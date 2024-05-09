@@ -161,16 +161,18 @@ export class CommercialBankEthiopiaService
     );
 
     if (paPayment.transactionId) {
-      const transaction = await this.transactionRepository.findOneBy({
+      const { customData } = await this.transactionRepository.findOneBy({
         id: paPayment.transactionId,
       });
-      const customData = {
-        ...transaction.customData,
-      };
+      // BEWARE: CommercialBankEthiopiaTransferPayload was used to silence the TS error
+      // but in reality it might not be the actual type of requestResult
+      const value = (
+        customData.requestResult as CommercialBankEthiopiaTransferPayload
+      ).debitTheIrRef;
       paRegistrationData.push({
         referenceId: paPayment.referenceId,
         fieldName: 'debitTheIrRef',
-        value: customData['requestResult'].debitTheIrRef,
+        value,
       });
     }
 

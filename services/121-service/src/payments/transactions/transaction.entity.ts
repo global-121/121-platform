@@ -39,7 +39,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column('json', {
     default: {},
   })
-  public customData: JSON;
+  public customData: Record<string, unknown>;
 
   @Column({ default: 1 })
   @Index()

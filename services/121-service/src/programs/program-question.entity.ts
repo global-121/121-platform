@@ -1,4 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   BeforeRemove,
   Check,
@@ -25,7 +28,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json')
   @ApiProperty({ example: { en: 'label' } })
-  public label: JSON;
+  public label: LocalizedString;
 
   @Column()
   @ApiProperty({ example: 'tel' })
@@ -33,7 +36,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'placeholder' } })
-  public placeholder: JSON;
+  public placeholder: LocalizedString;
 
   @Column()
   @ApiProperty({ example: 'standard' })
@@ -41,11 +44,11 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: [] })
-  public options: JSON;
+  public options: QuestionOption[];
 
   @Column('json')
   @ApiProperty({ example: {} })
-  public scoring: JSON;
+  public scoring: Record<string, unknown>;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.programQuestions)
   @JoinColumn({ name: 'programId' })
@@ -61,7 +64,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
     default: [ExportType.allPeopleAffected, ExportType.included],
   })
   @ApiProperty({ example: [] })
-  public export: JSON;
+  public export: ExportType[];
 
   @Column({ nullable: true })
   @ApiProperty({ example: 'pattern' })
@@ -73,7 +76,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { default: [] })
   @ApiProperty({ example: [] })
-  public phases: JSON;
+  public phases: ProgramPhase[];
 
   @OneToMany(
     () => RegistrationDataEntity,

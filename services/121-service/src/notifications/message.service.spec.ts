@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { LanguageEnum } from '../shared/enum/language.enums';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { AzureLogService } from '../shared/services/azure-log.service';
 import { MessageContentType } from './enum/message-type.enum';

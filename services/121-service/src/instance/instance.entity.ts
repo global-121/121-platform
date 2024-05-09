@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { Column, Entity } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 
@@ -11,5 +12,5 @@ export class InstanceEntity extends Base121Entity {
 
   @Column('json')
   @ApiProperty({ example: { en: 'display name' } })
-  public displayName: JSON;
+  public displayName: LocalizedString;
 }

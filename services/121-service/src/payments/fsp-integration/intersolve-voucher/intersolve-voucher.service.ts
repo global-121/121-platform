@@ -20,11 +20,11 @@ import {
 } from '../../../notifications/twilio.dto';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
-import { LanguageEnum } from '../../../registration/enum/language.enum';
 import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '../../../registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '../../../scoped.repository';
+import { LanguageEnum } from '../../../shared/enum/language.enums';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';

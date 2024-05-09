@@ -1,8 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 import { CreateMessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { LanguageEnum } from '../../src/shared/enum/language.enums';
 import {
   getMessageTemplates,
   postMessageTemplate,
@@ -20,7 +20,7 @@ describe('Message template', () => {
     message: 'testing message',
     isWhatsappTemplate: true,
     isSendMessageTemplate: true,
-    label: JSON.parse(JSON.stringify({ en: 'test' })),
+    label: { en: 'test' },
   };
 
   beforeEach(async () => {

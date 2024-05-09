@@ -13,6 +13,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
@@ -61,11 +62,11 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  public readonly titlePortal: JSON;
+  public readonly titlePortal: LocalizedString;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description?: JSON;
+  public readonly description?: LocalizedString;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
@@ -253,18 +254,18 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()
-  public readonly aboutProgram: JSON;
+  public readonly aboutProgram: LocalizedString;
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
     description: 'Should be array of name-related program-questions.',
   })
   @IsArray()
-  public readonly fullnameNamingConvention: JSON;
+  public readonly fullnameNamingConvention: string[];
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
-  public readonly languages: JSON;
+  public readonly languages: LanguageEnum[];
 
   @ApiProperty({ example: false })
   @IsBoolean()

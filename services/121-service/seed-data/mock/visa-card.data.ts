@@ -1,6 +1,6 @@
 import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
+import { LanguageEnum } from '../../src/shared/enum/language.enums';
 
 export const programIdVisa = 3;
 export const paymentNrVisa = 1;

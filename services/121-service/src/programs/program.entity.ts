@@ -1,3 +1,4 @@
+import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 import {
   BeforeRemove,
   Column,
@@ -35,7 +36,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public location: string;
 
   @Column('json', { nullable: true })
-  public titlePortal: JSON;
+  public titlePortal: LocalizedString;
 
   @Column({ nullable: true })
   public ngo: string;
@@ -72,7 +73,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public targetNrRegistrations: number;
 
   @Column('json', { nullable: true })
-  public description: JSON;
+  public description: LocalizedString;
 
   @Column({ default: false })
   public published: boolean;
@@ -81,7 +82,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public validation: boolean;
 
   @Column('json', { nullable: true, default: null })
-  public aboutProgram: JSON;
+  public aboutProgram: LocalizedString;
 
   public editableAttributes?: Attribute[];
 
@@ -116,17 +117,17 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', {
     default: [],
   })
-  public deprecatedCustomDataKeys: JSON;
+  public deprecatedCustomDataKeys: unknown[];
 
   @Column({ default: false })
   public tryWhatsAppFirst: boolean;
 
   // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
-  public fullnameNamingConvention: JSON;
+  public fullnameNamingConvention: string[];
 
   @Column('json', { default: [] })
-  public languages: JSON;
+  public languages: LanguageEnum[];
 
   @Column({ default: false })
   public enableMaxPayments: boolean;

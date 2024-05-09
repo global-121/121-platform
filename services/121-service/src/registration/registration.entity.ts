@@ -32,9 +32,9 @@ import { LatestTransactionEntity } from '../payments/transactions/latest-transac
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ReferenceIdConstraints } from '../shared/const';
+import { LanguageEnum } from '../shared/enum/language.enums';
 import { UserEntity } from '../user/user.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
-import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataEntity } from './registration-data.entity';
 

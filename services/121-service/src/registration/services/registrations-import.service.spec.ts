@@ -4,8 +4,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { ProgramService } from '../../programs/programs.service';
+import { LanguageEnum } from '../../shared/enum/language.enums';
 import { GenericAttributes } from '../enum/custom-data-attributes';
-import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationsInputValidator } from '../validators/registrations-input-validator';
 import { RegistrationsImportService } from './registrations-import.service';
 

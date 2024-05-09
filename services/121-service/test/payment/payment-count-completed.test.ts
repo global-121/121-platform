@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { LanguageEnum } from '../../src/shared/enum/language.enums';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
 import { waitFor } from '../../src/utils/waitFor.helper';

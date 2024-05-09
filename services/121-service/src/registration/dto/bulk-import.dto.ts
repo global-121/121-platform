@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
-import { LanguageEnum } from '../enum/language.enum';
+import { LanguageEnum } from '../../shared/enum/language.enums';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export enum ImportStatus {

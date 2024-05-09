@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderIntegrationType } from '../financial-service-providers/enum/financial-service-provider-integration-type.enum';
@@ -16,7 +17,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'FSP display name' } })
-  public displayName: JSON;
+  public displayName: LocalizedString;
 
   @Column({ default: FinancialServiceProviderIntegrationType.api })
   @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })

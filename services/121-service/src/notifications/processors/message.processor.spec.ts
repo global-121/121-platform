@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { LanguageEnum } from '../../registration/enum/language.enum';
+import { LanguageEnum } from '../../shared/enum/language.enums';
 import { MessageContentType } from '../enum/message-type.enum';
 import { MessageJobDto, MessageProcessType } from '../message-job.dto';
 import { MessageService } from '../message.service';

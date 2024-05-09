@@ -1,3 +1,4 @@
+import { QuestionOption } from 'src/shared/enum/question.enums';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 
 export enum CustomDataAttributes {
@@ -45,7 +46,7 @@ export class Attribute {
   public name: string;
   public type: string;
   public label: object;
-  public options?: JSON;
+  public options?: QuestionOption[];
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
   public fspNames?: FinancialServiceProviderName[];
   public questionTypes?: QuestionType[];

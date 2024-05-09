@@ -593,7 +593,7 @@ export class ProgramService {
     programQuestion.pattern = dto.pattern;
     programQuestion.phases = dto.phases;
     programQuestion.editableInPortal = dto.editableInPortal;
-    programQuestion.export = dto.export as unknown as JSON;
+    programQuestion.export = dto.export;
     programQuestion.duplicateCheck = dto.duplicateCheck;
     programQuestion.placeholder = dto.placeholder;
     return programQuestion;

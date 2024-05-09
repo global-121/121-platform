@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export class CreateOptionsDto {
   @ApiProperty()
@@ -8,5 +9,5 @@ export class CreateOptionsDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  public readonly label: JSON;
+  public readonly label: LocalizedString;
 }

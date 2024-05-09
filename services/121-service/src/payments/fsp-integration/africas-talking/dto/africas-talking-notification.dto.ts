@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsOptional, IsString } from 'class-validator';
+import { AfricasTalkingNotificationRequestMetadata } from '../africas-talking-notification.entity';
 
 export class AfricasTalkingNotificationDto {
   @ApiProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })
@@ -77,11 +78,11 @@ export class AfricasTalkingNotificationDto {
 
   @ApiProperty({ example: {} })
   @IsOptional()
-  public readonly requestMetadata: JSON;
+  public readonly requestMetadata: AfricasTalkingNotificationRequestMetadata;
 
   @ApiProperty({ example: {} })
   @IsOptional()
-  public readonly providerMetadata: JSON;
+  public readonly providerMetadata: Record<string, unknown>;
 
   @ApiProperty({ example: '2020-09-02' })
   @IsOptional()

@@ -1,4 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   Check,
   Column,
@@ -24,21 +27,21 @@ export class FspQuestionEntity extends Base121Entity {
 
   @Column('json')
   @ApiProperty({ example: { en: 'label' } })
-  public label: JSON;
+  public label: LocalizedString;
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'placeholder' } })
-  public placeholder: JSON;
+  public placeholder: LocalizedString;
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: [] })
-  public options: JSON;
+  public options: QuestionOption[];
 
   @Column('json', {
     default: [ExportType.allPeopleAffected, ExportType.included],
   })
   @ApiProperty({ example: [] })
-  public export: JSON;
+  public export: ExportType[];
 
   @Column({ nullable: true })
   @ApiProperty({ example: 'pattern' })
@@ -54,7 +57,7 @@ export class FspQuestionEntity extends Base121Entity {
 
   @Column('json', { default: [] })
   @ApiProperty({ example: [] })
-  public phases: JSON;
+  public phases: ProgramPhase[];
 
   @ManyToOne((_type) => FinancialServiceProviderEntity, (fsp) => fsp.questions)
   @JoinColumn({ name: 'fspId' })

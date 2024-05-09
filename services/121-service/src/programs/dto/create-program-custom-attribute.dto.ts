@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export enum CustomAttributeType {
@@ -28,7 +29,7 @@ export class UpdateProgramCustomAttributeDto {
     },
   })
   @IsNotEmpty()
-  public label: JSON;
+  public label: LocalizedString;
 
   @ApiProperty({
     example: [
@@ -38,7 +39,7 @@ export class UpdateProgramCustomAttributeDto {
     ],
   })
   @IsNotEmpty()
-  public phases: JSON;
+  public phases: ProgramPhase[];
 
   @ApiProperty({ example: true, required: false })
   @IsOptional()

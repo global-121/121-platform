@@ -10,6 +10,8 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
@@ -26,10 +28,10 @@ class BaseProgramQuestionDto {
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
-  public readonly options: JSON;
+  public readonly options: QuestionOption[];
   @ApiProperty()
   @IsOptional()
-  public readonly scoring: JSON;
+  public readonly scoring: Record<string, unknown>;
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
@@ -46,7 +48,7 @@ class BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public phases: JSON;
+  public phases: ProgramPhase[];
   @ApiProperty({ example: true })
   @IsOptional()
   public readonly editableInPortal: boolean;
@@ -64,7 +66,7 @@ class BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public placeholder: JSON;
+  public placeholder: LocalizedString;
   @ApiProperty({
     example: false,
     required: false,
@@ -80,7 +82,7 @@ export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
       fr: "Remplissez votre nom, s'il vous plaît:",
     },
   })
-  public readonly label: JSON;
+  public readonly label: LocalizedString;
 
   @ApiProperty({
     example: AnswerTypes.text,
@@ -109,7 +111,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public readonly label: JSON;
+  public readonly label: LocalizedString;
 
   @ApiProperty({
     example: AnswerTypes.numeric,

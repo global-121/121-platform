@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
-import { LanguageEnum } from '../../registration/enum/language.enum';
+import { LanguageEnum } from '../../shared/enum/language.enums';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,

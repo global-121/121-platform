@@ -9,3 +9,5 @@ export enum LanguageEnum {
   fr = 'fr',
   tr = 'tr',
 }
+
+export type LocalizedString = { [K in LanguageEnum]?: string };
