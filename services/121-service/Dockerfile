@@ -5,6 +5,7 @@ WORKDIR /home/node/app
 FROM base as production
 
 COPY ./package*.json ./
+COPY ./.npmrc ./
 
 RUN npm ci
 
