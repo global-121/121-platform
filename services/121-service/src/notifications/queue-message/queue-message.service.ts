@@ -10,8 +10,8 @@ import { RegistrationViewEntity } from '../../registration/registration-view.ent
 import { RegistrationEntity } from '../../registration/registration.entity';
 import {
   DEFAULT_QUEUE_CREATE_MESSAGE,
-  MessageQueueMap,
   MESSAGE_QUEUE_MAP,
+  MessageQueueMap,
 } from '../enum/message-queue-mapping.const';
 import { MessageContentType } from '../enum/message-type.enum';
 import {

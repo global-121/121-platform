@@ -5,7 +5,7 @@ import {
   FindOneOptions,
   Repository,
 } from 'typeorm';
-import { hasNoUserScope, ScopedQueryBuilder } from '../../scoped.repository';
+import { ScopedQueryBuilder, hasNoUserScope } from '../../scoped.repository';
 import { ScopedUserRequest } from '../../shared/scoped-user-request';
 import { convertToScopedOptions } from '../../utils/scope/createFindWhereOptions.helper';
 

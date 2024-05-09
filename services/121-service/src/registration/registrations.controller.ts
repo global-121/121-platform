@@ -31,9 +31,9 @@ import {
 } from '@nestjs/swagger';
 import {
   Paginate,
+  PaginateQuery,
   Paginated,
   PaginatedSwaggerDocs,
-  PaginateQuery,
 } from 'nestjs-paginate';
 import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';

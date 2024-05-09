@@ -94,8 +94,8 @@ const PaginateConfigRegistrationViewNoLimit: PaginateConfig<RegistrationViewEnti
   };
 
 export {
-  PaginateConfigRegistrationViewWithPayments,
   PaginateConfigRegistrationView,
-  PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewNoLimit,
+  PaginateConfigRegistrationViewOnlyFilters,
+  PaginateConfigRegistrationViewWithPayments,
 };
