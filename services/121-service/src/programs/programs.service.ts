@@ -104,7 +104,6 @@ export class ProgramService {
 
     if (!includeMetricsUrl) {
       delete program.monitoringDashboardUrl;
-      delete program.evaluationDashboardUrl;
     }
 
     // over write fsp displayname by program specific displayName
@@ -253,7 +252,6 @@ export class ProgramService {
     program.enableScope = programData.enableScope;
     program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
-    program.evaluationDashboardUrl = programData.evaluationDashboardUrl;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -469,9 +467,7 @@ export class ProgramService {
     if (program.monitoringDashboardUrl) {
       programDto.monitoringDashboardUrl = program.monitoringDashboardUrl;
     }
-    if (program.evaluationDashboardUrl) {
-      programDto.evaluationDashboardUrl = program.evaluationDashboardUrl;
-    }
+
     return programDto;
   }
 

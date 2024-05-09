@@ -111,14 +111,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.evaluation,
-        loadChildren: () =>
-          import('./pages/evaluation/evaluation.module').then(
-            (m) => m.EvaluationPageModule,
-          ),
-        canActivate: [AuthGuard],
-      },
-      {
         path: 'registration/:paId',
         loadComponent: () =>
           import('./pages/registration-details/registration-details.page').then(
