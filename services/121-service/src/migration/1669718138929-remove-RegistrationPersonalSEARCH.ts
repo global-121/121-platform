@@ -48,7 +48,7 @@ export class removeRegistrationPersonalSEARCH1669718138929
         'registration:personal.read' as PermissionEnum,
       );
       if (includesSearch && !includesRead) {
-        userRole.permissions.push(readPerm);
+        userRole.permissions.push(readPerm!);
         await userRoleRepo.save(userRole);
       }
     }

@@ -2,7 +2,6 @@ import { EXTERNAL_API } from '@121-service/src/config';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   ProcessNamePayment,
   QueueNamePayment,
@@ -91,6 +90,11 @@ export class SafaricomService
       (user) => user.referenceId == jobData.paPaymentData.referenceId,
     );
 
+    if (!resultUser) {
+      // XXX: should throw error?
+      return;
+    }
+
     const payload = this.createPayloadPerPa(
       jobData.paPaymentData,
       jobData.programId,
@@ -103,7 +107,7 @@ export class SafaricomService
       jobData.paPaymentData.referenceId,
     );
 
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId: jobData.programId,
       paymentNr: jobData.paymentNr,
       userId: jobData.userId,
@@ -162,12 +166,12 @@ export class SafaricomService
       ].join('');
     }
 
-    const payload = {
-      InitiatorName: process.env.SAFARICOM_INITIATORNAME,
-      SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
+    return {
+      InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
+      SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
       CommandID: 'BusinessPayment',
       Amount: paymentData.transactionAmount,
-      PartyA: process.env.SAFARICOM_PARTY_A,
+      PartyA: process.env.SAFARICOM_PARTY_A!,
       PartyB: paymentData.paymentAddress,
       Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
@@ -176,11 +180,9 @@ export class SafaricomService
       OriginatorConversationID: `P${programId}PA${userInfo.id}_${formatDate(
         new Date(),
       )}_${generateRandomString(3)}`,
-      IDType: process.env.SAFARICOM_IDTYPE,
+      IDType: process.env.SAFARICOM_IDTYPE!,
       IDNumber: userInfo.value,
     };
-
-    return payload;
   }
 
   public async sendPaymentPerPa(
@@ -257,7 +259,7 @@ export class SafaricomService
       return;
     }
 
-    let paymentStatus = null;
+    let paymentStatus: StatusEnum | null = null;
 
     if (
       safaricomPaymentResultData &&

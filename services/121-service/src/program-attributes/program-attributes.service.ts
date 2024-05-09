@@ -27,9 +27,7 @@ export class ProgramAttributesService {
   @InjectRepository(FspQuestionEntity)
   private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
 
-  public getFilterableAttributes(
-    program: ProgramEntity,
-  ): { group: string; filters: FilterAttributeDto[] }[] {
+  public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [
       'personAffectedSequence',
       'referenceId',
@@ -77,12 +75,15 @@ export class ProgramAttributesService {
       ];
     }
 
-    const filterableAttributes = [];
+    const filterableAttributes: {
+      group: string;
+      filters: FilterAttributeDto[];
+    }[] = [];
     for (const group of filterableAttributeNames) {
       const filterableAttributesPerGroup: FilterAttributeDto[] = [];
       for (const name of group.filters) {
         if (
-          PaginateConfigRegistrationViewWithPayments.filterableColumns[name]
+          PaginateConfigRegistrationViewWithPayments.filterableColumns?.[name]
         ) {
           filterableAttributesPerGroup.push({
             name: name,
@@ -120,21 +121,21 @@ export class ProgramAttributesService {
     includeTemplateDefaultAttributes: boolean,
     filterShowInPeopleAffectedTable?: boolean,
   ): Promise<Attribute[]> {
-    let customAttributes = [];
+    let customAttributes: Attribute[] = [];
     if (includeCustomAttributes) {
       customAttributes = await this.getAndMapProgramCustomAttributes(
         programId,
         filterShowInPeopleAffectedTable,
       );
     }
-    let programQuestions = [];
+    let programQuestions: Attribute[] = [];
     if (includeProgramQuestions) {
       programQuestions = await this.getAndMapProgramQuestions(
         programId,
         filterShowInPeopleAffectedTable,
       );
     }
-    let fspQuestions = [];
+    let fspQuestions: Attribute[] = [];
     if (includeFspQuestions) {
       fspQuestions = await this.getAndMapProgramFspQuestions(
         programId,
@@ -142,7 +143,7 @@ export class ProgramAttributesService {
       );
     }
 
-    let templateDefaultAttributes = [];
+    let templateDefaultAttributes: Attribute[] = [];
     if (includeTemplateDefaultAttributes) {
       templateDefaultAttributes =
         await this.getMessageTemplateDefaultAttributes(programId);
@@ -163,7 +164,7 @@ export class ProgramAttributesService {
       where: { id: programId },
       select: ['enableMaxPayments'],
     });
-    const defaultAttributes = [
+    const defaultAttributes: Attribute[] = [
       {
         name: 'paymentAmountMultiplier',
         type: 'numeric',
@@ -268,7 +269,7 @@ export class ProgramAttributesService {
     programId: number,
     filterShowInPeopleAffectedTable?: boolean,
   ): Promise<Attribute[]> {
-    const program = await this.programRepository.findOne({
+    const program = await this.programRepository.findOneOrFail({
       where: { id: programId },
       relations: ['financialServiceProviders'],
     });

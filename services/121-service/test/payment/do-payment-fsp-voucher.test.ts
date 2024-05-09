@@ -64,7 +64,7 @@ describe('Do payment to 1 PA', () => {
       );
 
       // Assert
-      let getTransactionsBody = [];
+      let getTransactionsBody: any[] = [];
       let attempts = 0;
       while (attempts <= 10) {
         attempts++;

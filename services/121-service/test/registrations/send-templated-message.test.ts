@@ -60,7 +60,7 @@ describe('Sending templated message', () => {
         [registrationAh.referenceId],
         statusChange,
         accessToken,
-        null,
+        undefined,
         true, // check the checkbox for sending templated message about status change
       );
 
@@ -119,7 +119,7 @@ describe('Sending templated message', () => {
         accessToken,
         programId,
         [registrationAh.referenceId],
-        null,
+        undefined,
         templateKey,
       );
 
@@ -169,8 +169,8 @@ describe('Sending templated message', () => {
 
     it('throw error if neither messageTemplateKey AND message are defined', async () => {
       // Arrange
-      const templateKey = null;
-      const message = null;
+      const templateKey = undefined;
+      const message = undefined;
 
       // Act
       const result = await sendMessage(

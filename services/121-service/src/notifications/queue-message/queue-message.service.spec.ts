@@ -62,13 +62,13 @@ describe('QueueMessageService', () => {
     registration['whatsappPhoneNumber'] = '0987654321';
 
     // Act
-    await queueMessageService.addMessageToQueue(
+    await queueMessageService.addMessageToQueue({
       registration,
-      'test message',
-      defaultMessageJob.messageTemplateKey,
-      MessageContentType.custom,
-      MessageProcessType.whatsappTemplateGeneric,
-    );
+      message: 'test message',
+      messageTemplateKey: defaultMessageJob.messageTemplateKey,
+      messageContentType: MessageContentType.custom,
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    });
 
     // Assert
     expect(messageQueue.add).toHaveBeenCalledWith(ProcessNameMessage.send, {
@@ -100,13 +100,13 @@ describe('QueueMessageService', () => {
       .mockResolvedValue(whatsappNumber);
 
     // Act
-    await queueMessageService.addMessageToQueue(
+    await queueMessageService.addMessageToQueue({
       registration,
-      'test message',
-      defaultMessageJob.messageTemplateKey,
-      MessageContentType.custom,
-      MessageProcessType.whatsappTemplateGeneric,
-    );
+      message: 'test message',
+      messageTemplateKey: defaultMessageJob.messageTemplateKey,
+      messageContentType: MessageContentType.custom,
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    });
 
     // Assert
     expect(mockGetRegistrationDataValueByName).toHaveBeenCalledTimes(1);
@@ -175,7 +175,7 @@ describe('QueueMessageService', () => {
       // Act
       const result = await queueMessageService.getPlaceholdersInMessageText(
         2,
-        null,
+        undefined,
         messageTemplateKey,
       );
 

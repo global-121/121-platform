@@ -10,7 +10,7 @@ interface QueryBuilderMock {
 }
 
 export function generateMockCreateQueryBuilder(
-  dbQueryResult: any[],
+  dbQueryResult?: any[] | null,
   options: { useGetMany?: boolean } = {},
 ): QueryBuilderMock {
   const mock: QueryBuilderMock = {

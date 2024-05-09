@@ -42,7 +42,7 @@ export class ImageCodeService {
     const imageCodeExportVouchersEntity = new ImageCodeExportVouchersEntity();
 
     imageCodeExportVouchersEntity.registration =
-      await this.registrationRepository.findOne({
+      await this.registrationRepository.findOneOrFail({
         where: { referenceId: referenceId },
       });
     imageCodeExportVouchersEntity.voucher = intersolveVoucherEntity;
@@ -114,7 +114,7 @@ export class ImageCodeService {
 
   public async generateVoucherImage(voucherData: {
     dateTime: Date;
-    amount: number | string;
+    amount: number | string | null;
     code: string;
     pin: string;
   }): Promise<Buffer> {

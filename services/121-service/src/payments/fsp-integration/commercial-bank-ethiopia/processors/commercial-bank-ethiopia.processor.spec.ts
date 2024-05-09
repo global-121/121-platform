@@ -46,7 +46,7 @@ describe('Payment processor(s)', () => {
 
   it('should call sendQueuePayment', async () => {
     // Arrannge
-    commercialBankEthiopiaService.processQueuedPayment.mockResolvedValue(null);
+    commercialBankEthiopiaService.processQueuedPayment.mockResolvedValue();
 
     // Act
     await paymentProcessor.handleSendPayment(testJob);

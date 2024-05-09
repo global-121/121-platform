@@ -61,8 +61,8 @@ export class RegistrationDataTypeClassValidator
     const typeValid = this.typeIsValid(
       value,
       validationInfo.type,
-      validationInfo.options,
       attribute,
+      validationInfo.options,
     );
     if (!typeValid) {
       return false;
@@ -102,7 +102,9 @@ export class RegistrationDataTypeClassValidator
       const valResult = await validate(dto);
       if (valResult.length > 0) {
         try {
-          this.message = Object.values(valResult[0].constraints).join(', ');
+          if (valResult[0].constraints) {
+            this.message = Object.values(valResult[0].constraints).join(', ');
+          }
         } catch (e) {
           this.message = JSON.stringify(valResult);
         }
@@ -135,10 +137,10 @@ export class RegistrationDataTypeClassValidator
   private typeIsValid(
     value: any,
     type: string,
-    options: any[],
     attribute: string,
-  ): boolean {
-    let isValid = false;
+    options?: any[],
+  ): boolean | null {
+    let isValid: boolean | null = false;
     if (type === AnswerTypes.date) {
       const datePattern =
         /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
@@ -166,7 +168,7 @@ export class RegistrationDataTypeClassValidator
     return isValid;
   }
 
-  private multiSelectIsValid(values: any, options: any[]): boolean {
+  private multiSelectIsValid(values: any, options?: any[]): boolean {
     if (!Array.isArray(values) || values.length === 0) {
       return false;
     }
@@ -191,7 +193,7 @@ export class RegistrationDataTypeClassValidator
     }
   }
 
-  private optionIsValid(value: any, options: any[]): boolean {
+  private optionIsValid(value: any, options?: any[]): boolean {
     if (!options) {
       return false;
     } else {

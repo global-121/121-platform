@@ -40,7 +40,7 @@ describe('Message processor(s)', () => {
 
   it('should call sendMessage', async () => {
     // Arrannge
-    messageService.sendTextMessage.mockResolvedValue(null);
+    messageService.sendTextMessage.mockResolvedValue();
 
     // Act
     await messageProcessor.handleSend(testJob);

@@ -51,7 +51,7 @@ export class FileImportService {
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
-    const parsedData = [];
+    const parsedData: object[] = [];
     return await new Promise((resolve, reject): void => {
       stream
         .pipe(csv({ separator: separator }))

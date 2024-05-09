@@ -18,7 +18,7 @@ export class FinancialServiceProvidersService {
   public fspAttributeRepository: Repository<FspQuestionEntity>;
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
-    const fsp = await this.financialServiceProviderRepository.findOne({
+    const fsp = await this.financialServiceProviderRepository.findOneOrFail({
       where: { id: id },
       relations: ['questions'],
     });
@@ -39,11 +39,11 @@ export class FinancialServiceProvidersService {
   }
 
   private async getPaEditableAttributesFsp(fspId): Promise<Attribute[]> {
-    return (
-      await this.fspAttributeRepository.find({
-        where: { fspId: fspId },
-      })
-    ).map((c) => {
+    const fspAttributes = await this.fspAttributeRepository.find({
+      where: { fspId: fspId },
+    });
+
+    const attrs = fspAttributes.map((c) => {
       return {
         name: c.name,
         type: c.answerType,
@@ -52,6 +52,8 @@ export class FinancialServiceProvidersService {
         pattern: c.pattern,
       };
     });
+
+    return attrs;
   }
 
   public async updateFsp(

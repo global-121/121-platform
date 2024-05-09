@@ -29,7 +29,7 @@ export class ActionsService {
       where: { id: savedAction.id },
       relations: ['user'],
     });
-    return ActionMapper.entityToActionReturnDto(actionWithRelations);
+    return ActionMapper.entityToActionReturnDto(actionWithRelations!);
   }
 
   public async saveAction(
@@ -39,14 +39,16 @@ export class ActionsService {
   ): Promise<ActionEntity> {
     const action = new ActionEntity();
     action.actionType = actionType;
-    const user = await this.userRepository.findOneBy({
+    const user = await this.userRepository.findOneByOrFail({
       id: userId,
     });
+
     action.user = user;
 
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
+
     action.program = program;
 
     return await this.actionRepository.save(action);
@@ -55,7 +57,7 @@ export class ActionsService {
   public async getLatestAction(
     programId: number,
     actionType: ActionType,
-  ): Promise<ActionReturnDto> {
+  ): Promise<ActionReturnDto | null> {
     const action = await this.actionRepository.findOne({
       where: { program: { id: programId }, actionType: actionType },
       relations: ['user'],

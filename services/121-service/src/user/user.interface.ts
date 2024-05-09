@@ -2,7 +2,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 interface UserData {
   id: number;
-  username: string;
+  username?: string;
   permissions: UserPermissions;
   isAdmin?: boolean;
   isEntraUser?: boolean;
@@ -15,7 +15,7 @@ export interface UserRO {
 
 export interface UserRequestData {
   id: number;
-  username: string;
+  username: string | null;
   exp: number;
   admin: boolean;
   scope: string;

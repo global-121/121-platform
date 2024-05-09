@@ -9,7 +9,7 @@ import { Injectable } from '@nestjs/common';
 export class SeedProgramValidation implements InterfaceScript {
   public constructor(private readonly seedHelper: SeedHelper) {}
 
-  public async run(isApiTests?: boolean): Promise<void> {
+  public async run(isApiTests = false): Promise<void> {
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(
       programValidation,

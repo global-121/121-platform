@@ -73,7 +73,7 @@ export class SeedMockHelper {
         ['status'],
         accessToken,
         1,
-        null,
+        undefined,
         {
           'filter.status': `$in:${status}`,
         },

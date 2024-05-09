@@ -55,12 +55,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  Paginate,
-  PaginateQuery,
-  Paginated,
-  PaginatedSwaggerDocs,
-} from 'nestjs-paginate';
+import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -158,7 +153,7 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Req() req,
     @Param('programId', ParseIntPipe) programId: number,
-  ): Promise<Paginated<RegistrationViewEntity>> {
+  ) {
     const userId = req.user.id;
 
     const hasPersonalRead =
@@ -278,8 +273,8 @@ export class RegistrationsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
-    let permission: PermissionEnum;
-    let messageContentType: MessageContentType;
+    let permission: PermissionEnum | undefined;
+    let messageContentType: MessageContentType | undefined;
     const userId = req.user.id;
     const registrationStatus = statusUpdateDto.status;
     switch (registrationStatus) {
@@ -369,7 +364,7 @@ export class RegistrationsController {
     @Param('referenceId') referenceId: string,
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @Req() req,
-  ): Promise<RegistrationViewEntity> {
+  ) {
     const userId = req.user.id;
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -458,7 +453,7 @@ export class RegistrationsController {
   public async searchRegistration(
     @Query('phonenumber') phonenumber: string,
     @Req() req,
-  ): Promise<RegistrationViewEntity[]> {
+  ) {
     const userId = req.user.id;
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
@@ -490,14 +485,14 @@ export class RegistrationsController {
     @Param() params,
     @Body() data: UpdateChosenFspDto,
     @Req() req,
-  ): Promise<RegistrationViewEntity> {
+  ) {
     const userId = req.user.id;
-    return await this.registrationsService.updateChosenFsp(
-      params.referenceId,
-      data.newFspName,
-      data.newFspAttributes,
+    return await this.registrationsService.updateChosenFsp({
+      referenceId: params.referenceId,
+      newFspName: data.newFspName,
+      newFspAttributesRaw: data.newFspAttributes,
       userId,
-    );
+    });
   }
 
   @ApiTags('programs/registrations')

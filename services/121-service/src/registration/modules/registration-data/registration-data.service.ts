@@ -32,7 +32,7 @@ export class RegistrationDataService {
   public async getRegistrationValueByName(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     const registrationDataResult = await this.getRegistrationDataValueByName(
       registration,
       name,
@@ -51,7 +51,7 @@ export class RegistrationDataService {
   public async getRegistrationDataValueByName(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<string> {
+  ): Promise<string | null> {
     const result = await this.getRegistrationDataByName(registration, name);
     if (!result || !result.value) {
       return null;
@@ -94,7 +94,7 @@ export class RegistrationDataService {
   public async getRegistrationDataByName(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<RegistrationDataByNameDto> {
+  ): Promise<RegistrationDataByNameDto | null> {
     const query = this.getRegistrationDataQuery(registration, name);
     const queryWithSelect = query.select(
       `CASE
@@ -111,7 +111,7 @@ export class RegistrationDataService {
   public async getRegistrationDataEntityByName(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<RegistrationDataEntity> {
+  ): Promise<RegistrationDataEntity | null> {
     const query = this.getRegistrationDataQuery(registration, name);
     return query.getOne();
   }
@@ -175,13 +175,13 @@ export class RegistrationDataService {
     value: string | number | boolean | string[],
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
-    let relation = options.relation;
-    if (!options.relation && !options.name) {
+    let { relation } = options;
+    if (!relation && !options.name) {
       const errors = `Cannot save registration data, need either a dataRelation or a name`;
       throw new Error(errors);
     }
-    if (!options.relation) {
-      relation = await this.getRelationForName(registration, options.name);
+    if (!relation) {
+      relation = await this.getRelationForName(registration, options.name!);
     }
     if (Array.isArray(value)) {
       await this.saveMultipleData(registration, value, relation);
@@ -189,7 +189,7 @@ export class RegistrationDataService {
       await this.saveOneData(registration, value, relation);
     }
 
-    return await this.registrationScopedRepository.findOne({
+    return await this.registrationScopedRepository.findOneOrFail({
       relations: ['data'],
       where: {
         id: registration.id,

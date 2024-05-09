@@ -10,13 +10,14 @@ import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { HttpException, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
-import { DataSource, In } from 'typeorm';
+import { DataSource, DeepPartial, In } from 'typeorm';
 
 @Injectable()
 export class SeedHelper {
@@ -94,12 +95,14 @@ export class SeedHelper {
           username: `${debugScopeUser}@example.org`,
           password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
         });
-        await this.assignAidworker(
-          scopedUser.id,
-          program.id,
-          [DefaultUserRole.Admin],
-          debugScopeUser,
-        );
+        if (scopedUser) {
+          await this.assignAidworker(
+            scopedUser.id,
+            program.id,
+            [DefaultUserRole.Admin],
+            debugScopeUser,
+          );
+        }
       }
     }
 
@@ -201,13 +204,13 @@ export class SeedHelper {
     }
 
     // Remove original fsp and add it to a separate variable
-    const foundProgram = await programRepository.findOne({
+    const foundProgram = await programRepository.findOneOrFail({
       where: { id: programReturn.id },
     });
     const fsps = program.financialServiceProviders;
     foundProgram.financialServiceProviders = [];
     for (const fsp of fsps) {
-      const fspReturn = await fspRepository.findOne({
+      const fspReturn = await fspRepository.findOneOrFail({
         where: { fsp: fsp.fsp },
       });
       foundProgram.financialServiceProviders.push(fspReturn);
@@ -282,12 +285,12 @@ export class SeedHelper {
           role: In(roles),
         },
       }),
-    });
+    } as DeepPartial<ProgramAidworkerAssignmentEntity>);
   }
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
-    const adminUser = await userRepository.findOne({
+    const adminUser = await userRepository.findOneOrFail({
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
     await this.assignAidworker(adminUser.id, programId, [
@@ -330,7 +333,7 @@ export class SeedHelper {
     message: string,
     isWhatsappTemplate: boolean,
     isSendMessageTemplate: boolean,
-    label: object,
+    label: LocalizedString,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
     messageTemplateEntity.program = program;

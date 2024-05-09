@@ -12,6 +12,7 @@ import { ValidateRegistrationErrorObjectDto } from '@121-service/src/registratio
 import {
   AnswerTypes,
   Attribute,
+  AttributeWithOptionalLabel,
   CustomAttributeType,
   GenericAttributes,
   QuestionType,
@@ -42,12 +43,12 @@ export class RegistrationsInputValidator {
     csvArray: any[],
     programId: number,
     userId: number,
-    dynamicAttributes: Attribute[],
+    dynamicAttributes: AttributeWithOptionalLabel[],
     typeOfInput: RegistrationCsvValidationEnum,
     validationConfig: ValidationConfigDto = new ValidationConfigDto(),
   ): Promise<ImportRegistrationsDto[] | BulkImportDto[]> {
-    const errors = [];
-    const phoneNumberLookupResults: Record<string, string> = {};
+    const errors: ValidateRegistrationErrorObjectDto[] = [];
+    const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
     const userScope = await this.userService.getUserScopeForProgram(
       userId,
@@ -58,7 +59,7 @@ export class RegistrationsInputValidator {
       this.validateUniqueReferenceIds(csvArray);
     }
 
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
 
@@ -66,7 +67,7 @@ export class RegistrationsInputValidator {
       program.languages as unknown as string[],
     );
 
-    const validatedArray = [];
+    const validatedArray: any = [];
     const importRecordMap = {
       [RegistrationCsvValidationEnum.importAsRegistered]:
         ImportRegistrationsDto,
@@ -212,11 +213,16 @@ export class RegistrationsInputValidator {
       if (validationConfig.validateClassValidator) {
         const result = await validate(importRecord);
         if (result.length > 0) {
+          let error = result[0].toString();
+          if (result[0]?.constraints) {
+            error = Object.values(result[0].constraints).join(', ');
+          }
+
           const errorObj = {
             lineNumber: i + 1,
             column: result[0].property,
             value: result[0].value,
-            error: result[0]?.constraints,
+            error,
           };
           errors.push(errorObj);
         }
@@ -254,6 +260,12 @@ export class RegistrationsInputValidator {
       const fullNameLanguage = languageNamesApi.of(
         languageAbbr.substring(0, 2),
       );
+      if (!fullNameLanguage) {
+        throw new HttpException(
+          `Language ${languageAbbr} not found in createLanguageMapping`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const cleanedFullNameLanguage = fullNameLanguage.trim().toLowerCase();
       mapping[cleanedFullNameLanguage] = languageAbbr;
     }
@@ -266,8 +278,8 @@ export class RegistrationsInputValidator {
     i: number,
     validationConfig: ValidationConfigDto = new ValidationConfigDto(),
   ): {
-    errorObj: ValidateRegistrationErrorObjectDto;
-    preferredLanguage: LanguageEnum;
+    errorObj?: ValidateRegistrationErrorObjectDto;
+    preferredLanguage?: LanguageEnum;
   } {
     if (validationConfig.validatePreferredLanguage) {
       const cleanedPreferredLanguage =
@@ -301,7 +313,7 @@ export class RegistrationsInputValidator {
     inPreferredLanguage: string,
     programLanguageMapping: object,
     i: number,
-  ): ValidateRegistrationErrorObjectDto {
+  ): ValidateRegistrationErrorObjectDto | undefined {
     const cleanedPreferredLanguage =
       typeof inPreferredLanguage === 'string'
         ? inPreferredLanguage.trim().toLowerCase()
@@ -328,7 +340,7 @@ export class RegistrationsInputValidator {
   private updateLanguage(
     inPreferredLanguage: string,
     programLanguageMapping: object,
-  ): LanguageEnum {
+  ): LanguageEnum | undefined {
     const cleanedPreferredLanguage =
       typeof inPreferredLanguage === 'string'
         ? inPreferredLanguage.trim().toLowerCase()
@@ -357,7 +369,7 @@ export class RegistrationsInputValidator {
     userScope: string,
     i: number,
     validationConfig: ValidationConfigDto,
-  ): ValidateRegistrationErrorObjectDto {
+  ): ValidateRegistrationErrorObjectDto | undefined {
     if (validationConfig.validateScope) {
       const correctScope = this.recordHasAllowedScope(row, userScope);
       if (!correctScope) {
@@ -385,7 +397,7 @@ export class RegistrationsInputValidator {
     row: any,
     i: number,
     validationConfig: ValidationConfigDto,
-  ): Promise<ValidateRegistrationErrorObjectDto> {
+  ): Promise<ValidateRegistrationErrorObjectDto | undefined> {
     if (validationConfig.validateExistingReferenceId && row.referenceId) {
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: row.referenceId },
@@ -405,7 +417,7 @@ export class RegistrationsInputValidator {
     row: any,
     i: number,
     validationConfig: ValidationConfigDto,
-  ): ValidateRegistrationErrorObjectDto {
+  ): ValidateRegistrationErrorObjectDto | undefined {
     if (!row.phoneNumber && validationConfig.validatePhoneNumberEmpty) {
       return {
         lineNumber: i + 1,
@@ -417,7 +429,7 @@ export class RegistrationsInputValidator {
   }
 
   private isDynamicAttributeForFsp(
-    attribute: Attribute,
+    attribute: Attribute | AttributeWithOptionalLabel,
     fspName: FinancialServiceProviderName,
   ): boolean {
     // If the CSV does not have fspName all attributes may be relevant because a bulk PATCH may be for multiple FSPs
@@ -425,33 +437,37 @@ export class RegistrationsInputValidator {
       return true;
     }
     if (
-      attribute.questionTypes.length > 1 ||
-      attribute.questionTypes[0] !== QuestionType.fspQuestion
+      attribute.questionTypes &&
+      (attribute.questionTypes.length > 1 ||
+        attribute.questionTypes[0] !== QuestionType.fspQuestion)
     ) {
       // The attribute has multiple question types or is not FSP-specific
       return true;
-    } else if (
+    }
+
+    if (
+      attribute.questionTypes &&
       attribute.questionTypes.length === 1 &&
       attribute.questionTypes[0] === QuestionType.fspQuestion &&
-      attribute.fspNames.includes(fspName)
+      attribute.fspNames?.includes(fspName)
     ) {
       // The attribute has a single question type that is FSP-specific and is relevant for the FSP of this registration
       return true;
-    } else {
-      // The attribute is not relevant
-      return false;
     }
+
+    // The attribute is not relevant
+    return false;
   }
 
   private async validateLookupPhoneNumber(
     value: string,
     i: number,
-    phoneNumberLookupResults: Record<string, string>,
+    phoneNumberLookupResults: Record<string, string | undefined>,
   ): Promise<{
-    errorObj: ValidateRegistrationErrorObjectDto;
-    sanitized: string;
+    errorObj?: ValidateRegistrationErrorObjectDto;
+    sanitized?: string;
   }> {
-    let sanitized: string;
+    let sanitized: string | undefined;
     if (phoneNumberLookupResults[value]) {
       sanitized = phoneNumberLookupResults[value];
     } else {
@@ -474,7 +490,7 @@ export class RegistrationsInputValidator {
     type: string,
     columnName: string,
     i: number,
-  ): ValidateRegistrationErrorObjectDto {
+  ): ValidateRegistrationErrorObjectDto | undefined {
     const cleanedValue = this.cleanNumericOrBoolean(value, type);
     if (cleanedValue === null) {
       const errorObj = {
@@ -498,10 +514,9 @@ export class RegistrationsInputValidator {
     } else if (type === CustomAttributeType.boolean) {
       // Convert the value to a boolean and return it
       // If the value is not a boolean, return null
-      return RegistrationsInputValidatorHelpers.stringToBoolean(value) ===
-        undefined
-        ? null
-        : RegistrationsInputValidatorHelpers.stringToBoolean(value);
+      const convertedValue =
+        RegistrationsInputValidatorHelpers.stringToBoolean(value);
+      return convertedValue === undefined ? null : convertedValue;
     }
     // If the type is neither numeric nor boolean, return the original value
     return value;

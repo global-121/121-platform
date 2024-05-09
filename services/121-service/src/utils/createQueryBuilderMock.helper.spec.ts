@@ -9,7 +9,7 @@ describe('generateMockCreateQueryBuilder', () => {
     expect(mockQueryBuilder.select).toBeDefined();
     expect(mockQueryBuilder.addSelect).toBeDefined();
     expect(mockQueryBuilder.leftJoin).toBeDefined();
-    expect(mockQueryBuilder.getRawMany()).toEqual(dbQueryResult);
+    expect(mockQueryBuilder.getRawMany!()).toEqual(dbQueryResult);
     expect(mockQueryBuilder.getMany).toBeUndefined();
   });
 
@@ -25,7 +25,7 @@ describe('generateMockCreateQueryBuilder', () => {
     expect(mockQueryBuilder.select).toBeDefined();
     expect(mockQueryBuilder.addSelect).toBeDefined();
     expect(mockQueryBuilder.leftJoin).toBeDefined();
-    expect(mockQueryBuilder.getMany()).toEqual(dbQueryResult);
+    expect(mockQueryBuilder.getMany!()).toEqual(dbQueryResult);
     expect(mockQueryBuilder.getRawMany).toBeUndefined();
   });
 });

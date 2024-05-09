@@ -124,7 +124,7 @@ export class ScriptsController {
       await this.seedMultipleKrcs.run(isApiTests);
     } else if (
       script == SeedScript.nlrcMultipleMock &&
-      ['development', 'test'].includes(process.env.NODE_ENV)
+      ['development', 'test'].includes(process.env.NODE_ENV!)
     ) {
       const booleanMockPv = mockPv
         ? JSON.parse(mockPv as unknown as string)

@@ -102,7 +102,7 @@ describe('EventsService', () => {
     userService = unitRef.get(UserService);
     eventsService = unit;
     // Mock request user id
-    eventsService['request']['user']['id'] = 2;
+    eventsService['request']['user']!['id'] = 2;
 
     jest
       .spyOn(eventScopedRepository, 'find')
@@ -115,7 +115,7 @@ describe('EventsService', () => {
       password: 'dummyPassword',
       hashPassword: async () => 'hashedPasswordDummy',
       programAssignments: [],
-    } as UserEntity);
+    } as unknown as UserEntity);
 
     oldViewRegistration = getViewRegistration();
     newViewRegistration = getViewRegistration();
@@ -132,8 +132,8 @@ describe('EventsService', () => {
     const resultEvent = result[0];
     expect(resultEvent.id).toBe(mockFindEventResult[0].id);
     expect(resultEvent.created).toBe(mockFindEventResult[0].created);
-    expect(resultEvent.user.id).toBe(mockFindEventResult[0].user.id);
-    expect(resultEvent.user.username).toBe(
+    expect(resultEvent.user?.id).toBe(mockFindEventResult[0].user.id);
+    expect(resultEvent.user?.username).toBe(
       mockFindEventResult[0].user.username,
     );
     expect(resultEvent.registrationId).toBe(

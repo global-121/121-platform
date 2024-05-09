@@ -49,15 +49,15 @@ export class IntersolveVisaExportService {
     wallets: ExportWalletData[],
     programId: number,
   ): ExportCardsDto[] {
-    let previousRegistrationProgramId = null;
-    const exportWalletData = [];
+    let previousRegistrationProgramId: number | null = null;
+    const exportWalletData: ExportCardsDto[] = [];
     for (const wallet of wallets) {
       const isCurrentWallet =
         previousRegistrationProgramId === wallet.paId ? false : true;
 
       const statusInfo =
         this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.tokenBlocked,
+          wallet.tokenBlocked ?? false,
           wallet.walletStatus,
           wallet.cardStatus,
           isCurrentWallet,

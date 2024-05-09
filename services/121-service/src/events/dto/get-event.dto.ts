@@ -12,7 +12,7 @@ export class GetEventDto {
   @ApiProperty({ example: EventEnum.registrationDataChange })
   public readonly type: WrapperType<EventEnum>;
   @ApiProperty({ example: { id: 1, username: 'admin@example.org' } })
-  public readonly user: { id: number; username: string };
+  public readonly user: { id: number; username: string } | null;
   @ApiProperty({ example: new Date() })
   public readonly created: Date;
   @ApiProperty({ example: { exampleKey: 'exampleValue' } })

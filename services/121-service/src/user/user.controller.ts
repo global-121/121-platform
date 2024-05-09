@@ -167,8 +167,8 @@ export class UserController {
   }
 
   @Throttle(
-    +process.env.HIGH_THROTTLING_LIMIT || 30,
-    +process.env.HIGH_THROTTLING_TTL || 60,
+    parseInt(process.env.HIGH_THROTTLING_LIMIT ?? '30'),
+    parseInt(process.env.HIGH_THROTTLING_TTL ?? '60'),
   )
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })

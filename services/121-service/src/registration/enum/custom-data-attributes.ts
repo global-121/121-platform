@@ -1,5 +1,6 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export enum CustomDataAttributes {
   phoneNumber = 'phoneNumber',
@@ -43,15 +44,19 @@ export enum GenericAttributes {
 }
 
 export class Attribute {
+  public id?: number;
   public name: string;
   public type: string;
-  public label: object;
-  public options?: QuestionOption[];
+  public label: LocalizedString | null;
+  public options?: QuestionOption[] | null;
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
   public fspNames?: FinancialServiceProviderName[];
   public questionTypes?: QuestionType[];
-  public pattern?: string;
+  public pattern?: string | null;
 }
+
+export type AttributeWithOptionalLabel = Omit<Attribute, 'label'> &
+  Partial<Pick<Attribute, 'label'>>;
 
 export enum QuestionType {
   programQuestion = 'programQuestion',

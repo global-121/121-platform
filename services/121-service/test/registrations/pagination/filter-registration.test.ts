@@ -48,14 +48,11 @@ describe('Load PA table', () => {
 
     it('should filter based on status', async () => {
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        { 'filter.status': RegistrationStatusEnum.included },
-      );
+        filter: { 'filter.status': RegistrationStatusEnum.included },
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -71,14 +68,13 @@ describe('Load PA table', () => {
 
     it('should filter based on registration data', async () => {
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        { 'filter.whatsappPhoneNumber': registrationOCW4.whatsappPhoneNumber },
-      );
+        filter: {
+          'filter.whatsappPhoneNumber': registrationOCW4.whatsappPhoneNumber,
+        },
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -94,17 +90,14 @@ describe('Load PA table', () => {
 
     it('should filter based on root attributes & registration data', async () => {
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        {
+        filter: {
           'filter.whatsappPhoneNumber': registrationOCW3.whatsappPhoneNumber,
           'filter.preferredLanguage': registrationOCW3.preferredLanguage,
         },
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -121,13 +114,10 @@ describe('Load PA table', () => {
     it('should filter using in, eq, ilike and null', async () => {
       // Act
       // Each of the filters would seperately return
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        {
+        filter: {
           'filter.whatsappPhoneNumber': `$ilike:${registrationOCW3.whatsappPhoneNumber.substring(
             0,
             1,
@@ -135,7 +125,7 @@ describe('Load PA table', () => {
           'filter.preferredLanguage': `$in:nonExisting,${registrationOCW3.preferredLanguage}`,
           'filter.addressCity': `$eq:${registrationOCW3.addressCity}`,
         },
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -152,20 +142,17 @@ describe('Load PA table', () => {
     it('should filter using search in combination with filter', async () => {
       // Act
       // The postal code shoud filter 1 and 2 and the search should filter 2 and 4, so only 2 should be returned
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        {
+        filter: {
           'filter.addressPostalCode': `$ilike:${registrationOCW2.addressPostalCode.substring(
             0,
             1,
           )}`,
           search: `${registrationOCW2.addressCity}`,
         },
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 

@@ -1,5 +1,8 @@
 export class RegistrationsInputValidatorHelpers {
-  static stringToBoolean(string: string, defaultValue?: boolean): boolean {
+  static stringToBoolean(
+    string: string | null | undefined,
+    defaultValue?: boolean,
+  ): boolean | undefined {
     if (typeof string === 'boolean') {
       return string;
     }

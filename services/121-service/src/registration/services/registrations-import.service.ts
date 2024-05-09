@@ -1,6 +1,7 @@
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
@@ -18,6 +19,7 @@ import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-
 import {
   AnswerTypes,
   Attribute,
+  AttributeWithOptionalLabel,
   GenericAttributes,
   QuestionType,
 } from '@121-service/src/registration/enum/custom-data-attributes';
@@ -134,7 +136,7 @@ export class RegistrationsImportService {
       await this.getDynamicAttributes(programId)
     ).map((d) => d.name);
 
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
     // If paymentAmountMultiplier automatic, then drop from template
@@ -175,15 +177,14 @@ export class RegistrationsImportService {
     userId: number,
   ): Promise<ImportResult> {
     let countImported = 0;
-    const registrations: RegistrationEntity[] = [];
-    const customDataList = [];
-
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
+    const registrations: RegistrationEntity[] = [];
+    const customDataList: Record<string, unknown>[] = [];
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = record.referenceId || uuid();
-      registration.phoneNumber = record.phoneNumber;
-      registration.preferredLanguage = record.preferredLanguage;
+      registration.phoneNumber = record.phoneNumber ?? null;
+      registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;
       registration.registrationStatus = RegistrationStatusEnum.registered;
@@ -209,7 +210,7 @@ export class RegistrationsImportService {
           customData[att.name] = record[att.name];
         }
       }
-      const fsp = await this.fspRepository.findOne({
+      const fsp = await this.fspRepository.findOneOrFail({
         where: { fsp: record.fspName },
       });
       registration.fsp = fsp;
@@ -218,7 +219,7 @@ export class RegistrationsImportService {
     }
 
     // Save registrations using .save to properly set registrationProgramId
-    const savedRegistrations = [];
+    const savedRegistrations: RegistrationEntity[] = [];
     for await (const registration of registrations) {
       const savedRegistration =
         await this.registrationUtilsService.save(registration);
@@ -229,11 +230,11 @@ export class RegistrationsImportService {
     await this.eventsService.log(
       savedRegistrations.map((r) => ({
         id: r.id,
-        status: null,
+        status: undefined,
       })),
       savedRegistrations.map((r) => ({
         id: r.id,
-        status: r.registrationStatus,
+        status: r.registrationStatus!,
       })),
       { registrationAttributes: ['status'] },
     );
@@ -308,7 +309,7 @@ export class RegistrationsImportService {
       if (att.relation.fspQuestionId && att.fspId !== registration.fspId) {
         continue;
       }
-      let values = [];
+      let values: (boolean | string | undefined)[] = [];
       if (att.type === CustomAttributeType.boolean) {
         values.push(
           RegistrationsInputValidatorHelpers.stringToBoolean(
@@ -326,11 +327,12 @@ export class RegistrationsImportService {
       for (const value of values) {
         const registrationData = new RegistrationDataEntity();
         registrationData.registration = registration;
-        registrationData.value = value;
+        registrationData.value = String(value);
         registrationData.programCustomAttributeId =
-          att.relation.programCustomAttributeId;
-        registrationData.programQuestionId = att.relation.programQuestionId;
-        registrationData.fspQuestionId = att.relation.fspQuestionId;
+          att.relation.programCustomAttributeId ?? null;
+        registrationData.programQuestionId =
+          att.relation.programQuestionId ?? null;
+        registrationData.fspQuestionId = att.relation.fspQuestionId ?? null;
         registrationDataArray.push(registrationData);
       }
     }
@@ -372,8 +374,12 @@ export class RegistrationsImportService {
     });
   }
 
-  private async getDynamicAttributes(programId: number): Promise<Attribute[]> {
-    let attributes = [];
+  private async getDynamicAttributes(
+    programId: number,
+  ): Promise<AttributeWithOptionalLabel[]> {
+    let attributes: (AttributeWithOptionalLabel & {
+      fspName?: FinancialServiceProviderName;
+    })[] = [];
     const programCustomAttributes =
       await this.getProgramCustomAttributes(programId);
     attributes = [...attributes, ...programCustomAttributes];
@@ -388,7 +394,7 @@ export class RegistrationsImportService {
         name: c.name,
         type: c.answerType,
         questionType: QuestionType.programQuestion,
-      };
+      } as AttributeWithOptionalLabel;
     });
     attributes = [...attributes, ...programQuestions];
 
@@ -402,7 +408,7 @@ export class RegistrationsImportService {
           id: c.id,
           name: c.name,
           type: c.answerType,
-          fspName: c.fsp.fsp,
+          fspName: c.fsp.fsp as FinancialServiceProviderName,
           questionType: QuestionType.fspQuestion,
         };
       });
@@ -412,13 +418,20 @@ export class RegistrationsImportService {
     const deduplicatedAttributes = attributes.reduce((acc, curr) => {
       const existingAttribute = acc.find((a) => a.name === curr.name);
       if (existingAttribute) {
-        if (
-          curr.questionType &&
-          !existingAttribute.questionTypes.includes(curr.questionType)
-        ) {
-          existingAttribute.questionTypes.push(curr.questionType);
+        if (curr.questionType) {
+          if (!existingAttribute.questionTypes) {
+            existingAttribute.questionTypes = [];
+          }
+
+          if (!existingAttribute.questionTypes.includes(curr.questionType)) {
+            existingAttribute.questionTypes.push(curr.questionType);
+          }
         }
+
         if (curr.fspName) {
+          if (!existingAttribute.fspNames) {
+            existingAttribute.fspNames = [];
+          }
           existingAttribute.fspNames.push(curr.fspName);
         }
       } else {
@@ -431,7 +444,7 @@ export class RegistrationsImportService {
         });
       }
       return acc;
-    }, []);
+    }, [] as AttributeWithOptionalLabel[]);
     return deduplicatedAttributes;
   }
 

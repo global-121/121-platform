@@ -57,7 +57,7 @@ describe('send arbitrary messages to set of registrations', () => {
       2,
     );
 
-    const messageHistories = [];
+    const messageHistories: any[] = [];
     for (const referenceId of referenceIds) {
       const response = await getMessageHistory(
         programIdOCW,
@@ -89,7 +89,7 @@ describe('send arbitrary messages to set of registrations', () => {
       programIdOCW,
       [],
       message,
-      null,
+      undefined,
       {
         'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
         search: `str`, // select addressStreet of registrationOCW1, registrationOCW3, registrationOCW4

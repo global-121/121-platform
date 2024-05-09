@@ -13,7 +13,7 @@ import { Injectable } from '@nestjs/common';
 export class SeedMultipleKRCS implements InterfaceScript {
   public constructor(private readonly seedHelper: SeedHelper) {}
 
-  public async run(isApiTests?: boolean): Promise<void> {
+  public async run(isApiTests = false): Promise<void> {
     // ************************
     // ***** Program Baringo *****
     // ************************

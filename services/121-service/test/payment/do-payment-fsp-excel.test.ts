@@ -119,12 +119,13 @@ describe('Do payment with Excel FSP', () => {
       // Arrange
       const configValue = programTest.financialServiceProviders
         .find((fsp) => fsp.fsp === FinancialServiceProviderName.excel)
-        .configuration.find(
+        ?.configuration?.find(
           (c) =>
             c.name ===
             FinancialServiceProviderConfigurationEnum.columnsToExport,
         );
-      const columns = Array.isArray(configValue.value)
+
+      const columns = Array.isArray(configValue?.value)
         ? [...configValue.value, 'amount']
         : [];
 
@@ -161,7 +162,8 @@ describe('Do payment with Excel FSP', () => {
       for (const row of fspInstructions) {
         const registration = registrationsWesteros.find(
           (r) => r.name === row.name,
-        );
+        )!;
+        expect(registration).toBeDefined();
         for (const [key, value] of Object.entries(row)) {
           if (key === 'amount') {
             const multipliedAmount = amount * (registration.dragon + 1);
@@ -225,8 +227,9 @@ describe('Do payment with Excel FSP', () => {
       for (const row of fspInstructions) {
         const registration = registrationsWesteros.find(
           (r) => r.name === row.name,
-        );
+        )!;
         for (const [key, value] of Object.entries(row)) {
+          expect(registration).toBeDefined();
           if (key === 'amount') {
             const multipliedAmount = amount * (registration.dragon + 1);
             expect(value).toBe(multipliedAmount);
@@ -291,10 +294,12 @@ describe('Do payment with Excel FSP', () => {
       for (const transaction of transactionsResponse.body) {
         const registration = registrationsWesteros.find(
           (r) => r.referenceId === transaction.referenceId,
-        );
+        )!;
+        expect(registration).toBeDefined();
         const importRecord = reconciliationData.find(
           (r) => r[matchColumn] === registration[matchColumn],
-        );
+        )!;
+        expect(importRecord).toBeDefined();
         expect(transaction.status).toBe(importRecord.status);
       }
     });

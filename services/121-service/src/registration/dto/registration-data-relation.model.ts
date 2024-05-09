@@ -4,10 +4,17 @@ export class RegistrationDataRelation {
   public programCustomAttributeId?: number;
 }
 
-export class RegistrationDataOptions {
-  public relation?: RegistrationDataRelation;
-  public name?: string;
+interface RegistrationDataOpionsWithRequiredRelation {
+  relation: RegistrationDataRelation;
+  name?: string;
 }
+interface RegistrationDataOpionsWithRequiredName {
+  relation?: RegistrationDataRelation;
+  name: string;
+}
+export type RegistrationDataOptions =
+  | RegistrationDataOpionsWithRequiredName
+  | RegistrationDataOpionsWithRequiredRelation;
 
 export class RegistrationDataInfo {
   public name: string;

@@ -4,7 +4,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { UkrPoshtaFspInstructions } from '@121-service/src/payments/fsp-integration/ukrposhta/dto/ukrposhta-fsp-instructions.dto';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
@@ -40,7 +39,7 @@ export class UkrPoshtaService
       transactionResult.status = StatusEnum.success;
       fspTransactionResult.paList.push(transactionResult);
     }
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId,
       paymentNr,
       userId: paymentList[0].userId,
@@ -216,7 +215,10 @@ export class UkrPoshtaService
     return ukrPoshtaFspInstructions;
   }
 
-  private formatPhoneNumber(phoneNumber: string): string {
+  private formatPhoneNumber(phoneNumber: string | null) {
+    if (!phoneNumber) {
+      return null;
+    }
     const countryCodePart = phoneNumber.slice(0, 2);
     const parenthesisPart = phoneNumber.slice(2, 5);
     const trailingPart1 = phoneNumber.slice(5, 8);

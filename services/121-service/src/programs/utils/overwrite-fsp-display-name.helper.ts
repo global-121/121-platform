@@ -66,10 +66,11 @@ export function getFspDisplayNameMapping(
 }
 
 export function overwriteFspDisplayName(
-  registration: RegistrationViewEntity,
-  fspDisplayNameMapping: Record<string, LocalizedString>,
-): LocalizedString {
-  if (registration.financialServiceProvider) {
-    return fspDisplayNameMapping[registration.financialServiceProvider];
+  financialServiceProvider: RegistrationViewEntity['financialServiceProvider'],
+  fspDisplayNameMapping?: Record<string, LocalizedString>,
+): LocalizedString | undefined {
+  if (!financialServiceProvider || !fspDisplayNameMapping) {
+    return undefined;
   }
+  return fspDisplayNameMapping[financialServiceProvider];
 }

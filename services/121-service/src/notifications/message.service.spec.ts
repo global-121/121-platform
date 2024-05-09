@@ -115,7 +115,7 @@ describe('MessageService', () => {
         ...defaultMessageJob,
         messageProcessType: MessageProcessType.tryWhatsapp,
         phoneNumber: '999888777',
-        whatsappPhoneNumber: null,
+        whatsappPhoneNumber: undefined,
       };
       const testNotificationText = 'WhatsApp Generic Message';
       getNotificationTextMock = jest
@@ -211,7 +211,7 @@ describe('MessageService', () => {
         StatusEnum.waiting,
         1,
         testMessageID,
-        null,
+        undefined,
       );
     });
   });

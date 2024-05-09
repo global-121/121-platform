@@ -67,7 +67,9 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
 
   public calculateTopUpAmount(): number {
     return (
-      (maximumAmountOfSpentCentPerMonth - this.spentThisMonth - this.balance) /
+      (maximumAmountOfSpentCentPerMonth -
+        this.spentThisMonth -
+        (this.balance ?? 0)) /
       100
     );
   }

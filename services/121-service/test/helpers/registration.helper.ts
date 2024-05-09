@@ -99,15 +99,23 @@ export function searchRegistrationByPhoneNumber(
     .send();
 }
 
-export function getRegistrations(
-  programId: number,
-  attributes: string[],
-  accessToken: string,
-  page?: number,
-  limit?: number,
-  filter: Record<string, string> = {},
-  sort?: { field: string; direction: 'ASC' | 'DESC' },
-): Promise<request.Response> {
+export function getRegistrations({
+  programId,
+  attributes,
+  accessToken,
+  page,
+  limit,
+  filter = {},
+  sort,
+}: {
+  programId: number;
+  attributes?: string[];
+  accessToken: string;
+  page?: number;
+  limit?: number;
+  filter?: Record<string, string>;
+  sort?: { field: string; direction: 'ASC' | 'DESC' };
+}): Promise<request.Response> {
   const queryParams = {};
 
   if (attributes) {
@@ -186,16 +194,15 @@ export async function waitForStatusChangeToComplete(
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
     // Get payment transactions
-    const paginatedRegistrations = await getRegistrations(
+    const paginatedRegistrations = await getRegistrations({
       programId,
-      ['status'],
+      attributes: ['status'],
       accessToken,
-      1,
-      null,
-      {
+      page: 1,
+      filter: {
         'filter.status': `$in:${status}`,
       },
-    );
+    });
     // If not all status change are done check again
     if (paginatedRegistrations.body.data.length >= amountOfRegistrations) {
       return;

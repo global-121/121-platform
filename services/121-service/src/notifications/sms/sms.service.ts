@@ -22,8 +22,8 @@ export class SmsService {
 
   public async sendSms(
     message: string,
-    recipientPhoneNr: string,
-    registrationId: number,
+    recipientPhoneNr?: string,
+    registrationId?: number,
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
   ): Promise<void> {
@@ -60,9 +60,9 @@ export class SmsService {
     }
   }
 
-  public async storeSendSms(
+  private async storeSendSms(
     message,
-    registrationId: number,
+    registrationId?: number,
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
   ): Promise<void> {
@@ -75,9 +75,9 @@ export class SmsService {
     twilioMessage.status = message.status;
     twilioMessage.type = NotificationType.Sms;
     twilioMessage.dateCreated = message.dateCreated;
-    twilioMessage.registrationId = registrationId;
-    twilioMessage.contentType = messageContentType;
-    twilioMessage.processType = messageProcessType;
+    twilioMessage.registrationId = registrationId ?? null;
+    twilioMessage.contentType = messageContentType ?? MessageContentType.custom;
+    twilioMessage.processType = messageProcessType ?? null;
     if (message.errorCode) {
       twilioMessage.errorCode = message.errorCode;
     }
@@ -89,7 +89,7 @@ export class SmsService {
     await this.lastMessageService.updateLatestMessage(twilioMessageSave);
   }
 
-  public async findOne(sid: string): Promise<TwilioMessageEntity> {
+  public async findOne(sid: string): Promise<TwilioMessageEntity | null> {
     const findOneOptions = {
       sid: sid,
     };
