@@ -269,13 +269,19 @@ class RegistrationDetails {
     await okButton.click();
   }
 
-  async validateNoteTile(
-    noteIndex: number,
+  async validateNoteTile({
+    noteIndex = 0,
+    changeTitle,
+    userName,
+    date,
+    noteContent,
+  }, {
+    noteIndex?: number,
     changeTitle: string,
     userName: string,
     date: string,
     noteContent: string,
-  ) {
+  }) {
     const historyTile = this.historyTile.nth(noteIndex);
 
     await expect(historyTile).toBeVisible();
