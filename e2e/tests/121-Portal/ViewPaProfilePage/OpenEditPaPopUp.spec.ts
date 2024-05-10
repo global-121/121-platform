@@ -36,6 +36,9 @@ test('[27493] Open the edit PA popup', async ({ page }) => {
   });
 
   await test.step('Should open first uploaded PA', async () => {
+    await table.switchTable({
+      tableName: englishTranslations.page.program.phases.payment.label,
+    });
     await table.clickOnPaNumber(1);
   });
 
