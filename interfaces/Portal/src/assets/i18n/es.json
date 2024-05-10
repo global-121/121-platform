@@ -283,10 +283,6 @@
           "btnText": "Abierto el plazo de inscripción",
           "label": "Diseño"
         },
-        "evaluation": {
-          "btnText": "Terminar el programa",
-          "label": "Evaluación"
-        },
         "payment": {
           "btnText": "Pasar a: Evaluación",
           "label": "Pago"

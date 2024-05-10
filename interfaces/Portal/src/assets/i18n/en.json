@@ -257,12 +257,7 @@
           "btnText": "Open for registration",
           "label": "Design"
         },
-        "evaluation": {
-          "btnText": "Terminate program",
-          "label": "Evaluation"
-        },
         "payment": {
-          "btnText": "Move to: Evaluation",
           "label": "Payment"
         },
         "people-affected": {

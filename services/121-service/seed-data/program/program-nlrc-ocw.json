@@ -94,6 +94,5 @@
   "enableMaxPayments": false,
   "enableScope": false,
   "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
-  "evaluationDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
   "allowEmptyPhoneNumber": false
 }

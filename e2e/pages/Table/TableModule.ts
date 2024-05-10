@@ -135,13 +135,6 @@ class TableModule {
       .click();
   }
 
-  async selectTable(tableName: string) {
-    await this.page
-      .locator(this.tableButton)
-      .filter({ hasText: tableName })
-      .click();
-  }
-
   async quickFilter(filter: string) {
     try {
       const filterInputLocator = this.page.locator(this.filterInput);
