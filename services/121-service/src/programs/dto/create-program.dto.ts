@@ -268,10 +268,6 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()
-  public evaluationDashboardUrl?: string;
-
-  @ApiProperty({ example: 'example.org' })
-  @IsOptional()
   public monitoringDashboardUrl?: string;
 
   @ApiProperty({ example: 100000 })

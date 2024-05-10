@@ -290,10 +290,6 @@
           "btnText": "Open voor registratie",
           "label": "Programma ontwerp"
         },
-        "evaluation": {
-          "btnText": "Programma beëindigen",
-          "label": "Evaluatie"
-        },
         "payment": {
           "btnText": "Ga naar: Evaluatie",
           "label": "Betaling"

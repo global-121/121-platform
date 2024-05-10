@@ -35,7 +35,9 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await table.selectTable('Payment');
+    await table.switchTable({
+      tableName: englishTranslations.page.program.phases.payment.label,
+    });
     await table.clickOnPaNumber(2);
   });
 

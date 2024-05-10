@@ -283,10 +283,6 @@
           "btnText": "Ouvert aux inscriptions",
           "label": "Concevoir"
         },
-        "evaluation": {
-          "btnText": "Mettre fin au programme",
-          "label": "Évaluation"
-        },
         "payment": {
           "btnText": "Déplacer vers : Évaluation",
           "label": "Paiement"

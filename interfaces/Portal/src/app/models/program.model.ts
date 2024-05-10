@@ -37,7 +37,6 @@ export class Program {
   filterableAttributes: FilterableAttributeGroup[];
   allowEmptyPhoneNumber: boolean;
   monitoringDashboardUrl?: string;
-  evaluationDashboardUrl?: string;
   budget?: number;
 }
 
@@ -73,7 +72,6 @@ export enum ProgramPhase {
   peopleAffected = 'people-affected',
   inclusion = 'inclusion',
   payment = 'payment',
-  evaluation = 'evaluation',
 }
 
 export class AidWorker {
