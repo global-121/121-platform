@@ -258,13 +258,14 @@ class RegistrationDetails {
     }
   }
 
-  async validateNewNoteTile(
+  async validateNoteTile(
+    noteIndex: number,
     changeTitle: string,
     userName: string,
     date: string,
     noteContent: string,
   ) {
-    const historyTile = this.historyTile.nth(0);
+    const historyTile = this.historyTile.nth(noteIndex);
 
     await expect(historyTile).toBeVisible();
     expect(
