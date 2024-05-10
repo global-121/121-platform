@@ -261,10 +261,12 @@ class RegistrationDetails {
     await this.page.waitForLoadState('networkidle');
     await expect(okButton).toBeEnabled();
 
-    for (let i = 0; i < 2; i++) {
-      await okButton.waitFor({ state: 'visible' });
-      await okButton.click();
-    }
+    // accept note
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+    // dismiss "saved successfully" popup
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
   }
 
   async validateNoteTile(
