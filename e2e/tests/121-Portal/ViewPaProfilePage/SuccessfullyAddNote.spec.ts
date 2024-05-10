@@ -43,8 +43,7 @@ test('[27499] Successfully add note', async ({ page }) => {
   });
 
   await test.step('Should validate PA profile opened succesfully, add a note and validate new note log tile', async () => {
-    const userName =
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!;
+    const userName = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!;
     await registration.validateHeaderToContainText(
       englishTranslations['registration-details'].pageTitle,
     );
@@ -55,15 +54,17 @@ test('[27499] Successfully add note', async ({ page }) => {
       ],
     );
     await registration.writeNote({
-      placeholder: englishTranslations['registration-details']['activity-overview'][
-        'add-note-popup'
-      ]['note-textarea-placeholder'],
+      placeholder:
+        englishTranslations['registration-details']['activity-overview'][
+          'add-note-popup'
+        ]['note-textarea-placeholder'],
       note: englishTranslations['registration-details']['activity-overview'][
         'add-note-popup'
       ]['note-visible'],
-      button: englishTranslations.common.ok,
+      buttonName: englishTranslations.common.ok,
     });
-    await registration.validateNewNoteTile(
+    await registration.validateNoteTile(
+      0,
       englishTranslations.page.program['program-people-affected'].column.note,
       userName,
       await helpers.getTodaysDate(),
