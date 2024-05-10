@@ -36,6 +36,9 @@ test('[27492] View Personal information table', async ({ page }) => {
 
   await test.step('Should open PAs for registration', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await table.switchTable({
+      tableName: englishTranslations.page.program.phases.payment.label,
+    });
   });
 
   await test.step('Should open first uploaded PA', async () => {
