@@ -19,5 +19,5 @@ export class UpdateChosenFspDto {
     },
   })
   @IsOptional()
-  public readonly newFspAttributes: JSON;
+  public readonly newFspAttributes: Record<string, unknown>;
 }

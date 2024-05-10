@@ -14,6 +14,6 @@ export class SafaricomTransferPayload {
   public IDNumber: string;
   public conversationId?: string;
   public status?: string;
-  public requestResult?: JSON;
-  public paymentResult?: JSON;
+  public requestResult?: Record<string, unknown>;
+  public paymentResult?: Record<string, unknown>;
 }

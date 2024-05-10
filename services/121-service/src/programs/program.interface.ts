@@ -1,8 +1,9 @@
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { ProgramEntity } from './program.entity';
 
 export interface SimpleProgramRO {
   id: number;
-  titlePortal: JSON;
+  titlePortal: LocalizedString;
   phase: string;
 }
 

@@ -20,7 +20,7 @@ export class UserEntity extends CascadeDeleteEntity {
   @Index({ unique: true })
   @Column({ nullable: true })
   @ApiProperty({ example: 'username' })
-  public username: string;
+  public username: string | null;
 
   @Column({ select: false })
   @ApiProperty()
@@ -81,7 +81,7 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true, select: false })
   @ApiProperty()
-  public salt: string;
+  public salt: string | null;
 
   @Column({ default: true })
   @ApiProperty({ example: true })
@@ -89,5 +89,5 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true })
   @ApiProperty({ example: new Date() })
-  public lastLogin: Date;
+  public lastLogin: Date | null;
 }

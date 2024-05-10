@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { LanguageEnum } from '../../src/shared/enum/language.enums';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
 import { changePhase, getNotes, postNote } from '../helpers/program.helper';
 import { importRegistrations } from '../helpers/registration.helper';

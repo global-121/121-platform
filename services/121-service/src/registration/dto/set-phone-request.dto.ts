@@ -7,7 +7,7 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
-import { LanguageEnum } from '../../registration/enum/language.enum';
+import { LanguageEnum } from '../../shared/enum/language.enums';
 
 export class SetPhoneRequestDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })

@@ -1,16 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 import { ExportType } from '../../metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })
   @IsOptional()
-  public label: JSON;
+  public label: LocalizedString;
 
   @ApiProperty({ example: { en: 'attribute placeholder' } })
   @IsOptional()
-  public placeholder: JSON;
+  public placeholder: LocalizedString;
 
   @ApiProperty({
     example: [
@@ -29,13 +31,13 @@ export class UpdateFspAttributeDto {
     ],
   })
   @IsOptional()
-  public options: JSON;
+  public options: QuestionOption[];
 
   @ApiProperty({
     example: [ExportType.allPeopleAffected, ExportType.included],
   })
   @IsOptional()
-  public export: JSON;
+  public export: ExportType[];
 
   @ApiProperty()
   @IsOptional()
@@ -49,7 +51,7 @@ export class UpdateFspAttributeDto {
     ],
   })
   @IsOptional()
-  public phases: JSON;
+  public phases: ProgramPhase[];
 }
 
 export class CreateFspAttributeDto extends UpdateFspAttributeDto {
@@ -64,5 +66,5 @@ export class UpdateFinancialServiceProviderDto {
     example: { en: 'FSP display name', nl: 'FSP weergavenaam' },
   })
   @IsOptional()
-  public readonly displayName: JSON;
+  public readonly displayName: LocalizedString;
 }

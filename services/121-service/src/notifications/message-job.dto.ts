@@ -1,4 +1,4 @@
-import { LanguageEnum } from '../registration/enum/language.enum';
+import { LanguageEnum } from '../shared/enum/language.enums';
 import { MessageContentType } from './enum/message-type.enum';
 
 export class MessageJobDto {

@@ -18,10 +18,10 @@ export class WhatsappTemplateTestEntity extends Base121Entity {
   public messageKey: string;
 
   @Column({ nullable: true })
-  public succes: boolean;
+  public succes: boolean | null;
 
   @Column({ nullable: true })
-  public callback: string;
+  public callback: string | null;
 
   @Index()
   @Column()

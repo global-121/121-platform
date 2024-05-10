@@ -23,7 +23,7 @@ import {
   TransactionNotificationObject,
 } from '../dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '../dto/transaction-relation-details.dto';
-import { LanguageEnum } from './../../registration/enum/language.enum';
+import { LanguageEnum } from './../../shared/enum/language.enums';
 import {
   AuditedTransactionReturnDto,
   TransactionReturnDto,

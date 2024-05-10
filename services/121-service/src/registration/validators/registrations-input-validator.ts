@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramEntity } from '../../programs/program.entity';
+import { LanguageEnum } from '../../shared/enum/language.enums';
 import { UserService } from '../../user/user.service';
 import { BulkImportDto, ImportRegistrationsDto } from '../dto/bulk-import.dto';
 import { BulkUpdateDto } from '../dto/bulk-update.dto';
@@ -18,7 +19,6 @@ import {
   GenericAttributes,
   QuestionType,
 } from '../enum/custom-data-attributes';
-import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationCsvValidationEnum } from '../enum/registration-csv-validation.enum';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationsInputValidatorHelpers } from './registrations-input.validator.helper';

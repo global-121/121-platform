@@ -11,16 +11,16 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
   public body: string;
 
   @Column({ nullable: true })
-  public mediaUrl: string;
+  public mediaUrl: string | null;
 
   @Column({ nullable: true })
-  public messageType: string;
+  public messageType: string | null;
 
   @Column()
   public to: string;
 
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 
   @Column({ default: MessageContentType.custom })
   public contentType: MessageContentType;

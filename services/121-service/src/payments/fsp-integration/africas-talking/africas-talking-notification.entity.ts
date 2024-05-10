@@ -1,6 +1,13 @@
 import { Column, Entity } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 
+export interface AfricasTalkingNotificationRequestMetadata {
+  programId: string;
+  payment: string;
+  referenceId: string;
+  amount: string;
+}
+
 // TODO: REFACTOR: rename the database table into africas_talking_notification so it aligns with Entity class name
 @Entity('at_notification')
 export class AfricasTalkingNotificationEntity extends Base121Entity {
@@ -15,13 +22,13 @@ export class AfricasTalkingNotificationEntity extends Base121Entity {
   public provider: string;
 
   @Column({ nullable: true })
-  public providerRefId: string;
+  public providerRefId: string | null;
 
   @Column()
   public providerChannel: string;
 
   @Column({ nullable: true })
-  public clientAccount: string;
+  public clientAccount: string | null;
 
   @Column()
   public productName: string;
@@ -42,10 +49,10 @@ export class AfricasTalkingNotificationEntity extends Base121Entity {
   public value: string;
 
   @Column({ nullable: true })
-  public transactionFee: string;
+  public transactionFee: string | null;
 
   @Column({ nullable: true })
-  public providerFee: string;
+  public providerFee: string | null;
 
   @Column()
   public status: string;
@@ -54,11 +61,11 @@ export class AfricasTalkingNotificationEntity extends Base121Entity {
   public description: string;
 
   @Column('json', { default: null })
-  public requestMetadata: JSON;
+  public requestMetadata: AfricasTalkingNotificationRequestMetadata;
 
   @Column('json', { default: null })
-  public providerMetadata: JSON;
+  public providerMetadata: Record<string, unknown>;
 
   @Column({ nullable: true })
-  public transactionDate: string;
+  public transactionDate: string | null;
 }

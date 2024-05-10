@@ -9,7 +9,7 @@ export class UserRoleEntity extends Base121Entity {
   public role: string;
 
   @Column({ nullable: true })
-  public label: string;
+  public label: string | null;
 
   @ManyToMany(
     () => ProgramAidworkerAssignmentEntity,

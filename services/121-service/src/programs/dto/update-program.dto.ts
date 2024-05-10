@@ -11,6 +11,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 import { ProgramFinancialServiceProviderDto } from './create-program.dto';
@@ -37,7 +38,7 @@ export class UpdateProgramDto {
 
   @ApiProperty({ example: { en: 'title' } })
   @IsOptional()
-  public readonly titlePortal: JSON;
+  public readonly titlePortal: LocalizedString;
 
   @ApiProperty()
   @IsOptional()
@@ -111,7 +112,7 @@ export class UpdateProgramDto {
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description: JSON;
+  public readonly description: LocalizedString;
 
   @ApiProperty({ example: false })
   @IsOptional()

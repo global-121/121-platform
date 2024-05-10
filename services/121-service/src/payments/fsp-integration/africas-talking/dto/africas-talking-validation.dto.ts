@@ -30,5 +30,5 @@ export class AfricasTalkingValidationDto {
 
   @ApiProperty({ example: { programId: '1', payment: '1' } })
   @IsOptional()
-  public readonly metadata: JSON;
+  public readonly metadata: Record<string, unknown>;
 }

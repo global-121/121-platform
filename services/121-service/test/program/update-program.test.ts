@@ -18,7 +18,7 @@ describe('Update program', () => {
     // Arrange
     // Test with a few possibly to be changed attributes, not all attributes of a program
     const program = {
-      titlePortal: JSON.parse(JSON.stringify({ en: 'new title' })),
+      titlePortal: { en: 'new title' },
       published: false,
       distributionDuration: 100,
       fixedTransferValue: 500,

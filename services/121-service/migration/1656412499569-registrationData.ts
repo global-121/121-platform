@@ -31,7 +31,7 @@ class MonitoringQuestionEntity extends CascadeDeleteEntity {
   public conclusion: JSON;
 
   @Column('json', { nullable: true })
-  public options: JSON;
+  public options: JSON | null;
 
   // @ts-expect-error monitoringQuestion has been removed since
   @OneToOne(() => InstanceEntity, (instance) => instance.monitoringQuestion)

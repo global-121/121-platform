@@ -1,3 +1,5 @@
+import { isArray, isObject } from 'lodash';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
 import { RegistrationViewEntity } from '../../registration/registration-view.entity';
@@ -24,8 +26,14 @@ export function overwriteProgramFspDisplayName(
           );
 
         if (displayNameConfig.length > 0) {
-          financialServiceProvider.displayName = displayNameConfig[0]
-            .value as unknown as JSON;
+          // TODO: there should be a cleaner way to handle things here
+          // should "value" really have the capability of being all of these things?
+          if (
+            isObject(displayNameConfig[0].value) &&
+            !isArray(displayNameConfig[0].value)
+          ) {
+            financialServiceProvider.displayName = displayNameConfig[0].value;
+          }
         }
 
         return financialServiceProvider;
@@ -37,7 +45,7 @@ export function overwriteProgramFspDisplayName(
 
 export function getFspDisplayNameMapping(
   program: ProgramEntity,
-): Record<string, JSON> {
+): Record<string, LocalizedString> {
   if (!program.financialServiceProviders || !program.programFspConfiguration) {
     throw new Error(
       `getFspDisplayNameMapping: Should be used with a program entity relations ['financialServiceProviders', 'programFspConfiguration']`,
@@ -58,8 +66,8 @@ export function getFspDisplayNameMapping(
 
 export function overwriteFspDisplayName(
   registration: RegistrationViewEntity,
-  fspDisplayNameMapping: Record<string, JSON>,
-): JSON {
+  fspDisplayNameMapping: Record<string, LocalizedString>,
+): LocalizedString {
   if (registration.financialServiceProvider) {
     return fspDisplayNameMapping[registration.financialServiceProvider];
   }

@@ -54,16 +54,16 @@ export class SafaricomRequestEntity {
   @Column('json', {
     default: {},
   })
-  public requestResult?: JSON;
+  public requestResult?: Record<string, unknown>;
 
   @Column('json', {
     default: {},
   })
-  public paymentResult?: JSON;
+  public paymentResult?: Record<string, unknown>;
 
   @OneToOne(() => TransactionEntity)
   @JoinColumn({ name: 'transactionId' })
   transaction: TransactionEntity;
   @Column({ type: 'int', nullable: true })
-  public transactionId: number;
+  public transactionId: number | null;
 }

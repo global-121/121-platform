@@ -5,10 +5,10 @@ import { ImageCodeExportVouchersEntity } from '../../imagecode/image-code-export
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {
   @Column({ nullable: true })
-  public payment: number;
+  public payment: number | null;
 
   @Column({ nullable: true })
-  public whatsappPhoneNumber: string;
+  public whatsappPhoneNumber: string | null;
 
   @Column()
   public pin: string;
@@ -18,11 +18,11 @@ export class IntersolveVoucherEntity extends Base121Entity {
 
   // The amount with which the voucher was originally created
   @Column({ nullable: true, type: 'real' })
-  public amount: number;
+  public amount: number | null;
 
   @Index()
   @Column({ nullable: true })
-  public send: boolean;
+  public send: boolean | null;
 
   @Index()
   @Column({ default: false })
@@ -31,14 +31,14 @@ export class IntersolveVoucherEntity extends Base121Entity {
   // The last known balance we got from intersolve
   @Index()
   @Column({ nullable: true, default: null, type: 'real' })
-  public lastRequestedBalance: number;
+  public lastRequestedBalance: number | null;
 
   @Column({ nullable: true, default: null })
-  public updatedLastRequestedBalance: Date;
+  public updatedLastRequestedBalance: Date | null;
 
   @Index()
   @Column({ nullable: true, default: 0 })
-  public reminderCount: number;
+  public reminderCount: number | null;
 
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.voucher)
   public image: ImageCodeExportVouchersEntity[];

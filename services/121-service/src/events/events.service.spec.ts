@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
-import { LanguageEnum } from '../registration/enum/language.enum';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '../registration/registration-view.entity';
+import { LanguageEnum } from '../shared/enum/language.enums';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -198,7 +198,7 @@ describe('EventsService', () => {
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
     newViewRegistration['fspDisplayName'] = {
       en: 'Albert Heijn voucher WhatsApp',
-    } as unknown as JSON;
+    };
     delete newViewRegistration['addressCity'];
     delete newViewRegistration['addressPostalCode'];
     delete newViewRegistration['addressHouseNumberAddition'];

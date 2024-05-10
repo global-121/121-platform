@@ -10,7 +10,10 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
-import { LanguageEnum } from '../../../registration/enum/language.enum';
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '../../../shared/enum/language.enums';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
@@ -30,7 +33,7 @@ export class CreateMessageTemplateDto {
   })
   @IsNotEmpty()
   @ValidateIf((o) => o.isSendMessageTemplate)
-  public readonly label: JSON;
+  public readonly label: LocalizedString;
 
   @ApiProperty()
   @IsString()
@@ -81,7 +84,7 @@ export class UpdateTemplateBodyDto {
     example: { en: 'Template label' },
   })
   @IsOptional()
-  public readonly label?: JSON;
+  public readonly label?: LocalizedString;
 }
 
 export class DeleteTemplateParamDto {

@@ -11,7 +11,7 @@ import {
 import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
-import { LanguageEnum } from './enum/language.enum';
+import { LanguageEnum, LocalizedString } from '../shared/enum/language.enums';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -103,7 +103,7 @@ export class RegistrationViewEntity {
   public financialServiceProvider: FinancialServiceProviderName;
 
   @ViewColumn()
-  public fspDisplayName: JSON;
+  public fspDisplayName: LocalizedString;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()

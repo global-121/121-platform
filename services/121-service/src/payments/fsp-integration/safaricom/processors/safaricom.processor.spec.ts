@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 import { FinancialServiceProviderName } from '../../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { LanguageEnum } from '../../../../registration/enum/language.enum';
+import { LanguageEnum } from '../../../../shared/enum/language.enums';
 import { SafaricomService } from '../safaricom.service';
 import { PaymentProcessorSafaricom } from './safaricom.processor';
 

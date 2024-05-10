@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { LanguageEnum } from '../../../../registration/enum/language.enum';
+import { LanguageEnum } from '../../../../shared/enum/language.enums';
 import { IntersolveVisaService } from '../intersolve-visa.service';
 import { PaymentProcessorIntersolveVisa } from './intersolve-visa.processor';
 

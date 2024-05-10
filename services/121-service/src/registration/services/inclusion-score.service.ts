@@ -140,7 +140,7 @@ export class InclusionScoreService {
     const options = JSON.parse(JSON.stringify(programQuestion.options));
     for (const value of options) {
       if (value.option == answerPA && programQuestion.scoring[value.option]) {
-        score = programQuestion.scoring[value.option];
+        score = Number(programQuestion.scoring[value.option]);
       }
     }
     return score;
@@ -162,7 +162,7 @@ export class InclusionScoreService {
           value.option == selectedOption &&
           programQuestion.scoring[value.option]
         ) {
-          score = score + programQuestion.scoring[value.option];
+          score = score + Number(programQuestion.scoring[value.option]);
         }
       }
     }
@@ -178,7 +178,7 @@ export class InclusionScoreService {
       if (isNaN(answerPA)) {
         answerPA = 0;
       }
-      score = programQuestion.scoring['multiplier'] * answerPA;
+      score = Number(programQuestion.scoring['multiplier']) * answerPA;
     }
     return score;
   }
