@@ -238,6 +238,72 @@ class RegistrationDetails {
     ).toContain(userName);
     expect(await timeStampLocator.textContent()).toContain(date);
   }
+
+  async addNote(actions: string, addNote: string) {
+    await this.page.getByText(actions).click();
+    await this.page.getByText(addNote).click();
+  }
+
+  async writeNote({
+    placeholder,
+    note,
+    buttonName,
+  }: {
+    placeholder: string;
+    note: string;
+    buttonName: string;
+  }) {
+    const okButton = this.page.getByRole('button', {
+      name: buttonName,
+    });
+    await expect(okButton).toBeDisabled();
+    await this.page.getByPlaceholder(placeholder).fill(note);
+    await this.page.waitForLoadState('networkidle');
+    await expect(okButton).toBeEnabled();
+
+    // accept note
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+    // dismiss "saved successfully" popup
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
+  async validateNoteTile({
+    noteIndex = 0,
+    changeTitle,
+    userName,
+    date,
+    noteContent,
+  }: {
+    noteIndex?: number;
+    changeTitle: string;
+    userName: string;
+    date: string;
+    noteContent: string;
+  }) {
+    const historyTile = this.historyTile.nth(noteIndex);
+
+    await expect(historyTile).toBeVisible();
+    expect(
+      await historyTile
+        .locator(this.historyTileTitle)
+        .filter({ hasText: changeTitle })
+        .textContent(),
+    ).toContain(changeTitle);
+    expect(
+      await historyTile
+        .locator(this.historyTileUserName)
+        .filter({ hasText: userName })
+        .textContent(),
+    ).toContain(userName);
+    expect(
+      await historyTile.locator(this.historyTileTimeStamp).textContent(),
+    ).toContain(date);
+    expect(
+      await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
+    ).toContain(noteContent);
+  }
 }
 
 export default RegistrationDetails;
