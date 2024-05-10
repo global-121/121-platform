@@ -54,15 +54,15 @@ test('[27499] Successfully add note', async ({ page }) => {
         'add-note'
       ],
     );
-    await registration.writeNote(
-      englishTranslations['registration-details']['activity-overview'][
+    await registration.writeNote({
+      placeholder: englishTranslations['registration-details']['activity-overview'][
         'add-note-popup'
       ]['note-textarea-placeholder'],
-      englishTranslations['registration-details']['activity-overview'][
+      note: englishTranslations['registration-details']['activity-overview'][
         'add-note-popup'
       ]['note-visible'],
-      englishTranslations.common.ok,
-    );
+      button: englishTranslations.common.ok,
+    });
     await registration.validateNewNoteTile(
       englishTranslations.page.program['program-people-affected'].column.note,
       userName,
