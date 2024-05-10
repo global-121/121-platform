@@ -275,12 +275,12 @@ class RegistrationDetails {
     userName,
     date,
     noteContent,
-  }, {
-    noteIndex?: number,
-    changeTitle: string,
-    userName: string,
-    date: string,
-    noteContent: string,
+  }: {
+    noteIndex?: number;
+    changeTitle: string;
+    userName: string;
+    date: string;
+    noteContent: string;
   }) {
     const historyTile = this.historyTile.nth(noteIndex);
 

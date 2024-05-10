@@ -63,14 +63,15 @@ test('[27499] Successfully add note', async ({ page }) => {
       ]['note-visible'],
       buttonName: englishTranslations.common.ok,
     });
-    await registration.validateNoteTile(
-      0,
-      englishTranslations.page.program['program-people-affected'].column.note,
-      userName,
-      await helpers.getTodaysDate(),
-      englishTranslations['registration-details']['activity-overview'][
-        'add-note-popup'
-      ]['note-visible'],
-    );
+    await registration.validateNoteTile({
+      changeTitle:
+        englishTranslations.page.program['program-people-affected'].column.note,
+      userName: userName,
+      date: await helpers.getTodaysDate(),
+      noteContent:
+        englishTranslations['registration-details']['activity-overview'][
+          'add-note-popup'
+        ]['note-visible'],
+    });
   });
 });
