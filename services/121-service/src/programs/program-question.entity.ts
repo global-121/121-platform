@@ -36,7 +36,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'placeholder' } })
-  public placeholder: LocalizedString;
+  public placeholder: LocalizedString | null;
 
   @Column()
   @ApiProperty({ example: 'standard' })
@@ -44,7 +44,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: [] })
-  public options: QuestionOption[];
+  public options: QuestionOption[] | null;
 
   @Column('json')
   @ApiProperty({ example: {} })
@@ -68,7 +68,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true })
   @ApiProperty({ example: 'pattern' })
-  public pattern: string;
+  public pattern: string | null;
 
   @Column({ default: false })
   @ApiProperty({ example: false })

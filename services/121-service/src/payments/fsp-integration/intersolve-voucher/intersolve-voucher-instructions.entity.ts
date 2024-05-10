@@ -11,5 +11,5 @@ export class IntersolveVoucherInstructionsEntity extends Base121Entity {
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
   @Column({ type: 'int', nullable: true })
-  public programId: number;
+  public programId: number | null;
 }

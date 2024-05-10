@@ -13,12 +13,12 @@ export class LatestMessageEntity extends Base121Entity {
   public registration: RegistrationEntity;
   @Index()
   @Column({ type: 'int', nullable: true, unique: true })
-  public registrationId: number;
+  public registrationId: number | null;
 
   @OneToOne(() => TwilioMessageEntity)
   @JoinColumn({ name: 'messageId' })
   public message: TwilioMessageEntity;
   @Index()
   @Column({ type: 'int', nullable: true })
-  public messageId: number;
+  public messageId: number | null;
 }

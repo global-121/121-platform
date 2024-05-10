@@ -11,5 +11,5 @@ export class Base121AuditedEntity extends Base121Entity {
 // where status changes are done by the system, such as moving to status completed).
 export class Base121OptionalAuditedEntity extends Base121Entity {
   @Column({ nullable: true })
-  public userId: number;
+  public userId: number | null;
 }

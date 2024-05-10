@@ -53,7 +53,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @Index()
   @Column({ nullable: true })
-  public registrationStatus: RegistrationStatusEnum;
+  public registrationStatus: RegistrationStatusEnum | null;
 
   @Index({ unique: true })
   @Column()
@@ -63,21 +63,21 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public data: RegistrationDataEntity[];
 
   @Column({ nullable: true })
-  public phoneNumber: string;
+  public phoneNumber: string | null;
 
   @Column({ nullable: true })
   @IsEnum(LanguageEnum)
-  public preferredLanguage: LanguageEnum;
+  public preferredLanguage: LanguageEnum | null;
 
   @Index({ unique: false })
   @Column({ nullable: true })
-  public inclusionScore: number;
+  public inclusionScore: number | null;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity)
   @JoinColumn({ name: 'fspId' })
   public fsp: FinancialServiceProviderEntity;
   @Column({ nullable: true })
-  public fspId: number;
+  public fspId: number | null;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()
@@ -95,7 +95,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments: number;
+  public maxPayments: number | null;
 
   // This is a count of the number of transactions with a distinct on the paymentId
   // can be failed or successful or waiting transactions

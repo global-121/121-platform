@@ -33,34 +33,34 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public phase: ProgramPhase;
 
   @Column({ nullable: true })
-  public location: string;
+  public location: string | null;
 
   @Column('json', { nullable: true })
-  public titlePortal: LocalizedString;
+  public titlePortal: LocalizedString | null;
 
   @Column({ nullable: true })
-  public ngo: string;
+  public ngo: string | null;
 
   @Column({ nullable: true })
-  public startDate: Date;
+  public startDate: Date | null;
 
   @Column({ nullable: true })
-  public endDate: Date;
+  public endDate: Date | null;
 
   @Column({ nullable: true })
-  public currency: string;
+  public currency: string | null;
 
   @Column({ nullable: true })
-  public distributionFrequency: string;
+  public distributionFrequency: string | null;
 
   @Column({ nullable: true })
-  public distributionDuration: number;
+  public distributionDuration: number | null;
 
   @Column({ nullable: true, type: 'real' })
-  public fixedTransferValue: number;
+  public fixedTransferValue: number | null;
 
   @Column({ nullable: true })
-  public paymentAmountMultiplierFormula: string;
+  public paymentAmountMultiplierFormula: string | null;
 
   @ManyToMany(
     () => FinancialServiceProviderEntity,
@@ -70,10 +70,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
   @Column({ nullable: true })
-  public targetNrRegistrations: number;
+  public targetNrRegistrations: number | null;
 
   @Column('json', { nullable: true })
-  public description: LocalizedString;
+  public description: LocalizedString | null;
 
   @Column({ default: false })
   public published: boolean;
@@ -82,7 +82,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public validation: boolean;
 
   @Column('json', { nullable: true, default: null })
-  public aboutProgram: LocalizedString;
+  public aboutProgram: LocalizedString | null;
 
   public editableAttributes?: Attribute[];
 
@@ -124,7 +124,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
-  public fullnameNamingConvention: string[];
+  public fullnameNamingConvention: string[] | null;
 
   @Column('json', { default: [] })
   public languages: LanguageEnum[];
@@ -136,7 +136,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public enableScope: boolean;
 
   @Column({ nullable: true, default: null })
-  public budget: number;
+  public budget: number | null;
 
   @OneToMany(
     () => ProgramFspConfigurationEntity,
@@ -145,10 +145,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public programFspConfiguration: ProgramFspConfigurationEntity[];
 
   @Column({ nullable: true, default: null })
-  public monitoringDashboardUrl: string;
+  public monitoringDashboardUrl: string | null;
 
   @Column({ nullable: true, default: null })
-  public evaluationDashboardUrl: string;
+  public evaluationDashboardUrl: string | null;
 
   @Column({ default: false })
   public allowEmptyPhoneNumber: boolean;

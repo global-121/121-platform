@@ -65,5 +65,5 @@ export class SafaricomRequestEntity {
   @JoinColumn({ name: 'transactionId' })
   transaction: TransactionEntity;
   @Column({ type: 'int', nullable: true })
-  public transactionId: number;
+  public transactionId: number | null;
 }

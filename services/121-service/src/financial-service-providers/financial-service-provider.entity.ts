@@ -17,7 +17,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'FSP display name' } })
-  public displayName: LocalizedString;
+  public displayName: LocalizedString | null;
 
   @Column({ default: FinancialServiceProviderIntegrationType.api })
   @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })

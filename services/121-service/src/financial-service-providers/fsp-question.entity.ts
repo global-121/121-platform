@@ -31,11 +31,11 @@ export class FspQuestionEntity extends Base121Entity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'placeholder' } })
-  public placeholder: LocalizedString;
+  public placeholder: LocalizedString | null;
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: [] })
-  public options: QuestionOption[];
+  public options: QuestionOption[] | null;
 
   @Column('json', {
     default: [ExportType.allPeopleAffected, ExportType.included],
@@ -45,7 +45,7 @@ export class FspQuestionEntity extends Base121Entity {
 
   @Column({ nullable: true })
   @ApiProperty({ example: 'pattern' })
-  public pattern: string;
+  public pattern: string | null;
 
   @Column()
   @ApiProperty({ example: 'tel' })

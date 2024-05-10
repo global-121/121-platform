@@ -16,5 +16,5 @@ export class TryWhatsappEntity extends Base121Entity {
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 }

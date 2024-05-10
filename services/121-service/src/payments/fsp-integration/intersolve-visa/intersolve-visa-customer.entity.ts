@@ -15,13 +15,13 @@ import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @Index()
   @Column({ nullable: true })
-  public holderId: string;
+  public holderId: string | null;
 
   @OneToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 
   @OneToMany(
     (_type) => IntersolveVisaWalletEntity,

@@ -10,5 +10,5 @@ export class ExchangeRateEntity extends Base121Entity {
   public euroExchangeRate: number;
 
   @Column({ nullable: true })
-  public closeTime: string;
+  public closeTime: string | null;
 }

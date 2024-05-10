@@ -14,7 +14,7 @@ export class MessageTemplateEntity extends Base121Entity {
   public type: string;
 
   @Column('json', { nullable: true })
-  public label: LocalizedString;
+  public label: LocalizedString | null;
 
   @Column()
   public language: string;

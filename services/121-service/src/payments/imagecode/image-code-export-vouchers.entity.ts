@@ -12,7 +12,7 @@ export class ImageCodeExportVouchersEntity extends Base121Entity {
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 
   @ManyToOne((_type) => IntersolveVoucherEntity, (voucher) => voucher.image)
   public voucher: IntersolveVoucherEntity;

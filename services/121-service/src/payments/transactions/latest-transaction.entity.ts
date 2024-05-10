@@ -31,12 +31,12 @@ export class LatestTransactionEntity extends Base121Entity {
   public registration: RegistrationEntity;
   @Index()
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 
   @OneToOne(() => TransactionEntity)
   @JoinColumn({ name: 'transactionId' })
   public transaction: TransactionEntity;
   @Index()
   @Column({ type: 'int', nullable: true })
-  public transactionId: number;
+  public transactionId: number | null;
 }

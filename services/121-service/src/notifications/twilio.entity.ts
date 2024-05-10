@@ -27,7 +27,7 @@ export class TwilioMessageEntity extends Base121Entity {
   public body: string;
 
   @Column({ nullable: true })
-  public mediaUrl: string;
+  public mediaUrl: string | null;
 
   @Column()
   public to: string;
@@ -53,13 +53,13 @@ export class TwilioMessageEntity extends Base121Entity {
   public contentType: MessageContentType;
 
   @Column({ nullable: true })
-  public processType: MessageProcessType;
+  public processType: MessageProcessType | null;
 
   @Column({ nullable: true })
-  public errorCode?: string;
+  public errorCode?: string | null;
 
   @Column({ nullable: true })
-  public errorMessage?: string;
+  public errorMessage?: string | null;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -69,7 +69,7 @@ export class TwilioMessageEntity extends Base121Entity {
   public registration: RegistrationEntity;
   @Index()
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 
   @Column({ type: 'int', default: 0 })
   public retryCount: number;
@@ -78,5 +78,5 @@ export class TwilioMessageEntity extends Base121Entity {
   @JoinColumn({ name: 'transactionId' })
   public transaction: TransactionEntity;
   @Column({ type: 'int', nullable: true })
-  public transactionId: number;
+  public transactionId: number | null;
 }

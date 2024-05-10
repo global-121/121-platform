@@ -39,25 +39,25 @@ export class BelcashRequestEntity {
   public statusdetail: string;
 
   @Column({ nullable: true })
-  public id: string;
+  public id: string | null;
 
   @Column({ nullable: true })
-  public date: string;
+  public date: string | null;
 
   @Column({ nullable: true })
-  public processdate: string;
+  public processdate: string | null;
 
   @Column({ nullable: true })
-  public statuscomment: string;
+  public statuscomment: string | null;
 
   @Column()
   public status: string;
 
   @Column({ nullable: true })
-  public referenceid: string;
+  public referenceid: string | null;
 
   @Column({ nullable: true })
-  public tracenumber: string;
+  public tracenumber: string | null;
 
   @Column()
   public system: string;
