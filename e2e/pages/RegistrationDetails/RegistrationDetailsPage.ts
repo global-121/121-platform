@@ -247,15 +247,16 @@ class RegistrationDetails {
   async writeNote({
     placeholder,
     note,
-    buttonName
+    buttonName,
   }: {
-    placeholder: string,
-    note: string,
-    buttonName: string
+    placeholder: string;
+    note: string;
+    buttonName: string;
   }) {
     const okButton = this.page.getByRole('button', {
       name: buttonName,
     });
+    await expect(okButton).toBeDisabled();
     await this.page.getByPlaceholder(placeholder).fill(note);
     await this.page.waitForLoadState('networkidle');
     await expect(okButton).toBeEnabled();
