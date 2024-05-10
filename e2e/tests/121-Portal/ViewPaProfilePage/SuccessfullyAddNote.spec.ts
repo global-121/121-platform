@@ -33,7 +33,7 @@ test('[27499] Successfully add note', async ({ page }) => {
   const homePage = new HomePage(page);
   const helpers = new Helpers();
 
-  await test.step('Should display correct amount of runnig projects and navigate to PA table', async () => {
+  await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.validateNumberOfActivePrograms(2);
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
