@@ -143,9 +143,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ nullable: true, default: null })
   public monitoringDashboardUrl: string | null;
 
-  @Column({ nullable: true, default: null })
-  public evaluationDashboardUrl: string | null;
-
   @Column({ default: false })
   public allowEmptyPhoneNumber: boolean;
 
