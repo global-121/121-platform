@@ -35,9 +35,9 @@ test('[27494] View Visa debit cards table', async ({ page }) => {
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.validateNumberOfActivePrograms(2);
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await table.selectTable(
-      englishTranslations.page.program.phases.payment.label,
-    );
+    await table.switchTable({
+      tableName: englishTranslations.page.program.phases.payment.label,
+    });
     await table.clickOnPaNumber(2);
   });
 

@@ -13,8 +13,4 @@ export const PROGRAM_PHASE_ORDER = [
     id: 4,
     name: ProgramPhase.payment,
   },
-  {
-    id: 5,
-    name: ProgramPhase.evaluation,
-  },
 ];
