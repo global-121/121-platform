@@ -32,7 +32,8 @@ export function overwriteProgramFspDisplayName(
             isObject(displayNameConfig[0].value) &&
             !isArray(displayNameConfig[0].value)
           ) {
-            financialServiceProvider.displayName = displayNameConfig[0].value;
+            financialServiceProvider.displayName = displayNameConfig[0]
+              .value as LocalizedString;
           }
         }
 
