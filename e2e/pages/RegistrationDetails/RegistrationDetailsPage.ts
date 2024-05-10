@@ -244,7 +244,15 @@ class RegistrationDetails {
     await this.page.getByText(addNote).click();
   }
 
-  async writeNote(placeholder: string, note: string, buttonName: string) {
+  async writeNote({
+    placeholder,
+    note,
+    buttonName
+  }: {
+    placeholder: string,
+    note: string,
+    buttonName: string
+  }) {
     const okButton = this.page.getByRole('button', {
       name: buttonName,
     });
