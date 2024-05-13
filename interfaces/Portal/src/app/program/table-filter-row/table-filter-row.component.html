@@ -82,19 +82,6 @@
       ></app-status-table-filter>
     </div>
   </div>
-  <div
-    class="ion-align-items-center ion-justify-content-end ion-margin-top"
-    [ngClass]="{
-      'is-loading': isLoading
-    }"
-  >
-    <app-export-select
-      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
-      [programId]="programId"
-      [thisPhase]="thisPhase"
-      [showValidation]="showValidation"
-    ></app-export-select>
-  </div>
 </div>
 
 <div
