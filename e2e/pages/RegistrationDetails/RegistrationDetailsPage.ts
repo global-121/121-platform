@@ -22,6 +22,7 @@ class RegistrationDetails {
   readonly historyTileTimeStamp: Locator;
   readonly tileInformationPlaceHolder: Locator;
   readonly tileInformationStatus: Locator;
+  readonly tileDetailsDropdownIcon: Locator;
   readonly preferredLanguageDropdown: Locator;
   readonly updateReasonTextArea: Locator;
 
@@ -78,9 +79,12 @@ class RegistrationDetails {
     this.tileInformationStatus = this.page.getByTestId(
       'registration-activity-detail-status',
     );
-    this.preferredLanguageDropdown = this.page.getByTestId(
-      'preferred-language-dropdown',
-    );
+    (this.tileDetailsDropdownIcon = this.page.getByTestId(
+      'registration-notification-dropdown-icon',
+    )),
+      (this.preferredLanguageDropdown = this.page.getByTestId(
+        'preferred-language-dropdown',
+      ));
     this.updateReasonTextArea = this.page.locator('textarea');
   }
 
@@ -191,7 +195,11 @@ class RegistrationDetails {
   }
 
   async openActivityOverviewTab(tabName: string) {
-    await this.tabButton.filter({ hasText: tabName }).locator('button').click();
+    await this.page.waitForLoadState('load');
+    await this.tabButton
+      .filter({ hasText: tabName })
+      .locator('button')
+      .click({});
   }
 
   async validateChangeLogTile(
@@ -341,6 +349,15 @@ class RegistrationDetails {
     expect(
       await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
     ).toContain(noteContent);
+  }
+  async validateMessageContent({ messageContent }: { messageContent: string }) {
+    await this.page.waitForLoadState('networkidle');
+    const historyTile = this.historyTile.nth(1);
+    expect(await historyTile.isVisible()).toBe(true);
+    await historyTile.locator(this.tileDetailsDropdownIcon).click();
+    expect(
+      await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
+    ).toContain(messageContent);
   }
 }
 
