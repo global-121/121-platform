@@ -77,11 +77,9 @@
     "label": "حدد ملفا"
   },
   "header": {
-    "dashboard": "لوحه القياده",
     "help": "تعليمات",
     "home": "وطن",
     "menu": "قائمة",
-    "team": "فريق",
     "users": "المستعملون"
   },
   "ngx-datatable": {

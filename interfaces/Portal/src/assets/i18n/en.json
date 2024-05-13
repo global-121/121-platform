@@ -84,11 +84,9 @@
   },
   "header": {
     "create-program": "Create Program",
-    "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
     "menu": "Menu",
-    "team": "Team",
     "users": "Users"
   },
   "ngx-datatable": {

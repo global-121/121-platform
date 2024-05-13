@@ -78,11 +78,9 @@
     "label": "Selecteer een bestand"
   },
   "header": {
-    "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
     "menu": "Menu",
-    "team": "Team",
     "users": "Gebruikers"
   },
   "ngx-datatable": {

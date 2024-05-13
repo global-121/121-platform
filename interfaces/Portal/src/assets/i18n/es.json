@@ -77,11 +77,9 @@
     "label": "Seleccionar un archivo"
   },
   "header": {
-    "dashboard": "Salpicadero",
     "help": "Ayuda",
     "home": "Hogar",
     "menu": "Menú",
-    "team": "Equipo",
     "users": "Usuarios"
   },
   "ngx-datatable": {

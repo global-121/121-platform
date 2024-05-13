@@ -77,11 +77,9 @@
     "label": "Sélectionner un fichier"
   },
   "header": {
-    "dashboard": "Tableau de bord",
     "help": "Aide",
     "home": "Domicile",
     "menu": "Menu",
-    "team": "Équipe",
     "users": "Utilisateurs"
   },
   "ngx-datatable": {
