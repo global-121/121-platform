@@ -9,11 +9,9 @@ import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
-import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { UserRequestData } from '../user/user.interface';
 import { UserService } from '../user/user.service';
-import { generateRandomString } from '../utils/getRandomValue.helper';
 
 const config = {
   credentials: {
@@ -108,21 +106,7 @@ export class AzureAdStrategy
         });
       }
     } catch (error: Error | unknown) {
-      if (
-        error instanceof HttpException &&
-        error.getStatus() === HttpStatus.NOT_FOUND
-      ) {
-        // If this user is not found, create a new user
-        const password = generateRandomString(16);
-        user = await this.userService.create(
-          username,
-          password,
-          UserType.aidWorker,
-          true,
-        );
-      } else {
-        throw error;
-      }
+      throw error;
     }
 
     if (authParams.permissions) {
