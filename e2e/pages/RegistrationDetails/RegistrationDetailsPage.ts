@@ -319,6 +319,13 @@ class RegistrationDetails {
     await okButton.click();
   }
 
+  async addEmptyNote({ buttonName }: { buttonName: string }) {
+    const okButton = this.page.getByRole('button', {
+      name: buttonName,
+    });
+    await expect(okButton).toBeDisabled();
+  }
+
   async validateNoteTile({
     noteIndex = 0,
     changeTitle,
