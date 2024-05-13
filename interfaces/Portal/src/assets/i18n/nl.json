@@ -286,12 +286,13 @@
         }
       },
       "phases": {
-        "design": {
-          "btnText": "Open voor registratie",
-          "label": "Programma ontwerp"
+        "dashboard": {
+          "label": "Toezicht houden"
+        },
+        "overview": {
+          "label": "Overzicht"
         },
         "payment": {
-          "btnText": "Ga naar: Evaluatie",
           "label": "Betaling"
         },
         "people-affected": {
@@ -302,6 +303,9 @@
           "label": "Hulpvragers",
           "label-no-validation": "Hulpvragers",
           "toggleText-enable-registrations": "Nieuwe registraties toestaan"
+        },
+        "team": {
+          "label": "Team"
         }
       },
       "program-details": {

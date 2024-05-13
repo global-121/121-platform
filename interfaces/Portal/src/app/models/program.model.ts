@@ -67,11 +67,15 @@ export enum DistributionFrequency {
 }
 
 export enum ProgramPhase {
-  design = 'design',
-  registrationValidation = 'registrationValidation',
+  overview = 'overview',
+  team = 'team',
   peopleAffected = 'people-affected',
-  inclusion = 'inclusion',
   payment = 'payment',
+  monitoring = 'dashboard',
+
+  // TODO: remove these 2 options later
+  registrationValidation = 'registrationValidation',
+  inclusion = 'inclusion',
 }
 
 export class AidWorker {

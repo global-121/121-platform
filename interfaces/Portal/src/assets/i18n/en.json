@@ -253,9 +253,11 @@
         }
       },
       "phases": {
-        "design": {
-          "btnText": "Open for registration",
-          "label": "Design"
+        "dashboard": {
+          "label": "Monitoring"
+        },
+        "overview": {
+          "label": "Overview"
         },
         "payment": {
           "label": "Payment"
@@ -265,9 +267,12 @@
           "actionText-enabled-registrations": "Registrations are now enabled for this program",
           "btnText": "Move to: Payment",
           "btnText-no-validation": "Move to: Payment",
-          "label": "People Affected & Validation",
+          "label": "People Affected",
           "label-no-validation": "People Affected",
           "toggleText-enable-registrations": "Allow new registrations"
+        },
+        "team": {
+          "label": "Team"
         }
       },
       "program-details": {
