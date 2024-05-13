@@ -1,9 +1,7 @@
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
-import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import {
   HttpStatus,
   Injectable,
@@ -107,21 +105,7 @@ export class AzureAdStrategy
         });
       }
     } catch (error: Error | unknown) {
-      if (
-        error instanceof HttpException &&
-        error.getStatus() === HttpStatus.NOT_FOUND
-      ) {
-        // If this user is not found, create a new user
-        const password = generateRandomString(16);
-        user = await this.userService.create(
-          username,
-          password,
-          UserType.aidWorker,
-          true,
-        );
-      } else {
-        throw error;
-      }
+      throw error;
     }
 
     if (authParams.permissions) {

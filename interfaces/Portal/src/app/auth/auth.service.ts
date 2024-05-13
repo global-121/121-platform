@@ -186,7 +186,7 @@ export class AuthService {
     const userDto = await this.programsService.getCurrentUser();
 
     if (!userDto || !userDto.user) {
-      localStorage.removeItem(USER_KEY);
+      localStorage.clear();
       this.router.navigate(['/', AppRoutes.login]);
       return;
     }
