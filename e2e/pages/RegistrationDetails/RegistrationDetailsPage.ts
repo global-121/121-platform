@@ -22,6 +22,9 @@ class RegistrationDetails {
   readonly historyTileTimeStamp: Locator;
   readonly tileInformationPlaceHolder: Locator;
   readonly tileInformationStatus: Locator;
+  readonly tileDetailsDropdownIcon: Locator;
+  readonly preferredLanguageDropdown: Locator;
+  readonly updateReasonTextArea: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -76,6 +79,15 @@ class RegistrationDetails {
     this.tileInformationStatus = this.page.getByTestId(
       'registration-activity-detail-status',
     );
+    (this.tileDetailsDropdownIcon = this.page.getByTestId(
+      'registration-notification-dropdown-icon',
+    )),
+      (this.preferredLanguageDropdown = this.page.getByTestId(
+        'preferred-language-dropdown',
+      ));
+    this.updateReasonTextArea = this.page.getByTestId(
+      'user-data-update-textarea',
+    );
   }
 
   async validateHeaderToContainText(headerTitle: string) {
@@ -121,6 +133,40 @@ class RegistrationDetails {
     expect(await fspLocator.isVisible()).toBe(true);
   }
 
+  async changePreferredLanguage({
+    language,
+    saveButtonName,
+    okButtonName,
+  }: {
+    language: string;
+    saveButtonName: string;
+    okButtonName: string;
+  }) {
+    const dropdown = this.page.getByRole('radio');
+    const saveButton = this.page.getByRole('button', {
+      name: saveButtonName,
+    });
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
+
+    await this.page.waitForLoadState('networkidle');
+    await this.preferredLanguageDropdown.click();
+
+    await dropdown.getByText(language).click();
+    await this.preferredLanguageDropdown.getByText(saveButtonName).click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change language to ${language}`);
+
+    await saveButton.waitFor({ state: 'visible' });
+    await saveButton.click();
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
   async validateDebitCardStatus(cardOverviewTitle: string, status: string) {
     await this.page.waitForLoadState('networkidle');
     const activeCard = this.debitCardStatus.filter({ hasText: status });
@@ -153,7 +199,11 @@ class RegistrationDetails {
   }
 
   async openActivityOverviewTab(tabName: string) {
-    await this.tabButton.filter({ hasText: tabName }).locator('button').click();
+    await this.page.waitForLoadState('load');
+    await this.tabButton
+      .filter({ hasText: tabName })
+      .locator('button')
+      .click({});
   }
 
   async validateChangeLogTile(
@@ -303,6 +353,15 @@ class RegistrationDetails {
     expect(
       await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
     ).toContain(noteContent);
+  }
+  async validateMessageContent({ messageContent }: { messageContent: string }) {
+    await this.page.waitForLoadState('networkidle');
+    const historyTile = this.historyTile.nth(1);
+    expect(await historyTile.isVisible()).toBe(true);
+    await historyTile.locator(this.tileDetailsDropdownIcon).click();
+    expect(
+      await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
+    ).toContain(messageContent);
   }
 }
 
