@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { AppRoutes } from 'src/app/app-routes.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { Program, ProgramStats } from 'src/app/models/program.model';
 import { environment } from 'src/environments/environment';
@@ -17,6 +18,8 @@ export class ProgramCardComponent implements OnInit {
 
   @Input()
   programStats: ProgramStats;
+
+  public appRoute = AppRoutes;
 
   public DateFormat = DateFormat;
 
