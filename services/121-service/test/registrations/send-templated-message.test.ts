@@ -14,13 +14,13 @@ import {
   importRegistrations,
   sendMessage,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { getAccessToken, getServer, resetDB } from '../helpers/utility.helper';
 import { programIdPV } from './pagination/pagination-data';
 
 // this test is flaky, so we retry it before failing the whole 8-minute CI job just because of it
 jest.retryTimes(2);
 
-describe('Send templated message', () => {
+describe('Sending templated message', () => {
   const programId = programIdPV; // status change templates are only available for PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
@@ -44,8 +44,9 @@ describe('Send templated message', () => {
 
     messageTemplates = (await getMessageTemplates(programId, accessToken)).body;
   });
+
   describe('on status change of PA', () => {
-    it('include', async () => {
+    it('sucessfully send include message', async () => {
       // Arrange
       const statusChange = RegistrationStatusEnum.included;
 
@@ -83,6 +84,26 @@ describe('Send templated message', () => {
       );
 
       expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
+
+    it('throw error if messageTemplateKey AND message are defined', async () => {
+      // Arrange
+      const statusChange = RegistrationStatusEnum.included;
+      const templateKey = RegistrationStatusEnum.included;
+      const message = 'Message';
+
+      // Act
+      const result = await getServer()
+        .patch(`/programs/${programId}/registrations/status`)
+        .set('Cookie', [accessToken])
+        .query({})
+        .send({
+          status: statusChange,
+          message: message,
+          messageTemplateKey: templateKey,
+        });
+      // Assert
+      expect(result.status).toBe(400);
     });
   });
 
@@ -122,6 +143,42 @@ describe('Send templated message', () => {
       );
 
       expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
+
+    it('throw error if messageTemplateKey AND message are defined', async () => {
+      // Arrange
+      const templateKey = RegistrationStatusEnum.included;
+      const message = 'Message';
+
+      // Act
+      const result = await sendMessage(
+        accessToken,
+        programId,
+        [registrationAh.referenceId],
+        message,
+        templateKey,
+      );
+
+      // Assert
+      expect(result.status).toBe(400);
+    });
+
+    it('throw error if neither messageTemplateKey AND message are defined', async () => {
+      // Arrange
+      const templateKey = null;
+      const message = null;
+
+      // Act
+      const result = await sendMessage(
+        accessToken,
+        programId,
+        [registrationAh.referenceId],
+        message,
+        templateKey,
+      );
+
+      // Assert
+      expect(result.status).toBe(400);
     });
   });
 });
