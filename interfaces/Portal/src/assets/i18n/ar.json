@@ -77,11 +77,9 @@
     "label": "حدد ملفا"
   },
   "header": {
-    "dashboard": "لوحه القياده",
     "help": "تعليمات",
     "home": "وطن",
     "menu": "قائمة",
-    "team": "فريق",
     "users": "المستعملون"
   },
   "ngx-datatable": {
@@ -279,12 +277,13 @@
         }
       },
       "phases": {
-        "design": {
-          "btnText": "فتح باب التسجيل",
-          "label": "تصميم"
+        "dashboard": {
+          "label": "يراقب"
+        },
+        "overview": {
+          "label": "ملخص"
         },
         "payment": {
-          "btnText": "الانتقال إلى: التقييم",
           "label": "دفع"
         },
         "people-affected": {
@@ -295,6 +294,9 @@
           "label": "الأشخاص المتأثرون والتحقق",
           "label-no-validation": "الأشخاص المتأثرون",
           "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
+        },
+        "team": {
+          "label": "فريق"
         }
       },
       "program-details": {

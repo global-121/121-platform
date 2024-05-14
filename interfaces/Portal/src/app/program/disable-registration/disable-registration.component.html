@@ -6,10 +6,11 @@
     {{
       'page.program.phases.people-affected.toggleText-enable-registrations'
         | translate
-    }}
+    }}&nbsp;
   </ion-label>
   <ion-toggle
     [(ngModel)]="publishedStatus"
     (click)="updateRegistrationStatus()"
+    onKeyPress=""
   ></ion-toggle>
 </ion-row>

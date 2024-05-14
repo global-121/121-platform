@@ -77,11 +77,9 @@
     "label": "Sélectionner un fichier"
   },
   "header": {
-    "dashboard": "Tableau de bord",
     "help": "Aide",
     "home": "Domicile",
     "menu": "Menu",
-    "team": "Équipe",
     "users": "Utilisateurs"
   },
   "ngx-datatable": {
@@ -279,12 +277,13 @@
         }
       },
       "phases": {
-        "design": {
-          "btnText": "Ouvert aux inscriptions",
-          "label": "Concevoir"
+        "dashboard": {
+          "label": "Surveillance"
+        },
+        "overview": {
+          "label": "Aperçu"
         },
         "payment": {
-          "btnText": "Déplacer vers : Évaluation",
           "label": "Paiement"
         },
         "people-affected": {
@@ -295,6 +294,9 @@
           "label": "Personnes Touchées et validation",
           "label-no-validation": "Personnes Touchées",
           "toggleText-enable-registrations": "Autoriser les nouvelles inscriptions"
+        },
+        "team": {
+          "label": "Équipe"
         }
       },
       "program-details": {
