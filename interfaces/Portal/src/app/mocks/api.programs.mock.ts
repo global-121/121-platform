@@ -19,7 +19,7 @@ const programsArray: Program[] = [
     fixedTransferValue: getRandomInt(10, 1000),
     created: '1970-01-01T01:01:01Z',
     updated: '1970-01-01T01:01:01Z',
-    phase: ProgramPhase.design,
+    phase: ProgramPhase.overview,
     validation: false,
     author: {},
     published: true,

@@ -12,7 +12,7 @@ export class DesignPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramPhase.design;
+  public thisPhase = ProgramPhase.overview;
 
   constructor(private route: ActivatedRoute) {}
 }

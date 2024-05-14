@@ -10,21 +10,8 @@
   class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
 >
   <app-program-navigation></app-program-navigation>
-</div>
-
-<ion-content class="ion-padding">
   <ion-grid class="ion-no-padding ion-margin-bottom">
     <ion-row>
-      <ion-col class="ion-no-padding">
-        <app-bulk-import
-          *appIfPermissions="[
-            Permission.RegistrationCREATE,
-            Permission.RegistrationImportTemplateREAD
-          ]"
-          [programId]="programId"
-          [isTableLoading]="!isReady"
-        ></app-bulk-import>
-      </ion-col>
       <ion-col class="ion-justify-content-end">
         <app-disable-registration
           *appIfPermissions="[Permission.ProgramUPDATE]"
@@ -33,12 +20,15 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+</div>
 
+<ion-content class="ion-padding">
   <app-program-people-affected
     #table
     *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
+    displayImportRegistration="true"
   ></app-program-people-affected>
 </ion-content>
