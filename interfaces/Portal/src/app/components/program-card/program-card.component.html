@@ -29,7 +29,7 @@
 
 <ion-card
   *ngIf="program"
-  [routerLink]="['/program', program.id, 'people-affected']"
+  [routerLink]="['/program', program.id, appRoute.peopleAffected]"
 >
   <!-- Hardcode registrationValidation this should change when other phase related changes are ready -->
   <ion-card-header>
