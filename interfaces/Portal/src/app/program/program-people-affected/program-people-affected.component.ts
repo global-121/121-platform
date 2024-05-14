@@ -84,6 +84,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Input()
   public programId: number;
   @Input()
+  public displayImportRegistration: boolean = false;
+  @Input()
   public thisPhase: ProgramPhase;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -155,6 +157,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
   public messageTemplates: MessageTemplate[];
+
+  public Permission = Permission;
 
   constructor(
     private authService: AuthService,

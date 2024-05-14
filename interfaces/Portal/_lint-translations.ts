@@ -54,6 +54,7 @@ const ruleConfig: IRulesConfig = {
     'entity.registration.status.inclusionEnded',
     'entity.registration.status.rejected',
     'entity.registration.status.startedRegistration',
+    'page.program.phases.design.label',
     '_dir',
   ],
   ignoredMisprintKeys: [],

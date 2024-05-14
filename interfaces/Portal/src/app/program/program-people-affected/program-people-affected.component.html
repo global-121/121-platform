@@ -56,13 +56,32 @@
       >
         {{ 'page.program.program-people-affected.apply-action' | translate }}
       </app-confirm-prompt>
-
       <ion-spinner
         *ngIf="isInProgress"
         color="primary"
         class="ion-margin-start"
       ></ion-spinner>
     </ion-row>
+  </div>
+  <div>
+    <span *ngIf="displayImportRegistration">
+      <app-bulk-import
+        data-testid="registration-validation-bulk-import-button"
+        *appIfPermissions="[
+          Permission.RegistrationCREATE,
+          Permission.RegistrationImportTemplateREAD
+        ]"
+        [programId]="programId"
+        style="display: inline-block"
+      ></app-bulk-import>
+    </span>
+    <app-export-select
+      data-testid="table-filter-data-export-button"
+      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
+      [programId]="programId"
+      [thisPhase]="thisPhase"
+      [showValidation]="showValidation"
+    ></app-export-select>
   </div>
 </ion-row>
 

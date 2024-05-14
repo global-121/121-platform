@@ -55,7 +55,11 @@ export class CreateProgramPage implements AfterViewInit {
 
       this.resetForm();
 
-      this.router.navigate([AppRoutes.program, result.id, ProgramPhase.design]);
+      this.router.navigate([
+        AppRoutes.program,
+        result.id,
+        ProgramPhase.overview,
+      ]);
 
       return;
     } catch (error) {

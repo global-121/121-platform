@@ -77,11 +77,9 @@
     "label": "Seleccionar un archivo"
   },
   "header": {
-    "dashboard": "Salpicadero",
     "help": "Ayuda",
     "home": "Hogar",
     "menu": "Menú",
-    "team": "Equipo",
     "users": "Usuarios"
   },
   "ngx-datatable": {
@@ -279,12 +277,13 @@
         }
       },
       "phases": {
-        "design": {
-          "btnText": "Abierto el plazo de inscripción",
-          "label": "Diseño"
+        "dashboard": {
+          "label": "Supervisión"
+        },
+        "overview": {
+          "label": "Descripción"
         },
         "payment": {
-          "btnText": "Pasar a: Evaluación",
           "label": "Pago"
         },
         "people-affected": {
@@ -292,9 +291,12 @@
           "actionText-enabled-registrations": "Las inscripciones ya están habilitadas para este programa",
           "btnText": "Mover a: Pago",
           "btnText-no-validation": "Mover a: Pago",
-          "label": "Personas Afectadas y validación",
+          "label": "Personas Afectadas",
           "label-no-validation": "Personas Afectadas",
           "toggleText-enable-registrations": "Permitir nuevos registros"
+        },
+        "team": {
+          "label": "Equipo"
         }
       },
       "program-details": {
