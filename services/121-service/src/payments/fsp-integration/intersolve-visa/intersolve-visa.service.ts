@@ -476,6 +476,7 @@ export class IntersolveVisaService
       const createDebitCardResult = await this.createDebitCard(
         paymentDetails,
         visaCustomer.visaWallets[0],
+        registration.programId,
       );
 
       const createDebitCardResultStatus = this.isSuccessResponseStatus(
@@ -694,6 +695,7 @@ export class IntersolveVisaService
   private async createDebitCard(
     paymentDetails: PaymentDetailsDto,
     intersolveVisaWallet: IntersolveVisaWalletEntity,
+    programId: number,
   ): Promise<IntersolveCreateDebitCardResponseDto> {
     const createDebitCardPayload = new IntersolveCreateDebitCardDto();
     createDebitCardPayload.brand = 'VISA_CARD';
@@ -720,9 +722,8 @@ export class IntersolveVisaService
 
     try {
       // Added cover letter code during create debit card call
-      const coverLetterCode = await this.getCoverLetterCodeForProgram(
-        paymentDetails.programId,
-      );
+      const coverLetterCode =
+        await this.getCoverLetterCodeForProgram(programId);
       createDebitCardPayload.coverLetterCode = coverLetterCode;
     } catch (error) {
       return {
@@ -1327,6 +1328,7 @@ export class IntersolveVisaService
     const createDebitCardResult = await this.createDebitCard(
       paymentDetails[0],
       newWallet,
+      programId,
     );
     if (!this.isSuccessResponseStatus(createDebitCardResult.status)) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
