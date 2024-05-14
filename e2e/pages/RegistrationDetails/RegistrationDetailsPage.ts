@@ -85,7 +85,9 @@ class RegistrationDetails {
       (this.preferredLanguageDropdown = this.page.getByTestId(
         'preferred-language-dropdown',
       ));
-    this.updateReasonTextArea = this.page.locator('textarea');
+    this.updateReasonTextArea = this.page.getByTestId(
+      'user-data-update-textarea',
+    );
   }
 
   async validateHeaderToContainText(headerTitle: string) {
@@ -154,7 +156,9 @@ class RegistrationDetails {
     await dropdown.getByText(language).click();
     await this.preferredLanguageDropdown.getByText(saveButtonName).click();
 
-    await this.updateReasonTextArea.fill(`Change language to ${language}`);
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change language to ${language}`);
 
     await saveButton.waitFor({ state: 'visible' });
     await saveButton.click();
