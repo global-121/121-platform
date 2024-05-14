@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.118.0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.119.0...main)
 
 ---
+
+## [1.119.0](https://github.com/global-121/121-platform/compare/v1.118.0...v1.119.0)- 2024-05-14
+
+### Added
+
+- [AB#27988](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27988) Add registrationStatus to Payment export
+
+### Fixed
+
+- [AB#27895](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27895) Only english is used in templated message through send message action
+- [AB#27992](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27992) The column for inclusionScore is now correctly displayed again and also appears in the filter then applicable to the program
 
 ## [1.118.0](https://github.com/global-121/121-platform/compare/v1.117.0...v1.118.0)- 2024-05-06
 
