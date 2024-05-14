@@ -40,7 +40,7 @@ test('[27500] Unsuccessfully add note', async ({ page }) => {
     await table.clickOnPaNumber(1);
   });
 
-  await test.step('Should validate PA profile opened succesfully, add a note without title and validate that "ok" button is disabled', async () => {
+  await test.step('Should validate PA profile opened succesfully, adds note without content and validate that "ok" button is disabled', async () => {
     await registration.validateHeaderToContainText(
       englishTranslations['registration-details'].pageTitle,
     );
