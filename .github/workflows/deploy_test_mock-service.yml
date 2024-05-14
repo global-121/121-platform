@@ -52,6 +52,12 @@ jobs:
       - name: Creating ZIP package
         run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: services/artifact.zip
+
       - name: Deploy to Azure App Service
         id: deploy_to_aas
         uses: azure/webapps-deploy@v3
