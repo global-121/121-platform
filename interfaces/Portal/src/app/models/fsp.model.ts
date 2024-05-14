@@ -1,6 +1,5 @@
 import FspName from '../enums/fsp-name.enum';
 import { Attribute } from './attribute.model';
-import { ProgramTab } from './program.model';
 import { TranslatableString } from './translatable-string.model';
 
 export class Fsp {
@@ -32,7 +31,6 @@ export class FspQuestion {
   placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
   duplicateCheck: boolean;
-  phases: ProgramTab[];
 }
 
 export class FspAttributeOption {

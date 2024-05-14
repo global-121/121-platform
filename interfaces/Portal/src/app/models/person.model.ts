@@ -1,7 +1,6 @@
 import Permission from '../auth/permission.enum';
 import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { ProgramTab } from './program.model';
 import { TranslatableString } from './translatable-string.model';
 
 // Model for data from the API
@@ -86,7 +85,6 @@ export class PersonTableColumn {
   sortable: boolean;
   frozenLeft: boolean;
   comparator?: any;
-  phases: ProgramTab[];
   permissions: Permission[];
   showIfNoValidation: boolean;
   headerClass: string;
