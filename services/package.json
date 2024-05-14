@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "start": "echo 'Mock service is started from here as the whole services folder is deployed' && cd mock-service && npm start"
+  }
+}

@@ -67,7 +67,6 @@ jobs:
           package: 'services/artifact.zip'
           type: zip
           clean: true
-          startup-command: 'cd services/mock-service && npm start'
 
       - name: Finish
         run: |
