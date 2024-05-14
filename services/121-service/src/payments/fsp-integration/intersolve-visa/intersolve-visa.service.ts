@@ -35,7 +35,7 @@ import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '../../enum/queue.names.enum';
-import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
+import { REDIS_CLIENT, getRedisSetName } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { RegistrationEntity } from './../../../registration/registration.entity';
