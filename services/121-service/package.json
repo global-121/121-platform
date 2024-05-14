@@ -70,6 +70,7 @@
     "tsconfig-paths": "^4.2.0",
     "twilio": "^5.0.4",
     "typeorm": "^0.3.17",
+    "typescript": "^5.5.0-beta",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz",
     "xml-js": "^1.6.11"
   },
@@ -79,10 +80,10 @@
     "@compodoc/compodoc": "^1.1.23",
     "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.12",
-    "@types/passport-azure-ad": "^4.3.6",
-    "@types/passport-jwt": "^4.0.1",
     "@types/lodash": "^4.17.1",
     "@types/node": "^18.19.33",
+    "@types/passport-azure-ad": "^4.3.6",
+    "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "@types/yargs": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
@@ -99,7 +100,6 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.2",
     "tsc-watch": "^6.2.0",
-    "typescript": "^5.5.0-beta",
     "yargs": "^17.7.2"
   }
 }
