@@ -177,6 +177,8 @@ class TableModule {
   }
 
   async applyBulkAction(option: string) {
+    await this.page.reload();
+    await this.page.waitForTimeout(1000);
     await this.page.locator(this.bulkActionsDropdown).selectOption(option);
     await this.page.getByLabel('Select', { exact: true }).click();
     await this.page
@@ -201,6 +203,36 @@ class TableModule {
     } else {
       console.error('Text content is null');
     }
+  }
+
+  async selectFieldsforCustomMessage({
+    selectFieldDropdownName,
+    firstNameOption,
+    addPersonalizedFieldName,
+    okButtonName,
+  }: {
+    selectFieldDropdownName: string;
+    firstNameOption: string;
+    addPersonalizedFieldName: string;
+    okButtonName: string;
+  }) {
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
+    await this.page
+      .getByTitle(selectFieldDropdownName)
+      .getByLabel(selectFieldDropdownName)
+      .click();
+    await this.page.getByRole('radio', { name: firstNameOption }).click();
+    await this.page
+      .getByRole('button', { name: addPersonalizedFieldName })
+      .click();
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
   }
 }
 
