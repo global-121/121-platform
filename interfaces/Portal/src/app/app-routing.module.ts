@@ -62,7 +62,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard',
+        redirectTo: ProgramPhase.peopleAffected,
       },
       {
         path: 'dashboard',
@@ -79,7 +79,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.design,
+        path: ProgramPhase.overview,
         loadChildren: () =>
           import('./pages/design/design.module').then(
             (m) => m.DesignPageModule,
