@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { ProgramPhase } from '../../models/program.model';
+import { ProgramTab } from '../../models/program.model';
 import { FilterService } from '../../services/filter.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
@@ -14,7 +14,7 @@ export class StatusTableFilterComponent {
   public programId: number;
 
   @Input()
-  public thisPhase: ProgramPhase;
+  public thisPhase: ProgramTab;
 
   public isStatusPopoverOpen = false;
 
@@ -30,14 +30,14 @@ export class StatusTableFilterComponent {
   public selectAll: boolean;
 
   public paStatusDefaultsPerPhase = {
-    [ProgramPhase.peopleAffected]: [
+    [ProgramTab.peopleAffected]: [
       RegistrationStatus.validated,
       RegistrationStatus.registered,
       RegistrationStatus.paused,
       RegistrationStatus.included,
       RegistrationStatus.declined,
     ],
-    [ProgramPhase.payment]: [
+    [ProgramTab.payment]: [
       RegistrationStatus.included,
       RegistrationStatus.completed,
     ],

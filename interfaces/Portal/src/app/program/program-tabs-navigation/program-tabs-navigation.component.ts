@@ -5,10 +5,10 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramTab } from 'src/app/models/program.model';
 import {
   Phase,
-  ProgramPhaseService,
+  ProgramTabService,
 } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -25,17 +25,17 @@ export class ProgramTabsNavigationComponent implements OnInit {
 
   public dashboardIsEnabled: boolean;
 
-  public programPhases: Phase[];
+  public ProgramTabs: Phase[];
 
   constructor(
     private authService: AuthService,
-    private programPhaseService: ProgramPhaseService,
+    private ProgramTabService: ProgramTabService,
     private programsService: ProgramsServiceApiService,
   ) {}
 
   public async ngOnInit() {
     const program = await this.programsService.getProgramById(this.programId);
-    const programPhases: Phase[] = await this.programPhaseService.getPhases();
+    const ProgramTabs: Phase[] = await this.ProgramTabService.getPhases();
 
     const canReadAidWorkers = await this.authService.hasPermission(
       this.programId,
@@ -48,12 +48,12 @@ export class ProgramTabsNavigationComponent implements OnInit {
       Permission.ProgramMetricsREAD,
     );
 
-    this.programPhases = programPhases.map((item: Phase) => {
-      if (item.name === ProgramPhase.team) {
+    this.ProgramTabs = ProgramTabs.map((item: Phase) => {
+      if (item.name === ProgramTab.team) {
         item.disabled = !canReadAidWorkers;
       }
 
-      if (item.name === ProgramPhase.monitoring) {
+      if (item.name === ProgramTab.monitoring) {
         item.disabled = !canViewMetrics && dashboardIsEnabled;
       }
 

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramTab } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { User } from '../../models/user.model';
 
@@ -55,11 +55,7 @@ export class CreateProgramPage implements AfterViewInit {
 
       this.resetForm();
 
-      this.router.navigate([
-        AppRoutes.program,
-        result.id,
-        ProgramPhase.overview,
-      ]);
+      this.router.navigate([AppRoutes.program, result.id, ProgramTab.overview]);
 
       return;
     } catch (error) {

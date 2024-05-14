@@ -22,7 +22,7 @@ export class Program {
   aidworkerAssignments?: any[];
   created: string;
   updated: string;
-  phase: ProgramPhase;
+  phase: ProgramTab;
   validation: boolean;
   published: boolean;
   programCustomAttributes: ProgramCustomAttribute[];
@@ -66,7 +66,7 @@ export enum DistributionFrequency {
   month = 'month',
 }
 
-export enum ProgramPhase {
+export enum ProgramTab {
   overview = 'overview',
   team = 'team',
   peopleAffected = 'people-affected',
@@ -89,11 +89,11 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
-  phases: ProgramPhase[];
+  phases: ProgramTab[];
 }
 
 export class PaTableAttribute extends Attribute {
-  phases?: ProgramPhase[];
+  phases?: ProgramTab[];
 }
 
 export class ProgramQuestion {
@@ -105,7 +105,7 @@ export class ProgramQuestion {
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];
   duplicateCheck: boolean;
-  phases: ProgramPhase[];
+  phases: ProgramTab[];
 }
 
 export class ProgramQuestionOption {

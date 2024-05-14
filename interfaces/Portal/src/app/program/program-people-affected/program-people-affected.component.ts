@@ -34,7 +34,7 @@ import {
 import {
   PaTableAttribute,
   Program,
-  ProgramPhase,
+  ProgramTab,
 } from 'src/app/models/program.model';
 import { TableFilterType } from 'src/app/models/table-filter.model';
 import {
@@ -86,15 +86,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Input()
   public displayImportRegistration: boolean = false;
   @Input()
-  public thisPhase: ProgramPhase;
+  public thisPhase: ProgramTab;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public phaseEnum = ProgramPhase;
+  public phaseEnum = ProgramTab;
 
   public program: Program;
   private paTableAttributes: PaTableAttribute[] = [];
-  public activePhase: ProgramPhase;
+  public activePhase: ProgramTab;
 
   private locale: string;
 
@@ -258,7 +258,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.canViewPersonalData,
     );
 
-    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+    if (this.canViewPaymentData && this.thisPhase === ProgramTab.payment) {
       this.paymentHistoryColumn =
         this.tableService.createPaymentHistoryColumn();
     }
@@ -556,9 +556,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
-            [ProgramPhase.inclusion, ProgramPhase.payment].includes(
-              this.thisPhase,
-            )
+            [ProgramTab.inclusion, ProgramTab.payment].includes(this.thisPhase)
               ? `(${
                   person.maxPayments - person.paymentCount
                 } ${this.translate.instant(

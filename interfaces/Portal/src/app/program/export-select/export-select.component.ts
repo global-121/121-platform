@@ -1,7 +1,7 @@
 import { AfterViewChecked, Component, Input, ViewChild } from '@angular/core';
 import { IonPopover } from '@ionic/angular';
 import { ExportType } from '../../models/export-type.model';
-import { ProgramPhase } from '../../models/program.model';
+import { ProgramTab } from '../../models/program.model';
 
 @Component({
   selector: 'app-export-select',
@@ -13,7 +13,7 @@ export class ExportSelectComponent implements AfterViewChecked {
   public programId: number;
 
   @Input()
-  public thisPhase: ProgramPhase;
+  public thisPhase: ProgramTab;
 
   @Input()
   public showValidation: boolean;

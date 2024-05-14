@@ -13,7 +13,7 @@ import {
 import {
   DistributionFrequency,
   Program,
-  ProgramPhase,
+  ProgramTab,
 } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
@@ -128,7 +128,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   private checkCanMakePayment(): boolean {
     return (
-      this.program.phase === ProgramPhase.payment &&
+      this.program.phase === ProgramTab.payment &&
       this.authService.hasAllPermissions(this.program.id, [
         Permission.PaymentREAD,
         Permission.PaymentCREATE,
@@ -362,7 +362,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   private checkPhaseReady() {
     const isReady =
-      this.program.phase !== ProgramPhase.payment ||
+      this.program.phase !== ProgramTab.payment ||
       this.lastPaymentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);

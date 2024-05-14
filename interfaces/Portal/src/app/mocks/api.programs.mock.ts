@@ -2,7 +2,7 @@ import { LanguageEnum } from '../models/person.model';
 import {
   DistributionFrequency,
   Program,
-  ProgramPhase,
+  ProgramTab,
 } from '../models/program.model';
 import { getRandomInt } from './helpers';
 
@@ -19,7 +19,7 @@ const programsArray: Program[] = [
     fixedTransferValue: getRandomInt(10, 1000),
     created: '1970-01-01T01:01:01Z',
     updated: '1970-01-01T01:01:01Z',
-    phase: ProgramPhase.overview,
+    phase: ProgramTab.overview,
     validation: false,
     author: {},
     published: true,

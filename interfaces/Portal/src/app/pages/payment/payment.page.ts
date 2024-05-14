@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramTab } from 'src/app/models/program.model';
 import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-affected/program-people-affected.component';
 import { ExportType } from '../../models/export-type.model';
 
@@ -14,7 +14,7 @@ export class PaymentPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramPhase.payment;
+  public thisPhase = ProgramTab.payment;
   public isReady: boolean;
 
   public enumExportType = ExportType;

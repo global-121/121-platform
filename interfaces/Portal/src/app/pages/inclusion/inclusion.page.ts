@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramTab } from 'src/app/models/program.model';
 import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-affected/program-people-affected.component';
 
 @Component({
@@ -13,7 +13,7 @@ export class InclusionPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramPhase.inclusion;
+  public thisPhase = ProgramTab.inclusion;
   public isReady: boolean;
 
   @ViewChild('table')

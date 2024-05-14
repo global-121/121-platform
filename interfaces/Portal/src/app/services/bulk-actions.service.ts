@@ -9,7 +9,7 @@ import {
   BulkActionId,
   BulkActionResult,
 } from '../models/bulk-actions.models';
-import { ProgramPhase } from '../models/program.model';
+import { ProgramTab } from '../models/program.model';
 import { PromptType } from '../shared/confirm-prompt/confirm-prompt.component';
 import { PaginationFilter } from './filter.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
@@ -55,7 +55,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.markAsValidated',
       permissions: [Permission.RegistrationStatusMarkAsValidatedUPDATE],
-      phases: [ProgramPhase.peopleAffected],
+      phases: [ProgramTab.peopleAffected],
       showIfNoValidation: false,
       confirmConditions: {
         provideInput: false,
@@ -66,7 +66,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.include',
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
-      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
+      phases: [ProgramTab.peopleAffected, ProgramTab.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
@@ -85,7 +85,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.markAsDeclined',
       permissions: [Permission.RegistrationStatusMarkAsDeclinedUPDATE],
-      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
+      phases: [ProgramTab.peopleAffected, ProgramTab.payment],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,
@@ -96,7 +96,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.pause',
       permissions: [Permission.RegistrationStatusPausedUPDATE],
-      phases: [ProgramPhase.payment],
+      phases: [ProgramTab.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
@@ -115,7 +115,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.sendMessage',
       permissions: [Permission.RegistrationNotificationCREATE],
-      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
+      phases: [ProgramTab.peopleAffected, ProgramTab.payment],
       showIfNoValidation: true,
       confirmConditions: {
         promptType: PromptType.actionWithMessage,
@@ -131,7 +131,7 @@ export class BulkActionsService {
       enabled: false,
       label: 'page.program.program-people-affected.actions.deletePa',
       permissions: [Permission.RegistrationDELETE],
-      phases: [ProgramPhase.peopleAffected, ProgramPhase.payment],
+      phases: [ProgramTab.peopleAffected, ProgramTab.payment],
       showIfNoValidation: true,
       confirmConditions: {
         provideInput: false,
@@ -144,7 +144,7 @@ export class BulkActionsService {
       enabled: false,
       label: '-------------------------------',
       permissions: [Permission.PaymentCREATE],
-      phases: [ProgramPhase.payment],
+      phases: [ProgramTab.payment],
       showIfNoValidation: true,
     },
   ];
@@ -228,7 +228,7 @@ export class BulkActionsService {
           { paymentNr: paymentId },
         ),
         permissions: [Permission.PaymentCREATE],
-        phases: [ProgramPhase.payment],
+        phases: [ProgramTab.payment],
         showIfNoValidation: true,
         confirmConditions: {},
         data: {

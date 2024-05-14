@@ -1,7 +1,7 @@
 import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import Permission from '../auth/permission.enum';
 import { InputProps } from '../shared/confirm-prompt/confirm-prompt.component';
-import { ProgramPhase } from './program.model';
+import { ProgramTab } from './program.model';
 
 export enum BulkActionId {
   chooseAction = '',
@@ -25,7 +25,7 @@ export class BulkAction {
   enabled: boolean;
   label: string;
   permissions: Permission[];
-  phases: ProgramPhase[];
+  phases: ProgramTab[];
   showIfNoValidation: boolean;
   confirmConditions?: InputProps;
   data?: {

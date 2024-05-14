@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { Program, ProgramTab } from 'src/app/models/program.model';
 import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-affected/program-people-affected.component';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -16,7 +16,7 @@ export class PeoplesAffectedPage implements OnInit {
 
   public programId = this.route.snapshot.params.id;
   public program: Program;
-  public thisPhase = ProgramPhase.peopleAffected;
+  public thisPhase = ProgramTab.peopleAffected;
   public isReady: boolean;
 
   public enumExportType = ExportType;

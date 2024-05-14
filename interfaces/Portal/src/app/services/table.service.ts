@@ -8,7 +8,7 @@ import {
   PersonDefaultAttributes,
   PersonTableColumn,
 } from '../models/person.model';
-import { Program, ProgramPhase } from '../models/program.model';
+import { Program, ProgramTab } from '../models/program.model';
 import { TranslatableString } from '../models/translatable-string.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { TranslatableStringService } from './translatable-string.service';
@@ -50,9 +50,9 @@ export class TableService {
       comparator: undefined,
       frozenLeft: false,
       phases: [
-        ProgramPhase.peopleAffected,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
+        ProgramTab.peopleAffected,
+        ProgramTab.inclusion,
+        ProgramTab.payment,
       ],
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
@@ -109,9 +109,9 @@ export class TableService {
         ),
         ...this.getColumnDefaults(),
         phases: [
-          ProgramPhase.peopleAffected,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
+          ProgramTab.peopleAffected,
+          ProgramTab.inclusion,
+          ProgramTab.payment,
         ],
         minWidth: this.columnWidthPerType[AnswerType.Date],
         width: this.columnWidthPerType[AnswerType.Date],
@@ -151,9 +151,9 @@ export class TableService {
         ),
         ...this.getColumnDefaults(),
         phases: [
-          ProgramPhase.peopleAffected,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
+          ProgramTab.peopleAffected,
+          ProgramTab.inclusion,
+          ProgramTab.payment,
         ],
         permissions: [Permission.RegistrationNotificationREAD],
         minWidth: 200,
@@ -167,7 +167,7 @@ export class TableService {
   }
 
   public async loadColumns(
-    thisPhase: ProgramPhase,
+    thisPhase: ProgramTab,
     program: Program,
     canViewPersonalData: boolean,
   ): Promise<PersonTableColumn[]> {
@@ -279,7 +279,7 @@ export class TableService {
       ),
       ...this.getColumnDefaults(),
       sortable: false,
-      phases: [ProgramPhase.payment],
+      phases: [ProgramTab.payment],
       permissions: [Permission.RegistrationPersonalREAD],
       minWidth: 200,
       width: 200,
