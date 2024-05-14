@@ -276,29 +276,6 @@
           }
         }
       },
-      "phases": {
-        "dashboard": {
-          "label": "يراقب"
-        },
-        "overview": {
-          "label": "ملخص"
-        },
-        "payment": {
-          "label": "دفع"
-        },
-        "people-affected": {
-          "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج",
-          "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
-          "btnText": "الانتقال إلى: الدفع",
-          "btnText-no-validation": "الانتقال إلى: الدفع",
-          "label": "الأشخاص المتأثرون والتحقق",
-          "label-no-validation": "الأشخاص المتأثرون",
-          "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
-        },
-        "team": {
-          "label": "فريق"
-        }
-      },
       "program-details": {
         "distributionDuration": "مدة التوزيع",
         "distributionFrequency": "تردد التوزيع",
@@ -527,6 +504,29 @@
           "sent": "ارسال",
           "show-status": "إظهار الحالة",
           "waiting-message": "لا تزال تنتظر تحديث الحالة على هذه المعاملة. قم بتحديث الصفحة للحصول على أحدث حالة."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "يراقب"
+        },
+        "overview": {
+          "label": "ملخص"
+        },
+        "payment": {
+          "label": "دفع"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج",
+          "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
+          "btnText": "الانتقال إلى: الدفع",
+          "btnText-no-validation": "الانتقال إلى: الدفع",
+          "label": "الأشخاص المتأثرون والتحقق",
+          "label-no-validation": "الأشخاص المتأثرون",
+          "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
+        },
+        "team": {
+          "label": "فريق"
         }
       },
       "table-filter-row": {

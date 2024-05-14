@@ -22,7 +22,6 @@ export class Program {
   aidworkerAssignments?: any[];
   created: string;
   updated: string;
-  phase: ProgramTab;
   validation: boolean;
   published: boolean;
   programCustomAttributes: ProgramCustomAttribute[];
@@ -72,10 +71,6 @@ export enum ProgramTab {
   peopleAffected = 'people-affected',
   payment = 'payment',
   monitoring = 'dashboard',
-
-  // TODO: remove these 2 options later
-  registrationValidation = 'registrationValidation',
-  inclusion = 'inclusion',
 }
 
 export class AidWorker {
@@ -89,12 +84,9 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
-  phases: ProgramTab[];
 }
 
-export class PaTableAttribute extends Attribute {
-  phases?: ProgramTab[];
-}
+export class PaTableAttribute extends Attribute {}
 
 export class ProgramQuestion {
   id: number;
@@ -105,7 +97,6 @@ export class ProgramQuestion {
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];
   duplicateCheck: boolean;
-  phases: ProgramTab[];
 }
 
 export class ProgramQuestionOption {

@@ -1,6 +1,6 @@
 import { ProgramTab } from './models/program.model';
 
-export const PROGRAM_PHASE_ORDER = [
+export const PROGRAM_TABS_ORDER = [
   {
     id: 1,
     name: ProgramTab.overview,

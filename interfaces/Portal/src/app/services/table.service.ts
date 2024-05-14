@@ -49,11 +49,7 @@ export class TableService {
       sortable: true,
       comparator: undefined,
       frozenLeft: false,
-      phases: [
-        ProgramTab.peopleAffected,
-        ProgramTab.inclusion,
-        ProgramTab.payment,
-      ],
+      phases: [ProgramTab.peopleAffected, ProgramTab.payment],
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
@@ -108,11 +104,7 @@ export class TableService {
           'page.program.program-people-affected.column.registrationCreated',
         ),
         ...this.getColumnDefaults(),
-        phases: [
-          ProgramTab.peopleAffected,
-          ProgramTab.inclusion,
-          ProgramTab.payment,
-        ],
+        phases: [ProgramTab.peopleAffected, ProgramTab.payment],
         minWidth: this.columnWidthPerType[AnswerType.Date],
         width: this.columnWidthPerType[AnswerType.Date],
       },
@@ -150,11 +142,7 @@ export class TableService {
           'page.program.program-people-affected.column.lastMessageStatus',
         ),
         ...this.getColumnDefaults(),
-        phases: [
-          ProgramTab.peopleAffected,
-          ProgramTab.inclusion,
-          ProgramTab.payment,
-        ],
+        phases: [ProgramTab.peopleAffected, ProgramTab.payment],
         permissions: [Permission.RegistrationNotificationREAD],
         minWidth: 200,
         width: 200,
@@ -206,7 +194,6 @@ export class TableService {
         name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
         ...this.getColumnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
-        phases: colPerPhase.phases,
         headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
       if (this.getColumnWidthPerType()[colPerPhase.type]) {

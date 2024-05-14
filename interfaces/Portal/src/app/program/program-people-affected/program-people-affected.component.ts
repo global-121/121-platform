@@ -94,7 +94,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public program: Program;
   private paTableAttributes: PaTableAttribute[] = [];
-  public activePhase: ProgramTab;
 
   private locale: string;
 
@@ -249,8 +248,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
     );
-
-    this.activePhase = this.program.phase;
 
     this.columns = await this.tableService.loadColumns(
       this.thisPhase,
@@ -432,7 +429,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           this.programId,
           action.permissions,
         ) &&
-        action.phases.includes(this.thisPhase) &&
+        action.tabs.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
@@ -556,7 +553,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
-            [ProgramTab.inclusion, ProgramTab.payment].includes(this.thisPhase)
+            [ProgramTab.payment].includes(this.thisPhase)
               ? `(${
                   person.maxPayments - person.paymentCount
                 } ${this.translate.instant(

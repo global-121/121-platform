@@ -1,9 +1,5 @@
 import { LanguageEnum } from '../models/person.model';
-import {
-  DistributionFrequency,
-  Program,
-  ProgramTab,
-} from '../models/program.model';
+import { DistributionFrequency, Program } from '../models/program.model';
 import { getRandomInt } from './helpers';
 
 const programsArray: Program[] = [
@@ -19,7 +15,6 @@ const programsArray: Program[] = [
     fixedTransferValue: getRandomInt(10, 1000),
     created: '1970-01-01T01:01:01Z',
     updated: '1970-01-01T01:01:01Z',
-    phase: ProgramTab.overview,
     validation: false,
     author: {},
     published: true,
@@ -30,7 +25,6 @@ const programsArray: Program[] = [
         name: 'namePartnerOrganization',
         type: 'string',
         programId: 1,
-        phases: [],
         label: {
           en: 'Partner Organization',
         },
@@ -45,7 +39,6 @@ const programsArray: Program[] = [
           en: 'Phone Number',
         },
         options: null,
-        phases: [],
         duplicateCheck: false,
       },
     ],

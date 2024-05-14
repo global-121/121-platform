@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProgramTab } from '../models/program.model';
-import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
+import { PROGRAM_TABS_ORDER } from '../program-phase-order';
 
 export class Phase {
   id: number;
@@ -28,19 +28,19 @@ export class ProgramTabService {
   }
 
   private createInitialPhases(): Phase[] {
-    return PROGRAM_PHASE_ORDER.map((phase) => ({
+    return PROGRAM_TABS_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
-      labelKey: `page.program.phases.${phase.name}.label`,
-      btnTextKey: `page.program.phases.${phase.name}.btnText`,
+      labelKey: `page.program.tab.${phase.name}.label`,
+      btnTextKey: `page.program.tab.${phase.name}.btnText`,
     }));
   }
 
   private updatePhase() {
-    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_PHASE_ORDER definition:
+    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_TABS_ORDER definition:
     // TODO: Phase needs to be renamed and
     this.phases = this.phases.map((phase: Phase) => {
-      phase.active = phase.name === ProgramTab.registrationValidation;
+      phase.active = phase.name === ProgramTab.peopleAffected;
       return phase;
     });
   }

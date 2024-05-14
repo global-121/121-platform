@@ -25,7 +25,7 @@ export class BulkAction {
   enabled: boolean;
   label: string;
   permissions: Permission[];
-  phases: ProgramTab[];
+  tabs: ProgramTab[];
   showIfNoValidation: boolean;
   confirmConditions?: InputProps;
   data?: {

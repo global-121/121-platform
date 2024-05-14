@@ -13,7 +13,7 @@ export class InclusionPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramTab.inclusion;
+  public thisPhase = ProgramTab.peopleAffected;
   public isReady: boolean;
 
   @ViewChild('table')
