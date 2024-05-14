@@ -1,4 +1,4 @@
-export interface QueryBuilderMock {
+interface QueryBuilderMock {
   where: () => QueryBuilderMock;
   andWhere: () => QueryBuilderMock;
   select: () => QueryBuilderMock;

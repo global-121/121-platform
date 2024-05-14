@@ -47,7 +47,7 @@ export class IntersolveGetWalletResponseDto {
   public statusText?: string;
 }
 
-export class IntersolveGetWalletResponseBodyDto {
+class IntersolveGetWalletResponseBodyDto {
   public success: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code?: string;
@@ -55,7 +55,7 @@ export class IntersolveGetWalletResponseBodyDto {
   public data: IntersolveGetWalletResponseDataDto;
 }
 
-export class IntersolveGetWalletResponseDataDto {
+class IntersolveGetWalletResponseDataDto {
   public code: string;
   public blocked?: boolean;
   public type?: string;

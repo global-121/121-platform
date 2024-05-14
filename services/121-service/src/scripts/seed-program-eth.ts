@@ -317,5 +317,3 @@ export class SeedProgramEth implements InterfaceScript {
     ]);
   }
 }
-
-export default SeedProgramEth;

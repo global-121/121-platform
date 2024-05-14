@@ -18,7 +18,7 @@ export class IntersolveBlockWalletResponseDto {
   public statusText?: string;
 }
 
-export class IntersolveBlockWalletResponseBodyDto {
+class IntersolveBlockWalletResponseBodyDto {
   public success?: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code?: string;

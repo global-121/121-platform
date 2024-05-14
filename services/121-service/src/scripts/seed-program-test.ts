@@ -22,5 +22,3 @@ export class SeedTestProgram implements InterfaceScript {
     await this.seedHelper.addInstance(instanceDemo);
   }
 }
-
-export default SeedTestProgram;

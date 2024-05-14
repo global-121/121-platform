@@ -119,28 +119,3 @@ class IntersolveCreateWalletResponseSecurityCodeMetadataDto {
   required: boolean;
   format: string;
 }
-
-export class IntersolveGetTokenResponseDto {
-  public data: IntersolveGetTokenResponseBodyDto;
-  public status: number;
-  public statusText?: string;
-}
-
-export class IntersolveGetTokenResponseBodyDto {
-  public success: boolean;
-  public errors?: IntersolveReponseErrorDto[];
-  public code?: string;
-  public correlationId?: string;
-  public data: IntersolveGetTokenResponseTokenDto;
-}
-
-export class IntersolveGetTokenResponseTokenDto {
-  public code: string;
-  public blocked?: boolean;
-  public blockReasonCode?: string;
-  public tier?: string;
-  public brandTypeCode?: string;
-  public holderId?: string;
-  public balances?: IntersolveCreateWalletResponseBalanceDto[];
-  public assets?: IntersolveCreateWalletResponseAssetDto[];
-}
