@@ -7,6 +7,10 @@ WORKDIR /home/node/app
 
 FROM base as production
 
+COPY .. .
+
+WORKDIR /home/node/app/mock-service
+
 COPY ./package*.json ./
 
 RUN npm ci

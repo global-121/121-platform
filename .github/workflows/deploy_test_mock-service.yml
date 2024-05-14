@@ -9,7 +9,7 @@ env:
 
 defaults:
   run:
-    working-directory: services/mock-service
+    working-directory: services
 
 permissions:
   actions: read
@@ -25,7 +25,7 @@ on:
       - main
     paths:
       - '.github/workflows/deploy_test_mock-service.yml'
-      - 'services/mock-service/**'
+      - 'services/**'
       - '!*.md'
       - '!*.yml'
 
@@ -41,12 +41,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-          node-version-file: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/.node-version'
+          node-version-file: 'mock-service/.node-version'
           cache: 'npm'
-          cache-dependency-path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/package-lock.json'
+          cache-dependency-path: 'mock-service/package-lock.json'
 
       - name: Install
         run: npm ci --no-fund --no-audit
+        working-directory: mock-service
 
       - name: Creating ZIP package
         run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
@@ -57,7 +58,7 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_MOCK_SERVICE }}
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/artifact.zip'
+          package: 'mock-service/artifact.zip'
           type: zip
           clean: true
 
