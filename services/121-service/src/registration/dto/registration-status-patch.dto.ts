@@ -21,5 +21,5 @@ export class RegistrationStatusPatchDto {
   })
   @IsEnum(RegistrationStatusEnum)
   @IsOptional()
-  public readonly messageTemplateKey: string;
+  public readonly messageTemplateKey?: string;
 }

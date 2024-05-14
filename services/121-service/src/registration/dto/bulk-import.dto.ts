@@ -29,20 +29,20 @@ export class BulkImportDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public phoneNumber: string;
+  public phoneNumber?: string;
 
   @ApiProperty()
   @IsNumber()
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public paymentAmountMultiplier: number;
+  public paymentAmountMultiplier?: number;
 
   @ApiProperty()
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments: number;
+  public maxPayments?: number;
 
   @ApiProperty({
     enum: languageArray,
@@ -50,12 +50,12 @@ export class BulkImportDto {
   })
   @IsEnum(LanguageEnum)
   @IsOptional()
-  public preferredLanguage: LanguageEnum;
+  public preferredLanguage?: LanguageEnum;
 
   @ApiProperty({ example: 'utrecht.houten' })
   @IsString()
   @IsOptional()
-  public scope: string;
+  public scope?: string;
 }
 
 export class BulkImportResult extends BulkImportDto {
@@ -93,7 +93,7 @@ export class ImportRegistrationsDto extends BulkImportDto {
   @IsOptional()
   @IsString()
   @Length(5, 200)
-  public referenceId: string;
+  public referenceId?: string;
 
   @ApiProperty()
   public scope: string;

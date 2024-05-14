@@ -5,5 +5,5 @@ export class SearchRegistrationDto {
   @ApiProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
-  public readonly phoneNumber: string;
+  public readonly phoneNumber?: string;
 }

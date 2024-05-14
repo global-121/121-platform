@@ -25,5 +25,5 @@ export class SetPhoneRequestDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   @IsOptional()
-  public readonly useForInvitationMatching: boolean;
+  public readonly useForInvitationMatching?: boolean;
 }

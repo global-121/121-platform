@@ -95,7 +95,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments: number | null;
+  public maxPayments?: number;
 
   // This is a count of the number of transactions with a distinct on the paymentId
   // can be failed or successful or waiting transactions
@@ -103,7 +103,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsInt()
   @Min(0)
   @IsOptional()
-  public paymentCount: number;
+  public paymentCount?: number;
 
   @OneToMany(
     (_type) => TransactionEntity,

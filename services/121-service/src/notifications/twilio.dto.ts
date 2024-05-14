@@ -25,7 +25,7 @@ export class TwilioMessagesCreateDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly from: string;
+  public readonly from?: string;
 
   @ApiProperty()
   @IsString()
@@ -38,12 +38,12 @@ export class TwilioMessagesCreateDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly mediaUrl: string;
+  public readonly mediaUrl?: string;
 
   @ApiProperty({ example: MessageContentType.genericTemplated })
   @IsString()
   @IsOptional()
-  public readonly messageContentType: string;
+  public readonly messageContentType?: string;
 }
 
 class AccountSidObject {
@@ -70,7 +70,7 @@ export class TwilioValidateRequestDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly accountSidObject: AccountSidObject;
+  public readonly accountSidObject?: AccountSidObject;
 }
 
 export class TwilioStatusCallbackDto {
@@ -85,28 +85,28 @@ export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
-  public ErrorMessage: string;
+  public ErrorMessage?: string;
 
   @ApiProperty({ example: '63015' })
   @IsString()
   @IsOptional()
-  public ErrorCode: string;
+  public ErrorCode?: string;
 
   @IsOptional()
-  public SmsSid: string;
+  public SmsSid?: string;
 
   @IsOptional()
-  public SmsStatus: string;
+  public SmsStatus?: string;
 
   @IsOptional()
-  public To: string;
+  public To?: string;
 }
 
 export class TwilioIncomingCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   @IsOptional()
-  public MessageSid: string;
+  public MessageSid?: string;
 
   @ApiProperty({ example: formatWhatsAppNumber('31600000000') })
   @IsString()
@@ -115,7 +115,7 @@ export class TwilioIncomingCallbackDto {
   @ApiProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
-  public WaId: string;
+  public WaId?: string;
 
   @ApiProperty({
     example: formatWhatsAppNumber(
@@ -124,10 +124,10 @@ export class TwilioIncomingCallbackDto {
   })
   @IsString()
   @IsOptional()
-  public To: string;
+  public To?: string;
 
   @ApiProperty({ example: 'Yes' })
   @IsString()
   @IsOptional()
-  public Body: string;
+  public Body?: string;
 }

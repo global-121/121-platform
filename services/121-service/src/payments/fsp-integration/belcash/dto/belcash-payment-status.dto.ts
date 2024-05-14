@@ -49,22 +49,22 @@ export class BelcashPaymentStatusDto {
   @ApiProperty({ example: 'LUC000000520482ETH' })
   @IsString()
   @IsOptional()
-  public readonly id: string;
+  public readonly id?: string;
 
   @ApiProperty({ example: '2021-11-09T11:20:27Z' })
   @IsString()
   @IsOptional()
-  public readonly date: string;
+  public readonly date?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly processdate: string;
+  public readonly processdate?: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly statuscomment: string;
+  public readonly statuscomment?: string;
 
   @ApiProperty({ example: 'AUTHORIZING' })
   @IsString()
@@ -75,14 +75,14 @@ export class BelcashPaymentStatusDto {
   })
   @IsString()
   @IsOptional()
-  public readonly referenceid: string;
+  public readonly referenceid?: string;
 
   @ApiProperty({
     example: 'ed15b1f7-c579-4a59-8224-56520cd3bdf7-payment-1-1636456825275',
   })
   @IsString()
   @IsOptional()
-  public readonly tracenumber: string;
+  public readonly tracenumber?: string;
 
   @ApiProperty({ example: 'Lucy' })
   @IsString()

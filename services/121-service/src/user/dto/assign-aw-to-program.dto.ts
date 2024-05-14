@@ -24,12 +24,12 @@ export class UpdateProgramAssignmentDto {
   @IsArray()
   @ArrayMinSize(0)
   @IsOptional()
-  public readonly rolesToAdd: DefaultUserRole[];
+  public readonly rolesToAdd?: DefaultUserRole[];
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly scope: string;
+  public readonly scope?: string;
 }
 
 export class DeleteProgramAssignmentDto {
@@ -40,5 +40,5 @@ export class DeleteProgramAssignmentDto {
   @IsArray()
   @ArrayMinSize(0)
   @IsOptional()
-  public readonly rolesToDelete: DefaultUserRole[];
+  public readonly rolesToDelete?: DefaultUserRole[];
 }

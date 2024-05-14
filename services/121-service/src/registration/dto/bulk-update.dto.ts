@@ -9,5 +9,5 @@ export class BulkUpdateDto extends BulkImportDto {
 
   @ApiProperty()
   @IsOptional()
-  public scope: string;
+  public scope?: string;
 }

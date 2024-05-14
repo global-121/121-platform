@@ -47,5 +47,5 @@ export class UpdateRegistrationDto {
   })
   @IsOptional()
   @IsString()
-  public readonly reason: string;
+  public readonly reason?: string;
 }

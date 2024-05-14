@@ -8,11 +8,11 @@ import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })
   @IsOptional()
-  public label: LocalizedString;
+  public label?: LocalizedString;
 
   @ApiProperty({ example: { en: 'attribute placeholder' } })
   @IsOptional()
-  public placeholder: LocalizedString;
+  public placeholder?: LocalizedString;
 
   @ApiProperty({
     example: [
@@ -31,17 +31,17 @@ export class UpdateFspAttributeDto {
     ],
   })
   @IsOptional()
-  public options: QuestionOption[];
+  public options?: QuestionOption[];
 
   @ApiProperty({
     example: [ExportType.allPeopleAffected, ExportType.included],
   })
   @IsOptional()
-  public export: ExportType[];
+  public export?: ExportType[];
 
   @ApiProperty()
   @IsOptional()
-  public answerType: string;
+  public answerType?: string;
 
   @ApiProperty({
     example: [
@@ -51,7 +51,7 @@ export class UpdateFspAttributeDto {
     ],
   })
   @IsOptional()
-  public phases: ProgramPhase[];
+  public phases?: ProgramPhase[];
 }
 
 export class CreateFspAttributeDto extends UpdateFspAttributeDto {
@@ -66,5 +66,5 @@ export class UpdateFinancialServiceProviderDto {
     example: { en: 'FSP display name', nl: 'FSP weergavenaam' },
   })
   @IsOptional()
-  public readonly displayName: LocalizedString;
+  public readonly displayName?: LocalizedString;
 }

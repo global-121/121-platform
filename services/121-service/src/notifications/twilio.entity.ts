@@ -56,10 +56,10 @@ export class TwilioMessageEntity extends Base121Entity {
   public processType: MessageProcessType | null;
 
   @Column({ nullable: true })
-  public errorCode?: string | null;
+  public errorCode: string | null;
 
   @Column({ nullable: true })
-  public errorMessage?: string | null;
+  public errorMessage: string | null;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
