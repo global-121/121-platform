@@ -35,6 +35,10 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run lint'
 
+      - name: Check for dead code
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run knip'
+
       - name: Unit-Test
         working-directory: ${{ env.workingDirectory }}
         env:
