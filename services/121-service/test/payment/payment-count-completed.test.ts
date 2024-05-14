@@ -25,7 +25,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
   const payment = 1;
   const amount = 25;
   const registrationAh = {
-    referenceId: '63e62864557597e0d-AH',
+    referenceId: '63e62864557597e0b-AH',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
