@@ -9,4 +9,5 @@ export enum AppRoutes {
   user = 'user',
   users = 'users',
   auth = 'auth',
+  peopleAffected = 'people-affected',
 }
