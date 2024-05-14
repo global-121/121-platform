@@ -47,7 +47,7 @@ jobs:
 
       - name: Install
         run: npm ci --no-fund --no-audit
-        working-directory: mock-service
+        working-directory: services/mock-service
 
       - name: Creating ZIP package
         run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
