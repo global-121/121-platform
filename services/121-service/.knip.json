@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/knip/schema.json",
+  "entry": ["index.js"],
+  "project": ["src/**/*.{js,ts}", "!src/**/*.spec.{js,ts}"],
+  "rules": {
+    "dependencies": "warn",
+    "devDependencies": "warn",
+    "unlisted": "warn",
+    "enumMembers": "warn"
+  }
+}
