@@ -1158,4 +1158,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentAmount: null, // Not sending the amount makes the API call faster
     };
   }
+
+  public isColumnWithSpecialFormatting(column: string): boolean {
+    return this.tableService.isColumnWithSpecialFormatting(column);
+  }
 }

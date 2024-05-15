@@ -70,7 +70,7 @@ ion-button {
 }
 
 .input-element-with-border {
-  border: 1px solid var(--fiveten-neutral-300);
+  border: 1px solid var(--ion-color-fiveten-neutral-300);
   border-radius: 0.25em;
 }
 
@@ -268,7 +268,7 @@ ion-button {
 }
 
 .status-failed-text {
-  color: var(--ion-color-status-failed-text);
+  color: var(--ion-color-fiveten-red-700);
 }
 
 // for physical card list and popup in registration details page
@@ -276,33 +276,33 @@ ion-button {
   pointer-events: none;
   height: 20px;
   &.physical-card-status-chip-active {
-    background-color: var(--fiveten-success-100);
-    color: var(--fiveten-success-700);
+    background-color: var(--ion-color-fiveten-success-100);
+    color: var(--ion-color-fiveten-success-700);
   }
   &.physical-card-status-chip-blocked {
-    background-color: var(--fiveten-error-100);
-    color: var(--fiveten-error-700);
+    background-color: var(--ion-color-fiveten-error-100);
+    color: var(--ion-color-fiveten-error-700);
   }
   &.physical-card-status-chip-issued {
-    background-color: var(--fiveten-navy-200);
-    color: var(--fiveten-link-700);
+    background-color: var(--ion-color-fiveten-navy-100);
+    color: var(--ion-color-fiveten-link-700);
   }
   &.physical-card-status-chip-paused {
-    background-color: var(--fiveten-warning-100);
-    color: var(--fiveten-warning-700);
+    background-color: var(--ion-color-fiveten-warning-100);
+    color: var(--ion-color-fiveten-warning-700);
   }
   &.physical-card-status-chip-unknown {
-    background-color: var(--fiveten-warning-100);
-    color: var(--fiveten-warning-700);
+    background-color: var(--ion-color-fiveten-warning-100);
+    color: var(--ion-color-fiveten-warning-700);
   }
   &.physical-card-status-chip-suspected-fraud {
-    background-color: var(--fiveten-error-100);
-    color: var(--fiveten-error-700);
+    background-color: var(--ion-color-fiveten-error-100);
+    color: var(--ion-color-fiveten-error-700);
   }
 }
 .chip {
   pointer-events: none;
-  background-color: var(--fiveten-neutral-100);
+  background-color: var(--ion-color-fiveten-neutral-100);
   height: 27px;
 }
 
@@ -320,7 +320,7 @@ ion-input.custom-border {
   ion-list {
     width: 365px;
     overflow-x: hidden;
-    border: 2px solid var(--fiveten-neutral-200);
+    border: 2px solid var(--ion-color-fiveten-neutral-300);
     border-radius: 5px;
     padding: 0px;
     --min-height: 30px;
