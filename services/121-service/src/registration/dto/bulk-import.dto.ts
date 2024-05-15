@@ -63,7 +63,7 @@ export class BulkImportResult extends BulkImportDto {
   public registrationStatus: RegistrationStatusEnum | string;
 }
 
-export class ImportFspReconciliationResult extends ImportFspReconciliationArrayDto {
+class ImportFspReconciliationResult extends ImportFspReconciliationArrayDto {
   public importStatus: ImportStatus;
 }
 
@@ -73,7 +73,7 @@ export class ImportResult {
   public uploadFspReconciliationResult?: ImportFspReconciliationResult[];
 }
 
-export class AggregateImportResult {
+class AggregateImportResult {
   public countImported?: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;

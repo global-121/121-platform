@@ -25,5 +25,3 @@ export class SeedProgramUkr implements InterfaceScript {
     await this.seedHelper.addInstance(instanceUkr);
   }
 }
-
-export default SeedProgramUkr;

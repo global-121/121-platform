@@ -35,7 +35,7 @@ import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-export const tokenExpirationDays = 14;
+const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {

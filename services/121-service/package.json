@@ -27,7 +27,9 @@
     "migration:create": "npm run typeorm migration:create --",
     "migration:generate": "npm run typeorm migration:generate -- -d ./appdatasource.ts",
     "migration:run": "npm run typeorm migration:run -- -d ./appdatasource.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d ./appdatasource.ts"
+    "migration:revert": "npm run typeorm migration:revert -- -d ./appdatasource.ts",
+    "knip": "knip",
+    "knip:fix": "knip --fix-type files,exports,types"
   },
   "private": true,
   "dependencies": {
@@ -95,6 +97,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0",
     "jest-ci-spec-reporter": "^1.0.3",
+    "knip": "^5.15.1",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "supertest": "^7.0.0",

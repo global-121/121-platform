@@ -5,7 +5,6 @@ import {
 } from '../../src/notifications/message-template/dto/message-template.dto';
 import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
-import { MessageStatus } from '../../src/registration/enum/last-message-status';
 import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '../../src/shared/enum/language.enums';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
@@ -14,6 +13,13 @@ import { waitFor } from '../../src/utils/waitFor.helper';
 import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
 import { getMessageHistory, getRegistrations } from './registration.helper';
 import { getServer } from './utility.helper';
+
+enum MessageStatus {
+  sent = 'sent',
+  delivered = 'delivered',
+  failed = 'failed',
+  read = 'read',
+}
 
 export async function postProgram(
   program: CreateProgramDto,

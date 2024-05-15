@@ -331,5 +331,3 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspExcel);
   }
 }
-
-export default SeedInit;

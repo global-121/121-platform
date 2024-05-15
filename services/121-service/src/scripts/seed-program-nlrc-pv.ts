@@ -23,5 +23,3 @@ export class SeedNLProgramPV implements InterfaceScript {
     await this.seedHelper.addInstance(instanceNLRC);
   }
 }
-
-export default SeedNLProgramPV;

@@ -76,5 +76,3 @@ export class SeedMultipleKRCS implements InterfaceScript {
     await this.seedHelper.addDefaultUsers(programEntityWestPokot);
   }
 }
-
-export default SeedMultipleKRCS;

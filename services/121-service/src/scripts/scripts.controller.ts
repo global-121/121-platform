@@ -2,7 +2,7 @@ import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { SeedEthJointResponse } from './seed-eth-joint-response';
-import SeedInit from './seed-init';
+import { SeedInit } from './seed-init';
 import { SeedMultipleKRCS } from './seed-multiple-krcs';
 import { SeedMultipleNLRC } from './seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from './seed-multiple-nlrc-mock';

@@ -28,5 +28,3 @@ export class SeedProgramValidation implements InterfaceScript {
     await this.seedHelper.addInstance(instanceAnonymous);
   }
 }
-
-export default SeedProgramValidation;

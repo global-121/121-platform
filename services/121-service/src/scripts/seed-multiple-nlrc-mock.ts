@@ -13,7 +13,7 @@ import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 import { waitFor } from '../utils/waitFor.helper';
 import { InterfaceScript } from './scripts.module';
 import { SeedMockHelper } from './seed-mock-helpers';
-import SeedMultipleNLRC from './seed-multiple-nlrc';
+import { SeedMultipleNLRC } from './seed-multiple-nlrc';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -344,5 +344,3 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     }
   }
 }
-
-export default SeedMultipleNLRC;

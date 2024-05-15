@@ -25,5 +25,3 @@ export class SeedProgramLbn implements InterfaceScript {
     await this.seedHelper.addInstance(intanceLbn);
   }
 }
-
-export default SeedProgramLbn;

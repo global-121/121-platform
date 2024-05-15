@@ -22,5 +22,3 @@ export class SeedProgramDrc implements InterfaceScript {
     await this.seedHelper.addInstance(instanceDrc);
   }
 }
-
-export default SeedProgramDrc;

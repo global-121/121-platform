@@ -76,5 +76,3 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     await this.seedHelper.addDefaultUsers(programEntityValidation);
   }
 }
-
-export default SeedTestMultipleProgram;

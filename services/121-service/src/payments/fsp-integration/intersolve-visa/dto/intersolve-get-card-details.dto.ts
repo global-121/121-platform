@@ -1,7 +1,7 @@
 import { IntersolveVisaCardStatus } from '../intersolve-visa-wallet.entity';
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
-export class GetCardDetailsResponseDto {
+class GetCardDetailsResponseDto {
   public data: CardDetailsResponseDataDto;
   public success: boolean;
   public errors?: IntersolveReponseErrorDto[];
@@ -9,7 +9,7 @@ export class GetCardDetailsResponseDto {
   public correlationId: string;
 }
 
-export class CardDetailsResponseDataDto {
+class CardDetailsResponseDataDto {
   public cardURL: string;
   public cardFrameURL: string;
   public accessToken: string;

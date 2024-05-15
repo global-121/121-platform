@@ -76,5 +76,3 @@ export class SeedEthJointResponse implements InterfaceScript {
     await this.seedHelper.addDefaultUsers(programEntityEKHCDC);
   }
 }
-
-export default SeedEthJointResponse;

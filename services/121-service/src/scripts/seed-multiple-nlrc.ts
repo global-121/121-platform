@@ -69,5 +69,3 @@ export class SeedMultipleNLRC implements InterfaceScript {
     await this.seedHelper.addDefaultUsers(programEntityOCW, debugScopes);
   }
 }
-
-export default SeedMultipleNLRC;

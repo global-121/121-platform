@@ -11,7 +11,7 @@ export class GetTransactionsDetailsResponseDto {
   statusText: string;
 }
 
-export class GetTransactionsDetailsResponseBodyDto {
+class GetTransactionsDetailsResponseBodyDto {
   public success: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code: string;

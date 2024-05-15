@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
-import { MessageContentType } from './enum/message-type.enum';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -12,67 +11,6 @@ export enum TwilioStatus {
   sent = 'sent',
   failed = 'failed',
 }
-
-export class TwilioMessagesCreateDto {
-  @ApiProperty()
-  @IsString()
-  public readonly body: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly messagingServiceSid: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly from?: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly statusCallback: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly to: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly mediaUrl?: string;
-
-  @ApiProperty({ example: MessageContentType.genericTemplated })
-  @IsString()
-  @IsOptional()
-  public readonly messageContentType?: string;
-}
-
-class AccountSidObject {
-  public readonly accountSid: string;
-}
-
-export class TwilioValidateRequestDto {
-  @ApiProperty()
-  @IsString()
-  public readonly authToken: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly signature: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly callbackUrl: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly body: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly accountSidObject?: AccountSidObject;
-}
-
 export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()

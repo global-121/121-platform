@@ -8,9 +8,3 @@ export enum DefaultUserRole {
   FinanceManager = 'finance-manager',
   FinanceOfficer = 'finance-officer',
 }
-
-export enum PersonAffectedRole {
-  PersonAffected = 'person-affected',
-}
-
-export type AuthenticationRole = DefaultUserRole | PersonAffectedRole;
