@@ -11,3 +11,4 @@ node_modules
 *.tsbuildinfo
 # Playwright screenshots
 screenshots
+.DS_Store

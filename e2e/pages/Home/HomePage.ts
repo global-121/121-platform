@@ -47,6 +47,14 @@ class HomePage {
   async navigateToProgramme(programName: string) {
     await this.programCard.filter({ hasText: programName }).click();
   }
+
+  async closeBrowserCompatibilityBanner() {
+    await this.page.locator('button').nth(5).click();
+  }
+
+  async openMenu() {
+    await this.page.getByTestId('header-menu-button').click();
+  }
 }
 
 export default HomePage;

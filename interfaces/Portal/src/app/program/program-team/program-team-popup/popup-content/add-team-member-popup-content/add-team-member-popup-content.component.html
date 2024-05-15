@@ -1,5 +1,8 @@
 <!-- content -->
-<form (ngSubmit)="assignTeamMember()">
+<form
+  data-testid="add-new-team-member-pop-up"
+  (ngSubmit)="assignTeamMember()"
+>
   <ion-grid class="ion-no-margin ion-padding">
     <ion-row>
       <ion-label class="label">{{

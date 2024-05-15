@@ -23,7 +23,10 @@
 </ion-header>
 
 <!-- content -->
-<ion-content class="ion-padding">
+<ion-content
+  data-testid="add-new-team-member-pop-up-content"
+  class="ion-padding"
+>
   <div *ngIf="operation === programTeamPopupOperationEnum.add">
     <app-add-team-member-popup-content
       [programId]="programId"
