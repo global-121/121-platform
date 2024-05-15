@@ -3,8 +3,8 @@ import { CustomAttributeType } from '@121-service/src/programs/dto/create-progra
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
-import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
+import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import {
   BeforeRemove,
   Check,

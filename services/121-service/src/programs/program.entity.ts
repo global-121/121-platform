@@ -16,8 +16,11 @@ import {
   CustomAttributeType,
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '@121-service/src/shared/enum/language.enums';
 import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
-import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 import {
   BeforeRemove,
   Column,

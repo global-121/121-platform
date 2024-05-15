@@ -6,6 +6,10 @@ import {
 } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '@121-service/src/shared/enum/language.enums';
 import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -22,7 +26,6 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 
 export class ProgramReturnDto {
   @ApiProperty({ example: 1, type: 'number' })

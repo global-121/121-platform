@@ -4,9 +4,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { ApiProperty } from '@nestjs/swagger';
-import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
-import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   BeforeRemove,
   Check,
@@ -17,6 +14,10 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
+
+import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 
 @Unique('programQuestionUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
