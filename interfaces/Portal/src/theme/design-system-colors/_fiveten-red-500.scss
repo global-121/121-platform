@@ -1,0 +1,17 @@
+:root {
+  --ion-color-fiveten-red-500: #c70000;
+  --ion-color-fiveten-red-500-rgb: 199, 0, 0;
+  --ion-color-fiveten-red-500-contrast: #ffffff;
+  --ion-color-fiveten-red-500-contrast-rgb: 255, 255, 255;
+  --ion-color-fiveten-red-500-shade: #af0000;
+  --ion-color-fiveten-red-500-tint: #cd1a1a;
+}
+
+.ion-color-fiveten-red-500 {
+  --ion-color-base: var(--ion-color-fiveten-red-500);
+  --ion-color-base-rgb: var(--ion-color-fiveten-red-500-rgb);
+  --ion-color-contrast: var(--ion-color-fiveten-red-500-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-fiveten-red-500-contrast-rgb);
+  --ion-color-shade: var(--ion-color-fiveten-red-500-shade);
+  --ion-color-tint: var(--ion-color-fiveten-red-500-tint);
+}

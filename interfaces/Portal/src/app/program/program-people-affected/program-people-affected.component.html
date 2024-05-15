@@ -282,8 +282,7 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'lastMessageStatus' &&
-          column.prop !== 'name'
+          !isColumnWithSpecialFormatting(column.prop)
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
@@ -317,6 +316,13 @@
         >
           {{ value }}
         </span>
+      </ng-container>
+      <ng-container *ngIf="column.prop === 'status'">
+        <span
+          class="badge"
+          [ngClass]="'registration-status-' + row.registrationStatus"
+          >{{ value }}</span
+        >
       </ng-container>
     </ng-template>
   </ngx-datatable-column>

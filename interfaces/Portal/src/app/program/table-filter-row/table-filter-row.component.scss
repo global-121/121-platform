@@ -1,5 +1,5 @@
 .tfr--create-filters {
-  border: 1px solid var(--fiveten-neutral-200);
+  border: 1px solid var(--ion-color-fiveten-neutral-300);
   min-height: 3rem;
   width: 100%;
 
@@ -34,16 +34,16 @@
   }
 
   .tfr--clear-filters-btn {
-    --background: var(--fiveten-purple-100);
+    --background: var(--ion-color-fiveten-purple-100);
     --border-width: 1px;
     --border-style: solid;
-    --border-color: var(--fiveten-purple-200);
-    --color: var(--fiveten-neutral-900);
+    --border-color: var(--ion-color-fiveten-purple-300);
+    --color: var(--ion-color-fiveten-neutral-900);
     font-size: 12px;
   }
   .tfr--active-filters-chip {
-    --background: var(--fiveten-purple-100);
-    border: 1px solid var(--fiveten-purple-200);
+    --background: var(--ion-color-fiveten-purple-100);
+    border: 1px solid var(--ion-color-fiveten-purple-300);
     --min-height: 2.2em;
   }
 }

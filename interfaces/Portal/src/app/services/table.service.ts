@@ -28,6 +28,12 @@ export class TableService {
     [AnswerType.MultiSelect]: 180,
   };
 
+  private columnsWithSpecialFormatting = [
+    'lastMessageStatus',
+    'name',
+    'status',
+  ];
+
   constructor(
     private translate: TranslateService,
     private platform: Platform,
@@ -295,5 +301,9 @@ export class TableService {
       column.prop !== 'maxPayments' ||
       (column.prop === 'maxPayments' && enableMaxPayments)
     );
+  }
+
+  public isColumnWithSpecialFormatting(column: string): boolean {
+    return this.columnsWithSpecialFormatting.includes(column);
   }
 }

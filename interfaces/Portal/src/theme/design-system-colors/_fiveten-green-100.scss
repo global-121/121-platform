@@ -1,0 +1,17 @@
+:root {
+  --ion-color-fiveten-green-100: #e4f4e0;
+  --ion-color-fiveten-green-100-rgb: 228, 244, 224;
+  --ion-color-fiveten-green-100-contrast: #000000;
+  --ion-color-fiveten-green-100-contrast-rgb: 0, 0, 0;
+  --ion-color-fiveten-green-100-shade: #c9d7c5;
+  --ion-color-fiveten-green-100-tint: #e7f5e3;
+}
+
+.ion-color-fiveten-green-100 {
+  --ion-color-base: var(--ion-color-fiveten-green-100);
+  --ion-color-base-rgb: var(--ion-color-fiveten-green-100-rgb);
+  --ion-color-contrast: var(--ion-color-fiveten-green-100-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-fiveten-green-100-contrast-rgb);
+  --ion-color-shade: var(--ion-color-fiveten-green-100-shade);
+  --ion-color-tint: var(--ion-color-fiveten-green-100-tint);
+}
