@@ -24,5 +24,5 @@ export class SendCustomTextDto {
   })
   @IsOptional()
   @IsBoolean()
-  public readonly skipMessageValidation: boolean;
+  public readonly skipMessageValidation?: boolean;
 }

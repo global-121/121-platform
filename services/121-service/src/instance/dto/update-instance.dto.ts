@@ -10,11 +10,11 @@ export class UpdateInstanceDto {
 
   @ApiProperty({ example: { en: 'NGO display name' } })
   @IsOptional()
-  public readonly displayName: LocalizedString;
+  public readonly displayName?: LocalizedString;
 
   @ApiProperty({
     example: { en: '<about program>' },
   })
   @IsOptional()
-  public readonly aboutProgram: LocalizedString;
+  public readonly aboutProgram?: LocalizedString;
 }

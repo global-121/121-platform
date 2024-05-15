@@ -44,7 +44,7 @@ export class UpdateProgramCustomAttributeDto {
   @ApiProperty({ example: true, required: false })
   @IsOptional()
   @IsBoolean()
-  public duplicateCheck: boolean;
+  public duplicateCheck?: boolean;
 }
 
 export class CreateProgramCustomAttributeDto extends UpdateProgramCustomAttributeDto {

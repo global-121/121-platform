@@ -18,23 +18,23 @@ export class ExportDetailsQueryParamsDto {
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  public readonly minPayment: number | null;
+  public readonly minPayment?: number;
 
   @ApiProperty()
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  public readonly maxPayment: number | null;
+  public readonly maxPayment?: number;
 
   @ApiProperty()
   @IsDate()
   @Type(() => Date)
   @IsOptional()
-  public readonly fromDate: Date;
+  public readonly fromDate?: Date;
 
   @ApiProperty()
   @IsDate()
   @Type(() => Date)
   @IsOptional()
-  public readonly toDate: Date;
+  public readonly toDate?: Date;
 }

@@ -24,7 +24,7 @@ export class TwilioMessagesCreateDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly From: string;
+  public readonly From?: string;
 
   @ApiProperty()
   @IsString()
@@ -37,12 +37,12 @@ export class TwilioMessagesCreateDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly MediaUrl: string;
+  public readonly MediaUrl?: string;
 
   @ApiProperty({ example: 'generic-templated' })
   @IsString()
   @IsOptional()
-  public readonly MessageContentType: string;
+  public readonly MessageContentType?: string;
 }
 
 class AccountSidObject {
@@ -69,7 +69,7 @@ export class TwilioValidateRequestDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly accountSidObject: AccountSidObject;
+  public readonly accountSidObject?: AccountSidObject;
 }
 
 export class TwilioStatusCallbackDto {
@@ -84,25 +84,25 @@ export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
-  public ErrorMessage: string;
+  public ErrorMessage?: string;
 
   @ApiProperty({ example: '63015' })
   @IsString()
   @IsOptional()
-  public ErrorCode: string;
+  public ErrorCode?: string;
 
   @IsOptional()
-  public SmsSid: string;
+  public SmsSid?: string;
 
   @IsOptional()
-  public To: string;
+  public To?: string;
 }
 
 export class TwilioIncomingCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   @IsOptional()
-  public MessageSid: string;
+  public MessageSid?: string;
 
   @ApiProperty({ example: formatWhatsAppNumber('31600000000') })
   @IsString()
@@ -111,7 +111,7 @@ export class TwilioIncomingCallbackDto {
   @ApiProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
-  public WaId: string;
+  public WaId?: string;
 
   @ApiProperty({
     example: formatWhatsAppNumber(
@@ -120,10 +120,10 @@ export class TwilioIncomingCallbackDto {
   })
   @IsString()
   @IsOptional()
-  public To: string;
+  public To?: string;
 
   @ApiProperty({ example: 'Yes' })
   @IsString()
   @IsOptional()
-  public Body: string;
+  public Body?: string;
 }

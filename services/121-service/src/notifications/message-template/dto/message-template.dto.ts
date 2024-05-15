@@ -61,7 +61,7 @@ export class UpdateTemplateParamDto {
   public readonly type: string;
   @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language: LanguageEnum;
+  public readonly language?: LanguageEnum;
 }
 
 export class UpdateTemplateBodyDto {
@@ -99,5 +99,5 @@ export class DeleteTemplateParamDto {
 export class DeleteTemplateQueryDto {
   @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language: LanguageEnum;
+  public readonly language?: LanguageEnum;
 }

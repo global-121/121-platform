@@ -20,7 +20,7 @@ export class AfricasTalkingNotificationDto {
   @ApiProperty({ example: 'example' })
   @IsOptional()
   @IsString()
-  public readonly providerRefId: string;
+  public readonly providerRefId?: string;
 
   @ApiProperty({ example: 'example' })
   @IsString()
@@ -29,7 +29,7 @@ export class AfricasTalkingNotificationDto {
   @ApiProperty({ example: 'example' })
   @IsOptional()
   @IsString()
-  public readonly clientAccount: string;
+  public readonly clientAccount?: string;
 
   @ApiProperty({ example: 'test-product' })
   @IsString()
@@ -60,12 +60,12 @@ export class AfricasTalkingNotificationDto {
   @ApiProperty({ example: 'KES 0.10' })
   @IsOptional()
   @IsString()
-  public readonly transactionFee: string;
+  public readonly transactionFee?: string;
 
   @ApiProperty({ example: 'KES 0.10' })
   @IsOptional()
   @IsString()
-  public readonly providerFee: string;
+  public readonly providerFee?: string;
 
   @ApiProperty({ example: 'Success' })
   @IsIn(['Success', 'Failed'])
@@ -78,14 +78,14 @@ export class AfricasTalkingNotificationDto {
 
   @ApiProperty({ example: {} })
   @IsOptional()
-  public readonly requestMetadata: AfricasTalkingNotificationRequestMetadata;
+  public readonly requestMetadata?: AfricasTalkingNotificationRequestMetadata;
 
   @ApiProperty({ example: {} })
   @IsOptional()
-  public readonly providerMetadata: Record<string, unknown>;
+  public readonly providerMetadata?: Record<string, unknown>;
 
   @ApiProperty({ example: '2020-09-02' })
   @IsOptional()
   @IsString()
-  public readonly transactionDate: string;
+  public readonly transactionDate?: string;
 }
