@@ -148,7 +148,7 @@
     >
       <ng-container *ngIf="checkActionsInclude(['reissue'])">
         <app-confirm-prompt
-          color="portal-primary"
+          color="primary"
           fill="outline"
           size="small"
           shape="round"
@@ -174,7 +174,7 @@
 
           <ion-spinner
             *ngIf="issueLoading"
-            color="portal-primary"
+            color="primary"
           ></ion-spinner>
         </app-confirm-prompt>
       </ng-container>
@@ -182,7 +182,7 @@
       <ng-container *ngIf="checkActionsInclude(['pause', 'unpause'])">
         <app-confirm-prompt
           class="ion-margin-start"
-          color="portal-danger"
+          color="danger"
           fill="outline"
           size="small"
           shape="round"
@@ -217,7 +217,7 @@
 
           <ion-spinner
             *ngIf="pauseLoading"
-            color="portal-danger"
+            color="danger"
           ></ion-spinner>
         </app-confirm-prompt>
       </ng-container>
