@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IntersolveCreateCustomerDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+//import { IntersolveCreateCustomerDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
 import { IntersolveVisaMockService } from './intersolve-visa.mock.service';
 
 @ApiTags('fsp/intersolve-visa')
@@ -12,7 +12,7 @@ export class IntersolveVisaMockController {
 
   @ApiOperation({ summary: 'Create customer' })
   @Post('transfer')
-  public createCustomer(@Body() _dto: IntersolveCreateCustomerDto): object {
+  public createCustomer(@Body() _dto: any): object {
     return this.intersolveVisaMockService.createCustomer();
   }
 

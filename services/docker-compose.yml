@@ -34,7 +34,8 @@ services:
   mock-service:
     container_name: mock-service
     build:
-      context: mock-service
+      context: .
+      dockerfile: mock-service/Dockerfile
       target: production
     init: true
     env_file: .env

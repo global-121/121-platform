@@ -25,10 +25,12 @@ services:
     command: 'npm run start:dev'
   mock-service:
     build:
+      context: .
+      dockerfile: mock-service/Dockerfile
       target: development
     volumes:
       - 'mock_service_node_modules:/home/node/app/node_modules'
-      - './mock-service:/home/node/app'
+      - '.:/home/node/app'
     restart: unless-stopped
 
 volumes:
