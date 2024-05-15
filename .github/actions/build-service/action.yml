@@ -2,7 +2,7 @@
 # More specific about composite actions: https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 
 name: 'Build: Service'
-description: ''
+description: 'Builds a service for deployment.'
 
 inputs:
   servicePath:

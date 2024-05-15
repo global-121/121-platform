@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/actions/*'
-      - '.github/workflows/*'
+      - '.github/actions/**'
+      - '.github/workflows/**'
 
 jobs:
   test:
