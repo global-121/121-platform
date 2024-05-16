@@ -31,6 +31,7 @@ export class TransactionEntity extends Base121AuditedEntity {
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
   public program: ProgramEntity;
+  // TODO: Add JoinColumn so this entity can be created just with the programId
 
   @Column({ default: 1 })
   @Index()
@@ -50,6 +51,7 @@ export class TransactionEntity extends Base121AuditedEntity {
     (financialServiceProvider) => financialServiceProvider.transactions,
   )
   public financialServiceProvider: FinancialServiceProviderEntity;
+  // TODO: Add JoinColumn so this entity can be created just with the financialServiceProviderId
 
   @ManyToOne(
     (_type) => RegistrationEntity,

@@ -177,6 +177,7 @@ export class TransactionsService {
     const resultTransaction =
       await this.transactionScopedRepository.save(transaction);
 
+    // TODO: What does this do? Was necessary for Intersolve Vouchers, but not here? Ruben probably knows.
     if (transactionResponse.messageSid) {
       await this.twilioMessageRepository.update(
         { sid: transactionResponse.messageSid },
