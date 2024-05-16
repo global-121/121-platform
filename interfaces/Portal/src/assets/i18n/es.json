@@ -276,29 +276,6 @@
           }
         }
       },
-      "phases": {
-        "dashboard": {
-          "label": "Supervisión"
-        },
-        "overview": {
-          "label": "Descripción"
-        },
-        "payment": {
-          "label": "Pago"
-        },
-        "people-affected": {
-          "actionText-disabled-registrations": "Las inscripciones ahora están deshabilitadas para este programa",
-          "actionText-enabled-registrations": "Las inscripciones ya están habilitadas para este programa",
-          "btnText": "Mover a: Pago",
-          "btnText-no-validation": "Mover a: Pago",
-          "label": "Personas Afectadas",
-          "label-no-validation": "Personas Afectadas",
-          "toggleText-enable-registrations": "Permitir nuevos registros"
-        },
-        "team": {
-          "label": "Equipo"
-        }
-      },
       "program-details": {
         "distributionDuration": "Duración de la distribución",
         "distributionFrequency": "Frecuencia de distribución",
@@ -527,6 +504,29 @@
           "sent": "Enviado",
           "show-status": "Mostrar estado",
           "waiting-message": "Todavía estoy esperando la actualización del estado de esta transacción. Actualice la página para ver el estado más reciente."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "Supervisión"
+        },
+        "overview": {
+          "label": "Descripción"
+        },
+        "payment": {
+          "label": "Pago"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "Las inscripciones ahora están deshabilitadas para este programa",
+          "actionText-enabled-registrations": "Las inscripciones ya están habilitadas para este programa",
+          "btnText": "Mover a: Pago",
+          "btnText-no-validation": "Mover a: Pago",
+          "label": "Personas Afectadas",
+          "label-no-validation": "Personas Afectadas",
+          "toggleText-enable-registrations": "Permitir nuevos registros"
+        },
+        "team": {
+          "label": "Equipo"
         }
       },
       "table-filter-row": {

@@ -34,7 +34,7 @@ import {
 import {
   PaTableAttribute,
   Program,
-  ProgramPhase,
+  ProgramTab,
 } from 'src/app/models/program.model';
 import { TableFilterType } from 'src/app/models/table-filter.model';
 import {
@@ -84,17 +84,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Input()
   public programId: number;
   @Input()
-  public displayImportRegistration: boolean = false;
+  public displayImportRegistration = false;
   @Input()
-  public thisPhase: ProgramPhase;
+  public thisPhase: ProgramTab;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public phaseEnum = ProgramPhase;
+  public phaseEnum = ProgramTab;
 
   public program: Program;
   private paTableAttributes: PaTableAttribute[] = [];
-  public activePhase: ProgramPhase;
 
   private locale: string;
 
@@ -250,15 +249,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.programId,
     );
 
-    this.activePhase = this.program.phase;
-
     this.columns = await this.tableService.loadColumns(
-      this.thisPhase,
       this.program,
       this.canViewPersonalData,
     );
 
-    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+    if (this.canViewPaymentData && this.thisPhase === ProgramTab.payment) {
       this.paymentHistoryColumn =
         this.tableService.createPaymentHistoryColumn();
     }
@@ -432,7 +428,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           this.programId,
           action.permissions,
         ) &&
-        action.phases.includes(this.thisPhase) &&
+        action.tabs.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
@@ -556,9 +552,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
-            [ProgramPhase.inclusion, ProgramPhase.payment].includes(
-              this.thisPhase,
-            )
+            [ProgramTab.payment].includes(this.thisPhase)
               ? `(${
                   person.maxPayments - person.paymentCount
                 } ${this.translate.instant(

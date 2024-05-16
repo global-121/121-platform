@@ -1,6 +1,4 @@
-<app-header
-  [title]="'page.program.phases.payment.label' | translate"
-></app-header>
+<app-header [title]="'page.program.tab.payment.label' | translate"></app-header>
 <div
   class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
 >
@@ -11,7 +9,6 @@
   <app-program-payout
     *appIfPermissions="[Permission.PaymentREAD]"
     [programId]="programId"
-    (isCompleted)="onReady($event)"
   ></app-program-payout>
 
   <app-program-people-affected
@@ -19,6 +16,5 @@
     *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"
-    (isCompleted)="onReady($event)"
   ></app-program-people-affected>
 </ion-content>

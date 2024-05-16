@@ -3,7 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AppRoutes } from './app-routes.enum';
 import { AuthGuard } from './auth/auth.guard';
-import { ProgramPhase } from './models/program.model';
+import { ProgramTab } from './models/program.model';
 
 const routes: Routes = [
   {
@@ -62,7 +62,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: ProgramPhase.peopleAffected,
+        redirectTo: ProgramTab.peopleAffected,
       },
       {
         path: 'dashboard',
@@ -79,7 +79,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.overview,
+        path: ProgramTab.overview,
         loadChildren: () =>
           import('./pages/design/design.module').then(
             (m) => m.DesignPageModule,
@@ -87,7 +87,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.peopleAffected,
+        path: ProgramTab.peopleAffected,
         loadChildren: () =>
           import('./pages/peoples-affected/peoples-affected.module').then(
             (m) => m.PeoplesAffectedPageModule,
@@ -95,15 +95,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.inclusion,
-        loadChildren: () =>
-          import('./pages/inclusion/inclusion.module').then(
-            (m) => m.InclusionPageModule,
-          ),
-        canActivate: [AuthGuard],
-      },
-      {
-        path: ProgramPhase.payment,
+        path: ProgramTab.payment,
         loadChildren: () =>
           import('./pages/payment/payment.module').then(
             (m) => m.PaymentPageModule,
@@ -120,9 +112,15 @@ const routes: Routes = [
       },
       {
         // Fallback for change in url, from old to new syntax:
-        path: 'registration-validation',
+        path: 'registrationValidation',
         pathMatch: 'full',
-        redirectTo: ProgramPhase.peopleAffected,
+        redirectTo: ProgramTab.peopleAffected,
+      },
+      {
+        // Fallback for change in url, from old to new syntax:
+        path: 'inclusion',
+        pathMatch: 'full',
+        redirectTo: ProgramTab.peopleAffected,
       },
     ],
   },

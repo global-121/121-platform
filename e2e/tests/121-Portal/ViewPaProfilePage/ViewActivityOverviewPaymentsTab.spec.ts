@@ -46,7 +46,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
     );
     await registration.openActivityOverviewTab('Payments');
     await registration.validatePaymentsTab(
-      englishTranslations.page.program.phases.payment.label,
+      englishTranslations.page.program.tab.payment.label,
       1,
       englishTranslations.entity.payment.status.success,
       userName,

@@ -8,7 +8,7 @@ import {
   PersonDefaultAttributes,
   PersonTableColumn,
 } from '../models/person.model';
-import { Program, ProgramPhase } from '../models/program.model';
+import { Program } from '../models/program.model';
 import { TranslatableString } from '../models/translatable-string.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { TranslatableStringService } from './translatable-string.service';
@@ -49,11 +49,6 @@ export class TableService {
       sortable: true,
       comparator: undefined,
       frozenLeft: false,
-      phases: [
-        ProgramPhase.peopleAffected,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
@@ -108,11 +103,6 @@ export class TableService {
           'page.program.program-people-affected.column.registrationCreated',
         ),
         ...this.getColumnDefaults(),
-        phases: [
-          ProgramPhase.peopleAffected,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
         minWidth: this.columnWidthPerType[AnswerType.Date],
         width: this.columnWidthPerType[AnswerType.Date],
       },
@@ -150,11 +140,6 @@ export class TableService {
           'page.program.program-people-affected.column.lastMessageStatus',
         ),
         ...this.getColumnDefaults(),
-        phases: [
-          ProgramPhase.peopleAffected,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
         permissions: [Permission.RegistrationNotificationREAD],
         minWidth: 200,
         width: 200,
@@ -167,7 +152,6 @@ export class TableService {
   }
 
   public async loadColumns(
-    thisPhase: ProgramPhase,
     program: Program,
     canViewPersonalData: boolean,
   ): Promise<PersonTableColumn[]> {
@@ -175,7 +159,6 @@ export class TableService {
     columns.push(...this.loadNameColumns(program, canViewPersonalData));
     for (const column of this.getStandardColumns()) {
       if (
-        column.phases.includes(thisPhase) &&
         this.authService.hasAllPermissions(program.id, column.permissions) &&
         this.checkValidationColumnOrAction(column, program.validation) &&
         this.showMaxPaymentsColumn(column, program.enableMaxPayments)
@@ -206,7 +189,6 @@ export class TableService {
         name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
         ...this.getColumnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
-        phases: colPerPhase.phases,
         headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
       if (this.getColumnWidthPerType()[colPerPhase.type]) {
@@ -279,7 +261,6 @@ export class TableService {
       ),
       ...this.getColumnDefaults(),
       sortable: false,
-      phases: [ProgramPhase.payment],
       permissions: [Permission.RegistrationPersonalREAD],
       minWidth: 200,
       width: 200,

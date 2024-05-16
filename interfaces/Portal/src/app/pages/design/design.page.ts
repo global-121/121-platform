@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramTab } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-design',
@@ -12,7 +12,7 @@ export class DesignPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramPhase.overview;
+  public thisPhase = ProgramTab.overview;
 
   constructor(private route: ActivatedRoute) {}
 }

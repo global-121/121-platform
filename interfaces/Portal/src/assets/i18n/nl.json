@@ -283,29 +283,6 @@
           }
         }
       },
-      "phases": {
-        "dashboard": {
-          "label": "Toezicht houden"
-        },
-        "overview": {
-          "label": "Overzicht"
-        },
-        "payment": {
-          "label": "Betaling"
-        },
-        "people-affected": {
-          "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma",
-          "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
-          "btnText": "Ga naar: Betaling",
-          "btnText-no-validation": "Ga naar: Betaling",
-          "label": "Hulpvragers",
-          "label-no-validation": "Hulpvragers",
-          "toggleText-enable-registrations": "Nieuwe registraties toestaan"
-        },
-        "team": {
-          "label": "Team"
-        }
-      },
       "program-details": {
         "distributionDuration": "Distributieduur",
         "distributionFrequency": "Distributiefrequentie",
@@ -540,6 +517,29 @@
           "sent": "Verstuurd",
           "show-status": "Toon status",
           "waiting-message": "Wachtend op de statusupdate van deze transactie. Vernieuw de pagina voor de laatste status."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "Toezicht houden"
+        },
+        "overview": {
+          "label": "Overzicht"
+        },
+        "payment": {
+          "label": "Betaling"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma",
+          "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
+          "btnText": "Ga naar: Betaling",
+          "btnText-no-validation": "Ga naar: Betaling",
+          "label": "Hulpvragers",
+          "label-no-validation": "Hulpvragers",
+          "toggleText-enable-registrations": "Nieuwe registraties toestaan"
+        },
+        "team": {
+          "label": "Team"
         }
       },
       "table-filter-row": {

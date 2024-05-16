@@ -250,29 +250,6 @@
           }
         }
       },
-      "phases": {
-        "dashboard": {
-          "label": "Monitoring"
-        },
-        "overview": {
-          "label": "Overview"
-        },
-        "payment": {
-          "label": "Payment"
-        },
-        "people-affected": {
-          "actionText-disabled-registrations": "Registrations are now disabled for this program",
-          "actionText-enabled-registrations": "Registrations are now enabled for this program",
-          "btnText": "Move to: Payment",
-          "btnText-no-validation": "Move to: Payment",
-          "label": "People Affected",
-          "label-no-validation": "People Affected",
-          "toggleText-enable-registrations": "Allow new registrations"
-        },
-        "team": {
-          "label": "Team"
-        }
-      },
       "program-details": {
         "distributionDuration": "Distribution duration",
         "distributionFrequency": "Distribution frequency",
@@ -504,6 +481,29 @@
           "sent": "Sent",
           "show-status": "Show status",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "Monitoring"
+        },
+        "overview": {
+          "label": "Overview"
+        },
+        "payment": {
+          "label": "Payment"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "Registrations are now disabled for this program",
+          "actionText-enabled-registrations": "Registrations are now enabled for this program",
+          "btnText": "Move to: Payment",
+          "btnText-no-validation": "Move to: Payment",
+          "label": "People Affected",
+          "label-no-validation": "People Affected",
+          "toggleText-enable-registrations": "Allow new registrations"
+        },
+        "team": {
+          "label": "Team"
         }
       },
       "table-filter-row": {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ProgramPhase } from '../models/program.model';
-import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
+import { ProgramTab } from '../models/program.model';
+import { PROGRAM_TABS_ORDER } from '../program-phase-order';
 
-export class Phase {
+export class Tabs {
   id: number;
-  name: ProgramPhase;
+  name: ProgramTab;
   labelKey: string;
   btnTextKey: string;
   active?: boolean;
@@ -14,38 +14,38 @@ export class Phase {
 @Injectable({
   providedIn: 'root',
 })
-export class ProgramPhaseService {
-  public activePhaseName: ProgramPhase;
-  public phases: Phase[];
+export class ProgramTabService {
+  public activePhaseName: ProgramTab;
+  public tabs: Tabs[];
 
-  public async getPhases(): Promise<Phase[]> {
-    if (!this.phases) {
-      this.phases = this.createInitialPhases();
+  public async getProgramTabs(): Promise<Tabs[]> {
+    if (!this.tabs) {
+      this.tabs = this.initializeProgramTabs();
     }
-    this.updatePhase();
+    this.updateTab();
 
-    return this.phases;
+    return this.tabs;
   }
 
-  private createInitialPhases(): Phase[] {
-    return PROGRAM_PHASE_ORDER.map((phase) => ({
-      id: phase.id,
-      name: phase.name,
-      labelKey: `page.program.phases.${phase.name}.label`,
-      btnTextKey: `page.program.phases.${phase.name}.btnText`,
+  private initializeProgramTabs(): Tabs[] {
+    return PROGRAM_TABS_ORDER.map((tab) => ({
+      id: tab.id,
+      name: tab.name,
+      labelKey: `page.program.tab.${tab.name}.label`,
+      btnTextKey: `page.program.tab.${tab.name}.btnText`,
     }));
   }
 
-  private updatePhase() {
-    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_PHASE_ORDER definition:
+  private updateTab() {
+    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_TABS_ORDER definition:
     // TODO: Phase needs to be renamed and
-    this.phases = this.phases.map((phase: Phase) => {
-      phase.active = phase.name === ProgramPhase.registrationValidation;
+    this.tabs = this.tabs.map((phase: Tabs) => {
+      phase.active = phase.name === ProgramTab.peopleAffected;
       return phase;
     });
   }
 
-  public getPhaseByName(name: ProgramPhase): Phase {
-    return this.phases.find((phase) => phase.name === name);
+  public getPhaseByName(name: ProgramTab): Tabs {
+    return this.tabs.find((phase) => phase.name === name);
   }
 }

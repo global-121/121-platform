@@ -1,24 +1,24 @@
-import { ProgramPhase } from './models/program.model';
+import { ProgramTab } from './models/program.model';
 
-export const PROGRAM_PHASE_ORDER = [
+export const PROGRAM_TABS_ORDER = [
   {
     id: 1,
-    name: ProgramPhase.overview,
+    name: ProgramTab.overview,
   },
   {
     id: 2,
-    name: ProgramPhase.team,
+    name: ProgramTab.team,
   },
   {
     id: 3,
-    name: ProgramPhase.peopleAffected,
+    name: ProgramTab.peopleAffected,
   },
   {
     id: 4,
-    name: ProgramPhase.payment,
+    name: ProgramTab.payment,
   },
   {
     id: 5,
-    name: ProgramPhase.monitoring,
+    name: ProgramTab.monitoring,
   },
 ];
