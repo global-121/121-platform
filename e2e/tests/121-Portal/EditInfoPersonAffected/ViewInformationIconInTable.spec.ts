@@ -1,12 +1,12 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-// import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[28035] View information icon in table', async ({ page }) => {
-  // const table = new TableModule(page);
+  const table = new TableModule(page);
   const homePage = new HomePage(page);
 
   await test.step('Navigate to PA table', async () => {
@@ -33,6 +33,6 @@ test('[28035] View information icon in table', async ({ page }) => {
   });
 
   await test.step('Validate information icons are available in the table', async () => {
-    // await table.clickOnPaNumber(1);
+    await table.validateInformationButtonsPresent({ expectedCount: 4 });
   });
 });
