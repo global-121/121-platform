@@ -10,11 +10,7 @@ import {
   Payment,
   PaymentData,
 } from 'src/app/models/payment.model';
-import {
-  DistributionFrequency,
-  Program,
-  ProgramPhase,
-} from 'src/app/models/program.model';
+import { DistributionFrequency, Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { FinancialServiceProviderName } from '../../../../../../services/121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
@@ -106,7 +102,6 @@ export class ProgramPayoutComponent implements OnInit {
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
     this.getPaymentInProgress();
-    this.checkPhaseReady();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
 
@@ -127,14 +122,11 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkCanMakePayment(): boolean {
-    return (
-      this.program.phase === ProgramPhase.payment &&
-      this.authService.hasAllPermissions(this.program.id, [
-        Permission.PaymentREAD,
-        Permission.PaymentCREATE,
-        Permission.PaymentTransactionREAD,
-      ])
-    );
+    return this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentREAD,
+      Permission.PaymentCREATE,
+      Permission.PaymentTransactionREAD,
+    ]);
   }
 
   private checkCanMakeExport(): boolean {
@@ -358,14 +350,6 @@ export class ProgramPayoutComponent implements OnInit {
           }
         },
       );
-  }
-
-  private checkPhaseReady() {
-    const isReady =
-      this.program.phase !== ProgramPhase.payment ||
-      this.lastPaymentId === this.program.distributionDuration;
-
-    this.isCompleted.emit(isReady);
   }
 
   public refresh() {
