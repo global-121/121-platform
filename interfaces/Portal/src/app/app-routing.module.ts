@@ -112,7 +112,7 @@ const routes: Routes = [
       },
       {
         // Fallback for change in url, from old to new syntax:
-        path: 'registration-validation',
+        path: 'registrationValidation',
         pathMatch: 'full',
         redirectTo: ProgramTab.peopleAffected,
       },

@@ -15,7 +15,6 @@ export class PaymentPage {
 
   public programId = this.route.snapshot.params.id;
   public thisPhase = ProgramTab.payment;
-  public isReady: boolean;
 
   public enumExportType = ExportType;
 
@@ -23,10 +22,6 @@ export class PaymentPage {
   public table: ProgramPeopleAffectedComponent;
 
   constructor(private route: ActivatedRoute) {}
-
-  public onReady(state: boolean) {
-    this.isReady = state;
-  }
 
   public ionViewDidEnter() {
     this.table.initComponent();

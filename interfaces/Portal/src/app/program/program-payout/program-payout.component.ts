@@ -102,7 +102,6 @@ export class ProgramPayoutComponent implements OnInit {
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
     this.getPaymentInProgress();
-    this.checkPhaseReady();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
 
@@ -351,11 +350,6 @@ export class ProgramPayoutComponent implements OnInit {
           }
         },
       );
-  }
-
-  private checkPhaseReady() {
-    const isReady = this.lastPaymentId === this.program.distributionDuration;
-    this.isCompleted.emit(isReady);
   }
 
   public refresh() {

@@ -84,7 +84,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Input()
   public programId: number;
   @Input()
-  public displayImportRegistration: boolean = false;
+  public displayImportRegistration = false;
   @Input()
   public thisPhase: ProgramTab;
   @Output()

@@ -1,18 +1,18 @@
 <div>
   <span
-    *ngFor="let phase of ProgramTabs"
+    *ngFor="let programTab of ProgramTabs"
     class="navigation-button"
   >
     <ion-button
-      [disabled]="phase.disabled"
-      [routerLink]="['/program', programId, phase.name]"
+      [disabled]="programTab.disabled"
+      [routerLink]="['/program', programId, programTab.name]"
       routerLinkActive
       #rlaPhase="routerLinkActive"
       [color]="rlaPhase.isActive ? 'primary' : 'secondary'"
       fill="clear"
       size="small"
     >
-      {{ phase.labelKey | translate }}
+      {{ programTab.labelKey | translate }}
     </ion-button>
 
     <span

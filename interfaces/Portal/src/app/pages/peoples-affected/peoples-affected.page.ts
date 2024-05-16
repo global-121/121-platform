@@ -17,7 +17,6 @@ export class PeoplesAffectedPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public program: Program;
   public thisPhase = ProgramTab.peopleAffected;
-  public isReady: boolean;
 
   public enumExportType = ExportType;
   public hasDuplicateAttributes: boolean;
@@ -36,10 +35,6 @@ export class PeoplesAffectedPage implements OnInit {
       await this.programsService.getDuplicateCheckAttributes(this.programId);
     this.hasDuplicateAttributes =
       !!duplicateCheckAttributes && duplicateCheckAttributes.length > 0;
-  }
-
-  public onReady(state: boolean) {
-    this.isReady = state;
   }
 
   public ionViewDidEnter() {
