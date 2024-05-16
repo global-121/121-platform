@@ -250,15 +250,34 @@ export class AuthService {
       return;
     }
 
-    if (isIframed()) {
-      this.msalService.logoutPopup({
-        account: currentUser,
-        mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
-      });
+    const idTokenClaims = currentUser.idTokenClaims;
+    const preferredUsername =
+      idTokenClaims?.preferred_username || currentUser.username;
+    const emailDomain = preferredUsername.split('@')[1];
+    let authority;
+
+    const companyDomains = ['redlinenlrc.onmicrosoft.com', 'redcross.nl'];
+
+    if (companyDomains.includes(emailDomain)) {
+      authority = `https://login.microsoftonline.com/${currentUser.tenantId}`;
     } else {
-      this.msalService.logoutRedirect({
-        account: currentUser,
-      });
+      authority = 'https://login.microsoftonline.com/consumers';
+    }
+
+    const logoutRequest: any = {
+      account: currentUser,
+      authority: authority,
+      postLogoutRedirectUri: `${window.location.origin}`,
+      extraQueryParameters: {
+        id_token_hint: currentUser.idToken,
+        login_hint: preferredUsername,
+      },
+    };
+
+    if (isIframed()) {
+      await this.msalService.logoutPopup(logoutRequest);
+    } else {
+      await this.msalService.logoutRedirect(logoutRequest);
     }
   }
 
