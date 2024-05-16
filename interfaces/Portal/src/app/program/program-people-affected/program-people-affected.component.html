@@ -173,9 +173,9 @@
         style="display: flex"
       >
         <button
-          data-testid="information-popup-button"
           *ngIf="canViewPersonalData"
           type="button"
+          data-testid="information-popup-button"
           class="ion-no-padding popup-button"
           (click)="editPersonAffectedPopup(row, programId)"
           [attr.title]="
