@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Locator, Page } from 'playwright';
 
 interface PersonLeft {
   personAffected?: string;
@@ -12,13 +12,23 @@ interface PersonRight {
 }
 
 class TableModule {
-  filterInput = 'input[type="text"]';
-  button = 'ion-button';
-  textLabel = 'ion-text';
-  bulkActionsDropdown = 'select[name="bulkActions"]';
-  page: Page;
+  readonly page: Page;
+  readonly filterInput: Locator;
+  readonly button: Locator;
+  readonly textLabel: Locator;
+  readonly bulkActionsDropdown: Locator;
+  readonly informationPopUpButton: Locator;
 
-  tableButton = 'ion-button';
+  constructor(page: Page) {
+    this.page = page;
+    this.filterInput = this.page.locator('input[type="text"]');
+    this.button = this.page.locator('ion-button');
+    this.textLabel = this.page.locator('ion-text');
+    this.bulkActionsDropdown = this.page.locator('select[name="bulkActions"]');
+    this.informationPopUpButton = this.page.getByTestId(
+      'information-popup-button',
+    );
+  }
 
   static getRow(rowIndex: number) {
     return `//datatable-row-wrapper[${rowIndex}]`;
@@ -42,10 +52,6 @@ class TableModule {
       TableModule.getTable(2) +
       TableModule.getCollumn(collumn)
     );
-  }
-
-  constructor(page: Page) {
-    this.page = page;
   }
 
   async waitForElementDisplayed(selector: string) {
@@ -136,21 +142,17 @@ class TableModule {
   }
 
   async selectTable(tableName: string) {
-    await this.page
-      .locator(this.tableButton)
-      .filter({ hasText: tableName })
-      .click();
+    await this.button.filter({ hasText: tableName }).click();
   }
 
   async quickFilter(filter: string) {
     try {
-      const filterInputLocator = this.page.locator(this.filterInput);
-      await filterInputLocator.waitFor({ state: 'visible' });
-      await filterInputLocator.fill(filter);
+      await this.filterInput.waitFor({ state: 'visible' });
+      await this.filterInput.fill(filter);
 
-      const applyFilterButtonLocator = this.page
-        .locator(this.button)
-        .filter({ hasText: 'Apply Filter' });
+      const applyFilterButtonLocator = this.button.filter({
+        hasText: 'Apply Filter',
+      });
       await applyFilterButtonLocator.waitFor({ state: 'visible' });
       await applyFilterButtonLocator.click();
     } catch (error) {
@@ -159,9 +161,9 @@ class TableModule {
   }
 
   async validateQuickFilterResultsNumber(expectedNumber: number) {
-    const textLocator = this.page
-      .locator(this.textLabel)
-      .filter({ hasText: 'Filtered recipients:' });
+    const textLocator = this.textLabel.filter({
+      hasText: 'Filtered recipients:',
+    });
     const textContent = await textLocator.textContent();
 
     if (textContent !== null) {
@@ -179,12 +181,9 @@ class TableModule {
   async applyBulkAction(option: string) {
     await this.page.reload();
     await this.page.waitForTimeout(1000);
-    await this.page.locator(this.bulkActionsDropdown).selectOption(option);
+    await this.bulkActionsDropdown.selectOption(option);
     await this.page.getByLabel('Select', { exact: true }).click();
-    await this.page
-      .locator(this.button)
-      .filter({ hasText: 'Apply action' })
-      .click();
+    await this.button.filter({ hasText: 'Apply action' }).click();
   }
 
   async validateBulkActionTargetedPasNumber(expectedNumber: number) {
@@ -233,6 +232,34 @@ class TableModule {
 
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
+  }
+
+  async validateNumberOfElements({
+    locator,
+    expectedCount,
+  }: {
+    locator: Locator;
+    expectedCount: number;
+  }) {
+    await this.page.waitForLoadState('networkidle');
+    const actualCount = await locator.count();
+
+    if (actualCount !== expectedCount) {
+      throw new Error(
+        `Expected ${expectedCount} elements, but found ${actualCount}`,
+      );
+    }
+  }
+
+  async validateInformationButtonsPresent({
+    expectedCount,
+  }: {
+    expectedCount: number;
+  }) {
+    await this.validateNumberOfElements({
+      locator: this.informationPopUpButton,
+      expectedCount: expectedCount,
+    });
   }
 }
 
