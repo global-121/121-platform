@@ -59,7 +59,6 @@ export class AzureAdStrategy
   }
 
   async validate(request: any, payload: any): Promise<any> {
-    console.log(payload);
     if (!payload) {
       throw new UnauthorizedException();
     }
@@ -106,7 +105,10 @@ export class AzureAdStrategy
         });
       }
     } catch (error: Error | unknown) {
-      throw error;
+      throw new HttpException(
+        { message: `User with username ${username} not found`, username },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (authParams.permissions) {
