@@ -186,8 +186,8 @@ export class AuthService {
     const userDto = await this.programsService.getCurrentUser();
 
     if (!userDto || !userDto.user) {
-      localStorage.clear();
-      this.router.navigate(['/', AppRoutes.login]);
+      const username = userDto?.error?.username || null;
+      this.logoutSsoUser(username);
       return;
     }
 
@@ -255,23 +255,23 @@ export class AuthService {
       idTokenClaims?.preferred_username || currentUser.username;
     const emailDomain = preferredUsername.split('@')[1];
     let authority;
+    let account;
 
     const companyDomains = ['redlinenlrc.onmicrosoft.com', 'redcross.nl'];
 
     if (companyDomains.includes(emailDomain)) {
+      account = currentUser;
       authority = `https://login.microsoftonline.com/${currentUser.tenantId}`;
     } else {
+      account = this.msalService.instance.getActiveAccount();
       authority = 'https://login.microsoftonline.com/consumers';
     }
 
     const logoutRequest: any = {
-      account: currentUser,
-      authority: authority,
-      postLogoutRedirectUri: `${window.location.origin}`,
-      extraQueryParameters: {
-        id_token_hint: currentUser.idToken,
-        login_hint: preferredUsername,
-      },
+      account,
+      authority,
+      mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
     };
 
     if (isIframed()) {

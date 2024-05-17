@@ -979,7 +979,10 @@ export class ProgramsServiceApiService {
     );
   }
 
-  public async getCurrentUser(): Promise<{ user: User }> {
+  public async getCurrentUser(): Promise<{
+    user?: User;
+    error?: { message: string; username?: string };
+  }> {
     return this.apiService
       .get(environment.url_121_service_api, ApiPath.usersCurrent)
       .then((response) => {
