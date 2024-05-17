@@ -20,17 +20,29 @@ class TableModule {
   readonly bulkActionsDropdown: Locator;
   readonly informationPopUpButton: Locator;
   readonly paCell: Locator;
+  readonly filterSelectionDropdown: Locator;
+  readonly filterStatusDropdown: Locator;
+  readonly exportDataButton: Locator;
+  readonly bulkImportRegistrationsButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.filterInput = this.page.locator('input[type="text"]');
     this.button = this.page.locator('ion-button');
     this.textLabel = this.page.locator('ion-text');
-    this.bulkActionsDropdown = this.page.locator('select[name="bulkActions"]');
+    this.bulkActionsDropdown = this.page.getByTestId('bulk-actions-dropdown');
     this.informationPopUpButton = this.page.getByTestId(
       'information-popup-button',
     );
     this.paCell = this.page.getByTestId('pa-table-cell');
+    this.filterSelectionDropdown = this.page.getByTestId(
+      'filter-selection-dropdown',
+    );
+    this.filterStatusDropdown = this.page.getByTestId('status-table-filter');
+    this.exportDataButton = this.page.getByTestId('data-export-button');
+    this.bulkImportRegistrationsButton = this.page.getByTestId(
+      'bulk-import-registrations-button',
+    );
   }
 
   static getRow(rowIndex: number) {
@@ -187,6 +199,21 @@ class TableModule {
     await this.bulkActionsDropdown.selectOption(option);
     await this.page.getByLabel('Select', { exact: true }).click();
     await this.button.filter({ hasText: 'Apply action' }).click();
+  }
+
+  async selectBulkAction({ option }: { option: string }) {
+    await this.page.reload();
+    await this.page.waitForTimeout(1000);
+    await this.bulkActionsDropdown.selectOption(option);
+    await this.page.getByLabel('Select', { exact: true }).click();
+  }
+
+  async openDataExportDropdown() {
+    await this.exportDataButton.click();
+  }
+
+  async openImportPopUp() {
+    await this.bulkImportRegistrationsButton.getByRole('button').click();
   }
 
   async validateBulkActionTargetedPasNumber(expectedNumber: number) {

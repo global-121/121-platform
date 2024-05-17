@@ -42,7 +42,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.devdocs/api/class-testoptions. */
   workers: 1,
   outputDir: './test-results',
-  timeout: 20000,
+  timeout: 40000,
   use: {
     baseURL: process.env.BASE_URL,
     video: 'on-first-retry',

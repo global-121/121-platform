@@ -12,6 +12,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import { Page } from 'playwright';
+import { BulkActionId } from '../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const TIMEOUT_DURATION = 200;
@@ -147,6 +148,10 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
   });
 
   await page.reload();
+  await helpers.takeFullScreenShot({
+    fileName: 'RegistrationdetailsoverviewPA',
+  });
+
   await registration.openEditPaPopUp();
   await page.waitForTimeout(TIMEOUT_DURATION);
   await helpers.takeFullScreenShot({
@@ -165,4 +170,50 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
 
   await page.goto(`/program/${PROGRAM_ID}/registrationValidation`);
   await table.openFilterDropdown();
+  await helpers.takeFullScreenShot({
+    fileName: 'FilterFunctionFieldsSearch',
+  });
+
+  await page.reload();
+  await table.openStatusFilterDropdown();
+  await page.waitForTimeout(TIMEOUT_DURATION);
+  await helpers.takeFullScreenShot({
+    fileName: 'FilterFunctionStatusSearch',
+  });
+
+  // SCREENSHOT CANNOT BE MADE BECAUSE ELEMENT IS NOT VISIBLE IN DOM
+
+  // await page.reload();
+  // await table.openBulkActionDropdown();
+  // await page.waitForTimeout(1000);
+  // await helpers.takeFullScreenShot({
+  //   fileName: 'RegistrationActionList',
+  // });
+
+  await page.reload();
+  await table.openDataExportDropdown();
+  await page.waitForTimeout(TIMEOUT_DURATION);
+  await helpers.takeFullScreenShot({
+    fileName: 'RegistrationExportButton',
+  });
+
+  await page.reload();
+  await table.openImportPopUp();
+  await helpers.takeFullScreenShot({
+    fileName: 'RegistrationImportFile',
+  });
+
+  await page.reload();
+  await table.selectBulkAction({ option: BulkActionId.markAsDeclined });
+  await helpers.takeFullScreenShot({
+    fileName: 'RegistrationRejected',
+  });
+
+  // MARK AS VALIDATED DOES NOT EXIST ANYMORE
+
+  // await page.reload();
+  // await table.selectBulkAction({ option: BulkActionId.markAsValidated });
+  // await helpers.takeFullScreenShot({
+  //   fileName: 'RegistrationValidation',
+  // });
 });
