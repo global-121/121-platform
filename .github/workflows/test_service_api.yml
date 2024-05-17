@@ -42,8 +42,8 @@ jobs:
 
       - name: Wait for healthchecks
         run: |
-          timeout 90s sh -c 'until docker ps | grep mock-service | grep -q healthy; do echo "Waiting for mock-service to be healthy..."; sleep 5; done'
-          timeout 90s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for 121-service to be healthy..."; sleep 5; done'
+          timeout 90s sh -c 'until docker ps | grep mock-service | grep -q \(healthy\); do echo "Waiting for mock-service to be healthy..."; sleep 5; done' && echo "mock-service is running"
+          timeout 90s sh -c 'until docker ps | grep 121-service | grep -q \(healthy\); do echo "Waiting for 121-service to be healthy..."; sleep 5; done' && echo "121-service is running"
 
       - name: Check that no new migrations are necessary
         working-directory: ./services
