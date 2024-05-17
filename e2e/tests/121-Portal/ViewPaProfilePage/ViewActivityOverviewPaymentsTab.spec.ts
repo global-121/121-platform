@@ -31,7 +31,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);

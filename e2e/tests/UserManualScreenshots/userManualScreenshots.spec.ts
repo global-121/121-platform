@@ -2,13 +2,17 @@ import Helpers from '@121-e2e/pages/Helpers/Helpers';
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import ProgramTeam from '@121-e2e/pages/ProgramTeam/ProgramTeamPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 import UsersAndRoles from '@121-e2e/pages/UsersAndRoles/UsersAndRolesPage';
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import { Page } from 'playwright';
+import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const TIMEOUT_DURATION = 200;
 const PROGRAM_ID = 3;
@@ -31,7 +35,7 @@ async function navigateAndScreenshot({
 
 test.beforeEach(async () => {
   await resetDB(SeedScript.nlrcMultiple);
-  await seedPaidRegistrations(registrationsOCW, PROGRAM_ID);
+  await seedRegistrations(registrationsOCW, PROGRAM_ID);
 });
 
 test('Navigates to the portal and takes screenshots', async ({ page }) => {
@@ -40,6 +44,8 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
   const homePage = new HomePage(page);
   const usersAndRoles = new UsersAndRoles(page);
   const programTeam = new ProgramTeam(page);
+  const registration = new RegistrationDetails(page);
+  const table = new TableModule(page);
 
   await page.goto('/login');
   await page.waitForLoadState('domcontentloaded');
@@ -111,4 +117,52 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
   await helpers.takeFullScreenShot({
     fileName: 'ProgramTeamDeleteRemoveUserValidation',
   });
+
+  await navigateAndScreenshot({
+    page: page,
+    helpers: helpers,
+    url: `/program/${PROGRAM_ID}/design`,
+    fileName: 'ProgramDetails',
+  });
+  await helpers.takePartialScreenshot({
+    elementId: 'design-table-element',
+    fileName: 'ProgramDetailsTable',
+  });
+
+  await page.goto('/home');
+  await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePortal.en);
+  await page.waitForTimeout(1000);
+  await helpers.takeFullScreenShot({
+    fileName: 'RegistrationPageOverview',
+  });
+
+  await table.clickOnPaNumber(1);
+  await registration.clickActionButton({
+    button:
+      englishTranslations['registration-details']['activity-overview'].actions,
+  });
+  await page.waitForTimeout(TIMEOUT_DURATION);
+  await helpers.takeFullScreenShot({
+    fileName: 'ActionButtonOverviewPAproile',
+  });
+
+  await page.reload();
+  await registration.openEditPaPopUp();
+  await page.waitForTimeout(TIMEOUT_DURATION);
+  await helpers.takeFullScreenShot({
+    fileName: 'PopupPAdetailsShowAll',
+  });
+
+  await registration.openReasonForChangePopUp({
+    language:
+      englishTranslations.page.program['program-people-affected'].language.ar,
+    saveButtonName: englishTranslations.common.save,
+  });
+  await page.waitForTimeout(TIMEOUT_DURATION);
+  await helpers.takeFullScreenShot({
+    fileName: 'ChangewithreasonPAprofile',
+  });
+
+  await page.goto(`/program/${PROGRAM_ID}/registrationValidation`);
+  await table.openFilterDropdown();
 });

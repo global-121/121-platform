@@ -195,6 +195,26 @@ class RegistrationDetails {
     await okButton.click();
   }
 
+  async openReasonForChangePopUp({
+    language,
+    saveButtonName,
+  }: {
+    language: string;
+    saveButtonName: string;
+  }) {
+    const dropdown = this.page.getByRole('radio');
+
+    await this.page.waitForLoadState('networkidle');
+    await this.preferredLanguageDropdown.click();
+
+    await dropdown.getByText(language).click();
+    await this.preferredLanguageDropdown.getByText(saveButtonName).click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change language to ${language}`);
+  }
+
   async validateDebitCardStatus(cardOverviewTitle: string, status: string) {
     await this.page.waitForLoadState('networkidle');
     const activeCard = this.debitCardStatus.filter({ hasText: status });
@@ -320,6 +340,10 @@ class RegistrationDetails {
   async addNote(actions: string, addNote: string) {
     await this.page.getByText(actions).click();
     await this.page.getByText(addNote).click();
+  }
+
+  async clickActionButton({ button }: { button: string }) {
+    await this.page.getByText(button).click();
   }
 
   async writeNote({
