@@ -33,6 +33,6 @@ test('[28035] View information icon in table', async ({ page }) => {
   });
 
   await test.step('Validate information icons are available in the table', async () => {
-    await table.validateInformationButtonsPresent({ expectedCount: 4 });
+    await table.validateInformationButtonsPresent();
   });
 });

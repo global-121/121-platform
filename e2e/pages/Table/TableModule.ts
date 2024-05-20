@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 interface PersonLeft {
@@ -18,6 +19,7 @@ class TableModule {
   readonly textLabel: Locator;
   readonly bulkActionsDropdown: Locator;
   readonly informationPopUpButton: Locator;
+  readonly paCell: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,6 +30,7 @@ class TableModule {
     this.informationPopUpButton = this.page.getByTestId(
       'information-popup-button',
     );
+    this.paCell = this.page.getByTestId('pa-table-cell');
   }
 
   static getRow(rowIndex: number) {
@@ -234,32 +237,21 @@ class TableModule {
     await okButton.click();
   }
 
-  async validateNumberOfElements({
-    locator,
-    expectedCount,
-  }: {
-    locator: Locator;
-    expectedCount: number;
-  }) {
+  async validateInformationButtonsPresent() {
     await this.page.waitForLoadState('networkidle');
-    const actualCount = await locator.count();
+    const actualCount = await this.informationPopUpButton.count();
+    const expectedCount = await this.paCell.count();
 
     if (actualCount !== expectedCount) {
       throw new Error(
-        `Expected ${expectedCount} elements, but found ${actualCount}`,
+        `Expected ${actualCount} elements, but found ${expectedCount}`,
       );
     }
   }
 
-  async validateInformationButtonsPresent({
-    expectedCount,
-  }: {
-    expectedCount: number;
-  }) {
-    await this.validateNumberOfElements({
-      locator: this.informationPopUpButton,
-      expectedCount: expectedCount,
-    });
+  async validateNoInformationButtonIsPresent() {
+    await this.page.waitForLoadState('networkidle');
+    await expect(this.informationPopUpButton).toBeHidden();
   }
 }
 
