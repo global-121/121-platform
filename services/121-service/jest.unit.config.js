@@ -5,6 +5,9 @@ module.exports = {
   testMatch: ['<rootDir>/**/*.spec.ts'],
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  moduleNameMapper: {
+    '^@121-service/(.*)$': '<rootDir>/$1',
+  },
   randomize: true,
   verbose: true,
   reporters: [
