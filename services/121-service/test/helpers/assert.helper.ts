@@ -1,6 +1,6 @@
-import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '../../src/registration/registration.entity';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 export const assertArraysAreEqual = (
   actualArray: any[],

@@ -1,5 +1,5 @@
+import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { TestBed } from '@automock/jest';
-import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 
 const expectedCalculatedAmount = 10;
 

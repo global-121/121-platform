@@ -1,4 +1,4 @@
-import { splitArrayIntoChunks } from './chunk.helper';
+import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
 describe('splitArrayIntoChunks', () => {
   it('should correctly split an array into specified chunk sizes', () => {

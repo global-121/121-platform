@@ -1,9 +1,9 @@
 // This entity does not store intersolve vouchers messages only 'normal' notifications
 
+import { Base121Entity } from '@121-service/src/base.entity';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { MessageContentType } from '../enum/message-type.enum';
 
 @Entity('whatsapp_pending_message')
 export class WhatsappPendingMessageEntity extends Base121Entity {

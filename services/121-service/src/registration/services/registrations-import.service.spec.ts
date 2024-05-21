@@ -1,13 +1,13 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramService } from '@121-service/src/programs/programs.service';
+import { GenericAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramEntity } from '../../programs/program.entity';
-import { ProgramService } from '../../programs/programs.service';
-import { LanguageEnum } from '../../shared/enum/language.enums';
-import { GenericAttributes } from '../enum/custom-data-attributes';
-import { RegistrationsInputValidator } from '../validators/registrations-input-validator';
-import { RegistrationsImportService } from './registrations-import.service';
 
 describe('RegistrationsImportService', () => {
   let registrationsImportService: RegistrationsImportService;

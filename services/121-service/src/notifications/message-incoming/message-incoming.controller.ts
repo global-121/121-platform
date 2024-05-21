@@ -1,12 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SkipThrottle } from '@nestjs/throttler';
-import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
-} from '../twilio.dto';
-import { MessageIncomingService } from './message-incoming.service';
+} from '@121-service/src/notifications/twilio.dto';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('notifications')

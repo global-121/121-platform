@@ -1,22 +1,25 @@
-import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import {
   changePhase,
   waitForMessagesToComplete,
-} from '../../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
   importRegistrations,
   sendMessage,
-} from '../../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW1,
   registrationOCW2,
   registrationOCW3,
   registrationOCW4,
-} from './pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('send arbitrary messages to set of registrations', () => {
   let accessToken: string;

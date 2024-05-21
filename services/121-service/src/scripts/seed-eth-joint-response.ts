@@ -1,13 +1,13 @@
+import instanceEthJointResponse from '@121-service/seed-data/instance/instance-eth-joint-response.json';
+import messageTemplateAne from '@121-service/seed-data/message-template/message-template-joint-response-ANE.json';
+import messageTemplateEKHCDC from '@121-service/seed-data/message-template/message-template-joint-response-EKHCDC.json';
+import messageTemplateDorcas from '@121-service/seed-data/message-template/message-template-joint-response-dorcas.json';
+import programAne from '@121-service/seed-data/program/program-joint-response-ANE.json';
+import programEKHCDC from '@121-service/seed-data/program/program-joint-response-EKHCDC.json';
+import programDorcas from '@121-service/seed-data/program/program-joint-response-dorcas.json';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { Injectable } from '@nestjs/common';
-import instanceEthJointResponse from '../../seed-data/instance/instance-eth-joint-response.json';
-import messageTemplateAne from '../../seed-data/message-template/message-template-joint-response-ANE.json';
-import messageTemplateEKHCDC from '../../seed-data/message-template/message-template-joint-response-EKHCDC.json';
-import messageTemplateDorcas from '../../seed-data/message-template/message-template-joint-response-dorcas.json';
-import programAne from '../../seed-data/program/program-joint-response-ANE.json';
-import programEKHCDC from '../../seed-data/program/program-joint-response-EKHCDC.json';
-import programDorcas from '../../seed-data/program/program-joint-response-dorcas.json';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedEthJointResponse implements InterfaceScript {

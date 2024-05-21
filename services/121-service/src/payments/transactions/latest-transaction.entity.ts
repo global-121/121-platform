@@ -1,3 +1,6 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
   Column,
   Entity,
@@ -7,9 +10,6 @@ import {
   OneToOne,
   Unique,
 } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { TransactionEntity } from './transaction.entity';
 
 // This entity is used to store to link the lastest transaction for a payment to a registration
 

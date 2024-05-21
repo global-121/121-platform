@@ -1,20 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
-import { AfricasTalkingApiService } from './africas-talking.api.service';
-import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
-import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { AfricasTalkingNotificationEntity } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking-notification.entity';
+import { AfricasTalkingApiService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.api.service';
+import { AfricasTalkingNotificationDto } from '@121-service/src/payments/fsp-integration/africas-talking/dto/africas-talking-notification.dto';
+import { AfricasTalkingValidationDto } from '@121-service/src/payments/fsp-integration/africas-talking/dto/africas-talking-validation.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AfricasTalkingService

@@ -1,6 +1,6 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { ProgramEntity } from '../../../programs/program.entity';
 
 @Entity('intersolve_voucher_instruction')
 export class IntersolveVoucherInstructionsEntity extends Base121Entity {

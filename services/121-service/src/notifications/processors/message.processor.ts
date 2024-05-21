@@ -1,11 +1,11 @@
+import { MessageService } from '@121-service/src/notifications/message.service';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import { MessageService } from '../message.service';
 
 import {
   ProcessNameMessage,
   QueueNameCreateMessage,
-} from '../enum/queue.names.enum';
+} from '@121-service/src/notifications/enum/queue.names.enum';
 
 @Processor(QueueNameCreateMessage.replyOnIncoming)
 export class MessageProcessorReplyOnIncoming {

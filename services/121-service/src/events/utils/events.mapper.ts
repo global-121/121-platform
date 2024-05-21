@@ -1,7 +1,7 @@
-import { GetEventXlsxDto } from '../dto/get-event-xlsx.dto';
-import { GetEventDto } from '../dto/get-event.dto';
-import { EventAttributeEntity } from '../entities/event-attribute.entity';
-import { EventEntity } from '../entities/event.entity';
+import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
+import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
 
 export class EventsMapper {
   static mapEventsToXlsxDtos(events: EventEntity[]): GetEventXlsxDto[] {

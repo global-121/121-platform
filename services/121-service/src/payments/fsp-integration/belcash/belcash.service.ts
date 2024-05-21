@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { waitFor } from '../../../utils/waitFor.helper';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { BelcashRequestEntity } from './belcash-request.entity';
-import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
-import { BelcashApiService } from './belcash.api.service';
-import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { BelcashRequestEntity } from '@121-service/src/payments/fsp-integration/belcash/belcash-request.entity';
+import { BelcashTransferPayload } from '@121-service/src/payments/fsp-integration/belcash/belcash-transfer-payload.dto';
+import { BelcashApiService } from '@121-service/src/payments/fsp-integration/belcash/belcash.api.service';
+import { BelcashPaymentStatusDto } from '@121-service/src/payments/fsp-integration/belcash/dto/belcash-payment-status.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BelcashService

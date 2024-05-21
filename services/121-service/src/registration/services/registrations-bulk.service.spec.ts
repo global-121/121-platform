@@ -1,13 +1,13 @@
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { MessageTemplateEntity } from '../../notifications/message-template/message-template.entity';
-import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
-import { LanguageEnum } from '../../shared/enum/language.enums';
-import { generateMockCreateQueryBuilder } from '../../utils/createQueryBuilderMock.helper';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
-import { RegistrationsBulkService } from './registrations-bulk.service';
-import { RegistrationsPaginationService } from './registrations-pagination.service';
 
 describe('RegistrationBulkService', () => {
   const paginateQuery = {

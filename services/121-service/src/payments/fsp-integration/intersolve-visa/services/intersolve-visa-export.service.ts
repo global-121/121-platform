@@ -1,9 +1,12 @@
+import {
+  ExportCardsDto,
+  ExportWalletData,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
+import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
-import { ScopedRepository } from '../../../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../../../utils/scope/createScopedRepositoryProvider.helper';
-import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
-import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
-import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
 
 @Injectable()
 export class IntersolveVisaExportService {

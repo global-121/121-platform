@@ -1,5 +1,5 @@
+import { Base121Entity } from '@121-service/src/base.entity';
 import { Column, Entity } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
 
 export interface AfricasTalkingNotificationRequestMetadata {
   programId: string;

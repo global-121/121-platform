@@ -1,3 +1,8 @@
+import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   Column,
   Entity,
@@ -6,11 +11,6 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Base121OptionalAuditedEntity } from '../../base-audited.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { UserEntity } from '../../user/user.entity';
-import { EventEnum } from '../enum/event.enum';
-import { EventAttributeEntity } from './event-attribute.entity';
 
 @Entity('event')
 export class EventEntity extends Base121OptionalAuditedEntity {

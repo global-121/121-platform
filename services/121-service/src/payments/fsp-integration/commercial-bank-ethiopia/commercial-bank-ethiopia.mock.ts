@@ -1,5 +1,5 @@
+import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { waitForRandomDelay } from '../../../utils/waitFor.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaMockService {

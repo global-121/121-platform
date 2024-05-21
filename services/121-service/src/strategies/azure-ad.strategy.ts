@@ -1,3 +1,9 @@
+import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserRequestData } from '@121-service/src/user/user.interface';
+import { UserService } from '@121-service/src/user/user.service';
+import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import {
   HttpStatus,
   Injectable,
@@ -8,12 +14,6 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
-import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
-import { UserType } from '../user/user-type-enum';
-import { UserEntity } from '../user/user.entity';
-import { UserRequestData } from '../user/user.interface';
-import { UserService } from '../user/user.service';
-import { generateRandomString } from '../utils/getRandomValue.helper';
 
 const config = {
   credentials: {

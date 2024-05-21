@@ -1,13 +1,16 @@
 import {
+  ScopedQueryBuilder,
+  hasNoUserScope,
+} from '@121-service/src/scoped.repository';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import {
   DataSource,
   EntityTarget,
   FindManyOptions,
   FindOneOptions,
   Repository,
 } from 'typeorm';
-import { ScopedQueryBuilder, hasNoUserScope } from '../../scoped.repository';
-import { ScopedUserRequest } from '../../shared/scoped-user-request';
-import { convertToScopedOptions } from '../../utils/scope/createFindWhereOptions.helper';
 
 export class RegistrationScopedBaseRepository<T> {
   public readonly repository: Repository<T>;

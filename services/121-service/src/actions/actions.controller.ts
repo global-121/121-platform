@@ -1,3 +1,10 @@
+import { ActionType } from '@121-service/src/actions/action.entity';
+import { ActionsService } from '@121-service/src/actions/actions.service';
+import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { ActionDto } from '@121-service/src/actions/dto/action.dto';
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -17,13 +24,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import { PermissionEnum } from '../user/enum/permission.enum';
-import { ActionType } from './action.entity';
-import { ActionsService } from './actions.service';
-import { ActionReturnDto } from './dto/action-return.dto';
-import { ActionDto } from './dto/action.dto';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/actions')

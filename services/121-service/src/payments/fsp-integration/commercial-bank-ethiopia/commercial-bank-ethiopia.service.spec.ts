@@ -1,19 +1,19 @@
-import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { generateMockCreateQueryBuilder } from '../../../utils/createQueryBuilderMock.helper';
-import { getQueueName } from '../../../utils/unit-test.helpers';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   ProcessNamePayment,
   QueueNamePayment,
-} from '../../enum/queue.names.enum';
-import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
-import { CommercialBankEthiopiaJobDto } from './dto/commercial-bank-ethiopia-job.dto';
-import { CommercialBankEthiopiaTransferPayload } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
+} from '@121-service/src/payments/enum/queue.names.enum';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-job.dto';
+import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
+import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
 
 const programId = 3;
 const paymentNr = 5;

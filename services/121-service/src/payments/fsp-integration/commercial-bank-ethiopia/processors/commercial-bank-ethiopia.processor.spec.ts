@@ -1,9 +1,9 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { FinancialServiceProviderName } from '../../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { LanguageEnum } from '../../../../shared/enum/language.enums';
-import { CommercialBankEthiopiaService } from '../commercial-bank-ethiopia.service';
-import { PaymentProcessorCommercialBankEthiopia } from './commercial-bank-ethiopia.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',

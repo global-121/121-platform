@@ -1,3 +1,6 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
   BeforeRemove,
   Column,
@@ -7,9 +10,6 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { CascadeDeleteEntity } from '../../../base.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 
 @Entity('intersolve_visa_customer')
 export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {

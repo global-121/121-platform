@@ -1,3 +1,7 @@
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
+import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -12,10 +16,6 @@ import {
 } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { QuestionOption } from 'src/shared/enum/question.enums';
-import { ExportType } from '../../metrics/dto/export-details.dto';
-import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { CreateOptionsDto } from './create-options.dto';
 
 class BaseProgramQuestionDto {
   @ApiProperty({})

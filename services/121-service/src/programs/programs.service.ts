@@ -1,35 +1,35 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
-import { ActionEntity } from '../actions/action.entity';
-import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '../financial-service-providers/fsp-question.entity';
-import { ExportType } from '../metrics/dto/export-details.dto';
-import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
-import { RegistrationDataInfo } from '../registration/dto/registration-data-relation.model';
-import { nameConstraintQuestionsArray } from '../shared/const';
-import { PermissionEnum } from '../user/enum/permission.enum';
-import { DefaultUserRole } from '../user/user-role.enum';
-import { UserService } from '../user/user.service';
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import {
   CreateProgramCustomAttributeDto,
   UpdateProgramCustomAttributeDto,
-} from './dto/create-program-custom-attribute.dto';
-import { CreateProgramDto } from './dto/create-program.dto';
+} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   CreateProgramQuestionDto,
   UpdateProgramQuestionDto,
-} from './dto/program-question.dto';
-import { ProgramReturnDto } from './dto/program-return.dto';
-import { UpdateProgramDto } from './dto/update-program.dto';
-import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
-import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
-import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { ProgramQuestionEntity } from './program-question.entity';
-import { ProgramEntity } from './program.entity';
-import { ProgramsRO } from './program.interface';
-import { overwriteProgramFspDisplayName } from './utils/overwrite-fsp-display-name.helper';
+} from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
+import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramsRO } from '@121-service/src/programs/program.interface';
+import { overwriteProgramFspDisplayName } from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
+import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { UserService } from '@121-service/src/user/user.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)

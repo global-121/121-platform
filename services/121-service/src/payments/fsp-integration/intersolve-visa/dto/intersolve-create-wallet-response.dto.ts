@@ -1,5 +1,5 @@
-import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
-import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
+import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { IntersolveVisaWalletStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 
 export class IntersolveCreateWalletResponseDto {
   public data: IntersolveCreateWalletResponseBodyDto;

@@ -1,3 +1,8 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
@@ -11,11 +16,6 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { Base121Entity } from '../base.entity';
-import { ExportType } from '../metrics/dto/export-details.dto';
-import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { NameConstraintQuestions } from '../shared/const';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Unique('fspQuestionUnique', ['name', 'fspId'])
 @Entity('financial_service_provider_question')

@@ -1,24 +1,27 @@
-import { HttpStatus } from '@nestjs/common';
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { LanguageEnum } from '../../src/shared/enum/language.enums';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { StatusEnum } from '../../src/shared/enum/status.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from '../registrations/pagination/pagination-data';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = programIdPV;

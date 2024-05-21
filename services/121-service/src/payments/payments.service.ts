@@ -1,53 +1,56 @@
+import { AdditionalActionType } from '@121-service/src/actions/action.entity';
+import { ActionsService } from '@121-service/src/actions/actions.service';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  ExportFileType,
+  FspInstructions,
+} from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { AfricasTalkingService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.service';
+import { BelcashService } from '@121-service/src/payments/fsp-integration/belcash/belcash.service';
+import { BobFinanceService } from '@121-service/src/payments/fsp-integration/bob-finance/bob-finance.service';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { IntersolveJumboService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
+import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { UkrPoshtaService } from '@121-service/src/payments/fsp-integration/ukrposhta/ukrposhta.service';
+import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
+import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import {
+  BulkActionResultPaymentDto,
+  BulkActionResultRetryPaymentDto,
+} from '@121-service/src/registration/dto/bulk-action-result.dto';
+import {
+  ImportResult,
+  ImportStatus,
+} from '@121-service/src/registration/dto/bulk-import.dto';
+import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Repository } from 'typeorm';
-import { AdditionalActionType } from '../actions/action.entity';
-import { ActionsService } from '../actions/actions.service';
-import { FinancialServiceProviderIntegrationType } from '../financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviderName } from '../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramEntity } from '../programs/program.entity';
-import {
-  BulkActionResultPaymentDto,
-  BulkActionResultRetryPaymentDto,
-} from '../registration/dto/bulk-action-result.dto';
-import {
-  ImportResult,
-  ImportStatus,
-} from '../registration/dto/bulk-import.dto';
-import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
-import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { RegistrationViewEntity } from '../registration/registration-view.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
-import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
-import { ScopedQueryBuilder } from '../scoped.repository';
-import { StatusEnum } from '../shared/enum/status.enum';
-import { AzureLogService } from '../shared/services/azure-log.service';
-import { splitArrayIntoChunks } from '../utils/chunk.helper';
-import { FileImportService } from '../utils/file-import/file-import.service';
-import { RegistrationDataEntity } from './../registration/registration-data.entity';
-import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
-import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
-import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
-import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
-import { TransactionRelationDetailsDto } from './dto/transaction-relation-details.dto';
-import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
-import { BelcashService } from './fsp-integration/belcash/belcash.service';
-import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
-import { CommercialBankEthiopiaService } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
-import { ExcelService } from './fsp-integration/excel/excel.service';
-import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
-import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
-import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
-import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
-import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
-import { TransactionEntity } from './transactions/transaction.entity';
-import { TransactionsService } from './transactions/transactions.service';
 
 @Injectable()
 export class PaymentsService {

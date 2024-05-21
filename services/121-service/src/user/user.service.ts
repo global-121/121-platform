@@ -1,3 +1,38 @@
+import { DEBUG } from '@121-service/src/config';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+import {
+  CreateProgramAssignmentDto,
+  DeleteProgramAssignmentDto,
+  UpdateProgramAssignmentDto,
+} from '@121-service/src/user/dto/assign-aw-to-program.dto';
+import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
+import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
+import { CreateUserAidWorkerDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
+import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
+import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
+import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
+import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
+import {
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from '@121-service/src/user/dto/update-user.dto';
+import {
+  CreateUserRoleDto,
+  UpdateUserRoleDto,
+} from '@121-service/src/user/dto/user-role.dto';
+import {
+  AssignmentResponseDTO,
+  UserRoleResponseDTO,
+} from '@121-service/src/user/dto/userrole-response.dto';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { PermissionEntity } from '@121-service/src/user/permissions.entity';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserRO } from '@121-service/src/user/user.interface';
 import { HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
@@ -6,35 +41,6 @@ import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { Equal, In, Repository } from 'typeorm';
-import { DEBUG } from '../config';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { CookieNames } from './../shared/enum/cookie.enums';
-import { InterfaceNames } from './../shared/enum/interface-names.enum';
-import {
-  CreateProgramAssignmentDto,
-  DeleteProgramAssignmentDto,
-  UpdateProgramAssignmentDto,
-} from './dto/assign-aw-to-program.dto';
-import { changePasswordWithoutCurrentPasswordDto } from './dto/change-password-without-current-password.dto';
-import { CookieSettingsDto } from './dto/cookie-settings.dto';
-import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { FindUserReponseDto } from './dto/find-user-response.dto';
-import { GetUserReponseDto } from './dto/get-user-response.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { LoginUserDto } from './dto/login-user.dto';
-import { UpdateUserDto, UpdateUserPasswordDto } from './dto/update-user.dto';
-import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
-import {
-  AssignmentResponseDTO,
-  UserRoleResponseDTO,
-} from './dto/userrole-response.dto';
-import { PermissionEnum } from './enum/permission.enum';
-import { PermissionEntity } from './permissions.entity';
-import { UserRoleEntity } from './user-role.entity';
-import { UserType } from './user-type-enum';
-import { UserEntity } from './user.entity';
-import { UserRO } from './user.interface';
 const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })

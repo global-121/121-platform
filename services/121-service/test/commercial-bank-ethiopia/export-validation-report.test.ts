@@ -1,15 +1,18 @@
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { LanguageEnum } from '../../src/shared/enum/language.enums';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   changePhase,
   getCbeValidationReport,
   startCbeValidationProcess,
-} from '../helpers/program.helper';
-import { importRegistrations } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/program.helper';
+import { importRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 
 describe('Export CBE validation report', () => {
   const programId = 1;

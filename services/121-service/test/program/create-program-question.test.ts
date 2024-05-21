@@ -1,11 +1,14 @@
 /* eslint-disable jest/no-conditional-expect */
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { postProgramQuestion } from '@121-service/test/helpers/program.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 import { HttpStatus } from '@nestjs/common';
-import { ExportType } from '../../src/metrics/dto/export-details.dto';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { postProgramQuestion } from '../helpers/program.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('Create program', () => {
   let accessToken: string;

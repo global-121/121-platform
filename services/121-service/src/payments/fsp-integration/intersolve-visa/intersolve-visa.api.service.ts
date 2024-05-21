@@ -1,25 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { Issuer, TokenSet } from 'openid-client';
-import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import {
   IntersolveBlockWalletDto,
   IntersolveBlockWalletResponseDto,
-} from './dto/intersolve-block.dto';
-import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
+import { IntersolveCreateCustomerResponseBodyDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
 import {
   IntersolveAddressDto,
   IntersolveCreateCustomerDto,
   IntersolveTypeValue,
-} from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
-import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
-import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
-import { IntersolveGetCardResponseDto } from './dto/intersolve-get-card-details.dto';
-import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
-import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
-import { IntersolveLoadDto } from './dto/intersolve-load.dto';
-import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+import { IntersolveCreateDebitCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
+import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IntersolveCreateWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet.dto';
+import { IntersolveGetCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-card-details.dto';
+import { IntersolveGetWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
+import { GetTransactionsDetailsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
+import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
+import { IntersolveLoadDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load.dto';
+import { IntersolveVisaApiMockService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api-mock.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { Injectable } from '@nestjs/common';
+import { Issuer, TokenSet } from 'openid-client';
 
 const intersolveVisaApiUrl = process.env.INTERSOLVE_VISA_API_URL;
 

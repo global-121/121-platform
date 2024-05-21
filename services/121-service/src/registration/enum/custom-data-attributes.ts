@@ -1,5 +1,5 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { QuestionOption } from 'src/shared/enum/question.enums';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
 
 export enum CustomDataAttributes {
   phoneNumber = 'phoneNumber',

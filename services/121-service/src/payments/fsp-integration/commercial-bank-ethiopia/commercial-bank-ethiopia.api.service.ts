@@ -1,8 +1,8 @@
+import { CommercialBankEthiopiaMockService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock';
+import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaSoapElements } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
+import { SoapService } from '@121-service/src/utils/soap/soap.service';
 import { Injectable } from '@nestjs/common';
-import { SoapService } from '../../../utils/soap/soap.service';
-import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
-import { CommercialBankEthiopiaTransferPayload } from './dto/commercial-bank-ethiopia-transfer-payload.dto';
-import { CommercialBankEthiopiaSoapElements } from './enum/commercial-bank-ethiopia.enum';
 
 @Injectable()
 export class CommercialBankEthiopiaApiService {

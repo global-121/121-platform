@@ -1,4 +1,4 @@
-import { NotificationType } from '../../notifications/twilio.entity';
+import { NotificationType } from '@121-service/src/notifications/twilio.entity';
 
 export class MessageHistoryDto {
   public created: Date;

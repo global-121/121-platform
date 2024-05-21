@@ -1,3 +1,8 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { UpdateInstanceDto } from '@121-service/src/instance/dto/update-instance.dto';
+import { InstanceEntity } from '@121-service/src/instance/instance.entity';
+import { InstanceService } from '@121-service/src/instance/instance.service';
 import {
   Body,
   Controller,
@@ -7,11 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { InstanceEntity } from './instance.entity';
-import { InstanceService } from './instance.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('instance')

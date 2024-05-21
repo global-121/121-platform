@@ -1,3 +1,29 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramService } from '@121-service/src/programs/programs.service';
+import {
+  getFspDisplayNameMapping,
+  overwriteFspDisplayName,
+} from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
+import {
+  AllowedFilterOperatorsString,
+  PaginateConfigRegistrationView,
+  PaginateConfigRegistrationViewNoLimit,
+} from '@121-service/src/registration/const/filter-operation.const';
+import {
+  RegistrationDataInfo,
+  RegistrationDataRelation,
+} from '@121-service/src/registration/dto/registration-data-relation.model';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -14,32 +40,6 @@ import {
   Repository,
   WhereExpressionBuilder,
 } from 'typeorm';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramEntity } from '../../programs/program.entity';
-import { ProgramService } from '../../programs/programs.service';
-import {
-  getFspDisplayNameMapping,
-  overwriteFspDisplayName,
-} from '../../programs/utils/overwrite-fsp-display-name.helper';
-import { ScopedQueryBuilder } from '../../scoped.repository';
-import { StatusEnum } from '../../shared/enum/status.enum';
-import { PermissionEnum } from '../../user/enum/permission.enum';
-import { UserEntity } from '../../user/user.entity';
-import {
-  AllowedFilterOperatorsString,
-  PaginateConfigRegistrationView,
-  PaginateConfigRegistrationViewNoLimit,
-} from '../const/filter-operation.const';
-import {
-  RegistrationDataInfo,
-  RegistrationDataRelation,
-} from '../dto/registration-data-relation.model';
-import { CustomDataAttributes } from '../enum/custom-data-attributes';
-import { PaymentFilterEnum } from '../enum/payment-filter.enum';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { RegistrationDataEntity } from '../registration-data.entity';
-import { RegistrationViewEntity } from '../registration-view.entity';
-import { RegistrationViewScopedRepository } from '../repositories/registration-view-scoped.repository';
 
 interface Filter {
   comparator: FilterComparator;

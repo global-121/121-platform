@@ -1,14 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Attribute } from '../registration/enum/custom-data-attributes';
 import {
   CreateFspAttributeDto,
   UpdateFinancialServiceProviderDto,
   UpdateFspAttributeDto,
-} from './dto/update-financial-service-provider.dto';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspQuestionEntity } from './fsp-question.entity';
+} from '@121-service/src/financial-service-providers/dto/update-financial-service-provider.dto';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FinancialServiceProvidersService {

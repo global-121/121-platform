@@ -1,6 +1,9 @@
+import {
+  createRedisClient,
+  REDIS_CLIENT,
+} from '@121-service/src/payments/redis-client';
 import { Module } from '@nestjs/common';
 import Redis from 'ioredis';
-import { createRedisClient, REDIS_CLIENT } from './redis-client';
 
 @Module({
   providers: [

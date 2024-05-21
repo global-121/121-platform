@@ -1,3 +1,7 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   Column,
   Entity,
@@ -7,10 +11,6 @@ import {
   ManyToOne,
   Unique,
 } from 'typeorm';
-import { Base121Entity } from '../base.entity';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { UserEntity } from '../user/user.entity';
-import { ProgramEntity } from './program.entity';
 
 @Unique('userProgramAssignmentUnique', ['userId', 'programId'])
 @Entity('program_aidworker_assignment')

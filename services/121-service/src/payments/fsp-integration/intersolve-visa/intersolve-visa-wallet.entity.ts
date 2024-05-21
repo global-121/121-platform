@@ -1,7 +1,7 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
-import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',

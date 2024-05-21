@@ -1,18 +1,18 @@
+import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
+import { SeedInit } from '@121-service/src/scripts/seed-init';
+import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
+import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
+import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
+import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
+import { SeedProgramDrc } from '@121-service/src/scripts/seed-program-drc';
+import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
+import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
+import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
+import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { SeedEthJointResponse } from './seed-eth-joint-response';
-import { SeedInit } from './seed-init';
-import { SeedMultipleKRCS } from './seed-multiple-krcs';
-import { SeedMultipleNLRC } from './seed-multiple-nlrc';
-import { SeedMultipleNLRCMockData } from './seed-multiple-nlrc-mock';
-import { SeedDemoProgram } from './seed-program-demo';
-import { SeedProgramDrc } from './seed-program-drc';
-import { SeedNLProgramPV } from './seed-program-nlrc-pv';
-import { SeedTestProgram } from './seed-program-test';
-import { SeedTestMultipleProgram } from './seed-program-test-multiple';
-import { SeedProgramValidation } from './seed-program-validation';
-import { SeedScript } from './seed-script.enum';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()

@@ -1,6 +1,6 @@
-import { FinancialServiceProviderName } from '../../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { RegistrationEntity } from '../../../src/registration/registration.entity';
-import { LanguageEnum } from '../../../src/shared/enum/language.enums';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export function createExpectedValueObject(
   registration: Partial<RegistrationEntity> | any,

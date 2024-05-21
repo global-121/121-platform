@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { UserOwnerDto } from '../dto/user-owner.dto';
-import { UserType } from '../user-type-enum';
-import { UserEntity } from '../user.entity';
-import { UserMapper } from './user.mapper';
+import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserMapper } from '@121-service/src/user/utils/user.mapper';
 
 describe('User mapper', () => {
   it('should map to correct object', async () => {

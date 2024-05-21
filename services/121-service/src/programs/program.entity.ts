@@ -1,3 +1,22 @@
+import { AppDataSource } from '@121-service/appdatasource';
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ValidationInfo } from '@121-service/src/programs/dto/validation-info.dto';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
+import {
+  AnswerTypes,
+  Attribute,
+  CustomAttributeType,
+} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 import {
   BeforeRemove,
@@ -7,25 +26,6 @@ import {
   ManyToMany,
   OneToMany,
 } from 'typeorm';
-import { AppDataSource } from '../../appdatasource';
-import { ActionEntity } from '../actions/action.entity';
-import { CascadeDeleteEntity } from '../base.entity';
-import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Attributes } from '../registration/dto/update-registration.dto';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.enum';
-import {
-  AnswerTypes,
-  CustomAttributeType,
-} from './../registration/enum/custom-data-attributes';
-import { ValidationInfo } from './dto/validation-info.dto';
-import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
-import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
-import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {

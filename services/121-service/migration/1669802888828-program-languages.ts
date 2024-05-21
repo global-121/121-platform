@@ -1,5 +1,5 @@
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { ProgramEntity } from './../src/programs/program.entity';
 
 export class programLanguages1669802888828 implements MigrationInterface {
   name = 'programLanguages1669802888828';

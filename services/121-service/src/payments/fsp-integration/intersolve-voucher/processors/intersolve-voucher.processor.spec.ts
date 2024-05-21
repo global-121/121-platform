@@ -1,9 +1,9 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { PaymentProcessorIntersolveVoucher } from '@121-service/src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { FinancialServiceProviderName } from '../../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { LanguageEnum } from '../../../../shared/enum/language.enums';
-import { IntersolveVoucherService } from '../intersolve-voucher.service';
-import { PaymentProcessorIntersolveVoucher } from './intersolve-voucher.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',

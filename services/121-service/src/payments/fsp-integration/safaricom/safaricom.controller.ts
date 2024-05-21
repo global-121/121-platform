@@ -1,6 +1,6 @@
+import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SafaricomService } from './safaricom.service';
 
 @ApiTags('callbacks/safaricom')
 // TODO: REFACTOR: rename to /callbacks/safaricom

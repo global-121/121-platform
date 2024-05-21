@@ -1,8 +1,8 @@
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { Provider, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { DataSource } from 'typeorm';
-import { ScopedRepository } from '../../scoped.repository';
-import { ScopedUserRequest } from '../../shared/scoped-user-request';
 
 // Todo make this strongly typed
 export function getScopedRepositoryProviderName(entity: any): string {

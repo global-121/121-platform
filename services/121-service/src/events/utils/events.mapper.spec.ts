@@ -1,10 +1,10 @@
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { UserEntity } from '../../user/user.entity';
-import { EventAttributeEntity } from '../entities/event-attribute.entity';
-import { EventEntity } from '../entities/event.entity';
-import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
-import { EventEnum } from '../enum/event.enum';
-import { EventsMapper } from './events.mapper';
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 describe('EventsMapper', () => {
   let eventEntity: EventEntity;

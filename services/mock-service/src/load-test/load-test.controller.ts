@@ -1,7 +1,7 @@
+import { DEVELOPMENT } from '@mock-service/src/config';
+import { LoadTestService } from '@mock-service/src/load-test/load-test.service';
 import { BadRequestException, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { DEVELOPMENT } from '../config';
-import { LoadTestService } from './load-test.service';
 
 @Controller()
 export class LoadTestController {

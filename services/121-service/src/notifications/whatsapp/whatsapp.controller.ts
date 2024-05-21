@@ -1,10 +1,10 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
+import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { AuthenticatedUser } from '../../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
-import { TwilioStatusCallbackDto } from '../twilio.dto';
-import { WhatsappService } from './whatsapp.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('notifications')

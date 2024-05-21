@@ -1,35 +1,38 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { EventsService } from '../../events/events.service';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
-import { MessageContentType } from '../../notifications/enum/message-type.enum';
-import { MessageProcessTypeExtension } from '../../notifications/message-job.dto';
-import { MessageTemplateService } from '../../notifications/message-template/message-template.service';
-import { QueueMessageService } from '../../notifications/queue-message/queue-message.service';
-import { TwilioMessageEntity } from '../../notifications/twilio.entity';
-import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
-import { RegistrationUtilsService } from '../../registration/modules/registration-utilts/registration-utils.service';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { RegistrationScopedRepository } from '../../registration/repositories/registration-scoped.repository';
-import { ScopedQueryBuilder, ScopedRepository } from '../../scoped.repository';
-import { StatusEnum } from '../../shared/enum/status.enum';
-import { splitArrayIntoChunks } from '../../utils/chunk.helper';
-import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
+import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import {
   PaTransactionResultDto,
   TransactionNotificationObject,
-} from '../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../dto/transaction-relation-details.dto';
-import { LanguageEnum } from './../../shared/enum/language.enums';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   AuditedTransactionReturnDto,
   TransactionReturnDto,
-} from './dto/get-transaction.dto';
-import { LatestTransactionEntity } from './latest-transaction.entity';
-import { TransactionEntity } from './transaction.entity';
+} from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import {
+  ScopedQueryBuilder,
+  ScopedRepository,
+} from '@121-service/src/scoped.repository';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class TransactionsService {

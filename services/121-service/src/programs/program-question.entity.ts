@@ -1,3 +1,8 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
@@ -12,11 +17,6 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { ExportType } from '../metrics/dto/export-details.dto';
-import { NameConstraintQuestions } from '../shared/const';
-import { CascadeDeleteEntity } from './../base.entity';
-import { RegistrationDataEntity } from './../registration/registration-data.entity';
-import { ProgramEntity } from './program.entity';
 
 @Unique('programQuestionUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)

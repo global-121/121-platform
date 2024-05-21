@@ -1,9 +1,9 @@
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationScopedRepository } from '../../repositories/registration-scoped.repository';
-import { RegistrationDataModule } from '../registration-data/registration-data.module';
-import { RegistrationUtilsService } from './registration-utils.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProgramEntity]), RegistrationDataModule],

@@ -1,6 +1,6 @@
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateProgramDto } from '../programs/dto/create-program.dto';
-import { CustomHttpService } from '../shared/services/custom-http.service';
 
 @Injectable()
 export class KoboConnectApiService {

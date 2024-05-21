@@ -1,9 +1,9 @@
-import { FindOperator } from 'typeorm';
-import { RegistrationDataEntity } from '../../registration/registration-data.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import {
   convertToScopedOptions,
   FindOptionsCombined,
-} from './createFindWhereOptions.helper';
+} from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import { FindOperator } from 'typeorm';
 
 describe('createFindWhereOptions helper', () => {
   it('should return correct scoped whereFilters', () => {
