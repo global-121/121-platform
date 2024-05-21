@@ -110,4 +110,16 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     // This is as risk though that someone uses this expecting it to be scoped
     return this.repository.update(criteria, partialEntity);
   }
+
+  // This function returns Registrations (complete) with related RegistrationData according to the dataFieldNames provided. To consider for simplification: just get and return ALL RegistrationData fields, so we do not need to work with <Partial> or something.
+  // TODO: Do we want this function to return RegistrationEntities? If so, at least they should be <Partial>, otherwise it will not work. Coming up with a DTO is not easy, since the return fields are dynamic, so that will probably be a <Partial> then as well.
+  public async getRegistrationsWithData(referenceIds: string[], dataFieldNames: string[]): Promise<RegistrationEntity[]> {
+    // TODO: Below is what CoPilot generated, looks ok-ish but will not work like this yet. Also, add some close to make this scoped?
+    return this.repository
+      .createQueryBuilder('registration')
+      .leftJoinAndSelect('registration.data', 'data')
+      .where('registration.referenceId IN (:...referenceIds)', { referenceIds })
+      .andWhere('data.fieldName IN (:...dataFieldNames)', { dataFieldNames })
+      .getMany();
+  }
 }

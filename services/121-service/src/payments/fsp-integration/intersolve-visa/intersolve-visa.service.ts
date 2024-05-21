@@ -283,6 +283,7 @@ export class IntersolveVisaService
     );
   }
 
+  // TODO: Remove this function (logic moves to PaymentsService.createIntersolveVisaTransferJobs and/or related private funcions in PaymentsService)
   private async getPaPaymentDetails(
     paymentList: PaPaymentDataDto[],
   ): Promise<PaymentDetailsDto[]> {
@@ -313,6 +314,7 @@ export class IntersolveVisaService
     return result;
   }
 
+  // TODO: Remove this function (logic moves to PaymentsService.createIntersolveVisaTransferJobs and/or related private funcions in PaymentsService)
   private async getRelationOptionsForVisa(
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
