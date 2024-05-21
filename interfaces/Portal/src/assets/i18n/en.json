@@ -148,7 +148,8 @@
       "portalTitle": "Portal",
       "sso": {
         "btn-text": "Log in via SSO",
-        "label": "121 Portal uses Single Sign-On (SSO) to securely authenticate and log in all (121 & Redline) users."
+        "label": "121 Portal uses Single Sign-On (SSO) to securely authenticate and log in all (121 & Redline) users.",
+        "user-not-found": "Unknown user account or authentication failed."
       }
     },
     "program": {

@@ -12,7 +12,10 @@ import { isIframed } from '../shared/utils/is-iframed.util';
 import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
-
+export const SSO_ERROR_KEY = 'sso-error';
+export const SSO_ERRORS = {
+  notFound: 'not-found',
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -187,6 +190,7 @@ export class AuthService {
 
     if (!userDto || !userDto.user) {
       const username = userDto?.error?.username || null;
+      sessionStorage.setItem(SSO_ERROR_KEY, SSO_ERRORS.notFound);
       this.logoutSsoUser(username);
       return;
     }
@@ -257,14 +261,17 @@ export class AuthService {
     let authority;
     let account;
 
-    const companyDomains = ['redlinenlrc.onmicrosoft.com', 'redcross.nl'];
+    const enabledDomains = environment.azure_ad_domains
+      .trim()
+      .toLowerCase()
+      .split(/\s*,\s*/);
 
-    if (companyDomains.includes(emailDomain)) {
+    if (enabledDomains.includes(emailDomain)) {
       account = currentUser;
-      authority = `https://login.microsoftonline.com/${currentUser.tenantId}`;
+      authority = `${environment.azure_ad_url}/${currentUser.tenantId}`;
     } else {
       account = this.msalService.instance.getActiveAccount();
-      authority = 'https://login.microsoftonline.com/consumers';
+      authority = `${environment.azure_ad_url}/consumers`;
     }
 
     const logoutRequest: any = {
