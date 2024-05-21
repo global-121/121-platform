@@ -4,6 +4,8 @@ import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Check,
