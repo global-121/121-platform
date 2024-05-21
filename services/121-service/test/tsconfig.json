@@ -4,5 +4,9 @@
     "types": ["node", "jest", "supertest"]
   },
   "exclude": ["../node_modules", "../dist", "../src/**/*"],
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "baseUrl": "./",
+  "paths": {
+    "@121-service/*": ["../*"]
+  }
 }

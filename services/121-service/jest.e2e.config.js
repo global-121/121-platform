@@ -10,6 +10,9 @@ module.exports = {
   testMatch: ['<rootDir>/test/**/*.test.ts'],
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  moduleNameMapper: {
+    '^@121-service/(.*)$': '<rootDir>/$1',
+  },
   testTimeout: 30_000,
   randomize: false, // TODO: Some tests still depend on the order, but should not. Toggle locally to test + fix.
   verbose: true,
