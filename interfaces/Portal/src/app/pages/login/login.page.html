@@ -214,6 +214,18 @@
             >
               {{ 'page.login.sso.btn-text' | translate }}
             </ion-button>
+            <div
+              class="error-message-container"
+              *ngIf="ssoUserIsNotFound"
+            >
+              <ion-text color="danger">
+                <ion-icon
+                  name="warning"
+                  aria-hidden="true"
+                ></ion-icon>
+                {{ 'page.login.sso.user-not-found' | translate }}
+              </ion-text>
+            </div>
           </form>
         </div>
       </div>

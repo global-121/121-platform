@@ -8,7 +8,11 @@ import { Subscription } from 'rxjs';
 import { isIframed } from 'src/app/shared/utils/is-iframed.util';
 import { environment } from '../../../environments/environment';
 import { AppRoutes } from '../../app-routes.enum';
-import { AuthService } from '../../auth/auth.service';
+import {
+  AuthService,
+  SSO_ERRORS,
+  SSO_ERROR_KEY,
+} from '../../auth/auth.service';
 import { SystemNotificationComponent } from '../../components/system-notification/system-notification.component';
 
 @Component({
@@ -45,6 +49,7 @@ export class LoginPage implements OnDestroy {
   );
 
   private msalSubscription: Subscription;
+  public ssoUserIsNotFound: boolean;
 
   constructor(
     private authService: AuthService,
@@ -52,6 +57,13 @@ export class LoginPage implements OnDestroy {
     private router: Router,
     private msalService?: MsalService,
   ) {}
+
+  ngOnInit(): void {
+    // Retrieve the error message from session storage
+    this.ssoUserIsNotFound =
+      sessionStorage.getItem(SSO_ERROR_KEY) === SSO_ERRORS.notFound;
+    sessionStorage.removeItem(SSO_ERROR_KEY);
+  }
 
   ngOnDestroy(): void {
     if (this.msalSubscription) {
