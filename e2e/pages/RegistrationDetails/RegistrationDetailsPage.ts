@@ -402,7 +402,7 @@ class RegistrationDetails {
     whatsappLabel: string;
     saveButtonName: string;
   }) {
-    const customAttribute = await this.personAffectedCustomAttribute.filter({
+    const fspAttribute = await this.personAffectedCustomAttribute.filter({
       hasText: whatsappLabel,
     });
     const saveButton = this.personAffectedPopUpSaveButton.filter({
@@ -415,7 +415,7 @@ class RegistrationDetails {
     await expect(this.personAffectedLanguage).toBeVisible();
     await expect(this.personAffectedPhoneNumber).toBeVisible();
     await expect(this.personAffectedPopUpFsp).toBeVisible();
-    expect(await customAttribute.textContent()).toContain(whatsappLabel);
+    expect(await fspAttribute.textContent()).toContain(whatsappLabel);
 
     for (let i = 0; i < (await saveButton.count()); i++) {
       await expect(saveButton.nth(i)).toHaveAttribute('aria-disabled', 'true');
