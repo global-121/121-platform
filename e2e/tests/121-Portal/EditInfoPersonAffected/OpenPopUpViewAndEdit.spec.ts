@@ -2,6 +2,7 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
+import fspIntersolveJumbo from '@121-service/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -41,6 +42,9 @@ test('[28037] Open the popup to view and edit information', async ({
   });
 
   await test.step('Validate information shown', async () => {
-    await registration.validatePiiPopUp({ paId: 'PA #1' });
+    await registration.validatePiiPopUp({
+      paId: 'PA #1',
+      whatsappLabel: fspIntersolveJumbo.questions[5].label.en,
+    });
   });
 });

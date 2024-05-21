@@ -30,6 +30,7 @@ class RegistrationDetails {
   readonly personAffectedPhoneNumber: Locator;
   readonly personAffectedPaymentMultiplier: Locator;
   readonly personAffectedLanguage: Locator;
+  readonly personAffectedCustomAttribute: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -102,6 +103,9 @@ class RegistrationDetails {
       this.page.getByTestId('payment-multiplier');
     this.personAffectedLanguage = this.page.getByTestId(
       'preferred-language-dropdown',
+    );
+    this.personAffectedCustomAttribute = this.page.getByTestId(
+      'update-property-item-label',
     );
   }
 
@@ -386,7 +390,16 @@ class RegistrationDetails {
     ).toContain(messageContent);
   }
 
-  async validatePiiPopUp({ paId }: { paId: string }) {
+  async validatePiiPopUp({
+    paId,
+    whatsappLabel,
+  }: {
+    paId: string;
+    whatsappLabel: string;
+  }) {
+    const customAttribute = await this.personAffectedCustomAttribute.filter({
+      hasText: whatsappLabel,
+    });
     expect(await this.personAffectedEditPopUpTitle.textContent()).toContain(
       paId,
     );
@@ -394,6 +407,7 @@ class RegistrationDetails {
     await expect(this.personAffectedLanguage).toBeVisible();
     await expect(this.personAffectedPhoneNumber).toBeVisible();
     await expect(this.personAffectedPopUpFsp).toBeVisible();
+    expect(await customAttribute.textContent()).toContain(whatsappLabel);
   }
 }
 
