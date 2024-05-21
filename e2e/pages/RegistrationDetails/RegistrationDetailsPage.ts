@@ -31,6 +31,7 @@ class RegistrationDetails {
   readonly personAffectedPaymentMultiplier: Locator;
   readonly personAffectedLanguage: Locator;
   readonly personAffectedCustomAttribute: Locator;
+  readonly personAffectedPopUpSaveButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -107,6 +108,8 @@ class RegistrationDetails {
     this.personAffectedCustomAttribute = this.page.getByTestId(
       'update-property-item-label',
     );
+    this.personAffectedPopUpSaveButton =
+      this.page.getByTestId('button-default');
   }
 
   async validateHeaderToContainText(headerTitle: string) {
@@ -393,12 +396,17 @@ class RegistrationDetails {
   async validatePiiPopUp({
     paId,
     whatsappLabel,
+    saveButtonName,
   }: {
     paId: string;
     whatsappLabel: string;
+    saveButtonName: string;
   }) {
     const customAttribute = await this.personAffectedCustomAttribute.filter({
       hasText: whatsappLabel,
+    });
+    const saveButton = this.personAffectedPopUpSaveButton.filter({
+      hasText: saveButtonName,
     });
     expect(await this.personAffectedEditPopUpTitle.textContent()).toContain(
       paId,
@@ -408,6 +416,10 @@ class RegistrationDetails {
     await expect(this.personAffectedPhoneNumber).toBeVisible();
     await expect(this.personAffectedPopUpFsp).toBeVisible();
     expect(await customAttribute.textContent()).toContain(whatsappLabel);
+
+    for (let i = 0; i < (await saveButton.count()); i++) {
+      await expect(saveButton.nth(i)).toHaveAttribute('aria-disabled', 'true');
+    }
   }
 }
 

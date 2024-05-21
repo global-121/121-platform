@@ -9,6 +9,7 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
+import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -45,6 +46,7 @@ test('[28037] Open the popup to view and edit information', async ({
     await registration.validatePiiPopUp({
       paId: 'PA #1',
       whatsappLabel: fspIntersolveJumbo.questions[5].label.en,
+      saveButtonName: englishTranslations.common.save,
     });
   });
 });
