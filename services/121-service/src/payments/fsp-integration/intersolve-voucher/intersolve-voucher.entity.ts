@@ -1,6 +1,6 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { ImageCodeExportVouchersEntity } from '../../imagecode/image-code-export-vouchers.entity';
 
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {

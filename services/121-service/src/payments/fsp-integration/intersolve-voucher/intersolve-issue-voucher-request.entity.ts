@@ -1,6 +1,6 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { Column, Entity } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 
 @Entity('intersolve_issue_voucher_request')
 export class IntersolveIssueVoucherRequestEntity extends Base121Entity {

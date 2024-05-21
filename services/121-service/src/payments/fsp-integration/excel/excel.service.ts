@@ -1,28 +1,28 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { BulkImportResult } from '../../../registration/dto/bulk-import.dto';
-import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
-import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   ExcelFspInstructions,
   ExcelReconciliationDto,
-} from './dto/excel-fsp-instructions.dto';
+} from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { BulkImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExcelService

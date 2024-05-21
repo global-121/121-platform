@@ -1,7 +1,7 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
-import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
-import { EventEntity } from './event.entity';
 
 @Entity('event_attribute')
 export class EventAttributeEntity extends Base121Entity {

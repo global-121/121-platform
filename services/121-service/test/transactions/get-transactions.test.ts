@@ -1,18 +1,21 @@
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedMiddelburgPv,
   registrationsPV,
-} from '../fixtures/scoped-registrations';
-import { getTransactions } from '../helpers/program.helper';
-import { seedPaidRegistrations } from '../helpers/registration.helper';
-import { getAccessTokenScoped, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/fixtures/scoped-registrations';
+import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessTokenScoped,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   programIdPV,
   registrationsOCW,
-} from '../registrations/pagination/pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Registrations - [Scoped]', () => {
   const OcwProgramId = programIdOCW;

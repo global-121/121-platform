@@ -1,12 +1,15 @@
-import { HttpStatus } from '@nestjs/common';
-import { registrationVisa } from '../../seed-data/mock/visa-card.data';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { registrationVisa } from '@121-service/seed-data/mock/visa-card.data';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   deleteRegistrations,
   importRegistrations,
   searchRegistrationByReferenceId,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Delete PA', () => {
   const programId = 3;

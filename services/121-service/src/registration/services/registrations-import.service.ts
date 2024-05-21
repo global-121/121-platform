@@ -1,39 +1,42 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
-import { AdditionalActionType } from '../../actions/action.entity';
-import { ActionsService } from '../../actions/actions.service';
-import { EventsService } from '../../events/events.service';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '../../financial-service-providers/fsp-question.entity';
-import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
-import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '../../programs/program-question.entity';
-import { ProgramEntity } from '../../programs/program.entity';
-import { ProgramService } from '../../programs/programs.service';
-import { ScopedRepository } from '../../scoped.repository';
-import { FileImportService } from '../../utils/file-import/file-import.service';
-import { getScopedRepositoryProviderName } from '../../utils/scope/createScopedRepositoryProvider.helper';
-import { ImportRegistrationsDto, ImportResult } from '../dto/bulk-import.dto';
-import { RegistrationDataInfo } from '../dto/registration-data-relation.model';
-import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '../dto/registration-update-job.dto';
-import { ValidationConfigDto } from '../dto/validate-registration-config.dto';
+import { AdditionalActionType } from '@121-service/src/actions/action.entity';
+import { ActionsService } from '@121-service/src/actions/actions.service';
+import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramService } from '@121-service/src/programs/programs.service';
+import {
+  ImportRegistrationsDto,
+  ImportResult,
+} from '@121-service/src/registration/dto/bulk-import.dto';
+import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
+import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-registration-config.dto';
 import {
   AnswerTypes,
   Attribute,
   GenericAttributes,
   QuestionType,
-} from '../enum/custom-data-attributes';
-import { RegistrationCsvValidationEnum } from '../enum/registration-csv-validation.enum';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { QueueRegistrationUpdateService } from '../modules/queue-registrations-update/queue-registrations-update.service';
-import { RegistrationUtilsService } from '../modules/registration-utilts/registration-utils.service';
-import { RegistrationDataEntity } from '../registration-data.entity';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationsInputValidator } from '../validators/registrations-input-validator';
-import { RegistrationsInputValidatorHelpers } from '../validators/registrations-input.validator.helper';
-import { InclusionScoreService } from './inclusion-score.service';
+} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { QueueRegistrationUpdateService } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
+import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 const BATCH_SIZE = 500;
 const MASS_UPDATE_ROW_LIMIT = 100000;

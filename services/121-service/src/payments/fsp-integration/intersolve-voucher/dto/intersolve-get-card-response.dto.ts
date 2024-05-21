@@ -1,4 +1,4 @@
-import { IntersolveVoucherResultCode } from '../enum/intersolve-voucher-result-code.enum';
+import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 
 export class IntersolveGetCardResponse {
   public readonly resultCode: IntersolveVoucherResultCode;

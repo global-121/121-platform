@@ -1,6 +1,6 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
 
 @Entity('commercial_bank_ethiopia_account_enquiries')
 export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity {

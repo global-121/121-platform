@@ -1,6 +1,6 @@
+import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { LoginUserDto } from './login-user.dto';
 
 export class UpdateUserPasswordDto extends LoginUserDto {
   @ApiProperty({ example: 'newPassword' })

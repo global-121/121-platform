@@ -1,4 +1,4 @@
-import { generateMockCreateQueryBuilder } from './createQueryBuilderMock.helper';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 
 describe('generateMockCreateQueryBuilder', () => {
   const dbQueryResult = [{ name: 'username', value: '1234' }];

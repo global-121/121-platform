@@ -1,31 +1,31 @@
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import { Repository } from 'typeorm';
-import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
-import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
 import {
   DEFAULT_QUEUE_CREATE_MESSAGE,
   MESSAGE_QUEUE_MAP,
   MessageQueueMap,
-} from '../enum/message-queue-mapping.const';
-import { MessageContentType } from '../enum/message-type.enum';
+} from '@121-service/src/notifications/enum/message-queue-mapping.const';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import {
   ProcessNameMessage,
   QueueNameCreateMessage,
-} from '../enum/queue.names.enum';
+} from '@121-service/src/notifications/enum/queue.names.enum';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
   MessageJobDto,
   MessageProcessType,
   MessageProcessTypeExtension,
-} from '../message-job.dto';
-import { MessageTemplateEntity } from '../message-template/message-template.entity';
+} from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class QueueMessageService {

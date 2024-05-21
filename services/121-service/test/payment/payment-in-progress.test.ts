@@ -1,19 +1,22 @@
-import { HttpStatus } from '@nestjs/common';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { registrationsPV } from '../fixtures/scoped-registrations';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   doPayment,
   getProgramPaymentsStatus,
   retryPayment,
   waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
-import { seedIncludedRegistrations } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/program.helper';
+import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   programIdPV,
   registrationsOCW,
-} from '../registrations/pagination/pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Payment in progress', () => {
   let accessToken: string;

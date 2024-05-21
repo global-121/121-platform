@@ -1,14 +1,17 @@
+import { EXTERNAL_API } from '@121-service/src/config';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
+import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import {
+  NotificationType,
+  TwilioMessageEntity,
+} from '@121-service/src/notifications/twilio.entity';
+import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { formatPhoneNumber } from '../../utils/phone-number.helpers';
-import { MessageContentType } from '../enum/message-type.enum';
-import { LastMessageStatusService } from '../last-message-status.service';
-import { MessageProcessType } from '../message-job.dto';
-import { twilioClient } from '../twilio.client';
-import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
-import { EXTERNAL_API } from './../../config';
 
 @Injectable()
 export class SmsService {

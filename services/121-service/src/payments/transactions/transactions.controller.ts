@@ -1,3 +1,8 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { AuditedTransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Controller,
   Get,
@@ -14,11 +19,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthenticatedUser } from '../../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../../guards/authenticated-user.guard';
-import { PermissionEnum } from '../../user/enum/permission.enum';
-import { AuditedTransactionReturnDto } from './dto/get-transaction.dto';
-import { TransactionsService } from './transactions.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('transactions')

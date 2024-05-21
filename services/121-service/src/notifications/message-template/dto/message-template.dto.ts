@@ -1,3 +1,7 @@
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -10,10 +14,6 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
-import {
-  LanguageEnum,
-  LocalizedString,
-} from '../../../shared/enum/language.enums';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({

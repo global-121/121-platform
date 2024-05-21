@@ -1,11 +1,14 @@
+import {
+  ActionEntity,
+  ActionType,
+} from '@121-service/src/actions/action.entity';
+import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { UserEntity } from '../user/user.entity';
-import { ActionEntity, ActionType } from './action.entity';
-import { ActionReturnDto } from './dto/action-return.dto';
-import { ActionMapper } from './utils/action.mapper';
 
 @Injectable()
 export class ActionsService {

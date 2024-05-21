@@ -1,7 +1,7 @@
+import { IsNotBothEmpty } from '@121-service/src/registration/validators/is-not-both-empty.class.validator';
+import { IsNotBothPresent } from '@121-service/src/registration/validators/is-not-both-present.class.validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsOptional, ValidateIf } from 'class-validator';
-import { IsNotBothEmpty } from '../validators/is-not-both-empty.class.validator';
-import { IsNotBothPresent } from '../validators/is-not-both-present.class.validator';
 
 export class SendCustomTextDto {
   @ApiProperty({

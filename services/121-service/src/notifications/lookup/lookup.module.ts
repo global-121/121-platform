@@ -1,5 +1,5 @@
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { Module } from '@nestjs/common';
-import { LookupService } from './lookup.service';
 
 @Module({
   imports: [],

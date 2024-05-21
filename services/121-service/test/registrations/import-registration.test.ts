@@ -1,23 +1,29 @@
-import { HttpStatus } from '@nestjs/common';
-import { registrationVisa } from '../../seed-data/mock/visa-card.data';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { registrationVisa } from '@121-service/seed-data/mock/visa-card.data';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedUtrechtPv,
-} from '../fixtures/scoped-registrations';
-import { patchProgram, unpublishProgram } from '../helpers/program.helper';
+} from '@121-service/test/fixtures/scoped-registrations';
+import {
+  patchProgram,
+  unpublishProgram,
+} from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
   importRegistrations,
   searchRegistrationByReferenceId,
-} from '../helpers/registration.helper';
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenScoped,
   resetDB,
-} from '../helpers/utility.helper';
-import { programIdOCW, programIdPV } from './pagination/pagination-data';
+} from '@121-service/test/helpers/utility.helper';
+import {
+  programIdOCW,
+  programIdPV,
+} from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Import a registration', () => {
   let accessToken: string;

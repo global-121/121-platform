@@ -1,8 +1,8 @@
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { getServer, resetDB } from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 import { HttpStatus } from '@nestjs/common';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { CookieNames } from '../../src/shared/enum/cookie.enums';
-import { getServer, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from '../registrations/pagination/pagination-data';
 
 describe('/ Users', () => {
   describe('/ Login', () => {

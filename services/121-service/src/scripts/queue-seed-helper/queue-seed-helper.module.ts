@@ -1,11 +1,11 @@
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
 import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
-} from '../../notifications/enum/queue.names.enum';
-import { QueueNamePayment } from '../../payments/enum/queue.names.enum';
-import { QueueSeedHelperService } from './queue-seed-helper.service';
+} from '@121-service/src/notifications/enum/queue.names.enum';
+import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
+import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.service';
+import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [

@@ -1,13 +1,16 @@
-import * as request from 'supertest';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   changePhase,
   doPayment,
   waitForPaymentTransactionsToComplete,
-} from './program.helper';
-import { getAccessToken, getServer } from './utility.helper';
+} from '@121-service/test/helpers/program.helper';
+import {
+  getAccessToken,
+  getServer,
+} from '@121-service/test/helpers/utility.helper';
+import * as request from 'supertest';
 
 export function importRegistrations(
   programId: number,

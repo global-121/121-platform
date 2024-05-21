@@ -1,6 +1,6 @@
+import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional } from 'class-validator';
-import { ReferenceIdsDto } from '../../registration/dto/reference-id.dto';
 
 export class RetryPaymentDto {
   @ApiProperty({ example: 1 })

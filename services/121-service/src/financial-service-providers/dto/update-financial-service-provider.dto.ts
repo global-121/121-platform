@@ -1,9 +1,9 @@
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { QuestionOption } from 'src/shared/enum/question.enums';
-import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })

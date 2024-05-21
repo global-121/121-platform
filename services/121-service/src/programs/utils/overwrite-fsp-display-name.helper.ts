@@ -1,10 +1,10 @@
+import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { isArray, isObject } from 'lodash';
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { FinancialServiceProviderConfigurationEnum } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { ProgramFspConfigurationEntity } from '../fsp-configuration/program-fsp-configuration.entity';
-import { ProgramEntity } from '../program.entity';
 
 export function overwriteProgramFspDisplayName(
   programFinancialServiceProviders: FinancialServiceProviderEntity[],

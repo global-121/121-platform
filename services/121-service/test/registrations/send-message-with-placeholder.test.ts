@@ -1,15 +1,18 @@
-import fspIntersolveJson from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { LanguageEnum } from '../../src/shared/enum/language.enums';
-import { waitForMessagesToComplete } from '../helpers/program.helper';
+import fspIntersolveJson from '@121-service/seed-data/fsp/fsp-intersolve-voucher-paper.json';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
   importRegistrations,
   sendMessage,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from './pagination/pagination-data';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Send custom message with placeholders', () => {
   const programId = programIdPV;

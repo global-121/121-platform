@@ -1,4 +1,4 @@
-import { PermissionEnum } from './enum/permission.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 interface UserData {
   id: number;

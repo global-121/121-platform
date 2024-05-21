@@ -1,7 +1,7 @@
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
-import { AuthenticatedUserGuard } from './authenticated-user.guard';
 
 describe('AuthenticatedUserGuard', () => {
   let guard: AuthenticatedUserGuard;

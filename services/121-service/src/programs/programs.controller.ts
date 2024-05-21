@@ -1,3 +1,23 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
+import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import {
+  CreateProgramQuestionDto,
+  UpdateProgramQuestionDto,
+} from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
+import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramsRO } from '@121-service/src/programs/program.interface';
+import { ProgramService } from '@121-service/src/programs/programs.service';
+import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
+import { SecretDto } from '@121-service/src/scripts/scripts.controller';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -25,26 +45,6 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import { KoboConnectService } from '../kobo-connect/kobo-connect.service';
-import { ProgramAttributesService } from '../program-attributes/program-attributes.service';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { SecretDto } from '../scripts/scripts.controller';
-import { PermissionEnum } from '../user/enum/permission.enum';
-import { CreateProgramCustomAttributeDto } from './dto/create-program-custom-attribute.dto';
-import { CreateProgramDto } from './dto/create-program.dto';
-import {
-  CreateProgramQuestionDto,
-  UpdateProgramQuestionDto,
-} from './dto/program-question.dto';
-import { ProgramReturnDto } from './dto/program-return.dto';
-import { UpdateProgramDto } from './dto/update-program.dto';
-import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { ProgramQuestionEntity } from './program-question.entity';
-import { ProgramEntity } from './program.entity';
-import { ProgramsRO } from './program.interface';
-import { ProgramService } from './programs.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')

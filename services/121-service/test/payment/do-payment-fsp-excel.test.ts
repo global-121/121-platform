@@ -1,14 +1,14 @@
 /* eslint-disable jest/no-conditional-expect */
-import programTest from '../../seed-data/program/program-test.json';
+import programTest from '@121-service/seed-data/program/program-test.json';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
-} from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ImportStatus } from '../../src/registration/dto/bulk-import.dto';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { StatusEnum } from '../../src/shared/enum/status.enum';
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
   changePhase,
   deleteFspConfiguration,
@@ -18,19 +18,22 @@ import {
   getTransactions,
   importFspReconciliationData,
   waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdWesteros,
   programIdWithValidation,
   registrationPV5,
   registrationWesteros1,
   registrationWesteros2,
-} from '../registrations/pagination/pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;

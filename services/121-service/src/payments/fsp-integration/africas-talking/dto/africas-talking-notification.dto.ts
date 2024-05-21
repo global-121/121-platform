@@ -1,6 +1,6 @@
+import { AfricasTalkingNotificationRequestMetadata } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking-notification.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsOptional, IsString } from 'class-validator';
-import { AfricasTalkingNotificationRequestMetadata } from '../africas-talking-notification.entity';
 
 export class AfricasTalkingNotificationDto {
   @ApiProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })

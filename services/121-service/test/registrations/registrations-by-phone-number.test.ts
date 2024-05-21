@@ -1,21 +1,24 @@
-import { HttpStatus } from '@nestjs/common';
-import { registrationVisa } from '../../seed-data/mock/visa-card.data';
-import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { registrationNotScopedPv } from '../fixtures/scoped-registrations';
-import { changePhase } from '../helpers/program.helper';
+import { registrationVisa } from '@121-service/seed-data/mock/visa-card.data';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { registrationNotScopedPv } from '@121-service/test/fixtures/scoped-registrations';
+import { changePhase } from '@121-service/test/helpers/program.helper';
 import {
   importRegistrations,
   searchRegistrationByPhoneNumber,
-} from '../helpers/registration.helper';
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenScoped,
   resetDB,
-} from '../helpers/utility.helper';
-import { programIdOCW, programIdPV } from './pagination/pagination-data';
+} from '@121-service/test/helpers/utility.helper';
+import {
+  programIdOCW,
+  programIdPV,
+} from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('/ Registrations - by phone-number', () => {
   let accessToken: string;

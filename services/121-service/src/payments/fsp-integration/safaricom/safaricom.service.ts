@@ -1,30 +1,33 @@
+import { EXTERNAL_API } from '@121-service/src/config';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
+import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
+import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
+import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis-client';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import { EXTERNAL_API } from '../../../config';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { PaTransactionResultDto } from '../../../payments/dto/payment-transaction-result.dto';
-import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { generateRandomString } from '../../../utils/getRandomValue.helper';
-import { waitFor } from '../../../utils/waitFor.helper';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '../../enum/queue.names.enum';
-import { REDIS_CLIENT, getRedisSetName } from '../../redis-client';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { SafaricomJobDto } from './dto/safaricom-job.dto';
-import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
-import { SafaricomRequestEntity } from './safaricom-request.entity';
-import { SafaricomApiService } from './safaricom.api.service';
 
 @Injectable()
 export class SafaricomService

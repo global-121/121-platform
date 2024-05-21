@@ -1,8 +1,8 @@
+import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
-import { AuthenticatedUserParameters } from './authenticated-user.decorator';
 
 @Injectable()
 export class AuthenticatedUserGuard

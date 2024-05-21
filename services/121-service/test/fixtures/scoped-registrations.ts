@@ -1,7 +1,7 @@
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
-import { LanguageEnum } from '../../src/shared/enum/language.enums';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 ////////////////////////
 // PV registrations

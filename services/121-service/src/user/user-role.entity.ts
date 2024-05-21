@@ -1,7 +1,7 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { Base121Entity } from '../base.entity';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { PermissionEntity } from './permissions.entity';
 
 @Entity('user_role')
 export class UserRoleEntity extends Base121Entity {

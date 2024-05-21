@@ -1,9 +1,9 @@
+import instanceNLRC from '@121-service/seed-data/instance/instance-nlrc.json';
+import messageTemplatePV from '@121-service/seed-data/message-template/message-template-nlrc-pv.json';
+import programPV from '@121-service/seed-data/program/program-nlrc-pv.json';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { Injectable } from '@nestjs/common';
-import instanceNLRC from '../../seed-data/instance/instance-nlrc.json';
-import messageTemplatePV from '../../seed-data/message-template/message-template-nlrc-pv.json';
-import programPV from '../../seed-data/program/program-nlrc-pv.json';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedNLProgramPV implements InterfaceScript {

@@ -1,7 +1,7 @@
+import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
+import { MessageIncomingProcessor } from '@121-service/src/notifications/processors/message-incoming.processor';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { MessageIncomingService } from '../message-incoming/message-incoming.service';
-import { MessageIncomingProcessor } from './message-incoming.processor';
 
 const twilioIncommingMessage = {
   MessageSID: 'test',

@@ -1,6 +1,6 @@
+import { TwilioService } from '@mock-service/src/twilio/twilio.service';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { TwilioService } from './twilio.service';
 
 @ApiTags('twilio')
 @Controller()

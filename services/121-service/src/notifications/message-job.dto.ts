@@ -1,5 +1,5 @@
-import { LanguageEnum } from '../shared/enum/language.enums';
-import { MessageContentType } from './enum/message-type.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export class MessageJobDto {
   messageProcessType: MessageProcessType;

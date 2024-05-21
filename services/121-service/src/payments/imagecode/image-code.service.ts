@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { EXTERNAL_API } from '@121-service/src/config';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
+import { ImageCodeEntity } from '@121-service/src/payments/imagecode/image-code.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import Jimp from 'jimp';
 import { Repository } from 'typeorm';
-import { EXTERNAL_API } from '../../config';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { IntersolveVoucherEntity } from '../fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
-import { ImageCodeEntity } from './image-code.entity';
 
 @Injectable()
 export class ImageCodeService {

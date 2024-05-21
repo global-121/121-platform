@@ -1,16 +1,19 @@
-import { HttpStatus } from '@nestjs/common';
-import { registrationVisa } from '../../seed-data/mock/visa-card.data';
-import { EventEnum } from '../../src/events/enum/event.enum';
-import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { registrationVisa } from '@121-service/seed-data/mock/visa-card.data';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   getEvents,
   getRegistrationEvents,
   importRegistrations,
   searchRegistrationByReferenceId,
   updateRegistration,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { HttpStatus } from '@nestjs/common';
 
 const updatePhoneNumber = '15005550099';
 

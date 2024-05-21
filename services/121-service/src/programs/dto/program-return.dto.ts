@@ -1,3 +1,12 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import {
+  CreateProgramCustomAttributeDto,
+  CustomAttributeType,
+} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -14,15 +23,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import {
-  CreateProgramCustomAttributeDto,
-  CustomAttributeType,
-} from './create-program-custom-attribute.dto';
-import { ProgramFinancialServiceProviderDto } from './create-program.dto';
-import { CreateProgramQuestionDto } from './program-question.dto';
 
 export class ProgramReturnDto {
   @ApiProperty({ example: 1, type: 'number' })

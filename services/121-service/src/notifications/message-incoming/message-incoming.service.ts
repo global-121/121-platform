@@ -1,40 +1,40 @@
+import { API_PATHS, EXTERNAL_API } from '@121-service/src/config';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  MessageContentType,
+  TemplatedMessages,
+} from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import {
+  ProcessNameMessage,
+  QueueNameMessageCallBack,
+} from '@121-service/src/notifications/enum/queue.names.enum';
+import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import {
+  TwilioIncomingCallbackDto,
+  TwilioStatus,
+  TwilioStatusCallbackDto,
+} from '@121-service/src/notifications/twilio.dto';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
+import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { In, IsNull, Not, Repository } from 'typeorm';
-import { API_PATHS, EXTERNAL_API } from '../../config';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { IntersolveVoucherService } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { ImageCodeService } from '../../payments/imagecode/image-code.service';
-import { TransactionEntity } from '../../payments/transactions/transaction.entity';
-import { ProgramEntity } from '../../programs/program.entity';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
-import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { waitFor } from '../../utils/waitFor.helper';
-import {
-  MessageContentType,
-  TemplatedMessages,
-} from '../enum/message-type.enum';
-import { ProgramNotificationEnum } from '../enum/program-notification.enum';
-import {
-  ProcessNameMessage,
-  QueueNameMessageCallBack,
-} from '../enum/queue.names.enum';
-import { MessageProcessType } from '../message-job.dto';
-import { MessageTemplateService } from '../message-template/message-template.service';
-import { QueueMessageService } from '../queue-message/queue-message.service';
-import {
-  TwilioIncomingCallbackDto,
-  TwilioStatus,
-  TwilioStatusCallbackDto,
-} from '../twilio.dto';
-import { TwilioMessageEntity } from '../twilio.entity';
-import { TryWhatsappEntity } from '../whatsapp/try-whatsapp.entity';
-import { WhatsappPendingMessageEntity } from '../whatsapp/whatsapp-pending-message.entity';
-import { WhatsappService } from '../whatsapp/whatsapp.service';
 
 @Injectable()
 export class MessageIncomingService {

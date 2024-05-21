@@ -23,7 +23,11 @@
     "types": ["express", "node"],
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@mock-service/*": ["./*"],
+      "@121-service/*": ["../121-service/*"]
+    }
   },
   "watchOptions": {
     "watchFile": "fixedPollingInterval",

@@ -1,9 +1,9 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaymentProcessorSafaricom } from '@121-service/src/payments/fsp-integration/safaricom/processors/safaricom.processor';
+import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { FinancialServiceProviderName } from '../../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { LanguageEnum } from '../../../../shared/enum/language.enums';
-import { SafaricomService } from '../safaricom.service';
-import { PaymentProcessorSafaricom } from './safaricom.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',

@@ -1,3 +1,7 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ImportFspReconciliationArrayDto } from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
@@ -9,10 +13,6 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { FinancialServiceProviderName } from '../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
-import { LanguageEnum } from '../../shared/enum/language.enums';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export enum ImportStatus {
   imported = 'imported',

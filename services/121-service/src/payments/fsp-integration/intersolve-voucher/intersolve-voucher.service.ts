@@ -1,3 +1,52 @@
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import {
+  TwilioStatus,
+  TwilioStatusCallbackDto,
+} from '@121-service/src/notifications/twilio.dto';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
+import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
+import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
+import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
+import { IntersolveVoucherJobName } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/job-details.dto';
+import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
+import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
+import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis-client';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -5,52 +54,6 @@ import { Queue } from 'bull';
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { MessageContentType } from '../../../notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
-import { MessageProcessType } from '../../../notifications/message-job.dto';
-import { MessageTemplateService } from '../../../notifications/message-template/message-template.service';
-import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
-import {
-  TwilioStatus,
-  TwilioStatusCallbackDto,
-} from '../../../notifications/twilio.dto';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '../../../registration/modules/registration-utilts/registration-utils.service';
-import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '../../../scoped.repository';
-import { LanguageEnum } from '../../../shared/enum/language.enums';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
-import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '../../enum/queue.names.enum';
-import { ImageCodeService } from '../../imagecode/image-code.service';
-import { REDIS_CLIENT, getRedisSetName } from '../../redis-client';
-import { TransactionEntity } from '../../transactions/transaction.entity';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolveStoreVoucherOptionsDto } from './dto/intersolve-store-voucher-options.dto';
-import { IntersolveVoucherJobDto } from './dto/intersolve-voucher-job.dto';
-import { IntersolveVoucherJobName } from './dto/job-details.dto';
-import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
-import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
-import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
-import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
-import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
-import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 
 @Injectable()
 export class IntersolveVoucherService

@@ -1,21 +1,25 @@
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { LanguageEnum } from '../../src/shared/enum/language.enums';
-import { processMessagePlaceholders } from '../helpers/assert.helper';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { processMessagePlaceholders } from '@121-service/test/helpers/assert.helper';
 import {
   getMessageTemplates,
   waitForMessagesToComplete,
-} from '../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   getMessageHistory,
   importRegistrations,
   sendMessage,
-} from '../helpers/registration.helper';
-import { getAccessToken, getServer, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from './pagination/pagination-data';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  getServer,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 // this test is flaky, so we retry it before failing the whole 8-minute CI job just because of it
 jest.retryTimes(2);

@@ -1,5 +1,5 @@
+import { IsNotBothEmpty } from '@121-service/src/registration/validators/is-not-both-empty.class.validator';
 import { validate } from 'class-validator';
-import { IsNotBothEmpty } from './is-not-both-empty.class.validator';
 
 class TestClass {
   @IsNotBothEmpty<TestClass>('testOtherProperty')

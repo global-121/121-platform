@@ -1,7 +1,7 @@
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { IsRegistrationDataValidType } from '@121-service/src/registration/validators/registration-data-type.class.validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, Length } from 'class-validator';
-import { CustomDataAttributes } from '../enum/custom-data-attributes';
-import { IsRegistrationDataValidType } from '../validators/registration-data-type.class.validator';
 
 export enum AdditionalAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',

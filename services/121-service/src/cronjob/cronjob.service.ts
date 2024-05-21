@@ -1,9 +1,9 @@
+import { ExchangeRateService } from '@121-service/src/exchange-rate/exchange-rate.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { ExchangeRateService } from '../exchange-rate/exchange-rate.service';
-import { CustomHttpService } from '../shared/services/custom-http.service';
-import { AxiosCallsService } from '../utils/axios/axios-calls.service';
 
 @Injectable()
 export class CronjobService {

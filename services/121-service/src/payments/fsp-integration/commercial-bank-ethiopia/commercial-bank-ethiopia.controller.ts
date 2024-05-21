@@ -1,3 +1,8 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Controller,
   Get,
@@ -8,11 +13,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedUser } from '../../../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../../../guards/authenticated-user.guard';
-import { PermissionEnum } from '../../../user/enum/permission.enum';
-import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.service';
-import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')

@@ -1,4 +1,14 @@
 import {
+  CreateFspAttributeDto,
+  UpdateFinancialServiceProviderDto,
+  UpdateFspAttributeDto,
+} from '@121-service/src/financial-service-providers/dto/update-financial-service-provider.dto';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProvidersService } from '@121-service/src/financial-service-providers/financial-service-provider.service';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import {
   Body,
   Controller,
   Delete,
@@ -11,16 +21,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import {
-  CreateFspAttributeDto,
-  UpdateFinancialServiceProviderDto,
-  UpdateFspAttributeDto,
-} from './dto/update-financial-service-provider.dto';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FinancialServiceProvidersService } from './financial-service-provider.service';
-import { FspQuestionEntity } from './fsp-question.entity';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers')

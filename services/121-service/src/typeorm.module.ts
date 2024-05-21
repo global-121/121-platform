@@ -1,6 +1,6 @@
+import { AppDataSource } from '@121-service/appdatasource';
 import { Global, Module } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { AppDataSource } from '../appdatasource';
 
 @Global()
 @Module({

@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
-import { waitForRandomDelay } from '../../../utils/waitFor.helper';
-import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
+import { IntersolveBlockWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
-} from './dto/intersolve-create-customer-response.dto';
-import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateDebitCardResponseDto } from './dto/intersolve-create-debit-card.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
+import { IntersolveCreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+import { IntersolveCreateDebitCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
 import {
   IntersolveCreateWalletResponseBodyDto,
   IntersolveCreateWalletResponseDataDto,
   IntersolveCreateWalletResponseDto,
   IntersolveCreateWalletResponseTokenDto,
-} from './dto/intersolve-create-wallet-response.dto';
-import { IntersolveGetCardResponseDto } from './dto/intersolve-get-card-details.dto';
-import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
-import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IntersolveGetCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-card-details.dto';
+import { IntersolveGetWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
+import { GetTransactionsDetailsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
+import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
 import {
   IntersolveVisaCardStatus,
   IntersolveVisaWalletStatus,
-} from './intersolve-visa-wallet.entity';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class IntersolveVisaApiMockService {

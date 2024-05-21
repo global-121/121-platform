@@ -1,12 +1,15 @@
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
-import { assertRegistrationImport } from '../helpers/assert.helper';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { assertRegistrationImport } from '@121-service/test/helpers/assert.helper';
 import {
   bulkUpdateRegistrationsCSV,
   importRegistrationsCSV,
   searchRegistrationByReferenceId,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 
 describe('Update attribute of multiple PAs via Bulk update', () => {
   const programIdOcw = 3;

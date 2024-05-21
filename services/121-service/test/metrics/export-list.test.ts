@@ -1,31 +1,31 @@
-import { HttpStatus } from '@nestjs/common';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '../../src/registration/registration.entity';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedMiddelburgPv,
   registrationsPV,
-} from '../fixtures/scoped-registrations';
-import { changePhase } from '../helpers/program.helper';
+} from '@121-service/test/fixtures/scoped-registrations';
+import { changePhase } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   deleteRegistrations,
   importRegistrations,
-} from '../helpers/registration.helper';
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenScoped,
   getServer,
   resetDB,
-} from '../helpers/utility.helper';
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   programIdPV,
   registrationsOCW,
-} from '../registrations/pagination/pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 function createExportObject(
   registration: Partial<RegistrationEntity> | any,

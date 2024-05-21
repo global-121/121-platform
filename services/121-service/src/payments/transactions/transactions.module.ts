@@ -1,21 +1,21 @@
+import { ActionsModule } from '@121-service/src/actions/actions.module';
+import { EventsModule } from '@121-service/src/events/events.module';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
+import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsController } from '@121-service/src/payments/transactions/transactions.controller';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { UserModule } from '@121-service/src/user/user.module';
+import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionsModule } from '../../actions/actions.module';
-import { EventsModule } from '../../events/events.module';
-import { FinancialServiceProviderEntity } from '../../financial-service-providers/financial-service-provider.entity';
-import { MessageTemplateModule } from '../../notifications/message-template/message-template.module';
-import { QueueMessageModule } from '../../notifications/queue-message/queue-message.module';
-import { TwilioMessageEntity } from '../../notifications/twilio.entity';
-import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationUtilsModule } from '../../registration/modules/registration-utilts/registration-utils.module';
-import { RegistrationScopedRepository } from '../../registration/repositories/registration-scoped.repository';
-import { UserModule } from '../../user/user.module';
-import { createScopedRepositoryProvider } from '../../utils/scope/createScopedRepositoryProvider.helper';
-import { LatestTransactionEntity } from './latest-transaction.entity';
-import { TransactionEntity } from './transaction.entity';
-import { TransactionsController } from './transactions.controller';
-import { TransactionsService } from './transactions.service';
 
 @Module({
   imports: [

@@ -1,10 +1,10 @@
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationEntity } from '../../registration.entity';
-import { RegistrationScopedRepository } from '../../repositories/registration-scoped.repository';
-import { RegistrationDataService } from '../registration-data/registration-data.service';
 
 @Injectable()
 export class RegistrationUtilsService {

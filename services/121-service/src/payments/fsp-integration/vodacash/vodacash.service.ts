@@ -1,26 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import fs from 'fs';
-import * as convert from 'xml-js';
-import { FinancialServiceProviderName } from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { FileImportService } from '../../../utils/file-import/file-import.service';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   ImportFspReconciliationArrayDto,
   ImportFspReconciliationDto,
-} from '../../dto/import-fsp-reconciliation.dto';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+} from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
+import { Injectable } from '@nestjs/common';
+import fs from 'fs';
+import * as convert from 'xml-js';
 
 @Injectable()
 export class VodacashService

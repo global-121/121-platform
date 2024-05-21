@@ -1,9 +1,9 @@
-import { RegistrationStatusEnum } from '../../../../registration/enum/registration-status.enum';
-import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import {
   IntersolveVisaCardStatus,
   IntersolveVisaWalletStatus,
-} from '../intersolve-visa-wallet.entity';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 export class ExportCardsDto {
   paId: number;

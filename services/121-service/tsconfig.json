@@ -23,7 +23,10 @@
     "types": ["express", "node", "jest"],
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@121-service/*": ["./*"]
+    }
   },
   "watchOptions": {
     "watchFile": "fixedPollingInterval",

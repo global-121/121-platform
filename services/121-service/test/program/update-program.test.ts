@@ -1,10 +1,13 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { assertObjectsAreEqual } from '@121-service/test/helpers/assert.helper';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import { HttpStatus } from '@nestjs/common';
-import { FinancialServiceProviderName } from '../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { UpdateProgramDto } from '../../src/programs/dto/update-program.dto';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { assertObjectsAreEqual } from '../helpers/assert.helper';
-import { patchProgram } from '../helpers/program.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 describe('Update program', () => {
   let accessToken: string;

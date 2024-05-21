@@ -1,6 +1,6 @@
+import { TwilioController } from '@mock-service/src/twilio/twilio.controller';
+import { TwilioService } from '@mock-service/src/twilio/twilio.service';
 import { Module } from '@nestjs/common';
-import { TwilioController } from './twilio.controller';
-import { TwilioService } from './twilio.service';
 
 @Module({
   imports: [],

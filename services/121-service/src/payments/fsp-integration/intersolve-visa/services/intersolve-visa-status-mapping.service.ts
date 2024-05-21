@@ -1,13 +1,13 @@
+import { EXTERNAL_API } from '@121-service/src/config';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import {
+  IntersolveVisaCardStatus,
+  IntersolveVisaWalletStatus,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import csvParser from 'csv-parser';
 import fs from 'fs';
 import * as path from 'path';
-import { EXTERNAL_API } from '../../../../config';
-import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
-import {
-  IntersolveVisaCardStatus,
-  IntersolveVisaWalletStatus,
-} from './../intersolve-visa-wallet.entity';
 
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
 interface VisaStatusMapInterface {

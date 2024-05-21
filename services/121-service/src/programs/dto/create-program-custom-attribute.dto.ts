@@ -1,3 +1,4 @@
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -7,7 +8,6 @@ import {
   IsString,
 } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
 
 export enum CustomAttributeType {
   text = 'text',

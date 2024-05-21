@@ -1,7 +1,7 @@
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { IsNotBothPresent } from '@121-service/src/registration/validators/is-not-both-present.class.validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional } from 'class-validator';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { IsNotBothPresent } from '../validators/is-not-both-present.class.validator';
 
 export class RegistrationStatusPatchDto {
   @ApiProperty({

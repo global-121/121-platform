@@ -1,14 +1,14 @@
+import { IntersolveCancelTransactionByRefPosResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
+import { IntersolveGetCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-get-card-response.dto';
+import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
+import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
+import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
+import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
+import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
+import { SoapService } from '@121-service/src/utils/soap/soap.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SoapService } from '../../../utils/soap/soap.service';
-import { IntersolveCancelTransactionByRefPosResponse } from './dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
-import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
-import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
-import { IntersolveVoucherSoapElements } from './enum/intersolve-voucher-soap.enum';
-import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
-import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
 
 @Injectable()
 export class IntersolveVoucherApiService {

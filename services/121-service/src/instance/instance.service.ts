@@ -1,8 +1,8 @@
+import { UpdateInstanceDto } from '@121-service/src/instance/dto/update-instance.dto';
+import { InstanceEntity } from '@121-service/src/instance/instance.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { InstanceEntity } from './instance.entity';
 
 @Injectable()
 export class InstanceService {

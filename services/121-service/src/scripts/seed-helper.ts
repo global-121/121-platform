@@ -1,23 +1,23 @@
+import { DEBUG } from '@121-service/src/config';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { InstanceEntity } from '@121-service/src/instance/instance.entity';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { HttpException, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
-import { DEBUG } from '../config';
-import { FinancialServiceProviderEntity } from '../financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '../financial-service-providers/fsp-question.entity';
-import { InstanceEntity } from '../instance/instance.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
-import { MessageTemplateService } from '../notifications/message-template/message-template.service';
-import { ProgramFspConfigurationService } from '../programs/fsp-configuration/fsp-configuration.service';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { AnswerTypes } from '../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../shared/enum/program-phase.enum';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { DefaultUserRole } from '../user/user-role.enum';
-import { UserType } from '../user/user-type-enum';
-import { UserEntity } from '../user/user.entity';
 
 @Injectable()
 export class SeedHelper {

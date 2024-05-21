@@ -1,21 +1,24 @@
-import { FinancialServiceProviderName } from '../../../src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
-import { PermissionEnum } from '../../../src/user/enum/permission.enum';
-import { DefaultUserRole } from '../../../src/user/user-role.enum';
-import { changePhase } from '../../helpers/program.helper';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { changePhase } from '@121-service/test/helpers/program.helper';
 import {
   getRegistrations,
   importRegistrations,
-} from '../../helpers/registration.helper';
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenCvaManager,
   removePermissionsFromRole,
   resetDB,
-} from '../../helpers/utility.helper';
+} from '@121-service/test/helpers/utility.helper';
 
-import { programIdOCW, registrationOCW1 } from './pagination-data';
+import {
+  programIdOCW,
+  registrationOCW1,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Load PA table', () => {
   describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {

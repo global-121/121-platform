@@ -1,19 +1,25 @@
+import {
+  EXTERNAL_API,
+  TWILIO_SANDBOX_WHATSAPP_NUMBER,
+} from '@121-service/src/config';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
+import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
+import {
+  NotificationType,
+  TwilioMessageEntity,
+} from '@121-service/src/notifications/twilio.entity';
+import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
-import { ProgramEntity } from '../../programs/program.entity';
-import { formatWhatsAppNumber } from '../../utils/phone-number.helpers';
-import { MessageContentType } from '../enum/message-type.enum';
-import { LastMessageStatusService } from '../last-message-status.service';
-import { MessageProcessType } from '../message-job.dto';
-import { MessageTemplateEntity } from '../message-template/message-template.entity';
-import { MessageTemplateService } from '../message-template/message-template.service';
-import { twilioClient } from '../twilio.client';
-import { TwilioStatusCallbackDto } from '../twilio.dto';
-import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
-import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 
 @Injectable()
 export class WhatsappService {

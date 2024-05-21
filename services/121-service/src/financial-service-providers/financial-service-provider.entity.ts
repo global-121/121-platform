@@ -1,13 +1,13 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocalizedString } from 'src/shared/enum/language.enums';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
-import { CascadeDeleteEntity } from '../base.entity';
-import { FinancialServiceProviderIntegrationType } from '../financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { FspQuestionEntity } from './fsp-question.entity';
 
 @Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {

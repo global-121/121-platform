@@ -1,6 +1,6 @@
-import { UserMapper } from '../../user/utils/user.mapper';
-import { ActionEntity } from '../action.entity';
-import { ActionReturnDto } from '../dto/action-return.dto';
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { UserMapper } from '@121-service/src/user/utils/user.mapper';
 
 export class ActionMapper {
   static entityToActionReturnDto(actionEntity: ActionEntity): ActionReturnDto {

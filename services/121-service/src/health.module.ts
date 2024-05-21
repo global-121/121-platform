@@ -1,3 +1,4 @@
+import { APP_VERSION } from '@121-service/src/config';
 import { Controller, Get, Module } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
@@ -7,7 +8,6 @@ import {
   TerminusModule,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { APP_VERSION } from './config';
 
 @ApiTags('instance')
 // TODO: REFACTOR: rename to instance

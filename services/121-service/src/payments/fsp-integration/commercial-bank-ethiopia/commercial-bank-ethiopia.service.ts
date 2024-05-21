@@ -1,42 +1,45 @@
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
+import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.api.service';
+import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-job.dto';
+import {
+  CommercialBankEthiopiaRegistrationData,
+  CommercialBankEthiopiaTransferPayload,
+  CommercialBankEthiopiaValidationData,
+} from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis-client';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '../../../financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { ScopedRepository } from '../../../scoped.repository';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '../../enum/queue.names.enum';
-import { REDIS_CLIENT, getRedisSetName } from '../../redis-client';
-import { TransactionEntity } from '../../transactions/transaction.entity';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from './commercial-bank-ethiopia-account-enquiries.entity';
-import { CommercialBankEthiopiaApiService } from './commercial-bank-ethiopia.api.service';
-import { CommercialBankEthiopiaJobDto } from './dto/commercial-bank-ethiopia-job.dto';
-import {
-  CommercialBankEthiopiaRegistrationData,
-  CommercialBankEthiopiaTransferPayload,
-  CommercialBankEthiopiaValidationData,
-} from './dto/commercial-bank-ethiopia-transfer-payload.dto';
-import { CommercialBankEthiopiaValidationReportDto } from './dto/commercial-bank-ethiopia-validation-report.dto';
 
 @Injectable()
 export class CommercialBankEthiopiaService

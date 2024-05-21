@@ -1,14 +1,20 @@
 /* eslint-disable jest/no-conditional-expect */
-import { HttpStatus } from '@nestjs/common';
-import programEth from '../../seed-data/program/program-joint-response-dorcas.json';
-import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
+import programEth from '@121-service/seed-data/program/program-joint-response-dorcas.json';
+import programOCW from '@121-service/seed-data/program/program-nlrc-ocw.json';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   assertArraysAreEqual,
   assertObjectsAreEqual,
-} from '../helpers/assert.helper';
-import { getProgram, postProgram } from '../helpers/program.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/assert.helper';
+import {
+  getProgram,
+  postProgram,
+} from '@121-service/test/helpers/program.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Create program questions', () => {
   let accessToken: string;

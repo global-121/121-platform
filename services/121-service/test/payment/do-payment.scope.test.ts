@@ -1,29 +1,29 @@
-import { HttpStatus } from '@nestjs/common';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { DebugScope } from '../../src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { registrationsPV } from '../fixtures/scoped-registrations';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   changePhase,
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
-} from '../helpers/registration.helper';
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenScoped,
   resetDB,
-} from '../helpers/utility.helper';
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   programIdPV,
   registrationsOCW,
-} from '../registrations/pagination/pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Registrations - [Scoped]', () => {
   const OcwProgramId = programIdOCW;

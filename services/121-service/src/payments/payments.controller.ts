@@ -1,3 +1,22 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
+import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
+import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
+import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
+import {
+  BulkActionResultDto,
+  BulkActionResultPaymentDto,
+} from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -26,25 +45,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
-import { AuthenticatedUser } from '../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../guards/authenticated-user.guard';
-import { PaginateConfigRegistrationViewOnlyFilters } from '../registration/const/filter-operation.const';
-import {
-  BulkActionResultDto,
-  BulkActionResultPaymentDto,
-} from '../registration/dto/bulk-action-result.dto';
-import { ImportResult } from '../registration/dto/bulk-import.dto';
-import { RegistrationViewEntity } from '../registration/registration-view.entity';
-import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
-import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
-import { PermissionEnum } from '../user/enum/permission.enum';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { FspInstructions } from './dto/fsp-instructions.dto';
-import { GetPaymentAggregationDto } from './dto/get-payment-aggregration.dto';
-import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
-import { RetryPaymentDto } from './dto/retry-payment.dto';
-import { PaymentsService } from './payments.service';
-import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')

@@ -1,4 +1,7 @@
-import { waitFor, waitForRandomDelay } from './waitFor.helper';
+import {
+  waitFor,
+  waitForRandomDelay,
+} from '@121-service/src/utils/waitFor.helper';
 
 describe('waitFor helpers', () => {
   it('waitFor - should wait for the specified time', async () => {
