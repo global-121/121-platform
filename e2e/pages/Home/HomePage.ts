@@ -6,18 +6,14 @@ class HomePage {
   readonly activeProgramsBanner: Locator;
   readonly programCard: Locator;
   readonly openPAsForRegistrationButton: Locator;
-  readonly okButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.activeProgramsBanner = this.page.locator('p.ion-no-margin');
-    this.programCard = this.page.locator('[data-testid="program-card"]');
-    this.openPAsForRegistrationButton = this.page.locator(
-      'ion-button.ion-margin-start',
+    this.activeProgramsBanner = this.page.getByTestId(
+      'running-programs-list-header',
     );
-    this.okButton = this.page.locator(
-      'ion-button[fill="solid"][color="primary"]:has-text("OK")',
-    );
+    this.programCard = this.page.getByTestId('program-card');
+    this.openPAsForRegistrationButton = this.page.getByTestId('button-default');
   }
 
   async validateNumberOfActivePrograms(amount: number) {
@@ -26,10 +22,24 @@ class HomePage {
     );
   }
 
-  async openPAsForRegistrationOcwProgram(programName: string) {
+  async openPAsForRegistrationOcwProgram({
+    programName,
+    buttonName,
+    okButtonName,
+  }: {
+    programName: string;
+    buttonName: string;
+    okButtonName: string;
+  }) {
+    const openForRegistrationButton = this.openPAsForRegistrationButton.filter({
+      hasText: buttonName,
+    });
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
     await this.programCard.filter({ hasText: programName }).click();
-    await this.openPAsForRegistrationButton.click();
-    await this.okButton.click();
+    await openForRegistrationButton.click();
+    await okButton.click();
   }
 
   async navigateToProgramme(programName: string) {

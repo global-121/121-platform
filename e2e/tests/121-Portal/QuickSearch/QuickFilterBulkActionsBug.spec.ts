@@ -7,6 +7,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { expect, test } from '@playwright/test';
 import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
+import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import HomePage from '../../../pages/Home/HomePage';
 import LoginPage from '../../../pages/Login/LoginPage';
 import TableModule from '../../../pages/Table/TableModule';
@@ -39,7 +40,11 @@ test.skip('[27614] Quick filter through available PAs and apply bulk action', as
   const homePage = new HomePage(page);
 
   await test.step('Should open popup to send message to correct amount of filtered PAs', async () => {
-    await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePortal.en);
+    await homePage.openPAsForRegistrationOcwProgram({
+      programName: NLRCProgram.titlePortal.en,
+      buttonName: englishTranslations.page.program.phases.design.btnText,
+      okButtonName: englishTranslations.common.ok,
+    });
     await table.quickFilter('succeed');
     // Really bad solution to tackle flickering issue of FE
     await page.waitForTimeout(5000);
