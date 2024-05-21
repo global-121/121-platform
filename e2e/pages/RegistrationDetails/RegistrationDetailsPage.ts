@@ -25,6 +25,11 @@ class RegistrationDetails {
   readonly tileDetailsDropdownIcon: Locator;
   readonly preferredLanguageDropdown: Locator;
   readonly updateReasonTextArea: Locator;
+  readonly personAffectedEditPopUpTitle: Locator;
+  readonly personAffectedPopUpFsp: Locator;
+  readonly personAffectedPhoneNumber: Locator;
+  readonly personAffectedPaymentMultiplier: Locator;
+  readonly personAffectedLanguage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -87,6 +92,16 @@ class RegistrationDetails {
       ));
     this.updateReasonTextArea = this.page.getByTestId(
       'user-data-update-textarea',
+    );
+    this.personAffectedEditPopUpTitle = this.page.getByTestId(
+      'person-affected-popup-title',
+    );
+    this.personAffectedPopUpFsp = this.page.getByTestId('fsp-dropdown');
+    this.personAffectedPhoneNumber = this.page.getByTestId('phone-number');
+    this.personAffectedPaymentMultiplier =
+      this.page.getByTestId('payment-multiplier');
+    this.personAffectedLanguage = this.page.getByTestId(
+      'preferred-language-dropdown',
     );
   }
 
@@ -369,6 +384,16 @@ class RegistrationDetails {
     expect(
       await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
     ).toContain(messageContent);
+  }
+
+  async validatePiiPopUp({ paId }: { paId: string }) {
+    expect(await this.personAffectedEditPopUpTitle.textContent()).toContain(
+      paId,
+    );
+    await expect(this.personAffectedPaymentMultiplier).toBeVisible();
+    await expect(this.personAffectedLanguage).toBeVisible();
+    await expect(this.personAffectedPhoneNumber).toBeVisible();
+    await expect(this.personAffectedPopUpFsp).toBeVisible();
   }
 }
 

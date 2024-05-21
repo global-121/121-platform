@@ -253,6 +253,14 @@ class TableModule {
     await this.page.waitForLoadState('networkidle');
     await expect(this.informationPopUpButton).toBeHidden();
   }
+
+  async openPaPersonalInformation({
+    buttonIndex = 0,
+  }: {
+    buttonIndex?: number;
+  }) {
+    await this.informationPopUpButton.nth(buttonIndex).click();
+  }
 }
 
 export default TableModule;
