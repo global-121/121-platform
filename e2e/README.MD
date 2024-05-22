@@ -10,6 +10,25 @@
   This documentation touches upon E2E Playwright test suite for API refer to <a href="https://github.com/global-121/121-platform?tab=readme-ov-file#testing">features/</a>.
 </p>
 
+# Table of Contents
+
+1. [Advantages of Playwright Automated Tests](#advantages-of-playwright-automated-tests)
+2. [Prerequisite](#prerequisite)
+3. [Installation](#installation)
+4. [Environmental Variables](#environmental-variables)
+5. [Run Tests via Console](#run-tests-via-console)
+6. [Run Tests using Built-in Runner via VS Code](#run-tests-using-built-in-runner-via-vs-code)
+7. [Tests and Page Object Model (POM)](#tests-and-page-object-model-pom)
+   - [What is Page Object Model (POM)?](#what-is-page-object-model-pom)
+   - [Benefits of Using POM](#benefits-of-using-pom)
+   - [Implementing POM](#implementing-pom)
+8. [Writing Tests](#writing-tests)
+   - [Example Test](#example-test)
+   - [Best Practices](#best-practices)
+   - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
+9. [How to generate Screenshots for "User Manual"](#how-to-generate-screenshots-for-user-manual)
+
+
 ## Advantages of Playwright Automated Tests
 
 - **Simulating User Interactions**: Playwright enables you to simulate user interactions in the interface across different browsers and devices.
@@ -152,15 +171,17 @@ test('[27493] Navigate to programme', async ({ page }) => {
 
 ### Best Practices
 
-- Keep Tests Independent: Each test should be able to run independently of others.
-- Use Meaningful Names: Name your page objects and methods clearly to reflect their purpose.
-- Avoid Hardcoding: Use variables and configuration files (like translation file) to manage test data.
+- **Keep Tests Independent**: Each test should be able to run independently of others.
+- **Use Meaningful Names**: Name your page objects and methods clearly to reflect their purpose.
+- **Avoid Hardcoding**: Use variables and configuration files (like translation file) to manage test data.
 
 ### Common Issues and Troubleshooting
 
-- Element Not Found: Ensure the selectors in your page objects are correct, unique and are loaded in DOM.
-- Timeouts: Increase the default timeout if elements take longer to load.
-- Test Flakiness: Use wait methods to handle dynamic content and animations.
+- **Element Not Found**: Ensure the selectors in your page objects are correct, unique and are loaded in DOM.
+- **Timeouts**: Increase the default timeout if elements take longer to load.
+- **Test Flakiness**: Use wait methods to handle dynamic content and animations.
+
+For extended documentation refer to Plawyright's page: https://playwright.dev/docs/getting-started-vscode
 
 ### How to generate Screenshots for "User Manual":
 
