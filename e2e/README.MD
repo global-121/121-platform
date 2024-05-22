@@ -69,7 +69,7 @@ npm test -- --headed
     </a>
   </h2>
   <a>
-    <img alt="playwright tool" src="https://github.com/microsoft/playwright/assets/13063165/ffca2fd1-5349-41fb-ade9-ace143bb2c58"/>
+    <img alt="playwright tool" src="https://github.com/microsoft/playwright/assets/13063165/348e18ff-f819-4caa-8f7e-f16c20724f56"/>
   </a>
 
 ## Tests and Page Object Model (POM)
@@ -80,6 +80,6 @@ The Page Object Model is a design pattern that creates an object repository for 
 
 ### Benefits of Using POM
 
-- **Improved Test Maintenance: Changes in the UI require updates only in the page objects, not in the test scripts.
+- Improved Test Maintenance: Changes in the UI require updates only in the page objects, not in the test scripts.
 - Code Reusability: Page objects can be reused across multiple tests.
 - Separation of Concerns: Separates the test logic from the UI logic, making the code easier to understand and maintain.
