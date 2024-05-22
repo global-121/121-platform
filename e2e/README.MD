@@ -150,8 +150,11 @@ test('[27493] Navigate to programme', async ({ page }) => {
 });
 ```
 
-### Example of a folder structure that coudl be used with Page Object Model
+### How to generate Screenshots for "User Manual":
 
-<a>
-    <img alt="POM" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7eFsHVMRFiuTI8_pd0GFTA.png"/>
-</a>
+- Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
+- Remove "skip" command from the test
+``` test.skip('Navigates to the portal and takes screenshots', async ({ page }) => ```
+- Run the test with command: ``` npx playwright test userManualScreenshots/userManualScreenshots.spec.ts  ```
+- Copy the screenshots from "screenshots" folder and paste them in "User Manual" repository
+
