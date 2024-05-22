@@ -25,6 +25,13 @@ class RegistrationDetails {
   readonly tileDetailsDropdownIcon: Locator;
   readonly preferredLanguageDropdown: Locator;
   readonly updateReasonTextArea: Locator;
+  readonly personAffectedEditPopUpTitle: Locator;
+  readonly personAffectedPopUpFsp: Locator;
+  readonly personAffectedPhoneNumber: Locator;
+  readonly personAffectedPaymentMultiplier: Locator;
+  readonly personAffectedLanguage: Locator;
+  readonly personAffectedCustomAttribute: Locator;
+  readonly personAffectedPopUpSaveButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -87,6 +94,27 @@ class RegistrationDetails {
       ));
     this.updateReasonTextArea = this.page.getByTestId(
       'user-data-update-textarea',
+    );
+    this.personAffectedEditPopUpTitle = this.page.getByTestId(
+      'edit-person-affected-popup-title',
+    );
+    this.personAffectedPopUpFsp = this.page.getByTestId(
+      'edit-person-affected-popup-fsp-dropdown',
+    );
+    this.personAffectedPhoneNumber = this.page.getByTestId(
+      'edit-person-affected-popup-phone-number',
+    );
+    this.personAffectedPaymentMultiplier = this.page.getByTestId(
+      'edit-person-affected-popup-payment-multiplier',
+    );
+    this.personAffectedLanguage = this.page.getByTestId(
+      'preferred-language-dropdown',
+    );
+    this.personAffectedCustomAttribute = this.page.getByTestId(
+      'update-property-item-label',
+    );
+    this.personAffectedPopUpSaveButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
     );
   }
 
@@ -369,6 +397,35 @@ class RegistrationDetails {
     expect(
       await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
     ).toContain(messageContent);
+  }
+
+  async validatePiiPopUp({
+    paId,
+    whatsappLabel,
+    saveButtonName,
+  }: {
+    paId: string;
+    whatsappLabel: string;
+    saveButtonName: string;
+  }) {
+    const fspAttribute = await this.personAffectedCustomAttribute.filter({
+      hasText: whatsappLabel,
+    });
+    const saveButton = this.personAffectedPopUpSaveButton.filter({
+      hasText: saveButtonName,
+    });
+    expect(await this.personAffectedEditPopUpTitle.textContent()).toContain(
+      paId,
+    );
+    await expect(this.personAffectedPaymentMultiplier).toBeVisible();
+    await expect(this.personAffectedLanguage).toBeVisible();
+    await expect(this.personAffectedPhoneNumber).toBeVisible();
+    await expect(this.personAffectedPopUpFsp).toBeVisible();
+    expect(await fspAttribute.textContent()).toContain(whatsappLabel);
+
+    for (let i = 0; i < (await saveButton.count()); i++) {
+      await expect(saveButton.nth(i)).toHaveAttribute('aria-disabled', 'true');
+    }
   }
 }
 
