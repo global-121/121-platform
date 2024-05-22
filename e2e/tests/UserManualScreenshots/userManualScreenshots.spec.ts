@@ -56,8 +56,10 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
     process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
+
   await homePage.validateNumberOfActivePrograms(2);
   await helpers.takeFullScreenShot({ fileName: 'ProgramOverview' });
+
   await homePage.openMenu();
   await page.waitForTimeout(TIMEOUT_DURATION);
   await helpers.takeFullScreenShot({ fileName: 'HomeMenuPage' });
@@ -68,6 +70,7 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
     url: '/user',
     fileName: 'ChangePassword',
   });
+
   await navigateAndScreenshot({
     page,
     helpers: helpers,
@@ -125,6 +128,7 @@ test('Navigates to the portal and takes screenshots', async ({ page }) => {
     url: `/program/${PROGRAM_ID}/design`,
     fileName: 'ProgramDetails',
   });
+
   await helpers.takePartialScreenshot({
     elementId: 'design-table-element',
     fileName: 'ProgramDetailsTable',
