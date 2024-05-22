@@ -1,7 +1,7 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { PermissionEntity } from '@121-service/src/user/permissions.entity';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { PermissionEnum } from '../src/user/enum/permission.enum';
-import { PermissionEntity } from '../src/user/permissions.entity';
-import { UserRoleEntity } from '../src/user/user-role.entity';
 
 export class addPausedStatus1694821278357 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

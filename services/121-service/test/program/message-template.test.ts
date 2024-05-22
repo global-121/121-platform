@@ -1,15 +1,18 @@
 /* eslint-disable jest/no-conditional-expect */
-import { HttpStatus } from '@nestjs/common';
-import { CreateMessageTemplateDto } from '../../src/notifications/message-template/dto/message-template.dto';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { CreateMessageTemplateDto } from '@121-service/src/notifications/message-template/dto/message-template.dto';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import {
   getMessageTemplates,
   postMessageTemplate,
   updateMessageTemplate,
-} from '../helpers/program.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from '../registrations/pagination/pagination-data';
+} from '@121-service/test/helpers/program.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Message template', () => {
   let accessToken: string;
@@ -20,7 +23,7 @@ describe('Message template', () => {
     message: 'testing message',
     isWhatsappTemplate: true,
     isSendMessageTemplate: true,
-    label: JSON.parse(JSON.stringify({ en: 'test' })),
+    label: { en: 'test' },
   };
 
   beforeEach(async () => {

@@ -1,6 +1,6 @@
+import { SafaricomMockController } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.controller';
+import { SafaricomMockService } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.service';
 import { Module } from '@nestjs/common';
-import { SafaricomMockController } from './safaricom.mock.controller';
-import { SafaricomMockService } from './safaricom.mock.service';
 
 @Module({
   imports: [],

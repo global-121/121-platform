@@ -1,5 +1,5 @@
+import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 import { setTimeout } from 'node:timers/promises';
-import { getRandomInt } from './getRandomValue.helper';
 
 export async function waitFor(timeInMs: number): Promise<void> {
   return setTimeout(timeInMs);

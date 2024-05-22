@@ -1,9 +1,9 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { Injectable } from '@nestjs/common';
 import * as africastalking from 'africastalking';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { waitFor } from '../../../utils/waitFor.helper';
-import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 
 @Injectable()
 export class AfricasTalkingApiService {
@@ -18,7 +18,7 @@ export class AfricasTalkingApiService {
     const payments = AfricasTalking.PAYMENTS;
 
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FspName.africasTalking;
+    paTransactionResult.fspName = FinancialServiceProviderName.africasTalking;
     paTransactionResult.referenceId =
       payload.recipients[0].metadata.referenceId;
     paTransactionResult.date = new Date();

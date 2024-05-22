@@ -1,3 +1,9 @@
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { NoteEntity } from '@121-service/src/notes/note.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserType } from '@121-service/src/user/user-type-enum';
 import { ApiProperty } from '@nestjs/swagger';
 import crypto from 'crypto';
 import {
@@ -8,19 +14,13 @@ import {
   Index,
   OneToMany,
 } from 'typeorm';
-import { ActionEntity } from '../actions/action.entity';
-import { CascadeDeleteEntity } from '../base.entity';
-import { NoteEntity } from '../notes/note.entity';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
-import { UserType } from './user-type-enum';
 
 @Entity('user')
 export class UserEntity extends CascadeDeleteEntity {
   @Index({ unique: true })
   @Column({ nullable: true })
   @ApiProperty({ example: 'username' })
-  public username: string;
+  public username: string | null;
 
   @Column({ select: false })
   @ApiProperty()
@@ -81,7 +81,7 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true, select: false })
   @ApiProperty()
-  public salt: string;
+  public salt: string | null;
 
   @Column({ default: true })
   @ApiProperty({ example: true })
@@ -89,5 +89,5 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true })
   @ApiProperty({ example: new Date() })
-  public lastLogin: Date;
+  public lastLogin: Date | null;
 }

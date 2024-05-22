@@ -1,31 +1,31 @@
+import fspAfricasTalking from '@121-service/seed-data/fsp/fsp-africas-talking.json';
+import fspBank from '@121-service/seed-data/fsp/fsp-bank.json';
+import fspBelcash from '@121-service/seed-data/fsp/fsp-belcash.json';
+import fspBob from '@121-service/seed-data/fsp/fsp-bob.json';
+import fspCommercialBankEthiopia from '@121-service/seed-data/fsp/fsp-commercial-bank-ethiopia.json';
+import fspExcel from '@121-service/seed-data/fsp/fsp-excel.json';
+import fspIntersolveJumboPhysical from '@121-service/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
+import fspIntersolveVisa from '@121-service/seed-data/fsp/fsp-intersolve-visa.json';
+import fspIntersolveVoucherPaper from '@121-service/seed-data/fsp/fsp-intersolve-voucher-paper.json';
+import fspIntersolveVoucher from '@121-service/seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
+import fspMixedAttributes from '@121-service/seed-data/fsp/fsp-mixed-attributes.json';
+import fspNoAttributes from '@121-service/seed-data/fsp/fsp-no-attributes.json';
+import fspSafaricom from '@121-service/seed-data/fsp/fsp-safaricom.json';
+import fspUkrPoshta from '@121-service/seed-data/fsp/fsp-ukrposhta.json';
+import fspVodaCash from '@121-service/seed-data/fsp/fsp-vodacash.json';
+import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.service';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { PermissionEntity } from '@121-service/src/user/permissions.entity';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource } from 'typeorm';
-import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
-import fspBank from '../../seed-data/fsp/fsp-bank.json';
-import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
-import fspBob from '../../seed-data/fsp/fsp-bob.json';
-import fspCommercialBankEthiopia from '../../seed-data/fsp/fsp-commercial-bank-ethiopia.json';
-import fspExcel from '../../seed-data/fsp/fsp-excel.json';
-import fspIntersolveJumboPhysical from '../../seed-data/fsp/fsp-intersolve-jumbo-physical.json';
-import fspIntersolveVisa from '../../seed-data/fsp/fsp-intersolve-visa.json';
-import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
-import fspIntersolveVoucher from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
-import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
-import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
-import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
-import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
-import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
-import { CustomHttpService } from '../shared/services/custom-http.service';
-import { PermissionEnum } from '../user/enum/permission.enum';
-import { PermissionEntity } from '../user/permissions.entity';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { DefaultUserRole } from '../user/user-role.enum';
-import { UserType } from '../user/user-type-enum';
-import { UserEntity } from '../user/user.entity';
-import { QueueSeedHelperService } from './queue-seed-helper/queue-seed-helper.service';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -222,6 +222,21 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ActionREAD,
         ],
       },
+      {
+        role: DefaultUserRole.ViewWithoutPII,
+        label:
+          'Only view data, not including Personally Identifiable Information',
+        permissions: [
+          PermissionEnum.ActionREAD,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationREAD,
+        ],
+      },
     ];
 
     const userRoleEntities = [];
@@ -331,5 +346,3 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspExcel);
   }
 }
-
-export default SeedInit;

@@ -1,5 +1,5 @@
-import { UserOwnerDto } from '../dto/user-owner.dto';
-import { UserEntity } from '../user.entity';
+import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 export class UserMapper {
   static entityToOwner(userEntity: UserEntity): UserOwnerDto {

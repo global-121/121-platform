@@ -1,6 +1,6 @@
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
-import { DefaultUserRole } from '../user-role.enum';
 
 export class CreateProgramAssignmentDto {
   @ApiProperty({
@@ -24,12 +24,12 @@ export class UpdateProgramAssignmentDto {
   @IsArray()
   @ArrayMinSize(0)
   @IsOptional()
-  public readonly rolesToAdd: DefaultUserRole[];
+  public readonly rolesToAdd?: DefaultUserRole[];
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public readonly scope: string;
+  public readonly scope?: string;
 }
 
 export class DeleteProgramAssignmentDto {
@@ -40,5 +40,5 @@ export class DeleteProgramAssignmentDto {
   @IsArray()
   @ArrayMinSize(0)
   @IsOptional()
-  public readonly rolesToDelete: DefaultUserRole[];
+  public readonly rolesToDelete?: DefaultUserRole[];
 }

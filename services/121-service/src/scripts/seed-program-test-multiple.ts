@@ -1,13 +1,13 @@
+import instanceDemo from '@121-service/seed-data/instance/instance-demo.json';
+import messageTemplateDemo from '@121-service/seed-data/message-template/message-template-demo.json';
+import messageTemplateTest from '@121-service/seed-data/message-template/message-template-test.json';
+import messageTemplateValidation from '@121-service/seed-data/message-template/message-template-validation.json';
+import programDemo from '@121-service/seed-data/program/program-demo.json';
+import programTest from '@121-service/seed-data/program/program-test.json';
+import programValidation from '@121-service/seed-data/program/program-validation.json';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { Injectable } from '@nestjs/common';
-import instanceDemo from '../../seed-data/instance/instance-demo.json';
-import messageTemplateDemo from '../../seed-data/message-template/message-template-demo.json';
-import messageTemplateTest from '../../seed-data/message-template/message-template-test.json';
-import messageTemplateValidation from '../../seed-data/message-template/message-template-validation.json';
-import programDemo from '../../seed-data/program/program-demo.json';
-import programTest from '../../seed-data/program/program-test.json';
-import programValidation from '../../seed-data/program/program-validation.json';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedTestMultipleProgram implements InterfaceScript {
@@ -76,5 +76,3 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     await this.seedHelper.addDefaultUsers(programEntityValidation);
   }
 }
-
-export default SeedTestMultipleProgram;

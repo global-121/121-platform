@@ -1,3 +1,10 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { InstanceEntity } from '@121-service/src/instance/instance.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import fs from 'fs';
 import {
   Check,
@@ -9,13 +16,6 @@ import {
   OneToOne,
   QueryRunner,
 } from 'typeorm';
-import { CascadeDeleteEntity } from '../src/base.entity';
-import { InstanceEntity } from '../src/instance/instance.entity';
-import { ProgramEntity } from '../src/programs/program.entity';
-import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
-import { RegistrationEntity } from '../src/registration/registration.entity';
-import { NameConstraintQuestions } from '../src/shared/const';
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
 
 // This entity was copied here during the deletion of monitoringQuestions and everything related to it
 @Entity('monitoring_question')
@@ -31,7 +31,7 @@ class MonitoringQuestionEntity extends CascadeDeleteEntity {
   public conclusion: JSON;
 
   @Column('json', { nullable: true })
-  public options: JSON;
+  public options: JSON | null;
 
   // @ts-expect-error monitoringQuestion has been removed since
   @OneToOne(() => InstanceEntity, (instance) => instance.monitoringQuestion)

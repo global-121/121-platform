@@ -1,14 +1,14 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { UserService } from '@121-service/src/user/user.service';
 import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { LookupService } from '../../notifications/lookup/lookup.service';
-import { ProgramEntity } from '../../programs/program.entity';
-import { UserService } from '../../user/user.service';
-import { RegistrationCsvValidationEnum } from '../enum/registration-csv-validation.enum';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationsInputValidator } from './registrations-input-validator';
 
 describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
@@ -67,7 +67,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        fspName: FspName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -91,7 +91,7 @@ describe('RegistrationsInputValidator', () => {
     );
     expect(result[0]).toHaveProperty(
       'fspName',
-      FspName.intersolveVoucherWhatsapp,
+      FinancialServiceProviderName.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
     expect(result[0]).toHaveProperty('preferredLanguage', 'en');
@@ -109,7 +109,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        fspName: FspName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -130,7 +130,10 @@ describe('RegistrationsInputValidator', () => {
 
   it('should report errors for rows missing mandatory fields', async () => {
     const csvArray = [
-      { fspName: FspName.intersolveVoucherWhatsapp, preferredLanguage: 'en' },
+      {
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        preferredLanguage: 'en',
+      },
     ];
     const programId = 1;
     const userId = 1;

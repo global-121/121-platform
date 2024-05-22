@@ -1,9 +1,9 @@
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import fs from 'fs';
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
-import { ProgramEntity } from '../src/programs/program.entity';
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
-import { ProgramQuestionEntity } from './../src/programs/program-question.entity';
 
 export class PhasesAndEditableProperties1654693178991
   implements MigrationInterface

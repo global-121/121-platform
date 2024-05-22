@@ -1,9 +1,9 @@
+import instanceDemo from '@121-service/seed-data/instance/instance-demo.json';
+import messageTemplateDemo from '@121-service/seed-data/message-template/message-template-demo.json';
+import programDemo from '@121-service/seed-data/program/program-demo.json';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { Injectable } from '@nestjs/common';
-import instanceDemo from '../../seed-data/instance/instance-demo.json';
-import messageTemplateDemo from '../../seed-data/message-template/message-template-demo.json';
-import programDemo from '../../seed-data/program/program-demo.json';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedDemoProgram implements InterfaceScript {
@@ -22,5 +22,3 @@ export class SeedDemoProgram implements InterfaceScript {
     await this.seedHelper.addInstance(instanceDemo);
   }
 }
-
-export default SeedDemoProgram;

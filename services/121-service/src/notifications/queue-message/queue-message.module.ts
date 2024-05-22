@@ -1,11 +1,11 @@
+import { QueueNameCreateMessage } from '@121-service/src/notifications/enum/queue.names.enum';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
+import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProgramAttributesModule } from '../../program-attributes/program-attributes.module';
-import { RegistrationDataModule } from '../../registration/modules/registration-data/registration-data.module';
-import { QueueNameCreateMessage } from '../enum/queue.names.enum';
-import { MessageTemplateEntity } from '../message-template/message-template.entity';
-import { QueueMessageService } from './queue-message.service';
 
 @Module({
   imports: [

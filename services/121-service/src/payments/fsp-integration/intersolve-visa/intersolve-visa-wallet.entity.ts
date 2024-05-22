@@ -1,7 +1,7 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
-import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
@@ -28,10 +28,10 @@ export enum IntersolveVisaCardStatus {
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
   @Column({ unique: true, nullable: true })
-  public tokenCode: string;
+  public tokenCode: string | null;
 
   @Column({ nullable: true })
-  public tokenBlocked: boolean;
+  public tokenBlocked: boolean | null;
 
   @Column({ default: false })
   public linkedToVisaCustomer: boolean;
@@ -40,20 +40,20 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   public debitCardCreated: boolean;
 
   @Column({ nullable: true })
-  public balance: number;
+  public balance: number | null;
 
   @Column({ nullable: true })
-  public walletStatus: IntersolveVisaWalletStatus;
+  public walletStatus: IntersolveVisaWalletStatus | null;
 
   @Column({ nullable: true })
-  public cardStatus: IntersolveVisaCardStatus;
+  public cardStatus: IntersolveVisaCardStatus | null;
 
   @Column({ nullable: true })
-  public lastUsedDate: Date;
+  public lastUsedDate: Date | null;
 
   // Last time we got an update from Intersolve about the wallet status or balance or when it was last used
   @Column({ nullable: true })
-  public lastExternalUpdate: Date;
+  public lastExternalUpdate: Date | null;
 
   // This is euro cents
   @Column({ default: 0 })

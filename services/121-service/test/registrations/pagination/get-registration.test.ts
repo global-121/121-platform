@@ -1,18 +1,21 @@
-import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
-import { changePhase } from '../../helpers/program.helper';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { changePhase } from '@121-service/test/helpers/program.helper';
 import {
   getRegistrations,
   importRegistrations,
-} from '../../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   createExpectedValueObject,
   expectedAttributes,
   programIdOCW,
   registrationOCW1,
   registrationOCW2,
-} from './pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Load PA table', () => {
   describe('getting registration using paginate', () => {

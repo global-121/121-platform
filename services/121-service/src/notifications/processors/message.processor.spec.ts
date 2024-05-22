@@ -1,10 +1,13 @@
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import {
+  MessageJobDto,
+  MessageProcessType,
+} from '@121-service/src/notifications/message-job.dto';
+import { MessageService } from '@121-service/src/notifications/message.service';
+import { MessageProcessorReplyOnIncoming } from '@121-service/src/notifications/processors/message.processor';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { LanguageEnum } from '../../registration/enum/language.enum';
-import { MessageContentType } from '../enum/message-type.enum';
-import { MessageJobDto, MessageProcessType } from '../message-job.dto';
-import { MessageService } from '../message.service';
-import { MessageProcessorReplyOnIncoming } from './message.processor';
 
 const mockMessageJob: MessageJobDto = {
   registrationId: 1,
@@ -14,7 +17,7 @@ const mockMessageJob: MessageJobDto = {
   phoneNumber: '1234567890',
   programId: 1,
   message: 'test message',
-  key: 'key',
+  messageTemplateKey: 'messageTemplateKey',
   messageContentType: MessageContentType.custom,
   messageProcessType: MessageProcessType.whatsappTemplateGeneric,
 };

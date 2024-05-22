@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title *ngIf="person?.registrationProgramId">
+    <ion-title
+      data-testid="edit-person-affected-popup-title"
+      *ngIf="person?.registrationProgramId"
+    >
       {{
         'page.program.program-people-affected.edit-person-affected-popup.popup-title'
           | translate
@@ -45,6 +48,7 @@
     >
       <div>
         <app-update-property-item
+          data-testid="edit-person-affected-popup-payment-multiplier"
           type="number"
           [label]="
             'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
@@ -113,6 +117,7 @@
 
         <ng-container *ngIf="canViewPersonalData">
           <app-update-property-item
+            data-testid="edit-person-affected-popup-phone-number"
             *ngIf="attributeValues?.phoneNumber !== undefined"
             type="tel"
             [label]="
@@ -168,6 +173,7 @@
 
         <ng-container *ngIf="attributeValues.preferredLanguage">
           <app-update-property-item
+            data-testid="preferred-language-dropdown"
             type="dropdown"
             [label]="
               'page.program.program-people-affected.edit-person-affected-popup.properties.preferredLanguage.label'
@@ -206,6 +212,7 @@
           {{ person?.fspDisplayName }}
         </div>
         <app-update-fsp
+          data-testid="edit-person-affected-popup-fsp-dropdown"
           *ngIf="
             canUpdatePaData &&
             canUpdatePaFsp &&

@@ -1,3 +1,11 @@
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { IdentifyVoucherDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/identify-voucher.dto';
+import { IntersolveVoucherJobDetails } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/job-details.dto';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
+import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -24,14 +32,6 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import stream from 'stream';
-import { AuthenticatedUser } from '../../../guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '../../../guards/authenticated-user.guard';
-import { IMAGE_UPLOAD_API_FORMAT } from '../../../shared/file-upload-api-format';
-import { PermissionEnum } from '../../../user/enum/permission.enum';
-import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
-import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
-import { IntersolveVoucherService } from './intersolve-voucher.service';
-import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-voucher')

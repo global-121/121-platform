@@ -1,9 +1,9 @@
+import { IntersolveCreatePreOrderResponse } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/dto/intersolve-create-pre-order-response.dto';
+import { PreOrderInfoDto } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/dto/pre-order-info.dto';
+import { IntersolveJumboSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-soap.enum';
+import { IntersolveJumboApiMockService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.api-mock.service';
+import { SoapService } from '@121-service/src/utils/soap/soap.service';
 import { Injectable } from '@nestjs/common';
-import { SoapService } from '../../../utils/soap/soap.service';
-import { IntersolveCreatePreOrderResponse } from './dto/intersolve-create-pre-order-response.dto';
-import { PreOrderInfoDto } from './dto/pre-order-info.dto';
-import { IntersolveJumboSoapElements } from './enum/intersolve-jumbo-soap.enum';
-import { IntersolveJumboApiMockService } from './intersolve-jumbo.api-mock.service';
 
 @Injectable()
 export class IntersolveJumboApiService {

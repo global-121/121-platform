@@ -1,7 +1,7 @@
+import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
+import { UserRO } from '@121-service/src/user/user.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { UserRO } from '../user.interface';
-import { CookieSettingsDto } from './cookie-settings.dto';
 
 export class LoginResponseDto {
   @ApiProperty({ example: '' })

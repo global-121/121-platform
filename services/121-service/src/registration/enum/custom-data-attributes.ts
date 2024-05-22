@@ -1,4 +1,5 @@
-import { FspName } from '../../fsp/enum/fsp-name.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 
 export enum CustomDataAttributes {
   phoneNumber = 'phoneNumber',
@@ -45,9 +46,9 @@ export class Attribute {
   public name: string;
   public type: string;
   public label: object;
-  public options?: JSON;
+  public options?: QuestionOption[];
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
-  public fspNames?: FspName[];
+  public fspNames?: FinancialServiceProviderName[];
   public questionTypes?: QuestionType[];
   public pattern?: string;
 }
@@ -72,6 +73,3 @@ export enum CustomAttributeType {
   boolean = 'boolean',
   text = 'text',
 }
-
-export type AttributeType = AnswerTypes | CustomAttributeType;
-export const AttributeType = { ...AnswerTypes, ...CustomAttributeType };

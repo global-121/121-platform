@@ -1,17 +1,16 @@
-import { HttpStatus } from '@nestjs/common';
 import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
-} from '../../seed-data/mock/visa-card.data';
-import { FspConfigurationEnum } from '../../src/fsp/enum/fsp-name.enum';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { StatusEnum } from '../../src/shared/enum/status.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
-import { adminOwnerDto } from '../fixtures/user-owner';
+} from '@121-service/seed-data/mock/visa-card.data';
+import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import {
   changePhase,
   deleteFspConfiguration,
@@ -20,19 +19,23 @@ import {
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
-} from '../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
   issueNewVisaCard,
   updateRegistration,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   registrationOCW2,
   registrationOCW3,
   registrationOCW4,
-} from '../registrations/pagination/pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Do payment to 1 PA', () => {
   // Set WhatsApp-number for ALL tests in this suite only
@@ -659,7 +662,9 @@ describe('Do payment to 1 PA', () => {
 
       const fspConfig = await getFspConfiguration(programIdVisa, accessToken);
       const coverLetterCodeForFspConfigRecord = fspConfig.body.find(
-        (fspConfig) => fspConfig.name === FspConfigurationEnum.coverLetterCode,
+        (fspConfig) =>
+          fspConfig.name ===
+          FinancialServiceProviderConfigurationEnum.coverLetterCode,
       );
       await deleteFspConfiguration(
         programIdVisa,

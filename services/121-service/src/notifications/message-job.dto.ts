@@ -1,5 +1,5 @@
-import { LanguageEnum } from '../registration/enum/language.enum';
-import { MessageContentType } from './enum/message-type.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export class MessageJobDto {
   messageProcessType: MessageProcessType;
@@ -10,7 +10,7 @@ export class MessageJobDto {
   phoneNumber: string;
   programId: number;
   message?: string;
-  key?: string;
+  messageTemplateKey?: string;
   messageContentType?: MessageContentType;
   mediaUrl?: string;
   customData?: MessageJobCustomDataDto;

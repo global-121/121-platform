@@ -1,26 +1,30 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { MessageTemplateEntity } from '../../src/notifications/message-template/message-template.entity';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { processMessagePlaceholders } from '../helpers/assert.helper';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { processMessagePlaceholders } from '@121-service/test/helpers/assert.helper';
 import {
   getMessageTemplates,
   waitForMessagesToComplete,
-} from '../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   getMessageHistory,
   importRegistrations,
   sendMessage,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
-import { programIdPV } from './pagination/pagination-data';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  getServer,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 // this test is flaky, so we retry it before failing the whole 8-minute CI job just because of it
 jest.retryTimes(2);
 
-describe('Send templated message', () => {
+describe('Sending templated message', () => {
   const programId = programIdPV; // status change templates are only available for PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
@@ -29,7 +33,7 @@ describe('Send templated message', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    fspName: FspName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    fspName: FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
   };
 
@@ -44,8 +48,9 @@ describe('Send templated message', () => {
 
     messageTemplates = (await getMessageTemplates(programId, accessToken)).body;
   });
+
   describe('on status change of PA', () => {
-    it('include', async () => {
+    it('sucessfully send include message', async () => {
       // Arrange
       const statusChange = RegistrationStatusEnum.included;
 
@@ -63,7 +68,7 @@ describe('Send templated message', () => {
         programId,
         [registrationAh.referenceId],
         accessToken,
-        8000,
+        15_000,
       );
 
       const messageHistory = (
@@ -84,6 +89,26 @@ describe('Send templated message', () => {
 
       expect(messageHistory[0].body).toEqual(processedTemplate);
     });
+
+    it('throw error if messageTemplateKey AND message are defined', async () => {
+      // Arrange
+      const statusChange = RegistrationStatusEnum.included;
+      const templateKey = RegistrationStatusEnum.included;
+      const message = 'Message';
+
+      // Act
+      const result = await getServer()
+        .patch(`/programs/${programId}/registrations/status`)
+        .set('Cookie', [accessToken])
+        .query({})
+        .send({
+          status: statusChange,
+          message: message,
+          messageTemplateKey: templateKey,
+        });
+      // Assert
+      expect(result.status).toBe(400);
+    });
   });
 
   describe('on custom message', () => {
@@ -102,7 +127,7 @@ describe('Send templated message', () => {
         programId,
         [registrationAh.referenceId],
         accessToken,
-        8000,
+        15_000,
       );
 
       const messageHistory = (
@@ -122,6 +147,42 @@ describe('Send templated message', () => {
       );
 
       expect(messageHistory[0].body).toEqual(processedTemplate);
+    });
+
+    it('throw error if messageTemplateKey AND message are defined', async () => {
+      // Arrange
+      const templateKey = RegistrationStatusEnum.included;
+      const message = 'Message';
+
+      // Act
+      const result = await sendMessage(
+        accessToken,
+        programId,
+        [registrationAh.referenceId],
+        message,
+        templateKey,
+      );
+
+      // Assert
+      expect(result.status).toBe(400);
+    });
+
+    it('throw error if neither messageTemplateKey AND message are defined', async () => {
+      // Arrange
+      const templateKey = null;
+      const message = null;
+
+      // Act
+      const result = await sendMessage(
+        accessToken,
+        programId,
+        [registrationAh.referenceId],
+        message,
+        templateKey,
+      );
+
+      // Assert
+      expect(result.status).toBe(400);
     });
   });
 });

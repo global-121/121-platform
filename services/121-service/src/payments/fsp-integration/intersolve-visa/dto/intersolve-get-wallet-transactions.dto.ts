@@ -1,4 +1,4 @@
-import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
+import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
 
 export class TransactionInfoVisa {
   public lastUsedDate: Date | null;
@@ -11,7 +11,7 @@ export class GetTransactionsDetailsResponseDto {
   statusText: string;
 }
 
-export class GetTransactionsDetailsResponseBodyDto {
+class GetTransactionsDetailsResponseBodyDto {
   public success: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code: string;

@@ -6,3 +6,6 @@
 
 # Third-party code
 node_modules
+
+# TS Build output logs
+*.tsbuildinfo

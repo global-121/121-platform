@@ -1,3 +1,23 @@
+import { AppDataSource } from '@121-service/appdatasource';
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ValidationInfo } from '@121-service/src/programs/dto/validation-info.dto';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
+import {
+  AnswerTypes,
+  Attribute,
+  CustomAttributeType,
+} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 import {
   BeforeRemove,
   Column,
@@ -6,25 +26,6 @@ import {
   ManyToMany,
   OneToMany,
 } from 'typeorm';
-import { AppDataSource } from '../../appdatasource';
-import { ActionEntity } from '../actions/action.entity';
-import { CascadeDeleteEntity } from '../base.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { MessageTemplateEntity } from '../notifications/message-template/message-template.entity';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Attributes } from '../registration/dto/update-registration.dto';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.enum';
-import {
-  AnswerTypes,
-  CustomAttributeType,
-} from './../registration/enum/custom-data-attributes';
-import { ValidationInfo } from './dto/validation-info.dto';
-import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
-import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
-import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -32,34 +33,34 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public phase: ProgramPhase;
 
   @Column({ nullable: true })
-  public location: string;
+  public location: string | null;
 
   @Column('json', { nullable: true })
-  public titlePortal: JSON;
+  public titlePortal: LocalizedString | null;
 
   @Column({ nullable: true })
-  public ngo: string;
+  public ngo: string | null;
 
   @Column({ nullable: true })
-  public startDate: Date;
+  public startDate: Date | null;
 
   @Column({ nullable: true })
-  public endDate: Date;
+  public endDate: Date | null;
 
   @Column({ nullable: true })
-  public currency: string;
+  public currency: string | null;
 
   @Column({ nullable: true })
-  public distributionFrequency: string;
+  public distributionFrequency: string | null;
 
   @Column({ nullable: true })
-  public distributionDuration: number;
+  public distributionDuration: number | null;
 
   @Column({ nullable: true, type: 'real' })
-  public fixedTransferValue: number;
+  public fixedTransferValue: number | null;
 
   @Column({ nullable: true })
-  public paymentAmountMultiplierFormula: string;
+  public paymentAmountMultiplierFormula: string | null;
 
   @ManyToMany(
     () => FinancialServiceProviderEntity,
@@ -69,10 +70,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
   @Column({ nullable: true })
-  public targetNrRegistrations: number;
+  public targetNrRegistrations: number | null;
 
   @Column('json', { nullable: true })
-  public description: JSON;
+  public description: LocalizedString | null;
 
   @Column({ default: false })
   public published: boolean;
@@ -81,7 +82,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public validation: boolean;
 
   @Column('json', { nullable: true, default: null })
-  public aboutProgram: JSON;
+  public aboutProgram: LocalizedString | null;
 
   public editableAttributes?: Attribute[];
 
@@ -116,17 +117,17 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', {
     default: [],
   })
-  public deprecatedCustomDataKeys: JSON;
+  public deprecatedCustomDataKeys: unknown[];
 
   @Column({ default: false })
   public tryWhatsAppFirst: boolean;
 
   // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
-  public fullnameNamingConvention: JSON;
+  public fullnameNamingConvention: string[] | null;
 
   @Column('json', { default: [] })
-  public languages: JSON;
+  public languages: LanguageEnum[];
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
@@ -135,7 +136,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public enableScope: boolean;
 
   @Column({ nullable: true, default: null })
-  public budget: number;
+  public budget: number | null;
 
   @OneToMany(
     () => ProgramFspConfigurationEntity,
@@ -144,10 +145,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public programFspConfiguration: ProgramFspConfigurationEntity[];
 
   @Column({ nullable: true, default: null })
-  public monitoringDashboardUrl: string;
+  public monitoringDashboardUrl: string | null;
 
   @Column({ nullable: true, default: null })
-  public evaluationDashboardUrl: string;
+  public evaluationDashboardUrl: string | null;
 
   @Column({ default: false })
   public allowEmptyPhoneNumber: boolean;

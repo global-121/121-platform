@@ -16,6 +16,7 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
+      plugins: ['no-relative-import-paths'],
       extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/stylistic',
@@ -48,6 +49,13 @@ module.exports = {
           },
         ],
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
+        'no-relative-import-paths/no-relative-import-paths': [
+          'warn',
+          {
+            prefix: '@mock-service',
+            rootDir: '.',
+          },
+        ],
       },
     },
   ],

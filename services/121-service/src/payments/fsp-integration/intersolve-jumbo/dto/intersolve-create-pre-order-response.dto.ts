@@ -1,4 +1,4 @@
-import { IntersolveJumboResultCode } from '../enum/intersolve-jumbo-result-code.enum';
+import { IntersolveJumboResultCode } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
 
 export class IntersolveCreatePreOrderResponse {
   public readonly RequestResultSucces: { _text: string };

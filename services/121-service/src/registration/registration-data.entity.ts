@@ -1,10 +1,10 @@
+import { AppDataSource } from '@121-service/appdatasource';
+import { Base121Entity } from '@121-service/src/base.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
-import { AppDataSource } from '../../appdatasource';
-import { Base121Entity } from '../base.entity';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspQuestionEntity } from './../fsp/fsp-question.entity';
-import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
-import { RegistrationEntity } from './registration.entity';
 
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',
@@ -36,7 +36,7 @@ export class RegistrationDataEntity extends Base121Entity {
   @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;
   @Column({ nullable: true })
-  public programQuestionId: number;
+  public programQuestionId: number | null;
 
   @ManyToOne(
     (_type) => FspQuestionEntity,
@@ -45,7 +45,7 @@ export class RegistrationDataEntity extends Base121Entity {
   @JoinColumn({ name: 'fspQuestionId' })
   public fspQuestion: FspQuestionEntity;
   @Column({ nullable: true })
-  public fspQuestionId: number;
+  public fspQuestionId: number | null;
 
   @ManyToOne(
     (_type) => ProgramCustomAttributeEntity,
@@ -54,7 +54,7 @@ export class RegistrationDataEntity extends Base121Entity {
   @JoinColumn({ name: 'programCustomAttributeId' })
   public programCustomAttribute: ProgramCustomAttributeEntity;
   @Column({ nullable: true })
-  public programCustomAttributeId: number;
+  public programCustomAttributeId: number | null;
 
   @Index()
   @Column()

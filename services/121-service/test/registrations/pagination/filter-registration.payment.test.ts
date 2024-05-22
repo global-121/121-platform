@@ -1,19 +1,22 @@
-import { RegistrationStatusEnum } from '../../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../../src/shared/enum/program-phase.enum';
-import { StatusEnum } from '../../../src/shared/enum/status.enum';
+import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
   changePhase,
   doPayment,
   waitForPaymentTransactionsToComplete,
-} from '../../helpers/program.helper';
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   getRegistrations,
   importRegistrations,
-} from '../../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../../helpers/utility.helper';
-import { PaymentFilterEnum } from './../../../src/registration/enum/payment-filter.enum';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   createExpectedValueObject,
   expectedAttributes,
@@ -24,7 +27,7 @@ import {
   registrationOCW4,
   registrationPV5,
   registrationPV6,
-} from './pagination-data';
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Load PA table', () => {
   describe('getting registration using paginate and filtering on payment', () => {

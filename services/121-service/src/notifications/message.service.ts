@@ -1,20 +1,23 @@
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import {
+  MessageJobDto,
+  MessageProcessType,
+} from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { SmsService } from '@121-service/src/notifications/sms/sms.service';
+import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
+import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
+import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
-import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { LanguageEnum } from '../registration/enum/language.enum';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { StatusEnum } from '../shared/enum/status.enum';
-import { AzureLogService } from '../shared/services/azure-log.service';
-import { MessageContentType } from './enum/message-type.enum';
-import { ProgramNotificationEnum } from './enum/program-notification.enum';
-import { MessageJobDto, MessageProcessType } from './message-job.dto';
-import { MessageTemplateEntity } from './message-template/message-template.entity';
-import { SmsService } from './sms/sms.service';
-import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
-import { WhatsappPendingMessageEntity } from './whatsapp/whatsapp-pending-message.entity';
-import { WhatsappService } from './whatsapp/whatsapp.service';
 
 @Injectable()
 export class MessageService {
@@ -42,7 +45,7 @@ export class MessageService {
         ? messageJobDto.message
         : await this.getNotificationText(
             messageJobDto.preferredLanguage,
-            messageJobDto.key,
+            messageJobDto.messageTemplateKey,
             messageJobDto.programId,
           );
       if (messageJobDto.customData?.placeholderData) {
@@ -256,12 +259,12 @@ export class MessageService {
 
   private async getNotificationText(
     language: string,
-    key: string,
+    messageTemplateKey: string,
     programId: number,
   ): Promise<string> {
     const messageTemplates = await this.messageTemplateRepo.findBy({
       program: { id: programId },
-      type: key,
+      type: messageTemplateKey,
     });
 
     const notification = messageTemplates.find(

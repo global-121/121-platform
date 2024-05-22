@@ -1,11 +1,11 @@
+import { ExchangeRateApiService } from '@121-service/src/exchange-rate/exchange-rate.api.service';
+import { ExchangeRateEntity } from '@121-service/src/exchange-rate/exchange-rate.entity';
+import { ExchangeRateService } from '@121-service/src/exchange-rate/exchange-rate.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { generateMockCreateQueryBuilder } from '../utils/createQueryBuilderMock.helper';
-import { ExchangeRateApiService } from './exchange-rate.api.service';
-import { ExchangeRateEntity } from './exchange-rate.entity';
-import { ExchangeRateService } from './exchange-rate.service';
 
 // Mock for ExchangeRateApiService
 const mockExchangeRateApiService = {

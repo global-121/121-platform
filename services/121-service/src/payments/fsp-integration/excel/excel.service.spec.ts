@@ -1,14 +1,14 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { TransactionsService } from '../../../payments/transactions/transactions.service';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationViewEntity } from '../../../registration/registration-view.entity';
-import { RegistrationViewScopedRepository } from '../../../registration/repositories/registration-view-scoped.repository';
-import { RegistrationsPaginationService } from '../../../registration/services/registrations-pagination.service';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
-import { ExcelService } from './excel.service';
 
 const mockTransactionService = {
   retrieveTransaction: jest.fn(),
@@ -88,7 +88,7 @@ describe('ExcelService', () => {
       {
         paTransactionResult: {
           calculatedAmount: transactionAmount,
-          fspName: FspName.excel,
+          fspName: FinancialServiceProviderName.excel,
           referenceId: referenceid,
           registrationId: registrationId,
           status: transactionStatus,

@@ -16,6 +16,7 @@ module.exports = {
     {
       files: ['*.ts'],
       parser: '@typescript-eslint/parser',
+      plugins: ['no-relative-import-paths'],
       extends: [
         'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
@@ -60,6 +61,13 @@ module.exports = {
         // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
         'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
+        'no-relative-import-paths/no-relative-import-paths': [
+          'warn',
+          {
+            prefix: '@121-service',
+            rootDir: '.',
+          },
+        ],
       },
     },
   ],

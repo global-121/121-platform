@@ -1,4 +1,4 @@
-import { RegistrationsInputValidatorHelpers } from './registrations-input.validator.helper';
+import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 
 describe('RegistrationsInputValidatorHelpers', () => {
   describe('stringToBoolean', () => {

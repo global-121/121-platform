@@ -1,3 +1,13 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '@121-service/src/shared/enum/language.enums';
 import {
   Column,
   DataSource,
@@ -8,13 +18,6 @@ import {
   ViewColumn,
   ViewEntity,
 } from 'typeorm';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { LanguageEnum } from './enum/language.enum';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationEntity } from './registration.entity';
 
 @ViewEntity({
   name: 'registration_view',
@@ -100,10 +103,10 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProvider: FspName;
+  public financialServiceProvider: FinancialServiceProviderName;
 
   @ViewColumn()
-  public fspDisplayName: JSON;
+  public fspDisplayName: LocalizedString;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()

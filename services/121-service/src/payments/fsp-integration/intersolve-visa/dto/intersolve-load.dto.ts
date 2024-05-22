@@ -9,7 +9,7 @@ export class IntersolveQuantityObjectDto {
   public expiresAt?: string;
 }
 
-export class IntersolveQuantityDto {
+class IntersolveQuantityDto {
   public assetCode: string;
   public value: number;
 }

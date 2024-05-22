@@ -1,15 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { WalletCardStatus121 } from '../enum/wallet-status-121.enum';
-import {
-  IntersolveVisaCardStatus,
-  IntersolveVisaWalletStatus,
-} from '../intersolve-visa-wallet.entity';
-import { VisaCardActionLink } from '../services/intersolve-visa-status-mapping.service';
 import {
   IntersolveCreateWalletResponseAssetDto,
   IntersolveCreateWalletResponseBalanceDto,
-} from './intersolve-create-wallet-response.dto';
-import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import {
+  IntersolveVisaCardStatus,
+  IntersolveVisaWalletStatus,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { VisaCardActionLink } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class GetWalletDetailsResponseDto {
   @ApiProperty()
@@ -47,7 +47,7 @@ export class IntersolveGetWalletResponseDto {
   public statusText?: string;
 }
 
-export class IntersolveGetWalletResponseBodyDto {
+class IntersolveGetWalletResponseBodyDto {
   public success: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code?: string;
@@ -55,7 +55,7 @@ export class IntersolveGetWalletResponseBodyDto {
   public data: IntersolveGetWalletResponseDataDto;
 }
 
-export class IntersolveGetWalletResponseDataDto {
+class IntersolveGetWalletResponseDataDto {
   public code: string;
   public blocked?: boolean;
   public type?: string;

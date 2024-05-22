@@ -1,7 +1,7 @@
+import { PreOrderInfoDto } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/dto/pre-order-info.dto';
+import { IntersolveJumboResultCode } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
+import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
 import { Injectable } from '@nestjs/common';
-import { waitForRandomDelay } from '../../../utils/waitFor.helper';
-import { PreOrderInfoDto } from './dto/pre-order-info.dto';
-import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
 
 @Injectable()
 export class IntersolveJumboApiMockService {

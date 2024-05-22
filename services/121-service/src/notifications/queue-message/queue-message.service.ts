@@ -1,36 +1,37 @@
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import { Repository } from 'typeorm';
-import { ProgramAttributesService } from '../../program-attributes/program-attributes.service';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
-import { RegistrationDataService } from '../../registration/modules/registration-data/registration-data.service';
-import { RegistrationViewEntity } from '../../registration/registration-view.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
 import {
   DEFAULT_QUEUE_CREATE_MESSAGE,
-  MessageQueueMap,
   MESSAGE_QUEUE_MAP,
-} from '../enum/message-queue-mapping.const';
-import { MessageContentType } from '../enum/message-type.enum';
+  MessageQueueMap,
+} from '@121-service/src/notifications/enum/message-queue-mapping.const';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import {
   ProcessNameMessage,
   QueueNameCreateMessage,
-} from '../enum/queue.names.enum';
+} from '@121-service/src/notifications/enum/queue.names.enum';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
   MessageJobDto,
   MessageProcessType,
   MessageProcessTypeExtension,
-} from '../message-job.dto';
-import { MessageTemplateEntity } from '../message-template/message-template.entity';
+} from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class QueueMessageService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+  private readonly queueNameToQueueMap: Record<QueueNameCreateMessage, Queue>;
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
@@ -45,12 +46,21 @@ export class QueueMessageService {
     private readonly messageProcessorLargeBulk: Queue,
     @InjectQueue(QueueNameCreateMessage.lowPriority)
     private readonly messageProcessorLowPriority: Queue,
-  ) {}
+  ) {
+    this.queueNameToQueueMap = {
+      [QueueNameCreateMessage.replyOnIncoming]:
+        this.messageProcessorReplyOnIncoming,
+      [QueueNameCreateMessage.smallBulk]: this.messageProcessorSmallBulk,
+      [QueueNameCreateMessage.mediumBulk]: this.messageProcessorMediumBulk,
+      [QueueNameCreateMessage.largeBulk]: this.messageProcessorLargeBulk,
+      [QueueNameCreateMessage.lowPriority]: this.messageProcessorLowPriority,
+    };
+  }
 
   public async addMessageToQueue(
     registration: RegistrationEntity | RegistrationViewEntity,
     message: string,
-    key: string,
+    messageTemplateKey: string,
     messageContentType: MessageContentType,
     messageProcessType: ExtendedMessageProccessType,
     mediaUrl?: string,
@@ -88,38 +98,14 @@ export class QueueMessageService {
       phoneNumber: registration.phoneNumber,
       programId: registration.programId,
       message,
-      key,
+      messageTemplateKey,
       messageContentType,
       mediaUrl,
       customData,
     };
     try {
-      if (queueName === QueueNameCreateMessage.replyOnIncoming) {
-        await this.messageProcessorReplyOnIncoming.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.smallBulk) {
-        await this.messageProcessorSmallBulk.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.mediumBulk) {
-        await this.messageProcessorMediumBulk.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.largeBulk) {
-        await this.messageProcessorLargeBulk.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      } else if (queueName === QueueNameCreateMessage.lowPriority) {
-        await this.messageProcessorLowPriority.add(
-          ProcessNameMessage.send,
-          messageJob,
-        );
-      }
+      const queue = this.queueNameToQueueMap[queueName];
+      await queue.add(ProcessNameMessage.send, messageJob);
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);
     }

@@ -1,8 +1,8 @@
+import { BelcashService } from '@121-service/src/payments/fsp-integration/belcash/belcash.service';
+import { BelcashPaymentStatusDto } from '@121-service/src/payments/fsp-integration/belcash/dto/belcash-payment-status.dto';
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { BelcashService } from './belcash.service';
-import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 
 @ApiTags('callbacks/belcash')
 // TODO: REFACTOR: rename to callbacks/belcash

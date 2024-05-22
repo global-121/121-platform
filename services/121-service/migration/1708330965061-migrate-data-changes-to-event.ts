@@ -1,8 +1,8 @@
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { EventAttributeEntity } from '../src/events/entities/event-attribute.entity';
-import { EventEntity } from '../src/events/entities/event.entity';
-import { EventAttributeKeyEnum } from '../src/events/enum/event-attribute-key.enum';
-import { EventEnum } from '../src/events/enum/event.enum';
 
 export class MigrateDataChangesToEvent1708330965061
   implements MigrationInterface

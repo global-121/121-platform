@@ -1,3 +1,4 @@
+import { APP_VERSION } from '@121-service/src/config';
 import { Controller, Get, Module } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
@@ -7,12 +8,11 @@ import {
   TerminusModule,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { APP_VERSION } from './config';
 
 @ApiTags('instance')
 // TODO: REFACTOR: rename to instance
 @Controller('health')
-export class HealthController {
+class HealthController {
   public constructor(
     private health: HealthCheckService,
     private db: TypeOrmHealthIndicator,

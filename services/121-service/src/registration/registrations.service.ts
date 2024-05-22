@@ -1,57 +1,60 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
-import { Repository } from 'typeorm';
-import { EventEntity } from '../events/entities/event.entity';
-import { EventsService } from '../events/events.service';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { LastMessageStatusService } from '../notifications/last-message-status.service';
-import { LookupService } from '../notifications/lookup/lookup.service';
-import { QueueMessageService } from '../notifications/queue-message/queue-message.service';
-import { TwilioMessageEntity } from '../notifications/twilio.entity';
-import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { ScopedRepository } from '../scoped.repository';
-import { PermissionEnum } from '../user/enum/permission.enum';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { convertToScopedOptions } from '../utils/scope/createFindWhereOptions.helper';
-import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
-import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
-import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
-import { CreateRegistrationDto } from './dto/create-registration.dto';
-import { CustomDataDto } from './dto/custom-data.dto';
-import { MessageHistoryDto } from './dto/message-history.dto';
-import { ReferenceProgramIdScopeDto } from './dto/registrationProgramIdScope.dto';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
+import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import {
+  ImportRegistrationsDto,
+  ImportResult,
+} from '@121-service/src/registration/dto/bulk-import.dto';
+import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
+import { CustomDataDto } from '@121-service/src/registration/dto/custom-data.dto';
+import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
+import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
 import {
   AdditionalAttributes,
   Attributes,
   UpdateAttributeDto,
   UpdateRegistrationDto,
-} from './dto/update-registration.dto';
+} from '@121-service/src/registration/dto/update-registration.dto';
 import {
   AnswerTypes,
   CustomDataAttributes,
-} from './enum/custom-data-attributes';
+} from '@121-service/src/registration/enum/custom-data-attributes';
 import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
-} from './enum/registration-status.enum';
-import { ErrorEnum } from './errors/registration-data.error';
-import { RegistrationDataService } from './modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from './modules/registration-utilts/registration-utils.service';
-import { RegistrationDataEntity } from './registration-data.entity';
-import { RegistrationViewEntity } from './registration-view.entity';
-import { RegistrationEntity } from './registration.entity';
-import { RegistrationScopedRepository } from './repositories/registration-scoped.repository';
-import { RegistrationViewScopedRepository } from './repositories/registration-view-scoped.repository';
-import { InclusionScoreService } from './services/inclusion-score.service';
-import { RegistrationsImportService } from './services/registrations-import.service';
-import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+} from '@121-service/src/registration/enum/registration-status.enum';
+import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
+import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserService } from '@121-service/src/user/user.service';
+import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsService {
@@ -722,7 +725,7 @@ export class RegistrationsService {
 
   public async updateChosenFsp(
     referenceId: string,
-    newFspName: FspName,
+    newFspName: FinancialServiceProviderName,
     newFspAttributesRaw: object,
     userId: number,
   ): Promise<RegistrationViewEntity> {

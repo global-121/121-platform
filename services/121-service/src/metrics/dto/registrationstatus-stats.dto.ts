@@ -1,4 +1,4 @@
-import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 export class RegistrationStatusStats {
   status: RegistrationStatusEnum;

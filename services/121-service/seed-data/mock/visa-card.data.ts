@@ -1,6 +1,6 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { CustomDataAttributes } from '../../src/registration/enum/custom-data-attributes';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export const programIdVisa = 3;
 export const paymentNrVisa = 1;
@@ -13,7 +13,7 @@ export const registrationVisa = {
   firstName: 'Jane',
   lastName: 'Doe',
   [CustomDataAttributes.phoneNumber]: '14155238887',
-  fspName: FspName.intersolveVisa,
+  fspName: FinancialServiceProviderName.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',

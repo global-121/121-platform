@@ -1,24 +1,24 @@
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
+import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
-import {
-  FspConfigurationEnum,
-  FspName,
-} from '../../../../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../../../../notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '../../../../notifications/enum/program-notification.enum';
-import { MessageProcessType } from '../../../../notifications/message-job.dto';
-import { QueueMessageService } from '../../../../notifications/queue-message/queue-message.service';
-import { ProgramFspConfigurationEntity } from '../../../../programs/fsp-configuration/program-fsp-configuration.entity';
-import { ProgramEntity } from '../../../../programs/program.entity';
-import { CustomDataAttributes } from '../../../../registration/enum/custom-data-attributes';
-import { RegistrationDataService } from '../../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '../../../../registration/registration.entity';
-import { TransactionEntity } from '../../../transactions/transaction.entity';
-import { IntersolveVoucherApiService } from '../instersolve-voucher.api.service';
-import { IntersolveIssueVoucherRequestEntity } from '../intersolve-issue-voucher-request.entity';
-import { IntersolveVoucherEntity } from '../intersolve-voucher.entity';
-import { IntersolveVoucherService } from '../intersolve-voucher.service';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -71,7 +71,7 @@ export class IntersolveVoucherCronService {
       .select('name')
       .addSelect('value')
       .andWhere('fsp.fsp = :fspName', {
-        fspName: FspName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
       })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
@@ -82,10 +82,12 @@ export class IntersolveVoucherCronService {
     }
 
     const credentials: { username: string; password: string } = {
-      username: config.find((c) => c.name === FspConfigurationEnum.username)
-        ?.value,
-      password: config.find((c) => c.name === FspConfigurationEnum.password)
-        ?.value,
+      username: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+      )?.value,
+      password: config.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+      )?.value,
     };
 
     for (const intersolveRequest of failedIntersolveRquests) {

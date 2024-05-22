@@ -1,3 +1,22 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { NoteEntity } from '@121-service/src/notes/note.entity';
+import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { ReferenceIdConstraints } from '@121-service/src/shared/const';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   IsEnum,
   IsInt,
@@ -18,25 +37,6 @@ import {
   OneToOne,
   Unique,
 } from 'typeorm';
-import { CascadeDeleteEntity } from '../base.entity';
-import { EventEntity } from '../events/entities/event.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { NoteEntity } from '../notes/note.entity';
-import { LatestMessageEntity } from '../notifications/latest-message.entity';
-import { TwilioMessageEntity } from '../notifications/twilio.entity';
-import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from '../payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
-import { IntersolveVisaCustomerEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
-import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
-import { LatestTransactionEntity } from '../payments/transactions/latest-transaction.entity';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { ReferenceIdConstraints } from '../shared/const';
-import { UserEntity } from '../user/user.entity';
-import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
-import { LanguageEnum } from './enum/language.enum';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationDataEntity } from './registration-data.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
@@ -53,7 +53,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @Index()
   @Column({ nullable: true })
-  public registrationStatus: RegistrationStatusEnum;
+  public registrationStatus: RegistrationStatusEnum | null;
 
   @Index({ unique: true })
   @Column()
@@ -63,21 +63,21 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public data: RegistrationDataEntity[];
 
   @Column({ nullable: true })
-  public phoneNumber: string;
+  public phoneNumber: string | null;
 
   @Column({ nullable: true })
   @IsEnum(LanguageEnum)
-  public preferredLanguage: LanguageEnum;
+  public preferredLanguage: LanguageEnum | null;
 
   @Index({ unique: false })
   @Column({ nullable: true })
-  public inclusionScore: number;
+  public inclusionScore: number | null;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity)
   @JoinColumn({ name: 'fspId' })
   public fsp: FinancialServiceProviderEntity;
   @Column({ nullable: true })
-  public fspId: number;
+  public fspId: number | null;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()
@@ -95,7 +95,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments: number;
+  public maxPayments?: number;
 
   // This is a count of the number of transactions with a distinct on the paymentId
   // can be failed or successful or waiting transactions
@@ -103,7 +103,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @IsInt()
   @Min(0)
   @IsOptional()
-  public paymentCount: number;
+  public paymentCount?: number;
 
   @OneToMany(
     (_type) => TransactionEntity,

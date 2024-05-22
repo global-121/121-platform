@@ -1,5 +1,5 @@
-import { IntersolveContactInfoDto } from './intersolve-create-customer.dto';
-import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
+import { IntersolveContactInfoDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
 
 export class IntersolveCreateCustomerResponseBodyDto {
   public data: {
@@ -11,12 +11,6 @@ export class IntersolveCreateCustomerResponseBodyDto {
   };
   public status: number;
   public statusText: string;
-}
-
-export class IntersolveGetCustomerResponseBodyDto {
-  public data: {
-    success: boolean;
-  };
 }
 
 class CreateCustomerResponseDataDto {

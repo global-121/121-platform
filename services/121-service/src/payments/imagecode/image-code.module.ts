@@ -1,10 +1,10 @@
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
+import { ImageCodeController } from '@121-service/src/payments/imagecode/image-code.controller';
+import { ImageCodeEntity } from '@121-service/src/payments/imagecode/image-code.entity';
+import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
-import { ImageCodeController } from './image-code.controller';
-import { ImageCodeEntity } from './image-code.entity';
-import { ImageCodeService } from './image-code.service';
 
 @Module({
   imports: [

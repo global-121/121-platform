@@ -1,9 +1,9 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { PaymentProcessorIntersolveVoucher } from '@121-service/src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { FspName } from '../../../../fsp/enum/fsp-name.enum';
-import { LanguageEnum } from '../../../../registration/enum/language.enum';
-import { IntersolveVoucherService } from '../intersolve-voucher.service';
-import { PaymentProcessorIntersolveVoucher } from './intersolve-voucher.processor';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
@@ -13,7 +13,7 @@ const mockPaymentJob = {
   firstName: 'Test',
   lastName: 'mock-fail-create-debit-card',
   id: 11,
-  fspName: FspName.intersolveVoucherWhatsapp,
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   paymentAddress: '14155238886',
   transactionAmount: 22,
   transactionId: 38,

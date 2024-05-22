@@ -21,7 +21,7 @@
       >
       ]
     </small>
-    <ion-card-title>
+    <ion-card-title data-testid="registration-details-name">
       {{ person.name }}
     </ion-card-title>
     <ion-card-subtitle>
@@ -33,6 +33,7 @@
           }}
         </ion-note>
         <ion-button
+          data-testid="show-all-button"
           fill="outline"
           color="primary"
           size="small"

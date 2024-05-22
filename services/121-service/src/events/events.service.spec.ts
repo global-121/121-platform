@@ -1,15 +1,15 @@
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserService } from '@121-service/src/user/user.service';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { TestBed } from '@automock/jest';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { LanguageEnum } from '../registration/enum/language.enum';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { RegistrationViewEntity } from '../registration/registration-view.entity';
-import { UserType } from '../user/user-type-enum';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { getScopedRepositoryProviderName } from '../utils/scope/createScopedRepositoryProvider.helper';
-import { EventEntity } from './entities/event.entity';
-import { EventEnum } from './enum/event.enum';
-import { EventsService } from './events.service';
 
 const programId = 1;
 
@@ -65,7 +65,7 @@ function getViewRegistration(): RegistrationViewEntity {
     preferredLanguage: LanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
-    financialServiceProvider: FspName.intersolveVisa,
+    financialServiceProvider: FinancialServiceProviderName.intersolveVisa,
     fspDisplayName: { en: 'Visa debit card' },
     registrationProgramId: 2,
     personAffectedSequence: 'PA #2',
@@ -198,7 +198,7 @@ describe('EventsService', () => {
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
     newViewRegistration['fspDisplayName'] = {
       en: 'Albert Heijn voucher WhatsApp',
-    } as unknown as JSON;
+    };
     delete newViewRegistration['addressCity'];
     delete newViewRegistration['addressPostalCode'];
     delete newViewRegistration['addressHouseNumberAddition'];
@@ -207,7 +207,7 @@ describe('EventsService', () => {
 
     // Changes that should not be logged
     newViewRegistration.financialServiceProvider =
-      FspName.intersolveVoucherWhatsapp;
+      FinancialServiceProviderName.intersolveVoucherWhatsapp;
 
     // Act
     await eventsService.log(oldViewRegistration, newViewRegistration);

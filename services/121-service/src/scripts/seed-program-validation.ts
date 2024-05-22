@@ -1,9 +1,9 @@
+import instanceAnonymous from '@121-service/seed-data/instance/instance-anonymous.json';
+import messageTemplateValidation from '@121-service/seed-data/message-template/message-template-validation.json';
+import programValidation from '@121-service/seed-data/program/program-validation.json';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { Injectable } from '@nestjs/common';
-import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import messageTemplateValidation from '../../seed-data/message-template/message-template-validation.json';
-import programValidation from '../../seed-data/program/program-validation.json';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedProgramValidation implements InterfaceScript {
@@ -28,5 +28,3 @@ export class SeedProgramValidation implements InterfaceScript {
     await this.seedHelper.addInstance(instanceAnonymous);
   }
 }
-
-export default SeedProgramValidation;

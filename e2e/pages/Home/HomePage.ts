@@ -1,37 +1,51 @@
-import { expect } from '@playwright/test';
+import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 
 class HomePage {
-  page: Page;
-  activeProgramsBanner = 'p.ion-no-margin';
-  programCard = 'app-program-card';
-  openPAsForRegistrationButton = 'ion-button.ion-margin-start';
-  okButton = 'ion-button[fill="solid"][color="primary"]:has-text("OK")';
+  readonly page: Page;
+  readonly activeProgramsBanner: Locator;
+  readonly programCard: Locator;
+  readonly openPAsForRegistrationButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.activeProgramsBanner = this.page.getByTestId(
+      'update-property-item-list-header',
+    );
+    this.programCard = this.page.getByTestId('program-list-component-card');
+    this.openPAsForRegistrationButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
+    );
   }
 
   async validateNumberOfActivePrograms(amount: number) {
-    expect(
-      await this.page.locator(this.activeProgramsBanner).textContent(),
-    ).toContain(`You are running ${amount} program(s) actively`);
+    expect(await this.activeProgramsBanner.textContent()).toContain(
+      `You are running ${amount} program(s) actively`,
+    );
   }
 
-  async openPAsForRegistrationOcwProgram(programName: string) {
-    await this.page
-      .locator(this.programCard)
-      .filter({ hasText: programName })
-      .click();
-    await this.page.locator(this.openPAsForRegistrationButton).click();
-    await this.page.locator(this.okButton).click();
+  async openPAsForRegistrationOcwProgram({
+    programName,
+    buttonName,
+    okButtonName,
+  }: {
+    programName: string;
+    buttonName: string;
+    okButtonName: string;
+  }) {
+    const openForRegistrationButton = this.openPAsForRegistrationButton.filter({
+      hasText: buttonName,
+    });
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
+    await this.programCard.filter({ hasText: programName }).click();
+    await openForRegistrationButton.click();
+    await okButton.click();
   }
 
   async navigateToProgramme(programName: string) {
-    await this.page
-      .locator(this.programCard)
-      .filter({ hasText: programName })
-      .click();
+    await this.programCard.filter({ hasText: programName }).click();
   }
 }
 

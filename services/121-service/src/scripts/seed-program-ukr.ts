@@ -1,9 +1,9 @@
+import instanceUkr from '@121-service/seed-data/instance/instance-pilot-ukr.json';
+import messageTemplatePilotUkr from '@121-service/seed-data/message-template/message-template-pilot-ukr.json';
+import programPilotUkr from '@121-service/seed-data/program/program-pilot-ukr.json';
+import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { Injectable } from '@nestjs/common';
-import instanceUkr from '../../seed-data/instance/instance-pilot-ukr.json';
-import messageTemplatePilotUkr from '../../seed-data/message-template/message-template-pilot-ukr.json';
-import programPilotUkr from '../../seed-data/program/program-pilot-ukr.json';
-import { InterfaceScript } from './scripts.module';
-import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedProgramUkr implements InterfaceScript {
@@ -25,5 +25,3 @@ export class SeedProgramUkr implements InterfaceScript {
     await this.seedHelper.addInstance(instanceUkr);
   }
 }
-
-export default SeedProgramUkr;

@@ -1,4 +1,4 @@
-import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
+import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
 
 export class IntersolveLoadResponseDto {
   public data: IntersolveLoadBodyDto;

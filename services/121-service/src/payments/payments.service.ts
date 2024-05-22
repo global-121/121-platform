@@ -1,53 +1,56 @@
+import { AdditionalActionType } from '@121-service/src/actions/action.entity';
+import { ActionsService } from '@121-service/src/actions/actions.service';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  ExportFileType,
+  FspInstructions,
+} from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { AfricasTalkingService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.service';
+import { BelcashService } from '@121-service/src/payments/fsp-integration/belcash/belcash.service';
+import { BobFinanceService } from '@121-service/src/payments/fsp-integration/bob-finance/bob-finance.service';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { IntersolveJumboService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
+import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { UkrPoshtaService } from '@121-service/src/payments/fsp-integration/ukrposhta/ukrposhta.service';
+import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
+import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import {
+  BulkActionResultPaymentDto,
+  BulkActionResultRetryPaymentDto,
+} from '@121-service/src/registration/dto/bulk-action-result.dto';
+import {
+  ImportResult,
+  ImportStatus,
+} from '@121-service/src/registration/dto/bulk-import.dto';
+import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Repository } from 'typeorm';
-import { AdditionalActionType } from '../actions/action.entity';
-import { ActionsService } from '../actions/actions.service';
-import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
-import { FspName } from '../fsp/enum/fsp-name.enum';
-import { ProgramEntity } from '../programs/program.entity';
-import {
-  BulkActionResultPaymentDto,
-  BulkActionResultRetryPaymentDto,
-} from '../registration/dto/bulk-action-result.dto';
-import {
-  ImportResult,
-  ImportStatus,
-} from '../registration/dto/bulk-import.dto';
-import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
-import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { RegistrationViewEntity } from '../registration/registration-view.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { RegistrationScopedRepository } from '../registration/repositories/registration-scoped.repository';
-import { RegistrationsPaginationService } from '../registration/services/registrations-pagination.service';
-import { ScopedQueryBuilder } from '../scoped.repository';
-import { StatusEnum } from '../shared/enum/status.enum';
-import { AzureLogService } from '../shared/services/azure-log.service';
-import { splitArrayIntoChunks } from '../utils/chunk.helper';
-import { FileImportService } from '../utils/file-import/file-import.service';
-import { RegistrationDataEntity } from './../registration/registration-data.entity';
-import { RegistrationsBulkService } from './../registration/services/registrations-bulk.service';
-import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
-import { ProgramPaymentsStatusDto } from './dto/program-payments-status.dto';
-import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
-import { TransactionRelationDetailsDto } from './dto/transaction-relation-details.dto';
-import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
-import { BelcashService } from './fsp-integration/belcash/belcash.service';
-import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
-import { CommercialBankEthiopiaService } from './fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
-import { ExcelService } from './fsp-integration/excel/excel.service';
-import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
-import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
-import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
-import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
-import { PaymentReturnDto } from './transactions/dto/get-transaction.dto';
-import { TransactionEntity } from './transactions/transaction.entity';
-import { TransactionsService } from './transactions/transactions.service';
 
 @Injectable()
 export class PaymentsService {
@@ -57,11 +60,14 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   private fspWithQueueServiceMapping = {
-    [FspName.intersolveVisa]: this.intersolveVisaService,
-    [FspName.intersolveVoucherPaper]: this.intersolveVoucherService,
-    [FspName.intersolveVoucherWhatsapp]: this.intersolveVoucherService,
-    [FspName.safaricom]: this.safaricomService,
-    [FspName.commercialBankEthiopia]: this.commercialBankEthiopiaService,
+    [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
+    [FinancialServiceProviderName.intersolveVoucherPaper]:
+      this.intersolveVoucherService,
+    [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
+      this.intersolveVoucherService,
+    [FinancialServiceProviderName.safaricom]: this.safaricomService,
+    [FinancialServiceProviderName.commercialBankEthiopia]:
+      this.commercialBankEthiopiaService,
     // Add more FSP mappings if they work queue-based
   };
 
@@ -490,29 +496,55 @@ export class PaymentsService {
     const commercialBankEthiopiaPaPayment = [];
     const excelPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
-      if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
+      if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveVoucherWhatsapp
+      ) {
         intersolvePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveVoucherPaper) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveVoucherPaper
+      ) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveVisa) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.intersolveVisa
+      ) {
         intersolveVisaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveJumboPhysical) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.intersolveJumboPhysical
+      ) {
         intersolveJumboPhysicalPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.africasTalking) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.africasTalking
+      ) {
         africasTalkingPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.belcash) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.belcash
+      ) {
         belcashPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.bobFinance) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.bobFinance
+      ) {
         bobFinancePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.ukrPoshta) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.ukrPoshta
+      ) {
         ukrPoshtaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.vodacash) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.vodacash
+      ) {
         vodacashPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.safaricom) {
+      } else if (
+        paPaymentData.fspName === FinancialServiceProviderName.safaricom
+      ) {
         safaricomPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.commercialBankEthiopia) {
+      } else if (
+        paPaymentData.fspName ===
+        FinancialServiceProviderName.commercialBankEthiopia
+      ) {
         commercialBankEthiopiaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.excel) {
+      } else if (paPaymentData.fspName === FinancialServiceProviderName.excel) {
         excelPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
@@ -787,7 +819,10 @@ export class PaymentsService {
   ): Promise<FspInstructions> {
     const exportPaymentTransactions = (
       await this.transactionsService.getLastTransactions(programId, payment)
-    ).filter((t) => t.fspIntegrationType !== FspIntegrationType.api);
+    ).filter(
+      (t) =>
+        t.fspIntegrationType !== FinancialServiceProviderIntegrationType.api,
+    );
 
     if (exportPaymentTransactions.length === 0) {
       throw new HttpException(
@@ -803,7 +838,7 @@ export class PaymentsService {
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
-      (t) => t.fsp !== FspName.excel,
+      (t) => t.fsp !== FinancialServiceProviderName.excel,
     )) {
       const registration = await this.registrationScopedRepository.findOne({
         where: { referenceId: transaction.referenceId },
@@ -818,7 +853,7 @@ export class PaymentsService {
         continue;
       }
 
-      if (registration.fsp.fsp === FspName.bobFinance) {
+      if (registration.fsp.fsp === FinancialServiceProviderName.bobFinance) {
         const instruction = await this.bobFinanceService.getFspInstructions(
           registration,
           transaction,
@@ -828,7 +863,7 @@ export class PaymentsService {
           fileType = ExportFileType.csv;
         }
       }
-      if (registration.fsp.fsp === FspName.ukrPoshta) {
+      if (registration.fsp.fsp === FinancialServiceProviderName.ukrPoshta) {
         const instruction = await this.ukrPoshtaService.getFspInstructions(
           registration,
           transaction,
@@ -840,7 +875,7 @@ export class PaymentsService {
           csvInstructions.push(instruction);
         }
       }
-      if (registration.fsp.fsp === FspName.vodacash) {
+      if (registration.fsp.fsp === FinancialServiceProviderName.vodacash) {
         xmlInstructions = await this.vodacashService.getFspInstructions(
           registration,
           transaction,
@@ -854,7 +889,9 @@ export class PaymentsService {
 
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
-      (t) => t.fsp === FspName.excel && t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
+      (t) =>
+        t.fsp === FinancialServiceProviderName.excel &&
+        t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
       csvInstructions = await this.excelService.getFspInstructions(
@@ -894,7 +931,7 @@ export class PaymentsService {
 
     let importResponseRecords = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FspName.vodacash) {
+      if (fsp.fsp === FinancialServiceProviderName.vodacash) {
         const vodacashRegistrations =
           await this.vodacashService.getRegistrationsForReconciliation(
             programId,
@@ -925,7 +962,7 @@ export class PaymentsService {
         }
       }
 
-      if (fsp.fsp === FspName.excel) {
+      if (fsp.fsp === FinancialServiceProviderName.excel) {
         const maxRecords = 10000;
         const matchColumn =
           await this.excelService.getImportMatchColumn(programId);
@@ -947,7 +984,7 @@ export class PaymentsService {
           payment,
           null,
           null,
-          FspName.excel,
+          FinancialServiceProviderName.excel,
         );
         importResponseRecords =
           this.excelService.joinRegistrationsAndImportRecords(

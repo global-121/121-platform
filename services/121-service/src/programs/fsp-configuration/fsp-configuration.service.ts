@@ -1,14 +1,14 @@
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderConfigurationMapping,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/programs/dto/create-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationDto } from '@121-service/src/programs/dto/update-program-fsp-configuration.dto';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  FspConfigurationEnum,
-  FspConfigurationMapping,
-} from '../../fsp/enum/fsp-name.enum';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
-import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
-import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 
 @Injectable()
 export class ProgramFspConfigurationService {
@@ -42,13 +42,14 @@ export class ProgramFspConfigurationService {
       );
     }
 
-    if (FspConfigurationMapping[fsp.fsp] === undefined) {
+    if (FinancialServiceProviderConfigurationMapping[fsp.fsp] === undefined) {
       throw new HttpException(
         `Fsp ${fsp.fsp} has no fsp config`,
         HttpStatus.NOT_FOUND,
       );
     } else {
-      const allowedConfigForFsp = FspConfigurationMapping[fsp.fsp];
+      const allowedConfigForFsp =
+        FinancialServiceProviderConfigurationMapping[fsp.fsp];
       if (!allowedConfigForFsp.includes(programFspConfigurationDto.name)) {
         throw new HttpException(
           `For fsp ${fsp.fsp} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${programFspConfigurationDto.name}`,
@@ -131,7 +132,7 @@ export class ProgramFspConfigurationService {
         where: {
           fspId,
           programId: programId,
-          name: FspConfigurationEnum.displayName,
+          name: FinancialServiceProviderConfigurationEnum.displayName,
         },
       });
 

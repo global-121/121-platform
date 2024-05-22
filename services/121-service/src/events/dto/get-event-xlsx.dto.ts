@@ -1,5 +1,5 @@
-import { EventAttributeKeyEnum } from '../enum/event-attribute-key.enum';
-import { EventEnum } from '../enum/event.enum';
+import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
 
 export class GetEventXlsxDto {
   paId: number;

@@ -1,3 +1,4 @@
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -6,7 +7,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export enum CustomAttributeType {
   text = 'text',
@@ -28,7 +29,7 @@ export class UpdateProgramCustomAttributeDto {
     },
   })
   @IsNotEmpty()
-  public label: JSON;
+  public label: LocalizedString;
 
   @ApiProperty({
     example: [
@@ -38,12 +39,12 @@ export class UpdateProgramCustomAttributeDto {
     ],
   })
   @IsNotEmpty()
-  public phases: JSON;
+  public phases: ProgramPhase[];
 
   @ApiProperty({ example: true, required: false })
   @IsOptional()
   @IsBoolean()
-  public duplicateCheck: boolean;
+  public duplicateCheck?: boolean;
 }
 
 export class CreateProgramCustomAttributeDto extends UpdateProgramCustomAttributeDto {

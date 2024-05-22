@@ -1,14 +1,4 @@
-import { ProgramEntity } from './program.entity';
-
-export interface SimpleProgramRO {
-  id: number;
-  titlePortal: JSON;
-  phase: string;
-}
-
-export interface ProgramRO {
-  program: ProgramEntity;
-}
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 
 export interface ProgramsRO {
   programs: ProgramEntity[];

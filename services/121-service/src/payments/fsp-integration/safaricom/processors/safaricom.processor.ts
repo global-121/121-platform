@@ -1,13 +1,16 @@
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
+import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis-client';
 import { Process, Processor } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '../../../enum/queue.names.enum';
-import { getRedisSetName, REDIS_CLIENT } from '../../../redis-client';
-import { SafaricomService } from '../safaricom.service';
 
 @Processor(QueueNamePayment.paymentSafaricom)
 export class PaymentProcessorSafaricom {

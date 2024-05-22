@@ -1,5 +1,5 @@
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { EventEnum } from '../enum/event.enum';
 
 class AttributesDto {
   [key: string]: string;

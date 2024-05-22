@@ -1,6 +1,6 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { Column, Entity } from 'typeorm';
-import { Base121Entity } from '../../../base.entity';
-import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 
 @Entity('intersolve_issue_voucher_request')
 export class IntersolveIssueVoucherRequestEntity extends Base121Entity {
@@ -8,32 +8,32 @@ export class IntersolveIssueVoucherRequestEntity extends Base121Entity {
   public refPos: number;
 
   @Column({ nullable: true })
-  public EAN: string;
+  public EAN: string | null;
 
   @Column()
   public value: number;
 
   @Column({ nullable: true })
-  public clientReference: number;
+  public clientReference: number | null;
 
   @Column({ nullable: true })
-  public resultCodeIssueCard: IntersolveVoucherResultCode;
+  public resultCodeIssueCard: IntersolveVoucherResultCode | null;
 
   @Column({ nullable: true })
-  public cardId: string;
+  public cardId: string | null;
 
   // The values stored in this column should be 6 digits however some entries could be missing their first
   // 0 because convert this value from string to number. Currently however the data stores in this
   // column is never used. But when we do use this data we have to find a solution for this.
   @Column({ nullable: true })
-  public PIN: number;
+  public PIN: number | null;
 
   @Column({ nullable: true })
-  public balance: number;
+  public balance: number | null;
 
   // TODO: REFACTOR: into a JoinColumn with the Transaction Entity
   @Column({ nullable: true })
-  public transactionId: number;
+  public transactionId: number | null;
 
   @Column({ default: false })
   public isCancelled: boolean;
@@ -42,10 +42,10 @@ export class IntersolveIssueVoucherRequestEntity extends Base121Entity {
   public cancellationAttempts: number;
 
   @Column({ nullable: true })
-  public cancelByRefPosResultCode: IntersolveVoucherResultCode;
+  public cancelByRefPosResultCode: IntersolveVoucherResultCode | null;
 
   @Column({ nullable: true })
-  public cancelResultCode: IntersolveVoucherResultCode;
+  public cancelResultCode: IntersolveVoucherResultCode | null;
 
   @Column({ default: false })
   public toCancel: boolean;

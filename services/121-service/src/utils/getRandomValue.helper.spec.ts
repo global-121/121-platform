@@ -1,4 +1,4 @@
-import { getRandomInt } from './getRandomValue.helper';
+import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 
 describe('getRandomValue', () => {
   it('should return a random integer between min and max (inclusive)', () => {

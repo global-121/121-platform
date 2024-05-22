@@ -1,6 +1,7 @@
+import { Base121Entity } from '@121-service/src/base.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
-import { ProgramEntity } from '../../programs/program.entity';
 
 @Unique('uniqueTemplatePerTypeLanguageProgram', [
   'type',
@@ -13,7 +14,7 @@ export class MessageTemplateEntity extends Base121Entity {
   public type: string;
 
   @Column('json', { nullable: true })
-  public label: JSON;
+  public label: LocalizedString | null;
 
   @Column()
   public language: string;

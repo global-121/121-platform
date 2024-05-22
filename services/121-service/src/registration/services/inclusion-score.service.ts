@@ -1,13 +1,13 @@
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../../programs/program.entity';
-import { AnswerTypes } from '../enum/custom-data-attributes';
-import { RegistrationDataService } from '../modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '../modules/registration-utilts/registration-utils.service';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationScopedRepository } from '../repositories/registration-scoped.repository';
-import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 
 @Injectable()
 export class InclusionScoreService {
@@ -140,7 +140,7 @@ export class InclusionScoreService {
     const options = JSON.parse(JSON.stringify(programQuestion.options));
     for (const value of options) {
       if (value.option == answerPA && programQuestion.scoring[value.option]) {
-        score = programQuestion.scoring[value.option];
+        score = Number(programQuestion.scoring[value.option]);
       }
     }
     return score;
@@ -162,7 +162,7 @@ export class InclusionScoreService {
           value.option == selectedOption &&
           programQuestion.scoring[value.option]
         ) {
-          score = score + programQuestion.scoring[value.option];
+          score = score + Number(programQuestion.scoring[value.option]);
         }
       }
     }
@@ -178,7 +178,7 @@ export class InclusionScoreService {
       if (isNaN(answerPA)) {
         answerPA = 0;
       }
-      score = programQuestion.scoring['multiplier'] * answerPA;
+      score = Number(programQuestion.scoring['multiplier']) * answerPA;
     }
     return score;
   }

@@ -1,24 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
-import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
-import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   PaTransactionResultDto,
   TransactionNotificationObject,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { PreOrderInfoDto } from './dto/pre-order-info.dto';
-import { IntersolveJumboPaymentInfoEnum } from './enum/intersolve-jumbo-payment-info.enum';
-import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
-import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { PreOrderInfoDto } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/dto/pre-order-info.dto';
+import { IntersolveJumboPaymentInfoEnum } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-payment-info.enum';
+import { IntersolveJumboResultCode } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
+import { IntersolveJumboApiService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.api.service';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveJumboService
@@ -292,7 +292,8 @@ export class IntersolveJumboService
     transactionResult.message = errorMessage;
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
-    transactionResult.fspName = FspName.intersolveJumboPhysical;
+    transactionResult.fspName =
+      FinancialServiceProviderName.intersolveJumboPhysical;
     transactionResult.notificationObjects = notificationObjects;
 
     return transactionResult;

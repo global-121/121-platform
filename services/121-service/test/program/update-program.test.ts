@@ -1,10 +1,13 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { assertObjectsAreEqual } from '@121-service/test/helpers/assert.helper';
+import { patchProgram } from '@121-service/test/helpers/program.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import { HttpStatus } from '@nestjs/common';
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { UpdateProgramDto } from '../../src/programs/dto/update-program.dto';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { assertObjectsAreEqual } from '../helpers/assert.helper';
-import { patchProgram } from '../helpers/program.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 describe('Update program', () => {
   let accessToken: string;
@@ -18,7 +21,7 @@ describe('Update program', () => {
     // Arrange
     // Test with a few possibly to be changed attributes, not all attributes of a program
     const program = {
-      titlePortal: JSON.parse(JSON.stringify({ en: 'new title' })),
+      titlePortal: { en: 'new title' },
       published: false,
       distributionDuration: 100,
       fixedTransferValue: 500,
@@ -56,7 +59,7 @@ describe('Update program', () => {
     // Arrange
     const program = {
       financialServiceProviders: JSON.parse(
-        JSON.stringify([{ fsp: FspName.excel }]),
+        JSON.stringify([{ fsp: FinancialServiceProviderName.excel }]),
       ),
     };
 
@@ -71,7 +74,7 @@ describe('Update program', () => {
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
     const hasSpecificKeyValue =
       updateProgramResponse.body.financialServiceProviders.some(
-        (fsp) => fsp.fsp === FspName.excel,
+        (fsp) => fsp.fsp === FinancialServiceProviderName.excel,
       );
     expect(hasSpecificKeyValue).toBeTruthy();
   });

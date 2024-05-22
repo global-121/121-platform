@@ -1,7 +1,7 @@
 // This entity does not store intersolve vouchers messages only 'normal' notifications
 
+import { Base121Entity } from '@121-service/src/base.entity';
 import { Column, Entity, Index } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
 
 @Entity('whatsapp_template_test')
 export class WhatsappTemplateTestEntity extends Base121Entity {
@@ -18,10 +18,10 @@ export class WhatsappTemplateTestEntity extends Base121Entity {
   public messageKey: string;
 
   @Column({ nullable: true })
-  public succes: boolean;
+  public succes: boolean | null;
 
   @Column({ nullable: true })
-  public callback: string;
+  public callback: string | null;
 
   @Index()
   @Column()

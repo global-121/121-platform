@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
-import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import { TransactionReturnDto } from '../../transactions/dto/get-transaction.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { UkrPoshtaFspInstructions } from './dto/ukrposhta-fsp-instructions.dto';
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { UkrPoshtaFspInstructions } from '@121-service/src/payments/fsp-integration/ukrposhta/dto/ukrposhta-fsp-instructions.dto';
+import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UkrPoshtaService
@@ -31,11 +31,11 @@ export class UkrPoshtaService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.ukrPoshta;
+    fspTransactionResult.fspName = FinancialServiceProviderName.ukrPoshta;
     for (const payment of paymentList) {
       const transactionResult = new PaTransactionResultDto();
       transactionResult.calculatedAmount = payment.transactionAmount;
-      transactionResult.fspName = FspName.ukrPoshta;
+      transactionResult.fspName = FinancialServiceProviderName.ukrPoshta;
       transactionResult.referenceId = payment.referenceId;
       transactionResult.status = StatusEnum.success;
       fspTransactionResult.paList.push(transactionResult);

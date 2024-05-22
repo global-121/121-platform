@@ -1,3 +1,86 @@
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import {
+  PaTransactionResultDto,
+  TransactionNotificationObject,
+} from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import {
+  BlockReasonEnum,
+  IntersolveBlockWalletDto,
+  IntersolveBlockWalletResponseDto,
+  UnblockReasonEnum,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
+import {
+  CreateCustomerResponseExtensionDto,
+  IntersolveCreateCustomerResponseBodyDto,
+  IntersolveLinkWalletCustomerResponseDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
+import {
+  IntersolveAddressDto,
+  IntersolveCreateCustomerDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+import {
+  IntersolveCreateDebitCardDto,
+  IntersolveCreateDebitCardResponseDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
+import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IntersolveCreateWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet.dto';
+import {
+  GetWalletDetailsResponseDto,
+  GetWalletsResponseDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
+import {
+  IntersolveGetTransactionsResponseDataDto,
+  TransactionInfoVisa,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
+import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
+import { IntersolveLoadDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load.dto';
+import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
+import {
+  IntersolveVisaPaymentInfoEnum,
+  IntersolveVisaPaymentInfoEnumBackupName,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-payment-info.enum';
+import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import {
+  IntersolveVisaWalletEntity,
+  IntersolveVisaWalletStatus,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
+import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
+import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis-client';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
+import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
+import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -5,83 +88,6 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { FspConfigurationEnum, FspName } from '../../../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../../../notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
-import { MessageProcessTypeExtension } from '../../../notifications/message-job.dto';
-import { QueueMessageService } from '../../../notifications/queue-message/queue-message.service';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
-import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
-import { Attributes } from '../../../registration/dto/update-registration.dto';
-import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
-import { ErrorEnum } from '../../../registration/errors/registration-data.error';
-import { RegistrationDataService } from '../../../registration/modules/registration-data/registration-data.service';
-import { RegistrationScopedRepository } from '../../../registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '../../../scoped.repository';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { formatPhoneNumber } from '../../../utils/phone-number.helpers';
-import { RegistrationDataScopedQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
-import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import {
-  PaTransactionResultDto,
-  TransactionNotificationObject,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '../../enum/queue.names.enum';
-import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
-import { RegistrationEntity } from './../../../registration/registration.entity';
-import {
-  BlockReasonEnum,
-  IntersolveBlockWalletDto,
-  IntersolveBlockWalletResponseDto,
-  UnblockReasonEnum,
-} from './dto/intersolve-block.dto';
-import {
-  CreateCustomerResponseExtensionDto,
-  IntersolveCreateCustomerResponseBodyDto,
-  IntersolveLinkWalletCustomerResponseDto,
-} from './dto/intersolve-create-customer-response.dto';
-import {
-  IntersolveAddressDto,
-  IntersolveCreateCustomerDto,
-} from './dto/intersolve-create-customer.dto';
-import {
-  IntersolveCreateDebitCardDto,
-  IntersolveCreateDebitCardResponseDto,
-} from './dto/intersolve-create-debit-card.dto';
-import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
-import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
-import {
-  GetWalletDetailsResponseDto,
-  GetWalletsResponseDto,
-} from './dto/intersolve-get-wallet-details.dto';
-import {
-  IntersolveGetTransactionsResponseDataDto,
-  TransactionInfoVisa,
-} from './dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
-import { IntersolveLoadDto } from './dto/intersolve-load.dto';
-import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
-import { PaymentDetailsDto } from './dto/payment-details.dto';
-import {
-  IntersolveVisaPaymentInfoEnum,
-  IntersolveVisaPaymentInfoEnumBackupName,
-} from './enum/intersolve-visa-payment-info.enum';
-import { VisaErrorCodes } from './enum/visa-error-codes.enum';
-import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
-import {
-  IntersolveVisaWalletEntity,
-  IntersolveVisaWalletStatus,
-} from './intersolve-visa-wallet.entity';
-import { IntersolveVisaApiService } from './intersolve-visa.api.service';
-import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
-import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
 
 @Injectable()
 export class IntersolveVisaService
@@ -363,7 +369,7 @@ export class IntersolveVisaService
     paTransactionResult.referenceId = paymentDetails.referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = calculatedAmount;
-    paTransactionResult.fspName = FspName.intersolveVisa;
+    paTransactionResult.fspName = FinancialServiceProviderName.intersolveVisa;
 
     const transactionNotifications = [];
 
@@ -473,6 +479,7 @@ export class IntersolveVisaService
       const createDebitCardResult = await this.createDebitCard(
         paymentDetails,
         visaCustomer.visaWallets[0],
+        registration.programId,
       );
 
       const createDebitCardResultStatus = this.isSuccessResponseStatus(
@@ -652,8 +659,8 @@ export class IntersolveVisaService
       await this.programFspConfigurationRepository.findOne({
         where: {
           programId: programId,
-          name: FspConfigurationEnum.brandCode,
-          fsp: { fsp: FspName.intersolveVisa },
+          name: FinancialServiceProviderConfigurationEnum.brandCode,
+          fsp: { fsp: FinancialServiceProviderName.intersolveVisa },
         },
         relations: ['fsp'],
       });
@@ -673,8 +680,8 @@ export class IntersolveVisaService
       await this.programFspConfigurationRepository.findOne({
         where: {
           programId: programId,
-          name: FspConfigurationEnum.coverLetterCode,
-          fsp: { fsp: FspName.intersolveVisa },
+          name: FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          fsp: { fsp: FinancialServiceProviderName.intersolveVisa },
         },
         relations: ['fsp'],
       });
@@ -691,6 +698,7 @@ export class IntersolveVisaService
   private async createDebitCard(
     paymentDetails: PaymentDetailsDto,
     intersolveVisaWallet: IntersolveVisaWalletEntity,
+    programId: number,
   ): Promise<IntersolveCreateDebitCardResponseDto> {
     const createDebitCardPayload = new IntersolveCreateDebitCardDto();
     createDebitCardPayload.brand = 'VISA_CARD';
@@ -717,9 +725,8 @@ export class IntersolveVisaService
 
     try {
       // Added cover letter code during create debit card call
-      const coverLetterCode = await this.getCoverLetterCodeForProgram(
-        paymentDetails.programId,
-      );
+      const coverLetterCode =
+        await this.getCoverLetterCodeForProgram(programId);
       createDebitCardPayload.coverLetterCode = coverLetterCode;
     } catch (error) {
       return {
@@ -962,7 +969,7 @@ export class IntersolveVisaService
     }
 
     const visaCustomer = await this.getCustomerEntity(registration.id);
-    if (registration.fsp.fsp !== FspName.intersolveVisa) {
+    if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
       const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
@@ -1324,6 +1331,7 @@ export class IntersolveVisaService
     const createDebitCardResult = await this.createDebitCard(
       paymentDetails[0],
       newWallet,
+      programId,
     );
     if (!this.isSuccessResponseStatus(createDebitCardResult.status)) {
       // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw

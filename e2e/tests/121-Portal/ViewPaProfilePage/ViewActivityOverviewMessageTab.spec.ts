@@ -38,7 +38,9 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
   });
 
   await test.step('Validate the "Messages" tab on the PA Activity Overview table to Contain WhatsApp notifications and correct message content', async () => {
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      englishTranslations['registration-details'].pageTitle,
+    );
     await registration.openActivityOverviewTab('Messages');
     await registration.validateSentMessagesTab(
       englishTranslations.entity.message['content-type']['generic-templated'],

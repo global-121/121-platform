@@ -1,3 +1,7 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ImportFspReconciliationArrayDto } from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
@@ -9,10 +13,6 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
-import { LanguageEnum } from '../enum/language.enum';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export enum ImportStatus {
   imported = 'imported',
@@ -21,26 +21,28 @@ export enum ImportStatus {
   paymentFailed = 'paymentFailed',
 }
 
-const fspArray = Object.values(FspName).map((item) => String(item));
+const fspArray = Object.values(FinancialServiceProviderName).map((item) =>
+  String(item),
+);
 const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 export class BulkImportDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  public phoneNumber: string;
+  public phoneNumber?: string;
 
   @ApiProperty()
   @IsNumber()
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public paymentAmountMultiplier: number;
+  public paymentAmountMultiplier?: number;
 
   @ApiProperty()
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments: number;
+  public maxPayments?: number;
 
   @ApiProperty({
     enum: languageArray,
@@ -48,12 +50,12 @@ export class BulkImportDto {
   })
   @IsEnum(LanguageEnum)
   @IsOptional()
-  public preferredLanguage: LanguageEnum;
+  public preferredLanguage?: LanguageEnum;
 
   @ApiProperty({ example: 'utrecht.houten' })
   @IsString()
   @IsOptional()
-  public scope: string;
+  public scope?: string;
 }
 
 export class BulkImportResult extends BulkImportDto {
@@ -61,7 +63,7 @@ export class BulkImportResult extends BulkImportDto {
   public registrationStatus: RegistrationStatusEnum | string;
 }
 
-export class ImportFspReconciliationResult extends ImportFspReconciliationArrayDto {
+class ImportFspReconciliationResult extends ImportFspReconciliationArrayDto {
   public importStatus: ImportStatus;
 }
 
@@ -71,7 +73,7 @@ export class ImportResult {
   public uploadFspReconciliationResult?: ImportFspReconciliationResult[];
 }
 
-export class AggregateImportResult {
+class AggregateImportResult {
   public countImported?: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
@@ -85,13 +87,13 @@ export class ImportRegistrationsDto extends BulkImportDto {
     example: fspArray.join(' | '),
   })
   @IsIn(fspArray)
-  public fspName: FspName;
+  public fspName: FinancialServiceProviderName;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
   @Length(5, 200)
-  public referenceId: string;
+  public referenceId?: string;
 
   @ApiProperty()
   public scope: string;

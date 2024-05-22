@@ -1,6 +1,6 @@
+import { BulkImportDto } from '@121-service/src/registration/dto/bulk-import.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { BulkImportDto } from './bulk-import.dto';
 
 export class BulkUpdateDto extends BulkImportDto {
   @ApiProperty()
@@ -9,5 +9,5 @@ export class BulkUpdateDto extends BulkImportDto {
 
   @ApiProperty()
   @IsOptional()
-  public scope: string;
+  public scope?: string;
 }

@@ -1,3 +1,7 @@
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -10,7 +14,6 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
-import { LanguageEnum } from '../../../registration/enum/language.enum';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
@@ -30,7 +33,7 @@ export class CreateMessageTemplateDto {
   })
   @IsNotEmpty()
   @ValidateIf((o) => o.isSendMessageTemplate)
-  public readonly label: JSON;
+  public readonly label: LocalizedString;
 
   @ApiProperty()
   @IsString()
@@ -58,7 +61,7 @@ export class UpdateTemplateParamDto {
   public readonly type: string;
   @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language: LanguageEnum;
+  public readonly language?: LanguageEnum;
 }
 
 export class UpdateTemplateBodyDto {
@@ -81,7 +84,7 @@ export class UpdateTemplateBodyDto {
     example: { en: 'Template label' },
   })
   @IsOptional()
-  public readonly label?: JSON;
+  public readonly label?: LocalizedString;
 }
 
 export class DeleteTemplateParamDto {
@@ -96,5 +99,5 @@ export class DeleteTemplateParamDto {
 export class DeleteTemplateQueryDto {
   @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language: LanguageEnum;
+  public readonly language?: LanguageEnum;
 }

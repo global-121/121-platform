@@ -1,5 +1,5 @@
+import { twilioClient } from '@121-service/src/notifications/twilio.client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { twilioClient } from '../twilio.client';
 
 @Injectable()
 export class LookupService {

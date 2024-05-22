@@ -1,3 +1,6 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -11,9 +14,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { ProgramFinancialServiceProviderDto } from './create-program.dto';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export class UpdateProgramDto {
   @ApiProperty({
@@ -23,36 +24,36 @@ export class UpdateProgramDto {
   @IsString()
   @IsEnum(ProgramPhase)
   @IsOptional()
-  public readonly phase: ProgramPhase;
+  public readonly phase?: ProgramPhase;
 
   @ApiProperty()
   @IsOptional()
   @IsBoolean()
-  public readonly published: boolean;
+  public readonly published?: boolean;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  public readonly location: string;
+  public readonly location?: string;
 
   @ApiProperty({ example: { en: 'title' } })
   @IsOptional()
-  public readonly titlePortal: JSON;
+  public readonly titlePortal?: LocalizedString;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  public readonly ngo: string;
+  public readonly ngo?: string;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsOptional()
   @IsDateString()
-  public readonly startDate: Date;
+  public readonly startDate?: Date;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsOptional()
   @IsDateString()
-  public readonly endDate: Date;
+  public readonly endDate?: Date;
 
   @ApiProperty({ example: 'MWK' })
   @IsOptional()
@@ -60,34 +61,34 @@ export class UpdateProgramDto {
   @Length(3, 3, {
     message: 'Currency should be a 3 letter abbreviation',
   })
-  public readonly currency: string;
+  public readonly currency?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  public readonly distributionFrequency: string;
+  public readonly distributionFrequency?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  public readonly distributionDuration: number;
+  public readonly distributionDuration?: number;
 
   @ApiProperty({ example: 500 })
   @IsOptional()
-  public readonly fixedTransferValue: number;
+  public readonly fixedTransferValue?: number;
 
   @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
   @IsString()
-  public readonly paymentAmountMultiplierFormula: string;
+  public readonly paymentAmountMultiplierFormula?: string;
 
   @ApiProperty({
     example: [
       {
-        fsp: FspName.intersolveVoucherWhatsapp,
+        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FspName.intersolveVoucherPaper,
+        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
       },
     ],
     description:
@@ -97,39 +98,39 @@ export class UpdateProgramDto {
   @IsArray()
   @ValidateNested()
   @Type(() => ProgramFinancialServiceProviderDto)
-  public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
+  public readonly financialServiceProviders?: ProgramFinancialServiceProviderDto[];
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  public readonly targetNrRegistrations: number;
+  public readonly targetNrRegistrations?: number;
 
   @ApiProperty()
   @IsOptional()
   @IsBoolean()
-  public readonly validation: boolean;
+  public readonly validation?: boolean;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description: JSON;
+  public readonly description?: LocalizedString;
 
   @ApiProperty({ example: false })
   @IsOptional()
   @IsBoolean()
-  public readonly enableMaxPayments: boolean;
+  public readonly enableMaxPayments?: boolean;
 
   @ApiProperty({ example: false })
   @IsOptional()
   @IsBoolean()
-  public readonly enableScope: boolean;
+  public readonly enableScope?: boolean;
 
   @ApiProperty({ example: false })
   @IsOptional()
   @IsBoolean()
-  public readonly allowEmptyPhoneNumber: boolean;
+  public readonly allowEmptyPhoneNumber?: boolean;
 
   @ApiProperty({ example: 100000 })
   @IsOptional()
   @IsNumber()
-  public readonly budget: number;
+  public readonly budget?: number;
 }

@@ -1,6 +1,9 @@
+import {
+  ActionArray,
+  ActionType,
+} from '@121-service/src/actions/action.entity';
+import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserOwnerDto } from '../../user/dto/user-owner.dto';
-import { ActionArray, ActionType } from '../action.entity';
 
 export class ActionReturnDto {
   @ApiProperty({ example: 1, type: 'number' })

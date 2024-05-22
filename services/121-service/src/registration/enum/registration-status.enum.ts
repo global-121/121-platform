@@ -17,13 +17,3 @@ export enum RegistrationStatusTimestampField {
   pausedDate = 'pausedDate',
   declinedDate = 'declinedDate',
 }
-
-export enum RegistrationStatusDateMap {
-  registered = RegistrationStatusTimestampField.registeredDate,
-  validated = RegistrationStatusTimestampField.validationDate,
-  included = RegistrationStatusTimestampField.inclusionDate,
-  deleted = RegistrationStatusTimestampField.deleteDate,
-  completed = RegistrationStatusTimestampField.completedDate,
-  paused = RegistrationStatusTimestampField.pausedDate,
-  declined = RegistrationStatusTimestampField.declinedDate,
-}

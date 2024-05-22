@@ -1,4 +1,4 @@
-import { getQueueName } from './unit-test.helpers';
+import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
 describe('getQueueName', () => {
   it('should return a correctly formatted Queue-name', () => {

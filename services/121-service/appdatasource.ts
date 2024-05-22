@@ -1,3 +1,3 @@
+import { ORMConfig } from '@121-service/ormconfig';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { ORMConfig } from './ormconfig';
 export const AppDataSource = new DataSource(ORMConfig as DataSourceOptions);

@@ -1,3 +1,11 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import {
+  CreateProgramCustomAttributeDto,
+  CustomAttributeType,
+} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -13,24 +21,17 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { ExportType } from '../../metrics/dto/export-details.dto';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import {
-  CreateProgramCustomAttributeDto,
-  CustomAttributeType,
-} from './create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from './program-question.dto';
+import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
 
 export class ProgramFinancialServiceProviderDto {
   @ApiProperty()
-  @IsEnum(FspName)
-  fsp: FspName;
+  @IsEnum(FinancialServiceProviderName)
+  fsp: FinancialServiceProviderName;
 
   @ApiProperty()
   @IsArray()
   @IsOptional()
-  configuration: {
+  configuration?: {
     name: string;
     value: string | string[] | Record<string, string>;
   }[];
@@ -61,11 +62,11 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  public readonly titlePortal: JSON;
+  public readonly titlePortal: LocalizedString;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description?: JSON;
+  public readonly description?: LocalizedString;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
@@ -104,10 +105,10 @@ export class CreateProgramDto {
   @ApiProperty({
     example: [
       {
-        fsp: FspName.intersolveVoucherWhatsapp,
+        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FspName.intersolveVoucherPaper,
+        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
       },
     ],
     description:
@@ -253,18 +254,18 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()
-  public readonly aboutProgram: JSON;
+  public readonly aboutProgram: LocalizedString;
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
     description: 'Should be array of name-related program-questions.',
   })
   @IsArray()
-  public readonly fullnameNamingConvention: JSON;
+  public readonly fullnameNamingConvention: string[];
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
-  public readonly languages: JSON;
+  public readonly languages: LanguageEnum[];
 
   @ApiProperty({ example: false })
   @IsBoolean()

@@ -1,6 +1,6 @@
-import { PermissionEnum } from './enum/permission.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-export interface UserData {
+interface UserData {
   id: number;
   username: string;
   permissions: UserPermissions;
@@ -21,4 +21,4 @@ export interface UserRequestData {
   scope: string;
 }
 
-export type UserPermissions = Record<number, PermissionEnum[]>;
+type UserPermissions = Record<number, PermissionEnum[]>;

@@ -1,21 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FilterOperator } from 'nestjs-paginate';
-import { In, Repository } from 'typeorm';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { ProgramEntity } from '../programs/program.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationViewWithPayments,
-} from '../registration/const/filter-operation.const';
-import { FilterAttributeDto } from '../registration/dto/filter-attribute.dto';
+} from '@121-service/src/registration/const/filter-operation.const';
+import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
 import {
   Attribute,
   QuestionType,
-} from '../registration/enum/custom-data-attributes';
+} from '@121-service/src/registration/enum/custom-data-attributes';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FilterOperator } from 'nestjs-paginate';
+import { In, Repository } from 'typeorm';
 @Injectable()
 export class ProgramAttributesService {
   @InjectRepository(ProgramEntity)

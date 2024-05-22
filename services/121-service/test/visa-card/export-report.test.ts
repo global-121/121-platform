@@ -1,17 +1,24 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { WalletCardStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
-import { changePhase, doPayment, exportList } from '../helpers/program.helper';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import {
+  changePhase,
+  doPayment,
+  exportList,
+} from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
-} from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 
 describe('Export Visa debit card report', () => {
   const programId = 3;
@@ -25,7 +32,7 @@ describe('Export Visa debit card report', () => {
     firstName: 'Jane',
     lastName: 'Doe',
     phoneNumber: '14155238887',
-    fspName: FspName.intersolveVisa,
+    fspName: FinancialServiceProviderName.intersolveVisa,
     whatsappPhoneNumber: '14155238887',
     addressStreet: 'Teststraat',
     addressHouseNumber: '1',

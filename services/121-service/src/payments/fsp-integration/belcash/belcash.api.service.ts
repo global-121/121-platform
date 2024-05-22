@@ -1,6 +1,6 @@
+import { BelcashTransferPayload } from '@121-service/src/payments/fsp-integration/belcash/belcash-transfer-payload.dto';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
-import { CustomHttpService } from '../../../shared/services/custom-http.service';
-import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
 export class BelcashApiService {

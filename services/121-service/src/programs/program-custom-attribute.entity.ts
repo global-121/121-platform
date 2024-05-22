@@ -1,3 +1,10 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
 import {
   BeforeRemove,
   Check,
@@ -8,11 +15,6 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { RegistrationDataEntity } from '../registration/registration-data.entity';
-import { NameConstraintQuestions } from '../shared/const';
-import { CascadeDeleteEntity } from './../base.entity';
-import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
-import { ProgramEntity } from './program.entity';
 
 @Unique('programCustomAttributeUnique', ['name', 'programId'])
 @Entity('program_custom_attribute')
@@ -25,10 +27,10 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   public type: CustomAttributeType;
 
   @Column('json')
-  public label: JSON;
+  public label: LocalizedString;
 
   @Column('json', { default: [] })
-  public phases: JSON;
+  public phases: ProgramPhase[];
 
   @Column({ default: false })
   public duplicateCheck: boolean;

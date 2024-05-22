@@ -1,11 +1,11 @@
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LookupService } from '../../../notifications/lookup/lookup.service';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { RegistrationsModule } from '../../../registration/registrations.module';
-import { TransactionsModule } from '../../transactions/transactions.module';
-import { ExcelService } from './excel.service';
 
 @Module({
   imports: [

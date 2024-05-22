@@ -1,23 +1,23 @@
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { ActionsModule } from '@121-service/src/actions/actions.module';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { KoboConnectModule } from '@121-service/src/kobo-connect/kobo-connect.module';
+import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
+import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
+import { ProgramFspConfigurationController } from '@121-service/src/programs/fsp-configuration/fsp-configuration.controller';
+import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramController } from '@121-service/src/programs/programs.controller';
+import { ProgramService } from '@121-service/src/programs/programs.service';
+import { UserModule } from '@121-service/src/user/user.module';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionEntity } from '../actions/action.entity';
-import { ActionsModule } from '../actions/actions.module';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspModule } from '../fsp/fsp.module';
-import { KoboConnectModule } from '../kobo-connect/kobo-connect.module';
-import { LookupModule } from '../notifications/lookup/lookup.module';
-import { ProgramAttributesModule } from '../program-attributes/program-attributes.module';
-import { UserModule } from '../user/user.module';
-import { ProgramFspConfigurationController } from './fsp-configuration/fsp-configuration.controller';
-import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
-import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
-import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { ProgramQuestionEntity } from './program-question.entity';
-import { ProgramEntity } from './program.entity';
-import { ProgramController } from './programs.controller';
-import { ProgramService } from './programs.service';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { ProgramService } from './programs.service';
     ]),
     ActionsModule,
     UserModule,
-    FspModule,
+    FinancialServiceProvidersModule,
     HttpModule,
     LookupModule,
     UserModule,

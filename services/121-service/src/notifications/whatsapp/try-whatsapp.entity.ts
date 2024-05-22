@@ -1,8 +1,8 @@
 // This entity does not store intersolve vouchers messages only 'normal' notifications
 
+import { Base121Entity } from '@121-service/src/base.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Entity('try_whatsapp')
 export class TryWhatsappEntity extends Base121Entity {
@@ -16,5 +16,5 @@ export class TryWhatsappEntity extends Base121Entity {
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
   @Column({ type: 'int', nullable: true })
-  public registrationId: number;
+  public registrationId: number | null;
 }

@@ -1,7 +1,6 @@
+import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { formatWhatsAppNumber } from '../utils/phone-number.helpers';
-import { MessageContentType } from './enum/message-type.enum';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -12,67 +11,6 @@ export enum TwilioStatus {
   sent = 'sent',
   failed = 'failed',
 }
-
-export class TwilioMessagesCreateDto {
-  @ApiProperty()
-  @IsString()
-  public readonly body: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly messagingServiceSid: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly from: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly statusCallback: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly to: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly mediaUrl: string;
-
-  @ApiProperty({ example: MessageContentType.genericTemplated })
-  @IsString()
-  @IsOptional()
-  public readonly messageContentType: string;
-}
-
-class AccountSidObject {
-  public readonly accountSid: string;
-}
-
-export class TwilioValidateRequestDto {
-  @ApiProperty()
-  @IsString()
-  public readonly authToken: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly signature: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly callbackUrl: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly body: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  public readonly accountSidObject: AccountSidObject;
-}
-
 export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
@@ -85,28 +23,28 @@ export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
-  public ErrorMessage: string;
+  public ErrorMessage?: string;
 
   @ApiProperty({ example: '63015' })
   @IsString()
   @IsOptional()
-  public ErrorCode: string;
+  public ErrorCode?: string;
 
   @IsOptional()
-  public SmsSid: string;
+  public SmsSid?: string;
 
   @IsOptional()
-  public SmsStatus: string;
+  public SmsStatus?: string;
 
   @IsOptional()
-  public To: string;
+  public To?: string;
 }
 
 export class TwilioIncomingCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   @IsOptional()
-  public MessageSid: string;
+  public MessageSid?: string;
 
   @ApiProperty({ example: formatWhatsAppNumber('31600000000') })
   @IsString()
@@ -115,7 +53,7 @@ export class TwilioIncomingCallbackDto {
   @ApiProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
-  public WaId: string;
+  public WaId?: string;
 
   @ApiProperty({
     example: formatWhatsAppNumber(
@@ -124,10 +62,10 @@ export class TwilioIncomingCallbackDto {
   })
   @IsString()
   @IsOptional()
-  public To: string;
+  public To?: string;
 
   @ApiProperty({ example: 'Yes' })
   @IsString()
   @IsOptional()
-  public Body: string;
+  public Body?: string;
 }

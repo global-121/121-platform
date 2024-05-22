@@ -1,4 +1,12 @@
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { ApiProperty } from '@nestjs/swagger';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   BeforeRemove,
   Check,
@@ -9,11 +17,6 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { ExportType } from '../metrics/dto/export-details.dto';
-import { NameConstraintQuestions } from '../shared/const';
-import { CascadeDeleteEntity } from './../base.entity';
-import { RegistrationDataEntity } from './../registration/registration-data.entity';
-import { ProgramEntity } from './program.entity';
 
 @Unique('programQuestionUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
@@ -25,7 +28,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json')
   @ApiProperty({ example: { en: 'label' } })
-  public label: JSON;
+  public label: LocalizedString;
 
   @Column()
   @ApiProperty({ example: 'tel' })
@@ -33,7 +36,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'placeholder' } })
-  public placeholder: JSON;
+  public placeholder: LocalizedString | null;
 
   @Column()
   @ApiProperty({ example: 'standard' })
@@ -41,11 +44,11 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: [] })
-  public options: JSON;
+  public options: QuestionOption[] | null;
 
   @Column('json')
   @ApiProperty({ example: {} })
-  public scoring: JSON;
+  public scoring: Record<string, unknown>;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.programQuestions)
   @JoinColumn({ name: 'programId' })
@@ -61,11 +64,11 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
     default: [ExportType.allPeopleAffected, ExportType.included],
   })
   @ApiProperty({ example: [] })
-  public export: JSON;
+  public export: ExportType[];
 
   @Column({ nullable: true })
   @ApiProperty({ example: 'pattern' })
-  public pattern: string;
+  public pattern: string | null;
 
   @Column({ default: false })
   @ApiProperty({ example: false })
@@ -73,7 +76,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { default: [] })
   @ApiProperty({ example: [] })
-  public phases: JSON;
+  public phases: ProgramPhase[];
 
   @OneToMany(
     () => RegistrationDataEntity,

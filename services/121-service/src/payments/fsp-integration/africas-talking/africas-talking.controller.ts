@@ -1,9 +1,9 @@
+import { AfricasTalkingService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.service';
+import { AfricasTalkingNotificationDto } from '@121-service/src/payments/fsp-integration/africas-talking/dto/africas-talking-notification.dto';
+import { AfricasTalkingValidationDto } from '@121-service/src/payments/fsp-integration/africas-talking/dto/africas-talking-validation.dto';
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { AfricasTalkingService } from './africas-talking.service';
-import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
-import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @ApiTags('callbacks/africas-talking')
 // TODO: REFACTOR: rename to callbacks/africas-talking

@@ -205,13 +205,13 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
       return;
     }
 
+    // Send a templated message custom message
     if (
       this.selectedTemplateType !== this.customTemplateType &&
       this.selectedTemplateType !== undefined
     ) {
       this.modalController.dismiss(
         {
-          message: this.preview,
           messageTemplateKey: this.selectedTemplateType,
         },
         null,
@@ -219,11 +219,13 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
       return;
     }
 
+    // Send free text message
     if (this.inputProps.inputRequired && this.input && this.input.value) {
       this.modalController.dismiss({ message: this.input.value }, null);
       return;
     }
 
+    // Send templated message on status change
     if (this.inputProps.isTemplated && this.inputProps.checkboxChecked) {
       this.modalController.dismiss(
         { messageTemplateKey: this.inputProps.messageTemplateKey },

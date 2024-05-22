@@ -1,21 +1,21 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
-import { AppDataSource } from '../../../../appdatasource';
-import { InstanceEntity } from '../../../instance/instance.entity';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { ScopedRepository } from '../../../scoped.repository';
-import { getScopedRepositoryProviderName } from '../../../utils/scope/createScopedRepositoryProvider.helper';
-import { RegistrationDataByNameDto } from '../../dto/registration-data-by-name.dto';
+import { AppDataSource } from '@121-service/appdatasource';
+import { InstanceEntity } from '@121-service/src/instance/instance.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,
   RegistrationDataRelation,
-} from '../../dto/registration-data-relation.model';
-import { RegistrationDataError } from '../../errors/registration-data.error';
-import { RegistrationDataEntity } from '../../registration-data.entity';
-import { RegistrationViewEntity } from '../../registration-view.entity';
-import { RegistrationEntity } from '../../registration.entity';
-import { RegistrationScopedRepository } from '../../repositories/registration-scoped.repository';
+} from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class RegistrationDataService {

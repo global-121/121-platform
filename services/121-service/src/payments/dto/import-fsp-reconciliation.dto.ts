@@ -1,19 +1,19 @@
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, IsOptional } from 'class-validator';
-import { StatusEnum } from '../../shared/enum/status.enum';
 
 export class ImportFspReconciliationArrayDto {
   @ApiProperty({ example: +24300000000 })
   @IsOptional()
-  public phoneNumber: string;
+  public phoneNumber?: string;
 
   @ApiProperty({ example: StatusEnum.success })
   @IsOptional()
-  public status: string;
+  public status?: string;
 
   @ApiProperty({ example: 50 })
   @IsOptional()
-  public amount: string;
+  public amount?: string;
 }
 
 export class ImportFspReconciliationDto {

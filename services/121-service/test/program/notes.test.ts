@@ -1,11 +1,18 @@
 /* eslint-disable jest/no-conditional-expect */
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import {
+  changePhase,
+  getNotes,
+  postNote,
+} from '@121-service/test/helpers/program.helper';
+import { importRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import { HttpStatus } from '@nestjs/common';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
-import { SeedScript } from '../../src/scripts/seed-script.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { changePhase, getNotes, postNote } from '../helpers/program.helper';
-import { importRegistrations } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
 describe('Notes', () => {
   let accessToken: string;

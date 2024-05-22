@@ -1,19 +1,28 @@
-import * as request from 'supertest';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
-} from '../../src/notifications/message-template/dto/message-template.dto';
-import { CreateProgramCustomAttributeDto } from '../../src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '../../src/programs/dto/program-question.dto';
-import { LanguageEnum } from '../../src/registration/enum/language.enum';
-import { MessageStatus } from '../../src/registration/enum/last-message-status';
-import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
-import { ProgramPhase } from '../../src/shared/enum/program-phase.enum';
-import { StatusEnum } from '../../src/shared/enum/status.enum';
-import { waitFor } from '../../src/utils/waitFor.helper';
-import { CreateProgramDto } from './../../src/programs/dto/create-program.dto';
-import { getMessageHistory, getRegistrations } from './registration.helper';
-import { getServer } from './utility.helper';
+} from '@121-service/src/notifications/message-template/dto/message-template.dto';
+import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import {
+  getMessageHistory,
+  getRegistrations,
+} from '@121-service/test/helpers/registration.helper';
+import { getServer } from '@121-service/test/helpers/utility.helper';
+import * as request from 'supertest';
+
+enum MessageStatus {
+  sent = 'sent',
+  delivered = 'delivered',
+  failed = 'failed',
+  read = 'read',
+}
 
 export async function postProgram(
   program: CreateProgramDto,
@@ -393,7 +402,7 @@ export async function waitForMessagesToComplete(
 
     // If not all PAs received a message, wait for a short interval before checking again
     if (!allMessageUpdatesSuccessful) {
-      await waitFor(3_000);
+      await waitFor(1_000);
     }
   }
 

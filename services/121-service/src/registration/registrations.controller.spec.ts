@@ -1,10 +1,10 @@
+import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { TestBed } from '@automock/jest';
 import { PaginateQuery } from 'nestjs-paginate';
-import { RegistrationStatusPatchDto } from './dto/registration-status-patch.dto';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationsController } from './registrations.controller';
-import { RegistrationsBulkService } from './services/registrations-bulk.service';
-import { RegistrationsPaginationService } from './services/registrations-pagination.service';
 
 describe('RegistrationsController', () => {
   let registrationController: RegistrationsController;

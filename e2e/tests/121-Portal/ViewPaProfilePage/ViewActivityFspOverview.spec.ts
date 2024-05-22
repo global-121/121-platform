@@ -29,7 +29,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
-import data from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;
@@ -119,19 +119,19 @@ test('[27496] View Activity overview in FSP column on PA profile page', async ({
   await test.step('Validate Status histor tab on PA Activity Overview table', async () => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
-    await registration.validatePaProfileOpened();
+    await registration.validateHeaderToContainText(
+      englishTranslations['registration-details'].pageTitle,
+    );
     await registration.openActivityOverviewTab('All');
     await registration.validateChangeLogTile(
-      data['registration-details']['activity-overview'].activities['fsp-change']
-        .label,
+      englishTranslations['registration-details']['activity-overview']
+        .activities['fsp-change'].label,
       userName,
       await helpers.getTodaysDate(),
-      data['registration-details']['activity-overview'].activities[
-        'data-changes'
-      ].old,
-      data['registration-details']['activity-overview'].activities[
-        'data-changes'
-      ].new,
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].old,
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].new,
     );
   });
 });

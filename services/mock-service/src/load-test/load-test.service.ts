@@ -1,7 +1,7 @@
+import { EXTERNAL_API } from '@mock-service/src/config';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { EXTERNAL_API } from '../config';
 
 @Injectable()
 export class LoadTestService {

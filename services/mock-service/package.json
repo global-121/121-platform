@@ -13,9 +13,9 @@
     "lint": "eslint \"src/**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
     "test": "echo 'No tests available' && exit 0",
-    "start": "node index.js",
+    "start": "node -r tsconfig-paths/register  index.js",
     "prestart:dev": "npm install --no-fund --no-audit",
-    "start:dev": "tsc-watch --noClear --onSuccess \"  node --inspect index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json"
+    "start:dev": "tsc-watch --noClear --onSuccess \"  node -r tsconfig-paths/register  --inspect index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json"
   },
   "private": true,
   "dependencies": {
@@ -27,15 +27,17 @@
     "@nestjs/testing": "^10.3.8",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/lodash": "^4.17.0",
-    "@types/node": "^18.19.31",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
+    "@types/lodash": "^4.17.4",
+    "@types/node": "^18.19.33",
+    "@typescript-eslint/eslint-plugin": "^7.10.0",
+    "@typescript-eslint/parser": "^7.10.0",
     "eslint": "^8.57.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "3.2.5",

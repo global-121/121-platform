@@ -1,6 +1,7 @@
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { IsNotBothPresent } from '@121-service/src/registration/validators/is-not-both-present.class.validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { IsEnum, IsOptional } from 'class-validator';
 
 export class RegistrationStatusPatchDto {
   @ApiProperty({
@@ -10,9 +11,7 @@ export class RegistrationStatusPatchDto {
   public readonly status: RegistrationStatusEnum;
 
   @ApiProperty({ example: 'Long enough rejection message', required: false })
-  @MinLength(1)
-  @IsString()
-  @IsOptional()
+  @IsNotBothPresent<RegistrationStatusPatchDto>('messageTemplateKey')
   public readonly message: string;
 
   @ApiProperty({
@@ -22,5 +21,5 @@ export class RegistrationStatusPatchDto {
   })
   @IsEnum(RegistrationStatusEnum)
   @IsOptional()
-  public readonly messageTemplateKey: string;
+  public readonly messageTemplateKey?: string;
 }

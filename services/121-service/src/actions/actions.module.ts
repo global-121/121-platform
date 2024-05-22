@@ -1,11 +1,11 @@
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { ActionsController } from '@121-service/src/actions/actions.controller';
+import { ActionsService } from '@121-service/src/actions/actions.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserModule } from '@121-service/src/user/user.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { UserEntity } from '../user/user.entity';
-import { UserModule } from '../user/user.module';
-import { ActionEntity } from './action.entity';
-import { ActionsController } from './actions.controller';
-import { ActionsService } from './actions.service';
 
 @Module({
   imports: [

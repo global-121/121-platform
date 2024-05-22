@@ -1,27 +1,30 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { validate } from 'class-validator';
-import { Repository } from 'typeorm';
-import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { LookupService } from '../../notifications/lookup/lookup.service';
-import { ProgramEntity } from '../../programs/program.entity';
-import { UserService } from '../../user/user.service';
-import { BulkImportDto, ImportRegistrationsDto } from '../dto/bulk-import.dto';
-import { BulkUpdateDto } from '../dto/bulk-update.dto';
-import { AdditionalAttributes } from '../dto/update-registration.dto';
-import { ValidationConfigDto } from '../dto/validate-registration-config.dto';
-import { ValidateRegistrationErrorObjectDto } from '../dto/validate-registration-error-object.dto';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import {
+  BulkImportDto,
+  ImportRegistrationsDto,
+} from '@121-service/src/registration/dto/bulk-import.dto';
+import { BulkUpdateDto } from '@121-service/src/registration/dto/bulk-update.dto';
+import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
+import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-registration-config.dto';
+import { ValidateRegistrationErrorObjectDto } from '@121-service/src/registration/dto/validate-registration-error-object.dto';
 import {
   AnswerTypes,
   Attribute,
   CustomAttributeType,
   GenericAttributes,
   QuestionType,
-} from '../enum/custom-data-attributes';
-import { LanguageEnum } from '../enum/language.enum';
-import { RegistrationCsvValidationEnum } from '../enum/registration-csv-validation.enum';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationsInputValidatorHelpers } from './registrations-input.validator.helper';
+} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UserService } from '@121-service/src/user/user.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsInputValidator {
@@ -415,7 +418,7 @@ export class RegistrationsInputValidator {
 
   private isDynamicAttributeForFsp(
     attribute: Attribute,
-    fspName: FspName,
+    fspName: FinancialServiceProviderName,
   ): boolean {
     // If the CSV does not have fspName all attributes may be relevant because a bulk PATCH may be for multiple FSPs
     if (!fspName) {

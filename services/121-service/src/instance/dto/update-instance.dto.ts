@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export class UpdateInstanceDto {
   @ApiProperty({ example: 'NGO-name' })
@@ -9,11 +10,11 @@ export class UpdateInstanceDto {
 
   @ApiProperty({ example: { en: 'NGO display name' } })
   @IsOptional()
-  public readonly displayName: JSON;
+  public readonly displayName?: LocalizedString;
 
   @ApiProperty({
     example: { en: '<about program>' },
   })
   @IsOptional()
-  public readonly aboutProgram: JSON;
+  public readonly aboutProgram?: LocalizedString;
 }

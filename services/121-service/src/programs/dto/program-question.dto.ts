@@ -1,3 +1,7 @@
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
+import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -10,10 +14,8 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { ExportType } from '../../metrics/dto/export-details.dto';
-import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
-import { ProgramPhase } from '../../shared/enum/program-phase.enum';
-import { CreateOptionsDto } from './create-options.dto';
+import { LocalizedString } from 'src/shared/enum/language.enums';
+import { QuestionOption } from 'src/shared/enum/question.enums';
 
 class BaseProgramQuestionDto {
   @ApiProperty({})
@@ -26,17 +28,17 @@ class BaseProgramQuestionDto {
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
-  public readonly options: JSON;
+  public readonly options?: QuestionOption[];
   @ApiProperty()
   @IsOptional()
-  public readonly scoring: JSON;
+  public readonly scoring?: Record<string, unknown>;
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
-  public readonly persistence: boolean;
+  public readonly persistence?: boolean;
   @ApiProperty({ required: false })
   @IsOptional()
-  public pattern: string;
+  public pattern?: string;
   @ApiProperty({
     example: [
       ProgramPhase.registrationValidation,
@@ -46,17 +48,17 @@ class BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public phases: JSON;
+  public phases?: ProgramPhase[];
   @ApiProperty({ example: true })
   @IsOptional()
-  public readonly editableInPortal: boolean;
+  public readonly editableInPortal?: boolean;
   @ApiProperty({
     example: [ExportType.allPeopleAffected, ExportType.included],
     required: false,
   })
   @IsOptional()
   @IsEnum(ExportType, { each: true }) // Use @IsEnum decorator to validate each element
-  public readonly export: ExportType[];
+  public readonly export?: ExportType[];
   @ApiProperty({
     example: {
       en: '+31 6 00 00 00 00',
@@ -64,13 +66,13 @@ class BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public placeholder: JSON;
+  public placeholder?: LocalizedString;
   @ApiProperty({
     example: false,
     required: false,
   })
   @IsOptional()
-  public duplicateCheck: boolean;
+  public duplicateCheck?: boolean;
 }
 
 export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
@@ -80,7 +82,7 @@ export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
       fr: "Remplissez votre nom, s'il vous plaît:",
     },
   })
-  public readonly label: JSON;
+  public readonly label: LocalizedString;
 
   @ApiProperty({
     example: AnswerTypes.text,
@@ -109,7 +111,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public readonly label: JSON;
+  public readonly label?: LocalizedString;
 
   @ApiProperty({
     example: AnswerTypes.numeric,
@@ -124,10 +126,10 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     AnswerTypes.text,
     AnswerTypes.date,
   ])
-  public readonly answerType: AnswerTypes;
+  public readonly answerType?: AnswerTypes;
 
   @ApiProperty({ example: 'standard', required: false })
   @IsIn(['standard', 'custom'])
   @IsOptional()
-  public readonly questionType: string;
+  public readonly questionType?: string;
 }
