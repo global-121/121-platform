@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [AB#28191](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28191) Default missing firstName to empty string
 
+---
+
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.119.1...main)
+
+---
+
 ## [1.119.1](https://github.com/global-121/121-platform/compare/v1.119.0...v1.119.1)- 2024-05-14
 
 ### Fixed
