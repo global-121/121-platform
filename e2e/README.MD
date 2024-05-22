@@ -83,3 +83,62 @@ The Page Object Model is a design pattern that creates an object repository for 
 - Improved Test Maintenance: Changes in the UI require updates only in the page objects, not in the test scripts.
 - Code Reusability: Page objects can be reused across multiple tests.
 - Separation of Concerns: Separates the test logic from the UI logic, making the code easier to understand and maintain.
+
+### Implementing POM
+Page Classes
+Create a page class for each significant page in your application. Here is an example of how you can structure your HomePage class:
+
+```
+import { Locator, expect } from '@playwright/test';
+import { Page } from 'playwright';
+
+class HomePage {
+  readonly page: Page;
+  readonly activeProgramsBanner: Locator;
+  readonly programCard: Locator;
+  readonly openPAsForRegistrationButton: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.activeProgramsBanner = this.page.getByTestId(
+      'update-property-item-list-header',
+    );
+    this.programCard = this.page.getByTestId('program-list-component-card');
+    this.openPAsForRegistrationButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
+    );
+  }
+
+  async validateNumberOfActivePrograms(amount: number) {
+    expect(await this.activeProgramsBanner.textContent()).toContain(
+      `You are running ${amount} program(s) actively`,
+    );
+  }
+
+  async openPAsForRegistrationOcwProgram({
+    programName,
+    buttonName,
+    okButtonName,
+  }: {
+    programName: string;
+    buttonName: string;
+    okButtonName: string;
+  }) {
+    const openForRegistrationButton = this.openPAsForRegistrationButton.filter({
+      hasText: buttonName,
+    });
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
+    await this.programCard.filter({ hasText: programName }).click();
+    await openForRegistrationButton.click();
+    await okButton.click();
+  }
+
+  async navigateToProgramme(programName: string) {
+    await this.programCard.filter({ hasText: programName }).click();
+  }
+}
+
+export default HomePage;
+```
