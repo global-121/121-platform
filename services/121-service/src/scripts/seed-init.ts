@@ -222,6 +222,21 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ActionREAD,
         ],
       },
+      {
+        role: DefaultUserRole.ViewWithoutPII,
+        label:
+          'Only view data, not including Personally Identifiable Information',
+        permissions: [
+          PermissionEnum.ActionREAD,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationREAD,
+        ],
+      },
     ];
 
     const userRoleEntities = [];

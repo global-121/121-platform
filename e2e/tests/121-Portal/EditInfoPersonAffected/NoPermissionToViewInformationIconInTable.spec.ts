@@ -19,12 +19,12 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/login');
   await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
   );
 });
 
-test('[28035] View information icon in table', async ({ page }) => {
+test('[28036] No permission to view information', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
 
@@ -32,7 +32,7 @@ test('[28035] View information icon in table', async ({ page }) => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
-  await test.step('Validate information icons are available in the table', async () => {
-    await table.validateInformationButtonsPresent();
+  await test.step('Validate information icons are not available in the table', async () => {
+    await table.validateNoInformationButtonIsPresent();
   });
 });
