@@ -42,7 +42,7 @@ jobs:
       - name: Run Services with Docker
         working-directory: ./services
         run: |
-          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 90
+          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
 
       - name: Start Portal
         working-directory: ./interfaces/Portal
