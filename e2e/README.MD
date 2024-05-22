@@ -74,6 +74,6 @@ npm test -- --headed
 
 ### Tests and Page Object Model (POM)
 
-###What is Page Object Model (POM)?
+### What is Page Object Model (POM)?
 
 The Page Object Model is a design pattern that creates an object repository for storing all web elements. It acts as an interface for interacting with web pages in your test scripts. This pattern helps to keep the code clean and readable by separating the test logic from the details of the UI elements.
