@@ -288,6 +288,14 @@ class TableModule {
   }) {
     await this.informationPopUpButton.nth(buttonIndex).click();
   }
+
+  async openStatusFilterDropdown() {
+    await this.filterStatusDropdown.click();
+  }
+
+  async openFilterDropdown() {
+    await this.filterSelectionDropdown.click();
+  }
 }
 
 export default TableModule;

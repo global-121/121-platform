@@ -135,7 +135,11 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   });
 
   await page.goto('/home');
-  await homePage.openPAsForRegistrationOcwProgram(NLRCProgram.titlePortal.en);
+  await homePage.openPAsForRegistrationOcwProgram({
+    programName: NLRCProgram.titlePortal.en,
+    buttonName: englishTranslations.page.program.phases.design.btnText,
+    okButtonName: englishTranslations.common.ok,
+  });
   await page.waitForTimeout(1000);
   await helpers.takeFullScreenShot({
     fileName: 'RegistrationPageOverview',
