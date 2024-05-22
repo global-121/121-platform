@@ -156,6 +156,7 @@
       "sso": {
         "btn-text": "Log in via SSO",
         "label": "121 Portal uses Single Sign-On (SSO) to securely authenticate and log in all (121 & Redline) users.",
+        "popup-is-blocked": "Please allow pop-up windows to login.",
         "user-not-found": "Unknown user account or authentication failed."
       }
     },

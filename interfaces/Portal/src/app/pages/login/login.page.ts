@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { isPopupBlocked } from 'src/app/shared/utils/check-pop-up-is-blocked.utils';
 import { isIframed } from 'src/app/shared/utils/is-iframed.util';
 import { environment } from '../../../environments/environment';
 import { AppRoutes } from '../../app-routes.enum';
@@ -49,7 +50,9 @@ export class LoginPage implements OnDestroy {
   );
 
   private msalSubscription: Subscription;
+
   public ssoUserIsNotFound: boolean;
+  public isPopupBlocked = false;
 
   constructor(
     private authService: AuthService,
@@ -63,6 +66,10 @@ export class LoginPage implements OnDestroy {
     this.ssoUserIsNotFound =
       sessionStorage.getItem(SSO_ERROR_KEY) === SSO_ERRORS.notFound;
     sessionStorage.removeItem(SSO_ERROR_KEY);
+
+    if (isIframed()) {
+      this.isPopupBlocked = isPopupBlocked();
+    }
   }
 
   ngOnDestroy(): void {
