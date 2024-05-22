@@ -211,19 +211,38 @@
               (click)="loginSso()"
               expand="block"
               color="primary"
+              [disabled]="isPopupBlocked"
             >
               {{ 'page.login.sso.btn-text' | translate }}
             </ion-button>
             <div
-              class="error-message-container"
+              class="error-message"
               *ngIf="ssoUserIsNotFound"
             >
-              <ion-text color="danger">
+              <ion-text
+                color="danger"
+                class="error-message--text"
+              >
                 <ion-icon
                   name="warning"
                   aria-hidden="true"
                 ></ion-icon>
                 {{ 'page.login.sso.user-not-found' | translate }}
+              </ion-text>
+            </div>
+            <div
+              class="error-message"
+              *ngIf="isPopupBlocked"
+            >
+              <ion-text
+                color="danger"
+                class="error-message--text"
+              >
+                <ion-icon
+                  name="warning"
+                  aria-hidden="true"
+                ></ion-icon>
+                {{ 'page.login.sso.popup-is-blocked' | translate }}
               </ion-text>
             </div>
           </form>
