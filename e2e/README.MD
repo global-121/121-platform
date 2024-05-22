@@ -94,45 +94,11 @@ import { Page } from 'playwright';
 
 class HomePage {
   readonly page: Page;
-  readonly activeProgramsBanner: Locator;
   readonly programCard: Locator;
-  readonly openPAsForRegistrationButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.activeProgramsBanner = this.page.getByTestId(
-      'update-property-item-list-header',
-    );
     this.programCard = this.page.getByTestId('program-list-component-card');
-    this.openPAsForRegistrationButton = this.page.getByTestId(
-      'confirm-prompt-button-default',
-    );
-  }
-
-  async validateNumberOfActivePrograms(amount: number) {
-    expect(await this.activeProgramsBanner.textContent()).toContain(
-      `You are running ${amount} program(s) actively`,
-    );
-  }
-
-  async openPAsForRegistrationOcwProgram({
-    programName,
-    buttonName,
-    okButtonName,
-  }: {
-    programName: string;
-    buttonName: string;
-    okButtonName: string;
-  }) {
-    const openForRegistrationButton = this.openPAsForRegistrationButton.filter({
-      hasText: buttonName,
-    });
-    const okButton = this.page.getByRole('button', {
-      name: okButtonName,
-    });
-    await this.programCard.filter({ hasText: programName }).click();
-    await openForRegistrationButton.click();
-    await okButton.click();
   }
 
   async navigateToProgramme(programName: string) {
@@ -141,4 +107,45 @@ class HomePage {
 }
 
 export default HomePage;
+```
+
+## Writing Tests
+### Example Test
+
+Here is a simple example of writing a test using the POM structure:
+
+```
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { test } from '@playwright/test';
+import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+test.beforeEach(async ({ page }) => {
+  await resetDB(SeedScript.nlrcMultiple);
+  const programIdOCW = 3;
+  const OcwProgramId = programIdOCW;
+
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+
+  // Login
+  const loginPage = new LoginPage(page);
+  await page.goto('/login');
+  await loginPage.login(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  );
+});
+
+test('[27493] Navigate to programme', async ({ page }) => {
+  const homePage = new HomePage(page);
+
+  await test.step('Should open PAs for registration', async () => {
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+  });
+});
 ```
