@@ -1,7 +1,3 @@
-import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { UserRequestData } from '@121-service/src/user/user.interface';
-import { UserService } from '@121-service/src/user/user.service';
 import {
   HttpStatus,
   Injectable,
@@ -12,6 +8,10 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
+import { AuthenticatedUserParameters } from '../guards/authenticated-user.decorator';
+import { UserEntity } from '../user/user.entity';
+import { UserRequestData } from '../user/user.interface';
+import { UserService } from '../user/user.service';
 
 const config = {
   credentials: {
