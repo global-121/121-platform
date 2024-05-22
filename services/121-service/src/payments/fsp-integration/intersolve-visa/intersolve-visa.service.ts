@@ -210,6 +210,7 @@ export class IntersolveVisaService
     return reversed;
   }
 
+  // TODO: Remove this function, remaining logic (only add to queue stuff) goes into TransferQueuesService.addIntersolveVisaTransferJobs
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
     programId: number,

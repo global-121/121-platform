@@ -18,6 +18,8 @@ import { MessageModule } from './notifications/message.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ScriptsModule } from './scripts/scripts.module';
 import { TypeOrmModule } from './typeorm.module';
+import { ProgramFinancialServiceProviderConfigurationsModule } from './program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
+import { TransferQueuesModule } from './transfer-queues/transfer-queues.module';
 
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
@@ -55,6 +57,8 @@ import { TypeOrmModule } from './typeorm.module';
       },
     }),
     AuthModule,
+    ProgramFinancialServiceProviderConfigurationsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
+    TransferQueuesModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
   ],
   controllers: [AppController],
   providers: [

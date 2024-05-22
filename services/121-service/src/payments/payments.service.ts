@@ -696,8 +696,7 @@ export class PaymentsService {
     /* TODO: continue implementing this function:
     - Call getPaymentListForRetry to determine if this is a retry attempt, then get the transfer amount from the transaction instead of calculating it with paymentAmountMultiplier. REFACTOR: with segregation of duties implementation.
     - Get necessary PA data (see getPaPaymentDetails etc. logic in IntersolveVisaService.sendPayment)
-    - Get brandcode & coverLetterCode from ProgramFinancialServiceProviderConfigurationsService
-    - Map PA data, brandcode, coverLetterCode to FSP specific DTO: CreateIntersolveVisaTransferJobDto, see Miro for how the DTO will look like
+    - Map PA data to FSP specific DTO: CreateIntersolveVisaTransferJobDto, see Miro for how the DTO will look like
     - Call to be created TransferQueues.addIntersolveVisaTransferJobs(createIntersolveVisaTransferJobDto[])
     */
 
