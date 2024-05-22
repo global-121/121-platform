@@ -1,5 +1,5 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { StatusEnum } from 'src/shared/enum/status.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 export class FspTransactionResultDto {
   public fspName: FinancialServiceProviderName;

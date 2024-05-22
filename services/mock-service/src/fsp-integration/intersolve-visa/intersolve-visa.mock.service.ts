@@ -1,36 +1,34 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { IntersolveBlockWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
-import {
-  IntersolveCreateCustomerResponseBodyDto,
-  IntersolveLinkWalletCustomerResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
-import { IntersolveCreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
-import { IntersolveCreateDebitCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
-import {
-  IntersolveCreateWalletResponseBodyDto,
-  IntersolveCreateWalletResponseDataDto,
-  IntersolveCreateWalletResponseDto,
-  IntersolveCreateWalletResponseTokenDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
-import { IntersolveGetCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-card-details.dto';
-import { IntersolveGetWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
-import { GetTransactionsDetailsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
-import {
-  IntersolveVisaCardStatus,
-  IntersolveVisaWalletStatus,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
-import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
+import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
+export enum IntersolveVisaWalletStatus {
+  Active = 'ACTIVE',
+  Inactive = 'INACTIVE',
+  Redeemed = 'REDEEMED',
+  Substituted = 'SUBSTITUTED',
+  Expired = 'EXPIRED',
+  Disabled = 'DISABLED',
+}
+
+export enum IntersolveVisaCardStatus {
+  CardOk = 'CARD_OK',
+  CardBlocked = 'CARD_BLOCKED',
+  SuspectedFraud = 'SUSPECTED_FRAUD',
+  CardClosedDueToFraud = 'CARD_CLOSED_DUE_TO_FRAUD',
+  CardNoRenewal = 'CARD_NO_RENEWAL',
+  CardStolen = 'CARD_STOLEN',
+  CardLost = 'CARD_LOST',
+  CardClosed = 'CARD_CLOSED',
+  CardExpired = 'CARD_EXPIRED',
+}
+
 @Injectable()
-export class IntersolveVisaApiMockService {
-  public async createCustomerMock(
-    payload: IntersolveCreateCustomerDto,
-  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
-    await waitForRandomDelay(50, 100);
-    const res = new IntersolveCreateCustomerResponseBodyDto();
+export class IntersolveVisaMockService {
+  public createCustomerMock(
+    dto: Record<string, any>,
+  ): IntersolveVisaMockResponseDto {
+    const res = new IntersolveVisaMockResponseDto();
     res.data = {
       success: true,
       errors: [],
@@ -38,14 +36,14 @@ export class IntersolveVisaApiMockService {
       correlationId: 'string',
       data: {
         id: `mock-${uuid()}`,
-        externalReference: payload.externalReference,
+        externalReference: dto.externalReference,
         blocked: false,
         unblockable: false,
         createdAt: '2023-02-08T14:36:05.816Z',
       },
     };
-    const lastName = payload.individual.lastName
-      ? payload.individual.lastName.toLowerCase()
+    const lastName = dto.individual.lastName
+      ? dto.individual.lastName.toLowerCase()
       : '';
 
     if (lastName.includes('mock-fail-create-customer')) {
@@ -57,6 +55,9 @@ export class IntersolveVisaApiMockService {
       });
       res.status = 404;
       res.statusText = 'NOT_FOUND';
+    } else {
+      res.status = 201;
+      res.statusText = 'OK';
     }
     // in all below cases,pass different holderId to use in follow-up API-call (which does not take lastName as input)
     if (
@@ -74,22 +75,19 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public async createWalletMock(
-    holderId: string,
-  ): Promise<IntersolveCreateWalletResponseDto> {
-    await waitForRandomDelay(50, 100);
-    const response = new IntersolveCreateWalletResponseDto();
+  public createWalletMock(holderId: string): IntersolveVisaMockResponseDto {
+    const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.statusText = 'OK';
 
-    response.data = new IntersolveCreateWalletResponseBodyDto();
+    response.data = {};
     response.data.success = true;
     response.data.errors = [];
     response.data.code = 'string';
     response.data.correlationId = 'string';
 
-    response.data.data = new IntersolveCreateWalletResponseDataDto();
-    response.data.data.token = new IntersolveCreateWalletResponseTokenDto();
+    response.data.data = {};
+    response.data.data.token = {};
     response.data.data.token.code = `mock-token-${uuid()}`;
     response.data.data.token.blocked = false;
     response.data.data.token.blockReasonCode = 'string';
@@ -207,12 +205,10 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public async linkCustomerToWalletMock(
+  public linkCustomerToWalletMock(
     tokenCode: string,
-  ): Promise<IntersolveLinkWalletCustomerResponseDto> {
-    await waitForRandomDelay(50, 100);
-
-    const res: IntersolveLinkWalletCustomerResponseDto = {
+  ): IntersolveVisaMockResponseDto {
+    const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.NO_CONTENT,
       statusText: 'No Content',
       data: {},
@@ -231,12 +227,8 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public async createDebitCardMock(
-    tokenCode: string,
-  ): Promise<IntersolveCreateDebitCardResponseDto> {
-    await waitForRandomDelay(50, 100);
-
-    const res: IntersolveCreateDebitCardResponseDto = {
+  public createDebitCardMock(tokenCode: string): IntersolveVisaMockResponseDto {
+    const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.OK,
       statusText: 'OK',
       data: {},
@@ -255,11 +247,7 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public async loadBalanceCardMock(
-    tokenCode: string,
-  ): Promise<IntersolveLoadResponseDto> {
-    await waitForRandomDelay(50, 100);
-
+  public loadBalanceCardMock(tokenCode: string): IntersolveVisaMockResponseDto {
     const response = {
       data: {
         success: true,
@@ -296,7 +284,7 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public async unloadBalanceCardMock(): Promise<IntersolveLoadResponseDto> {
+  public unloadBalanceCardMock(): IntersolveVisaMockResponseDto {
     return {
       data: {
         success: true,
@@ -322,9 +310,7 @@ export class IntersolveVisaApiMockService {
     };
   }
 
-  public async getWalletMock(
-    tokenCode: string,
-  ): Promise<IntersolveGetWalletResponseDto> {
+  public getWalletMock(tokenCode: string): IntersolveVisaMockResponseDto {
     const match = tokenCode.match(/mock-current-balance-(\d+)/);
     let currentBalance;
     try {
@@ -332,7 +318,7 @@ export class IntersolveVisaApiMockService {
     } catch (error) {
       currentBalance = 2500;
     }
-    const response = new IntersolveGetWalletResponseDto();
+    const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.data = {
       success: true,
@@ -371,9 +357,7 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public async getCardMock(
-    tokenCode: string,
-  ): Promise<IntersolveGetCardResponseDto> {
+  public getCardMock(tokenCode: string): IntersolveVisaMockResponseDto {
     let returnStatus = IntersolveVisaCardStatus.CardOk;
     if (tokenCode.toLowerCase().includes('mock-fail-get-card')) {
       const substring = tokenCode.replace('mock-fail-get-card', '');
@@ -384,7 +368,7 @@ export class IntersolveVisaApiMockService {
       }
     }
 
-    const response = new IntersolveGetCardResponseDto();
+    const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.data = {
       success: true,
@@ -401,10 +385,8 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public getTransactionsMock(
-    tokenCode: string,
-  ): Promise<GetTransactionsDetailsResponseDto> {
-    const response = new GetTransactionsDetailsResponseDto();
+  public getTransactionsMock(tokenCode: string): IntersolveVisaMockResponseDto {
+    const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.data = {
       code: 'string',
@@ -500,14 +482,12 @@ export class IntersolveVisaApiMockService {
       });
     }
 
-    return Promise.resolve(response);
+    return response;
   }
 
-  public async toggleBlockWalletMock(): Promise<IntersolveBlockWalletResponseDto> {
-    await waitForRandomDelay(50, 100);
-
+  public toggleBlockWalletMock(): IntersolveVisaMockResponseDto {
     // for the response it does not matter if it's blocked or unblocked
-    const res: IntersolveBlockWalletResponseDto = {
+    const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.NO_CONTENT,
       statusText: 'No Content',
       data: {},
@@ -515,10 +495,8 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public async activateWalletMock(
-    tokenCode: string,
-  ): Promise<IntersolveGetWalletResponseDto> {
-    const response = new IntersolveGetWalletResponseDto();
+  public activateWalletMock(tokenCode: string): IntersolveVisaMockResponseDto {
+    const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.data = {
       success: true,
@@ -546,13 +524,13 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public updateCustomerPhoneNumber(): any {
+  public updateCustomerPhoneNumber(): { status: number } {
     return {
       status: HttpStatus.OK,
     };
   }
 
-  public updateCustomerAddress(): any {
+  public updateCustomerAddress(): { status: number } {
     return {
       status: HttpStatus.OK,
     };

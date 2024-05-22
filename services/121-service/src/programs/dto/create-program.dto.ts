@@ -20,7 +20,11 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { LanguageEnum, LocalizedString } from 'src/shared/enum/language.enums';
+
+import {
+  LanguageEnum,
+  LocalizedString,
+} from '@121-service/src/shared/enum/language.enums';
 
 export class ProgramFinancialServiceProviderDto {
   @ApiProperty()

@@ -1,35 +1,9 @@
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
-import { IntersolveVisaWalletStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveCreateWalletResponseBodyDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response-body.dto';
 
 export class IntersolveCreateWalletResponseDto {
   public data: IntersolveCreateWalletResponseBodyDto;
   public status: number;
   public statusText?: string;
-}
-
-export class IntersolveCreateWalletResponseBodyDto {
-  public success: boolean;
-  public errors?: IntersolveReponseErrorDto[];
-  public code?: string;
-  public correlationId?: string;
-  public data: IntersolveCreateWalletResponseDataDto;
-}
-
-export class IntersolveCreateWalletResponseDataDto {
-  public token: IntersolveCreateWalletResponseTokenDto;
-}
-
-export class IntersolveCreateWalletResponseTokenDto {
-  public code: string;
-  public blocked?: boolean;
-  public type?: string;
-  public brandTypeCode?: string;
-  public status?: IntersolveVisaWalletStatus;
-  public balances?: IntersolveCreateWalletResponseBalanceDto[];
-  public blockReasonCode?: string;
-  public tier?: string;
-  public holderId?: string;
-  public assets?: IntersolveCreateWalletResponseAssetDto[];
 }
 
 export class IntersolveCreateWalletResponseBalanceDto {

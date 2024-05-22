@@ -1,3 +1,4 @@
+import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -6,7 +7,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export enum CustomAttributeType {
   text = 'text',
