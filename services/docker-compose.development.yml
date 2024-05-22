@@ -28,9 +28,6 @@ services:
       context: .
       dockerfile: mock-service/Dockerfile
       target: development
-    volumes:
-      - 'mock_service_node_modules:/home/node/app/node_modules'
-      - '.:/home/node/app'
     restart: unless-stopped
 
 volumes:

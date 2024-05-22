@@ -38,6 +38,9 @@ services:
       dockerfile: mock-service/Dockerfile
       target: production
     init: true
+    volumes:
+      - 'mock_service_node_modules:/home/node/app/node_modules'
+      - '.:/home/node/app'
     env_file: .env
     ports:
       - '3001:3001'
