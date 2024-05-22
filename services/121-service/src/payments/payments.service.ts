@@ -621,9 +621,8 @@ export class PaymentsService {
         See this.createIntersolveVisaTransferJobs() of how this is handled.
       */
 
-      // TODO: Do we need to await this call? Is that because higher up in the function call chain there is a saveAction()? Can we remove that call, and make this call async?
       // TODO: Double check if paLists.intersolveVisaPaPayment[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
-      await this.createIntersolveVisaTransferJobs(
+      await this.createAndAddIntersolveVisaTransferJobs(
         paLists.intersolveVisaPaPayment,
         programId,
         paLists.intersolveVisaPaPayment[0].transactionAmount,
@@ -696,12 +695,12 @@ export class PaymentsService {
     }
   }
 
-  // TODO: Does this function need to be async?
-  private async createIntersolveVisaTransferJobs(
+  // TODO: Needed to add _'s to allow unused parameters, as this function is not yet implemented
+  private async createAndAddIntersolveVisaTransferJobs(
     referenceIds: string[],
-    programId: number,
-    paymentAmount: number,
-    paymentNumber: number,
+    _programId: number,
+    _paymentAmount: number,
+    _paymentNumber: number,
   ): Promise<void> {
     /* TODO: continue implementing this function:
     - Call getPaymentListForRetry to determine if this is a retry attempt, then get the transfer amount from the transaction instead of calculating it with paymentAmountMultiplier. REFACTOR: with segregation of duties implementation.
@@ -711,6 +710,7 @@ export class PaymentsService {
     */
 
     // TODO: Fill with the list of fields we want
+    // TODO: Get these fieldNames from the FinancialServiceProviderQuestions
     const dataFieldNames = [];
 
     // Get necessary Registration and RegistrationData data
@@ -718,6 +718,8 @@ export class PaymentsService {
       referenceIds,
       dataFieldNames,
     );
+    // TODO: Map name dynamically with the help of ProgramFinancialServiceProviderConfigurations
+    // TODO: Add missing call to addIntersolveVisaTransferJobs() here
   }
 
   private failedTransactionForRegistrationAndPayment(

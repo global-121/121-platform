@@ -21,14 +21,10 @@ export class CreateIntersolveVisaTransferJobDto {
   bulkSize: number;
 
   @IsNotEmpty()
-  firstName: string;
+  name: string;
 
   @IsNotEmpty()
-  lastName: string;
-
-  // TODO: What is the value of prefixing with "address" (see Clean Code)? If better not, then refactor elsehwere.
-  @IsNotEmpty()
-  Street: string;
+  street: string;
 
   @IsNotEmpty()
   houseNumber: string;

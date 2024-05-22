@@ -111,8 +111,12 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return this.repository.update(criteria, partialEntity);
   }
 
-  // This function returns Registrations (complete) with related RegistrationData according to the dataFieldNames provided. To consider for simplification: just get and return ALL RegistrationData fields, so we do not need to work with <Partial> or something.
-  // TODO: Do we want this function to return RegistrationEntities? If so, at least they should be <Partial>, otherwise it will not work. Coming up with a DTO is not easy, since the return fields are dynamic, so that will probably be a <Partial> then as well.
+  /**
+   * Returns Registrations (complete) with related RegistrationData according to the dataFieldNames provided.
+   *
+   * @returns {Promise<Registration[]>} A promise that resolves to an array of Registration objects.
+   *
+   */
   public async getRegistrationsWithData(
     referenceIds: string[],
     dataFieldNames: string[],
