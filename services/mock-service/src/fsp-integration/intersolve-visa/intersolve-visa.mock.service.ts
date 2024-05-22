@@ -1,31 +1,30 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
-import { IntersolveBlockWalletResponseDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
+import { IntersolveBlockWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
-} from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
-import { IntersolveCreateCustomerDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
-import { IntersolveCreateDebitCardResponseDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
+import { IntersolveCreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+import { IntersolveCreateDebitCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
 import {
   IntersolveCreateWalletResponseBodyDto,
   IntersolveCreateWalletResponseDataDto,
   IntersolveCreateWalletResponseDto,
   IntersolveCreateWalletResponseTokenDto,
-} from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
-import { IntersolveGetCardResponseDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-card-details.dto';
-import { IntersolveGetWalletResponseDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
-import { GetTransactionsDetailsResponseDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IntersolveGetCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-card-details.dto';
+import { IntersolveGetWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
+import { GetTransactionsDetailsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
+import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
 import {
   IntersolveVisaCardStatus,
   IntersolveVisaWalletStatus,
-} from '../../../../121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class IntersolveVisaMockService {
   public createCustomerMock(dto: IntersolveCreateCustomerDto): any {
-    console.log('🚀 ~ IntersolveVisaMockService ~ createCustomer ~ dto:', dto);
     const res = new IntersolveCreateCustomerResponseBodyDto();
     res.data = {
       success: true,
@@ -53,6 +52,9 @@ export class IntersolveVisaMockService {
       });
       res.status = 404;
       res.statusText = 'NOT_FOUND';
+    } else {
+      res.status = 201;
+      res.statusText = 'OK';
     }
     // in all below cases,pass different holderId to use in follow-up API-call (which does not take lastName as input)
     if (
@@ -354,9 +356,7 @@ export class IntersolveVisaMockService {
     return response;
   }
 
-  public async getCardMock(
-    tokenCode: string,
-  ): Promise<IntersolveGetCardResponseDto> {
+  public getCardMock(tokenCode: string): IntersolveGetCardResponseDto {
     let returnStatus = IntersolveVisaCardStatus.CardOk;
     if (tokenCode.toLowerCase().includes('mock-fail-get-card')) {
       const substring = tokenCode.replace('mock-fail-get-card', '');
@@ -386,7 +386,7 @@ export class IntersolveVisaMockService {
 
   public getTransactionsMock(
     tokenCode: string,
-  ): Promise<GetTransactionsDetailsResponseDto> {
+  ): GetTransactionsDetailsResponseDto {
     const response = new GetTransactionsDetailsResponseDto();
     response.status = 200;
     response.data = {
@@ -483,7 +483,7 @@ export class IntersolveVisaMockService {
       });
     }
 
-    return Promise.resolve(response);
+    return response;
   }
 
   public toggleBlockWalletMock(): IntersolveBlockWalletResponseDto {
@@ -525,13 +525,13 @@ export class IntersolveVisaMockService {
     return response;
   }
 
-  public updateCustomerPhoneNumber(): any {
+  public updateCustomerPhoneNumber(): { status: number } {
     return {
       status: HttpStatus.OK,
     };
   }
 
-  public updateCustomerAddress(): any {
+  public updateCustomerAddress(): { status: number } {
     return {
       status: HttpStatus.OK,
     };

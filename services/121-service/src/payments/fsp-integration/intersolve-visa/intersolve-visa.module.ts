@@ -1,6 +1,5 @@
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
-import { IntersolveVisaApiMockService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api-mock.service';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
@@ -49,7 +48,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [
     IntersolveVisaService,
     IntersolveVisaApiService,
-    IntersolveVisaApiMockService,
     CustomHttpService,
     RegistrationDataScopedQueryService,
     IntersolveVisaExportService,
@@ -64,7 +62,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   exports: [
     IntersolveVisaService,
     IntersolveVisaApiService,
-    IntersolveVisaApiMockService,
     IntersolveVisaExportService,
   ],
 })
