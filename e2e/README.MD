@@ -153,5 +153,5 @@ test('[27493] Navigate to programme', async ({ page }) => {
 ### Example of a folder structure that coudl be used with Page Object Model
 
 <a>
-    <img alt="POM" src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A1400%2F1*7eFsHVMRFiuTI8_pd0GFTA.png&tbnid=aLKr7V2TmuoFJM&vet=12ahUKEwibyJG2t6GGAxV2ybsIHbwLCQoQMygFegQIARBQ..i&imgrefurl=https%3A%2F%2Fmedium.com%2F%40jetti.dinesh%2Fpage-object-model-for-playwright-part-2-2d0bae3c54d3&docid=a1hwmkBJNuRsbM&w=840&h=894&q=folder%20structure%20for%20Page%20object%20model%20used%20in%20playwright%20tests&ved=2ahUKEwibyJG2t6GGAxV2ybsIHbwLCQoQMygFegQIARBQ"/>
+    <img alt="POM" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7eFsHVMRFiuTI8_pd0GFTA.png"/>
 </a>
