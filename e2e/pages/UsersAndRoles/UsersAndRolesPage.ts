@@ -8,8 +8,8 @@ class UsersAndRoles {
 
   constructor(page: Page) {
     this.page = page;
-    this.usersTabButton = this.page.getByTestId('roles-tab-button');
-    this.roleListTable = this.page.getByTestId('role-list-table');
+    this.usersTabButton = this.page.getByTestId('users-roles-tab-button');
+    this.roleListTable = this.page.getByTestId('roles-list-table');
   }
 
   async navigateRolesTab() {

@@ -11,7 +11,7 @@
     </ion-row>
     <ion-row class="search-wrapper">
       <ion-searchbar
-        data-testid="team-popup-team-member-searchbar"
+        data-testid="add-team-member-searchbar"
         [ngClass]="{ 'invalid-ion-select-searchbar': isUserAlreadyTeamMember }"
         class="team-member-searchbar ion-padding"
         name="searchQuery"
@@ -50,7 +50,7 @@
     </ion-row>
     <ion-row>
       <ion-select
-        data-testid="team-popup-roles-dropdown"
+        data-testid="add-team-member-popup-roles-dropdown"
         [ngClass]="{ 'invalid-ion-select-searchbar': showRolesWarning() }"
         placeholder="{{
           'page.program-team.popup.roles-placeholder' | translate

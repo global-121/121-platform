@@ -13,21 +13,25 @@ class ProgramTeam {
 
   constructor(page: Page) {
     this.page = page;
-    this.addTeamMemberButton = this.page.getByTestId('add-team-member-button');
+    this.addTeamMemberButton = this.page.getByTestId(
+      'program-team-add-member-button',
+    );
     this.addTeamMemberPopUp = this.page.getByTestId(
-      'add-new-team-member-pop-up-content',
+      'program-team-popup-add-new-team-member',
     );
     this.addTeamMemberRolesDropdown = this.page.getByTestId(
-      'team-popup-roles-dropdown',
+      'add-team-member-popup-roles-dropdown',
     );
     this.addTeamMemberSearchbar = this.page.getByTestId(
-      'team-popup-team-member-searchbar',
+      'add-team-member-searchbar',
     );
     this.editTeamMemberButton = this.page.getByTestId(
-      'edit-team-member-button',
+      'program-team-table-edit-member-button',
     );
     this.removeTeamMemberButton = this.page.getByTestId('remove-team-member');
-    this.removeUserButton = this.page.getByTestId('remove-team-member-button');
+    this.removeUserButton = this.page.getByTestId(
+      'remove-team-member-popup-content-button',
+    );
   }
 
   async openAddNewTeamMemberPoUp() {
