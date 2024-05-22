@@ -10,10 +10,12 @@ class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.activeProgramsBanner = this.page.getByTestId(
-      'running-programs-list-header',
+      'update-property-item-list-header',
     );
-    this.programCard = this.page.getByTestId('program-card');
-    this.openPAsForRegistrationButton = this.page.getByTestId('button-default');
+    this.programCard = this.page.getByTestId('program-list-component-card');
+    this.openPAsForRegistrationButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
+    );
   }
 
   async validateNumberOfActivePrograms(amount: number) {

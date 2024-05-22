@@ -96,20 +96,26 @@ class RegistrationDetails {
       'user-data-update-textarea',
     );
     this.personAffectedEditPopUpTitle = this.page.getByTestId(
-      'person-affected-popup-title',
+      'edit-person-affected-popup-title',
     );
-    this.personAffectedPopUpFsp = this.page.getByTestId('fsp-dropdown');
-    this.personAffectedPhoneNumber = this.page.getByTestId('phone-number');
-    this.personAffectedPaymentMultiplier =
-      this.page.getByTestId('payment-multiplier');
+    this.personAffectedPopUpFsp = this.page.getByTestId(
+      'edit-person-affected-popup-fsp-dropdown',
+    );
+    this.personAffectedPhoneNumber = this.page.getByTestId(
+      'edit-person-affected-popup-phone-number',
+    );
+    this.personAffectedPaymentMultiplier = this.page.getByTestId(
+      'edit-person-affected-popup-payment-multiplier',
+    );
     this.personAffectedLanguage = this.page.getByTestId(
       'preferred-language-dropdown',
     );
     this.personAffectedCustomAttribute = this.page.getByTestId(
       'update-property-item-label',
     );
-    this.personAffectedPopUpSaveButton =
-      this.page.getByTestId('button-default');
+    this.personAffectedPopUpSaveButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
+    );
   }
 
   async validateHeaderToContainText(headerTitle: string) {

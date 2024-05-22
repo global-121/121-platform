@@ -17,7 +17,7 @@
         {{ 'page.programs-list.not-available' | translate }}
       </ion-note>
       <p
-        data-testid="running-programs-list-header"
+        data-testid="update-property-item-list-header"
         *ngIf="items?.length > 0"
         class="ion-no-margin"
       >
@@ -48,7 +48,7 @@
       size-xl="4"
     >
       <app-program-card
-        data-testid="program-card"
+        data-testid="program-list-component-card"
         [program]="program"
         [programStats]="getProgramStatsById(program.id)"
       ></app-program-card>
