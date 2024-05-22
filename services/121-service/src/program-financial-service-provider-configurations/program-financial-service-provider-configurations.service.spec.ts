@@ -9,7 +9,9 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       providers: [ProgramFinancialServiceProviderConfigurationsService],
     }).compile();
 
-    service = module.get<ProgramFinancialServiceProviderConfigurationsService>(ProgramFinancialServiceProviderConfigurationsService);
+    service = module.get<ProgramFinancialServiceProviderConfigurationsService>(
+      ProgramFinancialServiceProviderConfigurationsService,
+    );
   });
 
   it('should be defined', () => {

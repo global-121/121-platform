@@ -6,7 +6,7 @@ import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '../../../enum/queue.names.enum';
-import { REDIS_CLIENT, getRedisSetName } from '../../../redis-client';
+import { getRedisSetName, REDIS_CLIENT } from '../../../redis-client';
 import { CommercialBankEthiopiaService } from '../commercial-bank-ethiopia.service';
 
 @Processor(QueueNamePayment.paymentCommercialBankEthiopia)

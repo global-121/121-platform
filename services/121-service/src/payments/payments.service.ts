@@ -623,7 +623,12 @@ export class PaymentsService {
 
       // TODO: Do we need to await this call? Is that because higher up in the function call chain there is a saveAction()? Can we remove that call, and make this call async?
       // TODO: Double check if paLists.intersolveVisaPaPayment[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
-      await this.createIntersolveVisaTransferJobs(paLists.intersolveVisaPaPayment, programId, paLists.intersolveVisaPaPayment[0].transactionAmount, payment);
+      await this.createIntersolveVisaTransferJobs(
+        paLists.intersolveVisaPaPayment,
+        programId,
+        paLists.intersolveVisaPaPayment[0].transactionAmount,
+        payment,
+      );
     }
 
     if (paLists.africasTalkingPaPayment.length) {
@@ -692,7 +697,12 @@ export class PaymentsService {
   }
 
   // TODO: Does this function need to be async?
-  private async createIntersolveVisaTransferJobs(referenceIds: string[], programId: number, paymentAmount: number, paymentNumber: number) : Promise<void> {
+  private async createIntersolveVisaTransferJobs(
+    referenceIds: string[],
+    programId: number,
+    paymentAmount: number,
+    paymentNumber: number,
+  ): Promise<void> {
     /* TODO: continue implementing this function:
     - Call getPaymentListForRetry to determine if this is a retry attempt, then get the transfer amount from the transaction instead of calculating it with paymentAmountMultiplier. REFACTOR: with segregation of duties implementation.
     - Get necessary PA data (see getPaPaymentDetails etc. logic in IntersolveVisaService.sendPayment)
@@ -704,9 +714,11 @@ export class PaymentsService {
     const dataFieldNames = [];
 
     // Get necessary Registration and RegistrationData data
-    this.registrationScopedRepository.getRegistrationsWithData(referenceIds, dataFieldNames)
+    await this.registrationScopedRepository.getRegistrationsWithData(
+      referenceIds,
+      dataFieldNames,
+    );
   }
-
 
   private failedTransactionForRegistrationAndPayment(
     q: ScopedQueryBuilder<RegistrationEntity>,

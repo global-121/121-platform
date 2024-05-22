@@ -31,11 +31,13 @@ import {
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '../../dto/transaction-relation-details.dto';
+//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
 import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '../../enum/queue.names.enum';
-import { REDIS_CLIENT, getRedisSetName } from '../../redis-client';
+//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { RegistrationEntity } from './../../../registration/registration.entity';

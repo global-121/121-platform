@@ -20,8 +20,8 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 import { RegistrationEntity } from './registration/registration.entity';
 import { ScopedUserRequest } from './shared/scoped-user-request';
 import {
-  FindOptionsCombined,
   convertToScopedOptions,
+  FindOptionsCombined,
 } from './utils/scope/createFindWhereOptions.helper';
 
 export class ScopedQueryBuilder<T> extends SelectQueryBuilder<T> {

@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FilterOperator,
-  PaginateQuery,
-  Paginated,
   paginate,
+  Paginated,
+  PaginateQuery,
 } from 'nestjs-paginate';
 import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
 import {

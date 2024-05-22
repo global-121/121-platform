@@ -1,11 +1,10 @@
 import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
 
-export class  CreateIntersolveVisaTransferJobDto {
-
+export class CreateIntersolveVisaTransferJobDto {
   @IsNotEmpty()
   @IsNumberString()
   programId: number;
-   
+
   @IsNotEmpty()
   @IsNumberString()
   paymentNumber: number;
@@ -36,7 +35,7 @@ export class  CreateIntersolveVisaTransferJobDto {
 
   @IsNotEmpty()
   houseNumberAddition: string;
-  
+
   @IsNotEmpty()
   postalCode: string;
 

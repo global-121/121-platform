@@ -15,11 +15,11 @@ import { MetricsModule } from './metrics/metrics.module';
 import { NoteModule } from './notes/notes.module';
 import { MessageIncomingModule } from './notifications/message-incoming/message-incoming.module';
 import { MessageModule } from './notifications/message.module';
+import { ProgramFinancialServiceProviderConfigurationsModule } from './program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.entity';
 import { ScriptsModule } from './scripts/scripts.module';
-import { TypeOrmModule } from './typeorm.module';
-import { ProgramFinancialServiceProviderConfigurationsModule } from './program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { TransferQueuesModule } from './transfer-queues/transfer-queues.module';
+import { TypeOrmModule } from './typeorm.module';
 
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it

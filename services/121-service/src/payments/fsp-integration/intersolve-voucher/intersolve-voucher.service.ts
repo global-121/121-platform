@@ -37,7 +37,7 @@ import {
   QueueNamePayment,
 } from '../../enum/queue.names.enum';
 import { ImageCodeService } from '../../imagecode/image-code.service';
-import { REDIS_CLIENT, getRedisSetName } from '../../redis-client';
+import { getRedisSetName, REDIS_CLIENT } from '../../redis-client';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
