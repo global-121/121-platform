@@ -1,4 +1,3 @@
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
