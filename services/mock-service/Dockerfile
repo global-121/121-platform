@@ -1,5 +1,6 @@
 FROM node:18-slim as base
 
+# Used by healthchecks
 RUN apt-get update && apt-get install curl -y
 
 WORKDIR /home/node/app
