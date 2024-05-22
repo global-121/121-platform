@@ -1,5 +1,7 @@
 FROM node:18-slim as base
 
+RUN apt-get update && apt-get install curl -y
+
 WORKDIR /home/node/app
 
 FROM base as production
