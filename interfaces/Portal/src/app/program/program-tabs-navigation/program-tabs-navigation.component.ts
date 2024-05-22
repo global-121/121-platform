@@ -37,7 +37,6 @@ export class ProgramTabsNavigationComponent implements OnInit {
     const program = await this.programsService.getProgramById(this.programId);
     const programTabs: Tabs[] = await this.programTabService.getProgramTabs();
 
-    console.log('programTabs: ', programTabs);
     const canReadAidWorkers = await this.authService.hasPermission(
       this.programId,
       Permission.AidWorkerProgramREAD,
