@@ -150,6 +150,18 @@ test('[27493] Navigate to programme', async ({ page }) => {
 });
 ```
 
+### Best Practices
+
+- Keep Tests Independent: Each test should be able to run independently of others.
+- Use Meaningful Names: Name your page objects and methods clearly to reflect their purpose.
+- Avoid Hardcoding: Use variables and configuration files (like translation file) to manage test data.
+
+### Common Issues and Troubleshooting
+
+- Element Not Found: Ensure the selectors in your page objects are correct, unique and are loaded in DOM.
+- Timeouts: Increase the default timeout if elements take longer to load.
+- Test Flakiness: Use wait methods to handle dynamic content and animations.
+
 ### How to generate Screenshots for "User Manual":
 
 - Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
