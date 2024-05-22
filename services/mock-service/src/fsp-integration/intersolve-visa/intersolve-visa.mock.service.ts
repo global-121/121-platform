@@ -5,12 +5,11 @@ import {
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
 import { IntersolveCreateDebitCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
-import {
-  IntersolveCreateWalletResponseBodyDto,
-  IntersolveCreateWalletResponseDataDto,
-  IntersolveCreateWalletResponseDto,
-  IntersolveCreateWalletResponseTokenDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IntersolveCreateWalletResponseBodyDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response-body.dto';
+import { IntersolveCreateWalletResponseDataDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response-data.dto';
+import { IntersolveCreateWalletResponseTokenDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response-token.dto';
+import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+
 import { IntersolveGetCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-card-details.dto';
 import { IntersolveGetWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
 import { GetTransactionsDetailsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
