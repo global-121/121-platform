@@ -86,7 +86,7 @@ The Page Object Model is a design pattern that creates an object repository for 
 
 ### Implementing POM
 Page Classes
-Create a page class for each significant page in your application. Here is an example of how you can structure your HomePage class:
+Create a page class for each page representing different module and/ or functionality in your application. Here is an example of how you can structure your HomePage class:
 
 ```
 import { Locator, expect } from '@playwright/test';
@@ -149,3 +149,9 @@ test('[27493] Navigate to programme', async ({ page }) => {
   });
 });
 ```
+
+### Example of a folder structure that coudl be used with Page Object Model
+
+<a>
+    <img alt="playwright tool" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fmedium.com%2F%40jetti.dinesh%2Fpage-object-model-for-playwright-part-2-2d0bae3c54d3&psig=AOvVaw3kpDtCOSOfa5ZEolJALHTt&ust=1716473288181000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCJDL8ba3oYYDFQAAAAAdAAAAABAL"/>
+</a>
