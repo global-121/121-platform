@@ -5,11 +5,17 @@ import ProgramTeam from '@121-e2e/pages/ProgramTeam/ProgramTeamPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import UsersAndRoles from '@121-e2e/pages/UsersAndRoles/UsersAndRolesPage';
+import {
+  programIdVisa,
+  registrationVisa as registrationVisaDefault,
+} from '@121-service/seed-data/mock/visa-card.data';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { importRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
 import { Page } from 'playwright';
 import { BulkActionId } from '../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
@@ -34,12 +40,19 @@ async function navigateAndScreenshot({
   await helpers.takeFullScreenShot({ fileName });
 }
 
+let accessToken: string;
+
 test.beforeEach(async () => {
+  const registrationVisa = {
+    ...registrationVisaDefault,
+    whatsappPhoneNumber: registrationVisaDefault.phoneNumber,
+  };
+  accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple);
-  await seedRegistrations(registrationsOCW, PROGRAM_ID);
+  await importRegistrations(programIdVisa, [registrationVisa], accessToken);
 });
 
-test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
+test('Navigates to the portal and takes screenshots', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const helpers = new Helpers(page);
   const homePage = new HomePage(page);

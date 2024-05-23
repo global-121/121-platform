@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { expect } from 'playwright/test';
 
 class Helpers {
   readonly page: Page;
@@ -17,7 +18,11 @@ class Helpers {
   async takeFullScreenShot({ fileName }: { fileName: string }) {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForLoadState('networkidle');
-    await this.page.screenshot({ path: `screenshots/${fileName}.png` });
+    // await this.page.screenshot({ path: `screenshots/${fileName}.png` });
+    await expect(this.page).toHaveScreenshot(`${fileName}.png`, {
+      fullPage: true,
+      animations: 'disabled',
+    });
   }
 
   async takePartialScreenshot({
@@ -30,7 +35,10 @@ class Helpers {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForLoadState('networkidle');
     const element = this.page.getByTestId(elementId);
-    await element.screenshot({ path: `screenshots/${fileName}.png` });
+    // await element.screenshot({ path: `screenshots/${fileName}.png` });
+    await expect(element).toHaveScreenshot(`${fileName}.png`, {
+      animations: 'disabled',
+    });
   }
 }
 
