@@ -1,13 +1,12 @@
 <app-header
   [title]="'page.program.tab.overview.label' | translate"
 ></app-header>
-<div
-  class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
->
-  <app-program-navigation></app-program-navigation>
-</div>
 
-<ion-content class="ion-padding">
+<app-program-tabs-navigation
+  [programId]="programId"
+></app-program-tabs-navigation>
+
+<ion-content class="ion-no-margin ion-no-padding">
   <div style="max-width: 33em; margin: auto">
     <h2>{{ 'page.program.program-details.section-title' | translate }}</h2>
 

@@ -1,11 +1,10 @@
 <app-header [title]="'page.program.tab.payment.label' | translate"></app-header>
-<div
-  class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
->
-  <app-program-navigation></app-program-navigation>
-</div>
 
-<ion-content class="ion-padding">
+<app-program-tabs-navigation
+  [programId]="programId"
+></app-program-tabs-navigation>
+
+<ion-content class="ion-no-padding ion-no-margin">
   <app-program-payout
     *appIfPermissions="[Permission.PaymentREAD]"
     [programId]="programId"

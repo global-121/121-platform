@@ -1,5 +1,7 @@
 <app-header [title]="'page.dashboard.pageTitle' | translate"> </app-header>
-<app-program-navigation></app-program-navigation>
+<app-program-tabs-navigation
+  [programId]="programId"
+></app-program-tabs-navigation>
 
 <ion-content class="ion-padding">
   <ng-container

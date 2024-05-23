@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
+import { ProgramTabsNavigationComponent } from '../../program/program-tabs-navigation/program-tabs-navigation.component';
 import { ProgramTeamComponent } from '../../program/program-team/program-team.component';
 
 @Component({
@@ -21,6 +22,7 @@ import { ProgramTeamComponent } from '../../program/program-team/program-team.co
     TranslateModule,
     ProgramNavigationComponent,
     ProgramTeamComponent,
+    ProgramTabsNavigationComponent,
   ],
 })
 export class TeamPage {

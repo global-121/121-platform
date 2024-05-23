@@ -1,6 +1,8 @@
 <app-header [title]="'page.team.pageTitle' | translate"></app-header>
-<app-program-navigation></app-program-navigation>
+<app-program-tabs-navigation
+  [programId]="programId"
+></app-program-tabs-navigation>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-no-padding ion-no-margin">
   <app-program-team></app-program-team>
 </ion-content>
