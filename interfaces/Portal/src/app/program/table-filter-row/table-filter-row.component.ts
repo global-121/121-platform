@@ -25,7 +25,7 @@ export class TableFilterRowComponent {
   public allFilters: { name: string; label: string }[] = [];
 
   @Input()
-  public thisPhase: ProgramTab;
+  public currentProgramTab: ProgramTab;
 
   @Input()
   public programId: number;

@@ -86,7 +86,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Input()
   public displayImportRegistration = false;
   @Input()
-  public thisPhase: ProgramTab;
+  public currentProgramTab: ProgramTab;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -254,7 +254,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.canViewPersonalData,
     );
 
-    if (this.canViewPaymentData && this.thisPhase === ProgramTab.payment) {
+    if (
+      this.canViewPaymentData &&
+      this.currentProgramTab === ProgramTab.payment
+    ) {
       this.paymentHistoryColumn =
         this.tableService.createPaymentHistoryColumn();
     }
@@ -285,7 +288,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.pubSubSubscription = this.pubSub.subscribe(
         PubSubEvent.dataRegistrationChanged,
         () => {
-          if (this.router.url.includes(this.thisPhase)) {
+          if (this.router.url.includes(this.currentProgramTab)) {
             this.refreshData();
           }
         },
@@ -428,7 +431,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           this.programId,
           action.permissions,
         ) &&
-        action.tabs.includes(this.thisPhase) &&
+        action.tabs.includes(this.currentProgramTab) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
@@ -552,7 +555,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
-            [ProgramTab.payment].includes(this.thisPhase)
+            this.currentProgramTab === ProgramTab.payment
               ? `(${
                   person.maxPayments - person.paymentCount
                 } ${this.translate.instant(

@@ -14,7 +14,7 @@ export class PaymentPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramTab.payment;
+  public currentProgramTab = ProgramTab.payment;
 
   public enumExportType = ExportType;
 

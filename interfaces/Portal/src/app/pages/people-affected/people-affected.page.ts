@@ -16,7 +16,7 @@ export class PeopleAffectedPage implements OnInit {
 
   public programId = this.route.snapshot.params.id;
   public program: Program;
-  public thisPhase = ProgramTab.peopleAffected;
+  public currentProgramTab = ProgramTab.peopleAffected;
 
   public enumExportType = ExportType;
   public hasDuplicateAttributes: boolean;

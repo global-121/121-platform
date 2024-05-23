@@ -13,7 +13,7 @@ export class ExportSelectComponent implements AfterViewChecked {
   public programId: number;
 
   @Input()
-  public thisPhase: ProgramTab;
+  public currentProgramTab: ProgramTab;
 
   @Input()
   public showValidation: boolean;
@@ -32,7 +32,7 @@ export class ExportSelectComponent implements AfterViewChecked {
   constructor() {}
 
   ngAfterViewChecked(): void {
-    if (!this.thisPhase) {
+    if (!this.currentProgramTab) {
       return;
     }
   }
