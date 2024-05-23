@@ -2,7 +2,6 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
-import fspIntersolveJumbo from '@121-service/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -43,10 +42,16 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
   });
 
   await test.step('Update payment amount multiplier', async () => {
-    await registration.validatePiiPopUp({
-      paId: 'PA #1',
-      whatsappLabel: fspIntersolveJumbo.questions[5].label.en,
+    await registration.updatepaymentAmountMultiplier({
+      amount: '2',
       saveButtonName: englishTranslations.common.save,
+      okButtonName: englishTranslations.common.ok,
     });
+  });
+
+  await test.step('Validate payment multiplier updated', async () => {
+    await page.reload();
+    await table.openPaPersonalInformation({});
+    await registration.validateAmountMultiplier({ amount: '2' });
   });
 });

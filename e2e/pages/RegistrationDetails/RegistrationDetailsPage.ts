@@ -427,6 +427,48 @@ class RegistrationDetails {
       await expect(saveButton.nth(i)).toHaveAttribute('aria-disabled', 'true');
     }
   }
+
+  async updatepaymentAmountMultiplier({
+    amount,
+    saveButtonName,
+    okButtonName,
+  }: {
+    amount: string;
+    saveButtonName: string;
+    okButtonName: string;
+  }) {
+    const saveButton = this.page.getByRole('button', {
+      name: saveButtonName,
+    });
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
+    const paymentMultipierInput =
+      this.personAffectedPaymentMultiplier.getByRole('textbox');
+    await paymentMultipierInput.fill(amount);
+
+    await this.page.waitForLoadState('networkidle');
+
+    await this.personAffectedPaymentMultiplier
+      .getByText(saveButtonName)
+      .click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change multiplier to ${amount}`);
+
+    await saveButton.waitFor({ state: 'visible' });
+    await saveButton.click();
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
+  async validateAmountMultiplier({ amount }: { amount: string }) {
+    const paymentMultipierInput =
+      this.personAffectedPaymentMultiplier.getByRole('textbox');
+    expect(await paymentMultipierInput.inputValue()).toBe(amount);
+  }
 }
 
 export default RegistrationDetails;
