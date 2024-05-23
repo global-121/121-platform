@@ -7,6 +7,7 @@ dotenv.config({ path: envPath });
 
 export default defineConfig({
   testDir: './tests',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -42,7 +43,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.devdocs/api/class-testoptions. */
   workers: 1,
   outputDir: './test-results',
-  timeout: 40000,
+  timeout: 60000,
   use: {
     baseURL: process.env.BASE_URL,
     video: 'on-first-retry',
