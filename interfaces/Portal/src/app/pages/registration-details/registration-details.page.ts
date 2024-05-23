@@ -10,7 +10,7 @@ import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
-import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
+
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { ProgramTabsNavigationComponent } from '../../program/program-tabs-navigation/program-tabs-navigation.component';
@@ -25,7 +25,6 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     IonicModule,
     HeaderComponent,
     TranslateModule,
-    ProgramNavigationComponent,
     RegistrationProfileComponent,
     ProgramTabsNavigationComponent,
   ],
