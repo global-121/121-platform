@@ -14,7 +14,7 @@ export class StatusTableFilterComponent {
   public programId: number;
 
   @Input()
-  public thisPhase: ProgramTab;
+  public currentProgramTab: ProgramTab;
 
   public isStatusPopoverOpen = false;
 
@@ -63,9 +63,9 @@ export class StatusTableFilterComponent {
     }, 0);
 
     this.options = activeStatuses.reduce((obj, s) => {
-      const selected = this.paStatusDefaultsPerPhase[this.thisPhase]?.includes(
-        s.status,
-      );
+      const selected = this.paStatusDefaultsPerPhase[
+        this.currentProgramTab
+      ]?.includes(s.status);
 
       return (obj = {
         ...obj,

@@ -12,7 +12,7 @@ export class ProgramOverviewPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
-  public thisPhase = ProgramTab.overview;
+  public currentProgramTab = ProgramTab.overview;
 
   constructor(private route: ActivatedRoute) {}
 }

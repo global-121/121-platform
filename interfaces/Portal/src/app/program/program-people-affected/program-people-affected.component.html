@@ -76,7 +76,7 @@
     <app-export-select
       *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
       [programId]="programId"
-      [thisPhase]="thisPhase"
+      [currentProgramTab]="currentProgramTab"
       [showValidation]="showValidation"
     ></app-export-select>
   </div>
@@ -87,7 +87,7 @@
   [isLoading]="isLoading"
   [allFilters]="tableFiltersPerColumn"
   [programId]="programId"
-  [thisPhase]="thisPhase"
+  [currentProgramTab]="currentProgramTab"
   [filteredCount]="pageMetaData?.totalItems"
   [showValidation]="program?.validation"
 />
@@ -344,7 +344,9 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="showInclusionScore() && thisPhase === ProgramTab.peopleAffected"
+    *ngIf="
+      showInclusionScore() && currentProgramTab === ProgramTab.peopleAffected
+    "
     prop="inclusionScore"
     [name]="
       'page.program.program-people-affected.column.inclusionScore' | translate
@@ -357,7 +359,7 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="thisPhase === ProgramTab.payment"
+    *ngIf="currentProgramTab === ProgramTab.payment"
     prop="paymentHistoryColumn"
     [name]="paymentHistoryColumn?.name || ''"
     [minWidth]="paymentHistoryColumn?.minWidth"
