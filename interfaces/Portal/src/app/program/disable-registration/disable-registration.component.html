@@ -1,6 +1,7 @@
-<ion-row
+<div
   *ngIf="program"
   class="ion-align-items-center ion-justify-content-end ion-padding-top"
+  class="util--flex-row ion-align-items-center ion-margin-vertical util--page-margin-end"
 >
   <ion-label>
     {{
@@ -13,4 +14,4 @@
     (click)="updateRegistrationStatus()"
     onKeyPress=""
   ></ion-toggle>
-</ion-row>
+</div>

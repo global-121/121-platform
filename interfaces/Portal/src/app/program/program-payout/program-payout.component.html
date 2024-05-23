@@ -1,6 +1,6 @@
 <div
   *ngIf="canMakeExport"
-  class="ion-margin-vertical"
+  class="ion-margin-vertical util--page-margin-horizontal"
 >
   <h3>{{ 'page.program.program-payout.make-export-import' | translate }}</h3>
   <ion-row class="ion-align-items-center">
@@ -91,7 +91,7 @@
 
 <ion-row
   *ngIf="canViewPayment"
-  class="ion-margin-vertical"
+  class="ion-margin-vertical util--page-margin-horizontal"
 >
   <ion-col
     *ngIf="!!lastPaymentId"

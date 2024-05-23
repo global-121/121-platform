@@ -4,23 +4,19 @@
     <ion-item
       lines="none"
       color="light"
+      class="ion-no-padding"
     >
-      <ion-col class="ion-padding">
-        <h2
-          class="ion-no-margin ion-padding-top"
-          class="users-title"
-        >
-          <strong> {{ 'page.program-team.pageTitle' | translate }} </strong>
+      <div class="util--page-margin-horizontal">
+        <h2 class="ion-padding-top">
+          <strong> {{ 'page.program-team.pageTitle' | translate }}</strong>
         </h2>
-        <p class="ion-no-margin">
+        <p class="ion-margin-vertical">
           {{ 'page.program-team.page-description' | translate }}
         </p>
-      </ion-col>
+      </div>
     </ion-item>
 
-    <div class="ion-padding search-and-button">
-      <div></div>
-
+    <div class="ion-margin-vertical util--page-margin-horizontal ion-text-end">
       <!--add team member button-->
       <ion-button
         [disabled]="!canManageAidworkers"
@@ -28,7 +24,6 @@
         shape="round"
         fill="outline"
         class="button"
-        item-end
       >
         <strong>{{
           'page.program-team.add-team-member' | translate
@@ -37,7 +32,9 @@
     </div>
 
     <!--program team table -->
-    <div class="ion-padding">
+    <div
+      class="ion-no-padding ion-margin-vertical util--page-margin-horizontal"
+    >
       <app-program-team-table
         [programId]="programId"
         [canManageAidworkers]="canManageAidworkers"
