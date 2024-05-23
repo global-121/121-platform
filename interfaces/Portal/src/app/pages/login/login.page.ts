@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -21,7 +21,7 @@ import { SystemNotificationComponent } from '../../components/system-notificatio
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnDestroy {
+export class LoginPage implements OnDestroy, OnInit {
   public useSso = environment.use_sso_azure_entra;
 
   @ViewChild('loginForm')
@@ -62,13 +62,15 @@ export class LoginPage implements OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Retrieve the error message from session storage
-    this.ssoUserIsNotFound =
-      sessionStorage.getItem(SSO_ERROR_KEY) === SSO_ERRORS.notFound;
-    sessionStorage.removeItem(SSO_ERROR_KEY);
+    if (environment.use_sso_azure_entra) {
+      // Retrieve the error message from session storage
+      this.ssoUserIsNotFound =
+        sessionStorage.getItem(SSO_ERROR_KEY) === SSO_ERRORS.notFound;
+      sessionStorage.removeItem(SSO_ERROR_KEY);
 
-    if (isIframed()) {
-      this.isPopupBlocked = isPopupBlocked();
+      if (isIframed()) {
+        this.isPopupBlocked = isPopupBlocked();
+      }
     }
   }
 
