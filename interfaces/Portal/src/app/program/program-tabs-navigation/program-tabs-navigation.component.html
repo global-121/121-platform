@@ -5,7 +5,7 @@
   >
     <ion-button
       [disabled]="programTab.disabled"
-      [routerLink]="['/program', programId, programTab.name]"
+      [routerLink]="['/', AppRoutes.program, programId, programTab.name]"
       routerLinkActive
       #rlaPhase="routerLinkActive"
       [color]="rlaPhase.isActive ? 'primary' : 'secondary'"
