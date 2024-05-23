@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { ProgramTab } from 'src/app/models/program.model';
@@ -19,6 +20,8 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 export class ProgramTabsNavigationComponent implements OnInit {
   @Input()
   public programId: number;
+
+  public AppRoutes = AppRoutes;
 
   public dashboardIsEnabled: boolean;
 
