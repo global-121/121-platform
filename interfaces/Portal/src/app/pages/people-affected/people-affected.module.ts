@@ -5,12 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ExportDuplicatesPopupComponent } from '../../program/export-duplicates-popup/export-duplicates-popup.component';
-import { PeoplesAffectedPage } from './peoples-affected.page';
+import { PeopleAffectedPage } from './people-affected.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PeoplesAffectedPage,
+    component: PeopleAffectedPage,
   },
 ];
 
@@ -22,6 +22,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [PeoplesAffectedPage, ExportDuplicatesPopupComponent],
+  declarations: [PeopleAffectedPage, ExportDuplicatesPopupComponent],
 })
-export class PeoplesAffectedPageModule {}
+export class PeopleAffectedPageModule {}

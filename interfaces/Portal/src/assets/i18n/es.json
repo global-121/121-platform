@@ -519,10 +519,7 @@
         "people-affected": {
           "actionText-disabled-registrations": "Las inscripciones ahora están deshabilitadas para este programa",
           "actionText-enabled-registrations": "Las inscripciones ya están habilitadas para este programa",
-          "btnText": "Mover a: Pago",
-          "btnText-no-validation": "Mover a: Pago",
           "label": "Personas Afectadas",
-          "label-no-validation": "Personas Afectadas",
           "toggleText-enable-registrations": "Permitir nuevos registros"
         },
         "team": {

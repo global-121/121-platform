@@ -81,16 +81,16 @@ const routes: Routes = [
       {
         path: ProgramTab.overview,
         loadChildren: () =>
-          import('./pages/design/design.module').then(
-            (m) => m.DesignPageModule,
+          import('./pages/program-overview/program-overview.module').then(
+            (m) => m.ProgramOverviewPageModule,
           ),
         canActivate: [AuthGuard],
       },
       {
         path: ProgramTab.peopleAffected,
         loadChildren: () =>
-          import('./pages/peoples-affected/peoples-affected.module').then(
-            (m) => m.PeoplesAffectedPageModule,
+          import('./pages/people-affected/people-affected.module').then(
+            (m) => m.PeopleAffectedPageModule,
           ),
         canActivate: [AuthGuard],
       },

@@ -19,8 +19,9 @@ export class UserStateComponent implements OnInit {
   @Input()
   public showUserStateActions = true;
 
+  public AppRoutes = AppRoutes;
+
   public isDebug = !environment.production;
-  public appRoute = AppRoutes;
   public userName: string;
   public isEntraUser = false;
   public permissions: User['permissions'];

@@ -19,7 +19,7 @@ export class ProgramCardComponent implements OnInit {
   @Input()
   programStats: ProgramStats;
 
-  public appRoute = AppRoutes;
+  public AppRoutes = AppRoutes;
 
   public DateFormat = DateFormat;
 
