@@ -51,14 +51,14 @@
                 </ion-list-header>
                 <ion-item
                   lines="full"
-                  [routerLink]="['/', appRoute.home]"
+                  [routerLink]="['/', AppRoutes.home]"
                 >
                   <ion-label>{{ 'header.home' | translate }}</ion-label>
                 </ion-item>
                 <ion-item
                   *ngIf="isAdmin"
                   lines="full"
-                  [routerLink]="['/', appRoute.createProgram]"
+                  [routerLink]="['/', AppRoutes.createProgram]"
                 >
                   <ion-label>{{
                     'header.create-program' | translate
@@ -67,13 +67,13 @@
                 <ion-item
                   *ngIf="isAdmin"
                   lines="full"
-                  [routerLink]="['/', appRoute.users]"
+                  [routerLink]="['/', AppRoutes.users]"
                 >
                   <ion-label>{{ 'header.users' | translate }}</ion-label>
                 </ion-item>
                 <ion-item
                   lines="full"
-                  [routerLink]="['/', appRoute.help]"
+                  [routerLink]="['/', AppRoutes.help]"
                 >
                   <ion-label>{{ 'header.help' | translate }}</ion-label>
                 </ion-item>

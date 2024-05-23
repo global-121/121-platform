@@ -519,10 +519,7 @@
         "people-affected": {
           "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج",
           "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
-          "btnText": "الانتقال إلى: الدفع",
-          "btnText-no-validation": "الانتقال إلى: الدفع",
           "label": "الأشخاص المتأثرون والتحقق",
-          "label-no-validation": "الأشخاص المتأثرون",
           "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
         },
         "team": {

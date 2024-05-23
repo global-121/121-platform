@@ -29,9 +29,8 @@
 
 <ion-card
   *ngIf="program"
-  [routerLink]="['/program', program.id, appRoute.peopleAffected]"
+  [routerLink]="['/program', program.id, AppRoutes.peopleAffected]"
 >
-  <!-- Hardcode registrationValidation this should change when other phase related changes are ready -->
   <ion-card-header>
     <ion-card-title color="primary">
       <strong class="program-title">{{ program.titlePortal }}</strong>

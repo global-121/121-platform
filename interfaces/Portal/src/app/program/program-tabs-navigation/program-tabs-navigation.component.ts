@@ -6,10 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { ProgramTab } from 'src/app/models/program.model';
-import {
-  ProgramTabService,
-  Tabs,
-} from 'src/app/services/program-phase.service';
+import { ProgramTabService, Tab } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
@@ -25,7 +22,7 @@ export class ProgramTabsNavigationComponent implements OnInit {
 
   public dashboardIsEnabled: boolean;
 
-  public ProgramTabs: Tabs[];
+  public programTabs: Tab[];
 
   constructor(
     private authService: AuthService,
@@ -35,7 +32,7 @@ export class ProgramTabsNavigationComponent implements OnInit {
 
   public async ngOnInit() {
     const program = await this.programsService.getProgramById(this.programId);
-    const programTabs: Tabs[] = await this.programTabService.getProgramTabs();
+    const programTabs: Tab[] = await this.programTabService.getProgramTabs();
 
     const canReadAidWorkers = await this.authService.hasPermission(
       this.programId,
@@ -48,7 +45,7 @@ export class ProgramTabsNavigationComponent implements OnInit {
       Permission.ProgramMetricsREAD,
     );
 
-    this.ProgramTabs = programTabs.map((item: Tabs) => {
+    this.programTabs = programTabs.map((item: Tab) => {
       if (item.name === ProgramTab.team) {
         item.disabled = !canReadAidWorkers;
       }

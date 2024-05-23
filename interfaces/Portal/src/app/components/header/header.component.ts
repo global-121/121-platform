@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
   @Input()
   public isIframeHeader = false;
 
-  public appRoute = AppRoutes;
+  public AppRoutes = AppRoutes;
 
   public menuId = Math.floor(Math.random() * 100_000);
   public programId: number;

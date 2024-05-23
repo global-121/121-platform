@@ -344,9 +344,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="
-      showInclusionScore() && [phaseEnum.peopleAffected].includes(thisPhase)
-    "
+    *ngIf="showInclusionScore() && thisPhase === ProgramTab.peopleAffected"
     prop="inclusionScore"
     [name]="
       'page.program.program-people-affected.column.inclusionScore' | translate
@@ -359,7 +357,7 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="thisPhase === phaseEnum.payment"
+    *ngIf="thisPhase === ProgramTab.payment"
     prop="paymentHistoryColumn"
     [name]="paymentHistoryColumn?.name || ''"
     [minWidth]="paymentHistoryColumn?.minWidth"

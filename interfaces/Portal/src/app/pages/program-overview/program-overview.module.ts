@@ -5,12 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsComponent } from '../../program/metrics/metrics.component';
-import { DesignPage } from './design.page';
+import { ProgramOverviewPage } from './program-overview.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: DesignPage,
+    component: ProgramOverviewPage,
   },
 ];
 
@@ -22,6 +22,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [DesignPage, MetricsComponent],
+  declarations: [ProgramOverviewPage, MetricsComponent],
 })
-export class DesignPageModule {}
+export class ProgramOverviewPageModule {}

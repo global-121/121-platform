@@ -45,7 +45,7 @@ const ruleConfig: IRulesConfig = {
     `page.program.export-list.(${anyValueFrom(
       ExportType,
     )}).(btn-text|confirm-message)`,
-    `page.program.tab.(${anyValueFrom(ProgramTab)}).(btnText|label)`,
+    `page.program.tab.(${anyValueFrom(ProgramTab)}).label`,
     `page.program.program-people-affected.bulk-action-conditions.(${anyValueFrom(
       BulkActionId,
     )})`,
@@ -54,7 +54,6 @@ const ruleConfig: IRulesConfig = {
     'entity.registration.status.inclusionEnded',
     'entity.registration.status.rejected',
     'entity.registration.status.startedRegistration',
-    'page.program.tab.design.label',
     '_dir',
   ],
   ignoredMisprintKeys: [],

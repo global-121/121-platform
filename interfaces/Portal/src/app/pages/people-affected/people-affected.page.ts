@@ -7,11 +7,11 @@ import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-a
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
-  selector: 'app-peoples-affected',
-  templateUrl: './peoples-affected.page.html',
-  styleUrls: ['./peoples-affected.page.scss'],
+  selector: 'app-people-affected',
+  templateUrl: './people-affected.page.html',
+  styleUrls: ['./people-affected.page.scss'],
 })
-export class PeoplesAffectedPage implements OnInit {
+export class PeopleAffectedPage implements OnInit {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;

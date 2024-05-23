@@ -90,7 +90,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public phaseEnum = ProgramTab;
+  public ProgramTab = ProgramTab;
 
   public program: Program;
   private paTableAttributes: PaTableAttribute[] = [];
