@@ -63,7 +63,7 @@
         ></ion-spinner>
       </ion-row>
     </div>
-    <div>
+    <div class="util--flex-row ion-align-items-center">
       <span *ngIf="displayImportRegistration">
         <app-bulk-import
           *appIfPermissions="[
@@ -71,7 +71,6 @@
             Permission.RegistrationImportTemplateREAD
           ]"
           [programId]="programId"
-          style="display: inline-block"
         ></app-bulk-import>
       </span>
       <app-export-select
