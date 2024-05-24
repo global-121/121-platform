@@ -10,21 +10,21 @@ export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity 
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public fullNameUsedForTheMatch: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public bankAccountNumberUsedForCall: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public cbeName: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'boolean', nullable: true })
   public namesMatch: boolean | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public cbeStatus: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 }

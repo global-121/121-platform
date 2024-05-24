@@ -8,7 +8,7 @@ export class UserRoleEntity extends Base121Entity {
   @Column({ unique: true })
   public role: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public label: string | null;
 
   @ManyToMany(

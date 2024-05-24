@@ -10,10 +10,10 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
   @Column()
   public body: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public mediaUrl: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public messageType: string | null;
 
   @Column()

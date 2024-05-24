@@ -28,34 +28,34 @@ import {
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public location: string | null;
 
   @Column('json', { nullable: true })
   public titlePortal: LocalizedString | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public ngo: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   public startDate: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   public endDate: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public currency: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public distributionFrequency: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public distributionDuration: number | null;
 
   @Column({ nullable: true, type: 'real' })
   public fixedTransferValue: number | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public paymentAmountMultiplierFormula: string | null;
 
   @ManyToMany(
@@ -65,7 +65,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public targetNrRegistrations: number | null;
 
   @Column('json', { nullable: true })
@@ -131,7 +131,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: false })
   public enableScope: boolean;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, type: 'integer' })
   public budget: number | null;
 
   @OneToMany(
@@ -140,7 +140,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   )
   public programFspConfiguration: ProgramFspConfigurationEntity[];
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, type: 'character varying' })
   public monitoringDashboardUrl: string | null;
 
   @Column({ default: false })

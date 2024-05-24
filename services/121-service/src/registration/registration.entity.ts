@@ -52,7 +52,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public user: UserEntity;
 
   @Index()
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public registrationStatus: RegistrationStatusEnum | null;
 
   @Index({ unique: true })
@@ -62,21 +62,21 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
   public data: RegistrationDataEntity[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public phoneNumber: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   @IsEnum(LanguageEnum)
   public preferredLanguage: LanguageEnum | null;
 
   @Index({ unique: false })
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity)
   @JoinColumn({ name: 'fspId' })
   public fsp: FinancialServiceProviderEntity;
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public fspId: number | null;
 
   @Column({ nullable: false, default: 1 })
@@ -91,7 +91,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Index()
   public registrationProgramId: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'integer' })
   @IsInt()
   @IsPositive()
   @IsOptional()
