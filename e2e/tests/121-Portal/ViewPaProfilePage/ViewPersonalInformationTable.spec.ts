@@ -32,7 +32,7 @@ test('[27492] View Personal information table', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
 
   await test.step('Should open PAs for registration', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);

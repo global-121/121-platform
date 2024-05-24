@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
