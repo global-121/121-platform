@@ -99,9 +99,9 @@ The Page Object Model is a design pattern that creates an object repository for 
 
 ### Benefits of Using POM
 
-- Improved Test Maintenance: Changes in the UI require updates only in the page objects, not in the test scripts.
-- Code Reusability: Page objects can be reused across multiple tests.
-- Separation of Concerns: Separates the test logic from the UI logic, making the code easier to understand and maintain.
+- **Improved Test Maintenance**: Changes in the UI require updates only in the page objects, not in the test scripts.
+- **Code Reusability**: Page objects can be reused across multiple tests.
+- **Separation of Concerns**: Separates the test logic from the UI logic, making the code easier to understand and maintain.
 
 ### Implementing POM
 Page Classes
@@ -189,5 +189,5 @@ For extended documentation refer to Plawyright's page: https://playwright.dev/do
 - Remove "skip" command from the test
 ``` test.skip('Navigates to the portal and takes screenshots', async ({ page }) => ```
 - Run the test with command: ``` npx playwright test userManualScreenshots/userManualScreenshots.spec.ts  ```
-- Copy the screenshots from "screenshots" folder and paste them in "User Manual" repository
+- Push your changes to the branch or create PR to merge them into ``` main ```
 
