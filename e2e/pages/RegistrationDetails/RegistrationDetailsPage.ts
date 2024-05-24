@@ -1,5 +1,6 @@
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
+import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 class RegistrationDetails {
   readonly page: Page;
@@ -456,10 +457,12 @@ class RegistrationDetails {
     amount,
     saveButtonName,
     okButtonName,
+    alert = englishTranslations.common['update-success'],
   }: {
     amount: string;
     saveButtonName: string;
     okButtonName: string;
+    alert?: string;
   }) {
     const saveButton = this.page.getByRole('button', {
       name: saveButtonName,
@@ -467,6 +470,8 @@ class RegistrationDetails {
     const okButton = this.page.getByRole('button', {
       name: okButtonName,
     });
+    const alertMessage = this.page.locator('div.alert-message');
+
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
     await paymentMultipierInput.fill(amount);
@@ -483,6 +488,9 @@ class RegistrationDetails {
 
     await saveButton.waitFor({ state: 'visible' });
     await saveButton.click();
+
+    await alertMessage.waitFor({ state: 'visible' });
+    expect((await alertMessage.allTextContents())[0]).toContain(alert);
 
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
