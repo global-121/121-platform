@@ -1,10 +1,11 @@
 <app-header
   [title]="'page.program.tab.overview.label' | translate"
 ></app-header>
-
-<app-program-tabs-navigation
-  [programId]="programId"
-></app-program-tabs-navigation>
+<div class="ion-margin-vertical util--page-margin-horizontal">
+  <app-program-tabs-navigation
+    [programId]="programId"
+  ></app-program-tabs-navigation>
+</div>
 
 <ion-content class="ion-no-margin ion-no-padding">
   <div style="max-width: 33em; margin: auto">

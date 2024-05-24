@@ -2,24 +2,25 @@
   [title]="'page.program.tab.people-affected.label' | translate"
 ></app-header>
 <div
-  class="util--flex-row ion-justify-content-between ion-align-items-start ion-no-padding ion-margin-bottom"
+  class="util--flex-row ion-justify-content-between ion-align-items-start ion-no-padding ion-margin-vertical util--page-margin-horizontal"
 >
   <app-program-tabs-navigation
     [programId]="programId"
   ></app-program-tabs-navigation>
   <app-disable-registration
-    class="ion-margin-end"
     *appIfPermissions="[Permission.ProgramUPDATE]"
     [programId]="programId"
   ></app-disable-registration>
 </div>
 
 <ion-content class="ion-no-padding ion-no-margin">
-  <app-program-people-affected
-    #table
-    *appIfPermissions="[Permission.RegistrationREAD]"
-    [programId]="programId"
-    [currentProgramTab]="currentProgramTab"
-    [displayImportRegistration]="true"
-  ></app-program-people-affected>
+  <div class="ion-margin-top util--page-margin-horizontal">
+    <app-program-people-affected
+      #table
+      *appIfPermissions="[Permission.RegistrationREAD]"
+      [programId]="programId"
+      [currentProgramTab]="currentProgramTab"
+      [displayImportRegistration]="true"
+    ></app-program-people-affected>
+  </div>
 </ion-content>
