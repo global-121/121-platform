@@ -32,6 +32,8 @@ test('[28057] Update paymentAmountMultiplier with invalid value', async ({
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
+  const alertPattern = englishTranslations.common['error-with-message'];
+  // const alert = alertPattern.substring(0,alertPattern.indexOf("{"));
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -46,7 +48,10 @@ test('[28057] Update paymentAmountMultiplier with invalid value', async ({
       amount: '',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
-      alert: 'paymentAmountMultiplier must be a positive number',
+      alert: alertPattern.replace(
+        '{{error}}',
+        'paymentAmountMultiplier must be a positive number',
+      ),
     });
   });
 
@@ -55,7 +60,19 @@ test('[28057] Update paymentAmountMultiplier with invalid value', async ({
       amount: '-1',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
-      alert: 'paymentAmountMultiplier must be a positive number',
+      alert: alertPattern.replace(
+        '{{error}}',
+        'paymentAmountMultiplier must be a positive number',
+      ),
+    });
+  });
+
+  await test.step('Update payment amount multiplier with a string', async () => {
+    await registration.updatepaymentAmountMultiplier({
+      amount: 'Mutiplier',
+      saveButtonName: englishTranslations.common.save,
+      okButtonName: englishTranslations.common.ok,
+      alert: alertPattern.replace('{{error}}', 'Input should be an integer'),
     });
   });
 });
