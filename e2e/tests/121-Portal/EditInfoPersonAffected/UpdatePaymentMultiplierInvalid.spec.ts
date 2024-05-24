@@ -41,17 +41,21 @@ test('[28057] Update paymentAmountMultiplier with invalid value', async ({
     await table.openPaPersonalInformation({});
   });
 
-  await test.step('Update payment amount multiplier', async () => {
+  await test.step('Update payment amount multiplier with empty string', async () => {
     await registration.updatepaymentAmountMultiplier({
-      amount: '2',
+      amount: '',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
+      alert: 'paymentAmountMultiplier must be a positive number',
     });
   });
 
-  await test.step('Validate payment multiplier updated', async () => {
-    await page.reload();
-    await table.openPaPersonalInformation({});
-    await registration.validateAmountMultiplier({ amount: '2' });
+  await test.step('Update payment amount multiplier with negative number', async () => {
+    await registration.updatepaymentAmountMultiplier({
+      amount: '-1',
+      saveButtonName: englishTranslations.common.save,
+      okButtonName: englishTranslations.common.ok,
+      alert: 'paymentAmountMultiplier must be a positive number',
+    });
   });
 });
