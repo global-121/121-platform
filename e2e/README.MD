@@ -188,6 +188,6 @@ For extended documentation refer to Plawyright's page: https://playwright.dev/do
 - Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
 - Remove "skip" command from the test
 ``` test.skip('Navigates to the portal and takes screenshots', async ({ page }) => ```
-- Run the test with command: ``` npx playwright test userManualScreenshots/userManualScreenshots.spec.ts  ```
+- Run the test with command: ``` npx playwright test userManualScreenshots/userManualScreenshots.spec.ts --update-snapshots ```
 - Push your changes to the branch or create PR to merge them into ``` main ```
 

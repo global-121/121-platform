@@ -102,6 +102,10 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'ProgramTeam',
   });
 
+  await programTeam.clickEditTeamMember({});
+  await helpers.takeFullScreenShot({ fileName: 'ChangeRoleTeam' });
+
+  await page.reload();
   await programTeam.openAddNewTeamMemberPoUp();
   await programTeam.validateAddTeamMemberPopUpIsPresent();
   await page.waitForTimeout(TIMEOUT_DURATION);
@@ -116,13 +120,7 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await page.waitForTimeout(TIMEOUT_DURATION);
   await helpers.takeFullScreenShot({ fileName: 'ProgramUserManagementRoles' });
 
-  await navigateAndScreenshot({
-    page: page,
-    helpers: helpers,
-    url: `/program/${PROGRAM_ID}/team`,
-    fileName: 'ChangeRoleTeam',
-  });
-
+  await page.reload();
   await programTeam.clickDeleteTeamMember({});
   await page.waitForTimeout(TIMEOUT_DURATION);
   await helpers.takeFullScreenShot({
