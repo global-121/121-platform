@@ -23,7 +23,10 @@
     "strict": false,
     "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "paths": {
+      "@121-service/*": ["./../../services/121-service/*"]
+    }
   },
   "angularCompilerOptions": {
     "strictDomEventTypes": false,

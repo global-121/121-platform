@@ -1,4 +1,4 @@
-import { PermissionEnum } from '../../../../../services/121-service/src/user/enum/permission.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 /**
  * Note: Permissions-definition explicitly used from back-end, to prevent repetition.
  */

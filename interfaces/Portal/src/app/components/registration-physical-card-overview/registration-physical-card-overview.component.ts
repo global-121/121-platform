@@ -1,3 +1,4 @@
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
@@ -5,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { PhysicalCard } from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { WalletCardStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
 
