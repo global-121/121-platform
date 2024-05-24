@@ -5,24 +5,22 @@
     <ion-item
       lines="none"
       color="light"
+      class="ion-no-padding"
     >
-      <ion-col class="ion-padding">
-        <h2
-          class="ion-no-margin ion-padding-top"
-          class="users-title"
-        >
-          <strong> {{ 'page.users.pageTitle' | translate }} </strong>
+      <div class="util--page-margin-horizontal">
+        <h2 class="ion-padding-top">
+          <strong> {{ 'page.users.pageTitle' | translate }}</strong>
         </h2>
-        <p class="ion-no-margin">
+        <p class="ion-margin-vertical">
           {{ 'page.users.page-description' | translate }}
         </p>
-      </ion-col>
+      </div>
     </ion-item>
 
     <ion-segment
       (ionChange)="segmentChanged($event)"
       value="users"
-      class="tab-bar"
+      class="tab-bar util--page-margin-start"
     >
       <ion-segment-button
         data-testid="users-tab-button"
@@ -47,7 +45,7 @@
     <!--tab 1 users-->
     <div
       *ngIf="segment === 'users'"
-      class="ion-padding"
+      class="util--page-margin-horizontal ion-padding-vertical"
     >
       <!--filter and add new user button-->
       <div class="filter-and-button">
@@ -85,10 +83,9 @@
           class="button"
           [disabled]="true"
           item-end
-          ><strong>{{
-            'page.users.add-new-user' | translate
-          }}</strong></ion-button
         >
+          <strong> {{ 'page.users.add-new-user' | translate }}</strong>
+        </ion-button>
       </div>
 
       <!--users table-->
@@ -100,7 +97,7 @@
     <!--tab 2 roles-->
     <div
       *ngIf="segment === 'roles'"
-      class="ion-padding"
+      class="util--page-margin-horizontal ion-padding-vertical"
     >
       <app-roles-list data-testid="roles-list-table"></app-roles-list>
     </div>

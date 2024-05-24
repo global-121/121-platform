@@ -2,27 +2,25 @@
   [title]="'page.program.tab.people-affected.label' | translate"
 ></app-header>
 <div
-  class="util--flex-row ion-justify-content-between ion-align-items-end ion-padding-end"
+  class="util--flex-row ion-justify-content-between ion-align-items-start ion-no-padding ion-margin-vertical util--page-margin-horizontal"
 >
-  <app-program-navigation></app-program-navigation>
-  <ion-grid class="ion-no-padding ion-margin-bottom">
-    <ion-row>
-      <ion-col class="ion-justify-content-end">
-        <app-disable-registration
-          *appIfPermissions="[Permission.ProgramUPDATE]"
-          [programId]="programId"
-        ></app-disable-registration>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <app-program-tabs-navigation
+    [programId]="programId"
+  ></app-program-tabs-navigation>
+  <app-disable-registration
+    *appIfPermissions="[Permission.ProgramUPDATE]"
+    [programId]="programId"
+  ></app-disable-registration>
 </div>
 
-<ion-content class="ion-padding">
-  <app-program-people-affected
-    #table
-    *appIfPermissions="[Permission.RegistrationREAD]"
-    [programId]="programId"
-    [currentProgramTab]="currentProgramTab"
-    [displayImportRegistration]="true"
-  ></app-program-people-affected>
+<ion-content class="ion-no-padding ion-no-margin">
+  <div class="ion-margin-top util--page-margin-horizontal">
+    <app-program-people-affected
+      #table
+      *appIfPermissions="[Permission.RegistrationREAD]"
+      [programId]="programId"
+      [currentProgramTab]="currentProgramTab"
+      [displayImportRegistration]="true"
+    ></app-program-people-affected>
+  </div>
 </ion-content>

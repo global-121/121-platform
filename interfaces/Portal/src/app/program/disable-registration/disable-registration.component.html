@@ -1,8 +1,11 @@
-<ion-row
+<div
   *ngIf="program"
-  class="ion-align-items-center ion-justify-content-end ion-padding-top"
+  class="util--flex-row ion-align-items-center"
+  [style.font-size.rem]="0.8125"
+  [style.font-weight]="500"
+  [style.min-height.rem]="2.1"
 >
-  <ion-label>
+  <ion-label class="util--half-margin-end">
     {{
       'page.program.tab.people-affected.toggleText-enable-registrations'
         | translate
@@ -13,4 +16,4 @@
     (click)="updateRegistrationStatus()"
     onKeyPress=""
   ></ion-toggle>
-</ion-row>
+</div>
