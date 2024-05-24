@@ -57,6 +57,7 @@ export class QueueMessageService {
     };
   }
 
+  // TODO: REFACTOR: Rename to addMessageJob()
   public async addMessageToQueue(
     registration: RegistrationEntity | RegistrationViewEntity,
     message: string,

@@ -20,6 +20,7 @@ import { ProgramAidworkerAssignmentEntity } from './programs/program-aidworker.e
 import { ScriptsModule } from './scripts/scripts.module';
 import { TransferQueuesModule } from './transfer-queues/transfer-queues.module';
 import { TypeOrmModule } from './typeorm.module';
+import { TransferJobProcessorsModule } from './transfer-job-processors/transfer-job-processors.module';
 
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
@@ -58,7 +59,7 @@ import { TypeOrmModule } from './typeorm.module';
     }),
     AuthModule,
     ProgramFinancialServiceProviderConfigurationsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
-    TransferQueuesModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
+    TransferQueuesModule, TransferJobProcessorsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
   ],
   controllers: [AppController],
   providers: [

@@ -113,6 +113,28 @@ export class IntersolveVisaService
     private readonly redisClient: Redis,
   ) {}
 
+  public async doTransfer(): Promise<void> {
+    /* TODO: Implement this function:
+      - This function is called by TransferJobsProcessorsService.processIntersolveVisaTransferJob()
+      - This function takes an IntersolveVisaTransferDto as input parameter and returns a DoTransferReturnDto
+      - This function is an optimization/refactoring of this.processQueuedPayment()
+      - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
+      - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
+      - 
+    */
+    throw new Error('Method not implemented.');
+  }
+
+  private async createParentWallet(): Promise<void> {
+    //TODO: Implement this function.
+    throw new Error('Method not implemented.');
+  }
+
+  private async createChildWallet(): Promise<void> {
+    //TODO: Implement this function.
+    throw new Error('Method not implemented.');
+  }
+
   public async getTransactionInfoByCustomer(
     visaCustomer: IntersolveVisaCustomerEntity,
   ): Promise<{ tokenCode: string; transactionInfo: TransactionInfoVisa }[]> {

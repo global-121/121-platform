@@ -65,6 +65,7 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   )
   public intersolveVisaCustomer: IntersolveVisaCustomerEntity;
 
+  // TODO: REFACTOR: this function should be moved to the IntersolveVisaService.
   public calculateTopUpAmount(): number {
     return (
       (maximumAmountOfSpentCentPerMonth - this.spentThisMonth - this.balance) /

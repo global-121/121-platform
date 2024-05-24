@@ -17,6 +17,7 @@ import { TransactionEntity } from './transaction.entity';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
 
+//TODO: REFACTOR: Rename to TransfersModule
 @Module({
   imports: [
     TypeOrmModule.forFeature([
