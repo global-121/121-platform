@@ -78,11 +78,9 @@
     "label": "Selecteer een bestand"
   },
   "header": {
-    "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
     "menu": "Menu",
-    "team": "Team",
     "users": "Gebruikers"
   },
   "ngx-datatable": {
@@ -283,33 +281,6 @@
             "week": "wekelijks",
             "weeks2": "2 wekelijks"
           }
-        }
-      },
-      "phases": {
-        "design": {
-          "btnText": "Open voor registratie",
-          "label": "Programma ontwerp"
-        },
-        "evaluation": {
-          "btnText": "Programma beëindigen",
-          "label": "Evaluatie"
-        },
-        "inclusion": {
-          "btnText": "Ga naar: Betaling",
-          "label": "Deelname"
-        },
-        "payment": {
-          "btnText": "Ga naar: Evaluatie",
-          "label": "Betaling"
-        },
-        "registrationValidation": {
-          "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma",
-          "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
-          "btnText": "Ga naar: Deelname",
-          "btnText-no-validation": "Ga naar: Deelname",
-          "label": "Aanmeldingen beoordelen",
-          "label-no-validation": "Registratie",
-          "toggleText-enable-registrations": "Nieuwe registraties toestaan"
         }
       },
       "program-details": {
@@ -546,6 +517,26 @@
           "sent": "Verstuurd",
           "show-status": "Toon status",
           "waiting-message": "Wachtend op de statusupdate van deze transactie. Vernieuw de pagina voor de laatste status."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "Toezicht houden"
+        },
+        "overview": {
+          "label": "Overzicht"
+        },
+        "payment": {
+          "label": "Betaling"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "Registratie is nu uitgeschakeld voor dit programma",
+          "actionText-enabled-registrations": "Registratie is nu mogelijk voor dit programma",
+          "label": "Hulpvragers",
+          "toggleText-enable-registrations": "Nieuwe registraties toestaan"
+        },
+        "team": {
+          "label": "Team"
         }
       },
       "table-filter-row": {

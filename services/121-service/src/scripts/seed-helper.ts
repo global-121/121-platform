@@ -10,7 +10,6 @@ import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
@@ -66,6 +65,11 @@ export class SeedHelper {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
     });
 
+    const ViewWithoutPII = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
+    });
+
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     if (programAdminUser) {
       await this.assignAidworker(programAdminUser.id, program.id, [
@@ -100,6 +104,11 @@ export class SeedHelper {
     if (financeOfficer) {
       await this.assignAidworker(financeOfficer.id, program.id, [
         DefaultUserRole.FinanceOfficer,
+      ]);
+    }
+    if (ViewWithoutPII) {
+      await this.assignAidworker(ViewWithoutPII.id, program.id, [
+        DefaultUserRole.ViewWithoutPII,
       ]);
     }
 
@@ -172,7 +181,6 @@ export class SeedHelper {
     const program = JSON.parse(programExampleDump);
 
     if (DEBUG && !isApiTests) {
-      program.phase = ProgramPhase.payment;
       program.published = true;
     }
 

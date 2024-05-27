@@ -1,10 +1,8 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  changePhase,
   getCbeValidationReport,
   startCbeValidationProcess,
 } from '@121-service/test/helpers/program.helper';
@@ -48,12 +46,6 @@ describe('Export CBE validation report', () => {
     await resetDB(SeedScript.ethJointResponse);
     accessToken = await getAccessToken();
     await waitFor(1_000);
-
-    await changePhase(
-      programId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
   });
 
   it('should succesfully generate a report of CBE validation data', async () => {

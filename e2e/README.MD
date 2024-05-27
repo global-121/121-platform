@@ -10,6 +10,25 @@
   This documentation touches upon E2E Playwright test suite for API refer to <a href="https://github.com/global-121/121-platform?tab=readme-ov-file#testing">features/</a>.
 </p>
 
+# Table of Contents
+
+1. [Advantages of Playwright Automated Tests](#advantages-of-playwright-automated-tests)
+2. [Prerequisite](#prerequisite)
+3. [Installation](#installation)
+4. [Environmental Variables](#environmental-variables)
+5. [Run Tests via Console](#run-tests-via-console)
+6. [Run Tests using Built-in Runner via VS Code](#run-tests-using-built-in-runner-via-vs-code)
+7. [Tests and Page Object Model (POM)](#tests-and-page-object-model-pom)
+   - [What is Page Object Model (POM)?](#what-is-page-object-model-pom)
+   - [Benefits of Using POM](#benefits-of-using-pom)
+   - [Implementing POM](#implementing-pom)
+8. [Writing Tests](#writing-tests)
+   - [Example Test](#example-test)
+   - [Best Practices](#best-practices)
+   - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
+9. [How to generate Screenshots for "User Manual"](#how-to-generate-screenshots-for-user-manual)
+
+
 ## Advantages of Playwright Automated Tests
 
 - **Simulating User Interactions**: Playwright enables you to simulate user interactions in the interface across different browsers and devices.
@@ -69,7 +88,106 @@ npm test -- --headed
     </a>
   </h2>
   <a>
-    <img alt="playwright tool" src="https://github.com/microsoft/playwright/assets/13063165/ffca2fd1-5349-41fb-ade9-ace143bb2c58"/>
+    <img alt="playwright tool" src="https://github.com/microsoft/playwright/assets/13063165/348e18ff-f819-4caa-8f7e-f16c20724f56"/>
   </a>
 
-### <p align="center"> This documentation is work in progress and thus far explains only installation process </p>
+## Tests and Page Object Model (POM)
+
+### What is Page Object Model (POM)?
+
+The Page Object Model is a design pattern that creates an object repository for storing all web elements. It acts as an interface for interacting with web pages in your test scripts. This pattern helps to keep the code clean and readable by separating the test logic from the details of the UI elements.
+
+### Benefits of Using POM
+
+- **Improved Test Maintenance**: Changes in the UI require updates only in the page objects, not in the test scripts.
+- **Code Reusability**: Page objects can be reused across multiple tests.
+- **Separation of Concerns**: Separates the test logic from the UI logic, making the code easier to understand and maintain.
+
+### Implementing POM
+Page Classes
+Create a page class for each page representing different module and/ or functionality in your application. Here is an example of how you can structure your HomePage class:
+
+```
+import { Locator, expect } from '@playwright/test';
+import { Page } from 'playwright';
+
+class HomePage {
+  readonly page: Page;
+  readonly programCard: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.programCard = this.page.getByTestId('program-list-component-card');
+  }
+
+  async navigateToProgramme(programName: string) {
+    await this.programCard.filter({ hasText: programName }).click();
+  }
+}
+
+export default HomePage;
+```
+
+## Writing Tests
+### Example Test
+
+Here is a simple example of writing a test using the POM structure:
+
+```
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { test } from '@playwright/test';
+import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+test.beforeEach(async ({ page }) => {
+  await resetDB(SeedScript.nlrcMultiple);
+  const programIdOCW = 3;
+  const OcwProgramId = programIdOCW;
+
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+
+  // Login
+  const loginPage = new LoginPage(page);
+  await page.goto('/login');
+  await loginPage.login(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  );
+});
+
+test('[27493] Navigate to programme', async ({ page }) => {
+  const homePage = new HomePage(page);
+
+  await test.step('Should open PAs for registration', async () => {
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+  });
+});
+```
+
+### Best Practices
+
+- **Keep Tests Independent**: Each test should be able to run independently of others.
+- **Use Meaningful Names**: Name your page objects and methods clearly to reflect their purpose.
+- **Avoid Hardcoding**: Use variables and configuration files (like translation file) to manage test data.
+
+### Common Issues and Troubleshooting
+
+- **Element Not Found**: Ensure the selectors in your page objects are correct, unique and are loaded in DOM.
+- **Timeouts**: Increase the default timeout if elements take longer to load.
+- **Test Flakiness**: Use wait methods to handle dynamic content and animations.
+
+For extended documentation refer to Plawyright's page: https://playwright.dev/docs/getting-started-vscode
+
+### How to generate Screenshots for "User Manual":
+
+- Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
+- Remove "skip" command from the test
+``` test.skip('Navigates to the portal and takes screenshots', async ({ page }) => ```
+- Run the test with command: ``` npx playwright test userManualScreenshots/userManualScreenshots.spec.ts --update-snapshots ```
+- Push your changes to the branch or create PR to merge them into ``` main ```
+

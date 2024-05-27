@@ -18,7 +18,7 @@
       >
         <ion-icon
           name="funnel"
-          color="black"
+          color="dark"
           aria-hidden="true"
         ></ion-icon>
 
@@ -67,7 +67,7 @@
     </div>
 
     <div
-      style="border-left: 1px solid var(--fiveten-neutral-200)"
+      style="border-left: 1px solid var(--ion-color-fiveten-neutral-300)"
       class="util--flex-row ion-align-items-center ion-padding-horizontal"
     >
       <ion-label class="ion-text-nowrap">
@@ -75,25 +75,13 @@
       </ion-label>
       &nbsp;
       <app-status-table-filter
+        data-testid="table-filter-status"
         #statusTableFilter
         *ngIf="programId"
         [programId]="programId"
-        [thisPhase]="thisPhase"
+        [currentProgramTab]="currentProgramTab"
       ></app-status-table-filter>
     </div>
-  </div>
-  <div
-    class="ion-align-items-center ion-justify-content-end ion-margin-top"
-    [ngClass]="{
-      'is-loading': isLoading
-    }"
-  >
-    <app-export-select
-      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
-      [programId]="programId"
-      [thisPhase]="thisPhase"
-      [showValidation]="showValidation"
-    ></app-export-select>
   </div>
 </div>
 

@@ -20,7 +20,8 @@
       },
       "answerType": "text",
       "pattern": ".+",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     }
   ]
 }

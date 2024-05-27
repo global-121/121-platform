@@ -1,5 +1,4 @@
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { LocalizedString } from 'src/shared/enum/language.enums';
@@ -44,14 +43,10 @@ export class UpdateFspAttributeDto {
   public answerType?: string;
 
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
+    example: false,
   })
   @IsOptional()
-  public phases?: ProgramPhase[];
+  public showInPeopleAffectedTable: boolean;
 }
 
 export class CreateFspAttributeDto extends UpdateFspAttributeDto {

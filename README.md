@@ -326,14 +326,12 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define what code gets released. ("_Is the current `main`-branch working?_")
 - [ ] Define the `version`(-number) for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
-  - [ ] Commit changes to `main`-branch on GitHub.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `main`-branch (or other specific starting-point).
-  - Create on GitHub via: <https://github.com/global-121/121-platform/branches>
-  - Or create locally and push to upstream/origin.
+  - [ ] Create a PR with the changes on the changelog.
+  - [ ] Merge the changes to main.
 - [ ] Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
-  - [ ] Add the `version` to create a new tag
-  - [ ] Select the `release/<version>`-branch
+  - [ ] For "Choose a tag": Insert the `version` to create a new tag
+  - [ ] For "Target": Choose the commit which was created as a result of merging the CHANGELOG changes into main
   - [ ] Set the title of the release to `<version>`.  
          Add a short description and/or link to relevant other documents (only if applicable)
   - [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
@@ -343,17 +341,18 @@ This is how we create and publish a new release of the 121-platform.
 
 ### Patch/Hotfix Checklist
 
-This follows the same process as a regular release + deployment. With some small changes.
+This follows a similar process to regular release + deployment, with some small changes.
 
-- Code does not need to be frozen. (As there is no active development on the release-branch)
-
-- Checkout the `release/<version>`-branch that needs the hotfix.
-- Create a new local branch on top of it (e.g. `release/<v1.x.1>`) and make the changes
+- Code does not need to be frozen.
+- Checkout the `<version>` tag which contains the code that you want to hotfix from.
+- Create a new local hotfix branch using that tag as the head (e.g. `hotfix/<v1.x.1>`) and make the changes
 - Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
 - Push this branch to the upstream/origin repository.
-- Create a new release (see above) and publish it.
-- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to production (for each instance)
-- After the hotfix-release, apply/include the fix by creating a PR from the hotfix-branch to `main`-branch
+- Create a new release + tag (see above) selecting the `hotfix` branch as target, and publish it.
+- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created tag (**not the branch**) to production (for each instance)
+- After the hotfix has been released to production, follow standard procedures to merge the hotfix branch into main
+
+**Note:** it is important that you do not rebase the `hotfix` branch on the head of `main` until AFTER you have successfully deployed the hotfix to production. The hotfix branch was created from a "dangling" commit, so this makes the GitHub UI confused when you look at a PR between the newly created `hotfix` branch and `main`, but you can ignore any conflict warnings from GitHub while you release.
 
 ---
 

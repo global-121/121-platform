@@ -38,12 +38,7 @@ jobs:
       - name: Run Services with Docker
         working-directory: ./services
         run: |
-          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull
-
-      - name: Wait for healthchecks
-        run: |
-          timeout 90s sh -c 'until docker ps | grep mock-service | grep -q healthy; do echo "Waiting for mock-service to be healthy..."; sleep 5; done'
-          timeout 90s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for 121-service to be healthy..."; sleep 5; done'
+          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
 
       - name: Check that no new migrations are necessary
         working-directory: ./services

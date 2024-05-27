@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 interface PersonLeft {
@@ -18,15 +19,33 @@ class TableModule {
   readonly textLabel: Locator;
   readonly bulkActionsDropdown: Locator;
   readonly informationPopUpButton: Locator;
+  readonly paCell: Locator;
+  readonly filterSelectionDropdown: Locator;
+  readonly filterStatusDropdown: Locator;
+  readonly exportDataButton: Locator;
+  readonly bulkImportRegistrationsButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.filterInput = this.page.locator('input[type="text"]');
     this.button = this.page.locator('ion-button');
     this.textLabel = this.page.locator('ion-text');
-    this.bulkActionsDropdown = this.page.locator('select[name="bulkActions"]');
+    this.bulkActionsDropdown = this.page.getByTestId(
+      'program-people-affected-bulk-actions',
+    );
     this.informationPopUpButton = this.page.getByTestId(
       'information-popup-button',
+    );
+    this.paCell = this.page.getByTestId('pa-table-cell');
+    this.filterSelectionDropdown = this.page.getByTestId(
+      'select-typhead-filter-selection-dropdown',
+    );
+    this.filterStatusDropdown = this.page.getByTestId('table-filter-status');
+    this.exportDataButton = this.page.getByTestId(
+      'table-filter-data-export-button',
+    );
+    this.bulkImportRegistrationsButton = this.page.getByTestId(
+      'registration-validation-bulk-import-button',
     );
   }
 
@@ -186,6 +205,21 @@ class TableModule {
     await this.button.filter({ hasText: 'Apply action' }).click();
   }
 
+  async selectBulkAction({ option }: { option: string }) {
+    await this.page.reload();
+    await this.page.waitForTimeout(1000);
+    await this.bulkActionsDropdown.selectOption(option);
+    await this.page.getByLabel('Select', { exact: true }).click();
+  }
+
+  async openDataExportDropdown() {
+    await this.exportDataButton.click();
+  }
+
+  async openImportPopUp() {
+    await this.bulkImportRegistrationsButton.getByRole('button').click();
+  }
+
   async validateBulkActionTargetedPasNumber(expectedNumber: number) {
     const textLocator = this.page
       .locator('p')
@@ -234,32 +268,37 @@ class TableModule {
     await okButton.click();
   }
 
-  async validateNumberOfElements({
-    locator,
-    expectedCount,
-  }: {
-    locator: Locator;
-    expectedCount: number;
-  }) {
+  async validateInformationButtonsPresent() {
     await this.page.waitForLoadState('networkidle');
-    const actualCount = await locator.count();
+    const actualCount = await this.informationPopUpButton.count();
+    const expectedCount = await this.paCell.count();
 
     if (actualCount !== expectedCount) {
       throw new Error(
-        `Expected ${expectedCount} elements, but found ${actualCount}`,
+        `Expected ${actualCount} elements, but found ${expectedCount}`,
       );
     }
   }
 
-  async validateInformationButtonsPresent({
-    expectedCount,
+  async validateNoInformationButtonIsPresent() {
+    await this.page.waitForLoadState('networkidle');
+    await expect(this.informationPopUpButton).toBeHidden();
+  }
+
+  async openPaPersonalInformation({
+    buttonIndex = 0,
   }: {
-    expectedCount: number;
+    buttonIndex?: number;
   }) {
-    await this.validateNumberOfElements({
-      locator: this.informationPopUpButton,
-      expectedCount: expectedCount,
-    });
+    await this.informationPopUpButton.nth(buttonIndex).click();
+  }
+
+  async openStatusFilterDropdown() {
+    await this.filterStatusDropdown.click();
+  }
+
+  async openFilterDropdown() {
+    await this.filterSelectionDropdown.click();
   }
 }
 

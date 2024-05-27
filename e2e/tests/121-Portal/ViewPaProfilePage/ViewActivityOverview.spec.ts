@@ -28,14 +28,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
   });
 

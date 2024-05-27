@@ -55,7 +55,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "csv-parser": "^3.0.0",
-    "easy-soap-request": "^5.5.0",
+    "easy-soap-request": "^5.6.1",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",

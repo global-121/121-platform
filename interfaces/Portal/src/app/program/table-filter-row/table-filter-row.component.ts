@@ -4,7 +4,7 @@ import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import Permission from '../../auth/permission.enum';
 import { StatusTableFilterComponent } from '../../components/status-table-filter/status-table-filter.component';
 import { ExportType } from '../../models/export-type.model';
-import { ProgramPhase } from '../../models/program.model';
+import { ProgramTab } from '../../models/program.model';
 import { TableFilterType } from '../../models/table-filter.model';
 import {
   Filter,
@@ -25,7 +25,7 @@ export class TableFilterRowComponent {
   public allFilters: { name: string; label: string }[] = [];
 
   @Input()
-  public thisPhase: ProgramPhase;
+  public currentProgramTab: ProgramTab;
 
   @Input()
   public programId: number;

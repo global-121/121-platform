@@ -4,6 +4,7 @@
   <div>
     <ion-row>
       <select
+        data-testid="program-people-affected-bulk-actions"
         name="bulkActions"
         [title]="
           'page.program.program-people-affected.choose-action' | translate
@@ -55,13 +56,31 @@
       >
         {{ 'page.program.program-people-affected.apply-action' | translate }}
       </app-confirm-prompt>
-
       <ion-spinner
         *ngIf="isInProgress"
         color="primary"
         class="ion-margin-start"
       ></ion-spinner>
     </ion-row>
+  </div>
+  <div class="util--flex-row ion-align-items-center">
+    <span *ngIf="displayImportRegistration">
+      <app-bulk-import
+        data-testid="registration-validation-bulk-import-button"
+        *appIfPermissions="[
+          Permission.RegistrationCREATE,
+          Permission.RegistrationImportTemplateREAD
+        ]"
+        [programId]="programId"
+      ></app-bulk-import>
+    </span>
+    <app-export-select
+      data-testid="table-filter-data-export-button"
+      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
+      [programId]="programId"
+      [currentProgramTab]="currentProgramTab"
+      [showValidation]="showValidation"
+    ></app-export-select>
   </div>
 </ion-row>
 
@@ -70,7 +89,7 @@
   [isLoading]="isLoading"
   [allFilters]="tableFiltersPerColumn"
   [programId]="programId"
-  [thisPhase]="thisPhase"
+  [currentProgramTab]="currentProgramTab"
   [filteredCount]="pageMetaData?.totalItems"
   [showValidation]="program?.validation"
 />
@@ -169,10 +188,12 @@
       let-row="row"
     >
       <div
+        data-testid="pa-table-cell"
         class="ion-align-items-center"
         style="display: flex"
       >
         <button
+          data-testid="information-popup-button"
           *ngIf="canViewPersonalData"
           type="button"
           data-testid="information-popup-button"
@@ -266,8 +287,7 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'lastMessageStatus' &&
-          column.prop !== 'name'
+          !isColumnWithSpecialFormatting(column.prop)
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
@@ -302,6 +322,13 @@
           {{ value }}
         </span>
       </ng-container>
+      <ng-container *ngIf="column.prop === 'status'">
+        <span
+          class="badge"
+          [ngClass]="'registration-status-' + row.registrationStatus"
+          >{{ value }}</span
+        >
+      </ng-container>
     </ng-template>
   </ngx-datatable-column>
 
@@ -320,10 +347,7 @@
 
   <ngx-datatable-column
     *ngIf="
-      showInclusionScore() &&
-      [phaseEnum.registrationValidation, phaseEnum.inclusion].includes(
-        thisPhase
-      )
+      showInclusionScore() && currentProgramTab === ProgramTab.peopleAffected
     "
     prop="inclusionScore"
     [name]="
@@ -337,7 +361,7 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="thisPhase === phaseEnum.payment"
+    *ngIf="currentProgramTab === ProgramTab.payment"
     prop="paymentHistoryColumn"
     [name]="paymentHistoryColumn?.name || ''"
     [minWidth]="paymentHistoryColumn?.minWidth"

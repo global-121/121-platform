@@ -77,11 +77,9 @@
     "label": "Sélectionner un fichier"
   },
   "header": {
-    "dashboard": "Tableau de bord",
     "help": "Aide",
     "home": "Domicile",
     "menu": "Menu",
-    "team": "Équipe",
     "users": "Utilisateurs"
   },
   "ngx-datatable": {
@@ -276,33 +274,6 @@
             "week": "hebdomadaire",
             "weeks2": "2 par semaine"
           }
-        }
-      },
-      "phases": {
-        "design": {
-          "btnText": "Ouvert aux inscriptions",
-          "label": "Concevoir"
-        },
-        "evaluation": {
-          "btnText": "Mettre fin au programme",
-          "label": "Évaluation"
-        },
-        "inclusion": {
-          "btnText": "Déplacer vers : Paiement",
-          "label": "Inclusion"
-        },
-        "payment": {
-          "btnText": "Déplacer vers : Évaluation",
-          "label": "Paiement"
-        },
-        "registrationValidation": {
-          "actionText-disabled-registrations": "Les inscriptions sont maintenant désactivées pour ce programme",
-          "actionText-enabled-registrations": "Les inscriptions sont maintenant activées pour ce programme",
-          "btnText": "Déplacer vers : Inclusion",
-          "btnText-no-validation": "Déplacer vers : Inclusion",
-          "label": "Inscription et validation",
-          "label-no-validation": "Inscription",
-          "toggleText-enable-registrations": "Autoriser les nouvelles inscriptions"
         }
       },
       "program-details": {
@@ -533,6 +504,26 @@
           "sent": "Envoyèrent",
           "show-status": "Afficher l’état",
           "waiting-message": "Toujours en attente d’une mise à jour de l’état de cette transaction. Actualisez la page pour connaître l’état le plus récent."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "Surveillance"
+        },
+        "overview": {
+          "label": "Aperçu"
+        },
+        "payment": {
+          "label": "Paiement"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "Les inscriptions sont maintenant désactivées pour ce programme",
+          "actionText-enabled-registrations": "Les inscriptions sont maintenant activées pour ce programme",
+          "label": "Personnes Touchées et validation",
+          "toggleText-enable-registrations": "Autoriser les nouvelles inscriptions"
+        },
+        "team": {
+          "label": "Équipe"
         }
       },
       "table-filter-row": {

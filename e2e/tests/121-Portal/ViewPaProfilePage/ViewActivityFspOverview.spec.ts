@@ -11,11 +11,9 @@ import {
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  changePhase,
   doPayment,
   updateFinancialServiceProvider,
   waitForPaymentTransactionsToComplete,
@@ -44,14 +42,6 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   accessToken = await getAccessToken();
   await waitFor(2_000);
-
-  await changePhase(
-    programIdVisa,
-    ProgramPhase.registrationValidation,
-    accessToken,
-  );
-  await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
-  await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
 
   // Arrange
   await importRegistrations(programIdVisa, [registrationVisa], accessToken);
@@ -105,14 +95,13 @@ test.beforeEach(async ({ page }) => {
 test('[27496] View Activity overview in FSP column on PA profile page', async ({
   page,
 }) => {
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
   });
 

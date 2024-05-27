@@ -10,7 +10,7 @@ import {
 import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { BulkActionId } from 'src/app/models/bulk-actions.models';
 import { ExportType } from 'src/app/models/export-type.model';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramTab } from 'src/app/models/program.model';
 import { MessageStatus } from './src/app/models/message.model';
 import { StatusEnum } from './src/app/models/status.enum';
 
@@ -45,7 +45,7 @@ const ruleConfig: IRulesConfig = {
     `page.program.export-list.(${anyValueFrom(
       ExportType,
     )}).(btn-text|confirm-message)`,
-    `page.program.phases.(${anyValueFrom(ProgramPhase)}).(btnText|label)`,
+    `page.program.tab.(${anyValueFrom(ProgramTab)}).label`,
     `page.program.program-people-affected.bulk-action-conditions.(${anyValueFrom(
       BulkActionId,
     )})`,

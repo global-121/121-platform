@@ -110,6 +110,7 @@
       ngx-datatable-cell-template
     >
       <ion-button
+        data-testid="program-team-table-edit-member-button"
         [disabled]="!canManageAidworkers"
         fill="clear"
         color="dark"
@@ -144,7 +145,10 @@
                 button
                 (click)="removeFromTeam(row)"
               >
-                <ion-text color="danger">
+                <ion-text
+                  data-testid="remove-team-member"
+                  color="danger"
+                >
                   {{ 'page.program-team.remove-team-member' | translate }}
                 </ion-text>
               </ion-item>

@@ -31,11 +31,10 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await table.selectTable('Payment');
     await table.clickOnPaNumber(2);
   });
 
@@ -47,7 +46,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
     );
     await registration.openActivityOverviewTab('Payments');
     await registration.validatePaymentsTab(
-      englishTranslations.page.program.phases.payment.label,
+      englishTranslations.page.program.tab.payment.label,
       1,
       englishTranslations.entity.payment.status.success,
       userName,

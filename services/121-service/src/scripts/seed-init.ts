@@ -132,7 +132,6 @@ export class SeedInit implements InterfaceScript {
         label: 'Cash Assistance Program Manager',
         permissions: [
           PermissionEnum.ProgramUPDATE,
-          PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
@@ -220,6 +219,21 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.ActionREAD,
+        ],
+      },
+      {
+        role: DefaultUserRole.ViewWithoutPII,
+        label:
+          'Only view data, not including Personally Identifiable Information',
+        permissions: [
+          PermissionEnum.ActionREAD,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationREAD,
         ],
       },
     ];
