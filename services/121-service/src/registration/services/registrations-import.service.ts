@@ -469,9 +469,16 @@ export class RegistrationsImportService {
   ): Promise<ImportRegistrationsDto[]> {
     const { allowEmptyPhoneNumber } =
       await this.programService.findProgramOrThrow(programId);
+
+    // Checking if there is any phoneNumber values in the submitted CSV file
+    const hasPhoneNumber = csvArray.some((row) => row.phoneNumber);
+
     const validationConfig = new ValidationConfigDto({
       validateExistingReferenceId: false,
-      validatePhoneNumberEmpty: !allowEmptyPhoneNumber,
+      // if there is no phoneNumber column in the submitted CSV file, but program is configured to not allow empty phone number
+      // then we are considering, in database we already have phone numbers for registrations and we are not expecting to update phone number through mas update.
+      // So ignoring phone number validation
+      validatePhoneNumberEmpty: hasPhoneNumber && !allowEmptyPhoneNumber,
       validatePhoneNumberLookup: false,
       validateClassValidator: true,
       validateUniqueReferenceId: false,
