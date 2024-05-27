@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TransferJobProcessorsService {
-
   /* TODO: For the IntersolveVisa Re-implementation this Service needs the following dependencies from the 121 Service:
     - ProgramFinancialServiceProviderConfigurationsCustomRepository  
     - IntersolveVisaService
@@ -20,8 +19,7 @@ export class TransferJobProcessorsService {
     Also see the modules imported into the TransferJobProcessorsModule.
   */
 
-  public async processIntersolveVisaTransferJob(): Promise<void>
-  {
+  public async processIntersolveVisaTransferJob(): Promise<void> {
     /*TODO: Implement this function:
 
       Note: for easy insight into the code / simplication, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
@@ -30,7 +28,7 @@ export class TransferJobProcessorsService {
         - Call ProgramFinancialServiceProviderConfigurationsCustomRepository.findByProgramIdAndFinancialServiceProviderId()
 
       - Do the actual top-up of the Visa card, or have a new customer, wallets, card be created.
-        - Call IntersolveVisaService.doTransfer with data from the job and the retrieved brand code and cover letter code.
+        - Call IntersolveVisaService.doTransferOrIssueCard with data from the job and the retrieved brand code and cover letter code.
 
       - Prepare the correct message that needs to be sent to the PA.
         - Call this.buildMessageObject() with data returned from doTransfer.
@@ -58,12 +56,10 @@ export class TransferJobProcessorsService {
         - Call this.updateInProgressRedisSet()
 
     */
-
   }
 
   //TODO: Can we come up with a better name for this thing than a "Message Object"? What is that?
-  private async buildMessageObject(): Promise<void>
-  {
+  private async buildMessageObject(): Promise<void> {
     /*TODO: Implement this function:
       - Build a message object with the data returned from doTransfer.
       - Logic can probably be found in the to-be-removed IntersolveVisaService.buildNotificationObjectIssueDebitCard(), and .buildNotificationObjectLoadBalance()
@@ -73,13 +69,11 @@ export class TransferJobProcessorsService {
     */
   }
 
-  private async addMessageJobToQueue(): Promise<void>
-  {
+  private async addMessageJobToQueue(): Promise<void> {
     //TODO: Implement this function.
   }
 
-  private async updateLatestTransaction(): Promise<void>
-  {
+  private async updateLatestTransaction(): Promise<void> {
     /*TODO: Implement this function:
       - Get the latesttransaction.
       - Update the latest transaction with the new transaction data.
@@ -87,11 +81,9 @@ export class TransferJobProcessorsService {
     */
   }
 
-  private async updateInProgressRedisSet(): Promise<void>
-  {
+  private async updateInProgressRedisSet(): Promise<void> {
     /*TODO: Implement this function:
       - Call Redis.srem()
     */
   }
-
 }

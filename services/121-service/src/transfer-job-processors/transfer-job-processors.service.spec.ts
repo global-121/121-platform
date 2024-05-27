@@ -9,7 +9,9 @@ describe('TransferJobProcessorsService', () => {
       providers: [TransferJobProcessorsService],
     }).compile();
 
-    service = module.get<TransferJobProcessorsService>(TransferJobProcessorsService);
+    service = module.get<TransferJobProcessorsService>(
+      TransferJobProcessorsService,
+    );
   });
 
   it('should be defined', () => {

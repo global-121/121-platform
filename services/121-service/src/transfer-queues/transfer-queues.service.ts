@@ -17,9 +17,10 @@ export class TransferQueuesService {
 
   // TODO: Does this function need to be async?
   public async addIntersolveVisaTransferJobs(
-    transferJobs: CreateIntersolveVisaTransferJobDto[],
+    _transferJobs: CreateIntersolveVisaTransferJobDto[],
   ): Promise<void> {
     /* TODO: Implement function:
+    - Remove _ from input parameter
     - Add jobs to queue
     - Add Redis set thing for monitoring in progress payments.
   */

@@ -73,6 +73,7 @@ import {
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
+import { IntersolveVisaTransferDto } from './dto/intersolve-visa-transfer.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import {
   IntersolveVisaPaymentInfoEnum,
@@ -113,8 +114,11 @@ export class IntersolveVisaService
     private readonly redisClient: Redis,
   ) {}
 
-  public async doTransfer(): Promise<void> {
+  public async doTransferOrIssueCard(
+    _intersolveVisaTransferDto: IntersolveVisaTransferDto,
+  ): Promise<void> {
     /* TODO: Implement this function:
+      - Remove _ from input parameter
       - This function is called by TransferJobsProcessorsService.processIntersolveVisaTransferJob()
       - This function takes an IntersolveVisaTransferDto as input parameter and returns a DoTransferReturnDto
       - This function is an optimization/refactoring of this.processQueuedPayment()

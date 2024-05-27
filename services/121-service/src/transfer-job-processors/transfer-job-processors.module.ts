@@ -17,6 +17,6 @@ import { TransferJobProcessorsService } from './transfer-job-processors.service'
 */
 
 @Module({
-  providers: [TransferJobProcessorsService]
+  providers: [TransferJobProcessorsService],
 })
 export class TransferJobProcessorsModule {}
