@@ -5,6 +5,7 @@ import { ExportCardsDto, ExportWalletData } from '../dto/export-cards.dto';
 import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
 import { IntersolveVisaStatusMappingService } from './intersolve-visa-status-mapping.service';
 
+// TODO: REFACTOR: IMO Move into IntersolveVisaService. Make sure it does not depend on anything outside of this Module.
 @Injectable()
 export class IntersolveVisaExportService {
   constructor(

@@ -24,6 +24,7 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
+//TODO: Split into 2 Entities: IntersolveVisaParentWalletEntity IntersolveVisaChildWalletEntity
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
