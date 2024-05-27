@@ -88,6 +88,7 @@ import {
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from './intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from './services/intersolve-visa-status-mapping.service';
+import { ReissueCardDto } from './dto/reissue-card.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -121,7 +122,7 @@ export class IntersolveVisaService
       - Remove _ from input parameter
       - This function is called by TransferJobsProcessorsService.processIntersolveVisaTransferJob()
       - This function takes an IntersolveVisaTransferDto as input parameter and returns a DoTransferReturnDto
-      - This function is an optimization/refactoring of this.processQueuedPayment()
+      - This function is a re-implemetation of and optimization/refactoring of this.processQueuedPayment(), according to the new Intersolve Integration Manual.
       - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
       - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
       - 
@@ -1462,5 +1463,21 @@ export class IntersolveVisaService
 
   private isSuccessResponseStatus(status: number): boolean {
     return status >= 200 && status < 300;
+  }
+
+  public async reissueCard(_reissueCardDto: ReissueCardDto): Promise<void> {
+    /* TODO: Implement this function:
+      - Add a ResponseDto
+      - See Sequence Diagram in Miro Scratch Board.
+      - Remove _ from input parameter
+      - This function is called by RegistrationsService.reissueCard()
+      - This function takes an ReissueCardDto as input parameter
+      - This function is a re-implementation and optimization/refactoring of this.reissueWalletAndCard(), according to the new Intersolve Integration Manual.
+      - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
+      - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
+      - 
+    */
+      throw new Error('Method not implemented.');
+
   }
 }

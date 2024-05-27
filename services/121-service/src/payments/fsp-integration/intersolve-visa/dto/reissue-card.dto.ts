@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class IntersolveVisaTransferDto {
+export class ReissueCardDto {
   // Used to find the IntersolveVisaCustomer Entity related to the Registration and continue from there.
   @IsNotEmpty()
   registrationId: string;
@@ -29,10 +29,6 @@ export class IntersolveVisaTransferDto {
 
   @IsNotEmpty()
   phoneNumber: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  transactionAmount: number;
 
   @IsNotEmpty()
   brandCode: string;

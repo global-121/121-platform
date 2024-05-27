@@ -52,6 +52,7 @@ import { RegistrationViewScopedRepository } from './repositories/registration-vi
 import { InclusionScoreService } from './services/inclusion-score.service';
 import { RegistrationsImportService } from './services/registrations-import.service';
 import { RegistrationsPaginationService } from './services/registrations-pagination.service';
+import { ReissueCardDto } from '../payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -889,5 +890,18 @@ export class RegistrationsService {
     return await this.registrationScopedRepository.findOne({
       where: { programId: programId, registrationProgramId: paId },
     });
+  }
+
+  public async reissueCard(_referenceId: string): Promise<void> { 
+    /* TODO: Implement this method:
+      - Get the registration data using the referenceId, by using the PaginationRegistrationService, see how that is done for do Intersolve Visa payment (PaymentsService)
+      - Get the brand code and cover letter code for IntersolveVisa as configured for this program, also see how that is done for do Intersolve Visa payment (PaymentsService)
+      - Fill a ReissueCardDto object
+      - Call this.IntersolveVisaService.reissueCard(ReissueCardDto)
+      - This function can probably simply pass on the ResponseDto it gets back to the calling Controller function.
+      
+    */
+    // TODO: Remove _ when used.
+      const _reissueCardDto = new ReissueCardDto();
   }
 }
