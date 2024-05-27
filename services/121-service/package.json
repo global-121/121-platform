@@ -65,7 +65,7 @@
     "passport": "^0.7.0",
     "passport-azure-ad": "^4.3.5",
     "passport-jwt": "^4.0.1",
-    "pg": "^8.8.0",
+    "pg": "^8.11.5",
     "rxjs": "^7.8.1",
     "soap": "^0.33.0",
     "ts-node": "^10.9.2",
