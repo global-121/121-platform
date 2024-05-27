@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": false,
-  "phase": "registrationValidation",
   "location": "Demoland",
   "ngo": "Demo NGO",
   "titlePortal": {
@@ -37,8 +36,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "gender",
@@ -66,8 +65,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": true
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

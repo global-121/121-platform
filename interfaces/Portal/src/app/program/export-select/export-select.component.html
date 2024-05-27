@@ -1,7 +1,7 @@
 <ng-container *ngIf="options && options.length > 0">
   <ion-button
     (click)="togglePopover()"
-    [id]="thisPhase + 'exportPopoverButton'"
+    [id]="currentProgramTab + 'exportPopoverButton'"
     fill="outline"
     class="ion-margin-start"
   >
@@ -16,7 +16,7 @@
     ></ion-icon>
   </ion-button>
   <ion-popover
-    [trigger]="thisPhase + 'exportPopoverButton'"
+    [trigger]="currentProgramTab + 'exportPopoverButton'"
     side="left"
     alignment="start"
     [showBackdrop]="false"

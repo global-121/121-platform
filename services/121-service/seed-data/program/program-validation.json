@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Location A",
   "ngo": "NGO A",
   "titlePortal": {
@@ -69,8 +68,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nameLast",
@@ -87,8 +86,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "phoneNumber",
@@ -107,7 +106,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

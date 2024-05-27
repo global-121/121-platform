@@ -1,0 +1,17 @@
+:root {
+  --ion-color-fiveten-neutral-100: #f4f7fa;
+  --ion-color-fiveten-neutral-100-rgb: 244, 247, 250;
+  --ion-color-fiveten-neutral-100-contrast: #000000;
+  --ion-color-fiveten-neutral-100-contrast-rgb: 0, 0, 0;
+  --ion-color-fiveten-neutral-100-shade: #d7d9dc;
+  --ion-color-fiveten-neutral-100-tint: #f5f8fb;
+}
+
+.ion-color-fiveten-neutral-100 {
+  --ion-color-base: var(--ion-color-fiveten-neutral-100);
+  --ion-color-base-rgb: var(--ion-color-fiveten-neutral-100-rgb);
+  --ion-color-contrast: var(--ion-color-fiveten-neutral-100-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-fiveten-neutral-100-contrast-rgb);
+  --ion-color-shade: var(--ion-color-fiveten-neutral-100-shade);
+  --ion-color-tint: var(--ion-color-fiveten-neutral-100-tint);
+}

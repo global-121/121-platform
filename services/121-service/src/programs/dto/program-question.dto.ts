@@ -1,7 +1,6 @@
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -40,15 +39,10 @@ class BaseProgramQuestionDto {
   @IsOptional()
   public pattern?: string;
   @ApiProperty({
-    example: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
-    required: false,
+    example: false,
   })
   @IsOptional()
-  public phases?: ProgramPhase[];
+  public showInPeopleAffectedTable: boolean;
   @ApiProperty({ example: true })
   @IsOptional()
   public readonly editableInPortal?: boolean;

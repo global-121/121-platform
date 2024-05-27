@@ -1,12 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
-import {
-  changePhase,
-  getNotes,
-  postNote,
-} from '@121-service/test/helpers/program.helper';
+import { getNotes, postNote } from '@121-service/test/helpers/program.helper';
 import { importRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -38,13 +33,6 @@ describe('Notes', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-
-    await changePhase(
-      programId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-
     await importRegistrations(programId, [registration], accessToken);
   });
 

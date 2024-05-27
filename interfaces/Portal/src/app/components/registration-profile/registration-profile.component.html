@@ -1,4 +1,7 @@
-<ion-grid *ngIf="person && program">
+<ion-grid
+  *ngIf="person && program"
+  [class.util--page-margin-horizontal]="addHorizontalMargins"
+>
   <ion-row>
     <ion-col
       [size]="12"

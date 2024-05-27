@@ -5,7 +5,6 @@ import { RegistrationDataEntity } from '@121-service/src/registration/registrati
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { ApiProperty } from '@nestjs/swagger';
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
 import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   Check,
@@ -55,9 +54,9 @@ export class FspQuestionEntity extends Base121Entity {
   @ApiProperty({ example: false })
   public duplicateCheck: boolean;
 
-  @Column('json', { default: [] })
-  @ApiProperty({ example: [] })
-  public phases: ProgramPhase[];
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  public showInPeopleAffectedTable: boolean;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity, (fsp) => fsp.questions)
   @JoinColumn({ name: 'fspId' })

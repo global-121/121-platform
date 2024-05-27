@@ -365,9 +365,9 @@ You can also leave the body empty.`,
     description: 'Return attributes by program-id.',
   })
   @ApiQuery({
-    name: 'phase',
+    name: 'filterShowInPeopleAffectedTable',
     required: false,
-    type: 'string',
+    type: 'boolean',
   })
   @ApiQuery({
     name: 'includeProgramQuestions',
@@ -393,7 +393,22 @@ You can also leave the body empty.`,
   public async getAttributes(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query() queryParams,
+    @Query('includeCustomAttributes', new ParseBoolPipe({ optional: true }))
+    includeCustomAttributes: boolean,
+    @Query('includeProgramQuestions', new ParseBoolPipe({ optional: true }))
+    includeProgramQuestions: boolean,
+    @Query('includeFspQuestions', new ParseBoolPipe({ optional: true }))
+    includeFspQuestions: boolean,
+    @Query(
+      'includeTemplateDefaultAttributes',
+      new ParseBoolPipe({ optional: true }),
+    )
+    includeTemplateDefaultAttributes: boolean,
+    @Query(
+      'filterShowInPeopleAffectedTable',
+      new ParseBoolPipe({ optional: true }),
+    )
+    filterShowInPeopleAffectedTable: boolean,
     @Req() req: any,
   ): Promise<Attribute[]> {
     const userId = req.user.id;
@@ -409,14 +424,13 @@ You can also leave the body empty.`,
         return [];
       }
     }
-
     return await this.programAttributesService.getAttributes(
       programId,
-      queryParams.includeCustomAttributes === 'true',
-      queryParams.includeProgramQuestions === 'true',
-      queryParams.includeFspQuestions === 'true',
-      queryParams.includeTemplateDefaultAttributes === 'true',
-      queryParams.phase,
+      includeCustomAttributes,
+      includeProgramQuestions,
+      includeFspQuestions,
+      includeTemplateDefaultAttributes,
+      filterShowInPeopleAffectedTable,
     );
   }
 }
