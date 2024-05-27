@@ -77,11 +77,9 @@
     "label": "حدد ملفا"
   },
   "header": {
-    "dashboard": "لوحه القياده",
     "help": "تعليمات",
     "home": "وطن",
     "menu": "قائمة",
-    "team": "فريق",
     "users": "المستعملون"
   },
   "ngx-datatable": {
@@ -276,33 +274,6 @@
             "week": "أسبوعي",
             "weeks2": "2 أسبوعيا"
           }
-        }
-      },
-      "phases": {
-        "design": {
-          "btnText": "فتح باب التسجيل",
-          "label": "تصميم"
-        },
-        "evaluation": {
-          "btnText": "إنهاء البرنامج",
-          "label": "تقييم"
-        },
-        "inclusion": {
-          "btnText": "الانتقال إلى: الدفع",
-          "label": "ادراج"
-        },
-        "payment": {
-          "btnText": "الانتقال إلى: التقييم",
-          "label": "دفع"
-        },
-        "registrationValidation": {
-          "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج",
-          "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
-          "btnText": "الانتقال إلى: التضمين",
-          "btnText-no-validation": "الانتقال إلى: التضمين",
-          "label": "التسجيل والتحقق من الصحة",
-          "label-no-validation": "تسجيل",
-          "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
         }
       },
       "program-details": {
@@ -533,6 +504,26 @@
           "sent": "ارسال",
           "show-status": "إظهار الحالة",
           "waiting-message": "لا تزال تنتظر تحديث الحالة على هذه المعاملة. قم بتحديث الصفحة للحصول على أحدث حالة."
+        }
+      },
+      "tab": {
+        "dashboard": {
+          "label": "يراقب"
+        },
+        "overview": {
+          "label": "ملخص"
+        },
+        "payment": {
+          "label": "دفع"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "تم تعطيل التسجيلات الآن لهذا البرنامج",
+          "actionText-enabled-registrations": "تم تمكين التسجيلات الآن لهذا البرنامج",
+          "label": "الأشخاص المتأثرون والتحقق",
+          "toggleText-enable-registrations": "السماح بالتسجيلات الجديدة"
+        },
+        "team": {
+          "label": "فريق"
         }
       },
       "table-filter-row": {

@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { AppRoutes } from '../app-routes.enum';
-import { ProgramPhase } from '../models/program.model';
-import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
-import { ProgramsServiceApiService } from './programs-service-api.service';
+import { ProgramTab } from '../models/program.model';
+import { PROGRAM_TABS_ORDER } from '../program-phase-order';
 
-export class Phase {
+export class Tab {
   id: number;
-  name: ProgramPhase;
+  name: ProgramTab;
   labelKey: string;
-  btnTextKey: string;
   active?: boolean;
   disabled?: boolean;
 }
@@ -17,105 +13,32 @@ export class Phase {
 @Injectable({
   providedIn: 'root',
 })
-export class ProgramPhaseService {
-  private programId: number;
+export class ProgramTabService {
+  public activePhaseName: ProgramTab;
+  public tabs: Tab[];
 
-  public activePhaseName: ProgramPhase;
-  private validation: boolean;
-  public phases: Phase[];
-
-  constructor(
-    private programsService: ProgramsServiceApiService,
-    private router: Router,
-  ) {}
-
-  public async getPhases(programId: number): Promise<Phase[]> {
-    if (!this.phases) {
-      this.phases = this.createInitialPhases();
+  public async getProgramTabs(): Promise<Tab[]> {
+    if (!this.tabs) {
+      this.tabs = this.initializeProgramTabs();
     }
-    await this.loadProgram(programId);
-    this.updatePhase();
+    this.updateTab();
 
-    return this.phases;
+    return this.tabs;
   }
 
-  private createInitialPhases(): Phase[] {
-    return PROGRAM_PHASE_ORDER.map((phase) => ({
-      id: phase.id,
-      name: phase.name,
-      labelKey: `page.program.phases.${phase.name}.label`,
-      btnTextKey: `page.program.phases.${phase.name}.btnText`,
+  private initializeProgramTabs(): Tab[] {
+    return PROGRAM_TABS_ORDER.map((tab) => ({
+      id: tab.id,
+      name: tab.name,
+      labelKey: `page.program.tab.${tab.name}.label`,
     }));
   }
 
-  private async loadProgram(programId: number) {
-    this.programId = programId;
-    const program = await this.programsService.getProgramById(programId);
-    this.activePhaseName = program.phase;
-    this.validation = program.validation;
-  }
-
-  private updatePhase() {
-    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_PHASE_ORDER definition:
-    const activePhase = this.getPhaseByName(this.activePhaseName);
-
-    this.phases = this.phases.map((phase: Phase) => {
-      phase.active = phase.name === activePhase.name;
-      phase.disabled = phase.id > activePhase.id;
-
-      if (
-        !this.validation &&
-        phase.name === ProgramPhase.registrationValidation
-      ) {
-        phase.labelKey =
-          'page.program.phases.registrationValidation.label-no-validation';
-        phase.btnTextKey =
-          'page.program.phases.registrationValidation.btnText-no-validation';
-      }
-
-      return phase;
+  private updateTab() {
+    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_TABS_ORDER definition:
+    this.tabs = this.tabs.map((tab: Tab) => {
+      tab.active = tab.name === ProgramTab.peopleAffected;
+      return tab;
     });
-  }
-
-  public getActivePhase(): Phase {
-    return this.phases.find((phase) => phase.active);
-  }
-
-  public getPhaseByName(name: ProgramPhase): Phase {
-    return this.phases.find((phase) => phase.name === name);
-  }
-
-  public getNextPhase(): Phase | null {
-    const activePhase = this.getActivePhase();
-    const nextPhaseId = activePhase.id + 1;
-    return this.phases.find((phase) => phase.id === nextPhaseId);
-  }
-
-  public async advancePhase(): Promise<void> {
-    const nextPhase = this.getNextPhase();
-
-    await this.programsService
-      .advancePhase(this.programId, nextPhase.name)
-      .then(
-        async (result) => {
-          // When available, use the 'truth' from the back-end
-          if (result.phase) {
-            this.activePhaseName = result.phase;
-          } else {
-            // Else, fall back to previous knowledge
-            this.activePhaseName = nextPhase.name;
-          }
-          this.updatePhase();
-          const newActivePhase = this.getActivePhase();
-          this.router.navigate([
-            AppRoutes.program,
-            this.programId,
-            newActivePhase.name,
-          ]);
-        },
-        (error) => {
-          console.log(error);
-        },
-      );
   }
 }

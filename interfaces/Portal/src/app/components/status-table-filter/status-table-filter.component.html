@@ -1,6 +1,6 @@
 <ion-button
   (click)="toggleStatusPopover()"
-  [id]="thisPhase + 'statusPopoverButton'"
+  [id]="currentProgramTab + 'statusPopoverButton'"
   fill="clear"
   color="secondary"
 >
@@ -14,7 +14,7 @@
   ></ion-icon>
 </ion-button>
 <ion-popover
-  [trigger]="thisPhase + 'statusPopoverButton'"
+  [trigger]="currentProgramTab + 'statusPopoverButton'"
   [isOpen]="isStatusPopoverOpen"
   (didDismiss)="isStatusPopoverOpen = false"
   class="table-filter-popover--multiple-choice"

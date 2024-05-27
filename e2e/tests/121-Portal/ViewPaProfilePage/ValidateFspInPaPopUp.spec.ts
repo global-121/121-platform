@@ -40,11 +40,7 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.openPAsForRegistrationOcwProgram({
-      programName: NLRCProgram.titlePortal.en,
-      buttonName: englishTranslations.page.program.phases.design.btnText,
-      okButtonName: englishTranslations.common.ok,
-    });
+    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
   await test.step('Should open first uploaded PA', async () => {

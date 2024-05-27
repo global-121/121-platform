@@ -51,7 +51,7 @@ export class DisableRegistrationComponent implements OnInit {
               this.alertController,
               this.translate,
               this.translate.instant(
-                'page.program.phases.registrationValidation.actionText-enabled-registrations',
+                'page.program.tab.people-affected.actionText-enabled-registrations',
               ),
             );
           }
@@ -60,7 +60,7 @@ export class DisableRegistrationComponent implements OnInit {
               this.alertController,
               this.translate,
               this.translate.instant(
-                'page.program.phases.registrationValidation.actionText-disabled-registrations',
+                'page.program.tab.people-affected.actionText-disabled-registrations',
               ),
             );
           }

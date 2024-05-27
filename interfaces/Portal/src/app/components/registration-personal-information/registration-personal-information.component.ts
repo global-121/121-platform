@@ -8,11 +8,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
-import {
-  PaTableAttribute,
-  Program,
-  ProgramPhase,
-} from '../../models/program.model';
+import { PaTableAttribute, Program } from '../../models/program.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { EnumService } from '../../services/enum.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -85,7 +81,6 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
     this.tableAttributes = await this.programsService.getPaTableAttributes(
       this.program.id,
-      { phase: ProgramPhase.registrationValidation },
     );
 
     if (!this.tableAttributes) {
