@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28058] Update preferredLanguage successfully', async ({ page }) => {
+test('[28041] Update preferredLanguage successfully', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
