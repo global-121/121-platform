@@ -1,5 +1,6 @@
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
+import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 class RegistrationDetails {
   readonly page: Page;
@@ -195,6 +196,26 @@ class RegistrationDetails {
     await okButton.click();
   }
 
+  async openReasonForChangePopUp({
+    language,
+    saveButtonName,
+  }: {
+    language: string;
+    saveButtonName: string;
+  }) {
+    const dropdown = this.page.getByRole('radio');
+
+    await this.page.waitForLoadState('networkidle');
+    await this.preferredLanguageDropdown.click();
+
+    await dropdown.getByText(language).click();
+    await this.preferredLanguageDropdown.getByText(saveButtonName).click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change language to ${language}`);
+  }
+
   async validateDebitCardStatus(cardOverviewTitle: string, status: string) {
     await this.page.waitForLoadState('networkidle');
     const activeCard = this.debitCardStatus.filter({ hasText: status });
@@ -322,6 +343,10 @@ class RegistrationDetails {
     await this.page.getByText(addNote).click();
   }
 
+  async clickActionButton({ button }: { button: string }) {
+    await this.page.getByText(button).click();
+  }
+
   async writeNote({
     placeholder,
     note,
@@ -432,10 +457,12 @@ class RegistrationDetails {
     amount,
     saveButtonName,
     okButtonName,
+    alert = englishTranslations.common['update-success'],
   }: {
     amount: string;
     saveButtonName: string;
     okButtonName: string;
+    alert?: string;
   }) {
     const saveButton = this.page.getByRole('button', {
       name: saveButtonName,
@@ -443,6 +470,8 @@ class RegistrationDetails {
     const okButton = this.page.getByRole('button', {
       name: okButtonName,
     });
+    const alertMessage = this.page.locator('div.alert-message');
+
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
     await paymentMultipierInput.fill(amount);
@@ -459,6 +488,9 @@ class RegistrationDetails {
 
     await saveButton.waitFor({ state: 'visible' });
     await saveButton.click();
+
+    await alertMessage.waitFor({ state: 'visible' });
+    expect((await alertMessage.allTextContents())[0]).toContain(alert);
 
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();

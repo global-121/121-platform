@@ -1,5 +1,8 @@
 <!-- content -->
-<form (ngSubmit)="assignTeamMember()">
+<form
+  data-testid="add-new-team-member-pop-up"
+  (ngSubmit)="assignTeamMember()"
+>
   <ion-grid class="ion-no-margin ion-padding">
     <ion-row>
       <ion-label class="label">{{
@@ -8,6 +11,7 @@
     </ion-row>
     <ion-row class="search-wrapper">
       <ion-searchbar
+        data-testid="add-team-member-searchbar"
         [ngClass]="{ 'invalid-ion-select-searchbar': isUserAlreadyTeamMember }"
         class="team-member-searchbar ion-padding"
         name="searchQuery"
@@ -46,6 +50,7 @@
     </ion-row>
     <ion-row>
       <ion-select
+        data-testid="add-team-member-popup-roles-dropdown"
         [ngClass]="{ 'invalid-ion-select-searchbar': showRolesWarning() }"
         placeholder="{{
           'page.program-team.popup.roles-placeholder' | translate

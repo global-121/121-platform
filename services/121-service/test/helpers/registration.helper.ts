@@ -353,6 +353,14 @@ export async function seedPaidRegistrations(
   );
 }
 
+export async function seedRegistrations(
+  registrations: any[],
+  programId: number,
+): Promise<void> {
+  const accessToken = await getAccessToken();
+  await importRegistrations(programId, registrations, accessToken);
+}
+
 export async function seedIncludedRegistrations(
   registrations: any[],
   programId: number,
