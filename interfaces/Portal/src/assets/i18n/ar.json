@@ -77,7 +77,7 @@
     "label": "حدد ملفا"
   },
   "header": {
-    "help": "تعليمات",
+    "help": "التعليمات",
     "home": "وطن",
     "menu": "قائمة",
     "users": "المستعملون"
@@ -95,11 +95,6 @@
       "help-explanation-tooltip": "أحب هذا!",
       "introduction": "تأتي المعلومات الموجودة على هذه الشاشة من البيانات الموجودة في منصة 121 فقط.",
       "pageTitle": "لوحه القياده"
-    },
-    "help": {
-      "pageTitle": "تعليمات",
-      "user-manual": "دليل الاستخدام",
-      "user-manual-content": "يجب إضافته."
     },
     "home": {
       "pageTitle": "وطن"

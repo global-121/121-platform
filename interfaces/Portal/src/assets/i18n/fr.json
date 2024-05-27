@@ -77,7 +77,7 @@
     "label": "Sélectionner un fichier"
   },
   "header": {
-    "help": "Aide",
+    "help": "Manuel de l'Utilisateur",
     "home": "Domicile",
     "menu": "Menu",
     "users": "Utilisateurs"
@@ -95,11 +95,6 @@
       "help-explanation-tooltip": "Comme ça!",
       "introduction": "Les informations sur cet écran proviennent uniquement des données de la Plateforme 121.",
       "pageTitle": "Tableau de bord"
-    },
-    "help": {
-      "pageTitle": "Aide",
-      "user-manual": "Manuel",
-      "user-manual-content": "Doit être ajouté."
     },
     "home": {
       "pageTitle": "Domicile"

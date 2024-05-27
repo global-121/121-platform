@@ -38,9 +38,7 @@ const routes: Routes = [
   },
   {
     path: AppRoutes.help,
-    loadChildren: () =>
-      import('./pages/help/help.module').then((m) => m.HelpPageModule),
-    canActivate: [AuthGuard],
+    redirectTo: 'https://manual.121.global/',
   },
   {
     path: AppRoutes.users,

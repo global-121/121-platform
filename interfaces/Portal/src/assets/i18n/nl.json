@@ -78,7 +78,7 @@
     "label": "Selecteer een bestand"
   },
   "header": {
-    "help": "Help",
+    "help": "Handleiding",
     "home": "Home",
     "menu": "Menu",
     "users": "Gebruikers"
@@ -96,11 +96,6 @@
       "help-explanation-tooltip": "Zo!",
       "introduction": "De informatie op dit scherm is alleen afkomstig van gegevens in het 121 Platform.",
       "pageTitle": "Dashboard"
-    },
-    "help": {
-      "pageTitle": "Help",
-      "user-manual": "Handleiding",
-      "user-manual-content": "Moet worden toegevoegd."
     },
     "home": {
       "pageTitle": "Home"
