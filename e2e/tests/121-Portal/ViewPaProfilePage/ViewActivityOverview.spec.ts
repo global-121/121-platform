@@ -35,7 +35,6 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
   });
 

@@ -19,7 +19,6 @@ import { PhysicalCard } from '../models/physical-card.model';
 import {
   PaTableAttribute,
   Program,
-  ProgramPhase,
   ProgramStats,
 } from '../models/program.model';
 import {
@@ -143,7 +142,7 @@ export class ProgramsServiceApiService {
       includeProgramQuestions?: boolean;
       includeFspQuestions?: boolean;
       includeTemplateDefaultAttributes?: boolean;
-      phase?: ProgramPhase;
+      filterShowInPeopleAffectedTable?: boolean;
     },
   ): Promise<PaTableAttribute[]> {
     let params = new HttpParams();
@@ -152,6 +151,7 @@ export class ProgramsServiceApiService {
       includeProgramQuestions: true,
       includeFspQuestions: true,
       includeTemplateDefaultAttributes: false,
+      filterShowInPeopleAffectedTable: true,
     };
     params = params.appendAll(Object.assign(defaultOptions, options));
 
@@ -161,16 +161,6 @@ export class ProgramsServiceApiService {
       null,
       null,
       params,
-    );
-  }
-
-  advancePhase(programId: number, newPhase: string): Promise<any> {
-    return this.apiService.patch(
-      environment.url_121_service_api,
-      `/programs/${programId}`,
-      {
-        phase: newPhase,
-      },
     );
   }
 

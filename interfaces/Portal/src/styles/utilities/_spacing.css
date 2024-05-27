@@ -1,4 +1,12 @@
-/* Padding */
+/**
+ * Utilities: Spacing
+ *
+ * Classes that define paddings and margins..
+ */
+
+/**
+ * Half rem paddings
+ */
 .util--half-padding {
   padding: 0.5rem;
 }
@@ -29,7 +37,9 @@
   padding-inline-end: 0.5rem;
 }
 
-/* Margin */
+/**
+ * Half rem margins
+ */
 .util--half-margin {
   margin: 0.5rem;
 }
@@ -58,4 +68,29 @@
 .util--half-margin-horizontal {
   margin-inline-start: 0.5rem;
   margin-inline-end: 0.5rem;
+}
+
+/**
+ * Ad-hoc paddings and margins to apply to page components
+ */
+.util--page-padding-horizontal {
+  padding-inline-start: 5vw;
+  padding-inline-end: 5vw;
+}
+.util--page-padding-start {
+  padding-inline-start: 5vw;
+}
+.util--page-padding-end {
+  padding-inline-end: 5vw;
+}
+
+.util--page-margin-horizontal {
+  margin-inline-start: 5vw;
+  margin-inline-end: 5vw;
+}
+.util--page-margin-start {
+  margin-inline-start: 5vw;
+}
+.util--page-margin-end {
+  margin-inline-end: 5vw;
 }

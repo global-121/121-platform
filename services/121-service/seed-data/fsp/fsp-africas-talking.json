@@ -17,7 +17,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     }
   ]
 }

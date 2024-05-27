@@ -1,10 +1,8 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  changePhase,
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
@@ -44,20 +42,9 @@ describe('Registrations - [Scoped]', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    await changePhase(
-      OcwProgramId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
 
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
-
-    await changePhase(PvProgramId, ProgramPhase.inclusion, accessToken);
-    await changePhase(PvProgramId, ProgramPhase.payment, accessToken);
-    await changePhase(OcwProgramId, ProgramPhase.inclusion, accessToken);
-    await changePhase(OcwProgramId, ProgramPhase.payment, accessToken);
 
     await awaitChangePaStatus(
       OcwProgramId,

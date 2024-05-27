@@ -132,7 +132,6 @@ export class SeedInit implements InterfaceScript {
         label: 'Cash Assistance Program Manager',
         permissions: [
           PermissionEnum.ProgramUPDATE,
-          PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,

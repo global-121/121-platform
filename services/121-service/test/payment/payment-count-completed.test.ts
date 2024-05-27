@@ -2,11 +2,9 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  changePhase,
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
@@ -45,14 +43,6 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
-
-      await changePhase(
-        programId,
-        ProgramPhase.registrationValidation,
-        accessToken,
-      );
-      await changePhase(programId, ProgramPhase.inclusion, accessToken);
-      await changePhase(programId, ProgramPhase.payment, accessToken);
     });
 
     it('should set registration to complete', async () => {
