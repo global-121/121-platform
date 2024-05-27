@@ -75,6 +75,7 @@
       </ion-label>
       &nbsp;
       <app-status-table-filter
+        data-testid="table-filter-status"
         #statusTableFilter
         *ngIf="programId"
         [programId]="programId"
@@ -89,6 +90,7 @@
     }"
   >
     <app-export-select
+      data-testid="table-filter-data-export-button"
       *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
       [programId]="programId"
       [thisPhase]="thisPhase"

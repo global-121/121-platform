@@ -1,5 +1,6 @@
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
+import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 class RegistrationDetails {
   readonly page: Page;
@@ -25,6 +26,13 @@ class RegistrationDetails {
   readonly tileDetailsDropdownIcon: Locator;
   readonly preferredLanguageDropdown: Locator;
   readonly updateReasonTextArea: Locator;
+  readonly personAffectedEditPopUpTitle: Locator;
+  readonly personAffectedPopUpFsp: Locator;
+  readonly personAffectedPhoneNumber: Locator;
+  readonly personAffectedPaymentMultiplier: Locator;
+  readonly personAffectedLanguage: Locator;
+  readonly personAffectedCustomAttribute: Locator;
+  readonly personAffectedPopUpSaveButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -87,6 +95,27 @@ class RegistrationDetails {
       ));
     this.updateReasonTextArea = this.page.getByTestId(
       'user-data-update-textarea',
+    );
+    this.personAffectedEditPopUpTitle = this.page.getByTestId(
+      'edit-person-affected-popup-title',
+    );
+    this.personAffectedPopUpFsp = this.page.getByTestId(
+      'edit-person-affected-popup-fsp-dropdown',
+    );
+    this.personAffectedPhoneNumber = this.page.getByTestId(
+      'edit-person-affected-popup-phone-number',
+    );
+    this.personAffectedPaymentMultiplier = this.page.getByTestId(
+      'edit-person-affected-popup-payment-multiplier',
+    );
+    this.personAffectedLanguage = this.page.getByTestId(
+      'preferred-language-dropdown',
+    );
+    this.personAffectedCustomAttribute = this.page.getByTestId(
+      'update-property-item-label',
+    );
+    this.personAffectedPopUpSaveButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
     );
   }
 
@@ -165,6 +194,26 @@ class RegistrationDetails {
 
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
+  }
+
+  async openReasonForChangePopUp({
+    language,
+    saveButtonName,
+  }: {
+    language: string;
+    saveButtonName: string;
+  }) {
+    const dropdown = this.page.getByRole('radio');
+
+    await this.page.waitForLoadState('networkidle');
+    await this.preferredLanguageDropdown.click();
+
+    await dropdown.getByText(language).click();
+    await this.preferredLanguageDropdown.getByText(saveButtonName).click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change language to ${language}`);
   }
 
   async validateDebitCardStatus(cardOverviewTitle: string, status: string) {
@@ -294,6 +343,10 @@ class RegistrationDetails {
     await this.page.getByText(addNote).click();
   }
 
+  async clickActionButton({ button }: { button: string }) {
+    await this.page.getByText(button).click();
+  }
+
   async writeNote({
     placeholder,
     note,
@@ -369,6 +422,84 @@ class RegistrationDetails {
     expect(
       await historyTile.locator(this.tileInformationPlaceHolder).textContent(),
     ).toContain(messageContent);
+  }
+
+  async validatePiiPopUp({
+    paId,
+    whatsappLabel,
+    saveButtonName,
+  }: {
+    paId: string;
+    whatsappLabel: string;
+    saveButtonName: string;
+  }) {
+    const fspAttribute = await this.personAffectedCustomAttribute.filter({
+      hasText: whatsappLabel,
+    });
+    const saveButton = this.personAffectedPopUpSaveButton.filter({
+      hasText: saveButtonName,
+    });
+    expect(await this.personAffectedEditPopUpTitle.textContent()).toContain(
+      paId,
+    );
+    await expect(this.personAffectedPaymentMultiplier).toBeVisible();
+    await expect(this.personAffectedLanguage).toBeVisible();
+    await expect(this.personAffectedPhoneNumber).toBeVisible();
+    await expect(this.personAffectedPopUpFsp).toBeVisible();
+    expect(await fspAttribute.textContent()).toContain(whatsappLabel);
+
+    for (let i = 0; i < (await saveButton.count()); i++) {
+      await expect(saveButton.nth(i)).toHaveAttribute('aria-disabled', 'true');
+    }
+  }
+
+  async updatepaymentAmountMultiplier({
+    amount,
+    saveButtonName,
+    okButtonName,
+    alert = englishTranslations.common['update-success'],
+  }: {
+    amount: string;
+    saveButtonName: string;
+    okButtonName: string;
+    alert?: string;
+  }) {
+    const saveButton = this.page.getByRole('button', {
+      name: saveButtonName,
+    });
+    const okButton = this.page.getByRole('button', {
+      name: okButtonName,
+    });
+    const alertMessage = this.page.locator('div.alert-message');
+
+    const paymentMultipierInput =
+      this.personAffectedPaymentMultiplier.getByRole('textbox');
+    await paymentMultipierInput.fill(amount);
+
+    await this.page.waitForLoadState('networkidle');
+
+    await this.personAffectedPaymentMultiplier
+      .getByText(saveButtonName)
+      .click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Change multiplier to ${amount}`);
+
+    await saveButton.waitFor({ state: 'visible' });
+    await saveButton.click();
+
+    await alertMessage.waitFor({ state: 'visible' });
+    expect((await alertMessage.allTextContents())[0]).toContain(alert);
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
+  async validateAmountMultiplier({ amount }: { amount: string }) {
+    const paymentMultipierInput =
+      this.personAffectedPaymentMultiplier.getByRole('textbox');
+    expect(await paymentMultipierInput.inputValue()).toBe(amount);
   }
 }
 

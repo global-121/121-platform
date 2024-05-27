@@ -9,3 +9,6 @@ node_modules
 
 # TS Build output logs
 *.tsbuildinfo
+# Playwright screenshots
+screenshots
+.DS_Store

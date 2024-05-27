@@ -45,10 +45,10 @@ services:
     restart: on-failure
     healthcheck:
       test: curl --fail http://localhost:3001/api/v1/PhoneNumbers/123 || exit 1
-      interval: 3s
-      retries: 10
-      start_period: 30s
-      timeout: 10s
+      interval: 15s
+      retries: 15
+      start_period: 60s
+      timeout: 300s
 
   121-service:
     container_name: 121-service
@@ -74,7 +74,7 @@ services:
     restart: on-failure
     healthcheck:
       test: curl --fail http://localhost:${PORT_121_SERVICE}/api/instance || exit 1
-      interval: 3s
-      retries: 10
-      start_period: 30s
-      timeout: 10s
+      interval: 15s
+      retries: 15
+      start_period: 60s
+      timeout: 300s

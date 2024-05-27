@@ -25,6 +25,7 @@
       class="tab-bar"
     >
       <ion-segment-button
+        data-testid="users-tab-button"
         value="users"
         class="tab-bar--tab"
       >
@@ -33,6 +34,7 @@
         >
       </ion-segment-button>
       <ion-segment-button
+        data-testid="users-roles-tab-button"
         value="roles"
         class="tab-bar--tab"
       >
@@ -100,7 +102,7 @@
       *ngIf="segment === 'roles'"
       class="ion-padding"
     >
-      <app-roles-list></app-roles-list>
+      <app-roles-list data-testid="roles-list-table"></app-roles-list>
     </div>
   </section>
 </ion-content>

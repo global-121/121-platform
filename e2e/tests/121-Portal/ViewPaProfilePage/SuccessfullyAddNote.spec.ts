@@ -31,7 +31,7 @@ test('[27499] Successfully add note', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers();
+  const helpers = new Helpers(page);
 
   await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.validateNumberOfActivePrograms(2);

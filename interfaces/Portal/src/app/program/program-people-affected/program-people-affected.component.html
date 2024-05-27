@@ -4,6 +4,7 @@
   <div>
     <ion-row>
       <select
+        data-testid="program-people-affected-bulk-actions"
         name="bulkActions"
         [title]="
           'page.program.program-people-affected.choose-action' | translate
@@ -169,10 +170,12 @@
       let-row="row"
     >
       <div
+        data-testid="pa-table-cell"
         class="ion-align-items-center"
         style="display: flex"
       >
         <button
+          data-testid="information-popup-button"
           *ngIf="canViewPersonalData"
           type="button"
           data-testid="information-popup-button"
