@@ -5,7 +5,7 @@ form {
 ion-searchbar {
   border-radius: 5px;
   --box-shadow: none;
-  border: 1px solid var(--fiveten-neutral-200);
+  border: 1px solid var(--ion-color-fiveten-neutral-300);
   height: 3em;
   margin-bottom: 14px;
 }
@@ -16,11 +16,11 @@ ion-searchbar {
 }
 
 ion-select {
-  --border-color: var(--fiveten-neutral-200);
+  --border-color: var(--ion-color-fiveten-neutral-300);
   height: 3em;
   min-height: 3em;
   &::part(label) {
-    color: var(--fiveten-neutral-200);
+    color: var(--ion-color-fiveten-neutral-300);
   }
   &::part(icon) {
     width: 20px;
@@ -32,7 +32,7 @@ ion-select {
 }
 
 ion-input {
-  --border-color: var(--fiveten-neutral-200) !important;
+  --border-color: var(--ion-color-fiveten-neutral-300) !important;
   height: 3em !important;
   min-height: 3em !important;
 
@@ -56,7 +56,7 @@ ion-input {
     z-index: 3;
     border-radius: 0px 0px 5px 5px;
     --box-shadow: none;
-    border: 1px solid var(--fiveten-neutral-200);
+    border: 1px solid var(--ion-color-fiveten-neutral-300);
     width: 100%;
   }
 }

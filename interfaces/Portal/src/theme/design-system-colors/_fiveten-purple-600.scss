@@ -1,0 +1,17 @@
+:root {
+  --ion-color-fiveten-purple-600: #7355ed;
+  --ion-color-fiveten-purple-600-rgb: 115, 85, 237;
+  --ion-color-fiveten-purple-600-contrast: #ffffff;
+  --ion-color-fiveten-purple-600-contrast-rgb: 255, 255, 255;
+  --ion-color-fiveten-purple-600-shade: #654bd1;
+  --ion-color-fiveten-purple-600-tint: #8166ef;
+}
+
+.ion-color-fiveten-purple-600 {
+  --ion-color-base: var(--ion-color-fiveten-purple-600);
+  --ion-color-base-rgb: var(--ion-color-fiveten-purple-600-rgb);
+  --ion-color-contrast: var(--ion-color-fiveten-purple-600-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-fiveten-purple-600-contrast-rgb);
+  --ion-color-shade: var(--ion-color-fiveten-purple-600-shade);
+  --ion-color-tint: var(--ion-color-fiveten-purple-600-tint);
+}

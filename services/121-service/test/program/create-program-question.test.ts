@@ -1,7 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { postProgramQuestion } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
@@ -19,11 +18,7 @@ describe('Create program', () => {
     scoring: {},
     persistence: true,
     pattern: 'string',
-    phases: [
-      ProgramPhase.registrationValidation,
-      ProgramPhase.inclusion,
-      ProgramPhase.payment,
-    ],
+    showInPeopleAffectedTable: true,
     editableInPortal: true,
     export: [ExportType.allPeopleAffected, ExportType.included],
     label: {

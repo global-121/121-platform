@@ -4,7 +4,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { LocalizedString } from 'src/shared/enum/language.enums';
-import { ProgramPhase } from 'src/shared/enum/program-phase.enum';
 import {
   BeforeRemove,
   Check,
@@ -29,8 +28,8 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column('json')
   public label: LocalizedString;
 
-  @Column('json', { default: [] })
-  public phases: ProgramPhase[];
+  @Column({ default: false })
+  public showInPeopleAffectedTable: boolean;
 
   @Column({ default: false })
   public duplicateCheck: boolean;
