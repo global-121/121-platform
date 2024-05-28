@@ -724,8 +724,6 @@ export class RegistrationsController {
     /* TODO: Implement this function:
       - Add ReissueCardResponseDto, can be imported from the IntersolveVisa Module if the same DTO is used there as well? Should at least NOT be called "IntersolveBlockWalletResponseDto" as it is now.
       - Call this.registrationsService.reissueCard()
-      - Call this.sendMessageReissueCard() to build a message and add it to the queue.
-      - ... TBC....
     */
   }
 }

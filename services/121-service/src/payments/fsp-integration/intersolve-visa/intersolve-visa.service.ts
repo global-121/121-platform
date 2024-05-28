@@ -1416,6 +1416,7 @@ export class IntersolveVisaService
     await this.sendMessageReissueCard(referenceId, programId);
   }
 
+  // TODO: REFACTOR: Remove this method, the message is sent from RegistrationsService.sendMessageReissueCard()
   private async sendMessageReissueCard(
     referenceId: string,
     programId: number,
