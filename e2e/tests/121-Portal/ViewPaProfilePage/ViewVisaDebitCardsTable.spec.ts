@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -47,12 +47,12 @@ test('[27494] View Visa debit cards table', async ({ page }) => {
   await test.step('Should validate PA profile opened succesfully and Visa Card Details are presented correctly with status: Active', async () => {
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      WalletCardStatus121.Active,
+      VisaCard121Status.Active,
     );
     await physicalCard.issueNewVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      WalletCardStatus121.Blocked,
+      VisaCard121Status.Substituted,
     );
   });
 });

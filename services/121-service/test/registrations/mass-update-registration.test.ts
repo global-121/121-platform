@@ -17,21 +17,6 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    const PA1 = {
-      phoneNumber: '14155238886',
-      fullName: 'succeed',
-      addressStreet: 'Straat',
-      addressHouseNumber: '1',
-      addressHouseNumberAddition: 'A',
-    };
-    const PA2 = {
-      phoneNumber: '14155238886',
-      fullName: 'mock-fail-create-customer',
-      addressStreet: 'Straat',
-      addressHouseNumber: '1',
-      addressHouseNumberAddition: 'A',
-    };
-
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
@@ -40,35 +25,17 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       './test-registration-data/test-registrations-OCW.csv',
       accessToken,
     );
-
-    const pa1result = await searchRegistrationByReferenceId(
-      '00dc9451-1273-484c-b2e8-ae21b51a96ab',
-      programIdOcw,
-      accessToken,
-    );
-
-    const pa1response = pa1result.body.data[0];
-    assertRegistrationImport(pa1response, PA1);
-
-    const pa2result = await searchRegistrationByReferenceId(
-      '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-      programIdOcw,
-      accessToken,
-    );
-
-    const pa2response = pa2result.body.data[0];
-    assertRegistrationImport(pa2response, PA2);
   });
 
   it('Should bulk update and validate changed records', async () => {
-    const PA1Patch = {
+    const registrationDataThatWillChangePa1 = {
       phoneNumber: '14155238880',
       fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
       addressHouseNumberAddition: '',
     };
-    const PA2Patch = {
+    const registrationDataThatWillChangePa2 = {
       phoneNumber: '14155238881',
       fullName: 'updated name 2',
       addressStreet: 'newStreet2',
@@ -76,6 +43,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       addressHouseNumberAddition: 'updated',
     };
 
+    // Act
     const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
       programIdOcw,
       './test-registration-data/test-registrations-patch-OCW.csv',
@@ -83,37 +51,40 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       'Bulk update for test registrations due to data validation improvements',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
-
     await waitFor(2000);
 
-    const pa1patched = await searchRegistrationByReferenceId(
-      '00dc9451-1273-484c-b2e8-ae21b51a96ab',
-      programIdOcw,
-      accessToken,
-    );
+    const searchByReferenceIdAfterPatchPa1 =
+      await searchRegistrationByReferenceId(
+        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
 
-    const pa1patchedResponse = pa1patched.body.data[0];
-    assertRegistrationImport(pa1patchedResponse, PA1Patch);
+    const pa1AfterPatch = searchByReferenceIdAfterPatchPa1.body.data[0];
 
-    const pa2patched = await searchRegistrationByReferenceId(
-      '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-      programIdOcw,
-      accessToken,
-    );
+    const searchByReferenceIdAfterPatchPa2 =
+      await searchRegistrationByReferenceId(
+        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
 
-    const pa2patchedResponse = pa2patched.body.data[0];
-    assertRegistrationImport(pa2patchedResponse, PA2Patch);
+    const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
+
+    // Assert
+    assertRegistrationImport(pa1AfterPatch, registrationDataThatWillChangePa1);
+    assertRegistrationImport(pa2AfterPatch, registrationDataThatWillChangePa2);
   });
 
   it('Should bulk update if phoneNumber column is empty and program is configured as not allowing empty phone number', async () => {
-    const PA1Patch = {
+    const registrationDataThatWillChangePa1 = {
       phoneNumber: '14155238886',
       fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
       addressHouseNumberAddition: '',
     };
-    const PA2Patch = {
+    const registrationDataThatWillChangePa2 = {
       phoneNumber: '14155238886',
       fullName: 'updated name 2',
       addressStreet: 'newStreet2',
@@ -121,6 +92,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       addressHouseNumberAddition: 'updated',
     };
 
+    // Act
     const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
       programIdOcw,
       './test-registration-data/test-registrations-patch-OCW-without-phoneNumber-column.csv',
@@ -131,22 +103,24 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     await waitFor(2000);
 
-    const pa1patched = await searchRegistrationByReferenceId(
-      '00dc9451-1273-484c-b2e8-ae21b51a96ab',
-      programIdOcw,
-      accessToken,
-    );
+    const searchByReferenceIdAfterPatchPa1 =
+      await searchRegistrationByReferenceId(
+        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
+    const pa1AfterPatch = searchByReferenceIdAfterPatchPa1.body.data[0];
 
-    const pa1patchedResponse = pa1patched.body.data[0];
-    assertRegistrationImport(pa1patchedResponse, PA1Patch);
+    const searchByReferenceIdAfterPatchPa2 =
+      await searchRegistrationByReferenceId(
+        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
+    const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
 
-    const pa2patched = await searchRegistrationByReferenceId(
-      '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-      programIdOcw,
-      accessToken,
-    );
-
-    const pa2patchedResponse = pa2patched.body.data[0];
-    assertRegistrationImport(pa2patchedResponse, PA2Patch);
+    // Assert
+    assertRegistrationImport(pa1AfterPatch, registrationDataThatWillChangePa1);
+    assertRegistrationImport(pa2AfterPatch, registrationDataThatWillChangePa2);
   });
 });
