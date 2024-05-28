@@ -260,55 +260,53 @@ export class SeedProgramEth implements InterfaceScript {
   }
 
   private async addUserPerCustomRole(program: ProgramEntity): Promise<void> {
-    const administrationZoaUser = await this.seedHelper.getOrSaveUser({
-      username: 'administrator-zoa-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
-    await this.seedHelper.assignAidworker(
-      administrationZoaUser.id,
-      program.id,
-      ['administrator-zoa'],
-    );
-    const projectManagementUser = await this.seedHelper.getOrSaveUser({
-      username: 'project-management-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
-    await this.seedHelper.assignAidworker(
-      projectManagementUser.id,
-      program.id,
-      ['project-management'],
-    );
-    const programmeManagementUser = await this.seedHelper.getOrSaveUser({
-      username: 'programme-management-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
-    await this.seedHelper.assignAidworker(
-      programmeManagementUser.id,
-      program.id,
-      ['programme-management'],
-    );
-    const operationManagementUser = await this.seedHelper.getOrSaveUser({
-      username: 'operation-management-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
-    await this.seedHelper.assignAidworker(
-      operationManagementUser.id,
-      program.id,
-      ['manager-of-operations'],
-    );
-    const programQualiyUser = await this.seedHelper.getOrSaveUser({
-      username: 'programme-quality-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
-    await this.seedHelper.assignAidworker(programQualiyUser.id, program.id, [
-      'manager-of-programme-quality',
-    ]);
-    const projectOfficerUser = await this.seedHelper.getOrSaveUser({
-      username: 'project-officer-user@example.org',
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
-    await this.seedHelper.assignAidworker(projectOfficerUser.id, program.id, [
-      'project-officer',
-    ]);
+    const users = [
+      {
+        type: 'eth-administrationZoaUser',
+        username: 'administrator-zoa-user@example.org',
+        roles: ['administrator-zoa'],
+      },
+      {
+        type: 'eth-projectManagementUser',
+        username: 'project-management-user@example.org',
+        roles: ['project-management'],
+      },
+      {
+        type: 'eth-programmeManagementUser',
+        username: 'programme-management-user@example.org',
+        roles: ['programme-management'],
+      },
+      {
+        type: 'eth-operationManagementUser',
+        username: 'operation-management-user@example.org',
+        roles: ['manager-of-operations'],
+      },
+      {
+        type: 'eth-programQualiyUser',
+        username: 'programme-quality-user@example.org',
+        roles: ['manager-of-programme-quality'],
+      },
+      {
+        type: 'eth-projectOfficerUser',
+        username: 'project-officer-user@example.org',
+        roles: ['project-officer'],
+      },
+    ];
+
+    for (const user of users) {
+      const savedUser = await this.seedHelper.getOrSaveUser({
+        type: user.type,
+        username: user.username,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+      });
+
+      if (savedUser) {
+        await this.seedHelper.assignAidworker(
+          savedUser.id,
+          program.id,
+          user.roles,
+        );
+      }
+    }
   }
 }
