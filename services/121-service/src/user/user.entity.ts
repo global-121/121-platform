@@ -18,7 +18,7 @@ import {
 @Entity('user')
 export class UserEntity extends CascadeDeleteEntity {
   @Index({ unique: true })
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   @ApiProperty({ example: 'username' })
   public username: string | null;
 
@@ -79,7 +79,7 @@ export class UserEntity extends CascadeDeleteEntity {
     ]);
   }
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true, select: false, type: 'character varying' })
   @ApiProperty()
   public salt: string | null;
 
@@ -87,7 +87,7 @@ export class UserEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: true })
   public active: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   @ApiProperty({ example: new Date() })
   public lastLogin: Date | null;
 }

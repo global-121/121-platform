@@ -27,10 +27,10 @@ export enum IntersolveVisaCardStatus {
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
-  @Column({ unique: true, nullable: true })
+  @Column({ type: 'character varying', unique: true, nullable: true })
   public tokenCode: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'boolean', nullable: true })
   public tokenBlocked: boolean | null;
 
   @Column({ default: false })
@@ -39,20 +39,20 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ default: false })
   public debitCardCreated: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public balance: number | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public walletStatus: IntersolveVisaWalletStatus | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public cardStatus: IntersolveVisaCardStatus | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   public lastUsedDate: Date | null;
 
   // Last time we got an update from Intersolve about the wallet status or balance or when it was last used
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   public lastExternalUpdate: Date | null;
 
   // This is euro cents

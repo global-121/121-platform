@@ -42,7 +42,7 @@ export class FspQuestionEntity extends Base121Entity {
   @ApiProperty({ example: [] })
   public export: ExportType[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   @ApiProperty({ example: 'pattern' })
   public pattern: string | null;
 

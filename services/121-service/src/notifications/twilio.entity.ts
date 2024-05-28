@@ -26,7 +26,7 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column()
   public body: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public mediaUrl: string | null;
 
   @Column()
@@ -52,13 +52,13 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column({ default: MessageContentType.custom })
   public contentType: MessageContentType;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public processType: MessageProcessType | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public errorCode: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 
   @ManyToOne(

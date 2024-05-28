@@ -4,10 +4,10 @@ import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public payment: number | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public whatsappPhoneNumber: string | null;
 
   @Column()
@@ -21,7 +21,7 @@ export class IntersolveVoucherEntity extends Base121Entity {
   public amount: number | null;
 
   @Index()
-  @Column({ nullable: true })
+  @Column({ type: 'boolean', nullable: true })
   public send: boolean | null;
 
   @Index()
@@ -33,11 +33,11 @@ export class IntersolveVoucherEntity extends Base121Entity {
   @Column({ nullable: true, default: null, type: 'real' })
   public lastRequestedBalance: number | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, type: 'timestamp' })
   public updatedLastRequestedBalance: Date | null;
 
   @Index()
-  @Column({ nullable: true, default: 0 })
+  @Column({ nullable: true, default: 0, type: 'integer' })
   public reminderCount: number | null;
 
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.voucher)

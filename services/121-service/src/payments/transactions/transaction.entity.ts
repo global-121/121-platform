@@ -26,7 +26,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Index()
   public status: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)

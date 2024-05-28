@@ -65,7 +65,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: [] })
   public export: ExportType[];
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   @ApiProperty({ example: 'pattern' })
   public pattern: string | null;
 
