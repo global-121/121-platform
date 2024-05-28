@@ -14,7 +14,7 @@
       "export": ["all-people-affected", "included"],
       "answerType": "text",
       "pattern": ".+",
-      "phases": []
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "addressHouseNumber",
@@ -23,7 +23,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "numeric",
-      "phases": []
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "addressHouseNumberAddition",
@@ -32,7 +32,7 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "text",
-      "phases": []
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "addressPostalCode",
@@ -42,7 +42,7 @@
       "export": ["all-people-affected", "included"],
       "answerType": "text",
       "pattern": ".+",
-      "phases": []
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "addressCity",
@@ -52,7 +52,7 @@
       "export": ["all-people-affected", "included"],
       "answerType": "text",
       "pattern": ".+",
-      "phases": []
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "whatsappPhoneNumber",
@@ -67,7 +67,7 @@
       "answerType": "tel",
       "options": null,
       "duplicateCheck": true,
-      "phases": []
+      "showInPeopleAffectedTable": false
     }
   ]
 }

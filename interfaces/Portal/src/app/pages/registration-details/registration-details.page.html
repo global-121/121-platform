@@ -1,8 +1,11 @@
 <app-header [title]="'registration-details.pageTitle' | translate"></app-header>
+<div class="ion-margin-vertical util--page-margin-horizontal">
+  <app-program-tabs-navigation
+    [programId]="programId"
+  ></app-program-tabs-navigation>
+</div>
 
-<app-program-navigation></app-program-navigation>
-
-<ion-content class="ion-padding">
+<ion-content class="ion-no-padding ion-no-margin">
   <ion-spinner
     color="primary"
     *ngIf="loading"
@@ -17,6 +20,7 @@
       *ngIf="person"
       [person]="person"
       [program]="program"
+      [addHorizontalMargins]="true"
     ></app-registration-profile>
   </ng-container>
 </ion-content>

@@ -17,7 +17,8 @@
       },
       "export": ["all-people-affected", "included"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "healthArea",
@@ -28,7 +29,8 @@
       "answerType": "text",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included"]
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     }
   ]
 }

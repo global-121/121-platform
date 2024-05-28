@@ -1,0 +1,21 @@
+<span
+  *ngFor="let programTab of programTabs"
+  class="navigation-button"
+>
+  <ion-button
+    [disabled]="programTab.disabled"
+    [routerLink]="['/', AppRoutes.program, programId, programTab.name]"
+    routerLinkActive
+    #rlaPhase="routerLinkActive"
+    [color]="rlaPhase.isActive ? 'primary' : 'secondary'"
+    fill="clear"
+    size="small"
+  >
+    {{ programTab.labelKey | translate }}
+  </ion-button>
+
+  <span
+    *ngIf="rlaPhase.isActive"
+    class="navigation-button--indicator"
+  ></span>
+</span>

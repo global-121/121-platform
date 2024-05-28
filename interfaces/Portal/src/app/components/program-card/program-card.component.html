@@ -29,7 +29,7 @@
 
 <ion-card
   *ngIf="program"
-  [routerLink]="['/program', program.id, program.phase]"
+  [routerLink]="['/program', program.id, AppRoutes.peopleAffected]"
 >
   <ion-card-header>
     <ion-card-title color="primary">
@@ -119,15 +119,5 @@
         </ion-row>
       </ion-grid>
     </div>
-  </ion-card-content>
-  <ion-card-content>
-    <ion-text>
-      <small>
-        <strong>
-          {{ 'page.programs-list.card.status' | translate }}
-          {{ phase?.labelKey | translate }}
-        </strong>
-      </small>
-    </ion-text>
   </ion-card-content>
 </ion-card>

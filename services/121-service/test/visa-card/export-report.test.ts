@@ -3,10 +3,8 @@ import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/i
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  changePhase,
   doPayment,
   exportList,
 } from '@121-service/test/helpers/program.helper';
@@ -47,14 +45,6 @@ describe('Export Visa debit card report', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     await waitFor(2_000);
-
-    await changePhase(
-      programId,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await changePhase(programId, ProgramPhase.inclusion, accessToken);
-    await changePhase(programId, ProgramPhase.payment, accessToken);
   });
 
   it('should succesfully generate a report of all Visa Debit cards', async () => {

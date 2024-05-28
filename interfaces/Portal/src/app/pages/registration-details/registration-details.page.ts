@@ -10,9 +10,10 @@ import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
-import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
+
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
+import { ProgramTabsNavigationComponent } from '../../program/program-tabs-navigation/program-tabs-navigation.component';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
 
@@ -24,15 +25,15 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     IonicModule,
     HeaderComponent,
     TranslateModule,
-    ProgramNavigationComponent,
     RegistrationProfileComponent,
+    ProgramTabsNavigationComponent,
   ],
   selector: 'app-registration-details',
   templateUrl: './registration-details.page.html',
   styleUrls: ['./registration-details.page.scss'],
 })
 export class RegistrationDetailsPage implements OnInit, OnDestroy {
-  private programId = this.route.snapshot.params.id;
+  public programId = this.route.snapshot.params.id;
   private paId = this.route.snapshot.params.paId;
 
   private program: Program;

@@ -1,0 +1,24 @@
+<app-header
+  [title]="'page.program.tab.overview.label' | translate"
+></app-header>
+<div class="ion-margin-vertical util--page-margin-horizontal">
+  <app-program-tabs-navigation
+    [programId]="programId"
+  ></app-program-tabs-navigation>
+</div>
+
+<ion-content
+  data-testid="design-table-element"
+  class="ion-no-margin ion-no-padding"
+>
+  <div style="max-width: 33em; margin: auto">
+    <h2>{{ 'page.program.program-details.section-title' | translate }}</h2>
+
+    <br /><br />
+
+    <app-metrics
+      [isCollapsed]="false"
+      [programId]="programId"
+    ></app-metrics>
+  </div>
+</ion-content>

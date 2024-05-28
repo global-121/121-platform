@@ -196,6 +196,12 @@ class RegistrationDetails {
     await okButton.click();
   }
 
+  async validatePreferredLanguage({ language }: { language: string }) {
+    const dropdown = this.preferredLanguageDropdown.locator('#select-label');
+    await this.page.waitForLoadState('networkidle');
+    expect(await dropdown.innerText()).toContain(language);
+  }
+
   async openReasonForChangePopUp({
     language,
     saveButtonName,

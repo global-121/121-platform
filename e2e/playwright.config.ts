@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+// import { AzureReporterOptions } from '@alex_neo/playwright-azure-reporter/dist/playwright-azure-reporter';
 import dotenv from 'dotenv';
 import path from 'path';
 

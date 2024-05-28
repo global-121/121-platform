@@ -1,10 +1,8 @@
 import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
-  changePhase,
   doPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -54,17 +52,7 @@ describe('Load PA table', () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
 
-      await changePhase(
-        programIdOCW,
-        ProgramPhase.registrationValidation,
-        accessToken,
-      );
       await importRegistrations(programIdOCW, registrations, accessToken);
-      await changePhase(
-        programIdPV,
-        ProgramPhase.registrationValidation,
-        accessToken,
-      );
       await importRegistrations(programIdPV, [registrationPV6], accessToken);
 
       await awaitChangePaStatus(

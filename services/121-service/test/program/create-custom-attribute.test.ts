@@ -18,7 +18,7 @@ describe('Create program custom attributes', () => {
       en: 'District',
       fr: 'Département',
     },
-    phases: ['registrationValidation', 'inclusion', 'payment'],
+    showInPeopleAffectedTable: true,
     duplicateCheck: true,
   };
 

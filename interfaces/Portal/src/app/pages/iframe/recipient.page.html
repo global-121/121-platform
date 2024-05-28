@@ -21,10 +21,7 @@
         *ngFor="let recipient of recipients"
         [value]="recipient.id"
       >
-        <ion-item
-          slot="header"
-          color="white"
-        >
+        <ion-item slot="header">
           <ion-label color="secondary">
             {{ recipient.programTitle }} -
             <strong>{{ recipient.name }}</strong>

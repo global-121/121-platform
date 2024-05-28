@@ -22,7 +22,6 @@ export class Program {
   aidworkerAssignments?: any[];
   created: string;
   updated: string;
-  phase: ProgramPhase;
   validation: boolean;
   published: boolean;
   programCustomAttributes: ProgramCustomAttribute[];
@@ -37,7 +36,6 @@ export class Program {
   filterableAttributes: FilterableAttributeGroup[];
   allowEmptyPhoneNumber: boolean;
   monitoringDashboardUrl?: string;
-  evaluationDashboardUrl?: string;
   budget?: number;
 }
 
@@ -67,12 +65,12 @@ export enum DistributionFrequency {
   month = 'month',
 }
 
-export enum ProgramPhase {
-  design = 'design',
-  registrationValidation = 'registrationValidation',
-  inclusion = 'inclusion',
+export enum ProgramTab {
+  overview = 'overview',
+  team = 'team',
+  peopleAffected = 'people-affected',
   payment = 'payment',
-  evaluation = 'evaluation',
+  monitoring = 'dashboard',
 }
 
 export class AidWorker {
@@ -86,12 +84,9 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
-  phases: ProgramPhase[];
 }
 
-export class PaTableAttribute extends Attribute {
-  phases?: ProgramPhase[];
-}
+export class PaTableAttribute extends Attribute {}
 
 export class ProgramQuestion {
   id: number;
@@ -102,7 +97,6 @@ export class ProgramQuestion {
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];
   duplicateCheck: boolean;
-  phases: ProgramPhase[];
 }
 
 export class ProgramQuestionOption {

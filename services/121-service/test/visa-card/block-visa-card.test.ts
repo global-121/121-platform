@@ -8,12 +8,8 @@ import {
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import {
-  changePhase,
-  doPayment,
-} from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   blockVisaCard,
@@ -35,14 +31,6 @@ describe('Block visa debit card', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     await waitFor(3_000);
-
-    await changePhase(
-      programIdVisa,
-      ProgramPhase.registrationValidation,
-      accessToken,
-    );
-    await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
-    await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
   });
 
   it('should succesfully block a Visa Debit card', async () => {
