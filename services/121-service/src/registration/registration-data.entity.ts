@@ -4,7 +4,15 @@ import { FspQuestionEntity } from '@121-service/src/financial-service-providers/
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+  Unique,
+} from 'typeorm';
 
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',
@@ -24,7 +32,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, Unique } from 'typeorm';
 export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne((_type) => RegistrationEntity, (registration) => registration.data)
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Index()
   @Column()
   public registrationId: number;
@@ -43,7 +51,7 @@ export class RegistrationDataEntity extends Base121Entity {
     (fspQuestion) => fspQuestion.registrationData,
   )
   @JoinColumn({ name: 'fspQuestionId' })
-  public fspQuestion: FspQuestionEntity;
+  public fspQuestion: Relation<FspQuestionEntity>;
   @Column({ type: 'integer', nullable: true })
   public fspQuestionId: number | null;
 

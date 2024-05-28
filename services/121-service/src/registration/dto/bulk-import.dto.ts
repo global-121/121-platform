@@ -2,6 +2,7 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { ImportFspReconciliationArrayDto } from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
@@ -50,7 +51,7 @@ export class BulkImportDto {
   })
   @IsEnum(LanguageEnum)
   @IsOptional()
-  public preferredLanguage?: LanguageEnum;
+  public preferredLanguage?: WrapperType<LanguageEnum>;
 
   @ApiProperty({ example: 'utrecht.houten' })
   @IsString()

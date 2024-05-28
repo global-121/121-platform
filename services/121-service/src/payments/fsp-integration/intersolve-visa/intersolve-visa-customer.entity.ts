@@ -9,6 +9,7 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
+  Relation,
 } from 'typeorm';
 
 @Entity('intersolve_visa_customer')
@@ -19,7 +20,7 @@ export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
 
   @OneToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
 
@@ -27,7 +28,7 @@ export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
     (_type) => IntersolveVisaWalletEntity,
     (visaWallets) => visaWallets.intersolveVisaCustomer,
   )
-  public visaWallets: IntersolveVisaWalletEntity[];
+  public visaWallets: Relation<IntersolveVisaWalletEntity[]>;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
