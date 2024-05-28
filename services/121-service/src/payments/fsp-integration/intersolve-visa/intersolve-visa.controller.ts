@@ -137,6 +137,7 @@ export class IntersolveVisaController {
     );
   }
 
+  // TODO: REFACTOR: Remove this endpoint when replaced by POST /programs/:programId/registrations/:referenceid/financial-service-providers/intersolve-visa/child-wallets in the RegistrationsController
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary:
@@ -149,7 +150,6 @@ export class IntersolveVisaController {
     description:
       'Wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  // TODO: REFACTOR: PUT /api/programs/{programId}/financial-service-providers/intersolve-visa/wallets/:tokencode
   @Put(
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId/wallets',
   )

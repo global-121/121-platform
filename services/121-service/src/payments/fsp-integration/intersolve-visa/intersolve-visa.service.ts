@@ -87,6 +87,10 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
+//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
+import { IntersolveVisaTransferDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-transfer.dto';
+import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -112,6 +116,31 @@ export class IntersolveVisaService
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
+
+  public async doTransferOrIssueCard(
+    _intersolveVisaTransferDto: IntersolveVisaTransferDto,
+  ): Promise<void> {
+    /* TODO: Implement this function:
+      - Remove _ from input parameter
+      - This function is called by TransferJobsProcessorsService.processIntersolveVisaTransferJob()
+      - This function takes an IntersolveVisaTransferDto as input parameter and returns a DoTransferReturnDto
+      - This function is a re-implemetation of and optimization/refactoring of this.processQueuedPayment(), according to the new Intersolve Integration Manual.
+      - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
+      - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
+      -
+    */
+    throw new Error('Method not implemented.');
+  }
+
+  private async createParentWallet(): Promise<void> {
+    //TODO: Implement this function.
+    throw new Error('Method not implemented.');
+  }
+
+  private async createChildWallet(): Promise<void> {
+    //TODO: Implement this function.
+    throw new Error('Method not implemented.');
+  }
 
   public async getTransactionInfoByCustomer(
     visaCustomer: IntersolveVisaCustomerEntity,
@@ -214,6 +243,7 @@ export class IntersolveVisaService
     return reversed;
   }
 
+  // TODO: Remove this function, remaining logic (only add to queue stuff) goes into TransferQueuesService.addIntersolveVisaTransferJobs
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
     programId: number,
@@ -287,6 +317,7 @@ export class IntersolveVisaService
     );
   }
 
+  // TODO: Remove this function (logic moves to PaymentsService.createIntersolveVisaTransferJobs and/or related private funcions in PaymentsService)
   private async getPaPaymentDetails(
     paymentList: PaPaymentDataDto[],
   ): Promise<PaymentDetailsDto[]> {
@@ -309,6 +340,7 @@ export class IntersolveVisaService
     return result;
   }
 
+  // TODO: Remove this function (logic moves to PaymentsService.createIntersolveVisaTransferJobs and/or related private funcions in PaymentsService)
   private async getRelationOptionsForVisa(
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
@@ -1387,6 +1419,7 @@ export class IntersolveVisaService
     await this.sendMessageReissueCard(referenceId, programId);
   }
 
+  // TODO: REFACTOR: Remove this method, the message is sent from RegistrationsService.sendMessageReissueCard()
   private async sendMessageReissueCard(
     referenceId: string,
     programId: number,
@@ -1434,5 +1467,20 @@ export class IntersolveVisaService
 
   private isSuccessResponseStatus(status: number): boolean {
     return status >= 200 && status < 300;
+  }
+
+  public async reissueCard(_reissueCardDto: ReissueCardDto): Promise<void> {
+    /* TODO: Implement this function:
+      - Add a ResponseDto
+      - See Sequence Diagram in Miro Scratch Board.
+      - Remove _ from input parameter
+      - This function is called by RegistrationsService.reissueCard()
+      - This function takes an ReissueCardDto as input parameter
+      - This function is a re-implementation and optimization/refactoring of this.reissueWalletAndCard(), according to the new Intersolve Integration Manual.
+      - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
+      - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
+      -
+    */
+    throw new Error('Method not implemented.');
   }
 }
