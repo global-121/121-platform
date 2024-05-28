@@ -55,7 +55,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -698,5 +698,30 @@ export class RegistrationsController {
       params.programId,
       params.paId,
     );
+  }
+
+  // Re-issue card: creates a new IntersolveVisa Child Wallet and Card for a Registration, and makes the old ones unusable. This endpoint needs data from Registration, which is why it is not in the IntersolveVisaController.
+  // TODO: REFACTOR: Can we think of a better place for this endpoint? Or conceptually a better way to deal with re-issuing cards?
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] Re-issue card: replace existing child wallet and card with new ones. The newly created wallet will not be blocked.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Child wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceid/financial-service-providers/intersolve-visa/child-wallets',
+  )
+  public async reissueCard(): Promise<void> {
+    /* TODO: Implement this function:
+      - Add ReissueCardResponseDto, can be imported from the IntersolveVisa Module if the same DTO is used there as well? Should at least NOT be called "IntersolveBlockWalletResponseDto" as it is now.
+      - Call this.registrationsService.reissueCard()
+    */
   }
 }
