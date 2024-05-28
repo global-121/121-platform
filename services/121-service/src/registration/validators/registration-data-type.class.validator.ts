@@ -8,12 +8,12 @@ import {
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
-  registerDecorator,
-  validate,
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  registerDecorator,
+  validate,
 } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 

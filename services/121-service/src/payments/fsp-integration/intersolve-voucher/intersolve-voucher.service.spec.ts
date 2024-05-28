@@ -3,12 +3,12 @@ import {
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import {
   ProcessNamePayment,
   QueueNamePayment,
-} from '@121-service/src/payments/enum/queue.names.enum';
-import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
-import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 import { TestBed } from '@automock/jest';

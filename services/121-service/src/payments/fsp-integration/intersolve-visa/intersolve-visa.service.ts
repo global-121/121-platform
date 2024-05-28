@@ -1,1161 +1,543 @@
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import {
-  PaTransactionResultDto,
-  TransactionNotificationObject,
-} from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/payments/enum/queue.names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import {
-  BlockReasonEnum,
-  IntersolveBlockWalletDto,
-  IntersolveBlockWalletResponseDto,
-  UnblockReasonEnum,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
-import {
-  CreateCustomerResponseExtensionDto,
-  IntersolveCreateCustomerResponseBodyDto,
-  IntersolveLinkWalletCustomerResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
-import {
-  IntersolveAddressDto,
-  IntersolveCreateCustomerDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
-import {
-  IntersolveCreateDebitCardDto,
-  IntersolveCreateDebitCardResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
-import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
-import { IntersolveCreateWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet.dto';
-import {
-  GetWalletDetailsResponseDto,
-  GetWalletsResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
-import {
-  IntersolveGetTransactionsResponseDataDto,
-  TransactionInfoVisa,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
-import { IntersolveLoadDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load.dto';
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
-import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
-import {
-  IntersolveVisaPaymentInfoEnum,
-  IntersolveVisaPaymentInfoEnumBackupName,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-payment-info.enum';
-import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
-import {
-  IntersolveVisaWalletEntity,
-  IntersolveVisaWalletStatus,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
+import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
+import { CreatePhysicalCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-physical-card-params.interface';
+import { DoTransferOrIssueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-params.interface';
+import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
+import { GetPhysicalCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-return-type.interface';
+import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
+import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
+import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
+import { ReissueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/reissue-card-params.interface';
+import { SendUpdatedContactInformationParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
-import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
-import {
-  getRedisSetName,
-  REDIS_CLIENT,
-} from '@121-service/src/payments/redis-client';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
-import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
-import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
-import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
-import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import Redis from 'ioredis';
-import { Equal, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { IntersolveVisaDtoMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-dto.mapper';
+import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
+import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
+import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
+
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
 @Injectable()
 export class IntersolveVisaService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
-
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
-    private readonly transactionsService: TransactionsService,
-    private readonly registrationDataService: RegistrationDataService,
-    private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
-    private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
-    private readonly queueMessageService: QueueMessageService,
-    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
-    private readonly paymentIntersolveVisaQueue: Queue,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
-    private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
-    @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
-    private intersolveVisaWalletScopedRepo: ScopedRepository<IntersolveVisaWalletEntity>,
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: Redis,
+    private readonly intersolveVisaCustomerScopedRepository: IntersolveVisaCustomerScopedRepository,
+    private readonly intersolveVisaParentWalletScopedRepository: IntersolveVisaParentWalletScopedRepository,
+    private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
 
-  public async getTransactionInfoByCustomer(
-    visaCustomer: IntersolveVisaCustomerEntity,
-  ) {
-    const dateFrom = this.getTwoMonthAgo();
-
-    return Promise.all(
-      visaCustomer.visaWallets.map(async (wallet) => {
-        const walletTransactionInfo = await this.getTransactionInfoByWallet(
-          wallet.tokenCode,
-          dateFrom,
-        );
-        return {
-          tokenCode: wallet.tokenCode,
-          transactionInfo: walletTransactionInfo,
-        };
-      }),
-    );
-  }
-
-  public async getTransactionInfoByWallet(
-    tokenCode: string | null,
-    dateFrom?: Date,
-  ): Promise<TransactionInfoVisa> {
-    const transactionDetails =
-      await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
-    if (!transactionDetails.data?.success) {
-      const error =
-        transactionDetails.data?.errors ||
-        'Intersolve-visa: Get transactions API-call failed';
-      console.error(error);
-      throw new HttpException(
-        {
-          errors: error,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
-      );
-    }
-    const walletTransactions = transactionDetails.data.data;
-    // Filter out all transactions that are not reservations
-    // reservation is the type that is used for payments in a shop
-    let walletReserveTransactions: IntersolveGetTransactionsResponseDataDto[] =
-      [];
-    let expiredReserveTransactions: IntersolveGetTransactionsResponseDataDto[] =
-      [];
-    if (walletTransactions && walletTransactions.length > 0) {
-      walletReserveTransactions = walletTransactions.filter(
-        (t) => t.type === 'RESERVATION',
-      );
-      expiredReserveTransactions = walletTransactions.filter(
-        (t) => t.type === 'RESERVATION_EXPIRED',
-      );
-    }
-    return {
-      lastUsedDate: this.getLastTransactionDate(walletReserveTransactions),
-      spentThisMonth: this.calculateSpentThisMonth(
-        walletReserveTransactions,
-        expiredReserveTransactions,
-      ),
-    };
-  }
-
-  private getLastTransactionDate(
-    walletTransactions: IntersolveGetTransactionsResponseDataDto[],
-  ): null | Date {
-    if (walletTransactions && walletTransactions.length > 0) {
-      const sortedByDate = walletTransactions.sort((a, b) =>
-        a.createdAt < b.createdAt ? 1 : -1,
-      );
-      if (sortedByDate.length > 0) {
-        const dateString = sortedByDate[0].createdAt;
-        return new Date(dateString);
-      }
-    }
-    return null;
-  }
-
-  private calculateSpentThisMonth(
-    walletTransactions: IntersolveGetTransactionsResponseDataDto[],
-    expiredReserveTransactions: IntersolveGetTransactionsResponseDataDto[],
-  ): number {
-    const now = new Date();
-    const thisMonth = now.getMonth();
-    const thisYear = now.getFullYear();
-    let total = 0;
-    const originalTransactionIdsOfExpiredReservations =
-      expiredReserveTransactions.map((r) => r.originalTransactionId);
-    for (const transaction of walletTransactions) {
-      const transactionDate = new Date(transaction.createdAt);
-      if (
-        transactionDate.getMonth() === thisMonth &&
-        transactionDate.getFullYear() === thisYear &&
-        !originalTransactionIdsOfExpiredReservations.includes(transaction.id) // check that this reservation did not later expire
-      ) {
-        total += transaction.quantity.value;
-      }
-    }
-    // We get back negative numbers which needs to be reversed to a positive number
-    const reversed = -total;
-    return reversed;
-  }
-
+  // TODO: Remove this function when refactored out of all FSP integrations.
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
   public async sendPayment(
-    paymentList: PaPaymentDataDto[],
-    programId: number,
-    paymentNr: number,
+    _paPaymentArray: PaPaymentDataDto[],
+    _programId: number,
+    _payment: number,
   ): Promise<void> {
-    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
-
-    for (const paymentDetails of paymentDetailsArray) {
-      paymentDetails.programId = programId;
-      paymentDetails.paymentNr = paymentNr;
-      paymentDetails.bulkSize = paymentList[0].bulkSize;
-      paymentDetails.programId = programId;
-      paymentDetails.userId = paymentList[0].userId;
-      const job = await this.paymentIntersolveVisaQueue.add(
-        ProcessNamePayment.sendPayment,
-        paymentDetails,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    throw new Error('Method should not be called anymore.');
   }
 
-  private async getTransactionAmountPerRegistration(
-    maxAmount: number,
-    wallet: IntersolveVisaWalletEntity,
-    customer: IntersolveVisaCustomerEntity,
-  ): Promise<number> {
-    const updatedWallet = await this.getUpdateWalletDetails(
-      wallet,
-      customer,
-      true,
-    );
-    const calculatedAmount = updatedWallet.calculateTopUpAmount();
-    if (calculatedAmount > 0) {
-      return Math.min(calculatedAmount, maxAmount);
-    } else {
-      return 0;
-    }
-  }
-
-  public async getQueueProgress(programId?: number): Promise<number> {
-    if (programId) {
-      // Get the count of job IDs in the Redis set for the program
-      const count = await this.redisClient.scard(getRedisSetName(programId));
-      return count;
-    } else {
-      // If no programId is provided, use Bull's method to get the total delayed count
-      // This requires an instance of the Bull queue
-      const delayedCount =
-        await this.paymentIntersolveVisaQueue.getDelayedCount();
-      return delayedCount;
-    }
-  }
-
-  public async processQueuedPayment(
-    paymentDetailsData: PaymentDetailsDto,
-  ): Promise<void> {
-    const paymentRequestResultPerPa = await this.sendPaymentToPa(
-      paymentDetailsData,
-      paymentDetailsData.paymentNr,
-      paymentDetailsData.transactionAmount,
-      paymentDetailsData.bulkSize,
-    );
-    const transactionRelationDetails = {
-      programId: paymentDetailsData.programId,
-      paymentNr: paymentDetailsData.paymentNr,
-      userId: paymentDetailsData.userId,
-    };
-
-    await this.transactionsService.storeTransactionUpdateStatus(
-      paymentRequestResultPerPa,
-      transactionRelationDetails,
-    );
-  }
-
-  private async getPaPaymentDetails(
-    paymentList: PaPaymentDataDto[],
-  ): Promise<PaymentDetailsDto[]> {
-    const referenceIds = paymentList.map((pa) => pa.referenceId);
-    const relationOptions = await this.getRelationOptionsForVisa(
-      referenceIds[0],
-    );
-    const visaAddressInfoDtoArray =
-      await this.registrationDataQueryService.getPaDetails(
-        referenceIds,
-        relationOptions,
-      );
-
-    // Maps the registration data back to the correct amounts using referenceID
-    const result = visaAddressInfoDtoArray.map((v) => ({
-      ...v,
-      ...paymentList.find((s) => s.referenceId === v.referenceId),
-    }));
-
-    return result;
-  }
-
-  private async getRelationOptionsForVisa(
-    referenceId: string,
-  ): Promise<RegistrationDataOptions[]> {
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
+  // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
+  /**
+   * This function handles the process of transferring money to a person using intersolve visa.
+   * - It first checks if the customer exists, if not it creates a new customer.
+   * - Then it checks if a parent wallet exists, if not it creates a new parent wallet.
+   * - Then it checks if the parent wallet is linked to the customer, if not it links the parent wallet to the customer.
+   * - Then it checks if at least one child wallet exists, if not it creates a new child wallet.
+   * - Then it checks if the child wallet is linked to the parent wallet, if not it links the child wallet to the parent wallet.
+   * - Then it checks if a debit card is created, if not it creates a new debit card.
+   * - Finally, it transfers money from the client's funding token to the parent token.
+   *
+   * @param {DoTransferOrIssueCardParams} input - The parameters for the transfer or card issuance.
+   * @returns {Promise<DoTransferOrIssueCardReturnType>} The result of the operation, including whether a card was created, whether a transfer was done, and the amount transferred in major units.
+   */
+  public async doTransferOrIssueCard(
+    input: DoTransferOrIssueCardParams,
+  ): Promise<DoTransferOrIssueCardReturnType> {
+    const intersolveVisaCustomer = await this.getCustomerOrCreate({
+      registrationId: input.registrationId,
+      createCustomerReference: input.createCustomerReference,
+      name: input.name,
+      contactInformation: input.contactInformation,
     });
-    const registrationDataOptions: RegistrationDataOptions[] = [];
-    for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
-      let relation;
-      try {
-        relation = await this.registrationDataService.getRelationForName(
-          registration,
-          attr,
-        );
-      } catch (error) {
-        // If a program does not have lastName: use fullName instead
-        if (
-          error.name === ErrorEnum.RegistrationDataError &&
-          attr === IntersolveVisaPaymentInfoEnum.lastName
-        ) {
-          relation = await this.registrationDataService.getRelationForName(
-            registration,
-            IntersolveVisaPaymentInfoEnumBackupName.fullName,
-          );
-        } else if (
-          // If a program does not have firstName: ignore and continue
-          error.name === ErrorEnum.RegistrationDataError &&
-          attr === IntersolveVisaPaymentInfoEnum.firstName
-        ) {
-          continue;
-        } else {
-          throw error;
-        }
-      }
-      const registrationDataOption = {
-        name: attr,
-        relation: relation,
-      };
-      registrationDataOptions.push(registrationDataOption);
-    }
-    return registrationDataOptions;
-  }
 
-  public async sendPaymentToPa(
-    paymentDetails: PaymentDetailsDto,
-    paymentNr: number,
-    calculatedAmount: number,
-    bulkSizeCompletePayment: number,
-  ): Promise<PaTransactionResultDto> {
-    const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.referenceId = paymentDetails.referenceId;
-    paTransactionResult.date = new Date();
-    paTransactionResult.calculatedAmount = calculatedAmount;
-    paTransactionResult.fspName = FinancialServiceProviderName.intersolveVisa;
-
-    const transactionNotifications: TransactionNotificationObject[] = [];
-
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(paymentDetails.referenceId) },
+    const intersolveVisaParentWallet = await this.getParentWalletOrCreate({
+      intersolveVisaCustomer: intersolveVisaCustomer,
+      brandCode: input.brandCode,
     });
-    let visaCustomer = await this.getCustomerEntity(registration.id);
 
-    // Check if customer exists
-    if (!visaCustomer) {
-      // If not, create customer
-      const createCustomerResult = await this.createCustomer(
-        registration.referenceId,
-        paymentDetails,
-      );
+    await this.linkParentWalletToCustomerIfUnlinked(
+      intersolveVisaCustomer,
+      intersolveVisaParentWallet,
+    );
 
-      // if error, return error
-      if (!createCustomerResult.data?.success) {
-        paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = `CREATE CUSTOMER ERROR: ${
-          this.intersolveErrorToMessage(createCustomerResult.data?.errors) ||
-          `${createCustomerResult.status} - ${createCustomerResult.statusText}`
-        }`;
-        return paTransactionResult;
-      }
+    const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne(
+      intersolveVisaParentWallet,
+      input.brandCode,
+    );
 
-      // if success, store customer
-      visaCustomer = new IntersolveVisaCustomerEntity();
-      visaCustomer.registration = registration;
-      visaCustomer.holderId = createCustomerResult.data.data.id;
-      await this.intersolveVisaCustomerScopedRepo.save(visaCustomer);
-    }
+    // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
+    intersolveVisaChildWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
+    const newestChildWallet = intersolveVisaChildWallets[0];
 
-    // Check if a wallet exists
-    if (!visaCustomer.visaWallets?.length) {
-      // If not, create wallet
-      const createWalletResult = await this.createWallet(
-        visaCustomer,
-        calculatedAmount,
-        registration.programId,
-      );
-
-      // if error, return error
-      if (!createWalletResult.data?.success) {
-        paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = `CREATE WALLET ERROR: ${
-          this.intersolveErrorToMessage(createWalletResult.data?.errors) ||
-          `${createWalletResult.status} - ${createWalletResult.statusText}`
-        }`;
-        return paTransactionResult;
-      }
-
-      // if success, store wallet
-      const intersolveVisaWallet = new IntersolveVisaWalletEntity();
-      intersolveVisaWallet.tokenCode = createWalletResult.data.data.token.code;
-      intersolveVisaWallet.tokenBlocked =
-        createWalletResult.data.data.token.blocked ?? null;
-      intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
-      intersolveVisaWallet.walletStatus = createWalletResult.data.data.token
-        .status as IntersolveVisaWalletStatus;
-      intersolveVisaWallet.balance =
-        createWalletResult.data.data.token.balances?.find(
-          (b) =>
-            b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
-        )?.quantity.value ?? null;
-      intersolveVisaWallet.lastExternalUpdate = new Date();
-      await this.intersolveVisaWalletScopedRepo.save(intersolveVisaWallet);
-
-      visaCustomer.visaWallets = [intersolveVisaWallet];
-    }
-
-    // sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
-    visaCustomer.visaWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
-
-    // Check if wallet is linked to customer
-    if (!visaCustomer.visaWallets[0].linkedToVisaCustomer) {
-      // if not, link wallet to customer
-      const registerResult = await this.linkWalletToCustomer(
-        visaCustomer,
-        visaCustomer.visaWallets[0],
-      );
-
-      // if error, return error
-      if (!this.isSuccessResponseStatus(registerResult.status)) {
-        paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message = `LINK CUSTOMER ERROR: ${
-          this.intersolveErrorToMessage(registerResult.data?.errors) ||
-          registerResult.data?.code ||
-          `${registerResult.status} - ${registerResult.statusText}`
-        }`;
-        paTransactionResult.customData = {
-          intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
-        };
-        return paTransactionResult;
-      }
-
-      // if succes, update wallet: set linkedToVisaCustomer to true
-      visaCustomer.visaWallets[0].linkedToVisaCustomer = true;
-      await this.intersolveVisaWalletScopedRepo.save(
-        visaCustomer.visaWallets[0],
-      );
-    }
+    await this.linkChildWalletToParentWalletIfUnlinked(
+      intersolveVisaParentWallet,
+      newestChildWallet,
+    );
 
     // Check if debit card is created
-    if (!visaCustomer.visaWallets[0].debitCardCreated) {
-      // If not, create debit card
-      const createDebitCardResult = await this.createDebitCard(
-        paymentDetails,
-        visaCustomer.visaWallets[0],
-        registration.programId,
-      );
-
-      const createDebitCardResultStatus = this.isSuccessResponseStatus(
-        createDebitCardResult.status,
-      );
-      // error or success: set transaction result either way
-      paTransactionResult.status = createDebitCardResultStatus
-        ? StatusEnum.success
-        : StatusEnum.error;
-      paTransactionResult.message = createDebitCardResultStatus
-        ? null
-        : `CREATE DEBIT CARD ERROR: ${
-            this.intersolveErrorToMessage(createDebitCardResult.data?.errors) ||
-            `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
-          }`;
-      paTransactionResult.customData = {
-        intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
-      };
-
-      // if success, update wallet: set debitCardCreated to true ..
-      if (paTransactionResult.status === StatusEnum.success) {
-        visaCustomer.visaWallets[0].debitCardCreated = true;
-        await this.intersolveVisaWalletScopedRepo.save(
-          visaCustomer.visaWallets[0],
-        );
-
-        // .. and add 'debit card created' notification
-        transactionNotifications.push(
-          this.buildNotificationObjectIssueDebitCard(
-            calculatedAmount,
-            bulkSizeCompletePayment,
-          ),
-        );
-      }
-    } else {
-      // If yes, load balance
-      // Calculate the amount that should be paid out, taking the original calculatedAmount as MAX value.
-      let topupAmount;
-      try {
-        topupAmount = await this.getTransactionAmountPerRegistration(
-          calculatedAmount,
-          visaCustomer.visaWallets[0],
-          visaCustomer,
-        );
-      } catch (error) {
-        paTransactionResult.status = StatusEnum.error;
-        let errorMessage = 'Unknown';
-        if (error?.response?.errors) {
-          errorMessage =
-            this.intersolveErrorToMessage(error.response.errors) ||
-            error.response.errors;
-        } else {
-          console.error('Error in CALCULATE TOPUP AMOUNT:', error);
-        }
-        paTransactionResult.message = `CALCULATE TOPUP AMOUNT ERROR: ${errorMessage}`;
-        paTransactionResult.customData = {
-          intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
-        };
-        return paTransactionResult;
-      }
-
-      paTransactionResult.calculatedAmount = topupAmount;
-      // If calculatedAmount is larger than 0, call Intersolve
-      if (topupAmount > 0) {
-        const loadBalanceResult = await this.loadBalanceVisaCard(
-          visaCustomer.visaWallets[0].tokenCode,
-          topupAmount,
-          registration.referenceId,
-          paymentNr,
-        );
-
-        paTransactionResult.status = loadBalanceResult.data?.success
-          ? StatusEnum.success
-          : StatusEnum.error;
-        paTransactionResult.message = loadBalanceResult.data?.success
-          ? null
-          : `LOAD BALANCE CARD ERROR: ${
-              this.intersolveErrorToMessage(loadBalanceResult.data?.errors) ||
-              `${loadBalanceResult.status} - ${loadBalanceResult.statusText}`
-            }`;
-      } else {
-        // If topupAmount is 0, DON'T call Intersolve. Create a   successfull transaction
-        paTransactionResult.status = StatusEnum.success;
-        paTransactionResult.message = null;
-      }
-      paTransactionResult.customData = {
-        intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
-      };
-
-      transactionNotifications.push(
-        this.buildNotificationObjectLoadBalance(
-          topupAmount,
-          bulkSizeCompletePayment,
-        ),
-      );
-    }
-
-    paTransactionResult.notificationObjects = transactionNotifications;
-    return paTransactionResult;
-  }
-
-  private async getCustomerEntity(registrationId: number) {
-    return await this.intersolveVisaCustomerScopedRepo.findOne({
-      relations: ['visaWallets'],
-      where: { registrationId: Equal(registrationId) },
+    const createDebitCardReturn = await this.createDebitCardIfNotExists({
+      childWallet: newestChildWallet,
+      name: input.name,
+      contactInformation: input.contactInformation,
+      coverLetterCode: input.coverLetterCode,
     });
-  }
 
-  private async createCustomer(
-    referenceId: string,
-    paymentDetails: PaymentDetailsDto,
-  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
-    const createCustomerRequest: IntersolveCreateCustomerDto = {
-      externalReference: referenceId,
-      individual: {
-        lastName: paymentDetails.lastName,
-        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
-      },
-      contactInfo: {
-        addresses: [this.createCustomerAddressPayload(paymentDetails)],
-        phoneNumbers: [
-          {
-            type: 'MOBILE',
-            value: paymentDetails.phoneNumber,
-          },
-        ],
-      },
+    // Transfer money from the client's funding token to the parent token
+    if (input.transferAmountInMajorUnit > 0) {
+      await this.intersolveVisaApiService.transfer({
+        fromTokenCode: input.fundingTokenCode,
+        toTokenCode: intersolveVisaParentWallet.tokenCode,
+        amount: input.transferAmountInMajorUnit,
+        reference: input.transferReference,
+      });
+    }
+    return {
+      isNewCardCreated: createDebitCardReturn.isNewCardCreated,
+      amountTransferredInMajorUnit: input.transferAmountInMajorUnit,
     };
-    return await this.intersolveVisaApiService.createCustomer(
-      createCustomerRequest,
-    );
   }
 
-  private async createWallet(
-    visaCustomer: IntersolveVisaCustomerEntity,
-    calculatedAmount: number,
-    programId: number,
-  ): Promise<IntersolveCreateWalletResponseDto> {
-    const amountInCents = Math.round(calculatedAmount * 100);
-    const createWalletPayload = new IntersolveCreateWalletDto();
-    createWalletPayload.reference = visaCustomer.holderId;
-    if (calculatedAmount > 0) {
-      createWalletPayload.quantities = [
+  /**
+   * This function retrieves and updates the wallet information for a given registration ID.
+   * - The function first retrieves and updates the parent wallet from Intersolve. This includes first get token information and then get transaction information from intersolve.
+   * - It also retrieves and updates all non-substituted child wallets associated with the parent wallet.
+   * - Finally, it returns the updated wallet information as a DTO.
+   *
+   * @param {number} registrationId - The registration ID for which to retrieve and update the wallet.
+   * @throws {HttpException} Throws an HttpException if no customer or parent wallet is found for the given registration ID.
+   * @returns {Promise<IntersolveVisaWalletDto>} The updated wallet information as a DTO.
+   */
+  public async retrieveAndUpdateWallet(
+    registrationId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    const customer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        registrationId,
+      );
+
+    if (!customer) {
+      throw new HttpException(
         {
-          quantity: {
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
-            value: amountInCents,
-          },
+          errors: `No Customer Entity found for Registration: ${registrationId}`,
         },
-      ];
-    }
-
-    const brandCode = await this.getBrandcodeForProgram(programId);
-    const createWalletResult = await this.intersolveVisaApiService.createWallet(
-      createWalletPayload,
-      brandCode,
-    );
-    return createWalletResult;
-  }
-
-  private async linkWalletToCustomer(
-    customerEntity: IntersolveVisaCustomerEntity,
-    walletEntity: IntersolveVisaWalletEntity,
-  ): Promise<IntersolveLinkWalletCustomerResponseDto> {
-    return await this.intersolveVisaApiService.linkCustomerToWallet(
-      {
-        holderId: customerEntity.holderId,
-      },
-      walletEntity.tokenCode,
-    );
-  }
-
-  private async getBrandcodeForProgram(programId: number): Promise<string> {
-    const brandCodeConfig =
-      await this.programFspConfigurationRepository.findOne({
-        where: {
-          programId: Equal(programId),
-          name: Equal(FinancialServiceProviderConfigurationEnum.brandCode),
-          fsp: { fsp: Equal(FinancialServiceProviderName.intersolveVisa) },
-        },
-        relations: ['fsp'],
-      });
-    if (!brandCodeConfig) {
-      throw new Error(
-        `No brandCode found for program ${programId}. Please update the program FSP cofinguration.`,
+        HttpStatus.NOT_FOUND,
       );
     }
 
-    return brandCodeConfig?.value as string;
-  }
-
-  private async getCoverLetterCodeForProgram(
-    programId: number,
-  ): Promise<string> {
-    const coverLetterCodeConfig =
-      await this.programFspConfigurationRepository.findOne({
-        where: {
-          programId: Equal(programId),
-          name: Equal(
-            FinancialServiceProviderConfigurationEnum.coverLetterCode,
-          ),
-          fsp: { fsp: Equal(FinancialServiceProviderName.intersolveVisa) },
+    if (!customer.intersolveVisaParentWallet) {
+      throw new HttpException(
+        {
+          errors: `No ParentWallet Entity found for Registration: ${registrationId}`,
         },
-        relations: ['fsp'],
-      });
-
-    if (!coverLetterCodeConfig) {
-      throw new Error(
-        `No coverLetterCode found for financial service provider under program ${programId}. Please update the program's financial service provider cofinguration.`,
+        HttpStatus.NOT_FOUND,
       );
     }
 
-    return coverLetterCodeConfig?.value as string;
+    // Retrieve and update the parent wallet from Intersolve
+    const intersolveVisaParentWallet = await this.retrieveAndUpdateParentWallet(
+      customer.intersolveVisaParentWallet,
+    );
+
+    // Retrieve and update the current wallet from Intersolve (= skip all substituted wallets)
+    for (const childWallet of customer.intersolveVisaParentWallet
+      .intersolveVisaChildWallets) {
+      if (childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted) {
+        await this.retrieveAndUpdateChildWallet(childWallet);
+      }
+    }
+
+    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto(
+      intersolveVisaParentWallet,
+    );
   }
 
-  private async createDebitCard(
-    paymentDetails: PaymentDetailsDto,
-    intersolveVisaWallet: IntersolveVisaWalletEntity,
-    programId: number,
-  ): Promise<IntersolveCreateDebitCardResponseDto> {
-    const createDebitCardPayload = new IntersolveCreateDebitCardDto();
-    createDebitCardPayload.brand = 'VISA_CARD';
-    if (!paymentDetails.firstName) {
-      paymentDetails.firstName = '';
-    }
-    createDebitCardPayload.firstName = paymentDetails.firstName;
-    createDebitCardPayload.lastName = paymentDetails.lastName;
-    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber
-      ? formatPhoneNumber(paymentDetails.phoneNumber)
-      : null;
-    createDebitCardPayload.cardAddress = {
-      address1:
-        `${paymentDetails.addressStreet} ${paymentDetails.addressHouseNumber} ${paymentDetails.addressHouseNumberAddition}`.trim(),
-      city: paymentDetails.addressCity,
-      country: 'NLD',
-      postalCode: paymentDetails.addressPostalCode,
-    };
-    createDebitCardPayload.pinAddress = {
-      address1:
-        `${paymentDetails.addressStreet} ${paymentDetails.addressHouseNumber} ${paymentDetails.addressHouseNumberAddition}`.trim(),
-      city: paymentDetails.addressCity,
-      country: 'NLD',
-      postalCode: paymentDetails.addressPostalCode,
-    };
-    createDebitCardPayload.pinStatus = 'D';
+  /**
+   * This function retrieves the wallet and associated childwallets/cards for a given registration ID. It does not update the wallet information using Intersolve.
+   *
+   * @param {number} registrationId - The registration ID for which to retrieve the wallet and cards.
+   * @throws {HttpException} Throws an HttpException if no customer or parent wallet is found for the given registration ID.
+   * @returns {Promise<IntersolveVisaWalletDto>} The wallet and associated cards information as a DTO.
+   */
+  public async getWalletWithCards(
+    registrationId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    const customer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        registrationId,
+      );
 
-    try {
-      // Added cover letter code during create debit card call
-      const coverLetterCode =
-        await this.getCoverLetterCodeForProgram(programId);
-      createDebitCardPayload.coverLetterCode = coverLetterCode;
-    } catch (error) {
+    if (!customer) {
+      throw new HttpException(
+        {
+          errors: `No Customer Entity found for Registration: ${registrationId}`,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!customer.intersolveVisaParentWallet) {
+      throw new HttpException(
+        {
+          errors: `No ParentWallet Entity found for Registration: ${registrationId}`,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto(
+      customer.intersolveVisaParentWallet,
+    );
+  }
+
+  private async getCustomerOrCreate(input: {
+    registrationId: number;
+    createCustomerReference: string;
+    name: string;
+    contactInformation: ContactInformation;
+  }): Promise<IntersolveVisaCustomerEntity> {
+    let intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        input.registrationId,
+      );
+    if (intersolveVisaCustomer) {
+      return intersolveVisaCustomer;
+    }
+
+    const createCustomerResult =
+      await this.intersolveVisaApiService.createCustomer({
+        externalReference: input.createCustomerReference,
+        name: input.name,
+        contactInformation: {
+          addressStreet: input.contactInformation.addressStreet,
+          addressHouseNumber: input.contactInformation.addressHouseNumber,
+          addressHouseNumberAddition:
+            input.contactInformation.addressHouseNumberAddition,
+          addressPostalCode: input.contactInformation.addressPostalCode,
+          addressCity: input.contactInformation.addressCity,
+          phoneNumber: input.contactInformation.phoneNumber,
+        },
+        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100, // This is assuming 44 euro per month for a year for 1 child; Assuming this parameter is in cents
+      });
+
+    // if success, store customer
+    const newIntersolveVisaCustomer = new IntersolveVisaCustomerEntity();
+    newIntersolveVisaCustomer.registrationId = input.registrationId;
+    newIntersolveVisaCustomer.holderId = createCustomerResult.holderId;
+    intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.save(
+        newIntersolveVisaCustomer,
+      );
+    return intersolveVisaCustomer;
+  }
+
+  private async getParentWalletOrCreate(input: {
+    intersolveVisaCustomer: IntersolveVisaCustomerEntity;
+    brandCode: string;
+  }): Promise<IntersolveVisaParentWalletEntity> {
+    const { intersolveVisaCustomer, brandCode } = input;
+    // Check if a parent wallet exists and return it if it does
+    if (intersolveVisaCustomer.intersolveVisaParentWallet) {
+      return intersolveVisaCustomer.intersolveVisaParentWallet;
+    }
+
+    // If not, create parent wallet
+    const issueTokenResult = await this.intersolveVisaApiService.issueToken({
+      brandCode: brandCode,
+      activate: true, // Parent Wallets are always created activated
+      reference: process.env.MOCK_INTERSOLVE
+        ? intersolveVisaCustomer.holderId
+        : undefined,
+    });
+
+    const newIntersolveVisaParentWallet =
+      new IntersolveVisaParentWalletEntity();
+    newIntersolveVisaParentWallet.intersolveVisaCustomer =
+      intersolveVisaCustomer;
+    newIntersolveVisaParentWallet.tokenCode = issueTokenResult.code;
+    newIntersolveVisaParentWallet.lastExternalUpdate = new Date();
+
+    const savedIntersolveVisaParentWallet =
+      await this.intersolveVisaParentWalletScopedRepository.save(
+        newIntersolveVisaParentWallet,
+      );
+    //  Since the parent wallet is created, we can assume that the child wallets are not created yet.
+    savedIntersolveVisaParentWallet.intersolveVisaChildWallets = [];
+    return savedIntersolveVisaParentWallet;
+  }
+
+  private async linkParentWalletToCustomerIfUnlinked(
+    intersolveVisaCustomer: IntersolveVisaCustomerEntity,
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
+  ): Promise<void> {
+    // Check if parent wallet is linked to customer
+    if (intersolveVisaParentWallet.isLinkedToVisaCustomer) {
+      return;
+    }
+    // if not, link parent wallet to customer (registerHolder returns nothing if success and throw exception if failed)
+    await this.intersolveVisaApiService.registerHolder({
+      holderId: intersolveVisaCustomer.holderId,
+      tokenCode: intersolveVisaParentWallet.tokenCode,
+    });
+
+    // Update parent wallet: set linkedToVisaCustomer to true
+    intersolveVisaParentWallet.isLinkedToVisaCustomer = true;
+    await this.intersolveVisaParentWalletScopedRepository.update(
+      intersolveVisaParentWallet.id,
+      { isLinkedToVisaCustomer: true },
+    );
+  }
+
+  private async getChildWalletsOrCreateOne(
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
+    brandCode: string,
+  ): Promise<IntersolveVisaChildWalletEntity[]> {
+    // Check if at least one child wallet exists
+    if (intersolveVisaParentWallet.intersolveVisaChildWallets.length) {
+      return intersolveVisaParentWallet.intersolveVisaChildWallets;
+    }
+
+    // If not, create new child wallet
+    const issueTokenResult = await this.intersolveVisaApiService.issueToken({
+      brandCode: brandCode,
+      activate: false, // Child Wallets are always created deactivated
+      reference: process.env.MOCK_INTERSOLVE
+        ? intersolveVisaParentWallet.intersolveVisaCustomer.holderId
+        : undefined,
+    });
+
+    // Store child wallet
+    const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
+    newIntersolveVisaChildWallet.intersolveVisaParentWallet =
+      intersolveVisaParentWallet;
+    newIntersolveVisaChildWallet.tokenCode = issueTokenResult.code;
+    newIntersolveVisaChildWallet.isTokenBlocked = issueTokenResult.blocked;
+    newIntersolveVisaChildWallet.walletStatus =
+      issueTokenResult.status as IntersolveVisaTokenStatus;
+    newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
+    const intersolveVisaChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        newIntersolveVisaChildWallet,
+      );
+    // Return the new child wallet as an array
+    return [intersolveVisaChildWallet];
+  }
+
+  private async linkChildWalletToParentWalletIfUnlinked(
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
+    intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
+  ): Promise<void> {
+    // Check if child wallet is linked to parent wallet
+    if (intersolveVisaChildWallet.isLinkedToParentWallet) {
+      return;
+    }
+    // if not, link child wallet to parent wallet (linkToken returns nothing if success and throw exception if failed)
+    await this.intersolveVisaApiService.linkToken({
+      parentTokenCode: intersolveVisaParentWallet.tokenCode,
+      childTokenCode: intersolveVisaChildWallet.tokenCode,
+    });
+
+    // Update child wallet: set linkedToParentWallet to true
+    intersolveVisaChildWallet.isLinkedToParentWallet = true;
+    await this.intersolveVisaChildWalletScopedRepository.update(
+      intersolveVisaChildWallet.id,
+      { isLinkedToParentWallet: true },
+    );
+  }
+
+  private async createDebitCardIfNotExists(input: {
+    childWallet: IntersolveVisaChildWalletEntity;
+    name: string;
+    contactInformation: ContactInformation;
+    coverLetterCode: string;
+  }): Promise<{ isNewCardCreated: boolean }> {
+    const { childWallet, name, contactInformation, coverLetterCode } = input;
+
+    // Check if debit card is created
+    if (childWallet.isDebitCardCreated) {
       return {
-        status: HttpStatus.BAD_REQUEST,
-        statusText: error.message,
-        data: {
-          success: false,
-        },
+        isNewCardCreated: false,
       };
     }
 
-    return await this.intersolveVisaApiService.createDebitCard(
-      intersolveVisaWallet.tokenCode,
-      createDebitCardPayload,
-    );
-  }
+    // If not, create debit card
+    const createPhysicalCardDto: CreatePhysicalCardParams = {
+      tokenCode: childWallet.tokenCode,
+      name: name,
+      contactInformation: {
+        addressStreet: contactInformation.addressStreet,
+        addressHouseNumber: contactInformation.addressHouseNumber,
+        addressHouseNumberAddition:
+          contactInformation.addressHouseNumberAddition,
+        addressPostalCode: contactInformation.addressPostalCode,
+        addressCity: contactInformation.addressCity,
+        phoneNumber: contactInformation.phoneNumber,
+      },
+      coverLetterCode: coverLetterCode,
+    };
 
-  private buildNotificationObjectIssueDebitCard(
-    amount: number,
-    bulkSizeCompletePayment: number,
-  ): TransactionNotificationObject {
+    await this.intersolveVisaApiService.createPhysicalCard(
+      createPhysicalCardDto,
+    );
+
+    // If success, update child wallet: set isDebitCardCreated to true
+    childWallet.isDebitCardCreated = true;
+    childWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+    await this.intersolveVisaChildWalletScopedRepository.update(
+      childWallet.id,
+      {
+        isDebitCardCreated: true,
+        cardStatus: IntersolveVisaCardStatus.CardOk,
+      },
+    );
+
     return {
-      notificationKey: ProgramNotificationEnum.visaDebitCardCreated,
-      dynamicContent: [String(amount)],
-      bulkSize: bulkSizeCompletePayment,
+      isNewCardCreated: true,
     };
   }
 
-  private buildNotificationObjectLoadBalance(
-    amount: number,
-    bulkSizeCompletePayment: number,
-  ): TransactionNotificationObject {
-    return {
-      notificationKey: ProgramNotificationEnum.visaLoad,
-      dynamicContent: [String(amount)],
-      bulkSize: bulkSizeCompletePayment,
-    };
-  }
-
-  private async loadBalanceVisaCard(
-    tokenCode: string | null,
-    calculatedAmount: number,
-    referenceId: string,
-    payment: number,
-  ): Promise<IntersolveLoadResponseDto> {
-    const amountInCents = Math.round(calculatedAmount * 100);
-    const reference = uuid();
-    const saleId = `${referenceId}-${payment}`;
-
-    const payload: IntersolveLoadDto = {
-      reference: reference,
-      saleId: saleId,
-      quantities: [
-        {
-          quantity: {
-            value: amountInCents,
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
-          },
-        },
-      ],
-    };
-    return await this.intersolveVisaApiService.loadBalanceCard(
-      tokenCode,
-      payload,
-    );
-  }
-
-  private async unloadBalanceVisaCard(
-    tokenCode: string | null,
-    currentBalance: number,
-  ): Promise<IntersolveLoadResponseDto> {
-    const reference = uuid();
-    const payload: IntersolveLoadDto = {
-      reference: reference,
-      quantities: [
-        {
-          quantity: {
-            value: currentBalance,
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
-          },
-        },
-      ],
-    };
-    return await this.intersolveVisaApiService.unloadBalanceCard(
-      tokenCode,
-      payload,
-    );
-  }
-
-  private intersolveErrorToMessage(errors?: IntersolveReponseErrorDto[]) {
-    if (!errors || !Array.isArray(errors) || !errors.length) {
-      return;
-    }
-    let allMessages = '';
-    for (const [i, error] of errors.entries()) {
-      const newLine = i < errors.length - 1 ? '\n' : '';
-      allMessages = `${allMessages}${error.code}: ${error.description} Field: ${error.field}${newLine}`;
-    }
-    return allMessages;
-  }
-
-  private async getUpdateWalletDetails(
-    wallet: IntersolveVisaWalletEntity,
-    customer: IntersolveVisaCustomerEntity,
-    getPaymentDetailsOnly: boolean,
-  ): Promise<IntersolveVisaWalletEntity> {
-    const walletDetails = await this.intersolveVisaApiService.getWallet(
-      wallet.tokenCode,
-    );
-    if (!walletDetails.data?.success) {
-      const error =
-        walletDetails.data?.errors ||
-        'Intersolve-visa: Get wallet API-call failed';
-      console.error(error);
-      throw new HttpException(
-        {
-          errors: error,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
+  private async retrieveAndUpdateParentWallet(
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
+  ): Promise<IntersolveVisaParentWalletEntity> {
+    // Get balance on the parent wallet
+    const getTokenResult: GetTokenReturnType =
+      await this.intersolveVisaApiService.getToken(
+        intersolveVisaParentWallet.tokenCode,
       );
-    }
 
-    const walletData = walletDetails?.data?.data;
-    if (walletData?.balances) {
-      wallet.balance =
-        walletData.balances?.find(
-          (b) =>
-            b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
-        )?.quantity.value ?? null;
-    }
-    if (walletData?.status) {
-      wallet.walletStatus = walletDetails.data.data.status ?? null;
-    }
-    if (walletData?.blocked === true || walletData?.blocked === false) {
-      wallet.tokenBlocked = walletDetails.data.data.blocked ?? null;
-    }
-
-    // Get spentThisMonth across all wallets of customer
-    const transactionInfoByCustomer =
-      await this.getTransactionInfoByCustomer(customer);
-
-    if (transactionInfoByCustomer.length) {
-      wallet.spentThisMonth = transactionInfoByCustomer
-        .map((w) => w.transactionInfo.spentThisMonth)
-        .reduce((sum, current) => sum + current, 0);
-    }
-
-    if (!getPaymentDetailsOnly) {
-      // The below properties are not needed in payment amount calculation
-      // Get lastUsedDate is still per wallet, unlike spentThisMonth above
-      // If above API-call failed, then this code will simply not update lastUsedDate which is fine
-      const transactionInfoPerWallet = transactionInfoByCustomer?.find(
-        (w) => w.tokenCode === wallet.tokenCode,
-      )?.transactionInfo;
-      if (transactionInfoPerWallet?.lastUsedDate) {
-        wallet.lastUsedDate = transactionInfoPerWallet.lastUsedDate;
-      }
-      wallet.lastExternalUpdate = new Date();
-
-      const cardDetails = await this.intersolveVisaApiService.getCard(
-        wallet.tokenCode,
+    // Get parent wallet transaction info from Intersolve
+    const getTransactionInformationResultDto: GetTransactionInformationReturnType =
+      await this.intersolveVisaApiService.getTransactionInformation(
+        intersolveVisaParentWallet.tokenCode,
       );
-      if (cardDetails?.data?.data?.status) {
-        wallet.cardStatus = cardDetails.data.data.status;
-      }
-    }
 
-    return await this.intersolveVisaWalletScopedRepo.save(wallet);
+    // Update the parent wallet in the database
+    intersolveVisaParentWallet.balance = getTokenResult.balance;
+    intersolveVisaParentWallet.lastUsedDate =
+      getTransactionInformationResultDto.lastTransactionDate;
+    intersolveVisaParentWallet.spentThisMonth =
+      getTransactionInformationResultDto.spentThisMonth;
+    intersolveVisaParentWallet.lastExternalUpdate = new Date();
+    intersolveVisaParentWallet =
+      await this.intersolveVisaParentWalletScopedRepository.save(
+        intersolveVisaParentWallet,
+      );
+    return intersolveVisaParentWallet;
   }
 
-  private getTwoMonthAgo(): Date {
-    const date = new Date();
-    date.setMonth(date.getMonth() - 2);
-    return date;
-  }
+  private async retrieveAndUpdateChildWallet(
+    intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
+  ): Promise<IntersolveVisaChildWalletEntity> {
+    // Get child wallet information
+    const getTokenResult: GetTokenReturnType =
+      await this.intersolveVisaApiService.getToken(
+        intersolveVisaChildWallet.tokenCode,
+      );
 
-  public async getVisaWalletsAndDetails(
-    referenceId: string,
-    programId: number,
-  ): Promise<GetWalletsResponseDto> {
-    const { registration: _registration, visaCustomer } =
-      await this.getRegistrationAndVisaCustomer(referenceId, programId);
-
-    const walletsResponse = new GetWalletsResponseDto();
-    walletsResponse.wallets = [];
-
-    for await (let wallet of visaCustomer.visaWallets) {
-      wallet = await this.getUpdateWalletDetails(wallet, visaCustomer, false);
-
-      const walletDetailsResponse = new GetWalletDetailsResponseDto();
-      walletDetailsResponse.tokenCode = wallet.tokenCode ?? undefined;
-      walletDetailsResponse.balance = wallet.balance ?? undefined;
-
-      // Map Intersolve status to 121 status for the frontend
-      const statusInfo =
-        this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.tokenBlocked ?? false,
-          wallet.walletStatus,
-          wallet.cardStatus,
-          wallet.tokenCode === visaCustomer.visaWallets[0].tokenCode,
-          {
-            tokenCode: wallet.tokenCode ?? '',
-            programId: programId,
-            referenceId: referenceId,
-          },
+    // Get card status
+    if (intersolveVisaChildWallet.isDebitCardCreated) {
+      const GetPhysicalCardReturnDto: GetPhysicalCardReturnType =
+        await this.intersolveVisaApiService.getPhysicalCard(
+          intersolveVisaChildWallet.tokenCode,
         );
-      walletDetailsResponse.status = statusInfo.walletStatus121;
-      walletDetailsResponse.explanation = statusInfo.explanation;
-      walletDetailsResponse.links = statusInfo.links;
-      walletDetailsResponse.issuedDate = wallet.created;
-      walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
-      walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
-
-      // These properties are not used in the frontend but are very useful for debugging
-      walletDetailsResponse.intersolveVisaCardStatus =
-        wallet.cardStatus ?? undefined;
-      walletDetailsResponse.intersolveVisaWalletStatus =
-        wallet.walletStatus ?? undefined;
-
-      walletDetailsResponse.maxToSpendPerMonth =
-        maximumAmountOfSpentCentPerMonth;
-
-      walletsResponse.wallets.push(walletDetailsResponse);
+      intersolveVisaChildWallet.cardStatus = GetPhysicalCardReturnDto.status;
     }
-    return walletsResponse;
+
+    intersolveVisaChildWallet.walletStatus = getTokenResult.status;
+
+    // Our mock service always return that a token is not blocked
+    // However when we are using the mock service, we should not update the token status else it is always false when you refresh the registration page
+    if (!process.env.MOCK_INTERSOLVE) {
+      intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
+    }
+    intersolveVisaChildWallet.lastExternalUpdate = new Date();
+
+    intersolveVisaChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        intersolveVisaChildWallet,
+      );
+    return intersolveVisaChildWallet;
   }
 
-  private async getRegistrationAndVisaCustomer(
-    referenceId: string,
-    programId: number,
-  ): Promise<{
-    registration: RegistrationEntity;
-    visaCustomer: IntersolveVisaCustomerEntity;
-  }> {
-    const registration = await this.registrationScopedRepository.findOne({
-      where: {
-        referenceId: Equal(referenceId),
-        programId: Equal(programId),
-      },
-      relations: ['fsp'],
-    });
-    if (!registration) {
-      const errors = `No registration found with referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+  /**
+   * This function reissues a card for a given registration ID.
+   * - The function first creates a new (child) token at Intersolve
+   * - Creates a new child wallet entity,
+   * - Substitutes the old token with the new one.
+   * - Finally, it creates a new card and updates the child wallet status.
+   *
+   * @param {ReissueCardParams} input - The parameters for the card reissuance.
+   * @throws {Error} Throws an Error if no customer, parent wallet, or child wallet is found for the given registration ID, or if the child wallet to be replaced does not have a card created for it.
+   * @returns {Promise<void>}
+   */
+  public async reissueCard(input: ReissueCardParams): Promise<void> {
+    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
+    const intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        input.registrationId,
+      );
 
-    const visaCustomer = await this.getCustomerEntity(registration.id);
-    if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
-      const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    if (!intersolveVisaCustomer) {
+      throw new Error(
+        'This Registration does not have an Intersolve Visa Customer. Cannot reissue card.',
+      );
     }
-    if (!visaCustomer) {
-      const errors = `${VisaErrorCodes.NoCustomerYet} with referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    if (!intersolveVisaCustomer.intersolveVisaParentWallet) {
+      throw new Error(
+        'This Registration does not have an Intersolve Visa Parent Wallet. Cannot reissue card.',
+      );
     }
-    visaCustomer.visaWallets.sort((a, b) => (a.created > b.created ? -1 : 1));
-    return { registration: registration, visaCustomer: visaCustomer };
-  }
-
-  public async toggleBlockWallet(
-    tokenCode: string | null,
-    block: boolean,
-  ): Promise<IntersolveBlockWalletResponseDto> {
-    const payload: IntersolveBlockWalletDto = {
-      reasonCode: block
-        ? BlockReasonEnum.BLOCK_GENERAL // If using 'TOKEN_DISABLED' the wallet will supposably be blocked forever
-        : UnblockReasonEnum.UNBLOCK_GENERAL,
-    };
-    const result = await this.intersolveVisaApiService.toggleBlockWallet(
-      tokenCode,
-      payload,
-      block,
+    if (
+      !intersolveVisaCustomer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets.length
+    ) {
+      throw new Error(
+        'This Registration does not have an Intersolve Visa Child Wallet. Cannot reissue card.',
+      );
+    }
+    // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
+    intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.sort(
+      (a, b) => (a.created < b.created ? 1 : -1),
     );
-    if (
-      this.isSuccessResponseStatus(result.status) ||
-      (result.status === 405 &&
-        result.data?.code &&
-        ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
-          result.data.code,
-        ))
-    ) {
-      await this.intersolveVisaWalletScopedRepo.updateUnscoped(
-        { tokenCode: tokenCode ?? undefined },
-        { tokenBlocked: block },
-      );
-    }
-
-    return result;
-  }
-
-  public async toggleBlockWalletNotification(
-    tokenCode: string,
-    block: boolean,
-    programId: number,
-    userId: number,
-  ): Promise<IntersolveBlockWalletResponseDto> {
-    const qb = this.intersolveVisaWalletScopedRepo
-      .createQueryBuilder('wallet')
-      .leftJoinAndSelect(
-        'wallet.intersolveVisaCustomer',
-        'intersolveVisaCustomer',
-      )
-      .leftJoinAndSelect('intersolveVisaCustomer.registration', 'registration')
-      .andWhere('wallet.tokenCode = :tokenCode', { tokenCode });
-    const wallet = await qb.getOne();
-
-    if (
-      !wallet ||
-      !wallet.intersolveVisaCustomer ||
-      !wallet.intersolveVisaCustomer.registration ||
-      wallet.intersolveVisaCustomer.registration.programId !== programId
-    ) {
-      const errors = `No wallet found with tokenCode ${tokenCode}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const result = await this.toggleBlockWallet(tokenCode, block);
-
-    const notificationKey: string = block
-      ? ProgramNotificationEnum.blockVisaCard
-      : ProgramNotificationEnum.unblockVisaCard;
-
-    await this.queueMessageService.addMessageToQueue({
-      registration: wallet.intersolveVisaCustomer.registration,
-      messageTemplateKey: notificationKey,
-      messageContentType: MessageContentType.custom,
-      messageProcessType:
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId: userId,
-    });
-    return result;
-  }
-
-  private createCustomerAddressPayload(
-    paymentDetails: PaymentDetailsDto,
-  ): IntersolveAddressDto {
-    return {
-      type: 'HOME',
-      addressLine1: `${
-        paymentDetails.addressStreet +
-        ' ' +
-        paymentDetails.addressHouseNumber +
-        paymentDetails.addressHouseNumberAddition
-      }`,
-      city: paymentDetails.addressCity,
-      postalCode: paymentDetails.addressPostalCode,
-      country: 'NL',
-    };
-  }
-
-  private doAnyAttributesRequireSync(
-    attributes: CustomDataAttributes[],
-  ): boolean {
-    const attributesThatRequireSync = [
-      CustomDataAttributes.phoneNumber,
-      CustomDataAttributes.addressCity,
-      CustomDataAttributes.addressHouseNumber,
-      CustomDataAttributes.addressHouseNumberAddition,
-      CustomDataAttributes.addressPostalCode,
-      CustomDataAttributes.addressStreet,
-    ];
-
-    return attributes.some((attribute) =>
-      attributesThatRequireSync.includes(attribute),
-    );
-  }
-
-  public async syncIntersolveCustomerWith121(
-    referenceId: string,
-    programId: number,
-    attributes?: Attributes[] | string[],
-  ): Promise<void> {
-    if (
-      attributes &&
-      !this.doAnyAttributesRequireSync(attributes as CustomDataAttributes[])
-    ) {
-      return;
-    }
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: {
-        referenceId: Equal(referenceId),
-        programId: Equal(programId),
-      },
-    });
-    const visaCustomer = await this.getCustomerEntity(registration.id);
-
-    const errors: string[] = [];
-
-    const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
-      type: 'MOBILE',
-      value: registration.phoneNumber,
-    };
-    const phoneNumberResult =
-      await this.intersolveVisaApiService.updateCustomerPhoneNumber(
-        visaCustomer?.holderId ?? null,
-        phoneNumberPayload,
-      );
-    if (!this.isSuccessResponseStatus(phoneNumberResult.status)) {
-      errors.push(
-        `Phone number update failed: ${phoneNumberResult?.data?.code}. Adjust the (required) phone number and retry.`,
-      );
-    }
+    const childWalletToReplace =
+      intersolveVisaCustomer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets[0];
 
     try {
-      const relationOptions = await this.getRelationOptionsForVisa(referenceId);
-      const paymentDetails =
-        await this.registrationDataQueryService.getPaDetails(
-          [referenceId],
-          relationOptions,
-        );
-
-      const addressPayload = this.createCustomerAddressPayload(
-        paymentDetails[0],
+      await this.executeReissueCardSteps(
+        input,
+        intersolveVisaCustomer,
+        childWalletToReplace,
       );
-      const addressResult =
-        await this.intersolveVisaApiService.updateCustomerAddress(
-          visaCustomer?.holderId ?? null,
-          addressPayload,
-        );
-      if (!this.isSuccessResponseStatus(addressResult.status)) {
-        errors.push(`Address update failed: ${addressResult?.data?.code}.`);
-      }
-
-      if (errors.length > 0) {
-        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
     } catch (error) {
-      if (error.name === ErrorEnum.RegistrationDataError) {
-        console.info(
-          `Unable to sync address data because this registration does not have this data anymore.\n
-          This is most likely because this registration first had the FSP Intersolve Visa, and then switched to another FSP\n
-          This new fsp does not have the attributes needed for Intersolve Visa, so the data is removed from the registration`,
+      if (error instanceof IntersolveVisaApiError) {
+        throw new HttpException(
+          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
+          HttpStatus.NOT_FOUND,
         );
       } else {
         throw error;
@@ -1163,291 +545,235 @@ export class IntersolveVisaService
     }
   }
 
-  public async reissueWalletAndCard(
-    referenceId: string,
-    programId: number,
-    userId: number,
-  ): Promise<any> {
-    const { registration: _registration, visaCustomer } =
-      await this.getRegistrationAndVisaCustomer(referenceId, programId);
-    if (visaCustomer.visaWallets.length === 0) {
-      const errors = `No wallet available yet for PA with this referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const oldWallets = visaCustomer.visaWallets.sort((a, b) =>
-      a.created < b.created ? 1 : -1,
-    );
-    const oldWallet = oldWallets[0];
-
-    const errorGenericPart = `<br><br>Update data if applicable and retry by using the 'Issue new card' button again. If the problem persists, contact 121 technical support.`;
-    // 0. sync customer data with 121 data, as create-customer is skipped in this flow
-    try {
-      await this.syncIntersolveCustomerWith121(referenceId, programId);
-    } catch (error) {
-      const errors = `SYNC CUSTOMER DATA ERROR: <strong>${error.response?.errors.join(
-        ',',
-      )}</strong>${errorGenericPart}`;
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    // 0. Try to unblock wallet to be able to activate it
-    try {
-      await this.toggleBlockWallet(oldWallet.tokenCode, false);
-    } catch (error) {
-      if (error.status !== 405 && error.data?.code !== 'TOKEN_IS_NOT_BLOCKED') {
-        throw error;
-      }
-    }
-    // 1. activate old wallet (if needed) to be able to get & unload balance
-    try {
-      await this.intersolveVisaApiService.activateWallet(oldWallet.tokenCode, {
-        reference: uuid(),
-      });
-    } catch (error) {
-      if (error.status === 405 && error.data?.code === 'TOKEN_IS_NOT_ACTIVE') {
-        console.log('error: ', error);
-      } else {
-        const errors = `ACTIVATE OLD WALLET ERROR: ${
-          this.intersolveErrorToMessage(error.data?.errors) ||
-          error.data?.code ||
-          `${error.status} - ${error.statusText}`
-        }`;
-        throw new HttpException(
-          {
-            errors: `<strong>${errors}</strong>${errorGenericPart}`,
-          },
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
-
-    // 2. unblock old wallet (if needed) to be able to unload balance later and to prevent transactions in the meantime
-    try {
-      await this.toggleBlockWallet(oldWallet.tokenCode, false);
-    } catch (error) {
-      if (error.status === 405 && error.data?.code === 'TOKEN_IS_NOT_BLOCKED') {
-        console.log('error: ', error);
-      } else {
-        // if this step fails, then try to block to overwrite the activation from step 1, but don't throw
-        // don't do this above if the fail-reason for unblocking was that it was already unblocked (as nothing went wrong then actually)
-        await this.tryToBlockWallet(oldWallet.tokenCode);
-        const errors = `UNBLOCK OLD WALLET ERROR: ${
-          this.intersolveErrorToMessage(error.data?.errors) ||
-          error.data?.code ||
-          `${error.status} - ${error.statusText}`
-        }`;
-        throw new HttpException(
-          {
-            errors: `<strong>${errors}</strong>${errorGenericPart}`,
-          },
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
-
-    // 3. get balance of old wallet
-    const getWalletResponse = await this.intersolveVisaApiService.getWallet(
-      oldWallet.tokenCode,
-    );
-    if (!getWalletResponse.data?.success) {
-      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
-      await this.tryToBlockWallet(oldWallet.tokenCode);
-
-      const errors = `GET WALLET ERROR: ${
-        this.intersolveErrorToMessage(getWalletResponse.data?.errors) ||
-        `${getWalletResponse.status} - ${getWalletResponse.statusText}`
-      }`;
-      throw new HttpException(
-        {
-          errors: `<strong>${errors}</strong>${errorGenericPart}`,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-    const currentBalance =
-      getWalletResponse.data.data.balances?.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
-      )?.quantity.value ?? 0;
-
-    // 4. create new wallet
-    const createWalletResult = await this.createWallet(
-      visaCustomer,
-      currentBalance / 100,
-      programId,
-    );
-    if (!createWalletResult.data?.success) {
-      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
-      await this.tryToBlockWallet(oldWallet.tokenCode);
-
-      const errors = `CREATE WALLET ERROR: ${
-        this.intersolveErrorToMessage(createWalletResult.data?.errors) ||
-        `${createWalletResult.status} - ${createWalletResult.statusText}`
-      }`;
-      throw new HttpException(
-        {
-          errors: `<strong>${errors}</strong>${errorGenericPart}`,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-    // if success, store wallet
-    const newWallet = new IntersolveVisaWalletEntity();
-    newWallet.tokenCode = createWalletResult.data.data.token.code;
-    newWallet.tokenBlocked = createWalletResult.data.data.token.blocked ?? null;
-    newWallet.intersolveVisaCustomer = visaCustomer;
-    newWallet.walletStatus = createWalletResult.data.data.token
-      .status as IntersolveVisaWalletStatus;
-    newWallet.balance =
-      createWalletResult.data.data.token.balances?.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
-      )?.quantity.value ?? null;
-    newWallet.lastExternalUpdate = new Date();
-    await this.intersolveVisaWalletScopedRepo.save(newWallet);
-
-    // 5. register new wallet to customer
-    const registerResult = await this.linkWalletToCustomer(
-      visaCustomer,
-      newWallet,
-    );
-    if (!this.isSuccessResponseStatus(registerResult.status)) {
-      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
-      await this.tryToBlockWallet(oldWallet.tokenCode);
-
-      // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletScopedRepo.remove(newWallet);
-      const errors = `LINK CUSTOMER ERROR: ${
-        this.intersolveErrorToMessage(registerResult.data?.errors) ||
-        registerResult.data?.code ||
-        `${registerResult.status} - ${registerResult.statusText}`
-      }`;
-      throw new HttpException(
-        {
-          errors: `<strong>${errors}</strong>${errorGenericPart}`,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-    // if succes, update wallet: set linkedToVisaCustomer to true
-    newWallet.linkedToVisaCustomer = true;
-    await this.intersolveVisaWalletScopedRepo.save(newWallet);
-
-    // 6. create new debit card
-    const relationOptions = await this.getRelationOptionsForVisa(referenceId);
-    const paymentDetails = await this.registrationDataQueryService.getPaDetails(
-      [referenceId],
-      relationOptions,
-    );
-    const createDebitCardResult = await this.createDebitCard(
-      paymentDetails[0],
-      newWallet,
-      programId,
-    );
-    if (!this.isSuccessResponseStatus(createDebitCardResult.status)) {
-      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
-      await this.tryToBlockWallet(oldWallet.tokenCode);
-
-      // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletScopedRepo.remove(newWallet);
-
-      const errors = `CREATE DEBIT CARD ERROR: ${
-        this.intersolveErrorToMessage(createDebitCardResult.data?.errors) ||
-        `${createDebitCardResult.status} - ${createDebitCardResult.statusText}`
-      }`;
-      throw new HttpException(
-        {
-          errors: `<strong>${errors}</strong>${errorGenericPart}`,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-    // if success, update wallet: set debitCardCreated to true ..
-    newWallet.debitCardCreated = true;
-    await this.intersolveVisaWalletScopedRepo.save(newWallet);
-
-    // 7. unload balance from old wallet (don't do this if the balance is < 1 because Intersolve doesn't allow this)
-    if (currentBalance >= 1) {
-      const unloadResult = await this.unloadBalanceVisaCard(
-        oldWallet.tokenCode,
-        currentBalance,
-      );
-      if (!this.isSuccessResponseStatus(unloadResult.status)) {
-        const errors =
-          'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact 121 technical support to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
-        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-
-    // 8. block old wallet
-    const blockResult = await this.toggleBlockWallet(oldWallet.tokenCode, true);
-    if (!this.isSuccessResponseStatus(blockResult.status)) {
-      const errors =
-        'The old card could not be permanently blocked. <strong>Please contact 121 technical support to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    // also block older wallets, but don't throw error if it fails to not complicate retry-flow further
-    for await (const wallet of oldWallets.splice(
-      oldWallets.indexOf(oldWallet),
-    )) {
-      await this.toggleBlockWallet(wallet.tokenCode, true);
-    }
-
-    // if success, make sure to store old and new wallet in 121 database
-    await this.getVisaWalletsAndDetails(referenceId, programId);
-    await this.sendMessageReissueCard(referenceId, programId, userId);
-  }
-
-  private async sendMessageReissueCard(
-    referenceId: string,
-    programId: number,
-    userId: number,
+  public async executeReissueCardSteps(
+    input: ReissueCardParams,
+    intersolveVisaCustomer: IntersolveVisaCustomerEntity,
+    childWalletToReplace: IntersolveVisaChildWalletEntity,
   ): Promise<void> {
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: {
-        referenceId: Equal(referenceId),
-        programId: Equal(programId),
+    // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
+    if (childWalletToReplace.isTokenBlocked) {
+      await this.intersolveVisaApiService.setTokenBlocked(
+        childWalletToReplace.tokenCode,
+        false,
+      );
+    }
+
+    // Create new token at Intersolve
+    const issueTokenResult = await this.intersolveVisaApiService.issueToken({
+      brandCode: input.brandCode,
+      activate: false, // Child Wallets are always created deactivated
+      reference: process.env.MOCK_INTERSOLVE
+        ? intersolveVisaCustomer.holderId
+        : undefined,
+    });
+
+    // Substitute the old token with the new token at Intersolve
+    await this.intersolveVisaApiService.substituteToken({
+      oldTokenCode: childWalletToReplace.tokenCode,
+      newTokenCode: issueTokenResult.code,
+    });
+
+    // Create child wallet entity
+    // Do this after the token has been succesfully substituted, so to make this API call more idempotent
+    const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
+    newIntersolveVisaChildWallet.intersolveVisaParentWallet =
+      intersolveVisaCustomer.intersolveVisaParentWallet;
+    newIntersolveVisaChildWallet.tokenCode = issueTokenResult.code;
+    newIntersolveVisaChildWallet.isTokenBlocked = issueTokenResult.blocked;
+    newIntersolveVisaChildWallet.walletStatus =
+      issueTokenResult.status as IntersolveVisaTokenStatus;
+    newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
+    newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
+    const newChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        newIntersolveVisaChildWallet,
+      );
+    intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.push(
+      newChildWallet,
+    );
+
+    // Update old child wallet: set status to SUBSTITUTED
+    childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
+    childWalletToReplace =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        childWalletToReplace,
+      );
+
+    // Create new card
+    await this.intersolveVisaApiService.createPhysicalCard({
+      tokenCode: newChildWallet.tokenCode,
+      name: input.name,
+      contactInformation: {
+        addressStreet: input.contactInformation.addressStreet,
+        addressHouseNumber: input.contactInformation.addressHouseNumber,
+        addressHouseNumberAddition:
+          input.contactInformation.addressHouseNumberAddition,
+        addressPostalCode: input.contactInformation.addressPostalCode,
+        addressCity: input.contactInformation.addressCity,
+        phoneNumber: input.contactInformation.phoneNumber,
       },
+      coverLetterCode: input.coverLetterCode,
     });
-    await this.queueMessageService.addMessageToQueue({
-      registration,
-      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
-      messageContentType: MessageContentType.custom,
-      messageProcessType:
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId: userId,
-    });
-  }
 
-  private async tryToBlockWallet(tokenCode: string | null): Promise<void> {
-    try {
-      await this.toggleBlockWallet(tokenCode, true);
-    } catch (e) {
-      console.log('error: ', e);
-    }
-  }
-
-  public async updateVisaDebitWalletDetails(): Promise<void> {
-    // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const customerWithWallets =
-      await this.intersolveVisaCustomerScopedRepo.find({
-        relations: ['visaWallets'],
-      });
-    for (const customer of customerWithWallets) {
-      for (const wallet of customer.visaWallets) {
-        await this.getUpdateWalletDetails(wallet, customer, false);
-      }
-    }
+    // Update child wallet: set isDebitCardCreated to true
+    newChildWallet.isDebitCardCreated = true;
+    // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always cardOk
+    newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+    await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
-    const count = await this.intersolveVisaCustomerScopedRepo
+    const count = await this.intersolveVisaCustomerScopedRepository
       .createQueryBuilder('customer')
       .andWhere('customer.registrationId = :registrationId', { registrationId })
       .getCount();
     return count > 0;
   }
 
-  private isSuccessResponseStatus(status: number): boolean {
-    return status >= 200 && status < 300;
+  /**
+   * This function calculates the transfer amount after updating the wallet information for a given registration ID.
+   * - It finds a customer for registrationId. If the customer has any child wallets, it retrieves and updates the latest information of the wallets and card from Intersolve.
+   * - It then calculates the amount that should be transferred. If the registration does not have a customer yet, the spentThisMonth and balance will be 0.
+   *
+   * @param {number} registrationId - The registration ID for which to calculate the transfer amount.
+   * @param {number} inputTransferAmount - The initial amount to be transferred.
+   * @throws {Error} Throws an Error if no customer is found for the given registration ID.
+   * @returns {Promise<number>} The calculated transfer amount. This is the inputTransferAmount amount capped by 150 - spendThisMonth - currentBalance.
+   */
+  public async calculateTransferAmountWithWalletUpdate(
+    registrationId: number,
+    inputTransferAmountInMajorUnit: number,
+  ): Promise<number> {
+    const intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        registrationId,
+      );
+    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them.
+    if (
+      intersolveVisaCustomer?.intersolveVisaParentWallet
+        .intersolveVisaChildWallets
+    ) {
+      intersolveVisaCustomer.intersolveVisaParentWallet =
+        await this.retrieveAndUpdateParentWallet(
+          intersolveVisaCustomer.intersolveVisaParentWallet,
+        );
+      intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
+        await this.retrieveAndUpdateChildWallet(
+          intersolveVisaCustomer.intersolveVisaParentWallet
+            .intersolveVisaChildWallets[0],
+        );
+    }
+
+    // Calculate the amount that should be transfered. If the registration does not have customer yet the spendThisMonth and balance will be 0.
+    return this.calculateLimitedTransferAmount({
+      transactionAmountInMajorUnit: inputTransferAmountInMajorUnit,
+      spentThisMonth:
+        intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
+      balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
+    });
+  }
+
+  // Calculated the amount that can be transferred based on the limits of maxumum amount on a wallet and maximum amount that can be spent per month.
+  private calculateLimitedTransferAmount({
+    transactionAmountInMajorUnit,
+    spentThisMonth,
+    balance,
+  }: {
+    transactionAmountInMajorUnit: number;
+    spentThisMonth: number;
+    balance: number;
+  }): number {
+    const calculatedAmountMajorUnit =
+      (maximumAmountOfSpentCentPerMonth - spentThisMonth - balance) / 100;
+
+    if (calculatedAmountMajorUnit > 0) {
+      return Math.min(calculatedAmountMajorUnit, transactionAmountInMajorUnit);
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * This function pauses or unpauses a card associated with a given token code by blocking or unblocking the token at the Intersolve API.
+   * @param {string} tokenCode - The token code of the card to pause or unpause.
+   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
+   * @throws {Error} Throws an Error if no wallet is found for the given token code, or if the wallet's token is already in the desired state.
+   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
+   */
+  public async pauseCardOrThrow(
+    tokenCode: string,
+    pause: boolean,
+  ): Promise<IntersolveVisaChildWalletEntity> {
+    const wallet =
+      await this.intersolveVisaChildWalletScopedRepository.findOneOrFail({
+        where: { tokenCode: Equal(tokenCode) },
+      });
+    if (wallet.isTokenBlocked === pause) {
+      throw new HttpException(
+        `Token is already ${pause ? 'blocked' : 'unblocked'}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    await this.intersolveVisaApiService.setTokenBlocked(tokenCode, pause);
+    wallet.isTokenBlocked = pause;
+    return await this.intersolveVisaChildWalletScopedRepository.save(wallet);
+  }
+
+  /**
+   * Retrieves and updates all wallets and cards for all customers. Used by cronjob.
+   */
+  public async retrieveAndUpdateAllWalletsAndCards(): Promise<void> {
+    const customers =
+      await this.intersolveVisaCustomerScopedRepository.findWithWallets();
+    for (const customer of customers) {
+      for (const childWallet of customer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets) {
+        if (
+          childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted
+        ) {
+          await this.retrieveAndUpdateChildWallet(childWallet);
+        }
+      }
+      await this.retrieveAndUpdateParentWallet(
+        customer.intersolveVisaParentWallet,
+      );
+    }
+  }
+
+  // TODO: It looks like the old implementation (this.syncIntersolveCustomerWith121) had some logic to only send data to Intersolve if it changed. Do we want to implement that again? That probably then should be in the RegistrationService and not here.
+  /**
+   * This function sends updated contact information for a customer to Intersolve. It uses 2 api call:
+   * - update the address
+   * - update phone number
+   * @param {SendUpdatedContactInformationParams} input - The updated contact information for the customer.
+   * @throws {Error} Throws an Error if no customer is found for the given registration ID.
+   * @returns {Promise<void>}
+   */
+  public async sendUpdatedContactInformation(
+    input: SendUpdatedContactInformationParams,
+  ): Promise<void> {
+    const customer =
+      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
+        input.registrationId,
+      );
+
+    await this.intersolveVisaApiService.updateCustomerAddress({
+      holderId: customer.holderId,
+      addressStreet: input.contactInformation.addressStreet,
+      addressHouseNumber: input.contactInformation.addressHouseNumber,
+      addressHouseNumberAddition:
+        input.contactInformation.addressHouseNumberAddition,
+      addressPostalCode: input.contactInformation.addressPostalCode,
+      addressCity: input.contactInformation.addressCity,
+    });
+
+    await this.intersolveVisaApiService.updateCustomerPhoneNumber({
+      holderId: customer.holderId,
+      phoneNumber: input.contactInformation.phoneNumber,
+    });
+  }
+
+  public async getWallet(tokenCode: string) {
+    return await this.intersolveVisaApiService.getToken(tokenCode);
   }
 }

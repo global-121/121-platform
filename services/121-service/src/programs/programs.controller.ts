@@ -415,4 +415,15 @@ You can also leave the body empty.`,
       filterShowInPeopleAffectedTable,
     );
   }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @ApiOperation({ summary: 'Get information about the funding wallet' })
+  @Get(':programId/financial-service-providers/intersolve-visa/funding-wallet')
+  public async getFundingWallet(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ) {
+    return await this.programService.getFundingWallet(programId);
+  }
 }

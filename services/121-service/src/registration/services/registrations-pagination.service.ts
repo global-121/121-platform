@@ -30,9 +30,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { omit } from 'lodash';
 import {
   FilterOperator,
-  paginate,
-  Paginated,
   PaginateQuery,
+  Paginated,
+  paginate,
 } from 'nestjs-paginate';
 import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
 import {

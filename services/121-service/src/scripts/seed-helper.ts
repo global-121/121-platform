@@ -4,7 +4,7 @@ import { FspQuestionEntity } from '@121-service/src/financial-service-providers/
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
+import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -24,7 +24,7 @@ export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly programFspConfigurationService: ProgramFspConfigurationService,
+    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
   ) {}
   public async addDefaultUsers(
     program: ProgramEntity,
