@@ -15,6 +15,9 @@ graph LR
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
+  ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
+  ProgramModule-->IntersolveVisaModule
+  IntersolveVisaModule-->UserModule
   OrganizationModule-->UserModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
@@ -52,15 +55,11 @@ graph LR
   RegistrationsModule-->FinancialServiceProvidersModule
   RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->UserModule
-  IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->QueueMessageModule
-  IntersolveVisaModule-->RegistrationDataModule
-  IntersolveVisaModule-->RedisModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->QueueRegistrationUpdateModule
+  RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->UserModule
@@ -88,9 +87,16 @@ graph LR
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationDataModule
+  PaymentsModule-->TransactionQueuesModule
+  TransactionQueuesModule-->RedisModule
+  PaymentsModule-->FinancialServiceProvidersModule
+  PaymentsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  PaymentsModule-->RedisModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
+  MetricsModule-->RegistrationDataModule
+  MigrateVisaModule-->UserModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule
@@ -102,4 +108,14 @@ graph LR
   NoteModule-->UserModule
   AuthModule-->UserModule
   AuthModule-->PassportModule
+  TransactionJobProcessorsModule-->RedisModule
+  TransactionJobProcessorsModule-->IntersolveVisaModule
+  TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  TransactionJobProcessorsModule-->RegistrationsModule
+  TransactionJobProcessorsModule-->ProgramModule
+  TransactionJobProcessorsModule-->TransactionsModule
+  TransactionJobProcessorsModule-->QueueMessageModule
+  TransactionJobProcessorsModule-->FinancialServiceProvidersModule
+  TransactionJobProcessorsModule-->EventsModule
+  TransactionJobProcessorsModule-->MessageTemplateModule
 ```

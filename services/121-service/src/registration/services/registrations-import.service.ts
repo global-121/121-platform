@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -31,15 +31,14 @@ import {
 import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.service';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 const BATCH_SIZE = 500;
 const MASS_UPDATE_ROW_LIMIT = 100000;
@@ -62,8 +61,7 @@ export class RegistrationsImportService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly fileImportService: FileImportService,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly eventsService: EventsService,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
