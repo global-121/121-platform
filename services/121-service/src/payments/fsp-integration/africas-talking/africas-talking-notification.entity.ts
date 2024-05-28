@@ -21,13 +21,13 @@ export class AfricasTalkingNotificationEntity extends Base121Entity {
   @Column()
   public provider: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public providerRefId: string | null;
 
   @Column()
   public providerChannel: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public clientAccount: string | null;
 
   @Column()
@@ -48,10 +48,10 @@ export class AfricasTalkingNotificationEntity extends Base121Entity {
   @Column()
   public value: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public transactionFee: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public providerFee: string | null;
 
   @Column()
@@ -66,6 +66,6 @@ export class AfricasTalkingNotificationEntity extends Base121Entity {
   @Column('json', { default: null })
   public providerMetadata: Record<string, unknown>;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public transactionDate: string | null;
 }

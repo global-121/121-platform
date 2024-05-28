@@ -35,7 +35,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public programQuestionId: number | null;
 
   @ManyToOne(
@@ -44,7 +44,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'fspQuestionId' })
   public fspQuestion: FspQuestionEntity;
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public fspQuestionId: number | null;
 
   @ManyToOne(
@@ -53,7 +53,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programCustomAttributeId' })
   public programCustomAttribute: ProgramCustomAttributeEntity;
-  @Column({ nullable: true })
+  @Column({ type: 'integer', nullable: true })
   public programCustomAttributeId: number | null;
 
   @Index()

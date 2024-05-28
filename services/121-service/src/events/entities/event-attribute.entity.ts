@@ -15,6 +15,6 @@ export class EventAttributeEntity extends Base121Entity {
   @Column()
   public key: EventAttributeKeyEnum;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public value: string | null;
 }

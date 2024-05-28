@@ -17,10 +17,10 @@ export class WhatsappTemplateTestEntity extends Base121Entity {
   @Column()
   public messageKey: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'boolean', nullable: true })
   public succes: boolean | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public callback: string | null;
 
   @Index()

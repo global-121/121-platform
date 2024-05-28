@@ -14,7 +14,7 @@ import {
 @Entity('intersolve_visa_customer')
 export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @Index()
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', nullable: true })
   public holderId: string | null;
 
   @OneToOne(() => RegistrationEntity)
