@@ -9,7 +9,6 @@ import { HeaderComponent } from '../components/header/header.component';
 import { LanguageSwitcherComponent } from '../components/language-switcher/language-switcher.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
-import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
 import { RegistrationActivityDetailComponent } from '../components/registration-activity-detail/registration-activity-detail.component';
 import { SelectTypeaheadComponent } from '../components/select-typeahead/select-typeahead.component';
 import { StatusTableFilterComponent } from '../components/status-table-filter/status-table-filter.component';
@@ -26,9 +25,8 @@ import { ExportFspInstructionsComponent } from '../program/export-fsp-instructio
 import { ExportListComponent } from '../program/export-list/export-list.component';
 import { ExportSelectComponent } from '../program/export-select/export-select.component';
 import { ImportFspReconciliationComponent } from '../program/import-fsp-reconciliation/import-fsp-reconciliation.component';
-import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
-import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { ProgramTabsNavigationComponent } from '../program/program-tabs-navigation/program-tabs-navigation.component';
 import { RegistrationActivityDetailAccordionComponent } from '../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { TableFilterRowComponent } from '../program/table-filter-row/table-filter-row.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
@@ -54,7 +52,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     InputPromptComponent,
     OnlyAllowedInputDirective,
     PasswordToggleInputComponent,
-    PhaseNextComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,
     SystemNotificationComponent,
@@ -78,8 +75,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     NgxDatatableModule,
     HeaderComponent,
     UserStateComponent,
-    ProgramNavigationComponent,
-    PhaseNavigationComponent,
+    ProgramTabsNavigationComponent,
     SelectTypeaheadComponent,
     LanguageSwitcherComponent,
     RegistrationActivityDetailComponent,
@@ -99,9 +95,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     InputPromptComponent,
     NgxDatatableModule,
     PasswordToggleInputComponent,
-    PhaseNavigationComponent,
-    PhaseNextComponent,
-    ProgramNavigationComponent,
+    ProgramTabsNavigationComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,
     RouterModule,

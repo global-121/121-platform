@@ -7,7 +7,6 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -77,14 +76,6 @@ export async function postCustomAttribute(
     .send(customAttribute);
 }
 
-export async function publishProgram(
-  programId: number,
-): Promise<request.Response> {
-  return await getServer()
-    .patch(`/programs/${programId}`)
-    .send({ phase: 'registrationValidation' });
-}
-
 export async function unpublishProgram(
   programId: number,
   accessToken: string,
@@ -95,17 +86,6 @@ export async function unpublishProgram(
     .send({
       published: false,
     });
-}
-
-export async function changePhase(
-  programId: number,
-  newPhase: ProgramPhase,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .patch(`/programs/${programId}`)
-    .set('Cookie', [accessToken])
-    .send({ phase: newPhase });
 }
 
 export async function doPayment(

@@ -34,7 +34,7 @@ import {
 import {
   PaTableAttribute,
   Program,
-  ProgramPhase,
+  ProgramTab,
 } from 'src/app/models/program.model';
 import { TableFilterType } from 'src/app/models/table-filter.model';
 import {
@@ -84,15 +84,16 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   @Input()
   public programId: number;
   @Input()
-  public thisPhase: ProgramPhase;
+  public displayImportRegistration = false;
+  @Input()
+  public currentProgramTab: ProgramTab;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public phaseEnum = ProgramPhase;
+  public ProgramTab = ProgramTab;
 
   public program: Program;
   private paTableAttributes: PaTableAttribute[] = [];
-  public activePhase: ProgramPhase;
 
   private locale: string;
 
@@ -155,6 +156,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private messageColumnStatus = MessageStatusMapping;
   public pageMetaData: PaginationMetadata;
   public messageTemplates: MessageTemplate[];
+
+  public Permission = Permission;
 
   constructor(
     private authService: AuthService,
@@ -244,18 +247,17 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
-      { phase: this.thisPhase },
     );
 
-    this.activePhase = this.program.phase;
-
     this.columns = await this.tableService.loadColumns(
-      this.thisPhase,
       this.program,
       this.canViewPersonalData,
     );
 
-    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+    if (
+      this.canViewPaymentData &&
+      this.currentProgramTab === ProgramTab.payment
+    ) {
       this.paymentHistoryColumn =
         this.tableService.createPaymentHistoryColumn();
     }
@@ -286,7 +288,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.pubSubSubscription = this.pubSub.subscribe(
         PubSubEvent.dataRegistrationChanged,
         () => {
-          if (this.router.url.includes(this.thisPhase)) {
+          if (this.router.url.includes(this.currentProgramTab)) {
             this.refreshData();
           }
         },
@@ -429,7 +431,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           this.programId,
           action.permissions,
         ) &&
-        action.phases.includes(this.thisPhase) &&
+        action.tabs.includes(this.currentProgramTab) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
@@ -553,9 +555,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       paymentCountRemaining: person.paymentCountRemaining,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
-            [ProgramPhase.inclusion, ProgramPhase.payment].includes(
-              this.thisPhase,
-            )
+            this.currentProgramTab === ProgramTab.payment
               ? `(${
                   person.maxPayments - person.paymentCount
                 } ${this.translate.instant(
@@ -1154,5 +1154,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       payment: this.submitPaymentProps.payment,
       paymentAmount: null, // Not sending the amount makes the API call faster
     };
+  }
+
+  public isColumnWithSpecialFormatting(column: string): boolean {
+    return this.tableService.isColumnWithSpecialFormatting(column);
   }
 }

@@ -1,0 +1,17 @@
+:root {
+  --ion-color-fiveten-navy-900: #00214d;
+  --ion-color-fiveten-navy-900-rgb: 0, 33, 77;
+  --ion-color-fiveten-navy-900-contrast: #ffffff;
+  --ion-color-fiveten-navy-900-contrast-rgb: 255, 255, 255;
+  --ion-color-fiveten-navy-900-shade: #001d44;
+  --ion-color-fiveten-navy-900-tint: #1a375f;
+}
+
+.ion-color-fiveten-navy-900 {
+  --ion-color-base: var(--ion-color-fiveten-navy-900);
+  --ion-color-base-rgb: var(--ion-color-fiveten-navy-900-rgb);
+  --ion-color-contrast: var(--ion-color-fiveten-navy-900-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-fiveten-navy-900-contrast-rgb);
+  --ion-color-shade: var(--ion-color-fiveten-navy-900-shade);
+  --ion-color-tint: var(--ion-color-fiveten-navy-900-tint);
+}

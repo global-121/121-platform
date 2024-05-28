@@ -1,8 +1,6 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { ProgramPhase } from '@121-service/src/shared/enum/program-phase.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  changePhase,
   doPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -366,16 +364,7 @@ export async function seedIncludedRegistrations(
   programId: number,
   accessToken: string,
 ): Promise<void> {
-  await changePhase(
-    programId,
-    ProgramPhase.registrationValidation,
-    accessToken,
-  );
-
   await importRegistrations(programId, registrations, accessToken);
-
-  await changePhase(programId, ProgramPhase.inclusion, accessToken);
-  await changePhase(programId, ProgramPhase.payment, accessToken);
 
   await awaitChangePaStatus(
     programId,

@@ -2,13 +2,10 @@
   <ion-item
     lines="none"
     color="light"
-    class="programs-list-header"
+    class="ion-no-padding"
   >
-    <ion-col class="ion-padding">
-      <h2
-        class="ion-no-margin ion-padding-top"
-        class="programs-list-title"
-      >
+    <div class="util--page-margin-horizontal">
+      <h2 class="ion-padding-top">
         <strong>
           {{ 'page.programs-list.pageTitle' | translate }}
         </strong>
@@ -19,25 +16,25 @@
       <p
         data-testid="update-property-item-list-header"
         *ngIf="items?.length > 0"
-        class="ion-no-margin"
+        class="ion-margin-vertical"
       >
         {{
           'page.programs-list.pageSubtitle'
             | translate: { nrPrograms: items?.length }
         }}
       </p>
-    </ion-col>
+    </div>
   </ion-item>
   <ion-row
     *ngIf="loading"
-    class="ion-justify-content-center ion-align-items-center ion-padding"
+    class="ion-justify-content-center ion-align-items-center"
     style="min-height: 400px"
   >
-    <ion-spinner color="portal-primary"></ion-spinner>
+    <ion-spinner color="primary"></ion-spinner>
   </ion-row>
   <ion-row
     *ngIf="!loading"
-    class="ion-padding"
+    class="util--page-margin-horizontal"
   >
     <ion-col
       *ngFor="let program of items"

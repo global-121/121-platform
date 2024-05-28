@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": true,
-  "phase": "design",
   "location": "Ukraine",
   "ngo": "Dorcas Ukraine",
   "titlePortal": {
@@ -36,7 +35,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfHouseHoldMembers",
@@ -45,7 +45,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfMaleAdults",
@@ -54,7 +55,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOFemaleAdults",
@@ -63,7 +65,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfMaleElderly",
@@ -72,7 +75,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOFemaleElderly",
@@ -81,7 +85,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfBoys",
@@ -90,7 +95,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfGirls",
@@ -99,7 +105,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfIllnessInHousehold",
@@ -108,7 +115,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfDisabilitiesInHousehold",
@@ -117,7 +125,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "nrOfPregnantInHousehold",
@@ -126,7 +135,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "householdSituation",
@@ -168,7 +178,8 @@
       ],
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "phoneNumber",
@@ -182,7 +193,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "gender",
@@ -216,7 +228,8 @@
       ],
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "dateOfBirth",
@@ -225,7 +238,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "taxNumberAdult1",
@@ -235,7 +249,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "taxNumberAdult2",
@@ -245,7 +260,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "taxNumberAdult3",
@@ -255,7 +271,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "taxNumberAdult4",
@@ -265,7 +282,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "commentsFromEnumerator",
@@ -274,7 +292,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
-      "scoring": {}
+      "scoring": {},
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

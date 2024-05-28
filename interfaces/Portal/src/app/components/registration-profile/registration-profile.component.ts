@@ -33,6 +33,9 @@ export class RegistrationProfileComponent implements OnInit {
   @Input()
   public program: Program;
 
+  @Input()
+  public addHorizontalMargins = false;
+
   public events: Event[];
 
   public lastRegistrationStatusChangeEvent: Event;

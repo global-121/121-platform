@@ -1,7 +1,6 @@
 {
   "published": true,
   "validation": false,
-  "phase": "design",
   "location": "Ethiopia",
   "ngo": "EKHCDC",
   "titlePortal": {
@@ -39,10 +38,10 @@
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
-      "phases": [],
       "editableInPortal": true,
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "phoneNumber",
@@ -56,11 +55,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "idNumber",
@@ -74,11 +73,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": true,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "age",
@@ -92,11 +91,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "gender",
@@ -125,11 +124,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyFemale",
@@ -143,11 +142,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyMale",
@@ -161,11 +160,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "totalFamilyMembers",
@@ -179,11 +178,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyFemaleUnder18",
@@ -197,11 +196,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyMaleUnder18",
@@ -215,11 +214,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyFemaleOver18",
@@ -233,11 +232,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyMaleOver18",
@@ -251,11 +250,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyFemaleDisabilityUnder18",
@@ -269,11 +268,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyMaleDisabilityUnder18",
@@ -287,11 +286,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyFemaleDisabilityOver18",
@@ -305,11 +304,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     },
     {
       "name": "howManyMaleDisabilityOver18",
@@ -323,11 +322,11 @@
       "scoring": {},
       "persistence": true,
       "pattern": null,
-      "phases": [],
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
       "duplicateCheck": false,
-      "placeholder": null
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {

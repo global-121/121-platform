@@ -3,7 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AppRoutes } from './app-routes.enum';
 import { AuthGuard } from './auth/auth.guard';
-import { ProgramPhase } from './models/program.model';
+import { ProgramTab } from './models/program.model';
 
 const routes: Routes = [
   {
@@ -62,7 +62,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard',
+        redirectTo: ProgramTab.peopleAffected,
       },
       {
         path: 'dashboard',
@@ -79,42 +79,26 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.design,
+        path: ProgramTab.overview,
         loadChildren: () =>
-          import('./pages/design/design.module').then(
-            (m) => m.DesignPageModule,
+          import('./pages/program-overview/program-overview.module').then(
+            (m) => m.ProgramOverviewPageModule,
           ),
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.registrationValidation,
+        path: ProgramTab.peopleAffected,
         loadChildren: () =>
-          import(
-            './pages/registration-validation/registration-validation.module'
-          ).then((m) => m.RegistrationValidationPageModule),
-        canActivate: [AuthGuard],
-      },
-      {
-        path: ProgramPhase.inclusion,
-        loadChildren: () =>
-          import('./pages/inclusion/inclusion.module').then(
-            (m) => m.InclusionPageModule,
+          import('./pages/people-affected/people-affected.module').then(
+            (m) => m.PeopleAffectedPageModule,
           ),
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.payment,
+        path: ProgramTab.payment,
         loadChildren: () =>
           import('./pages/payment/payment.module').then(
             (m) => m.PaymentPageModule,
-          ),
-        canActivate: [AuthGuard],
-      },
-      {
-        path: ProgramPhase.evaluation,
-        loadChildren: () =>
-          import('./pages/evaluation/evaluation.module').then(
-            (m) => m.EvaluationPageModule,
           ),
         canActivate: [AuthGuard],
       },
@@ -128,9 +112,15 @@ const routes: Routes = [
       },
       {
         // Fallback for change in url, from old to new syntax:
-        path: 'registration-validation',
+        path: 'registrationValidation',
         pathMatch: 'full',
-        redirectTo: ProgramPhase.registrationValidation,
+        redirectTo: ProgramTab.peopleAffected,
+      },
+      {
+        // Fallback for change in url, from old to new syntax:
+        path: 'inclusion',
+        pathMatch: 'full',
+        redirectTo: ProgramTab.peopleAffected,
       },
     ],
   },

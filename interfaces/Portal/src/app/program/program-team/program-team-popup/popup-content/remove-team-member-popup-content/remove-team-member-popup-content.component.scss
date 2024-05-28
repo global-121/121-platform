@@ -1,7 +1,7 @@
 ion-searchbar {
   border-radius: 5px;
   --box-shadow: none;
-  border: 1px solid var(--fiveten-neutral-200);
+  border: 1px solid var(--ion-color-fiveten-neutral-300);
   height: 44px;
   margin-bottom: 14px;
 }
@@ -21,11 +21,11 @@ ion-searchbar {
 }
 
 ion-select {
-  --border-color: var(--fiveten-neutral-200);
+  --border-color: var(--ion-color-fiveten-neutral-300);
   height: 44px;
   min-height: 44px;
   &::part(label) {
-    color: var(--fiveten-neutral-200);
+    color: var(--ion-color-fiveten-neutral-300);
   }
   &::part(icon) {
     width: 20px;
@@ -51,7 +51,7 @@ ion-select {
     z-index: 3;
     border-radius: 0px 0px 5px 5px;
     --box-shadow: none;
-    border: 1px solid var(--fiveten-neutral-200);
+    border: 1px solid var(--ion-color-fiveten-neutral-300);
     width: 100%;
   }
 }

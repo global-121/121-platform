@@ -84,11 +84,9 @@
   },
   "header": {
     "create-program": "Create Program",
-    "dashboard": "Dashboard",
     "help": "Help",
     "home": "Home",
     "menu": "Menu",
-    "team": "Team",
     "users": "Users"
   },
   "ngx-datatable": {
@@ -252,33 +250,6 @@
             "week": "weekly",
             "weeks2": "2 weekly"
           }
-        }
-      },
-      "phases": {
-        "design": {
-          "btnText": "Open for registration",
-          "label": "Design"
-        },
-        "evaluation": {
-          "btnText": "Terminate program",
-          "label": "Evaluation"
-        },
-        "inclusion": {
-          "btnText": "Move to: Payment",
-          "label": "Inclusion"
-        },
-        "payment": {
-          "btnText": "Move to: Evaluation",
-          "label": "Payment"
-        },
-        "registrationValidation": {
-          "actionText-disabled-registrations": "Registrations are now disabled for this program",
-          "actionText-enabled-registrations": "Registrations are now enabled for this program",
-          "btnText": "Move to: Inclusion",
-          "btnText-no-validation": "Move to: Inclusion",
-          "label": "Registration & validation",
-          "label-no-validation": "Registration",
-          "toggleText-enable-registrations": "Allow new registrations"
         }
       },
       "program-details": {
@@ -514,6 +485,26 @@
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status."
         }
       },
+      "tab": {
+        "dashboard": {
+          "label": "Monitoring"
+        },
+        "overview": {
+          "label": "Overview"
+        },
+        "payment": {
+          "label": "Payment"
+        },
+        "people-affected": {
+          "actionText-disabled-registrations": "Registrations are now disabled for this program",
+          "actionText-enabled-registrations": "Registrations are now enabled for this program",
+          "label": "People Affected",
+          "toggleText-enable-registrations": "Allow new registrations"
+        },
+        "team": {
+          "label": "Team"
+        }
+      },
       "table-filter-row": {
         "apply-filter": "Apply Filter",
         "clear-all": "Clear all filters",
@@ -575,7 +566,6 @@
         "budget": "Total project budget ",
         "included": "Included People Affected",
         "spent": "Spent money",
-        "status": "Program status: ",
         "targeted": "Targeted People Affected",
         "updated": "Last updated: "
       },
