@@ -278,15 +278,23 @@ export function getVisaWalletsAndDetails(
   referenceId: string,
   accessToken: string,
 ): Promise<request.Response> {
-  const queryParams = {
-    referenceId,
-  };
-
   return getServer()
     .get(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
     )
-    .query(queryParams)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+export function retrieveAndUpdateVisaWalletsAndDetails(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
+    )
     .set('Cookie', [accessToken])
     .send();
 }
@@ -297,8 +305,8 @@ export function issueNewVisaCard(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .put(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
+    .post(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
     )
     .set('Cookie', [accessToken])
     .send();
@@ -308,10 +316,11 @@ export function blockVisaCard(
   programId: number,
   tokenCode: string,
   accessToken: string,
+  referenceId: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/block`,
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=true`,
     )
     .set('Cookie', [accessToken])
     .send({});
@@ -321,10 +330,11 @@ export function unblockVisaCard(
   programId: number,
   tokenCode: string,
   accessToken: string,
+  referenceId: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/unblock`,
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=false`,
     )
     .set('Cookie', [accessToken])
     .send({});
@@ -339,6 +349,24 @@ export function getMessageHistory(
     .get(`/programs/${programId}/registrations/message-history/${referenceId}`)
     .set('Cookie', [accessToken])
     .send();
+}
+
+export async function getMessageHistoryUntilX(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+  x: number,
+): Promise<request.Response> {
+  const response = await getMessageHistory(programId, referenceId, accessToken);
+
+  if (Array.isArray(response.body) && response.body.length >= x) {
+    return response;
+  }
+
+  // Wait for a second before making the next request to avoid overloading the server
+  await waitFor(400);
+
+  return getMessageHistoryUntilX(programId, referenceId, accessToken, x);
 }
 
 export async function seedPaidRegistrations(

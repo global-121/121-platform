@@ -169,8 +169,8 @@ describe('Do payment with filter', () => {
       [],
       accessToken,
       {
-        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
-        'filter.lastName': `$ilike:s`, // selects registrationOCW1 and registrationOCW3
+        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3
+        'filter.fullName': `$ilike:s`, // selects registrationOCW1 and registrationOCW3
       }, // This combination should only select registrationOCW3 that one is in both filters
     );
 
