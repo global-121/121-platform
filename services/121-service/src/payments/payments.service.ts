@@ -206,9 +206,11 @@ export class PaymentsService {
       await this.checkPaymentInProgressAndThrow(programId);
     }
 
+    // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
 
+    // Fill bulkActionResultDto with meta data of the payment being done
     const bulkActionResultDto =
       await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
@@ -216,6 +218,7 @@ export class PaymentsService {
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
+    // TODO: What is happening here? In which situation(s) does !amount evaluate to TRUE and what happens then?
     if (!amount) {
       return {
         ...bulkActionResultDto,
@@ -224,6 +227,7 @@ export class PaymentsService {
       };
     }
 
+    // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(
         programId,
@@ -231,6 +235,7 @@ export class PaymentsService {
         paginateQuery,
       );
 
+    // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
     const fspsInPayment: FinancialServiceProviderName[] = [];
@@ -246,17 +251,22 @@ export class PaymentsService {
         fspsInPayment.push(registration.financialServiceProvider);
       }
     }
+
+    // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
+    // TODO: REFACTOR: The definition of this DTO should live in its own file.
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
       fspsInPayment: fspsInPayment,
     };
 
+    // Create an array of referenceIds to be paid
     const referenceIds = registrationsForPayment.map(
       (registration) => registration.referenceId,
     );
 
     if (!dryRun && referenceIds.length > 0) {
+      // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment(
         userId,
         programId,
@@ -327,11 +337,14 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
+    // Split the referenceIds into chunks of 1000, to prevent heap out of memory errors
     const BATCH_SIZE = 1000;
     const paymentChunks = splitArrayIntoChunks(referenceIds, BATCH_SIZE);
 
     let paymentTransactionResult = 0;
     for (const chunk of paymentChunks) {
+      // TODO: REFACTOR: Registration and related data was already retrieved in postPayment, why first strip it down to referenceids and then retrieve it again?
+      // Get the PA data for the payment
       const paPaymentDataList = await this.getPaymentList(
         chunk,
         amount,
@@ -423,6 +436,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
   ): Promise<number> {
+    // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
     await this.makePaymentRequest(paLists, programId, payment);
@@ -430,6 +444,7 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
+  // TODO: REFACTOR: This method can be private
   public async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
@@ -450,6 +465,7 @@ export class PaymentsService {
   }
 
   private async isPaymentInProgress(programId: number): Promise<boolean> {
+    // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether.
     // check progress based on actions-table first
     const actionsInProgress =
       await this.checkPaymentActionInProgress(programId);
@@ -477,6 +493,7 @@ export class PaymentsService {
       programId,
       AdditionalActionType.paymentStarted,
     );
+    // TODO: REFACTOR: Use the Redis way of determining if a payment is in progress, see function this.checkFspQueueProgress
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
@@ -528,6 +545,7 @@ export class PaymentsService {
     }, {});
   }
 
+  // TODO: REFACTOR: This method does not make payment requests, but results in jobs added to queues. Rename to reflect this.
   private async makePaymentRequest(
     paLists: SplitPaymentListDto,
     programId: number,
@@ -535,6 +553,24 @@ export class PaymentsService {
   ): Promise<void> {
     await Promise.all(
       Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
+        if (fsp === FinancialServiceProviderName.intersolveVisa) {
+          /*
+            TODO: REFACTOR: We need to refactor the Payments Service during segregation of duties implementation, so that the Payments Service calls a private function per FSP with a list of ReferenceIds (or RegistrationIds ?!)
+            which then gathers the necessary data to create transfer jobs for the FSP.
+
+            Until then, we do a temporary hack here for Intersolve Visa, mapping paPaymentList to only a list of referenceIds. The only thing is we do not know here if this is a retry.
+            See this.createIntersolveVisaTransferJobs() of how this is handled.
+          */
+
+          // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
+          return await this.createAndAddIntersolveVisaTransferJobs(
+            paPaymentList.map((paPaymentData) => paPaymentData.referenceId),
+            programId,
+            paPaymentList[0].transactionAmount,
+            payment,
+          );
+        }
+
         const [paymentService, useWhatsapp] =
           this.financialServiceProviderNameToServiceMap[fsp];
         return await paymentService.sendPayment(
@@ -545,6 +581,33 @@ export class PaymentsService {
         );
       }),
     );
+  }
+
+  // TODO: Needed to add _'s to allow unused parameters, as this function is not yet implemented
+  private async createAndAddIntersolveVisaTransferJobs(
+    referenceIds: string[],
+    _programId: number,
+    _paymentAmount: number,
+    _paymentNumber: number,
+  ): Promise<void> {
+    /* TODO: continue implementing this function:
+    - Call getPaymentListForRetry to determine if this is a retry attempt, then get the transfer amount from the transaction instead of calculating it with paymentAmountMultiplier. REFACTOR: with segregation of duties implementation.
+    - Get necessary PA data (see getPaPaymentDetails etc. logic in IntersolveVisaService.sendPayment)
+    - Map PA data to FSP specific DTO: CreateIntersolveVisaTransferJobDto, see Miro for how the DTO will look like
+    - Call to be created TransferQueues.addIntersolveVisaTransferJobs(createIntersolveVisaTransferJobDto[])
+    */
+
+    // TODO: Fill with the list of fields we want
+    // TODO: Get these fieldNames from the FinancialServiceProviderQuestions
+    const dataFieldNames = [];
+
+    // Get necessary Registration and RegistrationData data
+    await this.registrationScopedRepository.getRegistrationsWithData(
+      referenceIds,
+      dataFieldNames,
+    );
+    // TODO: Map name dynamically with the help of ProgramFinancialServiceProviderConfigurations
+    // TODO: Add missing call to addIntersolveVisaTransferJobs() here
   }
 
   private failedTransactionForRegistrationAndPayment(
