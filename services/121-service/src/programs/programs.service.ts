@@ -36,6 +36,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
+interface FoundProgram
+  extends Omit<
+      ProgramEntity,
+      'monitoringDashboardUrl' | 'programFspConfiguration'
+    >,
+    Partial<
+      Pick<ProgramEntity, 'monitoringDashboardUrl' | 'programFspConfiguration'>
+    > {}
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
