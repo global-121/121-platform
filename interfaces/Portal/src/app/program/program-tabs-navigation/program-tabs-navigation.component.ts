@@ -48,16 +48,22 @@ export class ProgramTabsNavigationComponent implements OnInit {
       Permission.ProgramMetricsREAD,
     );
 
-    this.programTabs = programTabs.map((item: Tab) => {
-      if (item.name === ProgramTab.team) {
-        item.disabled = !canReadAidWorkers;
-      }
+    this.programTabs = programTabs
+      .map((item: Tab) => {
+        if (item.name === ProgramTab.team) {
+          item.disabled = !canReadAidWorkers;
+        }
 
-      if (item.name === ProgramTab.monitoring) {
-        item.disabled = !canViewMetrics && dashboardIsEnabled;
-      }
+        if (item.name === ProgramTab.monitoring) {
+          if (!dashboardIsEnabled) {
+            return null;
+          }
 
-      return item;
-    });
+          item.disabled = !canViewMetrics && dashboardIsEnabled;
+        }
+
+        return item;
+      })
+      .filter(Boolean);
   }
 }
