@@ -15,6 +15,7 @@ import { BelcashService } from '@121-service/src/payments/fsp-integration/belcas
 import { BobFinanceService } from '@121-service/src/payments/fsp-integration/bob-finance/bob-finance.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveJumboService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -71,6 +72,11 @@ export class PaymentsService {
     // Add more FSP mappings if they work queue-based
   };
 
+  private financialServiceProviderNameToServiceMap: Record<
+    FinancialServiceProviderName,
+    [FinancialServiceProviderIntegrationInterface, useWhatsapp?: boolean]
+  >;
+
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly actionService: ActionsService,
@@ -91,7 +97,36 @@ export class PaymentsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+    this.financialServiceProviderNameToServiceMap = {
+      [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+        this.intersolveVoucherService,
+        true,
+      ],
+      [FinancialServiceProviderName.intersolveVoucherPaper]: [
+        this.intersolveVoucherService,
+        false,
+      ],
+      [FinancialServiceProviderName.intersolveVisa]: [
+        this.intersolveVisaService,
+      ],
+      [FinancialServiceProviderName.intersolveJumboPhysical]: [
+        this.intersolveJumboService,
+      ],
+      [FinancialServiceProviderName.africasTalking]: [
+        this.africasTalkingService,
+      ],
+      [FinancialServiceProviderName.belcash]: [this.belcashService],
+      [FinancialServiceProviderName.vodacash]: [this.vodacashService],
+      [FinancialServiceProviderName.bobFinance]: [this.bobFinanceService],
+      [FinancialServiceProviderName.ukrPoshta]: [this.ukrPoshtaService],
+      [FinancialServiceProviderName.safaricom]: [this.safaricomService],
+      [FinancialServiceProviderName.commercialBankEthiopia]: [
+        this.commercialBankEthiopiaService,
+      ],
+      [FinancialServiceProviderName.excel]: [this.excelService],
+    };
+  }
 
   public async getPayments(programId: number): Promise<
     {
@@ -483,191 +518,33 @@ export class PaymentsService {
   private splitPaListByFsp(
     paPaymentDataList: PaPaymentDataDto[],
   ): SplitPaymentListDto {
-    const intersolvePaPayment = [];
-    const intersolveNoWhatsappPaPayment = [];
-    const intersolveVisaPaPayment = [];
-    const intersolveJumboPhysicalPaPayment = [];
-    const africasTalkingPaPayment = [];
-    const belcashPaPayment = [];
-    const bobFinancePaPayment = [];
-    const ukrPoshtaPaPayment = [];
-    const vodacashPaPayment = [];
-    const safaricomPaPayment = [];
-    const commercialBankEthiopiaPaPayment = [];
-    const excelPaPayment = [];
+    const output: SplitPaymentListDto = {};
     for (const paPaymentData of paPaymentDataList) {
-      if (
-        paPaymentData.fspName ===
-        FinancialServiceProviderName.intersolveVoucherWhatsapp
-      ) {
-        intersolvePaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName ===
-        FinancialServiceProviderName.intersolveVoucherPaper
-      ) {
-        intersolveNoWhatsappPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.intersolveVisa
-      ) {
-        intersolveVisaPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName ===
-        FinancialServiceProviderName.intersolveJumboPhysical
-      ) {
-        intersolveJumboPhysicalPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.africasTalking
-      ) {
-        africasTalkingPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.belcash
-      ) {
-        belcashPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.bobFinance
-      ) {
-        bobFinancePaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.ukrPoshta
-      ) {
-        ukrPoshtaPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.vodacash
-      ) {
-        vodacashPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName === FinancialServiceProviderName.safaricom
-      ) {
-        safaricomPaPayment.push(paPaymentData);
-      } else if (
-        paPaymentData.fspName ===
-        FinancialServiceProviderName.commercialBankEthiopia
-      ) {
-        commercialBankEthiopiaPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FinancialServiceProviderName.excel) {
-        excelPaPayment.push(paPaymentData);
-      } else {
-        console.log('fsp does not exist: paPaymentData: ', paPaymentData);
-        throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
+      if (!output[paPaymentData.fspName]) {
+        output[paPaymentData.fspName] = [];
       }
+      output[paPaymentData.fspName].push(paPaymentData);
     }
-    return {
-      intersolvePaPayment,
-      intersolveNoWhatsappPaPayment,
-      intersolveVisaPaPayment,
-      intersolveJumboPhysicalPaPayment,
-      africasTalkingPaPayment,
-      belcashPaPayment,
-      bobFinancePaPayment,
-      ukrPoshtaPaPayment,
-      vodacashPaPayment,
-      safaricomPaPayment,
-      commercialBankEthiopiaPaPayment,
-      excelPaPayment,
-    };
+    return output;
   }
 
   private async makePaymentRequest(
-    paLists: any,
+    paLists: SplitPaymentListDto,
     programId: number,
     payment: number,
-  ): Promise<any> {
-    if (paLists.intersolveJumboPhysicalPaPayment.length) {
-      await this.intersolveJumboService.sendPayment(
-        paLists.intersolveJumboPhysicalPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.intersolvePaPayment.length) {
-      await this.intersolveVoucherService.sendPayment(
-        paLists.intersolvePaPayment,
-        programId,
-        payment,
-        true,
-      );
-    }
-    if (paLists.intersolveNoWhatsappPaPayment.length) {
-      await this.intersolveVoucherService.sendPayment(
-        paLists.intersolveNoWhatsappPaPayment,
-        programId,
-        payment,
-        false,
-      );
-    }
-
-    if (paLists.intersolveVisaPaPayment.length) {
-      await this.intersolveVisaService.sendPayment(
-        paLists.intersolveVisaPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.africasTalkingPaPayment.length) {
-      await this.africasTalkingService.sendPayment(
-        paLists.africasTalkingPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.belcashPaPayment.length) {
-      await this.belcashService.sendPayment(
-        paLists.belcashPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.safaricomPaPayment.length) {
-      await this.safaricomService.sendPayment(
-        paLists.safaricomPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.bobFinancePaPayment.length) {
-      await this.bobFinanceService.sendPayment(
-        paLists.bobFinancePaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.ukrPoshtaPaPayment.length) {
-      await this.ukrPoshtaService.sendPayment(
-        paLists.ukrPoshtaPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.vodacashPaPayment.length) {
-      await this.vodacashService.sendPayment(
-        paLists.vodacashPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.commercialBankEthiopiaPaPayment.length) {
-      await this.commercialBankEthiopiaService.sendPayment(
-        paLists.commercialBankEthiopiaPaPayment,
-        programId,
-        payment,
-      );
-    }
-
-    if (paLists.excelPaPayment.length) {
-      await this.excelService.sendPayment(
-        paLists.excelPaPayment,
-        programId,
-        payment,
-      );
-    }
+  ): Promise<void> {
+    await Promise.all(
+      Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
+        const [paymentService, useWhatsapp] =
+          this.financialServiceProviderNameToServiceMap[fsp];
+        return await paymentService.sendPayment(
+          paPaymentList,
+          programId,
+          payment,
+          useWhatsapp,
+        );
+      }),
+    );
   }
 
   private failedTransactionForRegistrationAndPayment(
