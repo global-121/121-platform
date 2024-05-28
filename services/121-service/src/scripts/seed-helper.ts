@@ -25,96 +25,72 @@ export class SeedHelper {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
-
   public async addDefaultUsers(
     program: ProgramEntity,
     debugScopeUsers: string[] = [],
   ): Promise<void> {
-    const programAdminUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-    });
+    const users = [
+      {
+        type: 'programAdminUser',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+        roles: [DefaultUserRole.ProgramAdmin],
+      },
+      {
+        type: 'viewOnlyUser',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+        roles: [DefaultUserRole.View],
+      },
+      {
+        type: 'koboUser',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO,
+        roles: [DefaultUserRole.KoboUser],
+      },
+      {
+        type: 'cvaManager',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+        roles: [DefaultUserRole.CvaManager],
+      },
+      {
+        type: 'cvaOfficer',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+        roles: [DefaultUserRole.CvaOfficer],
+      },
+      {
+        type: 'financeManager',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+        roles: [DefaultUserRole.FinanceManager],
+      },
+      {
+        type: 'financeOfficer',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
+        roles: [DefaultUserRole.FinanceOfficer],
+      },
+      {
+        type: 'ViewWithoutPII',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
+        roles: [DefaultUserRole.ViewWithoutPII],
+      },
+    ];
 
-    const viewOnlyUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
-    });
-
-    const koboUser = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO,
-    });
-
-    const cvaManager = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
-    });
-
-    const cvaOfficer = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
-    });
-
-    const financeManager = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
-    });
-
-    const financeOfficer = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
-    });
-
-    const ViewWithoutPII = await this.getOrSaveUser({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
-    });
-
-    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    if (programAdminUser) {
-      await this.assignAidworker(programAdminUser.id, program.id, [
-        DefaultUserRole.ProgramAdmin,
-      ]);
-    }
-    if (viewOnlyUser) {
-      await this.assignAidworker(viewOnlyUser.id, program.id, [
-        DefaultUserRole.View,
-      ]);
-    }
-    if (koboUser) {
-      await this.assignAidworker(koboUser.id, program.id, [
-        DefaultUserRole.KoboUser,
-      ]);
-    }
-    if (cvaManager) {
-      await this.assignAidworker(cvaManager.id, program.id, [
-        DefaultUserRole.CvaManager,
-      ]);
-    }
-    if (cvaOfficer) {
-      await this.assignAidworker(cvaOfficer.id, program.id, [
-        DefaultUserRole.CvaOfficer,
-      ]);
-    }
-    if (financeManager) {
-      await this.assignAidworker(financeManager.id, program.id, [
-        DefaultUserRole.FinanceManager,
-      ]);
-    }
-    if (financeOfficer) {
-      await this.assignAidworker(financeOfficer.id, program.id, [
-        DefaultUserRole.FinanceOfficer,
-      ]);
-    }
-    if (ViewWithoutPII) {
-      await this.assignAidworker(ViewWithoutPII.id, program.id, [
-        DefaultUserRole.ViewWithoutPII,
-      ]);
+    for (const user of users) {
+      const savedUser = await this.getOrSaveUser(user);
+      if (savedUser) {
+        await this.assignAidworker(savedUser.id, program.id, user.roles);
+      }
     }
 
     if (debugScopeUsers && DEBUG) {
       for (const debugScopeUser of debugScopeUsers) {
         const scopedUser = await this.getOrSaveUser({
+          type: 'debugScopedUser',
           username: `${debugScopeUser}@example.org`,
           password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
         });
@@ -130,10 +106,14 @@ export class SeedHelper {
     await this.assignAdminUserToProgram(program.id);
   }
 
-  public async getOrSaveUser(userInput: any): Promise<UserEntity> {
+  public async getOrSaveUser(userInput: {
+    type: string;
+    username?: string;
+    password?: string;
+  }): Promise<UserEntity | undefined> {
     if (!userInput.username || !userInput.password) {
       console.log(
-        `User not created, because username or password not set in environment`,
+        `User "${userInput.type}" not created, because username or password not set in environment`,
       );
       return;
     }

@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test Workflows'
+name: 'Test: Workflows'
 
 on:
   workflow_dispatch:

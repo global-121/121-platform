@@ -103,4 +103,48 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const pa2patchedResponse = pa2patched.body.data[0];
     assertRegistrationImport(pa2patchedResponse, PA2Patch);
   });
+
+  it('Should bulk update if phoneNumber column is empty and program is configured as not allowing empty phone number', async () => {
+    const PA1Patch = {
+      phoneNumber: '14155238886',
+      lastName: 'updated name1',
+      addressStreet: 'newStreet1',
+      addressHouseNumber: '2',
+      addressHouseNumberAddition: '',
+    };
+    const PA2Patch = {
+      phoneNumber: '14155238886',
+      lastName: 'updated name 2',
+      addressStreet: 'newStreet2',
+      addressHouseNumber: '3',
+      addressHouseNumberAddition: 'updated',
+    };
+
+    const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
+      programIdOcw,
+      './test-registration-data/test-registrations-patch-OCW-without-phoneNumber-column.csv',
+      accessToken,
+    );
+    expect(bulkUpdateResult.statusCode).toBe(200);
+
+    await waitFor(2000);
+
+    const pa1patched = await searchRegistrationByReferenceId(
+      '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+      programIdOcw,
+      accessToken,
+    );
+
+    const pa1patchedResponse = pa1patched.body.data[0];
+    assertRegistrationImport(pa1patchedResponse, PA1Patch);
+
+    const pa2patched = await searchRegistrationByReferenceId(
+      '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+      programIdOcw,
+      accessToken,
+    );
+
+    const pa2patchedResponse = pa2patched.body.data[0];
+    assertRegistrationImport(pa2patchedResponse, PA2Patch);
+  });
 });

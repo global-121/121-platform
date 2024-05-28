@@ -1,7 +1,9 @@
-name: 'CodeQL'
-
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+#
 # Learn more...
 # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning
+
+name: 'Test: Code scanning with CodeQL'
 
 on:
   workflow_dispatch:
