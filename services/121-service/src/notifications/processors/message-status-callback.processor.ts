@@ -1,12 +1,12 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 
+import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
+import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
 import {
   ProcessNameMessage,
   QueueNameMessageCallBack,
-} from '@121-service/src/notifications/enum/queue.names.enum';
-import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
-import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 @Processor(QueueNameMessageCallBack.status)
 export class MessageStatusCallbackProcessor {

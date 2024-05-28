@@ -1,19 +1,13 @@
 import { Injectable, Signal } from '@angular/core';
 
-import { queryOptions } from '@tanstack/angular-query-experimental';
-
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
   ActitivitiesResponse,
   FindAllRegistrationsResult,
-  IntersolveVisaCardStatus,
-  IntersolveVisaTokenStatus,
   Registration,
   SendMessageData,
-  VisaCard121Status,
-  VisaCardAction,
   WalletWithCards,
 } from '~/domains/registration/registration.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
@@ -95,89 +89,16 @@ export class RegistrationApiService extends DomainApiService {
     projectId: Signal<number>,
     referenceId: Signal<string | undefined>,
   ) {
-    // TODO: AB#30525 - Use the real endpoint from intersolve visa branch
-    // and use the 'generateQueryOptions' method instead of hardcoding the data here.
-    //
-    // return this.generateQueryOptions<WalletWithCards>({
-    //   path: [
-    //     ...BASE_ENDPOINT(projectId),
-    //     referenceId,
-    //     'financial-service-providers',
-    //     'intersolve-visa',
-    //     'wallet',
-    //   ],
-    //   enabled: () => !!referenceId(),
-    // });
-
-    return () => {
-      const path = [
+    return this.generateQueryOptions<WalletWithCards>({
+      path: [
         ...BASE_ENDPOINT(projectId),
         referenceId,
         'financial-service-providers',
         'intersolve-visa',
         'wallet',
-      ];
-      return queryOptions({
-        // eslint-disable-next-line @tanstack/query/exhaustive-deps
-        queryKey: this.pathToQueryKey(path),
-        queryFn: async () => {
-          // fake a bit of a delay
-          await new Promise((resolve) => setTimeout(resolve, 100));
-
-          const data: WalletWithCards = {
-            tokenCode: 'c7283364-55fd-4f6d-8496-e6b28fccbb95',
-            balance: 2500,
-            spentThisMonth: 300,
-            maxToSpendPerMonth: 15000,
-            lastUsedDate: '2024-10-01',
-            lastExternalUpdate: '2024-10-01T09:30:44.868Z',
-            cards: [
-              {
-                tokenCode: 'mock-token-5f3df5b7-77dc-4f7a-a2a9-2160b71e2e1c',
-                status: VisaCard121Status.Active,
-                explanation: '',
-                issuedDate: '2024-10-01T09:30:06.449Z',
-                actions: [VisaCardAction.pause, VisaCardAction.reissue],
-                debugInformation: {
-                  intersolveVisaCardStatus: IntersolveVisaCardStatus.CardOk,
-                  intersolveVisaTokenStatus: IntersolveVisaTokenStatus.Active,
-                  isTokenBlocked: false,
-                },
-              },
-              {
-                tokenCode: 'mock-token-0326e461-8861-48b4-8986-4712a7fa7ffb',
-                status: VisaCard121Status.Substituted,
-                explanation: 'Card has been substituted due to re-issue',
-                issuedDate: '2024-10-01T09:29:48.734Z',
-                actions: [],
-                debugInformation: {
-                  intersolveVisaCardStatus: IntersolveVisaCardStatus.CardOk,
-                  intersolveVisaTokenStatus:
-                    IntersolveVisaTokenStatus.Substituted,
-                  isTokenBlocked: false,
-                },
-              },
-              {
-                tokenCode: '3c45a5bb-99a6-4f5a-b9b2-07fce4572162',
-                status: VisaCard121Status.Substituted,
-                explanation: 'Card has been substituted due to re-issue',
-                issuedDate: '2024-10-01T09:28:40.313Z',
-                actions: [],
-                debugInformation: {
-                  intersolveVisaCardStatus: IntersolveVisaCardStatus.CardOk,
-                  intersolveVisaTokenStatus:
-                    IntersolveVisaTokenStatus.Substituted,
-                  isTokenBlocked: false,
-                },
-              },
-            ],
-          };
-
-          return data;
-        },
-        enabled: () => !!referenceId(),
-      });
-    };
+      ],
+      enabled: () => !!referenceId(),
+    });
   }
 
   changeCardPauseStatus({

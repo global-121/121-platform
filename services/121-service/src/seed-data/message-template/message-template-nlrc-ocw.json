@@ -69,7 +69,7 @@
       "tr": "Sevgili veli/bakıcı, yeni alışveriş kartınızı gönderdik. Kartı 3 hafta içinde alırsınız. Okul Öğünleri"
     }
   },
-  "blockVisaCard": {
+  "pauseVisaCard": {
     "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
@@ -79,7 +79,7 @@
       "tr": "Sevgili veli/bakıcı, alışveriş kartınız bloke edildi. Eğer nedenini bilmiyorsanız, 097 010 204 851 nolu telefonu arayın ya da Whatsapp mesajı gönderin. Okul Öğünleri"
     }
   },
-  "unblockVisaCard": {
+  "unpauseVisaCard": {
     "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
     "message": {
