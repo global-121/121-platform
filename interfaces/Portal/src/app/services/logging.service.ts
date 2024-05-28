@@ -21,6 +21,9 @@ export class LoggingService {
         disableCookiesUsage: true,
         isStorageUseDisabled: true,
         enableSessionStorageBuffer: true,
+        extensionConfig: {
+          ['AppInsightsCfgSyncPlugin']: { cfgUrl: '' },
+        },
       },
     });
 
