@@ -77,7 +77,7 @@
     "label": "Seleccionar un archivo"
   },
   "header": {
-    "help": "Ayuda",
+    "help": "Manual de usuario",
     "home": "Hogar",
     "menu": "Menú",
     "users": "Usuarios"
@@ -95,11 +95,6 @@
       "help-explanation-tooltip": "¡Así!",
       "introduction": "La información de esta pantalla proviene únicamente de los datos de la Plataforma 121.",
       "pageTitle": "Salpicadero"
-    },
-    "help": {
-      "pageTitle": "Ayuda",
-      "user-manual": "Manual de usuario",
-      "user-manual-content": "Es necesario añadirlo."
     },
     "home": {
       "pageTitle": "Hogar"

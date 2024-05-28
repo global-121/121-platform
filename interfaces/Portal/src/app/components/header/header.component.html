@@ -73,10 +73,17 @@
                   <ion-label>{{ 'header.users' | translate }}</ion-label>
                 </ion-item>
                 <ion-item
-                  lines="full"
-                  [routerLink]="['/', AppRoutes.help]"
+                  lines="none"
+                  href="https://manual.121.global/"
+                  target="_blank"
+                  class="ion-margin-vertical"
                 >
                   <ion-label>{{ 'header.help' | translate }}</ion-label>
+                  <ion-icon
+                    name="open-outline"
+                    slot="end"
+                    aria-hidden="true"
+                  ></ion-icon>
                 </ion-item>
               </ion-list>
             </ion-content>
