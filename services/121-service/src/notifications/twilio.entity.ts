@@ -10,6 +10,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
+  Relation,
 } from 'typeorm';
 
 export enum NotificationType {
@@ -43,13 +44,13 @@ export class TwilioMessageEntity extends Base121Entity {
   @Index()
   public status: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   public type: NotificationType;
 
   @Column({ type: 'timestamp' })
   public dateCreated: Date;
 
-  @Column({ default: MessageContentType.custom })
+  @Column({ default: MessageContentType.custom, type: 'varchar' })
   public contentType: MessageContentType;
 
   @Column({ type: 'character varying', nullable: true })
@@ -66,7 +67,7 @@ export class TwilioMessageEntity extends Base121Entity {
     (registration) => registration.twilioMessages,
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
@@ -76,7 +77,7 @@ export class TwilioMessageEntity extends Base121Entity {
 
   @OneToOne(() => TransactionEntity)
   @JoinColumn({ name: 'transactionId' })
-  public transaction: TransactionEntity;
+  public transaction: Relation<TransactionEntity>;
   @Column({ type: 'int', nullable: true })
   public transactionId: number | null;
 }

@@ -3,8 +3,8 @@ import { FinancialServiceProviderEntity } from '@121-service/src/financial-servi
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { isArray, isObject } from 'lodash';
-import { LocalizedString } from 'src/shared/enum/language.enums';
 
 export function overwriteProgramFspDisplayName(
   programFinancialServiceProviders: FinancialServiceProviderEntity[],

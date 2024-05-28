@@ -1,10 +1,11 @@
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
-} from '@121-service/seed-data/mock/visa-card.data';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+} from '@121-service/src/seed-data/mock/visa-card.data';
+
 import {
   doPayment,
   getTransactions,

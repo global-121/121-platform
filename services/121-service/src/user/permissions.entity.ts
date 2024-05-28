@@ -5,7 +5,7 @@ import { Column, Entity, Index, ManyToMany } from 'typeorm';
 
 @Entity('permission')
 export class PermissionEntity extends Base121Entity {
-  @Column()
+  @Column({ type: 'varchar' })
   @Index({ unique: true })
   public name: PermissionEnum;
 

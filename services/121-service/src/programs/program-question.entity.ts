@@ -3,8 +3,8 @@ import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { ApiProperty } from '@nestjs/swagger';
-import { LocalizedString } from 'src/shared/enum/language.enums';
 import { QuestionOption } from 'src/shared/enum/question.enums';
 import {
   BeforeRemove,
@@ -14,6 +14,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Relation,
   Unique,
 } from 'typeorm';
 
@@ -51,7 +52,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.programQuestions)
   @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  public program: Relation<ProgramEntity>;
   @Column()
   public programId: number;
 
@@ -81,7 +82,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
     () => RegistrationDataEntity,
     (registrationData) => registrationData.programQuestion,
   )
-  public registrationData: RegistrationDataEntity[];
+  public registrationData: Relation<RegistrationDataEntity[]>;
 
   @Column({ default: false })
   @ApiProperty({ example: false })

@@ -3,7 +3,9 @@ import { CustomAttributeType } from '@121-service/src/programs/dto/create-progra
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
-import { LocalizedString } from 'src/shared/enum/language.enums';
+
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+
 import {
   BeforeRemove,
   Check,
@@ -12,6 +14,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Relation,
   Unique,
 } from 'typeorm';
 
@@ -22,7 +25,7 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column()
   public name: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   public type: CustomAttributeType;
 
   @Column('json')
@@ -39,7 +42,7 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
     (program) => program.programCustomAttributes,
   )
   @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  public program: Relation<ProgramEntity>;
 
   @Column()
   public programId: number;
@@ -48,7 +51,7 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
     () => RegistrationDataEntity,
     (registrationData) => registrationData.programCustomAttribute,
   )
-  public registrationData: RegistrationDataEntity[];
+  public registrationData: Relation<RegistrationDataEntity[]>;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

@@ -1,7 +1,7 @@
-import { registrationVisa } from '@121-service/seed-data/mock/visa-card.data';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { registrationNotScopedPv } from '@121-service/test/fixtures/scoped-registrations';
 import {
   importRegistrations,

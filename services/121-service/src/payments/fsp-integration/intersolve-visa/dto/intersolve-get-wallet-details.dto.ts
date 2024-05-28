@@ -9,13 +9,14 @@ import {
   IntersolveVisaWalletStatus,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public tokenCode: string;
   @ApiProperty({ enum: WalletCardStatus121 })
-  public status: WalletCardStatus121;
+  public status: WrapperType<WalletCardStatus121>;
   @ApiProperty()
   public balance: number;
   @ApiProperty()
@@ -23,7 +24,7 @@ export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public lastUsedDate?: Date;
   @ApiProperty({ type: [VisaCardActionLink] })
-  public links: VisaCardActionLink[];
+  public links: VisaCardActionLink[]; ///
   @ApiProperty()
   public explanation: string;
   @ApiProperty()
@@ -31,9 +32,9 @@ export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public maxToSpendPerMonth: number;
   @ApiProperty()
-  public intersolveVisaCardStatus: IntersolveVisaCardStatus;
+  public intersolveVisaCardStatus: WrapperType<IntersolveVisaCardStatus>;
   @ApiProperty()
-  public intersolveVisaWalletStatus: IntersolveVisaWalletStatus;
+  public intersolveVisaWalletStatus: WrapperType<IntersolveVisaWalletStatus>;
 }
 
 export class GetWalletsResponseDto {

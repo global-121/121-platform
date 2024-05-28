@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "assets": [
+      {
+        "include": "**/*.json",
+        "outDir": "dist",
+        "watchAssets": true
+      },
+      {
+        "include": "**/*.csv",
+        "outDir": "dist",
+        "watchAssets": true
+      }
+    ],
+    "watchAssets": true,
+    "builder": {
+      "type": "swc",
+      "typeCheck": true,
+      "options": {
+        "extensions": [".js", ".ts", ".jsx", ".tsx"],
+        "swcrcPath": ".swcrc"
+      }
+    }
+  }
+}
