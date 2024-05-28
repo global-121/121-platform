@@ -12,6 +12,7 @@ import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/regi
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import {
   Controller,
   Get,
@@ -93,8 +94,8 @@ export class MetricsController {
   public async getExportList(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('exportType') exportType: ExportType,
-    @Query() queryParams: ExportDetailsQueryParamsDto,
+    @Param('exportType') exportType: WrapperType<ExportType>,
+    @Query() queryParams: WrapperType<ExportDetailsQueryParamsDto>,
     @Paginate() paginationQuery: PaginateQuery,
     @Query('format') format = 'json',
     @Req() req,

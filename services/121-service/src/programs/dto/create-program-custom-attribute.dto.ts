@@ -1,4 +1,5 @@
-import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -19,7 +20,7 @@ export class UpdateProgramCustomAttributeDto {
   @IsNotEmpty()
   @IsString()
   @IsEnum(CustomAttributeType)
-  public readonly type: CustomAttributeType;
+  public readonly type: WrapperType<CustomAttributeType>;
 
   @ApiProperty({
     example: {

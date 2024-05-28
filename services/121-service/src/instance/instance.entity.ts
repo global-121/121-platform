@@ -1,5 +1,5 @@
 import { Base121Entity } from '@121-service/src/base.entity';
-import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity } from 'typeorm';
 

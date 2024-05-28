@@ -17,6 +17,7 @@ import { RegistrationDataEntity } from '@121-service/src/registration/registrati
 import { ReferenceIdConstraints } from '@121-service/src/shared/const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import {
   IsEnum,
   IsInt,
@@ -35,6 +36,7 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  Relation,
   Unique,
 } from 'typeorm';
 
@@ -44,12 +46,12 @@ import {
 export class RegistrationEntity extends CascadeDeleteEntity {
   @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
   @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  public program: Relation<ProgramEntity>;
   @Column()
   public programId: number;
 
   @ManyToOne(() => UserEntity)
-  public user: UserEntity;
+  public user: Relation<UserEntity>;
 
   @Index()
   @Column({ type: 'character varying', nullable: true })
@@ -60,14 +62,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public referenceId: string;
 
   @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
-  public data: RegistrationDataEntity[];
+  public data: Relation<RegistrationDataEntity[]>;
 
   @Column({ type: 'character varying', nullable: true })
   public phoneNumber: string | null;
 
   @Column({ type: 'character varying', nullable: true })
   @IsEnum(LanguageEnum)
-  public preferredLanguage: LanguageEnum | null;
+  public preferredLanguage: WrapperType<LanguageEnum | null>;
 
   @Index({ unique: false })
   @Column({ type: 'integer', nullable: true })
@@ -109,43 +111,43 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     (_type) => TransactionEntity,
     (transactions) => transactions.registration,
   )
-  public transactions: TransactionEntity[];
+  public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(
     (_type) => ImageCodeExportVouchersEntity,
     (image) => image.registration,
   )
-  public images: ImageCodeExportVouchersEntity[];
+  public images: Relation<ImageCodeExportVouchersEntity[]>;
 
   @OneToMany(
     (_type) => TwilioMessageEntity,
     (twilioMessages) => twilioMessages.registration,
   )
-  public twilioMessages: TwilioMessageEntity[];
+  public twilioMessages: Relation<TwilioMessageEntity[]>;
 
   @OneToMany(
     (_type) => WhatsappPendingMessageEntity,
     (whatsappPendingMessages) => whatsappPendingMessages.registration,
   )
-  public whatsappPendingMessages: WhatsappPendingMessageEntity[];
+  public whatsappPendingMessages: Relation<WhatsappPendingMessageEntity[]>;
 
   @OneToMany(
     () => LatestTransactionEntity,
     (latestTransactions) => latestTransactions.registration,
   )
-  public latestTransactions: LatestTransactionEntity[];
+  public latestTransactions: Relation<LatestTransactionEntity[]>;
 
   @OneToOne(
     () => LatestMessageEntity,
     (latestMessage) => latestMessage.registration,
   )
-  public latestMessage: LatestMessageEntity;
+  public latestMessage: Relation<LatestMessageEntity>;
 
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
-  public notes: NoteEntity[];
+  public notes: Relation<NoteEntity[]>;
 
   @OneToMany(() => EventEntity, (events) => events.registration)
-  public events: EventEntity[];
+  public events: Relation<EventEntity[]>;
 
   // TODO: add some database constraints to make sure that scope is always lowercase
   // TODO: DO not make this nullable but set everything to empty string in migration

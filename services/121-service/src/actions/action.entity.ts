@@ -2,18 +2,18 @@ import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, Relation } from 'typeorm';
 
 @Entity('action')
 export class ActionEntity extends Base121AuditedEntity {
-  @Column()
+  @Column({ type: 'character varying' })
   public actionType: ActionType;
 
   @ManyToOne((_type) => UserEntity, (user) => user.actions)
-  public user: UserEntity;
+  public user: Relation<UserEntity>;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.actions)
-  public program: ProgramEntity;
+  public program: Relation<ProgramEntity>;
 }
 
 export enum AdditionalActionType {

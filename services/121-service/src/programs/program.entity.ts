@@ -16,10 +16,7 @@ import {
   CustomAttributeType,
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import {
-  LanguageEnum,
-  LocalizedString,
-} from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import {
   BeforeRemove,
   Column,
@@ -27,6 +24,7 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
+  Relation,
 } from 'typeorm';
 
 @Entity('program')
@@ -66,7 +64,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     (financialServiceProviders) => financialServiceProviders.program,
   )
   @JoinTable()
-  public financialServiceProviders: FinancialServiceProviderEntity[];
+  public financialServiceProviders: Relation<FinancialServiceProviderEntity[]>;
 
   @Column({ type: 'integer', nullable: true })
   public targetNrRegistrations: number | null;
@@ -89,7 +87,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.program,
   )
-  public aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
+  public aidworkerAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
 
   @OneToMany(() => ActionEntity, (action) => action.program)
   public actions: ActionEntity[];
@@ -98,19 +96,19 @@ export class ProgramEntity extends CascadeDeleteEntity {
     () => ProgramQuestionEntity,
     (programQuestions) => programQuestions.program,
   )
-  public programQuestions: ProgramQuestionEntity[];
+  public programQuestions: Relation<ProgramQuestionEntity[]>;
 
   @OneToMany(
     () => ProgramCustomAttributeEntity,
     (programCustomAttributes) => programCustomAttributes.program,
   )
-  public programCustomAttributes: ProgramCustomAttributeEntity[];
+  public programCustomAttributes: Relation<ProgramCustomAttributeEntity[]>;
 
   @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
-  public transactions: TransactionEntity[];
+  public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
-  public registrations: RegistrationEntity[];
+  public registrations: Relation<RegistrationEntity[]>;
 
   // Can be used to add deprecated custom attributes to an export if
   @Column('json', {
@@ -126,7 +124,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public fullnameNamingConvention: string[] | null;
 
   @Column('json', { default: [] })
-  public languages: LanguageEnum[];
+  public languages: string[];
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
@@ -141,7 +139,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     () => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,
   )
-  public programFspConfiguration: ProgramFspConfigurationEntity[];
+  public programFspConfiguration: Relation<ProgramFspConfigurationEntity[]>;
 
   @Column({ nullable: true, default: null, type: 'character varying' })
   public monitoringDashboardUrl: string | null;
@@ -153,7 +151,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     () => MessageTemplateEntity,
     (messageTemplates) => messageTemplates.program,
   )
-  public messageTemplates: MessageTemplateEntity[];
+  public messageTemplates: Relation<MessageTemplateEntity[]>;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

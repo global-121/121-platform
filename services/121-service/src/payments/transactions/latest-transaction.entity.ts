@@ -8,6 +8,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
+  Relation,
   Unique,
 } from 'typeorm';
 
@@ -28,14 +29,14 @@ export class LatestTransactionEntity extends Base121Entity {
     (registration) => registration.latestTransactions,
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
 
   @OneToOne(() => TransactionEntity)
   @JoinColumn({ name: 'transactionId' })
-  public transaction: TransactionEntity;
+  public transaction: Relation<TransactionEntity>;
   @Index()
   @Column({ type: 'int', nullable: true })
   public transactionId: number | null;

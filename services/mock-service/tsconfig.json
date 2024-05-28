@@ -25,8 +25,7 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "@mock-service/*": ["./*"],
-      "@121-service/*": ["../121-service/*"]
+      "@mock-service/*": ["./*"]
     }
   },
   "watchOptions": {

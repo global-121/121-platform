@@ -1,7 +1,7 @@
 import { Base121Entity } from '@121-service/src/base.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, Relation } from 'typeorm';
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
@@ -63,7 +63,7 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,
   )
-  public intersolveVisaCustomer: IntersolveVisaCustomerEntity;
+  public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
 
   public calculateTopUpAmount(): number {
     return (

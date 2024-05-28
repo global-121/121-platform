@@ -1,7 +1,14 @@
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
-import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+  Unique,
+} from 'typeorm';
 
 @Unique('uniqueTemplatePerTypeLanguageProgram', [
   'type',
@@ -30,7 +37,7 @@ export class MessageTemplateEntity extends Base121Entity {
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates)
   @JoinColumn({ name: 'programId' })
-  public program?: ProgramEntity;
+  public program?: Relation<ProgramEntity>;
   @Column()
   public programId: number;
 }
