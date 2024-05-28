@@ -516,7 +516,7 @@ class RegistrationDetails {
     saveButtonName: string;
     okButtonName: string;
     alert?: string;
-  }) {
+  }): Promise<string> {
     const saveButton = this.page.getByRole('button', {
       name: saveButtonName,
     });
@@ -527,6 +527,7 @@ class RegistrationDetails {
 
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
+    const oldAmount = paymentMultipierInput.innerText();
     await paymentMultipierInput.fill(amount);
 
     await this.page.waitForLoadState('networkidle');
@@ -547,12 +548,44 @@ class RegistrationDetails {
 
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
+    return oldAmount;
   }
 
   async validateAmountMultiplier({ amount }: { amount: string }) {
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
     expect(await paymentMultipierInput.inputValue()).toBe(amount);
+  }
+
+  async validateDataChangesTab({
+    dataChangesLabel,
+    oldValue,
+    newValue,
+    reason = 'Change multiplier to ' + newValue,
+  }: {
+    dataChangesLabel: string;
+    oldValue: string;
+    newValue: string;
+    reason?: string;
+  }) {
+    expect(await this.historyTile.isVisible()).toBe(true);
+    const dataAttributes = this.historyTile.filter({
+      hasText: dataChangesLabel,
+    });
+    const oldValueHolder = this.tileInformationPlaceHolder
+      .filter({ hasText: 'Old:' })
+      .nth(0);
+    const newValueHolder = this.tileInformationPlaceHolder
+      .filter({ hasText: 'New:' })
+      .nth(0);
+    const reasonHolder = this.tileInformationPlaceHolder
+      .filter({ hasText: 'Reason:' })
+      .nth(0);
+
+    expect(await dataAttributes.textContent()).toContain(dataChangesLabel);
+    expect(await oldValueHolder.textContent()).toContain(oldValue);
+    expect(await newValueHolder.textContent()).toContain(newValue);
+    expect(await reasonHolder.textContent()).toContain(reason);
   }
 }
 
