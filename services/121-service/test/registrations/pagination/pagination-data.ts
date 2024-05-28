@@ -115,6 +115,8 @@ export const registrationPV6 = {
   whatsappPhoneNumber: '14155235551',
 };
 
+export const registrationsPV = [registrationPV5, registrationPV6];
+
 export const registrationPvScoped = {
   referenceId: '434e62869242497e1e',
   preferredLanguage: LanguageEnum.nl,
