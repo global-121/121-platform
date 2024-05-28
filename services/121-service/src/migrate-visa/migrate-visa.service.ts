@@ -388,7 +388,7 @@ export class MigrateVisaService {
       from
         "121-service"."intersolve_visa_customer" i
       left join "121-service".registration r on
-        r.id = i."registrationId" 
+        r.id = i."registrationId"
       LEFT JOIN "121-service"."intersolve_migration_progress" imp ON r."referenceId" = imp."referenceId"
       WHERE "programId" = ${programId} AND imp."referenceId" IS NULL
       LIMIT ${limit ?? 'ALL'}`,
