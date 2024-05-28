@@ -7,7 +7,7 @@ class Helpers {
     this.page = page;
   }
 
-  async getTodaysDate(): Promise<string> {
+  static async getTodaysDate(): Promise<string> {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');

@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
+import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 interface PersonLeft {
   personAffected?: string;
@@ -197,7 +198,9 @@ class TableModule {
     }
   }
 
-  async applyBulkAction(option: string) {
+  async applyBulkAction(
+    option: Parameters<typeof this.bulkActionsDropdown.selectOption>[0],
+  ) {
     await this.page.reload();
     await this.page.waitForTimeout(1000);
     await this.bulkActionsDropdown.selectOption(option);
@@ -299,6 +302,14 @@ class TableModule {
 
   async openFilterDropdown() {
     await this.filterSelectionDropdown.click();
+  }
+
+  async doPayment(paymentNr: number) {
+    const doPaymentLabel = englishTranslations.page.program[
+      'program-people-affected'
+    ].actions.doPayment.replace('{{paymentNr}}', paymentNr.toString());
+
+    await this.applyBulkAction({ label: doPaymentLabel });
   }
 }
 

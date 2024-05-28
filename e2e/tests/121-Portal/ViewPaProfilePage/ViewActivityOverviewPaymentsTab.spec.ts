@@ -9,7 +9,6 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import { default as englishTranslations } from '../../../../interfaces/Portal/src/assets/i18n/en.json';
-import Helpers from '../../../pages/Helpers/Helpers';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -31,7 +30,6 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -39,18 +37,14 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   });
 
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
-    const userName =
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
     await registration.validateHeaderToContainText(
       englishTranslations['registration-details'].pageTitle,
     );
     await registration.openActivityOverviewTab('Payments');
-    await registration.validatePaymentsTab(
-      englishTranslations.page.program.tab.payment.label,
-      1,
-      englishTranslations.entity.payment.status.success,
-      userName,
-      await helpers.getTodaysDate(),
-    );
+    await registration.validatePaymentsTab({
+      paymentLabel: englishTranslations.page.program.tab.payment.label,
+      paymentNumber: 1,
+      statusLabel: englishTranslations.entity.payment.status.success,
+    });
   });
 });

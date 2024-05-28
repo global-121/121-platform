@@ -1,6 +1,7 @@
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
+import Helpers from '../Helpers/Helpers';
 
 class RegistrationDetails {
   readonly page: Page;
@@ -296,11 +297,42 @@ class RegistrationDetails {
     expect(await newValueHolder.textContent()).toContain(newValue);
   }
 
-  async validateSentMessagesTab(
-    messageNotification: string,
-    messageContext: string,
-    messageType: string,
-  ) {
+  async validateQuantityOfActivity({
+    quantity,
+    failWithoutReload = false,
+  }: {
+    quantity: number;
+    failWithoutReload?: boolean;
+  }) {
+    await expect(this.historyTile.nth(0)).toBeVisible();
+
+    if (failWithoutReload) {
+      await expect(this.historyTile).toHaveCount(quantity);
+      return;
+    }
+
+    try {
+      await expect(this.historyTile).toHaveCount(quantity);
+    } catch (error) {
+      // Sometimes the messages take a bit longer to appear
+      // Try reloading the page and checking again, but only once
+      await this.page.reload();
+      await this.validateQuantityOfActivity({
+        quantity,
+        failWithoutReload: true,
+      });
+    }
+  }
+
+  async validateSentMessagesTab({
+    messageNotification,
+    messageContext,
+    messageType,
+  }: {
+    messageNotification: string;
+    messageContext: string;
+    messageType: string;
+  }) {
     const paymentNotificationLocator = this.page.locator(
       `:text("${messageContext} (${messageType})")`,
     );
@@ -317,13 +349,24 @@ class RegistrationDetails {
     );
   }
 
-  async validatePaymentsTab(
-    paymentLabel: string,
-    paymentNumber: number,
-    statusLabel: string,
-    userName: string,
-    date: string,
-  ) {
+  async validatePaymentsTab({
+    paymentLabel,
+    paymentNumber,
+    statusLabel,
+    userName,
+    date,
+  }: {
+    paymentLabel: string;
+    paymentNumber: number;
+    statusLabel: string;
+    userName?: string;
+    date?: string;
+  }) {
+    if (!userName)
+      userName =
+        process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
+    if (!date) date = await Helpers.getTodaysDate();
+
     const historyTile = this.historyTile.nth(0);
     const paymentLocator = this.historyTileTitle.filter({
       hasText: `${paymentLabel} #${paymentNumber}`,

@@ -31,7 +31,6 @@ test('[27501] Successfully view note', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers(page);
 
   await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.validateNumberOfActivePrograms(2);
@@ -71,7 +70,7 @@ test('[27501] Successfully view note', async ({ page }) => {
       changeTitle:
         englishTranslations.page.program['program-people-affected'].column.note,
       userName: userName,
-      date: await helpers.getTodaysDate(),
+      date: await Helpers.getTodaysDate(),
       noteContent:
         englishTranslations['registration-details']['activity-overview'][
           'add-note-popup'

@@ -41,10 +41,12 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
       englishTranslations['registration-details'].pageTitle,
     );
     await registration.openActivityOverviewTab('Messages');
-    await registration.validateSentMessagesTab(
-      englishTranslations.entity.message['content-type']['generic-templated'],
-      englishTranslations.entity.message['content-type'].payment,
-      englishTranslations.entity.message.type.whatsapp,
-    );
+    await registration.validateSentMessagesTab({
+      messageNotification:
+        englishTranslations.entity.message['content-type']['generic-templated'],
+      messageContext:
+        englishTranslations.entity.message['content-type'].payment,
+      messageType: englishTranslations.entity.message.type.whatsapp,
+    });
   });
 });
