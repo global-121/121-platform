@@ -1,3 +1,4 @@
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
@@ -8,7 +9,6 @@ import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import { EventEnum } from '../../../../../../services/121-service/src/events/enum/event.enum';
 import { RegistrationActivityOverviewComponent } from '../registration-activity-overview/registration-activity-overview.component';
 import { RegistrationPersonalInformationComponent } from '../registration-personal-information/registration-personal-information.component';
 import { RegistrationPhysicalCardOverviewComponent } from '../registration-physical-card-overview/registration-physical-card-overview.component';

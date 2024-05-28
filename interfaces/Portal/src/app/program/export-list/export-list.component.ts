@@ -1,3 +1,4 @@
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
   Component,
   EventEmitter,
@@ -15,7 +16,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import {
   FilterService,

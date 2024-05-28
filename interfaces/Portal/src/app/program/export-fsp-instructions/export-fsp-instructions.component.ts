@@ -1,3 +1,4 @@
+import { ExportFileType } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +12,6 @@ import { actionResult } from '../../shared/action-result';
 import { downloadAsCsv } from '../../shared/array-to-csv';
 import { arrayToXlsx as downloadAsXlsx } from '../../shared/array-to-xlsx';
 import { downloadAsXml } from '../../shared/string-to-xml';
-import { ExportFileType } from './../../../../../../services/121-service/src/payments/dto/fsp-instructions.dto';
 
 @Component({
   selector: 'app-export-fsp-instructions',

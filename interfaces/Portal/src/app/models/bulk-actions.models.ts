@@ -1,4 +1,4 @@
-import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import Permission from '../auth/permission.enum';
 import { InputProps } from '../shared/confirm-prompt/confirm-prompt.component';
 import { ProgramTab } from './program.model';

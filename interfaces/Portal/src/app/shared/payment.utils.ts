@@ -1,5 +1,5 @@
-import { FinancialServiceProviderName } from '../../../../../services/121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { RegistrationStatusEnum } from '../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { FilterOperator } from '../enums/filters.enum';
 import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
