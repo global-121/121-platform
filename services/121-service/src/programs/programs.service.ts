@@ -4,6 +4,8 @@ import { FinancialServiceProviderEntity } from '@121-service/src/financial-servi
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import {
   CreateProgramCustomAttributeDto,
   UpdateProgramCustomAttributeDto,
@@ -15,8 +17,6 @@ import {
 } from '@121-service/src/programs/dto/program-question.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -31,7 +31,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { omit } from 'lodash';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
-
 interface FoundProgram
   extends Omit<
       ProgramEntity,
@@ -40,7 +39,6 @@ interface FoundProgram
     Partial<
       Pick<ProgramEntity, 'monitoringDashboardUrl' | 'programFspConfiguration'>
     > {}
-
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -60,7 +58,7 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly programFspConfigurationService: ProgramFspConfigurationService,
+    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
   ) {}
 
   public async findProgramOrThrow(
@@ -720,7 +718,7 @@ export class ProgramService {
   public async getFspConfigurations(
     programId: number,
     configName: string[],
-  ): Promise<ProgramFspConfigurationEntity[]> {
+  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
     let programFspConfigurations =
       await this.programFspConfigurationService.findByProgramId(programId);
     if (configName.length > 0) {
