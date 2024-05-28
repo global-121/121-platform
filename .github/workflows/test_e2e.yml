@@ -50,7 +50,7 @@ jobs:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm install
-          npm run start:debug-production > /dev/null 2>&1 &
+          npm run start:debug-production > portal-server-logs.txt 2>&1 &
 
       - name: Install e2e dependencies
         working-directory: ${{ env.e2eTestsPath }}
@@ -83,7 +83,9 @@ jobs:
         if: always()
         with:
           name: test-result-artifacts
-          path: ./e2e/test-results/
+          path: |
+            ./e2e/test-results/
+            ./interfaces/Portal/portal-server-logs.txt
           retention-days: 30
 
       - name: Docker logs

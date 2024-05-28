@@ -84,7 +84,7 @@
   },
   "header": {
     "create-program": "Create Program",
-    "help": "Help",
+    "help": "Manual",
     "home": "Home",
     "menu": "Menu",
     "users": "Users"
@@ -111,11 +111,6 @@
     },
     "dashboard": {
       "pageTitle": "Dashboard"
-    },
-    "help": {
-      "pageTitle": "Help",
-      "user-manual": "User manual",
-      "user-manual-content": "Needs to be added."
     },
     "home": {
       "pageTitle": "Home"

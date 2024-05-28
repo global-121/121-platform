@@ -32,7 +32,6 @@ test('[27492] View Personal information table', async ({ page }) => {
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const helpers = new Helpers(page);
 
   await test.step('Should open PAs for registration', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -52,7 +51,7 @@ test('[27492] View Personal information table', async ({ page }) => {
     await registration.validatePersonalInformationTable(
       'John Smith',
       englishTranslations.entity.registration.status.included,
-      await helpers.getTodaysDate(),
+      await Helpers.getTodaysDate(),
       englishTranslations.page.program['program-people-affected'].language.en,
       '+14155236666',
       jumboFspTranslations.displayName.en,
