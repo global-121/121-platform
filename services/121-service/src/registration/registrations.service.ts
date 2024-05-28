@@ -1,9 +1,11 @@
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
@@ -36,7 +38,6 @@ import {
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -55,6 +56,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
+
+import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 
 @Injectable()
 export class RegistrationsService {
@@ -80,7 +91,6 @@ export class RegistrationsService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -88,10 +98,11 @@ export class RegistrationsService {
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     @Inject(getScopedRepositoryProviderName(EventEntity))
     private eventScopedRepository: ScopedRepository<EventEntity>,
+    private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
+    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -225,24 +236,29 @@ export class RegistrationsService {
     return result;
   }
 
-  public async getRegistrationFromReferenceId(
-    referenceId: string,
-    relations: string[] = [],
-    programId?: number,
-  ): Promise<RegistrationEntity> {
+  public async getRegistrationOrThrow({
+    referenceId,
+    relations = [],
+    programId,
+  }: {
+    referenceId: string;
+    relations?: string[];
+    programId?: number;
+  }): Promise<RegistrationEntity> {
     if (!referenceId) {
       const errors = `ReferenceId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: Equal(referenceId) },
-      relations: relations,
-    });
+    const registration =
+      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
+        {
+          referenceId,
+          relations,
+          programId,
+        },
+      );
     if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    } else if (programId && registration.programId !== Number(programId)) {
-      const errors = `ReferenceId ${referenceId} is not known for program ${programId}.`;
+      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
@@ -252,7 +268,9 @@ export class RegistrationsService {
     referenceId: string,
     fspId: number,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+    });
     const fsp = await this.fspRepository.findOneOrFail({
       where: { id: Equal(fspId) },
       relations: ['questions'],
@@ -281,7 +299,9 @@ export class RegistrationsService {
     customDataKey: string,
     customDataValueRaw: string | string[],
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+    });
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
       customDataKey,
       customDataValueRaw,
@@ -467,11 +487,11 @@ export class RegistrationsService {
     let nrAttributesUpdated = 0;
     const { data: partialRegistration } = updateRegistrationDto;
 
-    let registrationToUpdate = await this.getRegistrationFromReferenceId(
+    let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
-      ['program', 'fsp'],
+      relations: ['program', 'fsp'],
       programId,
-    );
+    });
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
@@ -558,43 +578,70 @@ export class RegistrationsService {
         registration.referenceId,
       );
     if (calculatedRegistration) {
-      return this.getRegistrationFromReferenceId(
-        calculatedRegistration.referenceId,
-      );
+      return this.getRegistrationOrThrow({
+        referenceId: calculatedRegistration.referenceId,
+      });
     }
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.syncUpdatesWithThirdParties(registration, [attribute]);
+      await this.sendContactInformationToIntersolve(registration);
     }
 
-    return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
-      'program',
-    ]);
+    return this.getRegistrationOrThrow({
+      referenceId: savedRegistration.referenceId,
+      relations: ['program'],
+    });
   }
 
-  private async syncUpdatesWithThirdParties(
+  private async sendContactInformationToIntersolve(
     registration: RegistrationEntity,
-    attributes: Attributes[] | string[],
   ): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      try {
-        await this.intersolveVisaService.syncIntersolveCustomerWith121(
-          registration.referenceId,
-          registration.programId,
-          attributes,
+      // TODO: REFACTOR: Find a way to not have the data fields hardcoded in this function. -> can be implemented in registration data refeactor
+      type ContactInformationKeys = keyof ContactInformation;
+      const fieldNames: ContactInformationKeys[] = [
+        'addressStreet',
+        'addressHouseNumber',
+        'addressHouseNumberAddition',
+        'addressPostalCode',
+        'addressCity',
+        'phoneNumber',
+      ];
+      const registrationData =
+        await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+          registration,
+          fieldNames,
         );
-      } catch (error) {
-        if (error?.response?.errors?.length > 0) {
-          const errors = `ERROR SYNCING TO INTERSOLVE: ${error.response.errors.join(
-            ' ',
-          )} The update in 121 did succeed.`;
-          throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-          throw error;
-        }
+
+      if (!registrationData || registrationData.length === 0) {
+        throw new HttpException(
+          `No registration data found for referenceId: ${registration.referenceId}`,
+          HttpStatus.NOT_FOUND,
+        );
       }
+
+      const mappedRegistrationData = registrationData.reduce(
+        (acc, { name, value }) => {
+          acc[name] = value;
+          return acc;
+        },
+        {},
+      );
+
+      await this.intersolveVisaService.sendUpdatedContactInformation({
+        registrationId: registration.id,
+        contactInformation: {
+          addressStreet: mappedRegistrationData[`addressStreet`],
+          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
+          addressHouseNumberAddition:
+            mappedRegistrationData[`addressHouseNumberAddition`],
+          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
+          addressCity: mappedRegistrationData[`addressCity`],
+          phoneNumber: mappedRegistrationData[`phoneNumber`],
+        },
+      });
     }
   }
 
@@ -735,10 +782,10 @@ export class RegistrationsService {
     });
 
     // Get registration by referenceId
-    const registration = await this.getRegistrationFromReferenceId(
+    const registration = await this.getRegistrationOrThrow({
       referenceId,
-      ['fsp', 'fsp.questions'],
-    );
+      relations: ['fsp', 'fsp.questions'],
+    });
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
@@ -800,10 +847,7 @@ export class RegistrationsService {
       );
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.syncUpdatesWithThirdParties(
-        updatedRegistration,
-        Object.keys(newFspAttributes),
-      );
+      await this.sendContactInformationToIntersolve(updatedRegistration);
     }
 
     // Log change
@@ -891,5 +935,197 @@ export class RegistrationsService {
         registrationProgramId: Equal(paId),
       },
     });
+  }
+
+  public async retrieveAndUpdateIntersolveVisaWalletAndCards(
+    referenceId: string,
+    programId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      relations: [],
+      programId,
+    });
+    return await this.intersolveVisaService.retrieveAndUpdateWallet(
+      registration.id,
+    );
+  }
+
+  public async getIntersolveVisaWalletAndCards(
+    referenceId: string,
+    programId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      relations: [],
+      programId,
+    });
+    return await this.intersolveVisaService.getWalletWithCards(registration.id);
+  }
+
+  /**
+   * This function reissues a visa card and sends a message.
+   * - It first retrieves the registration associated with the given reference ID and program ID and he Intersolve Visa configuration for the program.
+   * - It than checks that all required data fields are present in the registration data.
+   * - It then calls the Intersolve Visa service to reissue the card with the registration data and Intersolve Visa configuration.
+   * - Finally, it adds a message to the queue to be sent to the registrant.
+   *
+   * @param {string} referenceId - The reference ID of the registration.
+   * @param {number} programId - The ID of the program.
+   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID, if no registration data is found for the reference ID, or if a required data field is missing from the registration data.
+   * @returns {Promise<void>}
+   */
+  public async reissueCardAndSendMessage(
+    referenceId: string,
+    programId: number,
+  ) {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+    const intersolveVisaConfig =
+      await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+        {
+          programId: programId,
+          financialServiceProviderName:
+            FinancialServiceProviderName.intersolveVisa,
+          names: [
+            FinancialServiceProviderConfigurationEnum.brandCode,
+            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          ],
+        },
+      );
+
+    //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
+    const intersolveVisaQuestions =
+      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+        FinancialServiceProviderName.intersolveVisa,
+      );
+    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
+      (q) => q.name,
+    );
+    const dataFieldNames = [
+      'fullName',
+      'phoneNumber',
+      ...intersolveVisaQuestionNames,
+    ];
+
+    const registrationData =
+      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+        registration,
+        dataFieldNames,
+      );
+
+    if (!registrationData || registrationData.length === 0) {
+      throw new HttpException(
+        `No registration data found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const mappedRegistrationData = registrationData.reduce(
+      (acc, { name, value }) => {
+        acc[name] = value;
+        return acc;
+      },
+      {},
+    );
+
+    for (const name of dataFieldNames) {
+      if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
+      if (
+        mappedRegistrationData[name] === null ||
+        mappedRegistrationData[name] === undefined ||
+        mappedRegistrationData[name] === ''
+      ) {
+        throw new HttpException(
+          `Property ${name} is undefined`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+    await this.sendContactInformationToIntersolve(registration);
+
+    await this.intersolveVisaService.reissueCard({
+      registrationId: registration.id,
+      // Why do we need this?
+      reference: registration.referenceId,
+      name: mappedRegistrationData['fullName'],
+      contactInformation: {
+        addressStreet: mappedRegistrationData['addressStreet'],
+        addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
+        addressHouseNumberAddition:
+          mappedRegistrationData['addressHouseNumberAddition'],
+        addressPostalCode: mappedRegistrationData['addressPostalCode'],
+        addressCity: mappedRegistrationData['addressCity'],
+        phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
+      },
+      brandCode: intersolveVisaConfig.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      coverLetterCode: intersolveVisaConfig.find(
+        (c) =>
+          c.name === FinancialServiceProviderConfigurationEnum.coverLetterCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+    });
+
+    await this.queueMessageService.addMessageToQueue({
+      registration: registration,
+      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
+  }
+
+  /**
+   * Pauses or unpauses a card associated with a given token code and sends a message to the registrant.
+   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registrant, and returns the updated wallet.
+   *
+   * @param {string} referenceId - The reference ID of the registration.
+   * @param {number} programId - The ID of the program.
+   * @param {string} tokenCode - The token code of the card to pause or unpause.
+   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
+   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID.
+   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
+   */
+  public async pauseCardAndSendMessage(
+    referenceId: string,
+    programId: number,
+    tokenCode: string,
+    pause: boolean,
+  ): Promise<IntersolveVisaChildWalletEntity> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+    const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
+      tokenCode,
+      pause,
+    );
+    await this.queueMessageService.addMessageToQueue({
+      registration: registration,
+      messageTemplateKey: pause
+        ? ProgramNotificationEnum.pauseVisaCard
+        : ProgramNotificationEnum.unpauseVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
+    return updatedWallet;
+  }
+
+  /**
+   * Retrieves a registration by reference ID and program ID, and sends its contact information to Intersolve. Used only for debugging purposes.
+   */
+  public async getRegistrationAndSendContactInformationToIntersolve(
+    referenceId: string,
+    programId: number,
+  ): Promise<void> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+    await this.sendContactInformationToIntersolve(registration);
   }
 }

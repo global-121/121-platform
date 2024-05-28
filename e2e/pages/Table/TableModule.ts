@@ -14,7 +14,9 @@ const sendMessageAction =
   englishTranslations.page.program['program-people-affected'].actions
     .sendMessage;
 const debitCardUsage =
-  englishTranslations.page.program['export-list']['card-balances']['btn-text'];
+  englishTranslations.page.program['export-list'][
+    'intersolve-visa-card-details'
+  ]['btn-text'];
 const paymentReport =
   englishTranslations.page.program['export-list']['payment']['btn-text'];
 

@@ -5,10 +5,6 @@ import {
 } from '@121-service/src/notifications/enum/message-queue-mapping.const';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import {
-  ProcessNameMessage,
-  QueueNameCreateMessage,
-} from '@121-service/src/notifications/enum/queue.names.enum';
-import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
   MessageJobDto,
@@ -22,6 +18,10 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import {
+  ProcessNameMessage,
+  QueueNameCreateMessage,
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,6 +58,7 @@ export class QueueMessageService {
     };
   }
 
+  // TODO: REFACTOR: Rename to addMessageJob()
   public async addMessageToQueue({
     registration,
     message,

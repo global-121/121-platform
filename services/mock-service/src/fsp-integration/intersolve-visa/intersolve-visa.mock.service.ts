@@ -23,6 +23,10 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
+// This is a magic number that will cause the transfer to fail due to a duplicate operation reference (idempotency key)
+// It's used in the API tests to verify that the API handles this case correctly
+const MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT = 15.15;
+
 @Injectable()
 export class IntersolveVisaMockService {
   public createCustomerMock(
@@ -95,6 +99,7 @@ export class IntersolveVisaMockService {
     response.data.data.token.blockReasonCode = 'string';
     response.data.data.token.tier = 'string';
     response.data.data.token.brandTypeCode = 'string';
+    response.data.data.token.status = 'INACTIVE';
     response.data.data.token.holderId = 'string';
     response.data.data.token.balances = [
       {
@@ -230,14 +235,15 @@ export class IntersolveVisaMockService {
   }
 
   public createDebitCardMock(
-    tokenCode: string | null,
+    lastName: string | null,
+    mobileNumber: string | null,
   ): IntersolveVisaMockResponseDto {
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.OK,
       statusText: 'OK',
       data: {},
     };
-    if (tokenCode?.toLowerCase().includes('mock-fail-create-debit-card')) {
+    if (lastName?.toLowerCase().includes('mock-fail-create-debit-card')) {
       res.data.success = false;
       res.data.errors = [];
       res.data.errors.push({
@@ -247,6 +253,19 @@ export class IntersolveVisaMockService {
       });
       res.status = HttpStatus.NOT_FOUND;
       res.statusText = 'NOT_FOUND';
+    }
+    // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\
+    const mobileNumberRegex = new RegExp('^([+]){1}([1-9]){1}([0-9]){5,14}$');
+    if (!mobileNumberRegex.test(mobileNumber)) {
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'INVALID_MOBILE_NUMBER',
+        field: 'mobileNumber',
+        description: 'Mobile number does not match the required format',
+      });
+      res.status = HttpStatus.BAD_REQUEST;
+      res.statusText = 'BAD_REQUEST';
     }
     return res;
   }
@@ -334,6 +353,7 @@ export class IntersolveVisaMockService {
       correlationId: 'string',
       data: {
         code: 'string',
+        blocked: false,
         status: IntersolveVisaWalletStatus.Active,
         balances: [
           {
@@ -409,7 +429,32 @@ export class IntersolveVisaMockService {
           id: 1,
           quantity: {
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
-            value: 3,
+            value: -300, // Reservations are negative and in cents
+          },
+          createdAt: new Date(
+            new Date().setDate(new Date().getDate()),
+          ).toISOString(),
+          creditor: {
+            tokenCode: 'random token code',
+          },
+          debtor: {
+            tokenCode: tokenCode,
+          },
+          reference: 'string',
+          type: 'RESERVATION',
+          description: 'string',
+          location: {
+            merchantCode: 'string',
+            merchantLocationCode: 'string',
+          },
+          originalTransactionId: 1,
+          paymentId: 1,
+        },
+        {
+          id: 1,
+          quantity: {
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            value: 300,
           },
           createdAt: new Date(
             new Date().setDate(new Date().getDate()),
@@ -441,31 +486,33 @@ export class IntersolveVisaMockService {
       } catch (error) {
         spentAmount = 200;
       }
-      response.data.data!.push({
-        id: 1,
-        quantity: {
-          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
-          value: -spentAmount,
+      response.data.data = [
+        {
+          id: 1,
+          quantity: {
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            value: -spentAmount,
+          },
+          createdAt: new Date(
+            new Date().setDate(new Date().getDate()),
+          ).toISOString(),
+          creditor: {
+            tokenCode: 'random token code',
+          },
+          debtor: {
+            tokenCode: tokenCode,
+          },
+          reference: 'string',
+          type: 'RESERVATION',
+          description: 'string',
+          location: {
+            merchantCode: 'string',
+            merchantLocationCode: 'string',
+          },
+          originalTransactionId: 1,
+          paymentId: 1,
         },
-        createdAt: new Date(
-          new Date().setDate(new Date().getDate()),
-        ).toISOString(),
-        creditor: {
-          tokenCode: 'random token code',
-        },
-        debtor: {
-          tokenCode: tokenCode,
-        },
-        reference: 'string',
-        type: 'RESERVATION',
-        description: 'string',
-        location: {
-          merchantCode: 'string',
-          merchantLocationCode: 'string',
-        },
-        originalTransactionId: 1,
-        paymentId: 1,
-      });
+      ];
 
       response.data.data!.push({
         id: 1,
@@ -547,6 +594,113 @@ export class IntersolveVisaMockService {
   public updateCustomerAddress(): { status: number } {
     return {
       status: HttpStatus.OK,
+    };
+  }
+
+  public linkToken(parentTokenCode: string): IntersolveVisaMockResponseDto {
+    if (parentTokenCode.includes('mock-fail-link-token')) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        statusText: 'Not Found',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'NOT_FOUND',
+              description: 'We mocked that linking the token failed',
+            },
+          ],
+        },
+      };
+    }
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+      errors: [],
+    };
+  }
+
+  public transfer(
+    fromToken: string,
+    amount: number,
+  ): IntersolveVisaMockResponseDto {
+    if (amount === MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT * 100) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Not Found',
+        data: {
+          code: 'INVALID_PARAMETERS',
+          field: 'operationReference',
+          correlationId: uuid(),
+          success: false,
+          errors: [
+            {
+              code: 'FIELD_IS_NOT_UNIQUE',
+              field: 'operationReference',
+              description: 'Operation reference is already used.',
+            },
+          ],
+        },
+      };
+    }
+    if (fromToken.includes('mock-fail-transfer')) {
+      // We assume this is the correct response for a failed transfer
+      // However I do not know a scenario where this would fail, maybe when our token code does not exist or is out of funding
+      return {
+        status: HttpStatus.NOT_FOUND,
+        statusText: 'Not Found',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'NOT_FOUND',
+              description: 'We mocked that transfer failed',
+            },
+          ],
+        },
+      };
+    }
+
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+      errors: [],
+    };
+  }
+
+  public substituteToken(token: string): IntersolveVisaMockResponseDto {
+    // TODO create API for this and add to import ocw registration .csv
+    if (token.includes('mock-fail-substitute')) {
+      // We assume this is the correct response for a failed substitution
+      // However, the exact failure scenario depends on your application's requirements
+      return {
+        status: HttpStatus.NOT_FOUND,
+        statusText: 'Not Found',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'NOT_FOUND',
+              description: 'We mocked that token substitution failed',
+            },
+          ],
+        },
+      };
+    }
+
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+      errors: [],
     };
   }
 }

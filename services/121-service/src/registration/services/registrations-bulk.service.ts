@@ -15,7 +15,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MessageSizeType as MessageSizeTypeDto } from '@121-service/src/registration/dto/message-size-type.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -62,8 +62,7 @@ export class RegistrationsBulkService {
     private readonly intersolveVoucherScopedRepo: ScopedRepository<IntersolveVoucherEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private readonly twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private readonly registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(NoteEntity))
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
@@ -292,8 +291,9 @@ export class RegistrationsBulkService {
     includeSendMessageProperties = false,
     includeStatusChangeProperties = false,
     usedPlaceholders?: string[],
+    selectColumns: string[] = [],
   ): PaginateQuery {
-    query.select = ['referenceId', 'programId'];
+    query.select = ['referenceId', 'programId', ...selectColumns];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
       query.select.push('financialServiceProvider');
@@ -315,6 +315,23 @@ export class RegistrationsBulkService {
     query.select = [...new Set(query.select)];
     query.page = undefined;
     return query;
+  }
+
+  public getRegistrationsForPaymentQuery(
+    referenceIds: string[],
+    dataFieldNames: string[],
+  ) {
+    return this.setQueryPropertiesBulkAction(
+      {
+        path: '',
+        filter: { referenceId: `$in:${referenceIds.join(',')}` },
+      },
+      true,
+      false,
+      false,
+      [],
+      dataFieldNames,
+    );
   }
 
   private getStatusUpdateBaseQuery(
