@@ -8,8 +8,8 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import {
   PaTransactionResultDto,
@@ -49,7 +49,7 @@ export class TransactionsService {
     private registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly eventsService: EventsService,
   ) {}
@@ -120,13 +120,14 @@ export class TransactionsService {
     transaction.payment = relationDetails.paymentNr;
     transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
-    transaction.errorMessage = transactionResponse.message;
+    transaction.errorMessage = transactionResponse.message ?? null;
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 
     const resultTransaction =
       await this.transactionScopedRepository.save(transaction);
 
+    // TODO: What does this do? Was necessary for Intersolve Vouchers, but not here? Ruben probably knows.
     if (transactionResponse.messageSid) {
       await this.twilioMessageRepository.update(
         { sid: transactionResponse.messageSid },
@@ -154,7 +155,7 @@ export class TransactionsService {
           program.id,
           transactionNotification,
         );
-        await this.queueMessageService.addMessageToQueue({
+        await this.queueMessageService.addMessageJob({
           registration,
           message,
           messageContentType: MessageContentType.payment,

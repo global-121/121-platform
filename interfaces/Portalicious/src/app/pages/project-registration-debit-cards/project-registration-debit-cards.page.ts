@@ -18,6 +18,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TabMenuModule } from 'primeng/tabmenu';
 
+import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
+
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByVisaCardStatus } from '~/components/colored-chip/colored-chip.helper';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
@@ -27,7 +29,6 @@ import {
 } from '~/components/data-list/data-list.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { VisaCardAction } from '~/domains/registration/registration.model';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
