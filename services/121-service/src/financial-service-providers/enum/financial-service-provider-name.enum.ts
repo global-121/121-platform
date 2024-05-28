@@ -16,6 +16,7 @@ export enum FinancialServiceProviderConfigurationEnum {
   brandCode = 'brandCode',
   displayName = 'displayName',
   coverLetterCode = 'coverLetterCode',
+  fundingTokenCode = 'fundingTokenCode',
 }
 
 export const FinancialServiceProviderConfigurationMapping: Record<
@@ -36,6 +37,7 @@ export const FinancialServiceProviderConfigurationMapping: Record<
     FinancialServiceProviderConfigurationEnum.brandCode,
     FinancialServiceProviderConfigurationEnum.coverLetterCode,
     FinancialServiceProviderConfigurationEnum.displayName,
+    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
   ],
   [FinancialServiceProviderName.vodacash]: [
     FinancialServiceProviderConfigurationEnum.displayName,
@@ -52,5 +54,31 @@ export const FinancialServiceProviderConfigurationMapping: Record<
     FinancialServiceProviderConfigurationEnum.columnsToExport,
     FinancialServiceProviderConfigurationEnum.columnToMatch,
     FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+};
+
+export const RequiredFinancialServiceProviderConfigurations: {
+  [key in FinancialServiceProviderName]?: any;
+} = {
+  [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviderName.intersolveVoucherPaper]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviderName.intersolveVisa]: [
+    FinancialServiceProviderConfigurationEnum.brandCode,
+    FinancialServiceProviderConfigurationEnum.coverLetterCode,
+    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+  ],
+  [FinancialServiceProviderName.commercialBankEthiopia]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviderName.excel]: [
+    FinancialServiceProviderConfigurationEnum.columnsToExport,
+    FinancialServiceProviderConfigurationEnum.columnToMatch,
   ],
 };
