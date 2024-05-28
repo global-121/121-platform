@@ -80,6 +80,8 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { v4 as uuid } from 'uuid';
+//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
+//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
 
 @Injectable()
 export class IntersolveVisaService
