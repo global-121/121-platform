@@ -15,10 +15,6 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/payments/enum/queue.names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
 import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
@@ -32,18 +28,22 @@ import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import {
-  getRedisSetName,
   REDIS_CLIENT,
-} from '@121-service/src/payments/redis-client';
+  getRedisSetName,
+} from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
@@ -66,8 +66,8 @@ export class IntersolveVoucherService
   public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
+  public readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -124,20 +124,6 @@ export class IntersolveVoucherService
         },
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
-  }
-
-  public async getQueueProgress(programId?: number): Promise<number> {
-    if (programId) {
-      // Get the count of job IDs in the Redis set for the program
-      const count = await this.redisClient.scard(getRedisSetName(programId));
-      return count;
-    } else {
-      // If no programId is provided, use Bull's method to get the total delayed count
-      // This requires an instance of the Bull queue
-      const delayedCount =
-        await this.paymentIntersolveVoucherQueue.getDelayedCount();
-      return delayedCount;
     }
   }
 

@@ -21,7 +21,7 @@ export class MessageTemplateService {
   public async getMessageTemplatesByProgramId(
     programId: number,
     type?: string,
-    language?: string,
+    language?: LanguageEnum,
   ): Promise<MessageTemplateEntity[]> {
     let where: any = { programId: programId };
 

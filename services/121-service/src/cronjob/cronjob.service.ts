@@ -41,11 +41,11 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM)
-  public async cronUpdateVisaDebitWalletDetails(): Promise<void> {
+  public async cronRetrieveAndUpdateVisaData(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const programIdVisa = 3;
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa/wallets`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     await this.httpService.patch(url, {}, headers);
   }

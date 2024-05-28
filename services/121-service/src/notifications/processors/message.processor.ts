@@ -5,7 +5,7 @@ import { Job } from 'bull';
 import {
   ProcessNameMessage,
   QueueNameCreateMessage,
-} from '@121-service/src/notifications/enum/queue.names.enum';
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 
 @Processor(QueueNameCreateMessage.replyOnIncoming)
 export class MessageProcessorReplyOnIncoming {

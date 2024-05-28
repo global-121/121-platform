@@ -39,6 +39,10 @@
         {
           "name": "coverLetterCode",
           "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
+        },
+        {
+          "name": "fundingTokenCode",
+          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
         }
       ]
     }
