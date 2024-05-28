@@ -4,6 +4,7 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserType } from '@121-service/src/user/user-type-enum';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import crypto from 'crypto';
 import {
@@ -13,6 +14,7 @@ import {
   Entity,
   Index,
   OneToMany,
+  Relation,
 } from 'typeorm';
 
 @Entity('user')
@@ -38,20 +40,20 @@ export class UserEntity extends CascadeDeleteEntity {
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.user,
   )
-  public programAssignments: ProgramAidworkerAssignmentEntity[];
+  public programAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
 
   @OneToMany(() => ActionEntity, (program) => program.user)
-  public actions: ActionEntity[];
+  public actions: Relation<ActionEntity[]>;
 
   @OneToMany(() => RegistrationEntity, (registration) => registration.user)
-  public registrations: RegistrationEntity[];
+  public registrations: Relation<RegistrationEntity[]>;
 
   @OneToMany(() => NoteEntity, (notes) => notes.user)
-  public notes: NoteEntity[];
+  public notes: Relation<NoteEntity[]>;
 
-  @Column()
+  @Column({ type: 'character varying' })
   @ApiProperty({ example: UserType.aidWorker })
-  public userType: UserType;
+  public userType: WrapperType<UserType>;
 
   @Column({ default: false })
   @ApiProperty({ example: false })

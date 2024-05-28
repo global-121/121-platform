@@ -2,7 +2,7 @@
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
 
 @Entity('try_whatsapp')
 export class TryWhatsappEntity extends Base121Entity {
@@ -14,7 +14,7 @@ export class TryWhatsappEntity extends Base121Entity {
     (registration) => registration.whatsappPendingMessages,
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
 }

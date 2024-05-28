@@ -11,13 +11,14 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
+  Relation,
 } from 'typeorm';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
-  public user: UserEntity;
+  public user: Relation<UserEntity>;
 
   @Column({ nullable: true, type: 'real' })
   public amount: number | null;
@@ -30,7 +31,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   public errorMessage: string | null;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
-  public program: ProgramEntity;
+  public program: Relation<ProgramEntity>;
 
   @Column({ default: 1 })
   @Index()
@@ -49,14 +50,14 @@ export class TransactionEntity extends Base121AuditedEntity {
     (_type) => FinancialServiceProviderEntity,
     (financialServiceProvider) => financialServiceProvider.transactions,
   )
-  public financialServiceProvider: FinancialServiceProviderEntity;
+  public financialServiceProvider: Relation<FinancialServiceProviderEntity>;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.transactions,
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
@@ -65,5 +66,5 @@ export class TransactionEntity extends Base121AuditedEntity {
     () => LatestTransactionEntity,
     (latestTransaction) => latestTransaction.transaction,
   )
-  public latestTransaction: LatestTransactionEntity;
+  public latestTransaction: Relation<LatestTransactionEntity>;
 }

@@ -10,13 +10,14 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Relation,
 } from 'typeorm';
 
 @Entity('event')
 export class EventEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
-  public user: UserEntity;
+  public user: Relation<UserEntity>;
 
   @OneToMany(
     (_type) => EventAttributeEntity,
@@ -26,12 +27,12 @@ export class EventEntity extends Base121OptionalAuditedEntity {
   public attributes: EventAttributeEntity[];
 
   @Index()
-  @Column()
+  @Column({ type: 'character varying' })
   public type: EventEnum;
 
   @ManyToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
-  public registration: RegistrationEntity;
+  public registration: Relation<RegistrationEntity>;
   @Column()
   public registrationId: number;
 }

@@ -16,7 +16,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { HttpStatus } from '@nestjs/common';
 
-describe('Create program questions', () => {
+describe('Create program', () => {
   let accessToken: string;
 
   beforeEach(async () => {

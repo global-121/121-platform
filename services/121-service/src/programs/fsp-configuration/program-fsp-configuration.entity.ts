@@ -2,7 +2,14 @@ import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { isObject } from 'lodash';
-import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+  Unique,
+} from 'typeorm';
 
 @Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
 @Entity('program_fsp_configuration')
@@ -20,7 +27,7 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
     (fsp) => fsp.configuration,
   )
   @JoinColumn({ name: 'fspId' })
-  public fsp: FinancialServiceProviderEntity;
+  public fsp: Relation<FinancialServiceProviderEntity>;
   @Column()
   public fspId: number;
 
