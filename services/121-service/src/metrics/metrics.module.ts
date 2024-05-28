@@ -13,7 +13,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -36,13 +36,13 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     IntersolveVisaModule,
     IntersolveVoucherModule,
     EventsModule,
+    RegistrationDataModule,
   ],
   providers: [
     MetricsService,
     RegistrationDataScopedQueryService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
-    createScopedRepositoryProvider(RegistrationDataEntity),
     createScopedRepositoryProvider(TransactionEntity),
   ],
   controllers: [MetricsController],

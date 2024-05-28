@@ -106,7 +106,6 @@ describe('Load PA table', () => {
       // Assert
       expect(data[0]).toHaveProperty(attributeName);
       expect(data[0]).not.toHaveProperty(attributeFullName);
-      expect(data[0]).not.toHaveProperty(attributeFullName);
     });
 
     it('should only return fspDisplayName', async () => {

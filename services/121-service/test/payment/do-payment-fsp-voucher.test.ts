@@ -128,7 +128,6 @@ describe('Do payment to 1 PA', () => {
           // because it is dynamic and it makes the snapshot fail when run in random order
           delete message.created;
           delete message.from;
-
           if (message.mediaUrl?.includes('imageCode')) {
             const [mediaUrlPath, mediaUrlSecret] =
               message.mediaUrl.split('imageCode/');
