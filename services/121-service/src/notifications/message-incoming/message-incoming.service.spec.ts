@@ -1,12 +1,12 @@
-import {
-  ProcessNameMessage,
-  QueueNameMessageCallBack,
-} from '@121-service/src/notifications/enum/queue.names.enum';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/twilio.dto';
+import {
+  ProcessNameMessage,
+  QueueNameMessageCallBack,
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';

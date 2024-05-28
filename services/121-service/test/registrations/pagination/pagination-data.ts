@@ -28,7 +28,7 @@ export const registrationOCW1 = {
   paymentAmountMultiplier: 1,
   fullName: 'John Smith',
   phoneNumber: '14155236666',
-  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+  fspName: FinancialServiceProviderName.intersolveVisa,
   whatsappPhoneNumber: '14155238886',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -71,7 +71,7 @@ export const registrationOCW4 = {
   referenceId: '54e62864557597e0d',
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 3,
-  fullName: 'Luis Garcia',
+  fullName: 'Luiz Garcia',
   phoneNumber: '14155235555',
   fspName: FinancialServiceProviderName.intersolveVisa,
   whatsappPhoneNumber: '14155235555',
@@ -97,6 +97,7 @@ export const registrationsOCW = [
   registrationOCW2,
   registrationOCW3,
   registrationOCW4,
+  registrationOCW5,
 ];
 
 export const registrationPV5 = {

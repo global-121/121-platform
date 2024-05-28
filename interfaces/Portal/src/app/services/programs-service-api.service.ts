@@ -15,11 +15,11 @@ import { Event } from '../models/event.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
+import { Wallet } from '../models/intersolve-visa-wallet.model';
 import { Message, MessageTemplate } from '../models/message.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
-import { PhysicalCard } from '../models/physical-card.model';
 import {
   PaTableAttribute,
   Program,
@@ -538,41 +538,40 @@ export class ProgramsServiceApiService {
     );
   }
 
-  public async getPhysicalCards(
+  public async getUpdateWalletAndCards(
     programId: number,
     referenceId: string,
-  ): Promise<PhysicalCard[]> {
-    const response = await this.apiService.get(
+  ): Promise<Wallet> {
+    const result = await this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets?referenceId=${referenceId}`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
+      {},
     );
-
-    return !!response && !!response.wallets ? response.wallets : [];
+    return result;
   }
 
-  public async issueNewCard(
+  public async reissueCard(
     programId: number,
     referenceId: string,
   ): Promise<any> {
-    const res = await this.apiService.put(
+    const res = await this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
       {},
     );
 
     return res;
   }
 
-  public async toggleBlockWallet(
+  public async pauseCard(
     programId: number,
+    referenceId: string,
     tokenCode: string,
-    block: boolean,
+    pause: boolean,
   ): Promise<any> {
-    return await this.apiService.post(
+    return await this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/${
-        block ? 'block' : 'unblock'
-      }`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=${pause}`,
       {},
     );
   }

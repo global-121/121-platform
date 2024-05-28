@@ -1,5 +1,5 @@
 /**
- * Format a phone number for use with Twilio as an international phone number
+ * Format a phone number according to international format.
  *
  * @param phoneNumber - The phone number to format
  * @returns The formatted phone number, including "+"-prefix
