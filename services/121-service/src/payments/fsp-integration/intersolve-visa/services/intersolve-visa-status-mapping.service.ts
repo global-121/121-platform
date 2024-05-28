@@ -58,6 +58,7 @@ const VisaCardActionsMapping = {
   'Issue New Card': VisaCardAction.reissue,
 };
 
+// TODO: REFACTOR: IMO Move into IntersolveVisaApiService. Make sure it does not depend on anything outside of this Module.
 export class IntersolveVisaStatusMappingService {
   private readonly mapping: VisaStatusMapInterface[] = [];
 

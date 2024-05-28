@@ -7,8 +7,11 @@ import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
 import { OrganizationModule } from '@121-service/src/organization/organization.module';
+import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
+import { TransferJobProcessorsModule } from '@121-service/src/transfer-job-processors/transfer-job-processors.module';
+import { TransferQueuesModule } from '@121-service/src/transfer-queues/transfer-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
 import { BullModule } from '@nestjs/bull';
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
@@ -53,6 +56,9 @@ import { DataSource } from 'typeorm';
       },
     }),
     AuthModule,
+    ProgramFinancialServiceProviderConfigurationsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
+    TransferQueuesModule,
+    TransferJobProcessorsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
   ],
   controllers: [AppController],
   providers: [

@@ -24,6 +24,10 @@ const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
   : process.env.INTERSOLVE_VISA_API_URL;
 
+/* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
+    121 Service needs to know about Intersolve API implementation details.
+    Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externaly used API) uses "121" terminology.
+*/
 @Injectable()
 export class IntersolveVisaApiService {
   public tokenSet: TokenSet;
