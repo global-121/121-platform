@@ -30,9 +30,14 @@ runs:
       working-directory: ${{ inputs.servicePath }}
       run: 'npm ci --no-fund --no-audit'
 
-    - name: Test
+    - name: Build
       shell: bash
       working-directory: ${{ inputs.servicePath }}
+      run: 'npm run build'
+
+    - name: Test
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}/dist
       run: 'npm run test'
 
     - name: Set VERSION of build/deployment
@@ -43,33 +48,33 @@ runs:
     - name: Add VERSION to deployment
       id: version
       shell: bash
-      working-directory: ${{ inputs.servicePath }}
+      working-directory: ${{ inputs.servicePath }}/dist
       run: |
         echo "${{ env.GLOBAL_121_VERSION }}" >> ./VERSION.txt
         echo "build_version=${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_OUTPUT
 
     - name: Download database certificate
       shell: bash
-      working-directory: ${{ inputs.servicePath }}
+      working-directory: ${{ inputs.servicePath }}/dist
       run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
 
-    - name: Reduce build package size
-      shell: bash
-      working-directory: ${{ inputs.servicePath }}
-      run: |
-        npm prune --omit=dev --no-fund --no-audit
-        rm -r .vscode/
-        rm -r test/
-        rm -r ./*.md
-        rm .dockerignore
-        rm .eslintrc.js
-        rm .gitignore
-        rm .prettier*
-        rm Dockerfile
-        rm jest.unit.config.js
-        rm jest.e2e.config.js
+    # - name: Reduce build package size
+    #   shell: bash
+    #   working-directory: ${{ inputs.servicePath }}/dist
+    #   run: |
+    #     npm prune --omit=dev --no-fund --no-audit
+    #     rm -r .vscode/
+    #     rm -r test/
+    #     rm -r ./*.md
+    #     rm .dockerignore
+    #     rm .eslintrc.js
+    #     rm .gitignore
+    #     rm .prettier*
+    #     rm Dockerfile
+    #     rm jest.unit.config.js
+    #     rm jest.e2e.config.js
 
     - name: Creating ZIP package
       shell: bash
-      working-directory: ${{ inputs.servicePath }}
-      run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
+      working-directory: ${{ inputs.servicePath }}/dist
+      run: zip --quiet --display-globaldots --recurse-paths ../artifact.zip .

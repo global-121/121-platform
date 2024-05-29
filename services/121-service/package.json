@@ -12,7 +12,8 @@
   "scripts": {
     "lint": "eslint \"**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
-    "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  nest start -r tsconfig-paths/register -p tsconfig.json",
+    "build": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  nest build -p tsconfig.json",
+    "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
     "start:dev": "nodemon --watch src/**/*.json --exec npm run start:dev:nest",
     "start:dev:nest": "nest start -r tsconfig-paths/register -w -p tsconfig.json",
     "prestart:dev": "npm install --no-fund --no-audit --no-save",
