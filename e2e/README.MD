@@ -28,7 +28,6 @@
    - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
 9. [How to generate Screenshots for "User Manual"](#how-to-generate-screenshots-for-user-manual)
 
-
 ## Advantages of Playwright Automated Tests
 
 - **Simulating User Interactions**: Playwright enables you to simulate user interactions in the interface across different browsers and devices.
@@ -104,6 +103,7 @@ The Page Object Model is a design pattern that creates an object repository for 
 - **Separation of Concerns**: Separates the test logic from the UI logic, making the code easier to understand and maintain.
 
 ### Implementing POM
+
 Page Classes
 Create a page class for each page representing different module and/ or functionality in your application. Here is an example of how you can structure your HomePage class:
 
@@ -129,6 +129,7 @@ export default HomePage;
 ```
 
 ## Writing Tests
+
 ### Example Test
 
 Here is a simple example of writing a test using the POM structure:
@@ -136,7 +137,7 @@ Here is a simple example of writing a test using the POM structure:
 ```
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -187,7 +188,6 @@ For extended documentation refer to Plawyright's page: https://playwright.dev/do
 
 - Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
 - Remove "skip" command from the test
-``` test.skip('Navigates to the portal and takes screenshots', async ({ page }) => ```
-- Run the test with command: ``` npx playwright test userManualScreenshots/userManualScreenshots.spec.ts --update-snapshots ```
-- Push your changes to the branch or create PR to merge them into ``` main ```
-
+  `test.skip('Navigates to the portal and takes screenshots', async ({ page }) =>`
+- Run the test with command: `npx playwright test userManualScreenshots/userManualScreenshots.spec.ts --update-snapshots`
+- Push your changes to the branch or create PR to merge them into `main`
