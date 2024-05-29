@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.119.2...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.120.0...main)
 
 ---
+
+## [1.120.0](https://github.com/global-121/121-platform/compare/v1.119.2...v1.120.0)- 2024-05-29
+
+### Added
+
+- [AB#28290](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28290) Replace help page with external manual
+- [AB#26327](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/26327) Combine registration & inclusion phase
 
 ## [1.119.2](https://github.com/global-121/121-platform/compare/v1.119.1...v1.119.2)- 2024-05-22
 
