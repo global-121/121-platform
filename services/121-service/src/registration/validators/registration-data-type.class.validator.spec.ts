@@ -4,7 +4,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationDataTypeClassValidator } from '@121-service/src/registration/validators/registration-data-type.class.validator';
 import { Repository } from 'typeorm';
 
-jest.mock('../../../appdatasource', () => ({
+jest.mock('../../../src/appdatasource', () => ({
   AppDataSource: {
     getRepository: {
       findOne: jest.fn().mockResolvedValue(null),
