@@ -1,6 +1,6 @@
-import jumboFspTranslations from '@121-service/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import jumboFspTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';

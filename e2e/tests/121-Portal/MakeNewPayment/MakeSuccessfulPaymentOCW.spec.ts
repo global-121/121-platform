@@ -4,8 +4,8 @@ import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
 import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
