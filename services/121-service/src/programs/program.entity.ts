@@ -16,6 +16,7 @@ import {
   CustomAttributeType,
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import {
   BeforeRemove,
@@ -124,7 +125,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public fullnameNamingConvention: string[] | null;
 
   @Column('json', { default: [] })
-  public languages: string[];
+  public languages: LanguageEnum[];
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
