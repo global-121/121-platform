@@ -48,7 +48,7 @@ runs:
     - name: Add VERSION to deployment
       id: version
       shell: bash
-      working-directory: ${{ inputs.servicePath }}/dist
+      working-directory: ${{ inputs.servicePath }}
       run: |
         echo "${{ env.GLOBAL_121_VERSION }}" >> ./VERSION.txt
         echo "build_version=${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_OUTPUT
@@ -76,5 +76,5 @@ runs:
 
     - name: Creating ZIP package
       shell: bash
-      working-directory: ${{ inputs.servicePath }}/dist
-      run: zip --quiet --display-globaldots --recurse-paths ../artifact.zip .
+      working-directory: ${{ inputs.servicePath }}
+      run: zip --quiet --display-globaldots --recurse-paths ./artifact.zip .
