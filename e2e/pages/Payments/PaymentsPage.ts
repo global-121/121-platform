@@ -1,3 +1,4 @@
+import TableModule from '@121-e2e/pages/Table/TableModule';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
@@ -22,11 +23,16 @@ class PaymentsPage {
     numberOfPas,
     defaultTransferValue,
     maxTransferValue,
+    paymentNumber = 1,
   }: {
     numberOfPas: number;
     defaultTransferValue: number;
     maxTransferValue: number;
+    paymentNumber?: number;
   }) {
+    // In case of UI delay page should refresh and do payment again with TableModule
+    const tableModule = new TableModule(this.page);
+    // --------------------------------------------------------------- //
     const paIncludedLabel = englishTranslations.page.program['program-payout'][
       'make-payment'
     ]['number-included'].replace('{{number}}', numberOfPas.toString());
@@ -37,11 +43,21 @@ class PaymentsPage {
       `EUR ${maxTransferValue.toString()}`,
     );
 
-    await expect(this.page.getByText(paIncludedLabel)).toBeVisible();
-    await expect(this.page.getByText(maximumAmountLabel)).toBeVisible();
-    await expect(
-      this.paymentPopupMakePaymentAmountInput.locator('input'),
-    ).toHaveValue(defaultTransferValue.toString());
+    try {
+      await expect(this.page.getByText(paIncludedLabel)).toBeVisible();
+      await expect(this.page.getByText(maximumAmountLabel)).toBeVisible();
+      await expect(
+        this.paymentPopupMakePaymentAmountInput.locator('input'),
+      ).toHaveValue(defaultTransferValue.toString());
+    } catch (error) {
+      await this.page.reload();
+      await tableModule.doPayment(paymentNumber);
+      await this.verifyPaymentPopupValues({
+        numberOfPas,
+        defaultTransferValue,
+        maxTransferValue,
+      });
+    }
   }
 
   async executePayment({
