@@ -1,6 +1,6 @@
-import visaFspIntersolve from '@121-service/seed-data/fsp/fsp-intersolve-visa.json';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-pv.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,

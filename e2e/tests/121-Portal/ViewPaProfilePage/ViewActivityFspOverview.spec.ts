@@ -2,15 +2,15 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
-} from '@121-service/seed-data/mock/visa-card.data';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+} from '@121-service/src/seed-data/mock/visa-card.data';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {

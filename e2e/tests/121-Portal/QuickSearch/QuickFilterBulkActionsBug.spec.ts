@@ -1,5 +1,5 @@
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
