@@ -5,7 +5,8 @@
     "src/**/*.{js,ts}",
     "!src/**/*.spec.{js,ts}",
     "!src/migration/**/*.{js,ts}",
-    "!src/seed-data/**/*.{js,ts}"
+    "!src/seed-data/**/*.{js,ts}",
+    "!src/datasource-manage-migrations.ts"
   ],
   "rules": {
     "dependencies": "warn",
