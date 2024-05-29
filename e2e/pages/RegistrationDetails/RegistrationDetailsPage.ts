@@ -193,6 +193,10 @@ class RegistrationDetails {
     await saveButton.waitFor({ state: 'visible' });
     await saveButton.click();
 
+    await expect(
+      this.page.getByText(englishTranslations.common['update-success']),
+    ).toBeVisible();
+
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
   }

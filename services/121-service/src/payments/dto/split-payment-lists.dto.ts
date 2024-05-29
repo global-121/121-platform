@@ -1,14 +1,6 @@
-export class SplitPaymentListDto {
-  public intersolvePaPayment?: object[];
-  public intersolveNoWhatsappPaPayment?: object[];
-  public intersolveVisaPaPayment?: object[];
-  public intersolveJumboPhysicalPaPayment?: object[];
-  public africasTalkingPaPayment?: object[];
-  public bobFinancePaPayment?: object[];
-  public ukrPoshtaPaPayment?: object[];
-  public vodacashPaPayment?: object[];
-  public belcashPaPayment?: object[];
-  public safaricomPaPayment?: object[];
-  public commercialBankEthiopiaPaPayment?: object[];
-  public excelPaPayment?: object[];
-}
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+
+export type SplitPaymentListDto = {
+  [key in FinancialServiceProviderName]?: PaPaymentDataDto[];
+};

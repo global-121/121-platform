@@ -11,10 +11,6 @@ export enum FinancialServiceProviderName {
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
-  //The values below are for testing purposes
-  fspAllAttributes = 'FSP - all attributes',
-  fspNoAttributes = 'FSP - no attributes',
-  bankA = 'Bank A',
 }
 
 export enum FinancialServiceProviderConfigurationEnum {
@@ -74,16 +70,6 @@ export const FinancialServiceProviderConfigurationMapping: {
   [FinancialServiceProviderName.excel]: [
     FinancialServiceProviderConfigurationEnum.columnsToExport,
     FinancialServiceProviderConfigurationEnum.columnToMatch,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  //The values below are for testing purposes
-  [FinancialServiceProviderName.fspAllAttributes]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.fspNoAttributes]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.bankA]: [
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
 };

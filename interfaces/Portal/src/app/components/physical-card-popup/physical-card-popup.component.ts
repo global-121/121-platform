@@ -1,10 +1,10 @@
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from 'src/environments/environment';
-import { WalletCardStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { PhysicalCard } from '../../models/physical-card.model';

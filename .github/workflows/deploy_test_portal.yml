@@ -61,9 +61,10 @@ jobs:
           NG_ENV_NAME: 'test'
           NG_LOCALES: 'ar,en,es,fr,nl'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
-          NG_AI_IKEY: '6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6'
-          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+          # Logging disabled by default (uncomment these lines to enable on a per-issue basis)
+          # NG_AI_IKEY: '6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6'
+          # NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          # APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
