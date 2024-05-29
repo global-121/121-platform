@@ -77,4 +77,4 @@ runs:
     - name: Creating ZIP package
       shell: bash
       working-directory: ${{ inputs.servicePath }}/dist
-      run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
+      run: zip --quiet --display-globaldots --recurse-paths ../artifact.zip .
