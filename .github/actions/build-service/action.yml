@@ -63,7 +63,6 @@ runs:
       working-directory: ${{ inputs.servicePath }}
       run: |
         npm prune --omit=dev --no-fund --no-audit
-        rm -r src/
         rm -r .vscode/
         rm -r test/
         rm -r ./*.md
