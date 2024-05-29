@@ -55,7 +55,7 @@ runs:
 
     - name: Download database certificate
       shell: bash
-      working-directory: ${{ inputs.servicePath }}/dist
+      working-directory: ${{ inputs.servicePath }}
       run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
 
     # - name: Reduce build package size
