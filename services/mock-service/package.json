@@ -13,7 +13,8 @@
     "lint": "eslint \"src/**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
     "test": "echo 'No tests available' && exit 0",
-    "start": "nest start -r tsconfig-paths/register -b swc -p tsconfig.json",
+    "build": "nest build -p tsconfig.json",
+    "start": "node dist/main.js",
     "prestart:dev": "npm install --no-fund --no-audit",
     "start:dev": "nest start -r tsconfig-paths/register -b swc -w -p tsconfig.json"
   },
