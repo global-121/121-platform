@@ -507,16 +507,16 @@ class RegistrationDetails {
   }
 
   async updatepaymentAmountMultiplier({
-    amount,
+    amount = 'default',
     saveButtonName,
     okButtonName,
     alert = englishTranslations.common['update-success'],
   }: {
-    amount: string;
+    amount?: string;
     saveButtonName: string;
     okButtonName: string;
     alert?: string;
-  }) {
+  }): Promise<string> {
     const saveButton = this.page.getByRole('button', {
       name: saveButtonName,
     });
@@ -527,6 +527,12 @@ class RegistrationDetails {
 
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
+    const oldAmount = await paymentMultipierInput.inputValue();
+    //if does not pass a new value for multiplier, set new amount= old amount + 1
+    if (amount == 'default') {
+      amount = (parseInt(oldAmount, 10) + 1).toString();
+      console.log(amount);
+    }
     await paymentMultipierInput.fill(amount);
 
     await this.page.waitForLoadState('networkidle');
@@ -547,12 +553,54 @@ class RegistrationDetails {
 
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
+    return oldAmount;
   }
 
   async validateAmountMultiplier({ amount }: { amount: string }) {
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
     expect(await paymentMultipierInput.inputValue()).toBe(amount);
+  }
+
+  async validateDataChangesTab({
+    dataChangesLabel,
+    oldValue,
+    newValue,
+    reason = 'Change multiplier to ' + newValue,
+  }: {
+    dataChangesLabel: string;
+    oldValue: string;
+    newValue: string;
+    reason?: string;
+  }) {
+    expect(await this.historyTile.isVisible()).toBe(true);
+    const dataAttributes = this.historyTile.filter({
+      hasText: dataChangesLabel,
+    });
+    const oldField =
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].new;
+    const newField =
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].old;
+    const reasonField =
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].reason;
+
+    const oldValueHolder = this.tileInformationPlaceHolder
+      .filter({ hasText: oldField })
+      .nth(0);
+    const newValueHolder = this.tileInformationPlaceHolder
+      .filter({ hasText: newField })
+      .nth(0);
+    const reasonHolder = this.tileInformationPlaceHolder
+      .filter({ hasText: reasonField })
+      .nth(0);
+
+    expect(await dataAttributes.textContent()).toContain(dataChangesLabel);
+    expect(await oldValueHolder.textContent()).toContain(oldValue);
+    expect(await newValueHolder.textContent()).toContain(newValue);
+    expect(await reasonHolder.textContent()).toContain(reason);
   }
 }
 
