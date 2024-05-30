@@ -84,7 +84,8 @@
     "@compodoc/compodoc": "^1.1.23",
     "@nestjs/cli": "^10.3.2",
     "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.5.7",
+    "@swc/core": "^1.5.22",
+    "@swc/jest": "^0.2.36",
     "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.4",
@@ -108,7 +109,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.1.4",
     "tsc-watch": "^6.2.0",
     "yargs": "^17.7.2"
   }
