@@ -33,8 +33,8 @@ import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import {
-  REDIS_CLIENT,
   getRedisSetName,
+  REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -600,32 +600,32 @@ export class IntersolveVoucherService
     intersolveVoucher: IntersolveVoucherEntity,
     programId: number,
   ): Promise<number> {
+    const fspName = intersolveVoucher.whatsappPhoneNumber
+      ? FinancialServiceProviderName.intersolveVoucherWhatsapp
+      : FinancialServiceProviderName.intersolveVoucherPaper;
+
     const configQuery = await this.programFspConfigurationRepository
       .createQueryBuilder('fspConfig')
       .select('name')
       .addSelect('value')
       .where('fspConfig.programId = :programId', { programId: programId })
-      .andWhere('fsp.fsp = :fspName', {
-        fspName: intersolveVoucher.whatsappPhoneNumber
-          ? FinancialServiceProviderName.intersolveVoucherWhatsapp
-          : FinancialServiceProviderName.intersolveVoucherPaper,
-      })
+      .andWhere('fsp.fsp = :fspName', { fspName: fspName })
       .leftJoin('fspConfig.fsp', 'fsp');
 
     const config = await configQuery.getRawMany();
     let credentials: { username: string; password: string };
     try {
       credentials = {
-        username: config.find((c) => c.name === 'username').value,
-        password: config.find((c) => c.name === 'password').value,
+        username: config.find(
+          (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+        ).value,
+        password: config.find(
+          (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+        ).value,
       };
     } catch (error) {
-      throw new HttpException(
-        {
-          error:
-            'An error occured during the retrieval of the FSP configuration. Please contact the 121 platform team.',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      throw new Error(
+        `Could not retrieve configuration of FSP: "${fspName}", for program: ${programId}. Please contact the 121 platform team.`,
       );
     }
     const getCard = await this.intersolveVoucherApiService.getCard(
@@ -685,7 +685,7 @@ export class IntersolveVoucherService
     return unusedVouchersDtos;
   }
 
-  public async updateUnusedVouchers(programId?: number): Promise<void> {
+  public async updateUnusedVouchers(programId: number): Promise<void> {
     const maxId = (
       await this.intersolveVoucherScopedRepository
         .createQueryBuilder('voucher')
