@@ -1,5 +1,6 @@
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 
+// TODO: Remove when use has been refactored out.
 export class IntersolveLoadResponseDto {
   public data: IntersolveLoadBodyDto;
   public status: number;
@@ -8,7 +9,7 @@ export class IntersolveLoadResponseDto {
 
 class IntersolveLoadBodyDto {
   public success: boolean;
-  public errors: IntersolveReponseErrorDto[];
+  public errors: ErrorsInResponseDto[];
   public code: string;
   public correlationId: string;
   public data: IntersolveLoadResponseDataDto;
