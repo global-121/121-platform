@@ -17,6 +17,7 @@ import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom
 import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
@@ -65,6 +66,7 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -733,7 +735,7 @@ export class RegistrationsController {
   @ApiTags('financial-service-providers/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
   @ApiOperation({
-    summary: '[SCOPED] [EXTERNALLY USED] Block Intersolve Visa Child wallet',
+    summary: '[SCOPED] [EXTERNALLY USED] Pause Intersolve Visa Card',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
@@ -742,10 +744,10 @@ export class RegistrationsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description:
-      'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Body.status 204: Paused card, stored in 121 db and sent notification to registration. - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Patch(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/cards/:tokenCode',
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet/cards/:tokenCode',
   )
   public async pauseCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
@@ -764,6 +766,29 @@ export class RegistrationsController {
       programId,
       tokenCode,
       pause,
+    );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Send Visa Customer Information of a registration to Intersolve',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Customer data sent',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/contact-information',
+  )
+  public async getRegistrationAndSendContactInformationToIntersolve(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+  ): Promise<void> {
+    return await this.registrationsService.getRegistrationAndSendContactInformationToIntersolve(
+      referenceId,
+      programId,
     );
   }
 }

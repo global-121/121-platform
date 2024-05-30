@@ -57,26 +57,28 @@ export class IntersolveVisaController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  // TODO: REFACTOR: Remove this endpoint when replaced by POST /programs/:programId/registrations/:referenceid/financial-service-providers/intersolve-visa/child-wallets in the RegistrationsController
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
-    summary: 'Send FSP Visa Customer data of a registration to Intersolve',
+    summary:
+      '[SCOPED] Replace wallet and card: issue new wallet and card for Intersolve Visa customer and unload/block old wallet',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Customer data updated',
+    description:
+      'Wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  // TODO: REFACTOR: POST /api/programs/{programId}/financial-service-providers/intersolve-visa/customers/:holderid/sync
   @Put(
-    'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId',
+    'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId/wallets',
   )
-  public async syncIntersolveCustomerWith121(
+  public async reissueWalletAndCard(
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<any> {
-    return await this.intersolveVisaService.syncIntersolveCustomerWith121(
+  ): Promise<IntersolveApiBlockWalletResponseDto> {
+    return await this.intersolveVisaService.reissueWalletAndCard(
       params.referenceId,
       programId,
     );

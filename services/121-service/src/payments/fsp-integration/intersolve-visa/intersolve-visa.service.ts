@@ -12,7 +12,6 @@ import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integrat
 import { GetTokenResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-token-result.dto';
 import { GetTransactionInformationResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-transaction-information-result.dto';
 import { AddressDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-request.dto';
-import { CreateCustomerResponseExtensionDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-response.dto';
 import { IssueTokenDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token.dto';
 import {
   GetWalletDetailsResponseDto,
@@ -37,7 +36,6 @@ import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payment
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -46,6 +44,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
+import { ContactInformationDto } from './dto/external/contact-information.dto';
 
 @Injectable()
 export class IntersolveVisaService
@@ -151,13 +150,14 @@ export class IntersolveVisaService
       const createCustomerDto: CreateCustomerDto = {
         externalReference: input.reference,
         name: input.name,
-        addressStreet: input.addressStreet,
-        addressHouseNumber: input.addressHouseNumber,
+        addressStreet: input.contactInformation.addressStreet,
+        addressHouseNumber: input.contactInformation.addressHouseNumber,
         // TODO: Check if this is the correct way to handle optional fields
-        addressHouseNumberAddition: input.addressHouseNumberAddition!,
-        addressPostalCode: input.addressPostalCode,
-        addressCity: input.addressCity,
-        phoneNumber: input.phoneNumber,
+        addressHouseNumberAddition:
+          input.contactInformation.addressHouseNumberAddition!,
+        addressPostalCode: input.contactInformation.addressPostalCode,
+        addressCity: input.contactInformation.addressCity,
+        phoneNumber: input.contactInformation.phoneNumber,
         estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
       };
 
@@ -291,12 +291,13 @@ export class IntersolveVisaService
           intersolveVisaCustomer.intersolveVisaParentWallet
             .intersolveVisaChildWallets[0].tokenCode,
         name: input.name,
-        addressStreet: input.addressStreet,
-        addressHouseNumber: input.addressHouseNumber,
-        addressHouseNumberAddition: input.addressHouseNumberAddition,
-        addressPostalCode: input.addressPostalCode,
-        addressCity: input.addressCity,
-        phoneNumber: input.phoneNumber,
+        addressStreet: input.contactInformation.addressStreet,
+        addressHouseNumber: input.contactInformation.addressHouseNumber,
+        addressHouseNumberAddition:
+          input.contactInformation.addressHouseNumberAddition,
+        addressPostalCode: input.contactInformation.addressPostalCode,
+        addressCity: input.contactInformation.addressCity,
+        phoneNumber: input.contactInformation.phoneNumber,
         coverLetterCode: input.coverLetterCode,
       };
 
@@ -544,82 +545,6 @@ export class IntersolveVisaService
     );
   }
 
-  // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
-  public async syncIntersolveCustomerWith121(
-    referenceId: string,
-    programId: number,
-    attributes?: Attributes[] | string[],
-  ): Promise<void> {
-    if (
-      attributes &&
-      !this.doAnyAttributesRequireSync(attributes as CustomDataAttributes[])
-    ) {
-      return;
-    }
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: {
-        referenceId: Equal(referenceId),
-        programId: Equal(programId),
-      },
-    });
-    const visaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
-        registration.id,
-      );
-
-    const errors: string[] = [];
-
-    const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
-      type: 'MOBILE',
-      value: registration.phoneNumber,
-    };
-    const phoneNumberResult =
-      await this.intersolveVisaApiService.updateCustomerPhoneNumber({
-        holderId: visaCustomer?.holderId ?? null,
-        payload: phoneNumberPayload,
-      });
-    if (!this.isSuccessResponseStatus(phoneNumberResult.status)) {
-      errors.push(
-        `Phone number update failed: ${phoneNumberResult?.data?.code}. Adjust the (required) phone number and retry.`,
-      );
-    }
-
-    try {
-      const relationOptions = await this.getRelationOptionsForVisa(referenceId);
-      const paymentDetails =
-        await this.registrationDataQueryService.getPaDetails(
-          [referenceId],
-          relationOptions,
-        );
-
-      const addressPayload = this.createCustomerAddressPayload(
-        paymentDetails[0],
-      );
-      const addressResult =
-        await this.intersolveVisaApiService.updateCustomerAddress({
-          holderId: visaCustomer?.holderId ?? null,
-          payload: addressPayload,
-        });
-      if (!this.isSuccessResponseStatus(addressResult.status)) {
-        errors.push(`Address update failed: ${addressResult?.data?.code}.`);
-      }
-
-      if (errors.length > 0) {
-        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    } catch (error) {
-      if (error.name === ErrorEnum.RegistrationDataError) {
-        console.info(
-          `Unable to sync address data because this registration does not have this data anymore.\n
-          This is most likely because this registration first had the FSP Intersolve Visa, and then switched to another FSP\n
-          This new fsp does not have the attributes needed for Intersolve Visa, so the data is removed from the registration`,
-        );
-      } else {
-        throw error;
-      }
-    }
-  }
-
   // TODO: Re-implement and refactor this function into the new this.reissueCard().
   public async reissueWalletAndCard(
     referenceId: string,
@@ -730,13 +655,14 @@ export class IntersolveVisaService
     // Create new card
     await this.intersolveVisaApiService.createPhysicalCard({
       tokenCode: newChildWallet.tokenCode,
-      name: input.personalData.name,
-      addressStreet: input.personalData.addressStreet,
-      addressHouseNumber: input.personalData.addressHouseNumber,
-      addressHouseNumberAddition: input.personalData.addressHouseNumberAddition,
-      addressPostalCode: input.personalData.addressPostalCode,
-      addressCity: input.personalData.addressCity,
-      phoneNumber: input.personalData.phoneNumber,
+      name: input.name,
+      addressStreet: input.contactInformation.addressStreet,
+      addressHouseNumber: input.contactInformation.addressHouseNumber,
+      addressHouseNumberAddition:
+        input.contactInformation.addressHouseNumberAddition,
+      addressPostalCode: input.contactInformation.addressPostalCode,
+      addressCity: input.contactInformation.addressCity,
+      phoneNumber: input.contactInformation.phoneNumber,
       coverLetterCode: input.coverLetterCode,
     });
 
@@ -847,5 +773,34 @@ export class IntersolveVisaService
         customer.intersolveVisaParentWallet,
       );
     }
+  }
+
+  // TODO: It looks like the old implementation (this.syncIntersolveCustomerWith121) had some logic to only send data to Intersolve if it changed. Do we want to implement that again? That probably then should be in the RegistrationService and not here.
+  public async sendUpdatedContactInformation({
+    registrationId,
+    contactInformation,
+  }: {
+    registrationId: number;
+    contactInformation: ContactInformationDto;
+  }): Promise<void> {
+    const customer =
+      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
+        registrationId,
+      );
+
+    // TODO: Is there a shorter / more expressive way of putting these variables into the method?
+    this.intersolveVisaApiService.updateCustomerAddress({
+      holderId: customer.holderId,
+      addressStreet: contactInformation.addressStreet,
+      addressHouseNumber: contactInformation.addressHouseNumber,
+      addressHouseNumberAddition: contactInformation.addressHouseNumberAddition,
+      addressPostalCode: contactInformation.addressPostalCode,
+      addressCity: contactInformation.addressCity,
+    });
+
+    this.intersolveVisaApiService.updateCustomerPhoneNumber({
+      holderId: customer.holderId,
+      phoneNumber: contactInformation.phoneNumber,
+    });
   }
 }
