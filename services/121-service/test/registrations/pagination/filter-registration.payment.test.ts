@@ -23,7 +23,7 @@ import {
   registrationOCW1,
   registrationOCW3,
   registrationOCW4,
-  registrationPV5,
+  registrationOCW5,
   registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -31,7 +31,7 @@ describe('Load PA table', () => {
   describe('getting registration using paginate and filtering on payment', () => {
     registrationOCW3.lastName = 'mock-fail-create-customer';
     // This number implies that in mock-service no incoming 'yes' is triggered, so that the transaction stays on 'waiting'
-    registrationPV5.whatsappPhoneNumber = '16005550002';
+    registrationOCW5.whatsappPhoneNumber = '16005550002';
 
     let accessToken: string;
     const payment1 = 1;
@@ -41,7 +41,7 @@ describe('Load PA table', () => {
     const registrations = [
       registrationOCW1,
       registrationOCW3,
-      registrationPV5,
+      registrationOCW5,
       registrationOCW4,
     ];
     const paymentReferenceIds = registrations.map(
@@ -114,7 +114,7 @@ describe('Load PA table', () => {
 
       // Assert
       const expectedValueObjectWaiting = createExpectedValueObject(
-        registrationPV5,
+        registrationOCW5,
         3,
       );
 

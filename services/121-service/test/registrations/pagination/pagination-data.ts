@@ -86,6 +86,17 @@ export const registrationOCW4 = {
   addressCity: 'AnotherCity',
 };
 
+export const registrationOCW5 = {
+  referenceId: '54e62864557597e034',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 3,
+  firstName: 'Lars',
+  lastName: 'Larsson',
+  phoneNumber: '14155235556',
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235556',
+};
+
 export const registrationsOCW = [
   registrationOCW1,
   registrationOCW2,
