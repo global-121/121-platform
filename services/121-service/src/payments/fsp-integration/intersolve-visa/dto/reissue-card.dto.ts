@@ -3,7 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 export class ReissueCardDto {
   // Used to find the IntersolveVisaCustomer Entity related to the Registration and continue from there.
   @IsNotEmpty()
-  registrationId: string;
+  registrationId: number;
 
   // Only used to send as CorrelationId to Intersolve. Not used internally, since the IntersolveVisa Module does not "know about" Registrations.
   @IsNotEmpty()
