@@ -671,6 +671,7 @@ export class PaymentsService {
         dataFieldNames,
       );
 
+    // TODO: FIX: registrationViews does not contain any name field of the Registration. Where/how to get it?
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationsChunked(
         programId,
