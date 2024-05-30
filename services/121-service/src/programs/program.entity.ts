@@ -60,6 +60,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ type: 'character varying', nullable: true })
   public paymentAmountMultiplierFormula: string | null;
 
+  @Column({ type: 'character varying', nullable: true, default: 'blabla' })
+  public stocazzo: string | null;
+
   @ManyToMany(
     () => FinancialServiceProviderEntity,
     (financialServiceProviders) => financialServiceProviders.program,
