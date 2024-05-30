@@ -1,14 +1,15 @@
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -37,7 +38,6 @@ import {
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -57,10 +57,14 @@ import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
+import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 
 @Injectable()
 export class RegistrationsService {
@@ -86,7 +90,6 @@ export class RegistrationsService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly lastMessageStatusService: LastMessageStatusService,
     private readonly userService: UserService,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -94,10 +97,11 @@ export class RegistrationsService {
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
     @Inject(getScopedRepositoryProviderName(EventEntity))
     private eventScopedRepository: ScopedRepository<EventEntity>,
+    private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
+    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -240,10 +244,11 @@ export class RegistrationsService {
       const errors = `ReferenceId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: Equal(referenceId) },
-      relations: relations,
-    });
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
+        referenceId,
+        relations,
+      });
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -882,37 +887,131 @@ export class RegistrationsService {
     });
   }
 
-  public async reissueCard(_referenceId: string): Promise<void> {
-    /* TODO: Implement this method:
-      - Get the registration data using the referenceId, by using the PaginationRegistrationService, see how that is done for do Intersolve Visa payment (PaymentsService)
-      - Get the brand code and cover letter code for IntersolveVisa as configured for this program, also see how that is done for do Intersolve Visa payment (PaymentsService)
-      - Fill a ReissueCardDto object
-      - Call this.IntersolveVisaService.reissueCard(ReissueCardDto)
-      - Call this.sendMessageReissueCard() to build a message and add it to the queue.
-      - This function can probably simply pass on the ResponseDto it gets back to the calling Controller function.
+  public async reissueCardAndSendMessage(
+    referenceId: string,
+    programId: number,
+  ) {
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
+        referenceId,
+        programId,
+      });
+    if (!registration) {
+      throw new HttpException(
+        `Registration not found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-    */
-    // TODO: Remove _ when used.
-    const _reissueCardDto = new ReissueCardDto();
-  }
+    const intersolveVisaConfig =
+      await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+        {
+          programId: programId,
+          financialServiceProviderName:
+            FinancialServiceProviderName.intersolveVisa,
+          names: [
+            FinancialServiceProviderConfigurationEnum.brandCode,
+            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          ],
+        },
+      );
 
-  public async sendMessageReissueCard(): Promise<void> {
-    /* TODO: Implement this method:
-      - Build a message object thing
-      - Put it in the MessageQueue.
-      - See to be removed method: IntersolveVisaService.sendMessageReissueCard()
-    */
+    //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
+    const intersolveVisaQuestions =
+      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+        FinancialServiceProviderName.intersolveVisa,
+      );
+    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
+      (q) => q.name,
+    );
+    const dataFieldNames = [
+      'fullName',
+      'phoneNumber',
+      ...intersolveVisaQuestionNames,
+    ];
+
+    const registrationData =
+      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+        registration,
+        dataFieldNames,
+      );
+
+    if (!registrationData || registrationData.length === 0) {
+      throw new HttpException(
+        `No registration data found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const mappedRegistrationData = registrationData.reduce(
+      (acc, { name, value }) => {
+        acc[name] = value;
+        return acc;
+      },
+      {},
+    );
+
+    // // TODO: Test with debugger to see empty properties
+    // // Check if all required properties are present. If not, create a failed transaction and throw an error.
+    for (const key in registrationData) {
+      if (key === 'addressHouseNumberAddition') continue; // Skip non-required property
+
+      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
+      if (
+        registrationData[key] === null ||
+        registrationData[key] === undefined ||
+        // TODO: Is this .value check what we want?
+        registrationData[key].value === ''
+      ) {
+        const errorText = `Property ${key} is undefined`;
+        throw new HttpException(errorText, HttpStatus.BAD_REQUEST);
+      }
+    }
+    const reissueCardDto: ReissueCardDto = {
+      registrationId: registration.id,
+      // Why do we need this?
+      reference: registration.referenceId,
+      personalData: {
+        name: mappedRegistrationData['fullName'],
+        addressStreet: mappedRegistrationData['addressStreet'],
+        addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
+        addressHouseNumberAddition:
+          mappedRegistrationData['addressHouseNumberAddition'],
+        addressPostalCode: mappedRegistrationData['addressPostalCode'],
+        addressCity: mappedRegistrationData['addressCity'],
+        phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
+      },
+      brandCode: intersolveVisaConfig.find(
+        (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      coverLetterCode: intersolveVisaConfig.find(
+        (c) =>
+          c.name === FinancialServiceProviderConfigurationEnum.coverLetterCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+    };
+
+    await this.intersolveVisaService.reissueCard(reissueCardDto);
+
+    await this.queueMessageService.addMessageToQueue({
+      registration: registration,
+      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
   }
 
   public async pauseCardAndSendMessage(
     referenceId: string,
+    programId: number,
     tokenCode: string,
     pause: boolean,
   ): Promise<IntersolveVisaChildWalletEntity> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId(
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
         referenceId,
-      );
+        programId,
+      });
     if (!registration) {
       throw new HttpException(
         `Registration not found for referenceId: ${referenceId}`,
