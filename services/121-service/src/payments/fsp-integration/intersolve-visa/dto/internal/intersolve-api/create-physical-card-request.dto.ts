@@ -1,6 +1,4 @@
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
-
-export class IntersolveCreateDebitCardDto {
+export class CreatePhysicalCardRequestDto {
   public brand: 'VISA_CARD';
   public firstName: string;
   public lastName: string;
@@ -25,14 +23,4 @@ export class IntersolveCreateDebitCardDto {
   };
   public pinStatus: 'D';
   public coverLetterCode: string;
-}
-
-export class IntersolveCreateDebitCardResponseDto {
-  public data: {
-    success?: boolean;
-    errors?: IntersolveReponseErrorDto[];
-    code?: string;
-  };
-  public status: number;
-  public statusText: string;
 }

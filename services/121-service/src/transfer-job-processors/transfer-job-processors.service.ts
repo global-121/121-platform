@@ -29,6 +29,15 @@ export class TransferJobProcessorsService {
 
       - Do the actual top-up of the Visa card, or have a new customer, wallets, card be created.
         - Call IntersolveVisaService.doTransferOrIssueCard with data from the job and the retrieved brand code and cover letter code.
+        - Wrap this call in a try-catch block, and handle any errors by storing a transaction with the error. Cut & pasted code from the old implementation that is removed:
+              if (!createCustomerResult.data?.success) {
+          paTransactionResult.status = StatusEnum.error;
+          paTransactionResult.message = `CREATE CUSTOMER ERROR: ${
+            this.intersolveErrorToMessage(createCustomerResult.data?.errors) ||
+            `${createCustomerResult.status} - ${createCustomerResult.statusText}`
+          }`;
+          return paTransactionResult;
+          }
 
       - Prepare the correct message that needs to be sent to the PA.
         - Call this.buildMessageObject() with data returned from doTransfer.

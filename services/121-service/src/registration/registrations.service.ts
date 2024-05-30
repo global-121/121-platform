@@ -8,6 +8,7 @@ import { LookupService } from '@121-service/src/notifications/lookup/lookup.serv
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
+import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -55,8 +56,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
-
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 
 @Injectable()
 export class RegistrationsService {

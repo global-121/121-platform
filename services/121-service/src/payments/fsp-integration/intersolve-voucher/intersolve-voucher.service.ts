@@ -32,8 +32,8 @@ import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import {
-  getRedisSetName,
   REDIS_CLIENT,
+  getRedisSetName,
 } from '@121-service/src/payments/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';

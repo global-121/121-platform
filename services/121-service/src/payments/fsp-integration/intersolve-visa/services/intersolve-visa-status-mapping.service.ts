@@ -1,9 +1,9 @@
 import { EXTERNAL_API } from '@121-service/src/config';
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import {
   IntersolveVisaCardStatus,
   IntersolveVisaWalletStatus,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import csvParser from 'csv-parser';
 import fs from 'fs';

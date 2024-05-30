@@ -1,10 +1,10 @@
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
-import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
 
 class GetCardDetailsResponseDto {
   public data: CardDetailsResponseDataDto;
   public success: boolean;
-  public errors?: IntersolveReponseErrorDto[];
+  public errors?: ErrorsInResponseDto[];
   public code?: string;
   public correlationId: string;
 }

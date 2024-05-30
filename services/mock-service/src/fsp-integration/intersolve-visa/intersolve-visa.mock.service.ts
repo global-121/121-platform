@@ -1,6 +1,26 @@
 import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+import { waitForRandomDelay } from '../../../utils/waitFor.helper';
+import { CreateCustomerRequestDto } from './dto/internal/intersolve-api/create-customer-request.dto';
+import {
+  CreateCustomerResponseDto,
+  IntersolveLinkWalletCustomerResponseDto,
+} from './dto/internal/intersolve-api/create-customer-response.dto';
+import { CreatePhysicalCardResponseDto } from './dto/internal/intersolve-api/create-physical-card-response.dto';
+import { GetTokenResponseDto } from './dto/internal/intersolve-api/get-token-response.dto';
+import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
+import {
+  IntersolveCreateWalletResponseDataDto,
+  IntersolveCreateWalletResponseTokenDto,
+  IssueTokenResponseBody,
+  IssueTokenResponseDto,
+} from './dto/intersolve-create-wallet-response.dto';
+import { IntersolveGetCardResponseDto } from './dto/intersolve-get-card-details.dto';
+import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
+import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
+import { IntersolveVisaCardStatus } from './enum/intersolve-visa-card-status.enum';
+import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-wallet-status.enum';
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
@@ -22,7 +42,7 @@ export enum IntersolveVisaCardStatus {
   CardClosed = 'CARD_CLOSED',
   CardExpired = 'CARD_EXPIRED',
 }
-
+// TODO: Use the new DTO or copy/paste it here or something
 @Injectable()
 export class IntersolveVisaMockService {
   public createCustomerMock(
@@ -75,14 +95,15 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public createWalletMock(
+  public async createWalletMock(
     holderId: string | null,
-  ): IntersolveVisaMockResponseDto {
-    const response = new IntersolveVisaMockResponseDto();
+  ): Promise<IssueTokenResponseDto> {
+    await waitForRandomDelay(50, 100);
+    const response = new IssueTokenResponseDto();
     response.status = 200;
     response.statusText = 'OK';
 
-    response.data = {};
+    response.data = new IssueTokenResponseBody();
     response.data.success = true;
     response.data.errors = [];
     response.data.code = 'string';
@@ -229,10 +250,12 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public createDebitCardMock(
+  public async createDebitCardMock(
     tokenCode: string | null,
-  ): IntersolveVisaMockResponseDto {
-    const res: IntersolveVisaMockResponseDto = {
+  ): Promise<CreatePhysicalCardResponseDto> {
+    await waitForRandomDelay(50, 100);
+
+    const res: CreatePhysicalCardResponseDto = {
       status: HttpStatus.OK,
       statusText: 'OK',
       data: {},
@@ -316,9 +339,7 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public getWalletMock(
-    tokenCode: string | null,
-  ): IntersolveVisaMockResponseDto {
+  public async getWalletMock(tokenCode: string): Promise<GetTokenResponseDto> {
     const match = tokenCode.match(/mock-current-balance-(\d+)/);
     let currentBalance;
     try {
@@ -326,7 +347,7 @@ export class IntersolveVisaMockService {
     } catch (error) {
       currentBalance = 2500;
     }
-    const response = new IntersolveVisaMockResponseDto();
+    const response = new GetTokenResponseDto();
     response.status = 200;
     response.data = {
       success: true,
@@ -507,10 +528,10 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public activateWalletMock(
+  public async activateWalletMock(
     tokenCode: string | null,
-  ): IntersolveVisaMockResponseDto {
-    const response = new IntersolveVisaMockResponseDto();
+  ): Promise<GetTokenResponseDto> {
+    const response = new GetTokenResponseDto();
     response.status = 200;
     response.data = {
       success: true,

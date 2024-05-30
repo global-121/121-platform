@@ -1,15 +1,7 @@
-import {
-  IntersolveCreateWalletResponseAssetDto,
-  IntersolveCreateWalletResponseBalanceDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
+import { IntersolveVisaWalletStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-wallet-status.enum';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
-import {
-  IntersolveVisaCardStatus,
-  IntersolveVisaWalletStatus,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
-import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetWalletDetailsResponseDto {
@@ -40,31 +32,4 @@ export class GetWalletDetailsResponseDto {
 export class GetWalletsResponseDto {
   @ApiProperty({ type: [GetWalletDetailsResponseDto] })
   public wallets: GetWalletDetailsResponseDto[];
-}
-
-export class IntersolveGetWalletResponseDto {
-  public data: IntersolveGetWalletResponseBodyDto;
-  public status: number;
-  public statusText?: string;
-}
-
-class IntersolveGetWalletResponseBodyDto {
-  public success: boolean;
-  public errors?: IntersolveReponseErrorDto[];
-  public code?: string;
-  public correlationId?: string;
-  public data: IntersolveGetWalletResponseDataDto;
-}
-
-class IntersolveGetWalletResponseDataDto {
-  public code: string;
-  public blocked?: boolean;
-  public type?: string;
-  public brandTypeCode?: string;
-  public status?: IntersolveVisaWalletStatus;
-  public balances?: IntersolveCreateWalletResponseBalanceDto[];
-  public blockReasonCode?: string;
-  public tier?: string;
-  public holderId?: string;
-  public assets?: IntersolveCreateWalletResponseAssetDto[];
 }

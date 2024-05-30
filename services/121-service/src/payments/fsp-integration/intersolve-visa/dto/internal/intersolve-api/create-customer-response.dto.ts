@@ -1,28 +1,26 @@
-import { IntersolveContactInfoDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-request.dto';
+import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 
-export class IntersolveCreateCustomerResponseBodyDto {
+export class CreateCustomerResponseDto {
   public data: {
     success: boolean;
-    errors: IntersolveReponseErrorDto[];
+    errors: ErrorsInResponseDto[];
     code: string;
     correlationId: string;
-    data: CreateCustomerResponseDataDto;
+    data: {
+      id: string;
+      externalReference: string;
+      blocked: boolean;
+      unblockable: boolean;
+      createdAt: string;
+      type?: string;
+      organization?: CreateCustomerResponseOrganizationDto;
+      individual?: CreateCustomerResponseIndividualDto;
+      contactInfo?: ContactInformation;
+    };
   };
   public status: number;
   public statusText: string;
-}
-
-class CreateCustomerResponseDataDto {
-  public id: string;
-  public externalReference: string;
-  public blocked: boolean;
-  public unblockable: boolean;
-  public createdAt: string;
-  public type?: string;
-  public organization?: CreateCustomerResponseOrganizationDto;
-  public individual?: CreateCustomerResponseIndividualDto;
-  public contactInfo?: IntersolveContactInfoDto;
 }
 
 class CreateCustomerResponseOrganizationDto {
@@ -50,7 +48,7 @@ export class CreateCustomerResponseExtensionDto {
 export class IntersolveLinkWalletCustomerResponseDto {
   public data: {
     success?: boolean;
-    errors?: IntersolveReponseErrorDto[];
+    errors?: ErrorsInResponseDto[];
     code?: string;
   };
   public status: number;
