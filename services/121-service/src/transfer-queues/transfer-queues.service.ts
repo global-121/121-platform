@@ -6,7 +6,7 @@ import {
   REDIS_CLIENT,
   getRedisSetName,
 } from '@121-service/src/payments/redis-client';
-import { CreateIntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/create-intersolve-visa-transfer-job.dto';
+import { IntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/create-intersolve-visa-transfer-job.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -22,7 +22,7 @@ export class TransferQueuesService {
   ) {}
 
   public async addIntersolveVisaTransferJobs(
-    transferJobs: CreateIntersolveVisaTransferJobDto[],
+    transferJobs: IntersolveVisaTransferJobDto[],
   ): Promise<void> {
     for (const transferJob of transferJobs) {
       const job = await this.paymentIntersolveVisaQueue.add(

@@ -44,7 +44,6 @@ graph LR
   IntersolveVisaModule-->TransactionsModule
   IntersolveVisaModule-->QueueMessageModule
   IntersolveVisaModule-->RegistrationDataModule
-  IntersolveVisaModule-->RedisModule
   IntersolveVisaModule-->ProgramFinancialServiceProviderConfigurationsModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
@@ -100,4 +99,14 @@ graph LR
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
   AuthModule-->PassportModule
+  TransferJobProcessorsModule-->RedisModule
+  TransferJobProcessorsModule-->IntersolveVisaModule
+  TransferJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  TransferJobProcessorsModule-->RegistrationsModule
+  TransferJobProcessorsModule-->ProgramModule
+  TransferJobProcessorsModule-->TransactionsModule
+  TransferJobProcessorsModule-->QueueMessageModule
+  TransferJobProcessorsModule-->FinancialServiceProvidersModule
+  TransferJobProcessorsModule-->EventsModule
+  TransferJobProcessorsModule-->MessageTemplateModule
 ```

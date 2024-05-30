@@ -47,7 +47,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { CreateIntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/create-intersolve-visa-transfer-job.dto';
+import { IntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/intersolve-visa-transfer-job.dto';
 import { TransferQueuesService } from '@121-service/src/transfer-queues/transfer-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
@@ -571,12 +571,15 @@ export class PaymentsService {
           */
 
           // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
-          return await this.createAndAddIntersolveVisaTransferJobs(
-            paPaymentList.map((paPaymentData) => paPaymentData.referenceId),
+          return await this.createAndAddIntersolveVisaTransferJobs({
+            referenceIds: paPaymentList.map(
+              (paPaymentData) => paPaymentData.referenceId,
+            ),
+            userId: paPaymentList[0].userId,
             programId,
-            paPaymentList[0].transactionAmount,
-            payment,
-          );
+            paymentAmount: paPaymentList[0].transactionAmount,
+            paymentNumber: payment,
+          });
         }
 
         const [paymentService, useWhatsapp] =
@@ -605,12 +608,19 @@ export class PaymentsService {
    * @returns {Promise<void>} A promise that resolves when the transfer jobs have been created and added.
    *
    */
-  private async createAndAddIntersolveVisaTransferJobs(
-    referenceIds: string[],
-    programId: number,
-    paymentAmount: number,
-    paymentNumber: number,
-  ): Promise<void> {
+  private async createAndAddIntersolveVisaTransferJobs({
+    referenceIds,
+    programId,
+    userId,
+    paymentAmount,
+    paymentNumber,
+  }: {
+    referenceIds: string[];
+    programId: number;
+    userId: number;
+    paymentAmount: number;
+    paymentNumber: number;
+  }): Promise<void> {
     const intersolveVisaQuestions =
       await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
         FinancialServiceProviderName.intersolveVisa,
@@ -629,6 +639,7 @@ export class PaymentsService {
         dataFieldNames,
       );
 
+    // TODO: FIX: registrationViews does not contain any name field of the Registration. Where/how to get it?
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationsChunked(
         programId,
@@ -636,11 +647,12 @@ export class PaymentsService {
         4000,
       );
 
-    const intersolveVisaTransferJobs: CreateIntersolveVisaTransferJobDto[] =
+    const intersolveVisaTransferJobs: IntersolveVisaTransferJobDto[] =
       registrationViews.map(
-        (registrationView): CreateIntersolveVisaTransferJobDto => {
+        (registrationView): IntersolveVisaTransferJobDto => {
           return {
             programId: programId,
+            userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
             transactionAmount: paymentAmount,

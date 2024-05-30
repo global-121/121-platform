@@ -95,6 +95,7 @@ export class IntersolveVisaMockService {
     response.data.data.token.blockReasonCode = 'string';
     response.data.data.token.tier = 'string';
     response.data.data.token.brandTypeCode = 'string';
+    response.data.data.token.status = 'INACTIVE';
     response.data.data.token.holderId = 'string';
     response.data.data.token.balances = [
       {

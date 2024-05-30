@@ -1,12 +1,12 @@
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
-import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { IntersolveVisaController } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.controller';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
-import { RedisModule } from '@121-service/src/payments/redis.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
@@ -26,7 +26,6 @@ import { Module } from '@nestjs/common';
     TransactionsModule,
     QueueMessageModule,
     RegistrationDataModule,
-    RedisModule,
     ProgramFinancialServiceProviderConfigurationsModule,
   ],
   providers: [
@@ -38,14 +37,11 @@ import { Module } from '@nestjs/common';
     IntersolveVisaStatusMappingService,
     AzureLogService,
     RegistrationScopedRepository,
-    createScopedRepositoryProvider(IntersolveVisaWalletEntity),
+    createScopedRepositoryProvider(IntersolveVisaParentWalletEntity),
+    createScopedRepositoryProvider(IntersolveVisaChildWalletEntity),
     createScopedRepositoryProvider(IntersolveVisaCustomerEntity),
   ],
   controllers: [IntersolveVisaController],
-  exports: [
-    IntersolveVisaService,
-    IntersolveVisaApiService,
-    IntersolveVisaExportService,
-  ],
+  exports: [IntersolveVisaService, IntersolveVisaExportService],
 })
 export class IntersolveVisaModule {}

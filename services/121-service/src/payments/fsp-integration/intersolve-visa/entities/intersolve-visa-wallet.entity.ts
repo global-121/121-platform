@@ -24,7 +24,6 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
-//TODO: Remove this entity after we've released the re-implementation of Intersolve Visa. We need this 'intermediate' to run the migrations.
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
@@ -63,7 +62,6 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @ManyToOne(() => IntersolveVisaCustomerEntity)
   public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
 
-  // TODO: REFACTOR: this function should be moved to the IntersolveVisaService.
   public calculateTopUpAmount(): number {
     return (
       (maximumAmountOfSpentCentPerMonth -

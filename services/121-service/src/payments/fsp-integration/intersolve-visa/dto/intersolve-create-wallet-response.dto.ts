@@ -1,79 +1,72 @@
-import { IntersolveCreateWalletResponseBodyDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response-body.dto';
+import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
+import { TokenResponseAsset } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/token-response-asset';
+import { TokenResponseBalance } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/token-response-balance';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-wallet-status.enum';
 
-export class IntersolveCreateWalletResponseDto {
-  public data: IntersolveCreateWalletResponseBodyDto;
+// TODO: Make properties readonly
+export class IssueTokenResponseDto {
+  public data: IssueTokenResponseBody;
   public status: number;
   public statusText?: string;
 }
-
-export class IntersolveCreateWalletResponseBalanceDto {
-  public quantity: IntersolveCreateWalletResponseQuantityDto;
-  public discountBudgetValue: number;
-  public lastChangedAt: string;
+// TODO: Make properties readonly
+// TODO: REFACTOR: Try to integrate this DTO into the IssueTokenResponseDto, at the moment it is only separately used in the IntersolveVisaApiMockService, refactor possible there?
+export class IssueTokenResponseBody {
+  public success: boolean;
+  public errors?: ErrorsInResponseDto[];
+  public code?: string;
+  public correlationId?: string;
+  public data: IntersolveCreateWalletResponseDataDto;
 }
 
-class IntersolveCreateWalletResponseQuantityDto {
-  public assetCode: string;
-  public value: number;
-  public reserved: number;
+export class IntersolveCreateWalletResponseDataDto {
+  public token: IntersolveCreateWalletResponseTokenDto;
 }
 
-export class IntersolveCreateWalletResponseAssetDto {
-  public identity: IntersolveCreateWalletResponseIdentityDto;
-  public groupCode: string;
-  public parentAssetCode: string;
-  public name: string;
-  public description: string;
-  public status: string;
-  public minorUnit: number;
-  public tags: string[];
-  public conversions: IntersolveCreateWalletResponseConversionDto[];
-  public images: IntersolveCreateWalletResponseImageDto[];
-  public vatRegulation: IntersolveCreateWalletResponseVatRegulationDto;
-  public termsAndConditions: IntersolveCreateWalletResponseTermsAndConditionsDto;
-  public amount: number;
-  public currency: string;
-  public articleCode: string;
-  public percentage: number;
-  public rank: number;
-  public unit: string;
-  public promotionCode: string;
-  public ticket: string;
-  public chargeRestrictions: IntersolveCreateWalletResponseChargeRestrictionsDto;
-  public allowedMethods: IntersolveCreateWalletResponseMethodMetadataDto[];
+export class IntersolveCreateWalletResponseTokenDto {
+  public code: string;
+  public blocked?: boolean;
+  public type?: string;
+  public brandTypeCode?: string;
+  public status?: IntersolveVisaTokenStatus;
+  public balances?: TokenResponseBalance[];
+  public blockReasonCode?: string;
+  public tier?: string;
+  public holderId?: string;
+  public assets?: TokenResponseAsset[];
 }
 
-class IntersolveCreateWalletResponseIdentityDto {
+export class IntersolveCreateWalletResponseIdentityDto {
   public type: string;
   public subType: string;
   public code: string;
 }
 
-class IntersolveCreateWalletResponseConversionDto {
+export class IntersolveCreateWalletResponseConversionDto {
   public toAssetCode: string;
   public automatic: boolean;
   public fromQuantity: number;
   public toQuantity: number;
 }
 
-class IntersolveCreateWalletResponseImageDto {
+export class IntersolveCreateWalletResponseImageDto {
   public code: string;
   public type: string;
   public url: string;
   public description: string;
 }
 
-class IntersolveCreateWalletResponseVatRegulationDto {
+export class IntersolveCreateWalletResponseVatRegulationDto {
   public code: string;
   public value: number;
 }
 
-class IntersolveCreateWalletResponseTermsAndConditionsDto {
+export class IntersolveCreateWalletResponseTermsAndConditionsDto {
   public url: string;
   public text: string;
 }
 
-class IntersolveCreateWalletResponseChargeRestrictionsDto {
+export class IntersolveCreateWalletResponseChargeRestrictionsDto {
   public product: IntersolveCreateWalletResponseIncludesExcludesDto;
   public productGroup: IntersolveCreateWalletResponseIncludesExcludesDto;
 }
@@ -83,7 +76,7 @@ class IntersolveCreateWalletResponseIncludesExcludesDto {
   public excludes: string[];
 }
 
-class IntersolveCreateWalletResponseMethodMetadataDto {
+export class IntersolveCreateWalletResponseMethodMetadataDto {
   code: string;
   period: { start: string; end: string };
   securityCodeInfo: IntersolveCreateWalletResponseSecurityCodeMetadataDto;

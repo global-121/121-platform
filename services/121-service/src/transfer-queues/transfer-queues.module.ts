@@ -12,7 +12,7 @@ import { Module } from '@nestjs/common';
       name: QueueNamePayment.paymentIntersolveVisa,
       processors: [
         {
-          path: 'src/payments/fsp-integration/intersolve-visa/processors/intersolve-visa.processor.ts',
+          path: 'src/transfer-job-processors/processors/transfer-job-intersolve-visa.processor.ts',
         },
       ],
       limiter: {

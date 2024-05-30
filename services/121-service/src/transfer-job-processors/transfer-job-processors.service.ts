@@ -1,89 +1,345 @@
-import { Injectable } from '@nestjs/common';
+import { EventsService } from '@121-service/src/events/events.service';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card-return.dto';
+import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { IntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/intersolve-visa-transfer-job.dto';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TransferJobProcessorsService {
-  /* TODO: For the IntersolveVisa Re-implementation this Service needs the following dependencies from the 121 Service:
-    - ProgramFinancialServiceProviderConfigurationsCustomRepository  
-    - IntersolveVisaService
-    - MessageTemplateService
-    - MessageQueuesService (renamed from QueueMessageService)
-    - TransactionScopedRepository
-    - LatestTransactionRepository
-    - RegistrationScopedRepository
-    - EventService
-    - Redis
+  public constructor(
+    private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly messageTemplateService: MessageTemplateService,
+    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly queueMessageService: QueueMessageService,
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
+    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
+    private readonly financialServiceProviderRepository: FinancialServiceProviderRepository,
+    private readonly latestTransactionRepository: LatestTransactionRepository,
+    private readonly programRepository: ProgramRepository,
+    private readonly eventsService: EventsService,
+  ) {}
 
-    For the segregation of duties implementation, it will also depend on the other (maintained only) FSP Services.
-    In case other 121 Service Services/Repositories need to be added, please take a step back and reconsider the diagrams/architecture and have a conversation.
+  public async processIntersolveVisaTransferJob(
+    input: IntersolveVisaTransferJobDto,
+  ): Promise<void> {
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId(
+        input.referenceId,
+      );
+    if (!registration) {
+      throw new Error(
+        `Registration was not found for referenceId ${input.referenceId}`,
+      );
+    }
+    const oldRegistration = structuredClone(registration);
+    const financialServiceProvider =
+      await this.financialServiceProviderRepository.getByName(
+        FinancialServiceProviderName.intersolveVisa,
+      );
+    if (!financialServiceProvider) {
+      throw new Error('Financial Service Provider not found');
+    }
+    await Promise.all(
+      Object.keys(input).map(async (key) => {
+        if (key !== 'addressHouseNumberAddition' && input[key] === undefined) {
+          // TODO: Group all missing keys and throw them at once instead of throwing only one
+          const errorText = `Property ${key} is undefined`;
+          await this.createTransaction({
+            amount: input.transactionAmount,
+            registration: registration,
+            financialServiceProviderId: financialServiceProvider.id,
+            programId: input.programId,
+            paymentNumber: input.paymentNumber,
+            userId: input.userId,
+            status: StatusEnum.error,
+            errorMessage: errorText,
+          });
+          throw new Error(errorText);
+        }
+      }),
+    );
 
-    Also see the modules imported into the TransferJobProcessorsModule.
-  */
+    const intersolveVisaConfig =
+      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
+        input.programId,
+        FinancialServiceProviderName.intersolveVisa,
+      );
 
-  public async processIntersolveVisaTransferJob(): Promise<void> {
-    /*TODO: Implement this function:
+    const coverLetterCode =
+      this.getProgramFinancialServiceProviderConfigurationValueByName({
+        intersolveVisaConfig,
+        name: FinancialServiceProviderConfigurationEnum.coverLetterCode,
+        programId: input.programId,
+      });
+    const brandCode =
+      this.getProgramFinancialServiceProviderConfigurationValueByName({
+        intersolveVisaConfig,
+        name: FinancialServiceProviderConfigurationEnum.brandCode,
+        programId: input.programId,
+      });
+    const fundingTokenCode =
+      this.getProgramFinancialServiceProviderConfigurationValueByName({
+        intersolveVisaConfig,
+        name: FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+        programId: input.programId,
+      });
 
-      Note: for easy insight into the code / simplication, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
+    let intersolveVisaDoTransferOrIssueCardReturnDto: IntersolveVisaDoTransferOrIssueCardReturnDto;
+    // try {
+    intersolveVisaDoTransferOrIssueCardReturnDto =
+      await this.intersolveVisaService.doTransferOrIssueCard({
+        registrationId: registration.id,
+        reference: input.referenceId,
+        name: input.name!,
+        addressStreet: input.addressStreet!,
+        addressHouseNumber: input.addressHouseNumber!,
+        addressHouseNumberAddition: input.addressHouseNumberAddition,
+        addressPostalCode: input.addressPostalCode!,
+        addressCity: input.addressCity!,
+        phoneNumber: input.phoneNumber!,
+        transferAmount: input.transactionAmount,
+        brandCode: brandCode,
+        coverLetterCode: coverLetterCode,
+        fundingTokenCode: fundingTokenCode,
+      });
+    // } catch (error) {
+    //   await this.createTransaction({
+    //     amount: input.transactionAmount,
+    //     registration: registration,
+    //     financialServiceProviderId: financialServiceProvider.id,
+    //     programId: input.programId,
+    //     paymentNumber: input.paymentNumber,
+    //     userId: input.userId,
+    //     status: StatusEnum.error,
+    //     errorMessage: `An error occured: ${error}`,
+    //   });
+    //   await this.updatePaymentCountAndStatusInRegistration(
+    //     registration,
+    //     input.programId,
+    //   );
+    //   throw new Error(error);
+    // }
 
-      - Get the IntersolveVisa-related ProgramFinancialServiceProviderConfigurations: brand code and cover letter code.
-        - Call ProgramFinancialServiceProviderConfigurationsCustomRepository.findByProgramIdAndFinancialServiceProviderId()
+    if (intersolveVisaDoTransferOrIssueCardReturnDto.cardCreated) {
+      await this.createMessageAndAddToQueue({
+        type: ProgramNotificationEnum.visaDebitCardCreated,
+        programId: input.programId,
+        registration: registration,
+        amountTransferred:
+          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+        bulkSize: input.bulkSize,
+      });
+    } else if (
+      intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred > 0
+    ) {
+      await this.createMessageAndAddToQueue({
+        type: ProgramNotificationEnum.visaLoad,
+        programId: input.programId,
+        registration: registration,
+        amountTransferred:
+          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+        bulkSize: input.bulkSize,
+      });
+    }
 
-      - Do the actual top-up of the Visa card, or have a new customer, wallets, card be created.
-        - Call IntersolveVisaService.doTransferOrIssueCard with data from the job and the retrieved brand code and cover letter code.
+    const resultTransaction = await this.createTransaction({
+      amount: intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+      registration: registration,
+      financialServiceProviderId: financialServiceProvider.id,
+      programId: input.programId,
+      paymentNumber: input.paymentNumber,
+      userId: input.userId,
+      status: StatusEnum.success,
+    });
+    await this.latestTransactionRepository.insertOrUpdateFromTransaction(
+      resultTransaction,
+    );
 
-      - Prepare the correct message that needs to be sent to the PA.
-        - Call this.buildMessageObject() with data returned from doTransfer.
-
-      - Get the relevant message template.
-        - Call MessageTemplateService.getMessageTemplatesByProgramId()
-
-      - Create a Message Job DTO and add the job to the queue.
-        - Call MessageQueues.addMessageJob() (refactored from QueueMessage.addMessageToQueue)
-
-      - Create a new Transaction.
-        - Call TransactionScopedRepository.save()
-        
-      - Update paymentCount and if necessary status (to Completed) in the Registration.
-        - Call RegistrationScopedRepository.findOne(), to get the related registration.
-        - Call RegistrationScopedRepository.updateUnscoped() (Why unscoped?)
-
-      - Update the LatestTransaction entity.
-        - Call this.updateLatestTransaction()
-
-      - Add a new Event for this transaction.
-        - Call EventService.log()
-
-      - Update the inProgressRedisSet, to remove the job from the set.
-        - Call this.updateInProgressRedisSet()
-
-    */
+    await this.updatePaymentCountAndStatusInRegistration(
+      registration,
+      input.programId,
+    );
+    await this.eventsService.log(
+      {
+        id: oldRegistration.id,
+        status: oldRegistration.registrationStatus ?? undefined,
+      },
+      {
+        id: registration.id,
+        status: registration.registrationStatus ?? undefined,
+      },
+      {
+        registrationAttributes: ['status'],
+      },
+    );
   }
 
-  //TODO: Can we come up with a better name for this thing than a "Message Object"? What is that?
-  private async buildMessageObject(): Promise<void> {
-    /*TODO: Implement this function:
-      - Build a message object with the data returned from doTransfer.
-      - Logic can probably be found in the to-be-removed IntersolveVisaService.buildNotificationObjectIssueDebitCard(), and .buildNotificationObjectLoadBalance()
-      - Maybe also relevant: to-be-removed function TransactionsService.getMessageText()
-      - 
-    
-    */
+  private async addMessageJobToQueue({
+    registration,
+    message,
+    bulksize,
+  }: {
+    registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
+    message?: string;
+    messageTemplateKey?: string;
+    bulksize?: number;
+  }): Promise<void> {
+    await this.queueMessageService.addMessageToQueue({
+      registration: registration,
+      message: message,
+      messageContentType: MessageContentType.payment,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      bulksize: bulksize,
+    });
   }
 
-  private async addMessageJobToQueue(): Promise<void> {
-    //TODO: Implement this function.
+  private async createTransaction({
+    amount,
+    registration,
+    financialServiceProviderId,
+    programId,
+    paymentNumber,
+    userId,
+    status,
+    errorMessage,
+  }: {
+    amount: number;
+    registration: RegistrationEntity;
+    financialServiceProviderId: number;
+    programId: number;
+    paymentNumber: number;
+    userId: number;
+    status: StatusEnum;
+    errorMessage?: string;
+  }) {
+    const transaction = new TransactionEntity();
+    transaction.amount = amount;
+    transaction.created = new Date();
+    transaction.registration = registration;
+    transaction.financialServiceProviderId = financialServiceProviderId;
+    transaction.programId = programId;
+    transaction.payment = paymentNumber;
+    transaction.userId = userId;
+    transaction.status = status;
+    transaction.transactionStep = 1;
+    transaction.errorMessage = errorMessage ?? null;
+
+    return await this.transactionScopedRepository.save(transaction);
   }
 
-  private async updateLatestTransaction(): Promise<void> {
-    /*TODO: Implement this function:
-      - Get the latesttransaction.
-      - Update the latest transaction with the new transaction data.
-      - Call TransactionScopedRepository.insert() (??)
-    */
+  private async updatePaymentCountAndStatusInRegistration(
+    registration: RegistrationEntity,
+    programId: number,
+  ): Promise<void> {
+    const program = await this.programRepository.getById(programId);
+    // TODO: Implement retry attempts for the paymentCount and status update.
+    // See old code for counting the transactions
+    // See if failed transactions also lead to status 'Completed' and is retryable
+    registration.paymentCount = registration.paymentCount
+      ? registration.paymentCount + 1
+      : 1;
+
+    if (
+      program.enableMaxPayments &&
+      registration.maxPayments &&
+      registration.paymentCount >= registration.maxPayments
+    ) {
+      registration.registrationStatus = RegistrationStatusEnum.completed;
+    }
+
+    await this.registrationScopedRepository.save(registration);
   }
 
-  private async updateInProgressRedisSet(): Promise<void> {
-    /*TODO: Implement this function:
-      - Call Redis.srem()
-    */
+  private getProgramFinancialServiceProviderConfigurationValueByName({
+    intersolveVisaConfig,
+    name,
+    programId,
+  }: {
+    intersolveVisaConfig: ProgramFinancialServiceProviderConfigurationEntity[];
+    name: FinancialServiceProviderConfigurationEnum;
+    programId: number;
+  }) {
+    const value = intersolveVisaConfig.find(
+      (config) => config.name === name,
+    )?.value;
+    if (!value && typeof value !== 'string') {
+      throw new Error(
+        `No ${name} found or incorrect format for program ${programId}. Please update the program financial service provider configuration.`,
+      );
+    }
+    return value as string;
+  }
+
+  private async createMessageAndAddToQueue({
+    type,
+    programId,
+    registration,
+    amountTransferred,
+    bulkSize,
+  }: {
+    type: ProgramNotificationEnum;
+    programId: number;
+    registration: RegistrationEntity;
+    amountTransferred: number;
+    bulkSize: number;
+  }) {
+    const templates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        programId,
+        type,
+      );
+    let messageContent = templates.find(
+      (template) => template.language === registration.preferredLanguage,
+    )?.message;
+    if (!messageContent) {
+      messageContent = templates.find(
+        (template) => template.language === LanguageEnum.en,
+      )?.message;
+    }
+    // Note: messageContent is possible undefined/null here, so we're assuming here that the message processor will handle this properly.
+
+    if (messageContent) {
+      const dynamicContents = [String(amountTransferred)];
+      for (const [i, dynamicContent] of dynamicContents.entries()) {
+        const replaceString = `[[${i + 1}]]`;
+        if (messageContent!.includes(replaceString)) {
+          messageContent = messageContent!.replace(
+            replaceString,
+            dynamicContent,
+          );
+        }
+      }
+    }
+
+    await this.addMessageJobToQueue({
+      registration: registration,
+      message: messageContent,
+      bulksize: bulkSize,
+    });
   }
 }
