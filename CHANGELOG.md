@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.120.0...main)
 
+### Added
+
+- For Azure SSO Multi-tenancy, add these new Poral ENV-variables to the [GitHub (client-)environment](https://github.com/global-121/121-platform/settings/environments):  
+  See [`.env.example`](./interfaces/Portal/.env.example)
+  - `AZURE_ENTRA_DOMAINS`
+  - `AZURE_ENTRA_URL`
+
+### Removed
+
+- The configuration-value of the `AZURE_ENTRA_TENANT_ID` is no longer used in the 121-service. It can be removed from the App Service configuration in Azure.
+
 ---
 
 ## [1.120.0](https://github.com/global-121/121-platform/compare/v1.119.2...v1.120.0)- 2024-05-29
