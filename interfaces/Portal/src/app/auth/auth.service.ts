@@ -12,7 +12,10 @@ import { isIframed } from '../shared/utils/is-iframed.util';
 import Permission from './permission.enum';
 
 export const USER_KEY = 'logged-in-user-portal';
-
+export const SSO_ERROR_KEY = 'sso-error';
+export const SSO_ERRORS = {
+  notFound: 'not-found',
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -186,8 +189,9 @@ export class AuthService {
     const userDto = await this.programsService.getCurrentUser();
 
     if (!userDto || !userDto.user) {
-      localStorage.removeItem(USER_KEY);
-      this.router.navigate(['/', AppRoutes.login]);
+      const username = userDto?.error?.username || null;
+      sessionStorage.setItem(SSO_ERROR_KEY, SSO_ERRORS.notFound);
+      this.logoutSsoUser(username);
       return;
     }
 
@@ -250,15 +254,37 @@ export class AuthService {
       return;
     }
 
-    if (isIframed()) {
-      this.msalService.logoutPopup({
-        account: currentUser,
-        mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
-      });
+    const idTokenClaims = currentUser.idTokenClaims;
+    const preferredUsername =
+      idTokenClaims?.preferred_username || currentUser.username;
+    const emailDomain = preferredUsername.split('@')[1];
+    let authority;
+    let account;
+
+    const enabledDomains = environment.azure_ad_domains
+      .trim()
+      .toLowerCase()
+      .split(/\s*,\s*/);
+
+    if (enabledDomains.includes(emailDomain)) {
+      account = currentUser;
+      authority = `${environment.azure_ad_url}/${currentUser.tenantId}`;
     } else {
-      this.msalService.logoutRedirect({
-        account: currentUser,
-      });
+      account = this.msalService.instance.getActiveAccount();
+      authority = `${environment.azure_ad_url}/consumers`;
+    }
+
+    const logoutRequest: any = {
+      account,
+      authority,
+      mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+    };
+
+    if (isIframed()) {
+      await this.msalService.logoutPopup(logoutRequest);
+    } else {
+      await this.msalService.logoutRedirect(logoutRequest);
     }
   }
 
