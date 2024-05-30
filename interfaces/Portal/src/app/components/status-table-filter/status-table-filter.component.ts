@@ -36,11 +36,9 @@ export class StatusTableFilterComponent {
       RegistrationStatus.paused,
       RegistrationStatus.included,
       RegistrationStatus.declined,
-    ],
-    [ProgramTab.payment]: [
-      RegistrationStatus.included,
       RegistrationStatus.completed,
     ],
+    [ProgramTab.payment]: [RegistrationStatus.included],
   };
 
   constructor(
