@@ -37,7 +37,7 @@ runs:
 
     - name: Test
       shell: bash
-      working-directory: ${{ inputs.servicePath }}/dist
+      working-directory: ${{ inputs.servicePath }}
       run: 'npm run test'
 
     - name: Set VERSION of build/deployment
@@ -77,4 +77,4 @@ runs:
     - name: Creating ZIP package
       shell: bash
       working-directory: ${{ inputs.servicePath }}
-      run: zip --quiet --display-globaldots --recurse-paths ./artifact.zip .
+      run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
