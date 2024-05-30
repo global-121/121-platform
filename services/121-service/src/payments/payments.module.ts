@@ -10,6 +10,7 @@ import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/exc
 import { IntersolveJumboModule } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
+import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { UkrPoshtaModule } from '@121-service/src/payments/fsp-integration/ukrposhta/ukrposhta.module';
 import { VodacashModule } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.module';
@@ -62,6 +63,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     SafaricomModule,
     ExcelModule,
     CommercialBankEthiopiaModule,
+    OnafriqModule,
     RegistrationsModule,
     ProgramModule,
     RegistrationUtilsModule,

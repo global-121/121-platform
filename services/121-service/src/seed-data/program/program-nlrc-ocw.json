@@ -44,6 +44,9 @@
           "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
         }
       ]
+    },
+    {
+      "fsp": "Onafriq"
     }
   ],
   "targetNrRegistrations": 100000,

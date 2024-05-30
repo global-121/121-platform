@@ -16,6 +16,7 @@ import fspNoAttributes from '@121-service/src/seed-data/fsp/fsp-no-attributes.js
 import fspSafaricom from '@121-service/src/seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '@121-service/src/seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '@121-service/src/seed-data/fsp/fsp-vodacash.json';
+import fspOnafriq from '@121-service/src/seed-data/fsp/fsp-onafriq.json';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
@@ -346,5 +347,6 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspSafaricom);
     await this.seedHelper.addFsp(fspCommercialBankEthiopia);
     await this.seedHelper.addFsp(fspExcel);
+    await this.seedHelper.addFsp(fspOnafriq);
   }
 }

@@ -7,4 +7,5 @@ export enum QueueNamePayment {
   paymentIntersolveVoucher = 'paymentIntersolveVoucher',
   paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
   paymentSafaricom = 'paymentSafaricom',
+  paymentOnafriq = 'paymentOnafriq',
 }

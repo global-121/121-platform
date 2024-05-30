@@ -9,6 +9,7 @@ export enum FinancialServiceProviderName {
   bobFinance = 'BoB-finance',
   ukrPoshta = 'UkrPoshta',
   safaricom = 'Safaricom',
+  onafriq = 'Onafriq',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
 }
@@ -70,6 +71,9 @@ export const FinancialServiceProviderConfigurationMapping: {
   [FinancialServiceProviderName.excel]: [
     FinancialServiceProviderConfigurationEnum.columnsToExport,
     FinancialServiceProviderConfigurationEnum.columnToMatch,
+    FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+  [FinancialServiceProviderName.onafriq]: [
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
 };

@@ -19,6 +19,7 @@ import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/p
 import { IntersolveJumboService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { UkrPoshtaService } from '@121-service/src/payments/fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
@@ -69,6 +70,7 @@ export class PaymentsService {
     [FinancialServiceProviderName.safaricom]: this.safaricomService,
     [FinancialServiceProviderName.commercialBankEthiopia]:
       this.commercialBankEthiopiaService,
+    [FinancialServiceProviderName.onafriq]: this.onafriqService,
     // Add more FSP mappings if they work queue-based
   };
 
@@ -93,6 +95,7 @@ export class PaymentsService {
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
+    private readonly onafriqService: OnafriqService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
@@ -125,6 +128,7 @@ export class PaymentsService {
         this.commercialBankEthiopiaService,
       ],
       [FinancialServiceProviderName.excel]: [this.excelService],
+      [FinancialServiceProviderName.onafriq]: [this.onafriqService],
     };
   }
 

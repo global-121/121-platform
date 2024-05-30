@@ -79,6 +79,9 @@ graph LR
   PaymentsModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
   CommercialBankEthiopiaModule-->RedisModule
+  PaymentsModule-->OnafriqModule
+  OnafriqModule-->TransactionsModule
+  OnafriqModule-->RedisModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule

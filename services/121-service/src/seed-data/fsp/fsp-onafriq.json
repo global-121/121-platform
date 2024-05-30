@@ -1,0 +1,22 @@
+{
+  "fsp": "Onafriq",
+  "integrationType": "api",
+  "displayName": {
+    "en": "Onafriq"
+  },
+  "questions": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Phone Number"
+      },
+      "placeholder": {
+        "en": "+243000000000"
+      },
+      "export": ["all-people-affected", "included"],
+      "answerType": "tel",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    }
+  ]
+}
