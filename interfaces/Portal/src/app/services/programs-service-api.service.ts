@@ -4,7 +4,11 @@ import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import { ApiPath } from '../enums/api-path.enum';
-import { FilterOperator, FilterParameter } from '../enums/filters.enum';
+import {
+  FilterOperator,
+  FilterParameter,
+  SortDirection,
+} from '../enums/filters.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { Event } from '../models/event.model';
@@ -596,6 +600,11 @@ export class ProgramsServiceApiService {
     params = params.append('limit', limit);
     params = params.append('page', page);
 
+    const defaultSortOption: PaginationSort = {
+      column: 'registrationCreated',
+      direction: SortDirection.DESC,
+    };
+
     // TODO: This still needs to be added to the back-end in a future item
     if (referenceId) {
       params = params.append('filter.referenceId', referenceId);
@@ -617,6 +626,11 @@ export class ProgramsServiceApiService {
     }
     if (sort) {
       params = params.append('sortBy', `${sort.column}:${sort.direction}`);
+    } else {
+      params.append(
+        'sortBy',
+        `${defaultSortOption.column}:${defaultSortOption.direction}`,
+      );
     }
 
     const { data, meta, links } = await this.apiService.get(
