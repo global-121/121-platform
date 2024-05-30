@@ -108,14 +108,37 @@ export const registrationPV6 = {
   referenceId: 'asdf234f4gg4ag64545',
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
-  firstName: 'Jan',
-  lastName: 'Janssen',
+  fullName: 'Jan Janssen',
   phoneNumber: '14155235551',
   fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
-  whatsappPhoneNumber: '14155235551',
+  // whatsappPhoneNumber: '14155235551',
+  // addressStreet: 'Teststraat',
+  // addressHouseNumber: '1',
+  // addressHouseNumberAddition: '',
+  // addressPostalCode: '1234AB',
+  // addressCity: 'Stad',
 };
 
-export const registrationsPV = [registrationPV5, registrationPV6];
+export const registrationPV7 = {
+  referenceId: 'asdf234f4gg4ag64547',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Joost Herlembach',
+  phoneNumber: '14155235551',
+  fspName: FinancialServiceProviderName.intersolveVisa,
+  // whatsappPhoneNumber: '14155235551',
+  // addressStreet: 'Teststraat',
+  // addressHouseNumber: '1',
+  // addressHouseNumberAddition: '',
+  // addressPostalCode: '1234AB',
+  // addressCity: 'Stad',
+};
+
+export const registrationsPV = [
+  // registrationPV5,
+  registrationPV6,
+  registrationPV7,
+];
 
 export const registrationPvScoped = {
   referenceId: '434e62869242497e1e',
