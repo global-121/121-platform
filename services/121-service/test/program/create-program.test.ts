@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
-import programEth from '@121-service/seed-data/program/program-joint-response-dorcas.json';
-import programOCW from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import programEth from '@121-service/src/seed-data/program/program-joint-response-dorcas.json';
+import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import {
   assertArraysAreEqual,
   assertObjectsAreEqual,

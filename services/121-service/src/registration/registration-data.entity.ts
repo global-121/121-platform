@@ -1,4 +1,4 @@
-import { AppDataSource } from '@121-service/appdatasource';
+import { AppDataSource } from '@121-service/src/appdatasource';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
