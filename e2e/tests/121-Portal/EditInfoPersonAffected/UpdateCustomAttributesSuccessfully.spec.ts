@@ -30,7 +30,6 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
-  const newAmount = '2';
   let oldAmount = '';
 
   await test.step('Navigate to PA table', async () => {
@@ -43,7 +42,6 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
 
   await test.step('Update payment amount multiplier', async () => {
     oldAmount = await registration.updatepaymentAmountMultiplier({
-      amount: newAmount,
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
     });
@@ -64,7 +62,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
         englishTranslations['registration-details']['activity-overview']
           .activities['data-changes'].label,
       oldValue: oldAmount,
-      newValue: newAmount,
+      newValue: String(Number(oldAmount) + 1),
     });
   });
 });

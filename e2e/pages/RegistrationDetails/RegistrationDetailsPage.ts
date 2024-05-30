@@ -507,12 +507,12 @@ class RegistrationDetails {
   }
 
   async updatepaymentAmountMultiplier({
-    amount,
+    amount = 'default',
     saveButtonName,
     okButtonName,
     alert = englishTranslations.common['update-success'],
   }: {
-    amount: string;
+    amount?: string;
     saveButtonName: string;
     okButtonName: string;
     alert?: string;
@@ -527,7 +527,12 @@ class RegistrationDetails {
 
     const paymentMultipierInput =
       this.personAffectedPaymentMultiplier.getByRole('textbox');
-    const oldAmount = paymentMultipierInput.innerText();
+    const oldAmount = await paymentMultipierInput.inputValue();
+    //if does not pass a new value for multiplier, set new amount= old amount + 1
+    if (amount == 'default') {
+      amount = (parseInt(oldAmount, 10) + 1).toString();
+      console.log(amount);
+    }
     await paymentMultipierInput.fill(amount);
 
     await this.page.waitForLoadState('networkidle');
@@ -572,14 +577,24 @@ class RegistrationDetails {
     const dataAttributes = this.historyTile.filter({
       hasText: dataChangesLabel,
     });
+    const oldField =
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].new;
+    const newField =
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].old;
+    const reasonField =
+      englishTranslations['registration-details']['activity-overview']
+        .activities['data-changes'].reason;
+
     const oldValueHolder = this.tileInformationPlaceHolder
-      .filter({ hasText: 'Old:' })
+      .filter({ hasText: oldField })
       .nth(0);
     const newValueHolder = this.tileInformationPlaceHolder
-      .filter({ hasText: 'New:' })
+      .filter({ hasText: newField })
       .nth(0);
     const reasonHolder = this.tileInformationPlaceHolder
-      .filter({ hasText: 'Reason:' })
+      .filter({ hasText: reasonField })
       .nth(0);
 
     expect(await dataAttributes.textContent()).toContain(dataChangesLabel);
