@@ -1,8 +1,8 @@
-import instanceUkr from '@121-service/seed-data/instance/instance-pilot-ukr.json';
-import messageTemplatePilotUkr from '@121-service/seed-data/message-template/message-template-pilot-ukr.json';
-import programPilotUkr from '@121-service/seed-data/program/program-pilot-ukr.json';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import instanceUkr from '@121-service/src/seed-data/instance/instance-pilot-ukr.json';
+import messageTemplatePilotUkr from '@121-service/src/seed-data/message-template/message-template-pilot-ukr.json';
+import programPilotUkr from '@121-service/src/seed-data/program/program-pilot-ukr.json';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

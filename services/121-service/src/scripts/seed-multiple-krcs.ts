@@ -1,12 +1,12 @@
-import instanceKRCS from '@121-service/seed-data/instance/instance-krcs.json';
-import messageTemplateBaringo from '@121-service/seed-data/message-template/message-template-krcs-baringo.json';
-import messageTemplateTurkana from '@121-service/seed-data/message-template/message-template-krcs-turkana.json';
-import messageTemplateWestPokot from '@121-service/seed-data/message-template/message-template-krcs-westpokot.json';
-import programBaringo from '@121-service/seed-data/program/program-krcs-baringo.json';
-import programTurkana from '@121-service/seed-data/program/program-krcs-turkana.json';
-import programWestPokot from '@121-service/seed-data/program/program-krcs-westpokot.json';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import instanceKRCS from '@121-service/src/seed-data/instance/instance-krcs.json';
+import messageTemplateBaringo from '@121-service/src/seed-data/message-template/message-template-krcs-baringo.json';
+import messageTemplateTurkana from '@121-service/src/seed-data/message-template/message-template-krcs-turkana.json';
+import messageTemplateWestPokot from '@121-service/src/seed-data/message-template/message-template-krcs-westpokot.json';
+import programBaringo from '@121-service/src/seed-data/program/program-krcs-baringo.json';
+import programTurkana from '@121-service/src/seed-data/program/program-krcs-turkana.json';
+import programWestPokot from '@121-service/src/seed-data/program/program-krcs-westpokot.json';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

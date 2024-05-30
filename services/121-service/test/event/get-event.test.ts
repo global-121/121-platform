@@ -1,7 +1,7 @@
-import { registrationVisa } from '@121-service/seed-data/mock/visa-card.data';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   getEvents,
   getRegistrationEvents,

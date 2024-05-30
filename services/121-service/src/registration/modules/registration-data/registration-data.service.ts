@@ -1,4 +1,4 @@
-import { AppDataSource } from '@121-service/appdatasource';
+import { AppDataSource } from '@121-service/src/appdatasource';
 import { InstanceEntity } from '@121-service/src/instance/instance.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';

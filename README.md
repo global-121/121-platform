@@ -162,7 +162,7 @@ When making changes to the data-model of the `121-service` (creating/editing any
 The process is:
 
 1. Make the changes in the `\*.entity.ts` file
-2. To generate a migration-script run: `docker exec 121-service npm run migration:generate migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
+2. To generate a migration-script run: `docker exec 121-service npm run migration:generate src/migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
 5. Do NOT import any files from our code base into your migrations. For example, do NOT import seed JSON files to get data to insert into the database, since the migration may break if ever these seed JSON files change. Instead, "hard code" the needed data in your migration file.
@@ -180,7 +180,7 @@ The process is:
 
 NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
 
-1. In `services/121-service/ormconfig.js` set `synchronize` to `true` and restart `121-service`.
+1. In `services/121-service/src/ormconfig.ts` set `synchronize` to `true` and restart `121-service`.
 2. This will make sure that any changes you make to `\*.entity.ts` files are automatically updated in your database tables, which allows for quicker development/testing.
 3. When you're done with all your changes, you will need to revert all changes temporarily to be able to create a migration script. There are multiple ways to do this, for example by stashing all your changes, or working with a new branch, etc. Either way:
    - stashing all your changes (git stash)
@@ -231,7 +231,7 @@ If there are issues with Docker commands, it could be due to permissions. Prefix
 
 If the errors are related to not being able to access/connect to the database then reset/recreate the database by:
 
-- Setting `dropSchema: true` in `ormconfig.ts` of the specific service.
+- Setting `dropSchema: true` in `src/ormconfig.ts` of the specific service.
 - Restarting that service will reset/recreate its database(-schema)
 
 ### Upgrade Node.js version

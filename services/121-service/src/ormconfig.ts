@@ -14,7 +14,7 @@ export const ORMConfig: DataSourceOptions = {
   entities: ['src/**/**.entity.ts'],
   subscribers: ['src/**/**.subscriber.ts'],
   migrationsTableName: 'custom_migration_table',
-  migrations: ['migration/*.ts'],
+  migrations: ['src/migration/*.ts'],
   migrationsRun: false,
   dropSchema: false,
   synchronize: false,

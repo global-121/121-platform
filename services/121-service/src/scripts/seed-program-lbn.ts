@@ -1,8 +1,8 @@
-import intanceLbn from '@121-service/seed-data/instance/instance-pilot-lbn.json';
-import messageTemplatePilotLbn from '@121-service/seed-data/message-template/message-template-pilot-lbn.json';
-import programPilotLbn from '@121-service/seed-data/program/program-pilot-lbn.json';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import intanceLbn from '@121-service/src/seed-data/instance/instance-pilot-lbn.json';
+import messageTemplatePilotLbn from '@121-service/src/seed-data/message-template/message-template-pilot-lbn.json';
+import programPilotLbn from '@121-service/src/seed-data/program/program-pilot-lbn.json';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
