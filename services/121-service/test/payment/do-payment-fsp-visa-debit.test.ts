@@ -1,12 +1,12 @@
+import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   amountVisa,
   paymentNrVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
-} from '@121-service/seed-data/mock/visa-card.data';
-import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+} from '@121-service/src/seed-data/mock/visa-card.data';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';

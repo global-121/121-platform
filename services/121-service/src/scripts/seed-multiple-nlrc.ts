@@ -1,11 +1,11 @@
-import instanceNLRC from '@121-service/seed-data/instance/instance-nlrc.json';
-import messageTemplateOCW from '@121-service/seed-data/message-template/message-template-nlrc-ocw.json';
-import messageTemplatePV from '@121-service/seed-data/message-template/message-template-nlrc-pv.json';
-import programOCW from '@121-service/seed-data/program/program-nlrc-ocw.json';
-import programPV from '@121-service/seed-data/program/program-nlrc-pv.json';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import instanceNLRC from '@121-service/src/seed-data/instance/instance-nlrc.json';
+import messageTemplateOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
+import messageTemplatePV from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.json';
+import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import programPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 

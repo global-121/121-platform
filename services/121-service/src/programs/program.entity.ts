@@ -1,5 +1,5 @@
-import { AppDataSource } from '@121-service/appdatasource';
 import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { AppDataSource } from '@121-service/src/appdatasource';
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
