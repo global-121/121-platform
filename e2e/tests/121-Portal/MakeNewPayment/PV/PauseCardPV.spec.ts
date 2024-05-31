@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28428] Re-issue Visa debit cards', async ({ page }) => {
+test('[28442] Pause Visa debit cards', async ({ page }) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const registration = new RegistrationDetails(page);
@@ -42,18 +42,17 @@ test('[28428] Re-issue Visa debit cards', async ({ page }) => {
     await table.clickOnPaNumber(3);
   });
 
-  await test.step('Should Re-Issue Visa Card and details are presented correctly with status: Active and Blocked/ Substituted', async () => {
+  await test.step('Should Pause Visa Card and details are presented correctly with status: Paused', async () => {
     await registration.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
       WalletCardStatus121.Active,
     );
-    await registration.issueNewVisaDebitCard();
-    // FOR NOW STATUS SHOULD BE BLOCKED BUT AFTER NEW CHANGES ARE APPLIED THIS SHOULD BE CHANGED INTO "SUBSTITUTED"
+    await registration.pauseVisaDebitCard();
     await registration.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
-      WalletCardStatus121.Blocked,
+      WalletCardStatus121.Paused,
     );
   });
 });

@@ -262,6 +262,28 @@ class RegistrationDetails {
     }
   }
 
+  async pauseVisaDebitCard() {
+    try {
+      const activeCard = this.debitCardStatus.filter({ hasText: 'Active' });
+      await activeCard.waitFor({ state: 'visible' });
+      await activeCard.click();
+
+      const issueNewCardButton = this.page.getByRole('button', {
+        name: 'Pause card',
+      });
+      await issueNewCardButton.waitFor({ state: 'visible' });
+      await issueNewCardButton.click();
+
+      for (let i = 0; i < 2; i++) {
+        const okButton = this.page.getByRole('button', { name: 'OK' });
+        await okButton.waitFor({ state: 'visible' });
+        await okButton.click();
+      }
+    } catch (error) {
+      console.error(`Failed to issue new Visa debit card: ${error}`);
+    }
+  }
+
   async openActivityOverviewTab(tabName: string) {
     await this.page.waitForLoadState('load');
     await this.tabButton
@@ -535,7 +557,6 @@ class RegistrationDetails {
     //if does not pass a new value for multiplier, set new amount= old amount + 1
     if (amount == 'default') {
       amount = (parseInt(oldAmount, 10) + 1).toString();
-      console.log(amount);
     }
     await paymentMultipierInput.fill(amount);
 
