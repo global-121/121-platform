@@ -2,7 +2,6 @@ import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
 import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -13,7 +12,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -32,13 +31,13 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28274] Make Successful payment for OCW', async ({ page }) => {
+test('[28297] OCW: Show maximum total amount (Dry Run)', async ({ page }) => {
   const tableModule = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
-  const registrationPage = new RegistrationDetails(page);
   const paymentsPage = new PaymentsPage(page);
 
+  const PaymentNumber = 1;
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const maxTransferValue = registrationsOCW.reduce((output, pa) => {
@@ -47,37 +46,17 @@ test('[28274] Make Successful payment for OCW', async ({ page }) => {
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await navigationModule.navigateToProgramTab('Payment');
+    await navigationModule.navigateToProgramTab(
+      englishTranslations.page.program.tab.payment.label,
+    );
   });
 
   await test.step('Do payment #1', async () => {
-    await tableModule.doPayment(1);
-    await paymentsPage.executePayment({
+    await tableModule.doPayment(PaymentNumber);
+    await paymentsPage.verifyPaymentPopupValues({
       numberOfPas,
       defaultTransferValue,
       maxTransferValue,
-    });
-  });
-
-  await test.step('Check PA payments and messages', async () => {
-    await tableModule.clickOnPaNumber(1);
-
-    await registrationPage.validateQuantityOfActivity({ quantity: 5 });
-
-    await registrationPage.openActivityOverviewTab('Payments');
-    await registrationPage.validatePaymentsTab({
-      paymentLabel: englishTranslations.page.program.tab.payment.label,
-      paymentNumber: 1,
-      statusLabel: englishTranslations.entity.payment.status.success,
-    });
-
-    await registrationPage.openActivityOverviewTab('Messages');
-    await registrationPage.validateSentMessagesTab({
-      messageNotification:
-        englishTranslations.entity.message['content-type']['generic-templated'],
-      messageContext:
-        englishTranslations.entity.message['content-type'].payment,
-      messageType: englishTranslations.entity.message.type.whatsapp,
     });
   });
 });

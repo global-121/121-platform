@@ -86,6 +86,17 @@ export const registrationOCW4 = {
   addressCity: 'AnotherCity',
 };
 
+export const registrationOCW5 = {
+  referenceId: '54e62864557597e034',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 3,
+  firstName: 'Lars',
+  lastName: 'Larsson',
+  phoneNumber: '14155235556',
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235556',
+};
+
 export const registrationsOCW = [
   registrationOCW1,
   registrationOCW2,
@@ -97,8 +108,7 @@ export const registrationPV5 = {
   referenceId: '44e62864557597e0d',
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
-  firstName: 'Gemma',
-  lastName: 'Houtenbos',
+  fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235556',
   fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
@@ -108,12 +118,32 @@ export const registrationPV6 = {
   referenceId: 'asdf234f4gg4ag64545',
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
-  firstName: 'Jan',
-  lastName: 'Janssen',
+  fullName: 'Jan Janssen',
   phoneNumber: '14155235551',
   fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235551',
 };
+
+export const registrationPV7 = {
+  referenceId: 'asdf234f4gg4ag64547',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Joost Herlembach',
+  phoneNumber: '14155235551',
+  fspName: FinancialServiceProviderName.intersolveVisa,
+  whatsappPhoneNumber: '14155235551',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationsPV = [
+  registrationPV5,
+  registrationPV6,
+  registrationPV7,
+];
 
 export const registrationPvScoped = {
   referenceId: '434e62869242497e1e',

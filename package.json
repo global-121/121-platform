@@ -29,6 +29,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "eslint-plugin-no-relative-import-paths": "^1.5.4",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5"

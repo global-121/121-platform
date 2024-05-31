@@ -364,7 +364,17 @@ export async function seedIncludedRegistrations(
   programId: number,
   accessToken: string,
 ): Promise<void> {
-  await importRegistrations(programId, registrations, accessToken);
+  const response = await importRegistrations(
+    programId,
+    registrations,
+    accessToken,
+  );
+
+  if (!(response.status >= 200 && response.status < 300)) {
+    throw new Error(
+      `Error occured while importing registrations: ${response.text}`,
+    );
+  }
 
   await awaitChangePaStatus(
     programId,
