@@ -1,5 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -27,7 +28,7 @@ test.beforeEach(async ({ page }) => {
 test('[28044] Update HouseNumber with invalid value', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  // const registration = new RegistrationDetails(page);
+  const registration = new RegistrationDetails(page);
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -38,6 +39,8 @@ test('[28044] Update HouseNumber with invalid value', async ({ page }) => {
   });
 
   await test.step('Update house number with a string', async () => {
-    console.log('to do');
+    await registration.updatehousenumber({
+      number: 'house number',
+    });
   });
 });
