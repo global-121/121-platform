@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28297] OCW: Show maximum total amount (Dry Run)', async ({ page }) => {
+test('[28446] OCW: Show maximum total amount (Dry Run)', async ({ page }) => {
   const tableModule = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);

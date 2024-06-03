@@ -1,7 +1,7 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PhysicalCardOverview from '@121-e2e/pages/PhysicalCardOverview/PhysicalCardOverview';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import NLRCProgramPV from '@121-service/seed-data/program/program-nlrc-pv.json';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
@@ -28,10 +28,10 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28442] Pause Visa debit cards', async ({ page }) => {
+test('[28480] Pause Visa debit cards', async ({ page }) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
-  const registration = new RegistrationDetails(page);
+  const physicalCard = new PhysicalCardOverview(page);
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
@@ -43,16 +43,22 @@ test('[28442] Pause Visa debit cards', async ({ page }) => {
   });
 
   await test.step('Should Pause Visa Card and details are presented correctly with status: Paused', async () => {
-    await registration.validateDebitCardStatus(
+    await physicalCard.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
       WalletCardStatus121.Active,
     );
-    await registration.pauseVisaDebitCard();
-    await registration.validateDebitCardStatus(
+    await physicalCard.pauseVisaDebitCard();
+    await physicalCard.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
       WalletCardStatus121.Paused,
+    );
+    await physicalCard.unPauseVisaDebitCard();
+    await physicalCard.validateDebitCardStatus(
+      englishTranslations['registration-details']['physical-cards-overview']
+        .title,
+      WalletCardStatus121.Active,
     );
   });
 });

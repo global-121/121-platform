@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PhysicalCardOverview from '@121-e2e/pages/PhysicalCardOverview/PhysicalCardOverview';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[27494] View Visa debit cards table', async ({ page }) => {
   const table = new TableModule(page);
-  const registration = new RegistrationDetails(page);
+  const physicalCard = new PhysicalCardOverview(page);
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
@@ -39,16 +39,13 @@ test('[27494] View Visa debit cards table', async ({ page }) => {
   });
 
   await test.step('Should validate PA profile opened succesfully and Visa Card Details are presented correctly with status: Active', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
-    await registration.validateDebitCardStatus(
+    await physicalCard.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
       WalletCardStatus121.Active,
     );
-    await registration.issueNewVisaDebitCard();
-    await registration.validateDebitCardStatus(
+    await physicalCard.issueNewVisaDebitCard();
+    await physicalCard.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
       WalletCardStatus121.Blocked,
