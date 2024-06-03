@@ -1,9 +1,9 @@
 import { DEBUG } from '@121-service/src/config';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { InstanceEntity } from '@121-service/src/instance/instance.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
@@ -135,13 +135,14 @@ export class SeedHelper {
     }
   }
 
-  public async addInstance(
-    exampleInstance: Record<string, any>,
+  public async addOrganization(
+    exampleOrganization: Record<string, any>,
   ): Promise<void> {
-    const instanceRepository = this.dataSource.getRepository(InstanceEntity);
-    const instanceDump = JSON.stringify(exampleInstance);
-    const instance = JSON.parse(instanceDump);
-    await instanceRepository.save(instance);
+    const organizationRepository =
+      this.dataSource.getRepository(OrganizationEntity);
+    const organizationDump = JSON.stringify(exampleOrganization);
+    const organization = JSON.parse(organizationDump);
+    await organizationRepository.save(organization);
   }
 
   public async addProgram(

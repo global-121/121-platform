@@ -93,7 +93,7 @@ Using application such as EspoCRM to call our API
 - [Load seed data](Admin-user/Load_seed_data.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
-- Update instance
+- Update organization
 - Add/update Intersolve instructions image
 - Create new aidworker user and manage assignment to program
 - Delete user

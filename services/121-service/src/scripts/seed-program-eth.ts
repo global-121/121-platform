@@ -1,8 +1,8 @@
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import instancePilotEth from '@121-service/src/seed-data/instance/instance-pilot-eth.json';
 import messageTemplatePilotEth from '@121-service/src/seed-data/message-template/message-template-pilot-zoa-eth.json';
+import organizationPilotEth from '@121-service/src/seed-data/organization/organization-pilot-eth.json';
 import programPilotEth from '@121-service/src/seed-data/program/program-pilot-zoa-eth.json';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
@@ -30,8 +30,8 @@ export class SeedProgramEth implements InterfaceScript {
     // ***** CREATE DEFAULT USERS *****
     await this.seedHelper.addDefaultUsers(program);
 
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instancePilotEth);
+    // ***** CREATE ORGANIZATION *****
+    await this.seedHelper.addOrganization(organizationPilotEth);
 
     // ***** CREATE USERS WITH CUSTOM ROLES *****
     await this.createCustomRoles();
@@ -45,14 +45,8 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Administrator (ZOA)',
         permissions: [
           // Listing all permission here to show which are not assigned (commented):
-          // PermissionEnum.InstanceUPDATE, // Admin-only
-          // PermissionEnum.ProgramCREATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          // PermissionEnum.ProgramQuestionUPDATE, // Admin-only
           PermissionEnum.ProgramMetricsREAD,
-          // PermissionEnum.FspUPDATE,
-          // PermissionEnum.FspAttributeUPDATE, // Admin-only
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
           // PermissionEnum.PaymentFspInstructionREAD, // N.A. to ZOA
@@ -74,10 +68,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.AidWorkerProgramREAD,
-          // PermissionEnum.RoleCREATE, // Admin-only
         ],
       },
       {
@@ -85,15 +76,10 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Project Management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
-          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          // PermissionEnum.FspUPDATE, Moved to admin
-          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
-          // PermissionEnum.PaymentCREATE, // not doing payments
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationCREATE,
@@ -120,12 +106,10 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Programme Management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
-          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          // PermissionEnum.FspUPDATE, Moved to admin
           // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           // PermissionEnum.PaymentCREATE, // not doing payments
@@ -146,7 +130,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          // PermissionEnum.AidWorkerDELETE,  Moved to admin
           // PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.AidWorkerProgramREAD,
         ],
@@ -156,13 +139,10 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Operation management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
-          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          // PermissionEnum.FspUPDATE,  Moved to admin
-          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentTransactionREAD,
@@ -191,12 +171,9 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Programme Quality',
         permissions: [
           // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
-          // PermissionEnum.InstanceUPDATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          // PermissionEnum.FspUPDATE,  Moved to admin
-          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentTransactionREAD,
@@ -226,7 +203,6 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Project Officer',
         permissions: [
           // Assuming this is equal to Default View Role
-          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,

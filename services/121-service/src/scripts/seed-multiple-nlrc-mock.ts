@@ -84,7 +84,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     // ************************
 
-    // Set up instance and program
+    // Set up organization and program
     await this.seedMultipleNLRC.run(isApiTests);
 
     // Set up 1 registration with 1 payment and 1 message

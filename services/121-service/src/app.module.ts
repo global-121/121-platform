@@ -2,11 +2,11 @@ import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { HealthModule } from '@121-service/src/health.module';
-import { InstanceModule } from '@121-service/src/instance/instance.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
+import { OrganizationModule } from '@121-service/src/organization/organization.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
@@ -27,7 +27,7 @@ import { DataSource } from 'typeorm';
     HealthModule,
     CronjobModule,
     ScriptsModule,
-    InstanceModule,
+    OrganizationModule,
     MessageModule,
     MetricsModule,
     MessageIncomingModule,

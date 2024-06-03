@@ -1,7 +1,7 @@
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import instanceDemo from '@121-service/src/seed-data/instance/instance-demo.json';
 import messageTemplateTest from '@121-service/src/seed-data/message-template/message-template-test.json';
+import organizationDemo from '@121-service/src/seed-data/organization/organization-demo.json';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import { Injectable } from '@nestjs/common';
 
@@ -18,7 +18,7 @@ export class SeedTestProgram implements InterfaceScript {
 
     await this.seedHelper.addDefaultUsers(program);
 
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instanceDemo);
+    // ***** CREATE ORGANIZATION *****
+    await this.seedHelper.addOrganization(organizationDemo);
   }
 }

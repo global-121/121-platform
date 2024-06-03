@@ -2,7 +2,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class UpdateInstanceDto {
+export class UpdateOrganizationDto {
   @ApiProperty({ example: 'NGO-name' })
   @IsString()
   @IsNotEmpty()
@@ -11,10 +11,4 @@ export class UpdateInstanceDto {
   @ApiProperty({ example: { en: 'NGO display name' } })
   @IsOptional()
   public readonly displayName?: LocalizedString;
-
-  @ApiProperty({
-    example: { en: '<about program>' },
-  })
-  @IsOptional()
-  public readonly aboutProgram?: LocalizedString;
 }

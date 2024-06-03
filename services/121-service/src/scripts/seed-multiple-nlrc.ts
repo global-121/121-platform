@@ -1,9 +1,9 @@
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import instanceNLRC from '@121-service/src/seed-data/instance/instance-nlrc.json';
 import messageTemplateOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
 import messageTemplatePV from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.json';
+import organizationNLRC from '@121-service/src/seed-data/organization/organization-nlrc.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import programPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { Injectable } from '@nestjs/common';
@@ -19,9 +19,9 @@ export class SeedMultipleNLRC implements InterfaceScript {
   public async run(isApiTests = false): Promise<void> {
     const debugScopes = Object.values(DebugScope);
 
-    // ***** CREATE INSTANCE *****
-    // Technically multiple instances could be loaded, but that should not be done
-    await this.seedHelper.addInstance(instanceNLRC);
+    // ***** CREATE ORGANIZATION *****
+    // Technically multiple organizations could be loaded, but that should not be done
+    await this.seedHelper.addOrganization(organizationNLRC);
 
     // ***** SET SEQUENCE *****
     // This is to keep PV and OCW program ids on respectively 2 and 3
