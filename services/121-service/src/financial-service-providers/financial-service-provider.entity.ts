@@ -5,8 +5,8 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
+import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
-import { LocalizedString } from 'src/shared/enum/language.enums';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity('financial_service_provider')

@@ -1,6 +1,6 @@
 import { Base121Entity } from '@121-service/src/base.entity';
+import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
-import { LocalizedString } from 'src/shared/enum/language.enums';
 import { Column, Entity } from 'typeorm';
 
 // TODO: enforce only 1 instance/record in the database

@@ -65,7 +65,7 @@ async function bootstrap(): Promise<void> {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      forbidUnknownValues: true,
+      forbidUnknownValues: false,
       exceptionFactory: (errors) => {
         for (const e of errors) {
           if (e.constraints && e.constraints['unknownValue']) {

@@ -1,8 +1,8 @@
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { LocalizedString } from 'src/shared/enum/language.enums';
-import { QuestionOption } from 'src/shared/enum/question.enums';
 
 export class UpdateFspAttributeDto {
   @ApiProperty({ example: { en: 'attribute label' } })
