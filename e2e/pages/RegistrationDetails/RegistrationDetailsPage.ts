@@ -34,6 +34,7 @@ class RegistrationDetails {
   readonly personAffectedLanguage: Locator;
   readonly personAffectedCustomAttribute: Locator;
   readonly personAffectedPopUpSaveButton: Locator;
+  readonly personAffectedHouseNumber: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -117,6 +118,9 @@ class RegistrationDetails {
     );
     this.personAffectedPopUpSaveButton = this.page.getByTestId(
       'confirm-prompt-button-default',
+    );
+    this.personAffectedHouseNumber = this.page.getByTestId(
+      'update-property-item-numeric-input',
     );
   }
 
@@ -601,6 +605,22 @@ class RegistrationDetails {
     expect(await oldValueHolder.textContent()).toContain(oldValue);
     expect(await newValueHolder.textContent()).toContain(newValue);
     expect(await reasonHolder.textContent()).toContain(reason);
+  }
+
+  async updatehousenumber({
+    number,
+  }: {
+    number: string;
+    saveButtonName: string;
+  }) {
+    const numbericInput =
+      await this.personAffectedHouseNumber.getByRole('spinbutton');
+    const oldNumber = await numbericInput.inputValue();
+    await this.personAffectedHouseNumber.pressSequentially(number);
+    await this.page.waitForLoadState('networkidle');
+    const currentNumber = await numbericInput.inputValue();
+    console.log(currentNumber);
+    expect(oldNumber).toBe(currentNumber);
   }
 }
 
