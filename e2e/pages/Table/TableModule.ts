@@ -94,7 +94,6 @@ class TableModule {
       i++;
     }
     if (content.includes(text)) {
-      console.log(`Element with text "${content}" was displayed`);
       return;
     } else {
       throw new Error(

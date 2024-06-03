@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28317] PV: Show maximum total amount (Dry Run)', async ({ page }) => {
+test('[28464] PV: Show maximum total amount (Dry Run)', async ({ page }) => {
   const tableModule = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);

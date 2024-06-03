@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28316] PV: Make Successful payment', async ({ page }) => {
+test('[28463] PV: Make Successful payment', async ({ page }) => {
   const tableModule = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
