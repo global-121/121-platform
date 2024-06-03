@@ -117,6 +117,26 @@ export async function doPayment(
     });
 }
 
+export async function doPaymentForAllPAs({
+  programId,
+  paymentNr,
+  amount,
+  accessToken,
+}: {
+  programId: number;
+  paymentNr: number;
+  amount: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/payments`)
+    .set('Cookie', [accessToken])
+    .send({
+      payment: paymentNr,
+      amount: amount,
+    });
+}
+
 export async function retryPayment(
   programId: number,
   paymentNr: number,

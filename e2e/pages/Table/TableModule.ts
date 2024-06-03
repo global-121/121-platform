@@ -310,6 +310,14 @@ class TableModule {
 
     await this.applyBulkAction({ label: doPaymentLabel });
   }
+
+  async acceptBulkAction() {
+    const okButton = this.page.getByRole('button', { name: 'OK' });
+
+    await okButton.click();
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
 }
 
 export default TableModule;
