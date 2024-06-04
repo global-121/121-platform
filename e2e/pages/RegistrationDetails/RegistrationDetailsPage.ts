@@ -310,6 +310,7 @@ class RegistrationDetails {
     const messageNotificationLocator = this.page.locator(
       `:text("${messageNotification}")`,
     );
+    await this.page.waitForLoadState('networkidle');
     await paymentNotificationLocator.waitFor({ state: 'visible' });
     await messageNotificationLocator.waitFor({ state: 'visible' });
     expect(await messageNotificationLocator.textContent()).toContain(
@@ -570,18 +571,17 @@ class RegistrationDetails {
   }
 
   async updatehousenumber({
-    number,
+    numberString,
   }: {
-    number: string;
+    numberString: string;
     saveButtonName: string;
   }) {
-    const numbericInput =
-      await this.personAffectedHouseNumber.getByRole('spinbutton');
-    const oldNumber = await numbericInput.inputValue();
-    await this.personAffectedHouseNumber.pressSequentially(number);
+    const numericInput = this.personAffectedHouseNumber.getByRole('spinbutton');
+    const oldNumber = await numericInput.inputValue();
+    const currentNumber = await numericInput.inputValue();
+
+    await this.personAffectedHouseNumber.pressSequentially(numberString);
     await this.page.waitForLoadState('networkidle');
-    const currentNumber = await numbericInput.inputValue();
-    console.log(currentNumber);
     expect(oldNumber).toBe(currentNumber);
   }
 }

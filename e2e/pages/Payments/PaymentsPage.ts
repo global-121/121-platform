@@ -8,6 +8,10 @@ class PaymentsPage {
   readonly page: Page;
   readonly paymentPopupMakePaymentAmountInput: Locator;
   readonly paymentPopupMakePaymentButton: Locator;
+  readonly paymentStatus: Locator;
+  readonly paymentRetryButton: Locator;
+  readonly paymentSuccessfulLabel: Locator;
+  readonly paymentsFailedLabel: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +21,16 @@ class PaymentsPage {
     this.paymentPopupMakePaymentButton = this.page.getByRole('button', {
       name: englishTranslations.page.program['program-payout']['start-payout'],
     });
+    this.paymentStatus = this.page.getByTestId('program-payout-in-progress');
+    this.paymentRetryButton = this.page.getByTestId(
+      'program-payout-retry-last-payment',
+    );
+    this.paymentSuccessfulLabel = this.page.getByTestId(
+      'program-payout-successful-payment',
+    );
+    this.paymentsFailedLabel = this.page.getByTestId(
+      'program-payout-failed-payment',
+    );
   }
 
   async verifyPaymentPopupValues({
@@ -96,6 +110,61 @@ class PaymentsPage {
         name: englishTranslations.common.ok,
       })
       .click();
+  }
+
+  async validatePaymentStatus({}) {
+    try {
+      while (true) {
+        await this.page.reload();
+        await this.page.waitForLoadState('networkidle');
+        if (!(await this.paymentStatus.isVisible())) {
+          break;
+        }
+      }
+    } catch (error) {
+      throw new Error('Payment status element does not exist in DOM.');
+    }
+  }
+
+  async retryPayment({ buttonName }: { buttonName: string }) {
+    const okButton = this.page.getByRole('button', { name: buttonName });
+
+    await this.paymentRetryButton.click();
+
+    await okButton.click();
+    await this.page.waitForLoadState('networkidle');
+    await okButton.click();
+  }
+
+  async validatePaymentCount({
+    payments,
+    label,
+  }: {
+    payments: number;
+    label: Locator;
+  }) {
+    await this.page.waitForLoadState('networkidle');
+    let paymentsText = await label.innerText();
+    paymentsText = paymentsText.replace(/\D/g, ''); // remove non-numeric characters
+    const paymentsNumber = Number(paymentsText);
+
+    await expect(this.paymentStatus).toBeHidden();
+    await expect(paymentsNumber).toBe(payments);
+  }
+
+  async validateFailedPaymentStatus({ payments }: { payments: number }) {
+    await this.validatePaymentCount({
+      payments,
+      label: this.paymentsFailedLabel,
+    });
+  }
+
+  async validateSuccessfulPaymentStatus({ payments }: { payments: number }) {
+    await this.validatePaymentCount({
+      payments,
+      label: this.paymentSuccessfulLabel,
+    });
+    await expect(this.paymentRetryButton).toBeHidden();
   }
 }
 

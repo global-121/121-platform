@@ -106,15 +106,20 @@
     </h3>
     <p *ngIf="lastPaymentResults">
       {{ 'page.program.program-payout.last-payment.success' | translate }}:
-      <strong>{{ lastPaymentResults.success }}</strong
+      <strong data-testid="program-payout-successful-payment">{{
+        lastPaymentResults.success
+      }}</strong
       ><br />
       {{ 'page.program.program-payout.last-payment.waiting' | translate }}:
       <strong>{{ lastPaymentResults.waiting }}</strong
       ><br />
       {{ 'page.program.program-payout.last-payment.error' | translate }}:
-      <strong>{{ lastPaymentResults.error }}</strong>
+      <strong data-testid="program-payout-failed-payment">{{
+        lastPaymentResults.error
+      }}</strong>
     </p>
     <ion-row
+      data-testid="program-payout-in-progress"
       *ngIf="canMakePayment"
       class="ion-align-items-center"
     >
@@ -147,6 +152,7 @@
       class="ion-align-items-center"
     >
       <app-confirm-prompt
+        data-testid="program-payout-retry-last-payment"
         (confirm)="retryLastPayment()"
         [subHeader]="
           'page.program.program-payout.last-payment.confirm-prompt'
