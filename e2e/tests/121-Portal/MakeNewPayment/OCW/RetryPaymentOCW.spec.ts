@@ -17,6 +17,7 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
