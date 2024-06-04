@@ -310,6 +310,7 @@ class RegistrationDetails {
     const messageNotificationLocator = this.page.locator(
       `:text("${messageNotification}")`,
     );
+    await this.page.waitForLoadState('networkidle');
     await paymentNotificationLocator.waitFor({ state: 'visible' });
     await messageNotificationLocator.waitFor({ state: 'visible' });
     expect(await messageNotificationLocator.textContent()).toContain(
@@ -578,9 +579,9 @@ class RegistrationDetails {
     const numericInput = this.personAffectedHouseNumber.getByRole('spinbutton');
     const oldNumber = await numericInput.inputValue();
     const currentNumber = await numericInput.inputValue();
+
     await this.personAffectedHouseNumber.pressSequentially(numberString);
     await this.page.waitForLoadState('networkidle');
-    console.log(currentNumber);
     expect(oldNumber).toBe(currentNumber);
   }
 }
