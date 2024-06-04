@@ -6,10 +6,9 @@ import {
 } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
-import {
-  LanguageEnum,
-  LocalizedString,
-} from '@121-service/src/shared/enum/language.enums';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -244,7 +243,7 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
-  public readonly languages: LanguageEnum[];
+  public readonly languages: WrapperType<LanguageEnum[]>;
 
   @ApiProperty({ example: false })
   @IsBoolean()

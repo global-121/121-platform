@@ -1,6 +1,6 @@
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany, Relation } from 'typeorm';
 
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {
@@ -41,5 +41,5 @@ export class IntersolveVoucherEntity extends Base121Entity {
   public reminderCount: number | null;
 
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.voucher)
-  public image: ImageCodeExportVouchersEntity[];
+  public image: Relation<ImageCodeExportVouchersEntity[]>;
 }

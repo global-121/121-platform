@@ -5,9 +5,10 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
-import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType, getEnumValue } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, Relation } from 'typeorm';
 
 @Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
@@ -19,9 +20,14 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @ApiProperty({ example: { en: 'FSP display name' } })
   public displayName: LocalizedString | null;
 
-  @Column({ default: FinancialServiceProviderIntegrationType.api })
-  @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })
-  public integrationType: FinancialServiceProviderIntegrationType;
+  @Column({
+    default: FinancialServiceProviderIntegrationType.api,
+    type: 'character varying',
+  })
+  @ApiProperty({
+    example: getEnumValue(FinancialServiceProviderIntegrationType.api),
+  })
+  public integrationType: WrapperType<FinancialServiceProviderIntegrationType>;
 
   @Column({ default: false })
   @ApiProperty({
@@ -35,25 +41,25 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   public notifyOnTransaction: boolean;
 
   @OneToMany((_type) => FspQuestionEntity, (questions) => questions.fsp)
-  public questions: FspQuestionEntity[];
+  public questions: Relation<FspQuestionEntity[]>;
 
   @ManyToMany(
     (_type) => ProgramEntity,
     (program) => program.financialServiceProviders,
   )
-  public program: ProgramEntity[];
+  public program: Relation<ProgramEntity[]>;
 
   @OneToMany(
     (_type) => TransactionEntity,
     (transactions) => transactions.financialServiceProvider,
   )
-  public transactions: TransactionEntity[];
+  public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(
     (_type) => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.fsp,
   )
-  public configuration: ProgramFspConfigurationEntity[];
+  public configuration: Relation<ProgramFspConfigurationEntity[]>;
 
   public editableAttributes?: Attribute[];
 }

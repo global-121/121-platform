@@ -1,8 +1,9 @@
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { LocalizedString } from '@121-service/src/shared/enum/language.enums';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -52,7 +53,7 @@ class BaseProgramQuestionDto {
   })
   @IsOptional()
   @IsEnum(ExportType, { each: true }) // Use @IsEnum decorator to validate each element
-  public readonly export?: ExportType[];
+  public readonly export?: WrapperType<ExportType[]>;
   @ApiProperty({
     example: {
       en: '+31 6 00 00 00 00',
@@ -120,7 +121,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     AnswerTypes.text,
     AnswerTypes.date,
   ])
-  public readonly answerType?: AnswerTypes;
+  public readonly answerType?: WrapperType<AnswerTypes>;
 
   @ApiProperty({ example: 'standard', required: false })
   @IsIn(['standard', 'custom'])

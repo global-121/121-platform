@@ -5,6 +5,8 @@ import {
   CustomAttributeType,
 } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -21,15 +23,12 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import {
-  LanguageEnum,
-  LocalizedString,
-} from '@121-service/src/shared/enum/language.enums';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export class ProgramFinancialServiceProviderDto {
   @ApiProperty()
   @IsEnum(FinancialServiceProviderName)
-  fsp: FinancialServiceProviderName;
+  fsp: WrapperType<FinancialServiceProviderName>;
 
   @ApiProperty()
   @IsArray()
@@ -256,7 +255,7 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
-  public readonly languages: LanguageEnum[];
+  public readonly languages: WrapperType<LanguageEnum[]>;
 
   @ApiProperty({ example: false })
   @IsBoolean()

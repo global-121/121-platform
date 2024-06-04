@@ -30,6 +30,11 @@ runs:
       working-directory: ${{ inputs.servicePath }}
       run: 'npm ci --no-fund --no-audit'
 
+    - name: Build
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: 'npm run build'
+
     - name: Test
       shell: bash
       working-directory: ${{ inputs.servicePath }}

@@ -10,6 +10,7 @@ import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
 import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
@@ -80,7 +81,7 @@ export class ScriptsController {
   @Post('/reset')
   public async resetDb(
     @Body() body: SecretDto,
-    @Query('script') script: SeedScript,
+    @Query('script') script: WrapperType<SeedScript>,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: number,
     @Query('mockNumberPayments') mockNumberPayments: number,

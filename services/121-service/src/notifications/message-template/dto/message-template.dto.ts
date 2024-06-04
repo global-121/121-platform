@@ -1,7 +1,6 @@
-import {
-  LanguageEnum,
-  LocalizedString,
-} from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src//shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src//wrapper.type';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -26,7 +25,7 @@ export class CreateMessageTemplateDto {
   @ApiProperty()
   @IsString()
   @IsEnum(LanguageEnum)
-  public readonly language: LanguageEnum;
+  public readonly language: WrapperType<LanguageEnum>;
 
   @ApiProperty({
     example: { en: 'Template label' },
@@ -61,7 +60,7 @@ export class UpdateTemplateParamDto {
   public readonly type: string;
   @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language?: LanguageEnum;
+  public readonly language?: WrapperType<LanguageEnum>;
 }
 
 export class UpdateTemplateBodyDto {
@@ -99,5 +98,5 @@ export class DeleteTemplateParamDto {
 export class DeleteTemplateQueryDto {
   @IsOptional()
   @IsEnum(LanguageEnum)
-  public readonly language?: LanguageEnum;
+  public readonly language?: WrapperType<LanguageEnum>;
 }
