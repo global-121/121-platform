@@ -12,7 +12,7 @@ class PhysicalCardOverview {
     this.debitCardPaTable = this.page.getByTestId(
       'physical-cards-overview-title',
     );
-    this.debitCardStatus = this.page.getByTestId('card-status-chip');
+    this.debitCardStatus = this.page.getByTestId('physical-card-status-badge');
   }
 
   async validateDebitCardStatus(cardOverviewTitle: string, status: string) {
