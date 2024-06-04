@@ -474,6 +474,45 @@ class RegistrationDetails {
     }
   }
 
+  async updateField({
+    fieldSelector,
+    newValue,
+    saveButtonName,
+    okButtonName,
+    alert = englishTranslations.common['update-success'],
+    reasonText,
+  }: {
+    fieldSelector: Locator;
+    newValue: string;
+    saveButtonName: string;
+    okButtonName: string;
+    alert?: string;
+    reasonText: (newValue: string) => string;
+  }) {
+    const saveButton = this.page.getByRole('button', { name: saveButtonName });
+    const okButton = this.page.getByRole('button', { name: okButtonName });
+    // const alertMessage = this.page.locator('div.alert-message');
+    const alertMessage = this.page.getByRole('alertdialog');
+    const fieldInput = fieldSelector.getByRole('textbox');
+    await fieldInput.fill(newValue);
+
+    await this.page.waitForLoadState('networkidle');
+    await fieldSelector.getByText(saveButtonName).click();
+
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(reasonText(newValue));
+
+    await saveButton.waitFor({ state: 'visible' });
+    await saveButton.click();
+
+    await alertMessage.waitFor({ state: 'visible' });
+    expect((await alertMessage.allTextContents())[0]).toContain(alert);
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
   async updatepaymentAmountMultiplier({
     amount = 'default',
     saveButtonName,
@@ -485,41 +524,24 @@ class RegistrationDetails {
     okButtonName: string;
     alert?: string;
   }): Promise<string> {
-    const saveButton = this.page.getByRole('button', {
-      name: saveButtonName,
-    });
-    const okButton = this.page.getByRole('button', {
-      name: okButtonName,
-    });
-    const alertMessage = this.page.locator('div.alert-message');
+    const fieldSelector = this.personAffectedPaymentMultiplier; // Update with correct selector
+    const oldAmount = await this.personAffectedPaymentMultiplier
+      .getByRole('textbox')
+      .inputValue();
 
-    const paymentMultipierInput =
-      this.personAffectedPaymentMultiplier.getByRole('textbox');
-    const oldAmount = await paymentMultipierInput.inputValue();
-    //if does not pass a new value for multiplier, set new amount= old amount + 1
-    if (amount == 'default') {
+    if (amount === 'default') {
       amount = (parseInt(oldAmount, 10) + 1).toString();
     }
-    await paymentMultipierInput.fill(amount);
 
-    await this.page.waitForLoadState('networkidle');
+    await this.updateField({
+      fieldSelector,
+      newValue: amount,
+      saveButtonName,
+      okButtonName,
+      alert,
+      reasonText: (newValue) => `Change multiplier to ${newValue}`,
+    });
 
-    await this.personAffectedPaymentMultiplier
-      .getByText(saveButtonName)
-      .click();
-
-    await this.updateReasonTextArea
-      .locator('textarea')
-      .fill(`Change multiplier to ${amount}`);
-
-    await saveButton.waitFor({ state: 'visible' });
-    await saveButton.click();
-
-    await alertMessage.waitFor({ state: 'visible' });
-    expect((await alertMessage.allTextContents())[0]).toContain(alert);
-
-    await okButton.waitFor({ state: 'visible' });
-    await okButton.click();
     return oldAmount;
   }
 
@@ -570,12 +592,7 @@ class RegistrationDetails {
     expect(await reasonHolder.textContent()).toContain(reason);
   }
 
-  async updatehousenumber({
-    numberString,
-  }: {
-    numberString: string;
-    saveButtonName: string;
-  }) {
+  async updatehousenumber({ numberString }: { numberString: string }) {
     const numericInput = this.personAffectedHouseNumber.getByRole('spinbutton');
     const oldNumber = await numericInput.inputValue();
     const currentNumber = await numericInput.inputValue();
@@ -583,6 +600,29 @@ class RegistrationDetails {
     await this.personAffectedHouseNumber.pressSequentially(numberString);
     await this.page.waitForLoadState('networkidle');
     expect(oldNumber).toBe(currentNumber);
+  }
+
+  async updatePhoneNumber({
+    phoneNumber,
+    saveButtonName,
+    okButtonName,
+    alert = englishTranslations.common['update-success'],
+  }: {
+    phoneNumber: string;
+    saveButtonName: string;
+    okButtonName: string;
+    alert?: string;
+  }) {
+    const fieldSelector = this.personAffectedPhoneNumber;
+
+    await this.updateField({
+      fieldSelector,
+      newValue: phoneNumber,
+      saveButtonName,
+      okButtonName,
+      alert,
+      reasonText: (newValue) => `Change phoneNumber to ${newValue}`,
+    });
   }
 }
 
