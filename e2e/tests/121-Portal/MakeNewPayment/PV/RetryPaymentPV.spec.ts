@@ -4,7 +4,7 @@ import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
 import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { doPaymentForAllPAs } from '@121-service/test/helpers/program.helper';
 import {
   bulkUpdateRegistrationsCSV,
@@ -14,19 +14,19 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
-  const programIdOCW = 3;
+  const programIdPV = 2;
 
   const accessToken = await getAccessToken();
 
   await importRegistrationsCSV(
-    programIdOCW,
-    './test-registration-data/test-registrations-OCW.csv',
+    programIdPV,
+    './test-registration-data/test-registrations-PV.csv',
     accessToken,
   );
 
@@ -39,7 +39,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28321] PV: Retry payment for all failed payments of PAs', async ({
+test('[28468] PV: Retry payment for all failed payments of PAs', async ({
   page,
 }) => {
   const tableModule = new TableModule(page);
@@ -48,10 +48,10 @@ test('[28321] PV: Retry payment for all failed payments of PAs', async ({
   const paymentsPage = new PaymentsPage(page);
 
   const numberOfPas = 20;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
+  const defaultTransferValue = NLRCProgramPV.fixedTransferValue;
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(NLRCProgramPV.titlePortal.en);
     await navigationModule.navigateToProgramTab(
       englishTranslations.page.program.tab['people-affected'].label,
     );
@@ -73,7 +73,7 @@ test('[28321] PV: Retry payment for all failed payments of PAs', async ({
       englishTranslations.page.program.tab.payment.label,
     );
     await doPaymentForAllPAs({
-      programId: programIdOCW,
+      programId: programIdPV,
       paymentNr: 1,
       amount: defaultTransferValue,
       accessToken: accessToken,
@@ -87,8 +87,8 @@ test('[28321] PV: Retry payment for all failed payments of PAs', async ({
     const accessToken = await getAccessToken();
 
     await bulkUpdateRegistrationsCSV(
-      programIdOCW,
-      './test-registration-data/test-registrations-patch-OCW.csv',
+      programIdPV,
+      './test-registration-data/test-registrations-patch-PV.csv',
       accessToken,
     );
     await paymentsPage.retryPayment({
