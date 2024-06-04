@@ -1,3 +1,4 @@
+import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
@@ -14,7 +15,6 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
-import { AppDataSource } from '../../../appdatasource';
 
 @Injectable()
 export class RegistrationDataService {
