@@ -26,9 +26,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28045] Update paymentAmountMultiplier with invalid value', async ({
-  page,
-}) => {
+test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
