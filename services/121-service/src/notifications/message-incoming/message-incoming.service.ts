@@ -237,7 +237,6 @@ export class MessageIncomingService {
     });
 
     if (!message.processType) {
-      // XXX: does this make sense?
       throw new Error(
         `Message with sid ${message.sid} has no processType attached`,
       );
@@ -261,7 +260,6 @@ export class MessageIncomingService {
     tryWhatsapp: TryWhatsappEntity,
   ): Promise<void> {
     if (!tryWhatsapp.registration.phoneNumber) {
-      // XXX: should we fail silently instead?
       throw new Error(
         `TryWhatsapp with sid ${tryWhatsapp.sid} has no whatsappnumber and no phonenumber attached`,
       );

@@ -91,8 +91,9 @@ export class SafaricomService
     );
 
     if (!resultUser) {
-      // XXX: should throw error?
-      return;
+      throw new Error(
+        `User not found in processQueuedPayment for referenceId ${jobData.paPaymentData.referenceId}`,
+      );
     }
 
     const payload = this.createPayloadPerPa(

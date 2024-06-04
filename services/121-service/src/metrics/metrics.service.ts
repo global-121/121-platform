@@ -1068,8 +1068,6 @@ export class MetricsService {
       })
       .getRawOne();
     const spentMoney = result.spentMoney;
-
-    // XXX: is there a reason this was a separate repository call?
     const totalBudget = program.budget;
 
     return {

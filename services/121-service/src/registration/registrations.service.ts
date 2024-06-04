@@ -287,9 +287,6 @@ export class RegistrationsService {
       customDataValueRaw,
       registration.programId,
     );
-    if (customDataValue == undefined) {
-      throw new Error('XXX: what to do here?');
-    }
     return await this.registrationDataService.saveData(
       registration,
       customDataValue,

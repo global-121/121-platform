@@ -931,8 +931,7 @@ export class IntersolveVisaService
       walletDetailsResponse.explanation = statusInfo.explanation;
       walletDetailsResponse.links = statusInfo.links;
       walletDetailsResponse.issuedDate = wallet.created;
-      // @ts-expect-error: XXX: need this to make 'load-visa-card-details.test' work
-      walletDetailsResponse.lastUsedDate = wallet.lastUsedDate ?? null;
+      walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
       walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
 
       // These properties are not used in the frontend but are very useful for debugging

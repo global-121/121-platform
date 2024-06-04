@@ -769,6 +769,12 @@ export class IntersolveVoucherService
       userId = options.userId;
     }
 
+    if (userId === undefined) {
+      throw new Error(
+        'Could not find userId for transaction in storeTransactionResult.',
+      );
+    }
+
     const transactionRelationDetails = {
       programId,
       paymentNr: payment,

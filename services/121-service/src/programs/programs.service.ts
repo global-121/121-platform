@@ -123,7 +123,7 @@ export class ProgramService {
     if (outputProgram.financialServiceProviders?.length > 0) {
       outputProgram.financialServiceProviders = overwriteProgramFspDisplayName(
         outputProgram.financialServiceProviders,
-        outputProgram.programFspConfiguration!,
+        outputProgram.programFspConfiguration ?? [],
       );
 
       delete outputProgram.programFspConfiguration;
@@ -422,22 +422,22 @@ export class ProgramService {
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
   private fillProgramReturnDto(program: FoundProgram): ProgramReturnDto {
-    // XXX: what to do with all these nullable values? For now, forcing them to defined, but this is hacky
     const programDto: ProgramReturnDto = {
       id: program.id,
       published: program.published,
       validation: program.validation,
-      location: program.location!,
-      ngo: program.ngo!,
-      titlePortal: program.titlePortal!,
-      description: program.description!,
-      startDate: program.startDate!,
-      endDate: program.endDate!,
-      currency: program.currency!,
-      distributionFrequency: program.distributionFrequency!,
-      distributionDuration: program.distributionDuration!,
-      fixedTransferValue: program.fixedTransferValue!,
-      paymentAmountMultiplierFormula: program.paymentAmountMultiplierFormula!,
+      location: program.location ?? undefined,
+      ngo: program.ngo ?? undefined,
+      titlePortal: program.titlePortal ?? undefined,
+      description: program.description ?? undefined,
+      startDate: program.startDate ?? undefined,
+      endDate: program.endDate ?? undefined,
+      currency: program.currency ?? undefined,
+      distributionFrequency: program.distributionFrequency ?? undefined,
+      distributionDuration: program.distributionDuration ?? undefined,
+      fixedTransferValue: program.fixedTransferValue ?? undefined,
+      paymentAmountMultiplierFormula:
+        program.paymentAmountMultiplierFormula ?? undefined,
       financialServiceProviders: program.financialServiceProviders.map(
         (fsp) => {
           return {
@@ -446,9 +446,9 @@ export class ProgramService {
           };
         },
       ),
-      targetNrRegistrations: program.targetNrRegistrations!,
+      targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
-      budget: program.budget!,
+      budget: program.budget ?? undefined,
       programCustomAttributes: program.programCustomAttributes.map(
         (programCustomAttribute) => {
           return {
@@ -478,8 +478,8 @@ export class ProgramService {
           placeholder: programQuestion.placeholder ?? undefined,
         };
       }),
-      aboutProgram: program.aboutProgram!,
-      fullnameNamingConvention: program.fullnameNamingConvention!,
+      aboutProgram: program.aboutProgram ?? undefined,
+      fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
       enableScope: program.enableScope,

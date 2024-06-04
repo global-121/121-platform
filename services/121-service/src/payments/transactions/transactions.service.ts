@@ -172,8 +172,7 @@ export class TransactionsService {
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.payment = relationDetails.paymentNr;
-    // XXX: this is a hack to get around the fact that the userId is not always available in relationDetails
-    transaction.userId = relationDetails.userId!;
+    transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;

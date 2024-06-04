@@ -22,7 +22,7 @@ export class GetWalletDetailsResponseDto {
   @ApiProperty()
   public issuedDate: Date;
   @ApiProperty()
-  public lastUsedDate?: Date;
+  public lastUsedDate?: Date | null;
   @ApiProperty({ type: [VisaCardActionLink] })
   public links: VisaCardActionLink[];
   @ApiProperty()
