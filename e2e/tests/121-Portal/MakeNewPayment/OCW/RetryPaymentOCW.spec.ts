@@ -3,8 +3,8 @@ import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
 import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { doPaymentForAllPAs } from '@121-service/test/helpers/program.helper';
 import {
   bulkUpdateRegistrationsCSV,
@@ -17,7 +17,6 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
