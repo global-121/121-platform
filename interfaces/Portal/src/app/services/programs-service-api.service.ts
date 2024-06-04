@@ -979,18 +979,11 @@ export class ProgramsServiceApiService {
     );
   }
 
-  public async getCurrentUser(): Promise<{
-    user?: User;
-    error?: { message: string; username?: string };
-  }> {
-    return this.apiService
-      .get(environment.url_121_service_api, ApiPath.usersCurrent)
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+  public async getCurrentUser(): Promise<{ user: User }> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      ApiPath.usersCurrent,
+    );
   }
 
   createProgramFromKobo(token: string, assetId: string): Promise<Program> {

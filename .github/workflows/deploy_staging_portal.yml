@@ -31,9 +31,9 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
           envContentSecurityPolicy: >-
-            connect-src 'self' https://staging.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://login.microsoftonline.com;
+            connect-src 'self' https://staging.121.global https://westeurope-1.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://*.ciamlogin.com;
             form-action https://staging.121.global;
-            frame-src blob: 'self' https://app.powerbi.com https://login.microsoftonline.com;
+            frame-src blob: 'self' https://app.powerbi.com https://*.ciamlogin.com;
             frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'staging'
@@ -45,8 +45,6 @@ jobs:
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
-          AZURE_ENTRA_DOMAINS: ${{ vars.AZURE_ENTRA_DOMAINS }}
-          AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
