@@ -32,9 +32,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     if (this.useSso) {
-      this.authService.logoutNonSsoUser();
+      await this.authService.logoutNonSsoUser();
+
+      await this.authService.processAzureAuthSuccess();
 
       this.msalSubscription = this.msalService
         .handleRedirectObservable()

@@ -1,9 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { AuthService } from '../../auth/auth.service';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -18,7 +16,7 @@ class Recipient extends Person {
   templateUrl: './recipient.page.html',
   styleUrls: ['./recipient.page.scss'],
 })
-export class RecipientPage implements OnInit, OnDestroy {
+export class RecipientPage implements OnDestroy {
   public recipients: Recipient[];
 
   public queryParamPhonenumber = '';
@@ -33,7 +31,6 @@ export class RecipientPage implements OnInit, OnDestroy {
     private translate: TranslateService,
     private translatableString: TranslatableStringService,
     private activatedRoute: ActivatedRoute,
-    private authService: AuthService,
   ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
       (params: Params) => {
@@ -44,13 +41,6 @@ export class RecipientPage implements OnInit, OnDestroy {
         this.getRecipientData();
       },
     );
-  }
-  async ngOnInit(): Promise<void> {
-    // If there is no phone number provided by Redline, it will not do an API call, so check 'manually' instead
-    // TODO: This check should happen (in a generic way) on all pages, not just this one
-    if (environment.use_sso_azure_entra) {
-      await this.authService.processAzureAuthSuccess();
-    }
   }
 
   ngOnDestroy(): void {

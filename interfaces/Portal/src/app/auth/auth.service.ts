@@ -69,12 +69,6 @@ export class AuthService {
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
 
-    // TODO: Move this to a better place in the flow, so it doesn't have to be checked this often
-    // Check with Azure (again) when user has no permissions (yet)
-    if (!this.isAssignedToProgram(programId, user)) {
-      this.processAzureAuthSuccess(); // Don't await, as it will block all permission-checks
-    }
-
     return (
       user &&
       user.permissions &&
