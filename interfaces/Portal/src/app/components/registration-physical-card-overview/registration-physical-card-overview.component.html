@@ -22,7 +22,10 @@
           [detail-icon]="'card'"
           (click)="openCardDetails(card)"
         >
-          <ion-label class="card">
+          <ion-label
+            class="pysical-card-number util--half-margin-end"
+            [title]="card.tokenCode"
+          >
             <code>{{ card.tokenCode }}</code>
           </ion-label>
           <span
