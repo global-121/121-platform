@@ -81,7 +81,7 @@
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.0",
-    "@compodoc/compodoc": "^1.1.23",
+    "@compodoc/compodoc": "^1.1.25",
     "@nestjs/cli": "^10.3.2",
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.5.7",
