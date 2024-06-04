@@ -1,9 +1,9 @@
-import instancePilotEth from '@121-service/seed-data/instance/instance-pilot-eth.json';
-import messageTemplatePilotEth from '@121-service/seed-data/message-template/message-template-pilot-zoa-eth.json';
-import programPilotEth from '@121-service/seed-data/program/program-pilot-zoa-eth.json';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import instancePilotEth from '@121-service/src/seed-data/instance/instance-pilot-eth.json';
+import messageTemplatePilotEth from '@121-service/src/seed-data/message-template/message-template-pilot-zoa-eth.json';
+import programPilotEth from '@121-service/src/seed-data/program/program-pilot-zoa-eth.json';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';

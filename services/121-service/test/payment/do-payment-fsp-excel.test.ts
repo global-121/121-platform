@@ -1,5 +1,4 @@
 /* eslint-disable jest/no-conditional-expect */
-import programTest from '@121-service/seed-data/program/program-test.json';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -7,6 +6,7 @@ import {
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import programTest from '@121-service/src/seed-data/program/program-test.json';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
   deleteFspConfiguration,

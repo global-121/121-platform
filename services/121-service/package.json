@@ -25,9 +25,9 @@
     "test:e2e:coverage": "npm run test:e2e:all -- --coverage --coverageDirectory=coverage/e2e",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:create": "npm run typeorm migration:create --",
-    "migration:generate": "npm run typeorm migration:generate -- -d ./appdatasource.ts",
-    "migration:run": "npm run typeorm migration:run -- -d ./appdatasource.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d ./appdatasource.ts",
+    "migration:generate": "npm run typeorm migration:generate -- -d ./src/appdatasource.ts",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/appdatasource.ts",
+    "migration:revert": "npm run typeorm migration:revert -- -d ./src/appdatasource.ts",
     "knip": "knip",
     "knip:fix": "knip --fix-type files,exports,types"
   },

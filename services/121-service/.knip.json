@@ -1,7 +1,12 @@
 {
   "$schema": "node_modules/knip/schema.json",
   "entry": ["index.js"],
-  "project": ["src/**/*.{js,ts}", "!src/**/*.spec.{js,ts}"],
+  "project": [
+    "src/**/*.{js,ts}",
+    "!src/**/*.spec.{js,ts}",
+    "!src/migration/**/*.{js,ts}",
+    "!src/seed-data/**/*.{js,ts}"
+  ],
   "rules": {
     "dependencies": "warn",
     "devDependencies": "warn",

@@ -1,4 +1,4 @@
-import { AppDataSource } from '@121-service/appdatasource';
+import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';

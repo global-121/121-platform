@@ -43,7 +43,7 @@ jobs:
       - name: Check that no new migrations are necessary
         working-directory: ./services
         run: |
-          docker compose exec 121-service npm run migration:generate migration/irrelevant_file_name -- --check
+          docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
 
       - name: Run API tests with Jest
         working-directory: ./services

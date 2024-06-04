@@ -5,12 +5,12 @@ import ProgramTeam from '@121-e2e/pages/ProgramTeam/ProgramTeamPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import UsersAndRoles from '@121-e2e/pages/UsersAndRoles/UsersAndRolesPage';
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
-} from '@121-service/seed-data/mock/visa-card.data';
-import NLRCProgram from '@121-service/seed-data/program/program-nlrc-ocw.json';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+} from '@121-service/src/seed-data/mock/visa-card.data';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { importRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,

@@ -118,7 +118,7 @@ export class ImageCodeService {
     code: string;
     pin: string;
   }): Promise<Buffer> {
-    const voucherBaseFile = './seed-data/voucher/ah-voucher_base.png';
+    const voucherBaseFile = './src/seed-data/voucher/ah-voucher_base.png';
     const barcodeImage = await this.generateBarCodeImage(voucherData.code);
 
     // See Jimp documentation: https://www.npmjs.com/package/jimp/v/0.16.1

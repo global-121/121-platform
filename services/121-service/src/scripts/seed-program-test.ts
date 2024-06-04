@@ -1,8 +1,8 @@
-import instanceDemo from '@121-service/seed-data/instance/instance-demo.json';
-import messageTemplateTest from '@121-service/seed-data/message-template/message-template-test.json';
-import programTest from '@121-service/seed-data/program/program-test.json';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
+import instanceDemo from '@121-service/src/seed-data/instance/instance-demo.json';
+import messageTemplateTest from '@121-service/src/seed-data/message-template/message-template-test.json';
+import programTest from '@121-service/src/seed-data/program/program-test.json';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
