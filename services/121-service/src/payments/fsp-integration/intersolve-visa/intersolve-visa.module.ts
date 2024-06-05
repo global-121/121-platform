@@ -1,6 +1,6 @@
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { IntersolveVisaController } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.controller';
