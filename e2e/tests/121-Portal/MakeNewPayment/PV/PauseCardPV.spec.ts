@@ -39,7 +39,7 @@ test('[28480] Pause Visa debit cards', async ({ page }) => {
     await navigationModule.navigateToProgramTab(
       englishTranslations.page.program.tab.payment.label,
     );
-    await table.clickOnPaNumber(3);
+    await table.clickOnPaNumber(1);
   });
 
   await test.step('Should Pause Visa Card and details are presented correctly with status: Paused', async () => {
