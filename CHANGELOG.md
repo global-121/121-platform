@@ -5,9 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.120.0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.121.0...main)
 
 ---
+
+## [1.121.0](https://github.com/global-121/121-platform/compare/v1.120.0...v1.121.0)- 2024-06-05
+
+### Added
+
+- [AB#28422](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28422) Show completed status on people affected page and default sort as registrationCreated for PAs
+
+### Technical
+
+- [AB#28408](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28408) Improve logging of FSP-configuration errors
+- [AB#27972](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27972) Add old Visa flow to the Mock service
+- [AB#28260](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28260) Use SWC for compiling
 
 ## [1.120.0](https://github.com/global-121/121-platform/compare/v1.119.2...v1.120.0)- 2024-05-29
 
