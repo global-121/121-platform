@@ -11,7 +11,6 @@ import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   ProcessNamePayment,
   QueueNamePayment,
@@ -64,8 +63,8 @@ import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integrat
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import {
-  REDIS_CLIENT,
   getRedisSetName,
+  REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
@@ -116,25 +115,25 @@ export class IntersolveVisaService
 
   public async getTransactionInfoByCustomer(
     visaCustomer: IntersolveVisaCustomerEntity,
-  ): Promise<{ tokenCode: string; transactionInfo: TransactionInfoVisa }[]> {
+  ) {
     const dateFrom = this.getTwoMonthAgo();
-    const transactionInfoByCustomer = [];
 
-    for (const wallet of visaCustomer.visaWallets) {
-      const walletTransactionInfo = await this.getTransactionInfoByWallet(
-        wallet.tokenCode,
-        dateFrom,
-      );
-      transactionInfoByCustomer.push({
-        tokenCode: wallet.tokenCode,
-        transactionInfo: walletTransactionInfo,
-      });
-    }
-    return transactionInfoByCustomer;
+    return Promise.all(
+      visaCustomer.visaWallets.map(async (wallet) => {
+        const walletTransactionInfo = await this.getTransactionInfoByWallet(
+          wallet.tokenCode,
+          dateFrom,
+        );
+        return {
+          tokenCode: wallet.tokenCode,
+          transactionInfo: walletTransactionInfo,
+        };
+      }),
+    );
   }
 
   public async getTransactionInfoByWallet(
-    tokenCode: string,
+    tokenCode: string | null,
     dateFrom?: Date,
   ): Promise<TransactionInfoVisa> {
     const transactionDetails =
@@ -154,8 +153,10 @@ export class IntersolveVisaService
     const walletTransactions = transactionDetails.data.data;
     // Filter out all transactions that are not reservations
     // reservation is the type that is used for payments in a shop
-    let walletReserveTransactions = [];
-    let expiredReserveTransactions = [];
+    let walletReserveTransactions: IntersolveGetTransactionsResponseDataDto[] =
+      [];
+    let expiredReserveTransactions: IntersolveGetTransactionsResponseDataDto[] =
+      [];
     if (walletTransactions && walletTransactions.length > 0) {
       walletReserveTransactions = walletTransactions.filter(
         (t) => t.type === 'RESERVATION',
@@ -274,7 +275,7 @@ export class IntersolveVisaService
       paymentDetailsData.transactionAmount,
       paymentDetailsData.bulkSize,
     );
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId: paymentDetailsData.programId,
       paymentNr: paymentDetailsData.paymentNr,
       userId: paymentDetailsData.userId,
@@ -311,7 +312,7 @@ export class IntersolveVisaService
   private async getRelationOptionsForVisa(
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
@@ -363,9 +364,9 @@ export class IntersolveVisaService
     paTransactionResult.calculatedAmount = calculatedAmount;
     paTransactionResult.fspName = FinancialServiceProviderName.intersolveVisa;
 
-    const transactionNotifications = [];
+    const transactionNotifications: TransactionNotificationObject[] = [];
 
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: paymentDetails.referenceId },
     });
     let visaCustomer = await this.getCustomerEntity(registration.id);
@@ -418,15 +419,15 @@ export class IntersolveVisaService
       const intersolveVisaWallet = new IntersolveVisaWalletEntity();
       intersolveVisaWallet.tokenCode = createWalletResult.data.data.token.code;
       intersolveVisaWallet.tokenBlocked =
-        createWalletResult.data.data.token.blocked;
+        createWalletResult.data.data.token.blocked ?? null;
       intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
       intersolveVisaWallet.walletStatus = createWalletResult.data.data.token
         .status as IntersolveVisaWalletStatus;
       intersolveVisaWallet.balance =
-        createWalletResult.data.data.token.balances.find(
+        createWalletResult.data.data.token.balances?.find(
           (b) =>
-            b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-        ).quantity.value;
+            b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
+        )?.quantity.value ?? null;
       intersolveVisaWallet.lastExternalUpdate = new Date();
       await this.intersolveVisaWalletScopedRepo.save(intersolveVisaWallet);
 
@@ -573,9 +574,7 @@ export class IntersolveVisaService
     return paTransactionResult;
   }
 
-  private async getCustomerEntity(
-    registrationId: number,
-  ): Promise<IntersolveVisaCustomerEntity> {
+  private async getCustomerEntity(registrationId: number) {
     return await this.intersolveVisaCustomerScopedRepo.findOne({
       relations: ['visaWallets'],
       where: { registrationId: registrationId },
@@ -619,7 +618,7 @@ export class IntersolveVisaService
       createWalletPayload.quantities = [
         {
           quantity: {
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
             value: amountInCents,
           },
         },
@@ -762,7 +761,7 @@ export class IntersolveVisaService
   }
 
   private async loadBalanceVisaCard(
-    tokenCode: string,
+    tokenCode: string | null,
     calculatedAmount: number,
     referenceId: string,
     payment: number,
@@ -778,7 +777,7 @@ export class IntersolveVisaService
         {
           quantity: {
             value: amountInCents,
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
           },
         },
       ],
@@ -790,7 +789,7 @@ export class IntersolveVisaService
   }
 
   private async unloadBalanceVisaCard(
-    tokenCode: string,
+    tokenCode: string | null,
     currentBalance: number,
   ): Promise<IntersolveLoadResponseDto> {
     const reference = uuid();
@@ -800,7 +799,7 @@ export class IntersolveVisaService
         {
           quantity: {
             value: currentBalance,
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
           },
         },
       ],
@@ -811,9 +810,7 @@ export class IntersolveVisaService
     );
   }
 
-  private intersolveErrorToMessage(
-    errors: IntersolveReponseErrorDto[],
-  ): string {
+  private intersolveErrorToMessage(errors?: IntersolveReponseErrorDto[]) {
     if (!errors || !Array.isArray(errors) || !errors.length) {
       return;
     }
@@ -848,15 +845,17 @@ export class IntersolveVisaService
 
     const walletData = walletDetails?.data?.data;
     if (walletData?.balances) {
-      wallet.balance = walletData.balances.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-      ).quantity.value;
+      wallet.balance =
+        walletData.balances?.find(
+          (b) =>
+            b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
+        )?.quantity.value ?? null;
     }
     if (walletData?.status) {
-      wallet.walletStatus = walletDetails.data.data.status;
+      wallet.walletStatus = walletDetails.data.data.status ?? null;
     }
     if (walletData?.blocked === true || walletData?.blocked === false) {
-      wallet.tokenBlocked = walletDetails.data.data.blocked;
+      wallet.tokenBlocked = walletDetails.data.data.blocked ?? null;
     }
 
     // Get spentThisMonth across all wallets of customer
@@ -912,18 +911,18 @@ export class IntersolveVisaService
       wallet = await this.getUpdateWalletDetails(wallet, visaCustomer, false);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
-      walletDetailsResponse.tokenCode = wallet.tokenCode;
-      walletDetailsResponse.balance = wallet.balance;
+      walletDetailsResponse.tokenCode = wallet.tokenCode ?? undefined;
+      walletDetailsResponse.balance = wallet.balance ?? undefined;
 
       // Map Intersolve status to 121 status for the frontend
       const statusInfo =
         this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.tokenBlocked,
+          wallet.tokenBlocked ?? false,
           wallet.walletStatus,
           wallet.cardStatus,
           wallet.tokenCode === visaCustomer.visaWallets[0].tokenCode,
           {
-            tokenCode: wallet.tokenCode,
+            tokenCode: wallet.tokenCode ?? '',
             programId: programId,
             referenceId: referenceId,
           },
@@ -936,8 +935,10 @@ export class IntersolveVisaService
       walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
 
       // These properties are not used in the frontend but are very useful for debugging
-      walletDetailsResponse.intersolveVisaCardStatus = wallet.cardStatus;
-      walletDetailsResponse.intersolveVisaWalletStatus = wallet.walletStatus;
+      walletDetailsResponse.intersolveVisaCardStatus =
+        wallet.cardStatus ?? undefined;
+      walletDetailsResponse.intersolveVisaWalletStatus =
+        wallet.walletStatus ?? undefined;
 
       walletDetailsResponse.maxToSpendPerMonth =
         maximumAmountOfSpentCentPerMonth;
@@ -977,7 +978,7 @@ export class IntersolveVisaService
   }
 
   public async toggleBlockWallet(
-    tokenCode: string,
+    tokenCode: string | null,
     block: boolean,
   ): Promise<IntersolveBlockWalletResponseDto> {
     const payload: IntersolveBlockWalletDto = {
@@ -993,12 +994,13 @@ export class IntersolveVisaService
     if (
       this.isSuccessResponseStatus(result.status) ||
       (result.status === 405 &&
+        result.data?.code &&
         ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
-          result.data?.code,
+          result.data.code,
         ))
     ) {
       await this.intersolveVisaWalletScopedRepo.updateUnscoped(
-        { tokenCode: tokenCode },
+        { tokenCode: tokenCode ?? undefined },
         { tokenBlocked: block },
       );
     }
@@ -1038,13 +1040,13 @@ export class IntersolveVisaService
       ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
       : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
-    await this.queueMessageService.addMessageToQueue(
-      wallet.intersolveVisaCustomer.registration,
-      null,
-      notificationKey,
-      MessageContentType.custom,
-      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-    );
+    await this.queueMessageService.addMessageToQueue({
+      registration: wallet.intersolveVisaCustomer.registration,
+      messageTemplateKey: notificationKey,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
     return result;
   }
 
@@ -1093,12 +1095,12 @@ export class IntersolveVisaService
     ) {
       return;
     }
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId, programId: programId },
     });
     const visaCustomer = await this.getCustomerEntity(registration.id);
 
-    const errors = [];
+    const errors: string[] = [];
 
     const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
       type: 'MOBILE',
@@ -1106,7 +1108,7 @@ export class IntersolveVisaService
     };
     const phoneNumberResult =
       await this.intersolveVisaApiService.updateCustomerPhoneNumber(
-        visaCustomer.holderId,
+        visaCustomer?.holderId ?? null,
         phoneNumberPayload,
       );
     if (!this.isSuccessResponseStatus(phoneNumberResult.status)) {
@@ -1128,7 +1130,7 @@ export class IntersolveVisaService
       );
       const addressResult =
         await this.intersolveVisaApiService.updateCustomerAddress(
-          visaCustomer.holderId,
+          visaCustomer?.holderId ?? null,
           addressPayload,
         );
       if (!this.isSuccessResponseStatus(addressResult.status)) {
@@ -1252,9 +1254,10 @@ export class IntersolveVisaService
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    const currentBalance = getWalletResponse.data.data.balances.find(
-      (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-    ).quantity.value;
+    const currentBalance =
+      getWalletResponse.data.data.balances?.find(
+        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
+      )?.quantity.value ?? 0;
 
     // 4. create new wallet
     const createWalletResult = await this.createWallet(
@@ -1280,13 +1283,14 @@ export class IntersolveVisaService
     // if success, store wallet
     const newWallet = new IntersolveVisaWalletEntity();
     newWallet.tokenCode = createWalletResult.data.data.token.code;
-    newWallet.tokenBlocked = createWalletResult.data.data.token.blocked;
+    newWallet.tokenBlocked = createWalletResult.data.data.token.blocked ?? null;
     newWallet.intersolveVisaCustomer = visaCustomer;
     newWallet.walletStatus = createWalletResult.data.data.token
       .status as IntersolveVisaWalletStatus;
-    newWallet.balance = createWalletResult.data.data.token.balances.find(
-      (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-    ).quantity.value;
+    newWallet.balance =
+      createWalletResult.data.data.token.balances?.find(
+        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE!,
+      )?.quantity.value ?? null;
     newWallet.lastExternalUpdate = new Date();
     await this.intersolveVisaWalletScopedRepo.save(newWallet);
 
@@ -1386,19 +1390,19 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId, programId: programId },
     });
-    await this.queueMessageService.addMessageToQueue(
+    await this.queueMessageService.addMessageToQueue({
       registration,
-      null,
-      ProgramNotificationEnum.reissueVisaCard,
-      MessageContentType.custom,
-      MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-    );
+      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
   }
 
-  private async tryToBlockWallet(tokenCode: string): Promise<void> {
+  private async tryToBlockWallet(tokenCode: string | null): Promise<void> {
     try {
       await this.toggleBlockWallet(tokenCode, true);
     } catch (e) {

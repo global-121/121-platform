@@ -33,7 +33,7 @@ describe('RegistrationsController', () => {
 
     jest
       .spyOn(registrationsPaginationService, 'throwIfNoPermissionsForQuery')
-      .mockResolvedValue(null); // do not throw
+      .mockResolvedValue(); // do not throw
 
     jest
       .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
@@ -54,7 +54,7 @@ describe('RegistrationsController', () => {
       const statusUpdateDto: RegistrationStatusPatchDto = {
         status: RegistrationStatusEnum.validated,
         message: 'message that should not be there',
-        messageTemplateKey: null,
+        messageTemplateKey: undefined,
       };
 
       await expect(
@@ -68,10 +68,10 @@ describe('RegistrationsController', () => {
       ).rejects.toHaveProperty('status', 403); // Forbidden
     });
 
-    it('should throw exception when user includes a messageTemplatKey, but does not have permission for that', async () => {
+    it('should throw exception when user includes a messageTemplateKey, but does not have permission for that', async () => {
       const statusUpdateDto: RegistrationStatusPatchDto = {
         status: RegistrationStatusEnum.validated,
-        message: null,
+        message: undefined,
         messageTemplateKey: RegistrationStatusEnum.validated,
       };
 
@@ -89,8 +89,8 @@ describe('RegistrationsController', () => {
     it('should not throw exception when user does not include a message', async () => {
       const statusUpdateDto: RegistrationStatusPatchDto = {
         status: RegistrationStatusEnum.validated,
-        message: null,
-        messageTemplateKey: null,
+        message: undefined,
+        messageTemplateKey: undefined,
       };
 
       const patchRegistrationsStatusResult =

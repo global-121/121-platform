@@ -39,14 +39,18 @@ export function loginApi(
 }
 
 export async function getAccessToken(
-  username = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-  password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  username = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!,
+  password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
 ): Promise<string> {
   const login = await loginApi(username, password);
   const cookies = login.get('Set-Cookie');
   const accessToken = cookies
-    .find((cookie: string) => cookie.startsWith(CookieNames.general))
-    .split(';')[0];
+    ?.find((cookie: string) => cookie.startsWith(CookieNames.general))
+    ?.split(';')[0];
+
+  if (!accessToken) {
+    throw new Error('Access token not found');
+  }
 
   return accessToken;
 }
@@ -102,11 +106,11 @@ export async function removePermissionsFromRole(
   permissionsToRemove: PermissionEnum[],
 ): Promise<void> {
   const role = await getRole(roleName);
-  const adjustedPermissions = role.permissions.filter(
+  const adjustedPermissions = role.permissions?.filter(
     (permission: PermissionEnum) => !permissionsToRemove.includes(permission),
   );
   await updatePermissionsOfRole(role.id, {
-    label: role.label,
+    label: role.label!,
     permissions: adjustedPermissions as PermissionEnum[],
   });
 }

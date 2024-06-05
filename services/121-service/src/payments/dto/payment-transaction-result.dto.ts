@@ -9,7 +9,7 @@ export class FspTransactionResultDto {
 export class PaTransactionResultDto {
   public referenceId: string;
   public status: StatusEnum;
-  public message: string;
+  public message: string | null;
   public notificationObjects?: TransactionNotificationObject[];
   public date?: Date;
   public customData?: any;

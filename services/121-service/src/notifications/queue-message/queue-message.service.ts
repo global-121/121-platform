@@ -21,6 +21,7 @@ import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -57,20 +58,27 @@ export class QueueMessageService {
     };
   }
 
-  public async addMessageToQueue(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    message: string,
-    messageTemplateKey: string,
-    messageContentType: MessageContentType,
-    messageProcessType: ExtendedMessageProccessType,
-    mediaUrl?: string,
-    customData?: MessageJobCustomDataDto,
-    bulksize?: number,
-  ): Promise<void> {
-    let whatsappPhoneNumber;
-    if (registration instanceof RegistrationViewEntity) {
-      whatsappPhoneNumber = registration['whatsappPhoneNumber'];
-    } else if (registration instanceof RegistrationEntity) {
+  public async addMessageToQueue({
+    registration,
+    message,
+    messageTemplateKey,
+    messageContentType,
+    messageProcessType,
+    mediaUrl,
+    customData,
+    bulksize,
+  }: {
+    registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
+    message?: string;
+    messageTemplateKey?: string;
+    messageContentType: MessageContentType;
+    messageProcessType: ExtendedMessageProccessType;
+    mediaUrl?: string | null;
+    customData?: MessageJobCustomDataDto;
+    bulksize?: number;
+  }): Promise<void> {
+    let whatsappPhoneNumber = registration['whatsappPhoneNumber'];
+    if (registration instanceof RegistrationEntity) {
       whatsappPhoneNumber =
         await this.registrationDataService.getRegistrationDataValueByName(
           registration,
@@ -88,22 +96,22 @@ export class QueueMessageService {
         : MessageProcessType.sms;
     }
 
-    const queueName = this.getQueueName(messageProcessType, bulksize);
-    const messageJob: MessageJobDto = {
-      messageProcessType: messageProcessType,
-      registrationId: registration.id,
-      referenceId: registration.referenceId,
-      preferredLanguage: registration.preferredLanguage,
-      whatsappPhoneNumber: whatsappPhoneNumber,
-      phoneNumber: registration.phoneNumber,
-      programId: registration.programId,
-      message,
-      messageTemplateKey,
-      messageContentType,
-      mediaUrl,
-      customData,
-    };
     try {
+      const queueName = this.getQueueName(messageProcessType, bulksize);
+      const messageJob: MessageJobDto = {
+        messageProcessType: messageProcessType,
+        registrationId: registration.id,
+        referenceId: registration.referenceId,
+        preferredLanguage: registration.preferredLanguage ?? LanguageEnum.en,
+        whatsappPhoneNumber: whatsappPhoneNumber,
+        phoneNumber: registration.phoneNumber ?? undefined,
+        programId: registration.programId,
+        message,
+        messageTemplateKey,
+        messageContentType,
+        mediaUrl: mediaUrl ?? undefined,
+        customData,
+      };
       const queue = this.queueNameToQueueMap[queueName];
       await queue.add(ProcessNameMessage.send, messageJob);
     } catch (error) {
@@ -127,7 +135,7 @@ export class QueueMessageService {
           language: 'en', // use english to determine which placeholders are used
         },
       });
-      messageText = messageTemplate.message;
+      messageText = messageTemplate?.message;
     }
     const placeholders = await this.programAttributesService.getAttributes(
       programId,
@@ -136,10 +144,10 @@ export class QueueMessageService {
       false,
       true,
     );
-    const usedPlaceholders = [];
+    const usedPlaceholders: string[] = [];
     for (const placeholder of placeholders) {
       const regex = new RegExp(`{{${placeholder.name}}}`, 'g');
-      if (messageText.match(regex)) {
+      if (messageText?.match(regex)) {
         usedPlaceholders.push(placeholder.name);
       }
     }
@@ -149,7 +157,7 @@ export class QueueMessageService {
   private getQueueName(
     messageProccessType: MessageProcessType,
     bulkSize?: number,
-  ): QueueNameCreateMessage {
+  ) {
     const mappingArray = MESSAGE_QUEUE_MAP;
 
     const relevantMapping = mappingArray.find((map: MessageQueueMap) => {
@@ -185,5 +193,9 @@ export class QueueMessageService {
         return bulkSizePriorityItem.queueName;
       }
     }
+
+    throw new Error(
+      `No queueName found for message type: ${messageProccessType} and bulk size: ${bulkSize}`,
+    );
   }
 }

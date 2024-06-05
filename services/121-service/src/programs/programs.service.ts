@@ -29,7 +29,18 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { omit } from 'lodash';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
+
+interface FoundProgram
+  extends Omit<
+      ProgramEntity,
+      'monitoringDashboardUrl' | 'programFspConfiguration'
+    >,
+    Partial<
+      Pick<ProgramEntity, 'monitoringDashboardUrl' | 'programFspConfiguration'>
+    > {}
+
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -55,7 +66,7 @@ export class ProgramService {
   public async findProgramOrThrow(
     programId: number,
     userId?: number,
-  ): Promise<ProgramEntity> {
+  ): Promise<FoundProgram> {
     let includeMetricsUrl = false;
     if (userId) {
       includeMetricsUrl = await this.userService.canActivate(
@@ -102,22 +113,24 @@ export class ProgramService {
     program['filterableAttributes'] =
       this.programAttributesService.getFilterableAttributes(program);
 
+    const outputProgram: FoundProgram = program;
+
     if (!includeMetricsUrl) {
-      delete program.monitoringDashboardUrl;
+      delete outputProgram.monitoringDashboardUrl;
     }
 
     // over write fsp displayname by program specific displayName
-    if (program.financialServiceProviders.length > 0) {
-      program.financialServiceProviders = overwriteProgramFspDisplayName(
-        program.financialServiceProviders,
-        program.programFspConfiguration,
+    if (outputProgram.financialServiceProviders?.length > 0) {
+      outputProgram.financialServiceProviders = overwriteProgramFspDisplayName(
+        outputProgram.financialServiceProviders,
+        outputProgram.programFspConfiguration ?? [],
       );
 
-      delete program.programFspConfiguration;
+      delete outputProgram.programFspConfiguration;
     }
 
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
-    return program;
+    return outputProgram;
   }
 
   public async getProgramReturnDto(
@@ -139,7 +152,7 @@ export class ProgramService {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
-    let programs = await this.programRepository.find({
+    const programs = await this.programRepository.find({
       where: { id: In(programIds) },
       relations: [
         'programQuestions',
@@ -151,22 +164,28 @@ export class ProgramService {
     });
     const programsCount = programs.length;
 
-    if (programsCount > 0) {
-      programs = programs.map((program) => {
+    if (programsCount <= 0) {
+      return {
+        programs: [],
+        programsCount,
+      };
+    }
+
+    return {
+      programsCount,
+      programs: programs.map((program) => {
         if (program.financialServiceProviders.length > 0) {
           program.financialServiceProviders = overwriteProgramFspDisplayName(
             program.financialServiceProviders,
             program.programFspConfiguration,
           );
 
-          delete program.programFspConfiguration;
+          return omit(program, ['programFspConfiguration']);
         }
 
         return program;
-      });
-    }
-
-    return { programs, programsCount };
+      }),
+    };
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
@@ -181,12 +200,13 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
-    const fspAttributeNames = [];
+    const fspAttributeNames: string[] = [];
     for (const fsp of programData.financialServiceProviders) {
-      const fspEntity = await this.financialServiceProviderRepository.findOne({
-        where: { fsp: fsp.fsp },
-        relations: ['questions'],
-      });
+      const fspEntity =
+        await this.financialServiceProviderRepository.findOneOrFail({
+          where: { fsp: fsp.fsp },
+          relations: ['questions'],
+        });
       for (const question of fspEntity.questions) {
         fspAttributeNames.push(question.name);
       }
@@ -234,7 +254,7 @@ export class ProgramService {
     program.location = programData.location;
     program.ngo = programData.ngo;
     program.titlePortal = programData.titlePortal;
-    program.description = programData.description;
+    program.description = programData.description ?? null;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
     program.currency = programData.currency;
@@ -242,7 +262,7 @@ export class ProgramService {
     program.distributionDuration = programData.distributionDuration;
     program.fixedTransferValue = programData.fixedTransferValue;
     program.paymentAmountMultiplierFormula =
-      programData.paymentAmountMultiplierFormula;
+      programData.paymentAmountMultiplierFormula ?? null;
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
     program.aboutProgram = programData.aboutProgram;
@@ -251,7 +271,7 @@ export class ProgramService {
     program.enableMaxPayments = programData.enableMaxPayments;
     program.enableScope = programData.enableScope;
     program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
-    program.monitoringDashboardUrl = programData.monitoringDashboardUrl;
+    program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -332,14 +352,14 @@ export class ProgramService {
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
-      scope: null,
+      scope: undefined,
     });
     return newProgram;
   }
 
   public async deleteProgram(programId: number): Promise<void> {
     const program = await this.findProgramOrThrow(programId);
-    await this.programRepository.remove(program);
+    await this.programRepository.remove(program as ProgramEntity);
   }
 
   public async updateProgram(
@@ -401,22 +421,23 @@ export class ProgramService {
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
-  private fillProgramReturnDto(program: ProgramEntity): ProgramReturnDto {
+  private fillProgramReturnDto(program: FoundProgram): ProgramReturnDto {
     const programDto: ProgramReturnDto = {
       id: program.id,
       published: program.published,
       validation: program.validation,
-      location: program.location,
-      ngo: program.ngo,
-      titlePortal: program.titlePortal,
-      description: program.description,
-      startDate: program.startDate,
-      endDate: program.endDate,
-      currency: program.currency,
-      distributionFrequency: program.distributionFrequency,
-      distributionDuration: program.distributionDuration,
-      fixedTransferValue: program.fixedTransferValue,
-      paymentAmountMultiplierFormula: program.paymentAmountMultiplierFormula,
+      location: program.location ?? undefined,
+      ngo: program.ngo ?? undefined,
+      titlePortal: program.titlePortal ?? undefined,
+      description: program.description ?? undefined,
+      startDate: program.startDate ?? undefined,
+      endDate: program.endDate ?? undefined,
+      currency: program.currency ?? undefined,
+      distributionFrequency: program.distributionFrequency ?? undefined,
+      distributionDuration: program.distributionDuration ?? undefined,
+      fixedTransferValue: program.fixedTransferValue ?? undefined,
+      paymentAmountMultiplierFormula:
+        program.paymentAmountMultiplierFormula ?? undefined,
       financialServiceProviders: program.financialServiceProviders.map(
         (fsp) => {
           return {
@@ -425,9 +446,9 @@ export class ProgramService {
           };
         },
       ),
-      targetNrRegistrations: program.targetNrRegistrations,
+      targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
-      budget: program.budget,
+      budget: program.budget ?? undefined,
       programCustomAttributes: program.programCustomAttributes.map(
         (programCustomAttribute) => {
           return {
@@ -446,19 +467,19 @@ export class ProgramService {
           label: programQuestion.label,
           answerType: programQuestion.answerType,
           questionType: programQuestion.questionType,
-          options: programQuestion.options,
+          options: programQuestion.options ?? undefined,
           scoring: programQuestion.scoring,
           persistence: programQuestion.persistence,
-          pattern: programQuestion.pattern,
+          pattern: programQuestion.pattern ?? undefined,
           showInPeopleAffectedTable: programQuestion.showInPeopleAffectedTable,
           editableInPortal: programQuestion.editableInPortal,
           export: programQuestion.export as unknown as ExportType[],
           duplicateCheck: programQuestion.duplicateCheck,
-          placeholder: programQuestion.placeholder,
+          placeholder: programQuestion.placeholder ?? undefined,
         };
       }),
-      aboutProgram: program.aboutProgram,
-      fullnameNamingConvention: program.fullnameNamingConvention,
+      aboutProgram: program.aboutProgram ?? undefined,
+      fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
       enableScope: program.enableScope,
@@ -524,7 +545,7 @@ export class ProgramService {
   public async createProgramCustomAttribute(
     programId: number,
     createProgramAttributeDto: CreateProgramCustomAttributeDto,
-  ): Promise<ProgramCustomAttributeEntity> {
+  ) {
     await this.validateAttributeName(programId, createProgramAttributeDto.name);
     const programCustomAttribute = this.programCustomAttributeDtoToEntity(
       createProgramAttributeDto,
@@ -549,14 +570,14 @@ export class ProgramService {
     programCustomAttribute.name = dto.name;
     programCustomAttribute.type = dto.type;
     programCustomAttribute.label = dto.label;
-    programCustomAttribute.duplicateCheck = dto.duplicateCheck;
+    programCustomAttribute.duplicateCheck = dto.duplicateCheck ?? false;
     return programCustomAttribute;
   }
 
   public async createProgramQuestion(
     programId: number,
     createProgramQuestionDto: CreateProgramQuestionDto,
-  ): Promise<ProgramQuestionEntity> {
+  ) {
     await this.validateAttributeName(programId, createProgramQuestionDto.name);
     const programQuestion = this.programQuestionDtoToEntity(
       createProgramQuestionDto,
@@ -581,14 +602,14 @@ export class ProgramService {
     programQuestion.label = dto.label;
     programQuestion.answerType = dto.answerType;
     programQuestion.questionType = dto.questionType;
-    programQuestion.options = dto.options;
-    programQuestion.scoring = dto.scoring;
-    programQuestion.persistence = dto.persistence;
-    programQuestion.pattern = dto.pattern;
-    programQuestion.editableInPortal = dto.editableInPortal;
-    programQuestion.export = dto.export;
-    programQuestion.duplicateCheck = dto.duplicateCheck;
-    programQuestion.placeholder = dto.placeholder;
+    programQuestion.options = dto.options ?? null;
+    programQuestion.scoring = dto.scoring ?? {};
+    programQuestion.persistence = dto.persistence ?? false;
+    programQuestion.pattern = dto.pattern ?? null;
+    programQuestion.editableInPortal = dto.editableInPortal ?? false;
+    programQuestion.export = dto.export ?? [];
+    programQuestion.duplicateCheck = dto.duplicateCheck ?? false;
+    programQuestion.placeholder = dto.placeholder ?? null;
     return programQuestion;
   }
 

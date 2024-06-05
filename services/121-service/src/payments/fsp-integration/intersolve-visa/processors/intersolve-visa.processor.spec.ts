@@ -43,7 +43,7 @@ describe('Payment processor(s)', () => {
 
   it('should call sendQueuePayment', async () => {
     // Arrannge
-    intersolveVisaService.processQueuedPayment.mockResolvedValue(null);
+    intersolveVisaService.processQueuedPayment.mockResolvedValue();
 
     // Act
     await paymentProcessor.handleSendPayment(testJob);

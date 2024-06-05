@@ -99,7 +99,7 @@ export class MessageTemplateService {
   public async deleteMessageTemplate(
     programId: number,
     messageType: string,
-    language: LanguageEnum,
+    language?: LanguageEnum,
   ): Promise<DeleteResult> {
     if (language) {
       return await this.messageTemplateRepository.delete({

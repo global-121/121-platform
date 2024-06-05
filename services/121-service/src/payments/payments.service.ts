@@ -3,13 +3,13 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
+  CsvInstructions,
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { AfricasTalkingService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from '@121-service/src/payments/fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from '@121-service/src/payments/fsp-integration/bob-finance/bob-finance.service';
@@ -198,7 +198,7 @@ export class PaymentsService {
     userId: number,
     programId: number,
     payment: number,
-    amount: number,
+    amount: number | undefined,
     query: PaginateQuery,
     dryRun: boolean,
   ): Promise<BulkActionResultPaymentDto> {
@@ -233,13 +233,14 @@ export class PaymentsService {
 
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspsInPayment = [];
+    const fspsInPayment: FinancialServiceProviderName[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
       if (
         !dryRun && // This is only needed in actual doPayment call
+        registration.financialServiceProvider &&
         !fspsInPayment.includes(registration.financialServiceProvider)
       ) {
         fspsInPayment.push(registration.financialServiceProvider);
@@ -283,7 +284,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     paginateQuery: PaginateQuery,
-  ): Promise<RegistrationViewEntity[]> {
+  ) {
     const chunkSize = 4000;
 
     return await this.registrationsPaginationService.getRegistrationsChunked(
@@ -386,7 +387,7 @@ export class PaymentsService {
         );
       });
 
-    const fspsInPayment = [];
+    const fspsInPayment: FinancialServiceProviderName[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
       if (!fspsInPayment.includes(registration.fspName)) {
@@ -518,14 +519,13 @@ export class PaymentsService {
   private splitPaListByFsp(
     paPaymentDataList: PaPaymentDataDto[],
   ): SplitPaymentListDto {
-    const output: SplitPaymentListDto = {};
-    for (const paPaymentData of paPaymentDataList) {
-      if (!output[paPaymentData.fspName]) {
-        output[paPaymentData.fspName] = [];
+    return paPaymentDataList.reduce((acc, paPaymentData) => {
+      if (!acc[paPaymentData.fspName]) {
+        acc[paPaymentData.fspName] = [];
       }
-      output[paPaymentData.fspName].push(paPaymentData);
-    }
-    return output;
+      acc[paPaymentData.fspName].push(paPaymentData);
+      return acc;
+    }, {});
   }
 
   private async makePaymentRequest(
@@ -639,7 +639,7 @@ export class PaymentsService {
         await this.transactionsService.getLastTransactions(
           programId,
           payment,
-          null,
+          undefined,
           StatusEnum.error,
         )
       ).map((t) => t.referenceId);
@@ -708,19 +708,20 @@ export class PaymentsService {
       );
     }
 
-    let csvInstructions = [];
-    let xmlInstructions: string;
-    let fileType: ExportFileType;
+    let csvInstructions: CsvInstructions = [];
+    let xmlInstructions: string | undefined;
+    let fileType: ExportFileType | undefined;
 
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
       (t) => t.fsp !== FinancialServiceProviderName.excel,
     )) {
-      const registration = await this.registrationScopedRepository.findOne({
-        where: { referenceId: transaction.referenceId },
-        relations: ['fsp'],
-      });
+      const registration =
+        await this.registrationScopedRepository.findOneOrFail({
+          where: { referenceId: transaction.referenceId },
+          relations: ['fsp'],
+        });
 
       if (
         // For fsp's with reconciliation export only export waiting transactions
@@ -798,15 +799,16 @@ export class PaymentsService {
     userId: number,
   ): Promise<ImportResult> {
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
-    const programWithReconciliationFsps = await this.programRepository.findOne({
-      where: {
-        id: programId,
-        financialServiceProviders: { hasReconciliation: true },
-      },
-      relations: ['financialServiceProviders'],
-    });
+    const programWithReconciliationFsps =
+      await this.programRepository.findOneOrFail({
+        where: {
+          id: programId,
+          financialServiceProviders: { hasReconciliation: true },
+        },
+        relations: ['financialServiceProviders'],
+      });
 
-    let importResponseRecords = [];
+    let importResponseRecords: any[] = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
       if (fsp.fsp === FinancialServiceProviderName.vodacash) {
         const vodacashRegistrations =
@@ -859,8 +861,8 @@ export class PaymentsService {
         const transactions = await this.transactionsService.getLastTransactions(
           programId,
           payment,
-          null,
-          null,
+          undefined,
+          undefined,
           FinancialServiceProviderName.excel,
         );
         importResponseRecords =
@@ -876,7 +878,7 @@ export class PaymentsService {
     let countPaymentSuccess = 0;
     let countPaymentFailed = 0;
     let countNotFound = 0;
-    const transactionsToSave = [];
+    const transactionsToSave: any[] = [];
     for (const importResponseRecord of importResponseRecords) {
       if (!importResponseRecord.paTransactionResult) {
         importResponseRecord.importStatus = ImportStatus.notFound;
@@ -896,7 +898,7 @@ export class PaymentsService {
     }
 
     if (transactionsToSave.length) {
-      const transactionRelationDetails: TransactionRelationDetailsDto = {
+      const transactionRelationDetails = {
         programId,
         paymentNr: payment,
         userId,

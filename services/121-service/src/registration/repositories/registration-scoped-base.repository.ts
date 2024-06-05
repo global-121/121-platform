@@ -1,6 +1,6 @@
 import {
+  hasUserScope,
   ScopedQueryBuilder,
-  hasNoUserScope,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
@@ -9,10 +9,11 @@ import {
   EntityTarget,
   FindManyOptions,
   FindOneOptions,
+  ObjectLiteral,
   Repository,
 } from 'typeorm';
 
-export class RegistrationScopedBaseRepository<T> {
+export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   public readonly repository: Repository<T>;
   public request: ScopedUserRequest;
 
@@ -21,7 +22,7 @@ export class RegistrationScopedBaseRepository<T> {
   }
 
   public async find(options: FindManyOptions<T>): Promise<T[]> {
-    if (hasNoUserScope(this.request)) {
+    if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
@@ -32,8 +33,8 @@ export class RegistrationScopedBaseRepository<T> {
     return this.repository.find(scopedOptions);
   }
 
-  public async findOne(options: FindOneOptions<T>): Promise<T> {
-    if (hasNoUserScope(this.request)) {
+  public async findOne(options: FindOneOptions<T>): Promise<T | null> {
+    if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
@@ -44,8 +45,20 @@ export class RegistrationScopedBaseRepository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
-  public async count(options?: FindManyOptions<T>): Promise<number> {
-    if (hasNoUserScope(this.request)) {
+  public async findOneOrFail(options: FindOneOptions<T>): Promise<T> {
+    if (!hasUserScope(this.request)) {
+      return this.repository.findOneOrFail(options);
+    }
+    const scopedOptions = convertToScopedOptions<T>(
+      options,
+      [],
+      this.request.user.scope,
+    );
+    return this.repository.findOneOrFail(scopedOptions);
+  }
+
+  public async count(options: FindManyOptions<T>): Promise<number> {
+    if (!hasUserScope(this.request)) {
       return this.repository.count(options);
     }
     const scopedOptions = convertToScopedOptions<T>(
@@ -57,7 +70,7 @@ export class RegistrationScopedBaseRepository<T> {
   }
 
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
-    if (hasNoUserScope(this.request)) {
+    if (!hasUserScope(this.request)) {
       return new ScopedQueryBuilder(this.repository.createQueryBuilder(alias));
     }
     const qb = this.repository

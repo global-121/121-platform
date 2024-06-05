@@ -9,14 +9,39 @@ export class IntersolveJumboApiMockService {
     preOrderDtoBatch: PreOrderInfoDto[],
   ): Promise<object> {
     await waitForRandomDelay(100, 300);
-    const response = {
+
+    for (const [index, element] of preOrderDtoBatch.entries()) {
+      if (!element.addressCity) {
+        return this.createPreOrderResponse(
+          IntersolveJumboResultCode.InvalidOrderLine,
+          `Error found in OrderLine ${
+            index + 1
+          }: Geconstateerde fouten: -STAD ongeldig! (Stad is niet ingevuld).`,
+        );
+      } else if (
+        element.lastName?.toLowerCase().includes('mock-fail-create-order')
+      ) {
+        return this.createPreOrderResponse(
+          IntersolveJumboResultCode.InvalidOrderLine,
+          `Error found in OrderLine ${
+            index + 1
+          }: Mock failed the create-pre-order step`,
+        );
+      }
+    }
+
+    return this.createPreOrderResponse(IntersolveJumboResultCode.Ok, null);
+  }
+
+  private createPreOrderResponse(code: string, description: string | null) {
+    return {
       'tns:CreatePreOrderResponse': {
         WebserviceRequest: {
           ResultCode: {
-            _cdata: IntersolveJumboResultCode.Ok,
+            _cdata: code,
           },
           ResultDescription: {
-            _cdata: null,
+            _cdata: description,
           },
           ReturnId: {
             _cdata: 'mock-return-id',
@@ -24,36 +49,6 @@ export class IntersolveJumboApiMockService {
         },
       },
     };
-    for (const [index, element] of preOrderDtoBatch.entries()) {
-      if (!element.addressCity) {
-        response[
-          'tns:CreatePreOrderResponse'
-        ].WebserviceRequest.ResultCode._cdata =
-          IntersolveJumboResultCode.InvalidOrderLine;
-        response[
-          'tns:CreatePreOrderResponse'
-        ].WebserviceRequest.ResultDescription._cdata =
-          `Error found in OrderLine ${
-            index + 1
-          }: Geconstateerde fouten: -STAD ongeldig! (Stad is niet ingevuld).`;
-        return response;
-      } else if (
-        element.lastName?.toLowerCase().includes('mock-fail-create-order')
-      ) {
-        response[
-          'tns:CreatePreOrderResponse'
-        ].WebserviceRequest.ResultCode._cdata =
-          IntersolveJumboResultCode.InvalidOrderLine;
-        response[
-          'tns:CreatePreOrderResponse'
-        ].WebserviceRequest.ResultDescription._cdata =
-          `Error found in OrderLine ${
-            index + 1
-          }: Mock failed the create-pre-order step`;
-        return response;
-      }
-    }
-    return response;
   }
 
   public async approvePreOrder(): Promise<object> {

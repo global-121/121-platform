@@ -94,10 +94,10 @@ export class PhasesAndEditableProperties1654693178991
 
       if (program) {
         let programJson;
-        if (program.titlePortal['en'] === programPilotNL.titlePortal.en) {
+        if (program.titlePortal!['en'] === programPilotNL.titlePortal.en) {
           programJson = programPilotNL;
         }
-        if (program.titlePortal['en'] === programPilotNL2.titlePortal.en) {
+        if (program.titlePortal!['en'] === programPilotNL2.titlePortal.en) {
           programJson = programPilotNL2;
         }
         for (const q of program.programQuestions) {

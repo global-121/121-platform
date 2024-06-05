@@ -21,8 +21,8 @@ export class QueueRegistrationUpdateService {
     job: RegistrationsUpdateJobDto,
   ): Promise<void> {
     job.request = {
-      userId: this.request.user.id,
-      scope: this.request.user.scope,
+      userId: this.request.user?.id,
+      scope: this.request.user?.scope,
     };
     await this.queueRegistrationUpdate.add(ProcessNameRegistration.update, job);
   }

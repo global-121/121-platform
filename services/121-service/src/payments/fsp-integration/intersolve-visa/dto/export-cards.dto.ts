@@ -15,6 +15,8 @@ export class ExportCardsDto {
   lastUsedDate: Date;
   balance: number;
   spentThisMonth: number;
+  explanation?: string;
+  isCurrentWallet?: boolean;
 }
 
 export interface ExportWalletData {

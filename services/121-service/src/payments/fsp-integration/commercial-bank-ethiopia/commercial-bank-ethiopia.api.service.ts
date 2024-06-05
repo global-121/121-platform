@@ -45,28 +45,26 @@ export class CommercialBankEthiopiaApiService {
       return responseBody;
     } catch (error) {
       // Handle errors here
-      const result = {
-        resultDescription: null,
-      };
+      let resultDescription: string | undefined;
 
       if (error.code === 'ENOTFOUND' || error.code === 'ECONNABORTED') {
         console.error('Failed because of CBE connection error or timeout.');
-        result.resultDescription =
+        resultDescription =
           'Failed because of CBE connection error or timeout. Please try again later.';
       } else if (error.code === 'ENOENT') {
         console.error(
           'Failed because the certificate file is not found or not valid.',
         );
-        result.resultDescription =
+        resultDescription =
           'Failed because the certificate file is not found or not valid. Please contact 121 technical support.';
       } else {
         console.error('Unknown error occurred:', error.response);
-        result.resultDescription =
+        resultDescription =
           error.response ||
           'Failed because of an unknown error. Please contact 121 technical support.';
       }
 
-      return result;
+      return { resultDescription };
     }
   }
 

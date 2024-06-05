@@ -7,7 +7,7 @@
  * @returns An array of chunks, where each chunk is an array of elements from the original array. The size of each chunk
  */
 export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {
-  const result = [];
+  const result: T[][] = [];
   for (let i = 0; i < array.length; i += chunkSize) {
     result.push(array.slice(i, i + chunkSize));
   }

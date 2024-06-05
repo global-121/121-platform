@@ -5,8 +5,16 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 export class LookupService {
   public async lookupAndCorrect(
     phoneNumber: string,
+    throwNoException: true,
+  ): Promise<string | undefined>;
+  public async lookupAndCorrect(
+    phoneNumber: string,
+    throwNoException?: false,
+  ): Promise<string>;
+  public async lookupAndCorrect(
+    phoneNumber: string,
     throwNoException?: boolean,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     try {
       // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
@@ -31,7 +39,9 @@ export class LookupService {
     }
   }
 
-  public async getLocalNumber(phoneNumber: string): Promise<number> {
+  public async getLocalNumber(
+    phoneNumber: string,
+  ): Promise<number | undefined> {
     try {
       // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);

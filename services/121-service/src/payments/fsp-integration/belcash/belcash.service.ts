@@ -4,7 +4,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { BelcashRequestEntity } from '@121-service/src/payments/fsp-integration/belcash/belcash-request.entity';
 import { BelcashTransferPayload } from '@121-service/src/payments/fsp-integration/belcash/belcash-transfer-payload.dto';
 import { BelcashApiService } from '@121-service/src/payments/fsp-integration/belcash/belcash.api.service';
@@ -41,7 +40,7 @@ export class BelcashService
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FinancialServiceProviderName.belcash;
 
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
 
@@ -64,7 +63,7 @@ export class BelcashService
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
 
-      const transactionRelationDetails: TransactionRelationDetailsDto = {
+      const transactionRelationDetails = {
         programId,
         paymentNr: paymentNr,
         userId: payment.userId,
@@ -88,7 +87,7 @@ export class BelcashService
     paymentData: PaPaymentDataDto,
     paymentNr: number,
     amount: number,
-    currency: string,
+    currency: string | null,
     programId: number,
     userId: number,
   ): BelcashTransferPayload {
@@ -181,7 +180,7 @@ export class BelcashService
         paTransactionResult.message = belcashRequest.status;
         paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
 
-        const transactionRelationDetails: TransactionRelationDetailsDto = {
+        const transactionRelationDetails = {
           programId,
           paymentNr: payment,
           userId,

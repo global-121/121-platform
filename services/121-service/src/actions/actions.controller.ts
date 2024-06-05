@@ -52,7 +52,7 @@ export class ActionsController {
     @Param('programId', ParseIntPipe)
     programId: number,
     @Query('actionType') actionType: ActionType,
-  ): Promise<ActionReturnDto> {
+  ): Promise<ActionReturnDto | null> {
     return await this.actionService.getLatestAction(programId, actionType);
   }
 

@@ -26,7 +26,7 @@ export class KoboConnectService {
       return result;
     }
 
-    const errors = [];
+    const errors: unknown[] = [];
 
     if (result && result.detail) {
       errors.push(result.detail);

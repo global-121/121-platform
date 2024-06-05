@@ -85,7 +85,7 @@ export class CookieJwtStrategy
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }
-    const username = payload.username.toLowerCase();
+    const username = (payload.username ?? '').toLowerCase();
     const user = await this.userService.findByUsernameOrThrow(username);
 
     const userToken: UserRequestData = {

@@ -1,7 +1,4 @@
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderConfigurationMapping,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderConfigurationMapping } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/programs/dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/programs/dto/update-program-fsp-configuration.dto';
@@ -121,21 +118,5 @@ export class ProgramFspConfigurationService {
     await this.programFspConfigurationRepository.delete({
       id: programFspConfigurationId,
     });
-  }
-
-  public async findDisplayNameConfiguration(
-    programId: number,
-    fspId: number,
-  ): Promise<ProgramFspConfigurationEntity> {
-    const programFspConfiguration =
-      await this.programFspConfigurationRepository.findOne({
-        where: {
-          fspId,
-          programId: programId,
-          name: FinancialServiceProviderConfigurationEnum.displayName,
-        },
-      });
-
-    return programFspConfiguration;
   }
 }

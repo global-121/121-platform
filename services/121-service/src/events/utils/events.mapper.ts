@@ -29,9 +29,10 @@ export class EventsMapper {
     return {
       id: event.id,
       created: event.created,
-      user: event.user
-        ? { id: event.userId, username: event.user.username }
-        : null,
+      user:
+        event.user && event.user.username && event.userId
+          ? { id: event.userId, username: event.user.username }
+          : null,
       registrationId: event.registrationId,
       type: event.type,
       attributes: attributes,

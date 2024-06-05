@@ -16,7 +16,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     private readonly seedHelper: SeedHelper,
   ) {}
 
-  public async run(isApiTests?: boolean): Promise<void> {
+  public async run(isApiTests = false): Promise<void> {
     const debugScopes = Object.values(DebugScope);
 
     // ***** CREATE INSTANCE *****

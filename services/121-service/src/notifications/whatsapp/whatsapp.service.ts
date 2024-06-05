@@ -38,7 +38,7 @@ export class WhatsappService {
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    mediaUrl: null | string,
+    mediaUrl?: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
@@ -47,7 +47,7 @@ export class WhatsappService {
     const payload = {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-      from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
+      from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER!),
       statusCallback: !!process.env.MOCK_TWILIO // This is needed to send reply messages when using MOCK_TWILIO
         ? `${EXTERNAL_API.whatsAppStatus}?messageContentType=${messageContentType}`
         : EXTERNAL_API.whatsAppStatus,
@@ -86,15 +86,15 @@ export class WhatsappService {
         mediaUrl,
         messageContentType,
         messageProcessType,
-        errorOccurred ? null : existingSidToUpdate,
+        errorOccurred ? undefined : existingSidToUpdate,
       );
     }
   }
 
   public async storeSendWhatsapp(
     message,
-    registrationId: number,
-    mediaUrl: string,
+    registrationId: number | undefined,
+    mediaUrl: string | null | undefined,
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
     existingSidToUpdate?: string,
@@ -115,16 +115,17 @@ export class WhatsappService {
       const twilioMessage = new TwilioMessageEntity();
       twilioMessage.accountSid = message.accountSid;
       twilioMessage.body = message.body;
-      twilioMessage.mediaUrl = mediaUrl;
+      twilioMessage.mediaUrl = mediaUrl ?? null;
       twilioMessage.to = message.to;
       twilioMessage.from = message.messagingServiceSid;
       twilioMessage.sid = message.sid;
       twilioMessage.status = message.status;
       twilioMessage.type = NotificationType.Whatsapp;
       twilioMessage.dateCreated = message.dateCreated;
-      twilioMessage.registrationId = registrationId;
-      twilioMessage.contentType = messageContentType;
-      twilioMessage.processType = messageProcessType;
+      twilioMessage.registrationId = registrationId ?? null;
+      twilioMessage.contentType =
+        messageContentType ?? MessageContentType.custom;
+      twilioMessage.processType = messageProcessType ?? null;
       if (message.errorCode) {
         twilioMessage.errorCode = message.errorCode;
       }
@@ -135,13 +136,6 @@ export class WhatsappService {
         await this.twilioMessageRepository.save(twilioMessage);
       await this.lastMessageService.updateLatestMessage(twilioMessageSave);
     }
-  }
-
-  public async findOne(sid: string): Promise<TwilioMessageEntity> {
-    const findOneOptions = {
-      sid: sid,
-    };
-    return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
   public async testTemplates(): Promise<object> {
@@ -283,7 +277,9 @@ export class WhatsappService {
         resultsLanguage[messageTemplate.language][messageTemplate.type] = {
           status: 'Failed',
           created: whatsappTemplateTestEntity.created,
-          callback: JSON.parse(whatsappTemplateTestEntity.callback),
+          callback: whatsappTemplateTestEntity.callback
+            ? JSON.parse(whatsappTemplateTestEntity.callback)
+            : undefined,
         };
       } else {
         resultsLanguage[messageTemplate.language][messageTemplate.type] = {

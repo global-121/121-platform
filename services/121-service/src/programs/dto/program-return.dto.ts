@@ -39,16 +39,19 @@ export class ProgramReturnDto {
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
   @IsString()
-  public readonly location: string;
+  @IsOptional()
+  public readonly location?: string;
 
   @ApiProperty({ example: 'NLRC' })
   @IsNotEmpty()
   @IsString()
-  public readonly ngo: string;
+  @IsOptional()
+  public readonly ngo?: string;
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  public readonly titlePortal: LocalizedString;
+  @IsOptional()
+  public readonly titlePortal?: LocalizedString;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
@@ -57,12 +60,14 @@ export class ProgramReturnDto {
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
-  public readonly startDate: Date;
+  @IsOptional()
+  public readonly startDate?: Date;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
-  public readonly endDate: Date;
+  @IsOptional()
+  public readonly endDate?: Date;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
@@ -70,18 +75,22 @@ export class ProgramReturnDto {
   @Length(3, 3, {
     message: 'Currency should be a 3 letter abbreviation',
   })
-  public readonly currency: string;
+  @IsOptional()
+  public readonly currency?: string;
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()
-  public readonly distributionFrequency: string;
+  @IsOptional()
+  public readonly distributionFrequency?: string;
 
   @ApiProperty({ example: 10 })
   @IsNumber()
-  public readonly distributionDuration: number;
+  @IsOptional()
+  public readonly distributionDuration?: number;
 
   @ApiProperty({ example: 500 })
-  public readonly fixedTransferValue: number;
+  @IsOptional()
+  public readonly fixedTransferValue?: number;
 
   @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
@@ -108,7 +117,8 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: 250 })
   @IsNumber()
-  public readonly targetNrRegistrations: number;
+  @IsOptional()
+  public readonly targetNrRegistrations?: number;
 
   @ApiProperty({ example: true })
   @IsBoolean()
@@ -232,14 +242,16 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()
-  public readonly aboutProgram: LocalizedString;
+  @IsOptional()
+  public readonly aboutProgram?: LocalizedString;
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
     description: 'Should be array of name-related program-questions.',
   })
   @IsArray()
-  public readonly fullnameNamingConvention: string[];
+  @IsOptional()
+  public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()

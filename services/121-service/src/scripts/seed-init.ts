@@ -36,7 +36,7 @@ export class SeedInit implements InterfaceScript {
     private readonly httpService: CustomHttpService,
   ) {}
 
-  public async run(isApiTests?: boolean): Promise<void> {
+  public async run(isApiTests = false): Promise<void> {
     await this.clearCallbacksMockService();
     if (isApiTests) {
       // Only truncate tables when running the API tests, since API Tests are run asynchronously, it may run into a situation where the migrations are still running and a table does not exist yet
@@ -66,7 +66,7 @@ export class SeedInit implements InterfaceScript {
   private async clearRedisData(): Promise<void> {
     if (
       process.env.REDIS_PREFIX &&
-      ['development', 'test'].includes(process.env.NODE_ENV)
+      ['development', 'test'].includes(process.env.NODE_ENV!)
     ) {
       await this.queueSeedHelper.emptyAllQueues();
     }
@@ -75,7 +75,7 @@ export class SeedInit implements InterfaceScript {
   private async addPermissions(): Promise<PermissionEntity[]> {
     const permissionsRepository =
       this.dataSource.getRepository(PermissionEntity);
-    const permissionEntities = [];
+    const permissionEntities: PermissionEntity[] = [];
     for (const permissionName of Object.values(PermissionEnum)) {
       let permissionEntity = await permissionsRepository.findOne({
         where: { name: permissionName },
@@ -238,7 +238,7 @@ export class SeedInit implements InterfaceScript {
       },
     ];
 
-    const userRoleEntities = [];
+    const userRoleEntities: UserRoleEntity[] = [];
     for (const defaultRole of defaultRoles) {
       const defaultRoleEntity = new UserRoleEntity();
       defaultRoleEntity.role = defaultRole.role;
@@ -256,7 +256,10 @@ export class SeedInit implements InterfaceScript {
     await userRepository.save({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: crypto
-        .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
+        .createHmac(
+          'sha256',
+          process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
+        )
         .digest('hex'),
       userType: UserType.aidWorker,
       admin: true,

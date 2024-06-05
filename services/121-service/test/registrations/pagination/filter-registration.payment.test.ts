@@ -101,14 +101,11 @@ describe('Load PA table', () => {
       const filter = {
         [`filter.${PaymentFilterEnum.waitingPayment}`]: `${payment1}`,
       };
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
         filter,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -132,14 +129,11 @@ describe('Load PA table', () => {
       const filter = {
         [`filter.${PaymentFilterEnum.failedPayment}`]: `${payment1}`,
       };
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
         filter,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -163,14 +157,11 @@ describe('Load PA table', () => {
       const filter = {
         [`filter.${PaymentFilterEnum.successPayment}`]: `$eq:${payment1}`,
       };
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
         filter,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -204,14 +195,12 @@ describe('Load PA table', () => {
         ['filter.lastName']: registrationOCW1.lastName,
         ['filter.phoneNumber']: registrationOCW1.phoneNumber,
       };
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        ['referenceId', 'lastName'],
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: ['referenceId', 'lastName'],
         accessToken,
-        null,
-        null,
         filter,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -251,14 +240,11 @@ describe('Load PA table', () => {
         [`filter.${PaymentFilterEnum.notYetSentPayment}`]: `$eq:${payment3}`,
       };
 
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
         filter,
-      );
+      });
       const meta = getRegistrationsResponse.body.meta;
 
       // Assert

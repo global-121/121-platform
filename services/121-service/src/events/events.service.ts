@@ -20,6 +20,11 @@ import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
 
+type LogEntity = Partial<RegistrationViewEntity> & {
+  id: number;
+  status?: string;
+};
+
 @Injectable()
 export class EventsService {
   constructor(
@@ -87,12 +92,8 @@ export class EventsService {
   }
 
   public async log(
-    oldRegistrationOrRegistrations:
-      | Partial<RegistrationViewEntity>
-      | Partial<RegistrationViewEntity>[],
-    newRegistrationOrRegistrations:
-      | Partial<RegistrationViewEntity>
-      | Partial<RegistrationViewEntity>[],
+    oldRegistrationOrRegistrations: LogEntity | LogEntity[],
+    newRegistrationOrRegistrations: LogEntity | LogEntity[],
     eventLogOptions?: EventLogOptionsDto,
   ): Promise<void> {
     // Convert to array if not already
@@ -107,11 +108,11 @@ export class EventsService {
     // Get userId from request if it exists otherwise this update was done using a queue
     // than get it from the request of the job of the queue
 
-    const requestUserId = this.request?.user?.['id']
+    const requestUserId: number = this.request?.user?.['id']
       ? this.request?.user?.['id']
       : this.jobRef?.data?.request?.userId;
 
-    let userIdToStore = null;
+    let userIdToStore: number | undefined = undefined;
     if (requestUserId) {
       const user = await this.userService.findById(requestUserId);
       if (user && user.userType === UserType.aidWorker) {
@@ -136,7 +137,7 @@ export class EventsService {
 
   private addAdditionalAttributesToEvents(
     events: EventEntity[],
-    additionalAttributeObject: Record<EventAttributeKeyEnum, string>,
+    additionalAttributeObject?: EventLogOptionsDto['additionalLogAttributes'],
   ): EventEntity[] {
     if (!additionalAttributeObject) {
       return events;
@@ -145,7 +146,7 @@ export class EventsService {
       for (const [key, value] of Object.entries(additionalAttributeObject)) {
         const attribute = new EventAttributeEntity();
         attribute.key = key as EventAttributeKeyEnum;
-        attribute.value = value;
+        attribute.value = value ?? null;
         event.attributes.push(attribute);
       }
     }
@@ -153,9 +154,9 @@ export class EventsService {
   }
 
   private validateEntities(
-    oldEntities: Partial<RegistrationViewEntity>[],
-    newEntities: Partial<RegistrationViewEntity>[],
-    eventLogOptionsDto: EventLogOptionsDto,
+    oldEntities: LogEntity[],
+    newEntities: LogEntity[],
+    eventLogOptionsDto?: EventLogOptionsDto,
   ): void {
     // check if oldEntities and newEntities are same length
     if (oldEntities.length !== newEntities.length) {
@@ -223,10 +224,10 @@ export class EventsService {
   }
 
   private createEventsForChanges(
-    oldEntities: Partial<RegistrationViewEntity>[],
-    newEntities: Partial<RegistrationViewEntity>[],
-    userId: number,
-    registrationAttributes: string[],
+    oldEntities: LogEntity[],
+    newEntities: LogEntity[],
+    userId?: number,
+    registrationAttributes?: string[],
   ): EventEntity[] {
     const allEventsForChange: EventEntity[] = [];
     for (let i = 0; i < oldEntities.length; i++) {
@@ -242,10 +243,10 @@ export class EventsService {
   }
 
   private createEventsForEntityChanges(
-    oldEntity: Partial<RegistrationViewEntity>,
-    newEntity: Partial<RegistrationViewEntity>,
-    userId: number,
-    registeredAttributes: string[],
+    oldEntity: LogEntity,
+    newEntity: LogEntity,
+    userId?: number,
+    registeredAttributes?: string[],
   ): EventEntity[] {
     let fieldNames = this.getRelevantRegistrationViewKeys(oldEntity, newEntity);
 
@@ -273,7 +274,7 @@ export class EventsService {
         newEntity[fieldName],
         oldEntity.id,
       );
-      eventForChange.userId = userId;
+      eventForChange.userId = userId ?? null;
       events.push(eventForChange);
     }
 
@@ -322,8 +323,8 @@ export class EventsService {
   }
 
   private getRelevantRegistrationViewKeys(
-    oldEntity: Partial<RegistrationViewEntity>,
-    newEntity: Partial<RegistrationViewEntity>,
+    oldEntity: LogEntity,
+    newEntity: LogEntity,
   ): string[] {
     const array1 = Object.keys(newEntity);
     const array2 = Object.keys(oldEntity);

@@ -34,5 +34,5 @@ export class IntersolveAddressDto {
 
 export class IntersolveTypeValue {
   public type: string;
-  public value: string;
+  public value: string | null;
 }

@@ -22,7 +22,7 @@ export class NoteService {
     const registration =
       await this.registrationsService.getRegistrationFromReferenceId(
         referenceId,
-        null,
+        undefined,
         programId,
       );
 

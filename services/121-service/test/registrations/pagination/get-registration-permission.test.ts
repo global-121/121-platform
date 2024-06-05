@@ -37,15 +37,15 @@ describe('Load PA table', () => {
 
     it(`should return all dynamic attributes when none explicitly requested`, async () => {
       // Arrange
-      const requestedDynamicAttributes = null;
+      const requestedDynamicAttributes = undefined;
       const accessTokenCvaManager = await getAccessTokenCvaManager();
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
-        accessTokenCvaManager,
-      );
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
+        accessToken: accessTokenCvaManager,
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -80,11 +80,11 @@ describe('Load PA table', () => {
       const requestedDynamicAttributes = ['preferredLanguage', 'referenceId'];
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
-        accessTokenCvaManager,
-      );
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
+        accessToken: accessTokenCvaManager,
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -105,11 +105,11 @@ describe('Load PA table', () => {
     const requestedDynamicAttributes = ['phoneNumber', 'preferredLanguage'];
 
     // Act
-    const getRegistrationsResponse = await getRegistrations(
-      programIdOCW,
-      requestedDynamicAttributes,
-      accessTokenCvaManager,
-    );
+    const getRegistrationsResponse = await getRegistrations({
+      programId: programIdOCW,
+      attributes: requestedDynamicAttributes,
+      accessToken: accessTokenCvaManager,
+    });
     const data = getRegistrationsResponse.body.data;
     const meta = getRegistrationsResponse.body.meta;
 

@@ -98,7 +98,7 @@ export class RegistrationsService {
   public async getPaginateRegistrationForReferenceId(
     referenceId: string,
     programId: number,
-  ): Promise<RegistrationViewEntity> {
+  ) {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .andWhere({ referenceId: referenceId });
@@ -133,7 +133,7 @@ export class RegistrationsService {
     const registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOneBy({
+    registration.program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
     await this.registrationUtilsService.save(registration);
@@ -148,7 +148,7 @@ export class RegistrationsService {
     status: RegistrationStatusEnum,
   ): Promise<RegistrationViewEntity> {
     const registrationBeforeUpdate =
-      await this.registrationViewScopedRepository.findOne({
+      await this.registrationViewScopedRepository.findOneOrFail({
         where: { referenceId: referenceId },
         select: ['id', 'status'],
       });
@@ -157,7 +157,7 @@ export class RegistrationsService {
       { registrationStatus: status },
     );
     const registrationAfterUpdate =
-      await this.registrationViewScopedRepository.findOne({
+      await this.registrationViewScopedRepository.findOneOrFail({
         where: { referenceId: referenceId },
         select: ['id', 'status'],
       });
@@ -176,7 +176,7 @@ export class RegistrationsService {
     let result = false;
     switch (newStatus) {
       case RegistrationStatusEnum.registered:
-        result = [null].includes(currentStatus);
+        result = false;
         break;
       case RegistrationStatusEnum.validated:
         result = [RegistrationStatusEnum.registered].includes(currentStatus);
@@ -253,7 +253,7 @@ export class RegistrationsService {
     fspId: number,
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
-    const fsp = await this.fspRepository.findOne({
+    const fsp = await this.fspRepository.findOneOrFail({
       where: { id: fspId },
       relations: ['questions'],
     });
@@ -264,7 +264,7 @@ export class RegistrationsService {
   public async addRegistrationDataBulk(
     dataArray: CustomDataDto[],
   ): Promise<RegistrationEntity[]> {
-    const registrations = [];
+    const registrations: RegistrationEntity[] = [];
     for (const data of dataArray) {
       const registration = await this.addRegistrationData(
         data.referenceId,
@@ -300,14 +300,14 @@ export class RegistrationsService {
     customDataKey: string,
     customDataValue: string | number | string[],
     programId: number,
-  ): Promise<string | number | string[]> {
+  ) {
     const allowEmptyPhoneNumber = (
       await this.programRepository.findOneBy({
         id: programId,
       })
     )?.allowEmptyPhoneNumber;
 
-    const answersTypeTel = [];
+    const answersTypeTel: string[] = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
       where: { answerType: AnswerTypes.tel },
     });
@@ -320,35 +320,32 @@ export class RegistrationsService {
     for (const question of programQuestionsTypeTel) {
       answersTypeTel.push(question.name);
     }
-    if (answersTypeTel.includes(customDataKey)) {
-      if (
-        !allowEmptyPhoneNumber &&
-        customDataKey === CustomDataAttributes.phoneNumber
-      ) {
-        // phoneNumber cannot be empty
-        if (!customDataValue) {
-          throw new HttpException(
-            'Phone number cannot be empty',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        // otherwise check
-        return await this.lookupService.lookupAndCorrect(
-          String(customDataValue),
-        );
-      } else {
-        if (!customDataValue) {
-          // other tel-types (e.g. whatsappPhoneNumber) can be empty
-          return customDataValue;
-        }
-        // otherwise check
-        return await this.lookupService.lookupAndCorrect(
-          String(customDataValue),
-        );
-      }
-    } else {
+
+    if (!answersTypeTel.includes(customDataKey)) {
       return customDataValue;
     }
+
+    if (
+      !allowEmptyPhoneNumber &&
+      customDataKey === CustomDataAttributes.phoneNumber
+    ) {
+      // phoneNumber cannot be empty
+      if (!customDataValue) {
+        throw new HttpException(
+          'Phone number cannot be empty',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      // otherwise check
+      return await this.lookupService.lookupAndCorrect(String(customDataValue));
+    }
+
+    if (!customDataValue) {
+      // other tel-types (e.g. whatsappPhoneNumber) can be empty
+      return customDataValue;
+    }
+    // otherwise check
+    return await this.lookupService.lookupAndCorrect(String(customDataValue));
   }
 
   public async getImportRegistrationsTemplate(
@@ -426,22 +423,11 @@ export class RegistrationsService {
     return program;
   }
 
-  public getName(registrationRow: object, program: ProgramEntity): string {
-    const fullnameConcat = [];
-    const nameColumns = JSON.parse(
-      JSON.stringify(program.fullnameNamingConvention),
-    );
-    for (const nameColumn of nameColumns) {
-      fullnameConcat.push(registrationRow[nameColumn]);
-    }
-    return fullnameConcat.join(' ');
-  }
-
   public transformRegistrationByNamingConvention(
     nameColumns: string[],
     registrationObject: object,
   ): object {
-    const fullnameConcat = [];
+    const fullnameConcat: string[] = [];
     for (const nameColumn of nameColumns) {
       fullnameConcat.push(registrationObject[nameColumn]);
       delete registrationObject[nameColumn];
@@ -475,7 +461,7 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
     updateRegistrationDto: UpdateRegistrationDto,
-  ): Promise<RegistrationViewEntity> {
+  ) {
     let nrAttributesUpdated = 0;
     const { data: partialRegistration } = updateRegistrationDto;
 
@@ -610,84 +596,75 @@ export class RegistrationsService {
     }
   }
 
-  public async searchRegistration(
-    rawPhoneNumber: string,
-    userId: number,
-  ): Promise<RegistrationViewEntity[]> {
-    const registrations = [];
+  public async searchRegistration(rawPhoneNumber: string, userId: number) {
+    const phoneNumber = await this.lookupService.lookupAndCorrect(
+      rawPhoneNumber,
+      true,
+    );
+    if (!phoneNumber) {
+      return [];
+    }
 
-    if (rawPhoneNumber) {
-      const customAttributesPhoneNumberNames = [
-        CustomDataAttributes.phoneNumber as string,
-        CustomDataAttributes.whatsappPhoneNumber as string,
-      ];
+    const customAttributesPhoneNumberNames = [
+      CustomDataAttributes.phoneNumber as string,
+      CustomDataAttributes.whatsappPhoneNumber as string,
+    ];
 
-      const phoneNumber = await this.lookupService.lookupAndCorrect(
-        rawPhoneNumber,
-        true,
-      );
-      if (!phoneNumber) {
-        return registrations;
+    const matchingRegistrations = (
+      await this.registrationScopedRepository.find({
+        where: { phoneNumber: phoneNumber },
+      })
+    ).map((r) => {
+      return {
+        programId: r.programId,
+        referenceId: r.referenceId,
+        scope: r.scope,
+      };
+    });
+    const matchingRegistrationData = await this.registrationDataScopedRepository
+      .createQueryBuilder('registrationData')
+      .leftJoinAndSelect('registrationData.registration', 'registration')
+      .andWhere('registrationData.value = :phoneNumber', {
+        phoneNumber: phoneNumber,
+      })
+      .getMany();
+
+    for (const d of matchingRegistrationData) {
+      const dataName = await d.getDataName();
+      if (dataName && customAttributesPhoneNumberNames.includes(dataName)) {
+        matchingRegistrations.push({
+          programId: d.registration.programId,
+          referenceId: d.registration.referenceId,
+          scope: d.registration.scope,
+        });
       }
+    }
 
-      const matchingRegistrations = (
-        await this.registrationScopedRepository.find({
-          where: { phoneNumber: phoneNumber },
-        })
-      ).map((r) => {
-        return {
-          programId: r.programId,
-          referenceId: r.referenceId,
-          scope: r.scope,
-        };
-      });
-      const matchingRegistrationData =
-        await this.registrationDataScopedRepository
-          .createQueryBuilder('registrationData')
-          .leftJoinAndSelect('registrationData.registration', 'registration')
-          .andWhere('registrationData.value = :phoneNumber', {
-            phoneNumber: phoneNumber,
-          })
-          .getMany();
+    const uniqueRegistrations = matchingRegistrations.filter(
+      (value, index, self) =>
+        index === self.findIndex((t) => t.referenceId === value.referenceId),
+    );
 
-      for (const d of matchingRegistrationData) {
-        const dataName = await d.getDataName();
-        if (customAttributesPhoneNumberNames.includes(dataName)) {
-          matchingRegistrations.push({
-            programId: d.registration.programId,
-            referenceId: d.registration.referenceId,
-            scope: d.registration.scope,
-          });
-        }
-      }
+    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
+      uniqueRegistrations,
+      userId,
+    );
 
-      const uniqueRegistrations = matchingRegistrations.filter(
-        (value, index, self) =>
-          index === self.findIndex((t) => t.referenceId === value.referenceId),
-      );
-
-      const filteredRegistrations =
-        await this.filterRegistrationsByProgramScope(
-          uniqueRegistrations,
-          userId,
-        );
-
-      for (const uniqueRegistration of filteredRegistrations) {
-        const registration = await this.getPaginateRegistrationForReferenceId(
+    return await Promise.all(
+      filteredRegistrations.map(async (uniqueRegistration) => {
+        return await this.getPaginateRegistrationForReferenceId(
           uniqueRegistration.referenceId,
           uniqueRegistration.programId,
         );
-        registrations.push(registration);
-      }
-    }
-    return registrations;
+      }),
+    );
   }
 
   private async filterRegistrationsByProgramScope(
     registrationObjects: ReferenceProgramIdScopeDto[],
     userId: number,
-  ): Promise<RegistrationEntity[]> {
-    const filteredRegistrations = [];
+  ): Promise<ReferenceProgramIdScopeDto[]> {
+    const filteredRegistrations: ReferenceProgramIdScopeDto[] = [];
     const programIdScopeObjects =
       await this.userService.getProgramScopeIdsUserHasPermission(
         userId,
@@ -723,12 +700,17 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  public async updateChosenFsp(
-    referenceId: string,
-    newFspName: FinancialServiceProviderName,
-    newFspAttributesRaw: object,
-    userId: number,
-  ): Promise<RegistrationViewEntity> {
+  public async updateChosenFsp({
+    referenceId,
+    newFspName,
+    newFspAttributesRaw = {},
+    userId,
+  }: {
+    referenceId: string;
+    newFspName: FinancialServiceProviderName;
+    newFspAttributesRaw?: Record<string, any>;
+    userId: number;
+  }) {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
       where: { fsp: newFspName },
@@ -741,10 +723,7 @@ export class RegistrationsService {
 
     // Check if required attributes are present
     newFsp.questions.forEach((requiredAttribute) => {
-      if (
-        !newFspAttributesRaw ||
-        !Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)
-      ) {
+      if (!Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)) {
         const requiredAttributes = newFsp.questions
           .map((a) => a.name)
           .join(', ');
@@ -789,7 +768,7 @@ export class RegistrationsService {
           attribute.name,
         );
       await this.registrationDataScopedRepository.deleteUnscoped({
-        id: regData.id,
+        id: regData?.id,
       });
     }
 
@@ -888,7 +867,7 @@ export class RegistrationsService {
   public async getReferenceId(
     programId: number,
     paId: number,
-  ): Promise<RegistrationEntity> {
+  ): Promise<RegistrationEntity | null> {
     return await this.registrationScopedRepository.findOne({
       where: { programId: programId, registrationProgramId: paId },
     });

@@ -36,14 +36,14 @@ describe('Load PA table', () => {
 
     it('should return all dynamic attributes if param not supplied', async () => {
       // Arrange
-      const requestedDynamicAttributes = null;
+      const requestedDynamicAttributes = undefined;
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -62,11 +62,11 @@ describe('Load PA table', () => {
       const requestedDynamicAttributes = [attribute1];
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
 
       // Assert
@@ -80,11 +80,11 @@ describe('Load PA table', () => {
       const requestedDynamicAttributes = [attributeName, attributeFirstName];
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
 
       // Assert
@@ -98,11 +98,11 @@ describe('Load PA table', () => {
       const requestedDynamicAttributes = [attributeName];
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
 
       // Assert
@@ -116,11 +116,11 @@ describe('Load PA table', () => {
       const requestedDynamicAttributes = [attributeFspDisplayName];
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
 
       // Assert
@@ -130,15 +130,15 @@ describe('Load PA table', () => {
 
     it('Should return specified amount of PA per page', async () => {
       // Arrange
-      const requestedDynamicAttributes = null;
+      const requestedDynamicAttributes = undefined;
       const programId2 = 2;
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programId2,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programId2,
+        attributes: requestedDynamicAttributes,
         accessToken,
-      );
+      });
       const data = getRegistrationsResponse.body.data;
 
       // Assert
@@ -147,37 +147,37 @@ describe('Load PA table', () => {
 
     it('should be able to specify page attributes', async () => {
       // Arrange
-      const requestedDynamicAttributes = null;
+      const requestedDynamicAttributes = undefined;
       await importRegistrations(programIdOCW, [registrationOCW2], accessToken);
 
       // Act
-      const getRegistrationsResponse1 = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse1 = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-        1,
-        1,
-      );
+        page: 1,
+        limit: 1,
+      });
       const data1 = getRegistrationsResponse1.body.data;
       const meta1 = getRegistrationsResponse1.body.meta;
 
-      const getRegistrationsResponse2 = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponse2 = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-        2,
-        1,
-      );
+        page: 2,
+        limit: 1,
+      });
       const data2 = getRegistrationsResponse2.body.data;
       const meta2 = getRegistrationsResponse2.body.meta;
 
-      const getRegistrationsResponseAll = await getRegistrations(
-        programIdOCW,
-        requestedDynamicAttributes,
+      const getRegistrationsResponseAll = await getRegistrations({
+        programId: programIdOCW,
+        attributes: requestedDynamicAttributes,
         accessToken,
-        1,
-        2,
-      );
+        page: 1,
+        limit: 2,
+      });
       const dataAll = getRegistrationsResponseAll.body.data;
       const metaAll = getRegistrationsResponseAll.body.meta;
 

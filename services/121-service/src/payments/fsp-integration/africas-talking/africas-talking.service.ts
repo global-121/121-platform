@@ -4,7 +4,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { AfricasTalkingNotificationEntity } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking-notification.entity';
 import { AfricasTalkingApiService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.api.service';
 import { AfricasTalkingNotificationDto } from '@121-service/src/payments/fsp-integration/africas-talking/dto/africas-talking-notification.dto';
@@ -49,7 +48,7 @@ export class AfricasTalkingService
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
 
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId,
       paymentNr,
       userId: paymentList[0].userId,
@@ -74,12 +73,6 @@ export class AfricasTalkingService
     payment: number,
     amount: number,
   ): object {
-    const payload = {
-      username: process.env.AFRICASTALKING_USERNAME,
-      productName: process.env.AFRICASTALKING_PRODUCT_NAME,
-      recipients: [],
-    };
-
     const recipient = {
       phoneNumber: paymentData.paymentAddress,
       currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
@@ -91,13 +84,17 @@ export class AfricasTalkingService
         amount: String(amount),
       },
     };
+
     if (process.env.AFRICASTALKING_PROVIDER_CHANNEL) {
       recipient['providerChannel'] =
         process.env.AFRICASTALKING_PROVIDER_CHANNEL;
     }
-    payload.recipients.push(recipient);
 
-    return payload;
+    return {
+      username: process.env.AFRICASTALKING_USERNAME,
+      productName: process.env.AFRICASTALKING_PRODUCT_NAME,
+      recipients: [recipient],
+    };
   }
 
   public async checkValidation(

@@ -24,7 +24,7 @@ export class IntersolveJumboApiService {
       payload,
       mainElem,
       ['CustomerNr'],
-      process.env.INTERSOLVE_JUMBO_CUSTOMER_ID,
+      process.env.INTERSOLVE_JUMBO_CUSTOMER_ID!,
     );
 
     payload = this.soapService.changeSoapBody(
@@ -98,9 +98,9 @@ export class IntersolveJumboApiService {
       return await this.soapService.post(
         payload,
         IntersolveJumboSoapElements.TradeHeader,
-        process.env.INTERSOLVE_JUMBO_USERNAME,
-        process.env.INTERSOLVE_JUMBO_PASSWORD,
-        process.env.INTERSOLVE_JUMBO_URL,
+        process.env.INTERSOLVE_JUMBO_USERNAME!,
+        process.env.INTERSOLVE_JUMBO_PASSWORD!,
+        process.env.INTERSOLVE_JUMBO_URL!,
       );
     }
   }
@@ -138,9 +138,9 @@ export class IntersolveJumboApiService {
       return await this.soapService.post(
         payload,
         IntersolveJumboSoapElements.TradeHeader,
-        process.env.INTERSOLVE_JUMBO_USERNAME,
-        process.env.INTERSOLVE_JUMBO_PASSWORD,
-        process.env.INTERSOLVE_JUMBO_URL,
+        process.env.INTERSOLVE_JUMBO_USERNAME!,
+        process.env.INTERSOLVE_JUMBO_PASSWORD!,
+        process.env.INTERSOLVE_JUMBO_URL!,
       );
     }
   }

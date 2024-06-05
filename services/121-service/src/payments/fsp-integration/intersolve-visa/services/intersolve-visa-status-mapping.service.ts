@@ -89,8 +89,8 @@ export class IntersolveVisaStatusMappingService {
 
   public determine121StatusInfo(
     tokenBlocked: boolean,
-    walletStatus: IntersolveVisaWalletStatus,
-    cardStatus: IntersolveVisaCardStatus,
+    walletStatus: IntersolveVisaWalletStatus | null,
+    cardStatus: IntersolveVisaCardStatus | null,
     isCurrentWallet: boolean,
     linkCreationInfo: VisaCardLinkCreationInfo,
   ): VisaStatusInfoDto {
@@ -152,14 +152,13 @@ export class IntersolveVisaStatusMappingService {
     action: VisaCardAction,
     linkCreationInfo: VisaCardLinkCreationInfo,
   ): string {
-    let link: string;
-    if (action === VisaCardAction.pause) {
-      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/block`;
-    } else if (action === VisaCardAction.unpause) {
-      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/unblock`;
-    } else if (action === VisaCardAction.reissue) {
-      link = `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/customers/${linkCreationInfo.referenceId}/wallets`;
+    switch (action) {
+      case VisaCardAction.pause:
+        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/block`;
+      case VisaCardAction.unpause:
+        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/unblock`;
+      case VisaCardAction.reissue:
+        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/customers/${linkCreationInfo.referenceId}/wallets`;
     }
-    return link;
   }
 }

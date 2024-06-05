@@ -51,15 +51,11 @@ describe('Load PA table', () => {
       const direction = 'DESC';
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        null,
-        { field, direction },
-      );
+        sort: { field, direction },
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 
@@ -84,15 +80,11 @@ describe('Load PA table', () => {
       const direction = 'ASC';
 
       // Act
-      const getRegistrationsResponse = await getRegistrations(
-        programIdOCW,
-        null,
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
         accessToken,
-        null,
-        null,
-        null,
-        { field, direction },
-      );
+        sort: { field, direction },
+      });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
 

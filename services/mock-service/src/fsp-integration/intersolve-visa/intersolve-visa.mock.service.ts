@@ -75,7 +75,9 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public createWalletMock(holderId: string): IntersolveVisaMockResponseDto {
+  public createWalletMock(
+    holderId: string | null,
+  ): IntersolveVisaMockResponseDto {
     const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.statusText = 'OK';
@@ -97,7 +99,7 @@ export class IntersolveVisaMockService {
     response.data.data.token.balances = [
       {
         quantity: {
-          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
           value: 0,
           reserved: 0,
         },
@@ -177,7 +179,7 @@ export class IntersolveVisaMockService {
       },
     ];
 
-    if (holderId.toLowerCase().includes('mock-fail-create-wallet')) {
+    if (holderId?.toLowerCase().includes('mock-fail-create-wallet')) {
       response.data.success = false;
       response.data.errors = [];
       response.data.errors.push({
@@ -191,13 +193,13 @@ export class IntersolveVisaMockService {
     // in all below cases,pass different tokenCode to use in follow-up API-call (which does not take holderId as input)
     // uuid is needed to not run into unqiue constraint on token code
     if (
-      holderId.toLowerCase().includes('mock-fail-link-customer-wallet') ||
-      holderId.toLowerCase().includes('mock-fail-create-debit-card') ||
-      holderId.toLowerCase().includes('mock-fail-load-balance') ||
-      holderId.toLowerCase().includes('mock-fail-get-wallet') ||
-      holderId.toLowerCase().includes('mock-fail-get-card') ||
-      holderId.toLowerCase().includes('mock-spent') ||
-      holderId.toLowerCase().includes('mock-current-balance')
+      holderId?.toLowerCase().includes('mock-fail-link-customer-wallet') ||
+      holderId?.toLowerCase().includes('mock-fail-create-debit-card') ||
+      holderId?.toLowerCase().includes('mock-fail-load-balance') ||
+      holderId?.toLowerCase().includes('mock-fail-get-wallet') ||
+      holderId?.toLowerCase().includes('mock-fail-get-card') ||
+      holderId?.toLowerCase().includes('mock-spent') ||
+      holderId?.toLowerCase().includes('mock-current-balance')
     ) {
       response.data.data.token.code = `${uuid()}${holderId}`;
     }
@@ -206,14 +208,14 @@ export class IntersolveVisaMockService {
   }
 
   public linkCustomerToWalletMock(
-    tokenCode: string,
+    tokenCode: string | null,
   ): IntersolveVisaMockResponseDto {
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.NO_CONTENT,
       statusText: 'No Content',
       data: {},
     };
-    if (tokenCode.toLowerCase().includes('mock-fail-link-customer-wallet')) {
+    if (tokenCode?.toLowerCase().includes('mock-fail-link-customer-wallet')) {
       res.data.success = false;
       res.data.errors = [];
       res.data.errors.push({
@@ -227,13 +229,15 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public createDebitCardMock(tokenCode: string): IntersolveVisaMockResponseDto {
+  public createDebitCardMock(
+    tokenCode: string | null,
+  ): IntersolveVisaMockResponseDto {
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.OK,
       statusText: 'OK',
       data: {},
     };
-    if (tokenCode.toLowerCase().includes('mock-fail-create-debit-card')) {
+    if (tokenCode?.toLowerCase().includes('mock-fail-create-debit-card')) {
       res.data.success = false;
       res.data.errors = [];
       res.data.errors.push({
@@ -247,7 +251,9 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public loadBalanceCardMock(tokenCode: string): IntersolveVisaMockResponseDto {
+  public loadBalanceCardMock(
+    tokenCode: string | null,
+  ): IntersolveVisaMockResponseDto {
     const response = {
       data: {
         success: true,
@@ -258,7 +264,7 @@ export class IntersolveVisaMockService {
           balances: [
             {
               quantity: {
-                assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+                assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
                 value: 0,
                 reserved: 0,
               },
@@ -271,7 +277,7 @@ export class IntersolveVisaMockService {
       status: HttpStatus.OK,
       statusText: 'OK',
     };
-    if (tokenCode.toLowerCase().includes('mock-fail-load-balance')) {
+    if (tokenCode?.toLowerCase().includes('mock-fail-load-balance')) {
       response.data.success = false;
       response.data.errors.push({
         code: 'NOT_FOUND',
@@ -295,7 +301,7 @@ export class IntersolveVisaMockService {
           balances: [
             {
               quantity: {
-                assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+                assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
                 value: 0, // return 0 because unload is only used to unload complete amount when re-issuing
                 reserved: 0,
               },
@@ -310,7 +316,9 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public getWalletMock(tokenCode: string): IntersolveVisaMockResponseDto {
+  public getWalletMock(
+    tokenCode: string | null,
+  ): IntersolveVisaMockResponseDto {
     const match = tokenCode.match(/mock-current-balance-(\d+)/);
     let currentBalance;
     try {
@@ -322,7 +330,6 @@ export class IntersolveVisaMockService {
     response.status = 200;
     response.data = {
       success: true,
-      errors: [],
       code: 'string',
       correlationId: 'string',
       data: {
@@ -331,7 +338,7 @@ export class IntersolveVisaMockService {
         balances: [
           {
             quantity: {
-              assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+              assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
               value: currentBalance,
               reserved: 0,
             },
@@ -344,8 +351,11 @@ export class IntersolveVisaMockService {
       },
     };
 
-    if (tokenCode.toLowerCase().includes('mock-fail-get-wallet')) {
+    if (tokenCode?.toLowerCase().includes('mock-fail-get-wallet')) {
       response.data.success = false;
+      if (!response.data.errors) {
+        response.data.errors = [];
+      }
       response.data.errors.push({
         code: 'NOT_FOUND',
         field: 'mock field',
@@ -357,9 +367,9 @@ export class IntersolveVisaMockService {
     return response;
   }
 
-  public getCardMock(tokenCode: string): IntersolveVisaMockResponseDto {
+  public getCardMock(tokenCode: string | null): IntersolveVisaMockResponseDto {
     let returnStatus = IntersolveVisaCardStatus.CardOk;
-    if (tokenCode.toLowerCase().includes('mock-fail-get-card')) {
+    if (tokenCode?.toLowerCase().includes('mock-fail-get-card')) {
       const substring = tokenCode.replace('mock-fail-get-card', '');
       for (const status of Object.values(IntersolveVisaCardStatus)) {
         if (substring.toLowerCase().includes(status.toLowerCase())) {
@@ -385,7 +395,9 @@ export class IntersolveVisaMockService {
     return response;
   }
 
-  public getTransactionsMock(tokenCode: string): IntersolveVisaMockResponseDto {
+  public getTransactionsMock(
+    tokenCode: string | null,
+  ): IntersolveVisaMockResponseDto {
     const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.data = {
@@ -396,7 +408,7 @@ export class IntersolveVisaMockService {
         {
           id: 1,
           quantity: {
-            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
             value: 3,
           },
           createdAt: new Date(
@@ -420,7 +432,7 @@ export class IntersolveVisaMockService {
         },
       ],
     };
-    if (tokenCode.toLowerCase().includes('mock-spent')) {
+    if (tokenCode?.toLowerCase().includes('mock-spent')) {
       // gets the numberic values from the token code after the mock-spent- string
       const match = tokenCode.match(/mock-spent-(\d+)/);
       let spentAmount;
@@ -429,10 +441,10 @@ export class IntersolveVisaMockService {
       } catch (error) {
         spentAmount = 200;
       }
-      response.data.data.push({
+      response.data.data!.push({
         id: 1,
         quantity: {
-          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
           value: -spentAmount,
         },
         createdAt: new Date(
@@ -455,10 +467,10 @@ export class IntersolveVisaMockService {
         paymentId: 1,
       });
 
-      response.data.data.push({
+      response.data.data!.push({
         id: 1,
         quantity: {
-          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
           value: -300,
         },
         createdAt: new Date(
@@ -495,7 +507,9 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public activateWalletMock(tokenCode: string): IntersolveVisaMockResponseDto {
+  public activateWalletMock(
+    tokenCode: string | null,
+  ): IntersolveVisaMockResponseDto {
     const response = new IntersolveVisaMockResponseDto();
     response.status = 200;
     response.data = {
@@ -504,12 +518,12 @@ export class IntersolveVisaMockService {
       code: 'string',
       correlationId: 'string',
       data: {
-        code: tokenCode,
+        code: tokenCode ?? '',
         status: IntersolveVisaWalletStatus.Active,
         balances: [
           {
             quantity: {
-              assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+              assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
               value: 2500,
               reserved: 0,
             },

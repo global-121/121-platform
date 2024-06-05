@@ -44,7 +44,7 @@ describe('splitArrayIntoChunks', () => {
       // Assert
       expect(() => {
         // Act
-        splitArrayIntoChunks(array, chunkSize);
+        splitArrayIntoChunks(array as any, chunkSize);
       }).toThrow(); // Or to handle gracefully, depending on your function implementation
     });
   });

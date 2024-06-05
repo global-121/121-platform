@@ -162,7 +162,7 @@ export async function getProgramPaymentsStatus(
 export async function getTransactions(
   programId: number,
   paymentNr: number,
-  referenceId: string,
+  referenceId: string | null,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
@@ -336,7 +336,10 @@ export async function waitForStatusUpdateToComplete(
     !allStatusUpdatesSuccessful
   ) {
     // Get registrations
-    const registrations = await getRegistrations(programId, null, accessToken);
+    const registrations = await getRegistrations({
+      programId,
+      accessToken,
+    });
 
     // Check if all registrations have the new status
     allStatusUpdatesSuccessful = referenceIds.every((referenceId) => {
@@ -372,7 +375,7 @@ export async function waitForMessagesToComplete(
     !allMessageUpdatesSuccessful
   ) {
     // Get message histories
-    const messageHistories = [];
+    const messageHistories: any[] = [];
     for (const referenceId of referenceIds) {
       const response = await getMessageHistory(
         programId,

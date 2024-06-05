@@ -7,7 +7,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   ExcelFspInstructions,
   ExcelReconciliationDto,
@@ -17,7 +16,6 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -59,7 +57,7 @@ export class ExcelService
       transactionResult.status = StatusEnum.waiting;
       fspTransactionResult.paList.push(transactionResult);
     }
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId,
       paymentNr,
       userId: paPaymentList[0].userId,
@@ -125,7 +123,7 @@ export class ExcelService
       .andWhere('program.id = :programId', {
         programId: programId,
       })
-      .getOne();
+      .getOneOrFail();
 
     let exportColumns: string[];
     const columnsToExportConfig =
@@ -143,7 +141,9 @@ export class ExcelService
   }
 
   private joinRegistrationsAndTransactions(
-    orderedRegistrations: RegistrationViewEntity[],
+    orderedRegistrations: Awaited<
+      ReturnType<RegistrationsPaginationService['getRegistrationsChunked']>
+    >,
     transactions: TransactionReturnDto[],
     exportColumns: string[],
   ): ExcelFspInstructions[] {
@@ -201,7 +201,7 @@ export class ExcelService
         programId: programId,
       })
       .getOne();
-    const matchColumn: string = programWithConfig.programFspConfiguration[0]
+    const matchColumn: string = programWithConfig?.programFspConfiguration[0]
       ?.value as string;
     if (!matchColumn) {
       throw new HttpException(
@@ -218,7 +218,7 @@ export class ExcelService
     programId: number,
     payment: number,
     matchColumn: string,
-  ): Promise<RegistrationViewEntity[]> {
+  ) {
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
@@ -237,7 +237,9 @@ export class ExcelService
   }
 
   public joinRegistrationsAndImportRecords(
-    registrations: RegistrationViewEntity[],
+    registrations: Awaited<
+      ReturnType<ExcelService['getRegistrationsForReconciliation']>
+    >,
     importRecords: object[],
     matchColumn: string,
     transactions: TransactionReturnDto[],

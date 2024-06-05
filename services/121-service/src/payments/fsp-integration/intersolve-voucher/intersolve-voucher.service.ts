@@ -13,7 +13,6 @@ import {
 } from '@121-service/src/notifications/twilio.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
 import {
@@ -159,6 +158,12 @@ export class IntersolveVoucherService
     const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: paResult.referenceId },
     });
+    if (!registration) {
+      throw new HttpException(
+        'PA with this referenceId not found (within your scope)',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     await this.storeTransactionResult(
       jobData.payment,
       jobData.paymentInfo.transactionAmount,
@@ -179,7 +184,7 @@ export class IntersolveVoucherService
     calculatedAmount: number,
     payment: number,
     credentials: { username: string; password: string },
-  ): Promise<PaTransactionResultDto> {
+  ) {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;
 
@@ -264,10 +269,7 @@ export class IntersolveVoucherService
     return parseInt(crypto.randomBytes(5).toString('hex'), 16);
   }
 
-  private async getReusableVoucher(
-    referenceId: string,
-    payment: number,
-  ): Promise<IntersolveVoucherEntity> {
+  private async getReusableVoucher(referenceId: string, payment: number) {
     const rawVoucher = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       //The .* is to prevent the raw query from prefixing with voucher_
@@ -360,12 +362,12 @@ export class IntersolveVoucherService
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
 
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: paymentInfo.referenceId },
     });
 
     const programId = registration.programId;
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
@@ -378,16 +380,14 @@ export class IntersolveVoucherService
       .split('[[amount]]')
       .join(String(calculatedAmount));
 
-    await this.queueMessageService.addMessageToQueue(
+    await this.queueMessageService.addMessageToQueue({
       registration,
-      whatsappPayment,
-      null,
-      MessageContentType.paymentTemplated,
-      MessageProcessType.whatsappTemplateVoucher,
-      null,
-      { payment: payment, amount: calculatedAmount },
-      paymentInfo.bulkSize,
-    );
+      message: whatsappPayment,
+      messageContentType: MessageContentType.paymentTemplated,
+      messageProcessType: MessageProcessType.whatsappTemplateVoucher,
+      customData: { payment: payment, amount: calculatedAmount },
+      bulksize: paymentInfo.bulkSize,
+    });
     result.status = StatusEnum.waiting;
     return result;
   }
@@ -674,11 +674,14 @@ export class IntersolveVoucherService
       if (voucher.lastRequestedBalance === voucher.amount) {
         const unusedVoucher = new UnusedVoucherDto();
         unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
-        unusedVoucher.payment = voucher.payment;
+        unusedVoucher.payment = voucher.payment ?? undefined;
         unusedVoucher.issueDate = voucher.created;
-        unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
-        unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-        unusedVoucher.lastExternalUpdate = voucher.updatedLastRequestedBalance;
+        unusedVoucher.whatsappPhoneNumber =
+          voucher.whatsappPhoneNumber ?? undefined;
+        unusedVoucher.phoneNumber =
+          voucher.image[0].registration.phoneNumber ?? undefined;
+        unusedVoucher.lastExternalUpdate =
+          voucher.updatedLastRequestedBalance ?? undefined;
         unusedVouchersDtos.push(unusedVoucher);
       }
     }
@@ -736,13 +739,13 @@ export class IntersolveVoucherService
     registrationId: number,
     transactionStep: number,
     status: StatusEnum,
-    errorMessage: string,
+    errorMessage: string | null,
     programId: number,
     options: IntersolveStoreVoucherOptionsDto,
   ): Promise<void> {
     if (options.intersolveVoucherId) {
       const intersolveVoucher =
-        await this.intersolveVoucherScopedRepository.findOne({
+        await this.intersolveVoucherScopedRepository.findOneOrFail({
           where: { id: options.intersolveVoucherId },
         });
       intersolveVoucher.send = true;
@@ -757,17 +760,25 @@ export class IntersolveVoucherService
       options.messageSid,
     );
 
-    let userId: number;
+    let userId: number | undefined;
     if (transactionStep === 2) {
-      userId = await this.getUserIdForTransactionStep2(registrationId, payment);
+      userId =
+        (await this.getUserIdForTransactionStep2(registrationId, payment)) ??
+        undefined;
     } else {
       userId = options.userId;
     }
 
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    if (userId === undefined) {
+      throw new Error(
+        'Could not find userId for transaction in storeTransactionResult.',
+      );
+    }
+
+    const transactionRelationDetails = {
       programId,
       paymentNr: payment,
-      userId: userId,
+      userId,
     };
 
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -779,13 +790,13 @@ export class IntersolveVoucherService
   private async getUserIdForTransactionStep2(
     registrationId: number,
     payment: number,
-  ): Promise<number> {
+  ) {
     const transaction = await this.transactionRepository.findOne({
       where: { registrationId: registrationId, payment: payment },
       order: { created: 'DESC' },
       select: ['userId'],
     });
-    return transaction.userId;
+    return transaction?.userId;
   }
 
   public async createTransactionResult(
@@ -793,10 +804,10 @@ export class IntersolveVoucherService
     registrationId: number,
     transactionStep: number,
     status: StatusEnum,
-    errorMessage: string,
+    errorMessage: string | null,
     messageSid?: string,
   ): Promise<PaTransactionResultDto> {
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { id: registrationId },
       relations: ['fsp', 'program'],
     });
@@ -921,23 +932,26 @@ export class IntersolveVoucherService
     voucherWithBalance.name = await this.registrationUtilsService.getFullName(
       voucher.image[0].registration,
     );
-    voucherWithBalance.phoneNumber = voucher.image[0].registration.phoneNumber;
-    voucherWithBalance.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+    voucherWithBalance.phoneNumber =
+      voucher.image[0].registration.phoneNumber ?? undefined;
+    voucherWithBalance.whatsappPhoneNumber =
+      voucher.whatsappPhoneNumber ?? undefined;
     voucherWithBalance.paStatus =
-      voucher.image[0].registration.registrationStatus;
+      voucher.image[0].registration.registrationStatus ?? undefined;
     voucherWithBalance.partnerName =
-      await this.registrationDataService.getRegistrationDataValueByName(
+      (await this.registrationDataService.getRegistrationDataValueByName(
         voucher.image[0].registration,
         'namePartnerOrganization',
-      );
+      )) ?? undefined;
 
-    voucherWithBalance.payment = voucher.payment;
+    voucherWithBalance.payment = voucher.payment ?? undefined;
     voucherWithBalance.issueDate = voucher.created;
-    voucherWithBalance.originalBalance = voucher.amount;
-    voucherWithBalance.remainingBalance = voucher.lastRequestedBalance;
+    voucherWithBalance.originalBalance = voucher.amount ?? undefined;
+    voucherWithBalance.remainingBalance =
+      voucher.lastRequestedBalance ?? undefined;
     voucherWithBalance.updatedRemainingBalanceUTC =
-      voucher.updatedLastRequestedBalance;
-    voucherWithBalance.voucherSend = voucher.send;
+      voucher.updatedLastRequestedBalance ?? undefined;
+    voucherWithBalance.voucherSend = voucher.send ?? undefined;
     return voucherWithBalance;
   }
 }

@@ -28,7 +28,7 @@ export class IntersolveGetTransactionsResponseDataDto {
   public quantity: { assetCode: string; value: number };
   public createdAt: string;
   public creditor: { tokenCode: string };
-  public debtor: { tokenCode: string };
+  public debtor: { tokenCode: string | null };
   public reference: string;
   public type: string;
   public description: string;

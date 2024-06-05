@@ -7,7 +7,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   ProcessNamePayment,
   QueueNamePayment,
@@ -40,6 +39,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -77,7 +77,7 @@ export class CommercialBankEthiopiaService
     const credentials: { username: string; password: string } =
       await this.getCommercialBankEthiopiaCredentials(programId);
 
-    const program = await this.programRepository.findOneBy({
+    const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
 
@@ -143,7 +143,7 @@ export class CommercialBankEthiopiaService
       data.credentials,
     );
 
-    const transactionRelationDetails: TransactionRelationDetailsDto = {
+    const transactionRelationDetails = {
       programId: data.programId,
       paymentNr: data.paymentNr,
       userId: data.userId,
@@ -164,7 +164,7 @@ export class CommercialBankEthiopiaService
     );
 
     if (paPayment.transactionId) {
-      const { customData } = await this.transactionRepository.findOneBy({
+      const { customData } = await this.transactionRepository.findOneByOrFail({
         id: paPayment.transactionId,
       });
       // BEWARE: CommercialBankEthiopiaTransferPayload was used to silence the TS error
@@ -255,7 +255,7 @@ export class CommercialBankEthiopiaService
       ].join('');
     }
 
-    const payload = {
+    return {
       debitAmount: payment.transactionAmount,
       debitTheIrRef:
         debitTheIrRefRetry ||
@@ -263,11 +263,12 @@ export class CommercialBankEthiopiaService
       creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
-      remitterName: program.titlePortal['en'].substring(0, 35),
+      remitterName:
+        program.titlePortal && program.titlePortal.en
+          ? program.titlePortal.en.substring(0, 35)
+          : null,
       beneficiaryName: `${fullName}`,
     };
-
-    return payload;
   }
 
   public async sendPaymentPerPa(
@@ -398,7 +399,7 @@ export class CommercialBankEthiopiaService
       if (existingRecord) {
         await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.updateUnscoped(
           { registrationId: pa.id },
-          result,
+          result as QueryDeepPartialEntity<CommercialBankEthiopiaAccountEnquiriesEntity>,
         );
       } else {
         await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.save(

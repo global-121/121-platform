@@ -20,9 +20,9 @@ export class ExchangeRateApiService {
 
     try {
       const exchangeRateUrl = `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`;
-      const data = (await this.httpService.get(exchangeRateUrl))[dataKey][
-        responseKey
-      ][0];
+      const data = ((await this.httpService.get(exchangeRateUrl)) as any)[
+        dataKey
+      ][responseKey][0];
 
       return { rate: data[averageBidKey], closeTime: data[closeTimeKey] };
     } catch (error) {

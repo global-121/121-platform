@@ -3,6 +3,7 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entit
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class LastMessageStatusService {
@@ -18,7 +19,8 @@ export class LastMessageStatusService {
     if (!message.registrationId) {
       return;
     }
-    const latestMessage = new LatestMessageEntity();
+    const latestMessage =
+      new LatestMessageEntity() as QueryDeepPartialEntity<LatestMessageEntity>;
     latestMessage.registrationId = message.registrationId;
     latestMessage.messageId = message.id;
     const updateResult = await this.latestMessageRepository.update(
