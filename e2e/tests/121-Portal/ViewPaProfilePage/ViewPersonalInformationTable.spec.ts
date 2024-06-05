@@ -1,5 +1,5 @@
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import jumboFspTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
+import visaFspTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -49,12 +49,12 @@ test('[27492] View Personal information table', async ({ page }) => {
     await page.reload();
     // Reload should be removed after fixing the issue with the data not being available https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27568
     await registration.validatePersonalInformationTable(
-      'John Smith',
+      'Luis Garcia',
       englishTranslations.entity.registration.status.included,
       await Helpers.getTodaysDate(),
-      englishTranslations.page.program['program-people-affected'].language.en,
-      '+14155236666',
-      jumboFspTranslations.displayName.en,
+      englishTranslations.page.program['program-people-affected'].language.nl,
+      '+14155235555',
+      visaFspTranslations.displayName.en,
     );
   });
 });

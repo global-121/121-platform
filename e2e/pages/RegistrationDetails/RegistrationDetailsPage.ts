@@ -299,14 +299,16 @@ class RegistrationDetails {
     messageNotification,
     messageContext,
     messageType,
+    locatorNumber = 0,
   }: {
     messageNotification: string;
     messageContext: string;
     messageType: string;
+    locatorNumber?: number;
   }) {
-    const paymentNotificationLocator = this.page.locator(
-      `:text("${messageContext} (${messageType})")`,
-    );
+    const paymentNotificationLocator = this.page
+      .locator(`:text("${messageContext} (${messageType})")`)
+      .nth(locatorNumber);
     const messageNotificationLocator = this.page.locator(
       `:text("${messageNotification}")`,
     );
