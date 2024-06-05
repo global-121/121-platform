@@ -20,8 +20,6 @@ import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
-  const programIdOCW = 3;
-
   const accessToken = await getAccessToken();
 
   await importRegistrationsCSV(
