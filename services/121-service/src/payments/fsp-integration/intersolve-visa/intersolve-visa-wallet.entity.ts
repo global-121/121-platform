@@ -1,5 +1,5 @@
 import { Base121Entity } from '@121-service/src/base.entity';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { Column, Entity, Index, ManyToOne, Relation } from 'typeorm';
 
@@ -24,7 +24,7 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
-//TODO: Split into 2 Entities: IntersolveVisaParentWalletEntity IntersolveVisaChildWalletEntity
+//TODO: Remove this entity after we've released the re-implementation of Intersolve Visa. We need this 'intermediate' to run the migrations.
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
@@ -60,10 +60,7 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ default: 0 })
   public spentThisMonth: number;
 
-  @ManyToOne(
-    () => IntersolveVisaCustomerEntity,
-    (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,
-  )
+  @ManyToOne(() => IntersolveVisaCustomerEntity)
   public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
 
   // TODO: REFACTOR: this function should be moved to the IntersolveVisaService.
