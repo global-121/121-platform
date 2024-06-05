@@ -87,7 +87,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     });
     // Validate Dutch message
     await page.goto(`/program/${programIdOCW}/payment`);
-    await table.clickOnPaNumber(3);
+    await table.clickOnPaNumber(2);
     await registration.openActivityOverviewTab(
       englishTranslations['registration-details']['activity-overview'].filters
         .message,

@@ -62,9 +62,9 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   });
 
   await test.step('Check PA payments and messages', async () => {
-    await tableModule.clickOnPaNumber(1);
+    await tableModule.clickOnPaNumber(2);
 
-    await registrationPage.validateQuantityOfActivity({ quantity: 6 });
+    await registrationPage.validateQuantityOfActivity({ quantity: 8 });
 
     await registrationPage.openActivityOverviewTab(
       englishTranslations['registration-details']['activity-overview'].filters

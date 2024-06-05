@@ -44,7 +44,7 @@ test('[28037] Open the popup to view and edit information', async ({
 
   await test.step('Validate information shown', async () => {
     await registration.validatePiiPopUp({
-      paId: 'PA #1',
+      paId: 'PA #4',
       whatsappLabel: fspIntersolveJumbo.questions[5].label.en,
       saveButtonName: englishTranslations.common.save,
     });
