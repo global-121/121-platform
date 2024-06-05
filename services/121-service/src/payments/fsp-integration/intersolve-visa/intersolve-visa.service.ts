@@ -54,7 +54,6 @@ import {
   IntersolveVisaPaymentInfoEnumBackupName,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-payment-info.enum';
 import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
 import {
   IntersolveVisaWalletEntity,
   IntersolveVisaWalletStatus,
@@ -91,6 +90,7 @@ import { v4 as uuid } from 'uuid';
 //TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
 import { IntersolveVisaTransferDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-transfer.dto';
 import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 
 @Injectable()
 export class IntersolveVisaService
