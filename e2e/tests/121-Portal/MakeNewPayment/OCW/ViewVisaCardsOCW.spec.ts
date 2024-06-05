@@ -42,7 +42,7 @@ test('[28516] View Visa cards', async ({ page }) => {
     await table.clickOnPaNumber(2);
   });
 
-  await test.step('Should validate all possible card statuses at once', async () => {
+  await test.step('Should validate all possible card statuses at once: Paused, Active, Blocked/Substitued', async () => {
     await physicalCard.validateDebitCardStatus(
       englishTranslations['registration-details']['physical-cards-overview']
         .title,
