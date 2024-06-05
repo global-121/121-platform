@@ -627,7 +627,7 @@ export class ProgramsServiceApiService {
     if (sort) {
       params = params.append('sortBy', `${sort.column}:${sort.direction}`);
     } else {
-      params.append(
+      params = params.append(
         'sortBy',
         `${defaultSortOption.column}:${defaultSortOption.direction}`,
       );
