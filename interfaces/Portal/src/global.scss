@@ -271,12 +271,6 @@ ion-button {
   color: var(--ion-color-fiveten-red-700);
 }
 
-.chip {
-  pointer-events: none;
-  background-color: var(--ion-color-fiveten-neutral-100);
-  height: 27px;
-}
-
 ion-input.custom-border {
   &.invalid-border {
     --border-color: var(--ion-color-danger) !important;
