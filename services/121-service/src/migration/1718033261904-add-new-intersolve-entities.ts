@@ -1,16 +1,19 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddNewIntersolveEntities1717513412071
+export class AddNewIntersolveEntities1718033261904
   implements MigrationInterface
 {
-  name = 'AddNewIntersolveEntities1717513412071';
+  name = 'AddNewIntersolveEntities1718033261904';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "121-service"."intersolve_visa_child_wallet" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "tokenCode" character varying NOT NULL, "isLinkedToParentWallet" boolean NOT NULL DEFAULT false, "isTokenBlocked" boolean NOT NULL, "isDebitCardCreated" boolean NOT NULL DEFAULT false, "walletStatus" character varying NOT NULL, "cardStatus" character varying, "lastUsedDate" TIMESTAMP, "lastExternalUpdate" TIMESTAMP, "intersolveVisaParentWalletId" integer, CONSTRAINT "UQ_8d14f1ebd6bb4e145692e264c81" UNIQUE ("tokenCode"), CONSTRAINT "PK_4dc8497d497c3f616b95b81bf4a" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."intersolve_visa_child_wallet" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "intersolveVisaParentWalletId" integer NOT NULL, "tokenCode" character varying NOT NULL, "isLinkedToParentWallet" boolean NOT NULL DEFAULT false, "isTokenBlocked" boolean NOT NULL DEFAULT false, "isDebitCardCreated" boolean NOT NULL DEFAULT false, "walletStatus" character varying NOT NULL, "cardStatus" character varying, "lastUsedDate" TIMESTAMP, "lastExternalUpdate" TIMESTAMP, CONSTRAINT "UQ_8d14f1ebd6bb4e145692e264c81" UNIQUE ("tokenCode"), CONSTRAINT "PK_4dc8497d497c3f616b95b81bf4a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_4612504fc9c5f58e9af93fbb49" ON "121-service"."intersolve_visa_child_wallet" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_59ddd28d67a179d138682da697" ON "121-service"."intersolve_visa_child_wallet" ("intersolveVisaParentWalletId") `,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_8d14f1ebd6bb4e145692e264c8" ON "121-service"."intersolve_visa_child_wallet" ("tokenCode") `,
@@ -34,6 +37,11 @@ export class AddNewIntersolveEntities1717513412071
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
+      `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
+      ['VIEW', 'registration_view', '121-service'],
+    );
+    await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
+    await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_parent_wallet" DROP CONSTRAINT "FK_2975915495fd7289eaad6f47050"`,
     );
     await queryRunner.query(
@@ -50,6 +58,9 @@ export class AddNewIntersolveEntities1717513412071
     );
     await queryRunner.query(
       `DROP INDEX "121-service"."IDX_8d14f1ebd6bb4e145692e264c8"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_59ddd28d67a179d138682da697"`,
     );
     await queryRunner.query(
       `DROP INDEX "121-service"."IDX_4612504fc9c5f58e9af93fbb49"`,
