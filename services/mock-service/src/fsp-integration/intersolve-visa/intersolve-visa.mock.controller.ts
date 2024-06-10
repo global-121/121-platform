@@ -127,8 +127,20 @@ export class IntersolveVisaMockController {
   @Put('/customer/v1/customers/:holderId/contact-info/addresses')
   public updateCustomerAddress(
     @Body() _payload: Record<string, unknown>,
-    @Param('tokenCode') _holderId: string,
+    @Param('holderId') _holderId: string,
   ): { status: number } {
     return this.intersolveVisaMockService.updateCustomerAddress();
+  }
+
+  @ApiOperation({ summary: 'Update customer phonnumber' })
+  @Post('/pointofsale/v1/tokens/:childTokenCode/link-token')
+  public linkToken(
+    @Body() payload: Record<string, string>,
+    @Param('childTokenCode') childTokenCode: string,
+  ): { status: number } {
+    return this.intersolveVisaMockService.linkToken(
+      childTokenCode,
+      payload.tokenCode,
+    );
   }
 }

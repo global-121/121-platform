@@ -4,6 +4,7 @@ import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { HealthModule } from '@121-service/src/health.module';
 import { InstanceModule } from '@121-service/src/instance/instance.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
+import { MigrateVisaModule } from '@121-service/src/migrate-visa/migrate-visa.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
@@ -33,6 +34,7 @@ import { DataSource } from 'typeorm';
     InstanceModule,
     MessageModule,
     MetricsModule,
+    MigrateVisaModule,
     MessageIncomingModule,
     NoteModule,
     ScheduleModule.forRoot(),
