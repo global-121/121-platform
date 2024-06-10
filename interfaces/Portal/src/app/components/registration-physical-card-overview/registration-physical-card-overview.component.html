@@ -22,21 +22,22 @@
           [detail-icon]="'card'"
           (click)="openCardDetails(card)"
         >
-          <ion-label class="card">
+          <ion-label
+            class="physical-card-number util--half-margin-end"
+            [title]="card.tokenCode"
+          >
             <code>{{ card.tokenCode }}</code>
           </ion-label>
-          <ion-label
-            data-testid="card-status-chip"
-            class="ion-text-right"
-            ><ion-chip
-              class="physical-card-status-chip"
-              [ngClass]="
-                'physical-card-status-chip-' +
-                card.status.replace(' ', '-').toLowerCase()
-              "
-              >{{ card.status }}</ion-chip
-            ></ion-label
+          <span
+            data-testid="physical-card-status-badge"
+            class="badge"
+            [ngClass]="
+              'physical-card-status-' +
+              card.status.replace(' ', '-').toLowerCase()
+            "
           >
+            {{ card.status }}
+          </span>
         </ion-item>
       </ion-list>
     </ion-card-content>

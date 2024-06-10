@@ -38,17 +38,14 @@
       <ion-label class="card-key-value">
         {{ 'registration-details.physical-cards-overview.status' | translate }}:
       </ion-label>
-      <ion-label class="ion-text-end">
-        <ion-chip
-          class="physical-card-status-chip"
-          [ngClass]="
-            'physical-card-status-chip-' +
-            card?.status.replace(' ', '-').toLowerCase()
-          "
-        >
-          {{ card?.status }}
-        </ion-chip>
-      </ion-label>
+      <span
+        class="badge"
+        [ngClass]="
+          'physical-card-status-' + card?.status.replace(' ', '-').toLowerCase()
+        "
+      >
+        {{ card?.status }}
+      </span>
     </ion-item>
 
     <!-- Explanation -->

@@ -271,41 +271,6 @@ ion-button {
   color: var(--ion-color-fiveten-red-700);
 }
 
-// for physical card list and popup in registration details page
-.physical-card-status-chip {
-  pointer-events: none;
-  height: 20px;
-  &.physical-card-status-chip-active {
-    background-color: var(--ion-color-fiveten-success-100);
-    color: var(--ion-color-fiveten-success-700);
-  }
-  &.physical-card-status-chip-blocked {
-    background-color: var(--ion-color-fiveten-error-100);
-    color: var(--ion-color-fiveten-error-700);
-  }
-  &.physical-card-status-chip-issued {
-    background-color: var(--ion-color-fiveten-navy-100);
-    color: var(--ion-color-fiveten-link-700);
-  }
-  &.physical-card-status-chip-paused {
-    background-color: var(--ion-color-fiveten-warning-100);
-    color: var(--ion-color-fiveten-warning-700);
-  }
-  &.physical-card-status-chip-unknown {
-    background-color: var(--ion-color-fiveten-warning-100);
-    color: var(--ion-color-fiveten-warning-700);
-  }
-  &.physical-card-status-chip-suspected-fraud {
-    background-color: var(--ion-color-fiveten-error-100);
-    color: var(--ion-color-fiveten-error-700);
-  }
-}
-.chip {
-  pointer-events: none;
-  background-color: var(--ion-color-fiveten-neutral-100);
-  height: 27px;
-}
-
 ion-input.custom-border {
   &.invalid-border {
     --border-color: var(--ion-color-danger) !important;
