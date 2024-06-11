@@ -1,3 +1,4 @@
+import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
@@ -171,19 +172,25 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
-          request.payload,
-        )}`;
-        const responseContent = `Response: ${response.status} ${
-          response.statusText
-        } - Body: ${JSON.stringify(response.data)}`;
+        const requestPayload = JSON.stringify(
+          this.redactSensitiveDataProperties(request.payload),
+        );
+        const responseBody = JSON.stringify(
+          this.redactSensitiveDataProperties(response.data),
+        );
+
+        const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
+        const responseContent = `Response: ${response.status} ${response.statusText} - Body: ${responseBody}`;
+
         // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
         this.defaultClient.trackTrace({
           message: `${requestContent.substring(
             0,
-            16000,
-          )} - ${responseContent.substring(0, 16000)}`,
-          properties: { externalUrl: request.url },
+            16_000,
+          )} - ${responseContent.substring(0, 16_000)}`,
+          properties: {
+            externalUrl: request.url,
+          },
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -198,21 +205,27 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestContent = `URL: ${request.url}. Payload: ${this.stringify(
-          request.payload,
-        )}`;
-        const responseContent = `Response error: ${error.status} ${
-          error.statusText
-        } - Body: ${this.stringify(error.data)}`;
+        const requestPayload = this.stringify(
+          this.redactSensitiveDataProperties(request.payload),
+        );
+        const responseBody = this.stringify(
+          this.redactSensitiveDataProperties(error.data),
+        );
+
+        const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
+        const responseContent = `Response error: ${error.status} ${error.statusText} - Body: ${responseBody}`;
+
         this.defaultClient.trackException({
           // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
           exception: new Error(
             `${requestContent.substring(
               0,
-              16000,
-            )} - ${responseContent.substring(0, 16000)}}`,
+              16_000,
+            )} - ${responseContent.substring(0, 16_000)}}`,
           ),
-          properties: { externalUrl: request.url },
+          properties: {
+            externalUrl: request.url,
+          },
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -236,5 +249,32 @@ export class CustomHttpService {
     });
     cache = null; // reset the cache
     return str;
+  }
+
+  /**
+   * Overwrite sensitive data with "REDACTED" (for specific properties, 1-level deep only)
+   * @param data - Any key-value object
+   * @returns - The same object with sensitive data overwritten/redacted
+   */
+  private redactSensitiveDataProperties(data: any) {
+    const sensitiveProperties = [
+      'password',
+      CookieNames.general,
+      CookieNames.portal,
+    ];
+    for (const property of sensitiveProperties) {
+      const value = data[property] as string;
+      if (value) {
+        data[property] = '**REDACTED**';
+      }
+    }
+
+    // Explicitly mask the full username/email:
+    if (data.username) {
+      data['username'] =
+        `${data.username.substring(0, 3)}${data.username.substring(3).replace(/./g, '*')}`;
+    }
+
+    return data;
   }
 }
