@@ -39,7 +39,7 @@ test('[28479] Re-issue Visa debit cards', async ({ page }) => {
     await navigationModule.navigateToProgramTab(
       englishTranslations.page.program.tab.payment.label,
     );
-    await table.clickOnPaNumber(3);
+    await table.clickOnPaNumber(1);
   });
 
   await test.step('Should validate all possible card statuses at once: Paused, Active, Blocked/Substitued', async () => {
