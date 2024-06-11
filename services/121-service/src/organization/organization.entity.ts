@@ -3,11 +3,11 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity } from 'typeorm';
 
-// TODO: enforce only 1 instance/record in the database
-@Entity('instance')
-export class InstanceEntity extends Base121Entity {
+// TODO: enforce only 1 organization/record in the database
+@Entity('organization')
+export class OrganizationEntity extends Base121Entity {
   @Column()
-  @ApiProperty({ example: 'instance name' })
+  @ApiProperty({ example: 'organization name' })
   public name: string;
 
   @Column('json')

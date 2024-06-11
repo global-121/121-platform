@@ -1,4 +1,4 @@
-import { InstanceEntity } from '@121-service/src/instance/instance.entity';
+import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
@@ -8,7 +8,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProgramEntity, InstanceEntity])],
+  imports: [TypeOrmModule.forFeature([ProgramEntity, OrganizationEntity])],
   providers: [
     RegistrationDataService,
     createScopedRepositoryProvider(RegistrationDataEntity),

@@ -1,7 +1,7 @@
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import intanceLbn from '@121-service/src/seed-data/instance/instance-pilot-lbn.json';
 import messageTemplatePilotLbn from '@121-service/src/seed-data/message-template/message-template-pilot-lbn.json';
+import organizationLbn from '@121-service/src/seed-data/organization/organization-pilot-lbn.json';
 import programPilotLbn from '@121-service/src/seed-data/program/program-pilot-lbn.json';
 import { Injectable } from '@nestjs/common';
 
@@ -21,7 +21,7 @@ export class SeedProgramLbn implements InterfaceScript {
 
     await this.seedHelper.addDefaultUsers(program);
 
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(intanceLbn);
+    // ***** CREATE ORGANIZATION *****
+    await this.seedHelper.addOrganization(organizationLbn);
   }
 }

@@ -1,6 +1,6 @@
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { InstanceEntity } from '@121-service/src/instance/instance.entity';
+import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -34,8 +34,8 @@ class MonitoringQuestionEntity extends CascadeDeleteEntity {
   public options: JSON | null;
 
   // @ts-expect-error monitoringQuestion has been removed since
-  @OneToOne(() => InstanceEntity, (instance) => instance.monitoringQuestion)
-  public instance: InstanceEntity;
+  @OneToOne(() => OrganizationEntity, (instance) => instance.monitoringQuestion)
+  public instance: OrganizationEntity;
 
   @OneToMany(
     () => RegistrationDataEntity,
@@ -147,7 +147,7 @@ export class registrationData1656412499569 implements MigrationInterface {
     const registrationRepo = manager.getRepository(RegistrationEntity);
     const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
     const registrationDataRepo = manager.getRepository(RegistrationDataEntity);
-    const instanceRepo = manager.getRepository(InstanceEntity);
+    const instanceRepo = manager.getRepository(OrganizationEntity);
     const monQuestionRepo = manager.getRepository(MonitoringQuestionEntity);
 
     let instancePilotLVV, instancePilotPV;

@@ -1,7 +1,7 @@
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import instanceDrc from '@121-service/src/seed-data/instance/instance-drc.json';
 import messageTemplateDrc from '@121-service/src/seed-data/message-template/message-template-drc.json';
+import organizationDrc from '@121-service/src/seed-data/organization/organization-drc.json';
 import programDrc from '@121-service/src/seed-data/program/program-drc.json';
 import { Injectable } from '@nestjs/common';
 
@@ -18,7 +18,7 @@ export class SeedProgramDrc implements InterfaceScript {
 
     await this.seedHelper.addDefaultUsers(program);
 
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instanceDrc);
+    // ***** CREATE ORGANIZATION *****
+    await this.seedHelper.addOrganization(organizationDrc);
   }
 }

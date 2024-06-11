@@ -1,5 +1,4 @@
 import { AppDataSource } from '@121-service/src/appdatasource';
-import { InstanceEntity } from '@121-service/src/instance/instance.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
@@ -21,8 +20,6 @@ import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 export class RegistrationDataService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(InstanceEntity)
-  private readonly instanceRepository: Repository<InstanceEntity>;
   public constructor(
     @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
     private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,

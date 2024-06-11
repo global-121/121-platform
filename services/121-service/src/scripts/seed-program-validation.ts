@@ -1,7 +1,7 @@
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import instanceAnonymous from '@121-service/src/seed-data/instance/instance-anonymous.json';
 import messageTemplateValidation from '@121-service/src/seed-data/message-template/message-template-validation.json';
+import organizationAnonymous from '@121-service/src/seed-data/organization/organization-anonymous.json';
 import programValidation from '@121-service/src/seed-data/program/program-validation.json';
 import { Injectable } from '@nestjs/common';
 
@@ -24,7 +24,7 @@ export class SeedProgramValidation implements InterfaceScript {
 
     await this.seedHelper.addDefaultUsers(program);
 
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instanceAnonymous);
+    // ***** CREATE ORGANIZATION *****
+    await this.seedHelper.addOrganization(organizationAnonymous);
   }
 }

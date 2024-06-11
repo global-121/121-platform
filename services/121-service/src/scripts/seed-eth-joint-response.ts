@@ -1,9 +1,9 @@
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import instanceEthJointResponse from '@121-service/src/seed-data/instance/instance-eth-joint-response.json';
 import messageTemplateAne from '@121-service/src/seed-data/message-template/message-template-joint-response-ANE.json';
 import messageTemplateDorcas from '@121-service/src/seed-data/message-template/message-template-joint-response-dorcas.json';
 import messageTemplateEKHCDC from '@121-service/src/seed-data/message-template/message-template-joint-response-EKHCDC.json';
+import organizationEthJointResponse from '@121-service/src/seed-data/organization/organization-eth-joint-response.json';
 import programAne from '@121-service/src/seed-data/program/program-joint-response-ANE.json';
 import programDorcas from '@121-service/src/seed-data/program/program-joint-response-dorcas.json';
 import programEKHCDC from '@121-service/src/seed-data/program/program-joint-response-EKHCDC.json';
@@ -33,9 +33,9 @@ export class SeedEthJointResponse implements InterfaceScript {
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityAne);
 
-    // ***** CREATE INSTANCE *****
-    // Technically multiple instances could be loaded, but that should not be done
-    await this.seedHelper.addInstance(instanceEthJointResponse);
+    // ***** CREATE ORGANIZATION *****
+    // Technically multiple organizations could be loaded, but that should not be done
+    await this.seedHelper.addOrganization(organizationEthJointResponse);
 
     // ************************
     // ***** Program Dorcas *****
