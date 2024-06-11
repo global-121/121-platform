@@ -12,3 +12,6 @@ node_modules
 # Playwright screenshots
 screenshots
 .DS_Store
+
+# Used by openapi-generator script
+121-service-docs.json

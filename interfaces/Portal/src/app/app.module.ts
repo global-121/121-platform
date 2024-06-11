@@ -91,6 +91,20 @@ if (environment.use_sso_azure_entra) {
   ];
 }
 
+import {
+  ApiModule,
+  Configuration,
+  ConfigurationParameters,
+} from '121-service-angular-api';
+
+export function apiConfigFactory(): Configuration {
+  const params: ConfigurationParameters = {
+    // set configuration parameters here.
+    basePath: environment.url_121_service_api.replace('/api', ''),
+  };
+  return new Configuration(params);
+}
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -100,6 +114,7 @@ if (environment.use_sso_azure_entra) {
       innerHTMLTemplatesEnabled: true,
     }),
     AppRoutingModule,
+    ApiModule.forRoot(apiConfigFactory),
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
