@@ -74,12 +74,12 @@ export class RecipientPage implements OnInit, OnDestroy {
   }> {
     const programsMap = {};
 
-    const programs = await this.progamsServiceApiService.getAllPrograms();
+    const programIds = await this.progamsServiceApiService.getAllProgramIds();
 
     const detailedPrograms = [];
-    for (const program of programs) {
+    for (const id of programIds) {
       detailedPrograms.push(
-        await this.progamsServiceApiService.getProgramById(program.id),
+        await this.progamsServiceApiService.getProgramById(id),
       );
     }
 

@@ -29,7 +29,6 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { omit } from 'lodash';
 import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
 
 interface FoundProgram
@@ -77,7 +76,6 @@ export class ProgramService {
     }
 
     const relations = [
-      'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
       'programFspConfiguration',
@@ -92,11 +90,14 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // Program attributes are queried separately because the performance is bad when using relations
+    // Program attributes and questions are queried separately because the performance is bad when using relations
     program.programCustomAttributes =
       await this.programCustomAttributeRepository.find({
         where: { program: { id: programId } },
       });
+    program.programQuestions = await this.programQuestionRepository.find({
+      where: { program: { id: programId } },
+    });
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
@@ -154,37 +155,12 @@ export class ProgramService {
     const programIds = user.programAssignments.map((p) => p.program.id);
     const programs = await this.programRepository.find({
       where: { id: In(programIds) },
-      relations: [
-        'programQuestions',
-        'programCustomAttributes',
-        'financialServiceProviders',
-        'financialServiceProviders.questions',
-        'programFspConfiguration',
-      ],
+      select: ['id'],
     });
     const programsCount = programs.length;
-
-    if (programsCount <= 0) {
-      return {
-        programs: [],
-        programsCount,
-      };
-    }
-
     return {
       programsCount,
-      programs: programs.map((program) => {
-        if (program.financialServiceProviders.length > 0) {
-          program.financialServiceProviders = overwriteProgramFspDisplayName(
-            program.financialServiceProviders,
-            program.programFspConfiguration,
-          );
-
-          return omit(program, ['programFspConfiguration']);
-        }
-
-        return program;
-      }),
+      programIds: programs.map((p) => p.id),
     };
   }
 
