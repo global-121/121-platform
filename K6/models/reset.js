@@ -1,10 +1,12 @@
 import http from 'k6/http';
 
+const baseUrl = __ENV.API_BASE_URL || 'http://localhost:3000';
+
 export default class resetModel
 {
   constructor() {}
   resetDB(powerNumberRegistrations) {
-    const url = `http://localhost:3000/api/scripts/reset?mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true&isApiTests=false&script=nlrc-multiple-mock-data`;
+    const url = `${baseUrl}/api/scripts/reset?mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true&isApiTests=false&script=nlrc-multiple-mock-data`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
