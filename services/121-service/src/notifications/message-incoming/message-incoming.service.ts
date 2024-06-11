@@ -1,4 +1,4 @@
-import { API_PATHS, EXTERNAL_API } from '@121-service/src/config';
+import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   MessageContentType,
@@ -341,7 +341,7 @@ export class MessageIncomingService {
       .getMany();
 
     if (!registrationsWithPhoneNumber.length) {
-      const phoneNumberLog = !!process.env.MOCK_TWILIO
+      const phoneNumberLog = DEBUG
         ? phoneNumber
         : maskValueKeepEnd(phoneNumber, 5);
       console.log(
