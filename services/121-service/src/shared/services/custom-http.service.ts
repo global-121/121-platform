@@ -185,6 +185,7 @@ export class CustomHttpService {
 
         // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
         const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}`;
+
         this.defaultClient.trackTrace({
           message,
           properties: {
@@ -214,14 +215,11 @@ export class CustomHttpService {
         const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
         const responseContent = `Response error: ${error.status} ${error.statusText} - Body: ${responseBody}`;
 
+        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
+        const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}}`;
+
         this.defaultClient.trackException({
-          // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
-          exception: new Error(
-            `${requestContent.substring(
-              0,
-              16_000,
-            )} - ${responseContent.substring(0, 16_000)}}`,
-          ),
+          exception: new Error(message),
           properties: {
             externalUrl: request.url,
           },
@@ -251,9 +249,9 @@ export class CustomHttpService {
   }
 
   /**
-   * Overwrite and/or mask sensitive data with "REDACTED" (only for specific properties, 1-level deep)
+   * Overwrite and/or mask sensitive data (only for specific properties, 1-level deep)
    * @param data - Any key-value object
-   * @returns - A copy of the input-object with sensitive data overwritten/redacted
+   * @returns - A copy of the input-object with some specific data overwritten/redacted
    */
   private redactSensitiveDataProperties(data: any) {
     const sensitiveProperties = [
