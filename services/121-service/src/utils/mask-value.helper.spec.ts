@@ -1,9 +1,9 @@
 import {
-  maskValueEnd,
-  maskValueStart,
+  maskValueKeepEnd,
+  maskValueKeepStart,
 } from '@121-service/src/utils/mask-value.helper';
 
-describe('maskValueStart', () => {
+describe('maskValueKeepStart', () => {
   it('should mask the value by replacing all characters except the FIRST N characters with "*"', () => {
     // Arrange
     const tests = [
@@ -31,7 +31,7 @@ describe('maskValueStart', () => {
 
     tests.forEach((testCase) => {
       // Act
-      const result = maskValueStart(testCase.value, testCase.length);
+      const result = maskValueKeepStart(testCase.value, testCase.length);
 
       // Assert
       expect(result).toBe(testCase.expected);
@@ -53,7 +53,7 @@ describe('maskValueStart', () => {
 
     tests.forEach((testCase) => {
       // Act
-      const result = maskValueStart(testCase.value);
+      const result = maskValueKeepStart(testCase.value);
 
       // Assert
       expect(result).toBe(testCase.expected);
@@ -69,14 +69,14 @@ describe('maskValueStart', () => {
     };
 
     // Act
-    const result = maskValueStart(testCase.value);
+    const result = maskValueKeepStart(testCase.value);
 
     // Assert
     expect(result).toBe(testCase.expected);
   });
 });
 
-describe('maskValueEnd', () => {
+describe('maskValueKeepEnd', () => {
   it('should mask the value by replacing all characters except the LAST N characters with "*"', () => {
     // Arrange
     const tests = [
@@ -104,7 +104,7 @@ describe('maskValueEnd', () => {
 
     tests.forEach((testCase) => {
       // Act
-      const result = maskValueEnd(testCase.value, testCase.length);
+      const result = maskValueKeepEnd(testCase.value, testCase.length);
 
       // Assert
       expect(result).toBe(testCase.expected);
@@ -126,7 +126,7 @@ describe('maskValueEnd', () => {
 
     tests.forEach((testCase) => {
       // Act
-      const result = maskValueEnd(testCase.value);
+      const result = maskValueKeepEnd(testCase.value);
 
       // Assert
       expect(result).toBe(testCase.expected);
@@ -142,7 +142,7 @@ describe('maskValueEnd', () => {
     };
 
     // Act
-    const result = maskValueEnd(testCase.value);
+    const result = maskValueKeepEnd(testCase.value);
 
     // Assert
     expect(result).toBe(testCase.expected);

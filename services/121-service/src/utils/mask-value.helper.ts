@@ -5,7 +5,7 @@
  * @param length Number of characters to keep unmasked (at the START of the input value)
  * @returns The masked string
  */
-export function maskValueStart(value: string, length = 0): string {
+export function maskValueKeepStart(value: string, length = 0): string {
   if (!value) {
     return '';
   }
@@ -20,7 +20,7 @@ export function maskValueStart(value: string, length = 0): string {
  * @param length Number of characters to keep unmasked (at the END of the input value)
  * @returns The masked string
  */
-export function maskValueEnd(value: string, length = 0): string {
+export function maskValueKeepEnd(value: string, length = 0): string {
   if (!value) {
     return '';
   }

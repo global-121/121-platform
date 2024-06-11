@@ -1,5 +1,5 @@
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { maskValueStart } from '@121-service/src/utils/mask-value.helper';
+import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
@@ -272,7 +272,7 @@ export class CustomHttpService {
 
     // Explicitly mask the username/email:
     if (redactedData.username) {
-      redactedData.username = maskValueStart(redactedData.username, 3);
+      redactedData.username = maskValueKeepStart(redactedData.username, 3);
     }
 
     return redactedData;
