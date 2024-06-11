@@ -102,12 +102,12 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getAllPrograms(): Promise<Program[]> {
+  getAllProgramIds(): Promise<number[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/assigned/all')
       .then((response) => {
-        if (response && response.programs) {
-          return response.programs;
+        if (response && response.programIds) {
+          return response.programIds;
         }
         return [];
       })

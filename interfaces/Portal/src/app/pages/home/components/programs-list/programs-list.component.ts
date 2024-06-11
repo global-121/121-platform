@@ -27,10 +27,15 @@ export class ProgramsListComponent implements OnInit {
 
   private async refresh() {
     this.loading = true;
-    const programs = await this.programsService.getAllPrograms();
+    const programIds = await this.programsService.getAllProgramIds();
     this.programStats = await this.programsService.getAllProgramsStats(
-      programs.map((p) => p.id),
+      programIds.map((id) => id),
     );
+    const programs = [];
+    for (const programId of programIds) {
+      const program = await this.programsService.getProgramById(programId);
+      programs.push(program);
+    }
     this.items = this.translateProperties(programs).sort((a, b) =>
       a.created <= b.created ? -1 : 1,
     );
