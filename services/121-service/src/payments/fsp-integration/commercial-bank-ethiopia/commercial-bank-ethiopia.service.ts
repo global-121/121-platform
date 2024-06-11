@@ -371,14 +371,12 @@ export class CommercialBankEthiopiaService
           result.namesMatch =
             pa.fullName.toUpperCase() === cbeName.toUpperCase();
         } else if (pa.fullName && !cbeName) {
-          console.log('### No pa.cbeName', JSON.stringify(paResult));
           result.errorMessage =
             'Could not be matched: did not get a name from CBE for account number';
         } else if (cbeName && !pa.fullName) {
           result.errorMessage =
             'Could not be matched: fullName in 121 is missing';
         } else {
-          console.log('### No pa.cbeName & fullName', JSON.stringify(paResult));
           result.errorMessage =
             'Could not be matched: fullName in 121 is missing and did not get a name from CBE for account number';
         }
