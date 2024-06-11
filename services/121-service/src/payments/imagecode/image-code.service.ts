@@ -121,7 +121,7 @@ export class ImageCodeService {
     const voucherBaseFile = './src/seed-data/voucher/ah-voucher_base.png';
     const barcodeImage = await this.generateBarCodeImage(voucherData.code);
 
-    // See Jimp documentation: https://www.npmjs.com/package/jimp/v/0.16.1
+    // See Jimp documentation: https://www.npmjs.com/package/jimp/v/0.22.12
     const voucher = await Jimp.read(voucherBaseFile).then(async (image) => {
       // Add the generated barcode
       await Jimp.read(barcodeImage).then(async (barcode) => {
