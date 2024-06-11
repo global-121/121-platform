@@ -183,11 +183,9 @@ export class CustomHttpService {
         const responseContent = `Response: ${response.status} ${response.statusText} - Body: ${responseBody}`;
 
         // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
+        const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}`;
         this.defaultClient.trackTrace({
-          message: `${requestContent.substring(
-            0,
-            16_000,
-          )} - ${responseContent.substring(0, 16_000)}`,
+          message,
           properties: {
             externalUrl: request.url,
           },
@@ -262,19 +260,20 @@ export class CustomHttpService {
       CookieNames.general,
       CookieNames.portal,
     ];
+
+    const redactedData = { ...data }; // Shallow copy to avoid mutating the original object
+
     for (const property of sensitiveProperties) {
-      const value = data[property] as string;
-      if (value) {
-        data[property] = '**REDACTED**';
+      if (redactedData[property]) {
+        redactedData[property] = '**REDACTED**';
       }
     }
 
     // Explicitly mask the full username/email:
-    if (data.username) {
-      data['username'] =
-        `${data.username.substring(0, 3)}${data.username.substring(3).replace(/./g, '*')}`;
+    if (redactedData.username) {
+      redactedData.username = `${redactedData.username.substring(0, 3)}${redactedData.username.substring(3).replace(/./g, '*')}`;
     }
 
-    return data;
+    return redactedData;
   }
 }
