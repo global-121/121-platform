@@ -164,7 +164,7 @@ export class OnafriqService
     )}_${generateRandomString(5)}`; // This should be generated or retrieved appropriately
     const mfsSign = this.generateMfsSign(
       process.env.ONAFRIQ_PASSWORD,
-      process.env.ONAFRIQ_BATCH_ID,
+      'onafriq-test-batch-001',
       uniqueKey,
     );
 
@@ -172,7 +172,7 @@ export class OnafriqService
       corporateCode: process.env.ONAFRIQ_CORPORATE_CODE,
       password: process.env.ONAFRIQ_PASSWORD,
       mfsSign: mfsSign,
-      batchId: process.env.ONAFRIQ_BATCH_ID,
+      batchId: 'onafriq-test-batch-001',
       requestBody: [
         {
           instructionType: {
@@ -220,7 +220,7 @@ export class OnafriqService
       ],
     };
 
-    console.log('payload', payload);
+    console.log('payload', JSON.stringify(payload, null, 2));
     return payload;
   }
 
