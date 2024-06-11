@@ -1,4 +1,5 @@
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { maskValueStart } from '@121-service/src/utils/mask-value.helper';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
@@ -250,9 +251,9 @@ export class CustomHttpService {
   }
 
   /**
-   * Overwrite sensitive data with "REDACTED" (for specific properties, 1-level deep only)
+   * Overwrite and/or mask sensitive data with "REDACTED" (only for specific properties, 1-level deep)
    * @param data - Any key-value object
-   * @returns - The same object with sensitive data overwritten/redacted
+   * @returns - A copy of the input-object with sensitive data overwritten/redacted
    */
   private redactSensitiveDataProperties(data: any) {
     const sensitiveProperties = [
@@ -269,9 +270,9 @@ export class CustomHttpService {
       }
     }
 
-    // Explicitly mask the full username/email:
+    // Explicitly mask the username/email:
     if (redactedData.username) {
-      redactedData.username = `${redactedData.username.substring(0, 3)}${redactedData.username.substring(3).replace(/./g, '*')}`;
+      redactedData.username = maskValueStart(redactedData.username, 3);
     }
 
     return redactedData;
