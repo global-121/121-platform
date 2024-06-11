@@ -35,7 +35,7 @@ import { RegistrationsInputValidatorHelpers } from '@121-service/src/registratio
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -301,7 +301,7 @@ export class RegistrationsImportService {
 
   private prepareRegistrationData(
     registration: RegistrationEntity,
-    customData: object,
+    customData: Record<string, unknown>,
     dynamicAttributeRelations: RegistrationDataInfo[],
   ): RegistrationDataEntity[] {
     const registrationDataArray: RegistrationDataEntity[] = [];
@@ -309,25 +309,60 @@ export class RegistrationsImportService {
       if (att.relation.fspQuestionId && att.fspId !== registration.fspId) {
         continue;
       }
-      let values: (boolean | string | undefined)[] = [];
-      if (att.type === CustomAttributeType.boolean) {
-        values.push(
-          RegistrationsInputValidatorHelpers.stringToBoolean(
-            customData[att.name],
-            false,
-          ),
-        );
-      } else if (att.type === CustomAttributeType.text) {
-        values.push(customData[att.name] ? customData[att.name] : '');
-      } else if (att.type === AnswerTypes.multiSelect) {
-        values = customData[att.name].split('|');
-      } else {
-        values.push(customData[att.name]);
+      let values: (boolean | string)[] = [];
+      const customDataForAttribute = customData[att.name];
+      switch (att.type) {
+        case CustomAttributeType.boolean:
+          values.push(
+            RegistrationsInputValidatorHelpers.stringToBoolean(
+              customDataForAttribute,
+              false,
+            ),
+          );
+          break;
+        case CustomAttributeType.text:
+          if (!customDataForAttribute) {
+            values.push('');
+            break;
+          }
+          if (typeof customDataForAttribute !== 'string') {
+            throw new HttpException(
+              `Expected string for attribute ${att.name}, got ${typeof customDataForAttribute}`,
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          values.push(customDataForAttribute);
+          break;
+        case AnswerTypes.multiSelect:
+          if (typeof customDataForAttribute !== 'string') {
+            throw new HttpException(
+              `Expected string for attribute ${att.name}, got ${typeof customDataForAttribute}`,
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          values = customDataForAttribute.split('|');
+          break;
+        default:
+          if (customDataForAttribute !== '' && !customDataForAttribute) {
+            throw new HttpException(
+              `Missing value for attribute ${att.name}`,
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          if (typeof customDataForAttribute !== 'string') {
+            throw new HttpException(
+              `Expected string for attribute ${att.name}, got ${typeof customDataForAttribute}`,
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          values.push(customDataForAttribute);
+          break;
       }
+
       for (const value of values) {
         const registrationData = new RegistrationDataEntity();
         registrationData.registration = registration;
-        registrationData.value = String(value);
+        registrationData.value = value.toString();
         registrationData.programCustomAttributeId =
           att.relation.programCustomAttributeId ?? null;
         registrationData.programQuestionId =

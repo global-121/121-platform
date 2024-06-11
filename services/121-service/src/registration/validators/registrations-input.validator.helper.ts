@@ -1,8 +1,10 @@
 export class RegistrationsInputValidatorHelpers {
+  static stringToBoolean(string: unknown, defaultValue: boolean): boolean;
   static stringToBoolean(
-    string: string | null | undefined,
-    defaultValue?: boolean,
-  ): boolean | undefined {
+    string: unknown,
+    defaultValue?: undefined,
+  ): boolean | undefined;
+  static stringToBoolean(string: unknown, defaultValue?: boolean | undefined) {
     if (typeof string === 'boolean') {
       return string;
     }
@@ -15,6 +17,12 @@ export class RegistrationsInputValidatorHelpers {
       return this.isValueUndefinedOrNull(defaultValue)
         ? undefined
         : defaultValue;
+    }
+
+    if (typeof string !== 'string') {
+      throw new Error(
+        'Invalid input for stringToBoolean function: ' + typeof string,
+      );
     }
 
     switch (string.toLowerCase().trim()) {

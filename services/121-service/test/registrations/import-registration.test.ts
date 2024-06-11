@@ -205,6 +205,26 @@ describe('Import a registration', () => {
     }
   });
 
+  it('should throw an error with a custom atribute set to null', async () => {
+    // Arrange
+    accessToken = await getAccessToken();
+    const registrationVisaCopy = { ...registrationVisa };
+    // @ts-expect-error we are forcing something to be null when it shouldn't be
+    registrationVisaCopy.addressHouseNumber = null;
+
+    // Act
+    const response = await importRegistrations(
+      programIdOCW,
+      [registrationVisaCopy],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toBe(
+      'Missing value for attribute addressHouseNumber',
+    );
+  });
+
   it('should give me a CSV template when I request it', async () => {
     // Arrange
     accessToken = await getAccessToken();
