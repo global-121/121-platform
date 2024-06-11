@@ -36,6 +36,7 @@ export enum GenericAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   fspName = 'fspName',
   maxPayments = 'maxPayments',
+  paymentCount = 'paymentCount',
   scope = 'scope',
   status = 'status',
   registrationProgramId = 'registrationProgramId',

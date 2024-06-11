@@ -36,6 +36,7 @@ function createExportObject(
   Object.keys(exportObject).forEach(
     (key) => !exportObject[key] && delete exportObject[key],
   );
+  exportObject.paymentCount = 0;
   return exportObject;
 }
 
