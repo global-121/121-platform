@@ -58,7 +58,7 @@
     "cookie-parser": "^1.4.6",
     "csv-parser": "^3.0.0",
     "easy-soap-request": "^5.6.1",
-    "jimp": "^0.16.1",
+    "jimp": "^0.22.12",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "nestjs-paginate": "^8.6.2",
@@ -81,7 +81,7 @@
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.0",
-    "@compodoc/compodoc": "^1.1.23",
+    "@compodoc/compodoc": "^1.1.25",
     "@nestjs/cli": "^10.3.2",
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.5.7",
