@@ -13,7 +13,7 @@ import {
 
 @Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
 @Entity('program_fsp_configuration')
-export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
+export class ProgramFinancialServiceProviderConfigurationEntity extends CascadeDeleteEntity {
   @ManyToOne(
     (_type) => ProgramEntity,
     (program) => program.programFspConfiguration,

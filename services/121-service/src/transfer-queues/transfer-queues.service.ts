@@ -1,28 +1,35 @@
-import { Injectable } from '@nestjs/common';
-//TODO: Uncomment all below, some imports and constructor stuff needed to work with the queues.
-//import { InjectQueue } from '@nestjs/bull';
-//import { Queue } from 'bull';
-//import Redis from 'ioredis';
-// import {
-//   ProcessNamePayment,
-//   QueueNamePayment,
-// } from '../payments/enum/queue.names.enum';
-
-//import { REDIS_CLIENT, getRedisSetName } from '../payments/redis-client';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis-client';
 import { CreateIntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/create-intersolve-visa-transfer-job.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
 
 @Injectable()
 export class TransferQueuesService {
-  //public constructor() {} private readonly redisClient: Redis, @Inject(REDIS_CLIENT) private readonly paymentIntersolveVisaQueue: Queue, @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
+  public constructor(
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
+    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
+    private readonly paymentIntersolveVisaQueue: Queue,
+  ) {}
 
-  // TODO: Does this function need to be async?
   public async addIntersolveVisaTransferJobs(
-    _transferJobs: CreateIntersolveVisaTransferJobDto[],
+    transferJobs: CreateIntersolveVisaTransferJobDto[],
   ): Promise<void> {
-    /* TODO: Implement function:
-    - Remove _ from input parameter
-    - Add jobs to queue
-    - Add Redis set thing for monitoring in progress payments.
-  */
+    for (const transferJob of transferJobs) {
+      const job = await this.paymentIntersolveVisaQueue.add(
+        ProcessNamePayment.sendPayment,
+        transferJob,
+      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    }
   }
 }

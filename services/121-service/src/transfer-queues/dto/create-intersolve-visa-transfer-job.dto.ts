@@ -1,4 +1,9 @@
-import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateIntersolveVisaTransferJobDto {
   @IsNotEmpty()
@@ -20,24 +25,24 @@ export class CreateIntersolveVisaTransferJobDto {
   @IsNumber()
   bulkSize: number;
 
-  @IsNotEmpty()
-  name: string;
+  @IsOptional()
+  name?: string;
 
-  @IsNotEmpty()
-  street: string;
+  @IsOptional()
+  addressStreet?: string;
 
-  @IsNotEmpty()
-  houseNumber: string;
+  @IsOptional()
+  addressHouseNumber?: string;
 
-  @IsNotEmpty()
-  houseNumberAddition: string;
+  @IsOptional()
+  addressHouseNumberAddition?: string;
 
-  @IsNotEmpty()
-  postalCode: string;
+  @IsOptional()
+  addressPostalCode?: string;
 
-  @IsNotEmpty()
-  city: string;
+  @IsOptional()
+  addressCity?: string;
 
-  @IsNotEmpty()
-  phoneNumber: string;
+  @IsOptional()
+  phoneNumber?: string;
 }

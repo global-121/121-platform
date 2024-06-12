@@ -1,9 +1,9 @@
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/programs/dto/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/programs/dto/update-program-fsp-configuration.dto';
-import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import {
   Body,
   Controller,
@@ -22,9 +22,9 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramFspConfigurationController {
-  private readonly programFspConfigurationService: ProgramFspConfigurationService;
+  private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService;
   public constructor(
-    programFspConfigurationService: ProgramFspConfigurationService,
+    programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
   ) {
     this.programFspConfigurationService = programFspConfigurationService;
   }
@@ -42,7 +42,7 @@ export class ProgramFspConfigurationController {
   public async findByProgramId(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramFspConfigurationEntity[]> {
+  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
     return this.programFspConfigurationService.findByProgramId(programId);
   }
 
