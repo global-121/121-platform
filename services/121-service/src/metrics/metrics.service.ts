@@ -531,7 +531,7 @@ export class MetricsService {
     return columnDetails.map((row) => {
       const filteredRow = {};
       for (const key in row) {
-        if (row[key]) {
+        if (row[key] != null) {
           filteredRow[key] = row[key];
         }
       }
