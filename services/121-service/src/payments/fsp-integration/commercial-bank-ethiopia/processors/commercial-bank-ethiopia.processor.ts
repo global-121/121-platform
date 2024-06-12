@@ -4,8 +4,8 @@ import {
 } from '@121-service/src/payments/enum/queue.names.enum';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import {
-  getRedisSetName,
   REDIS_CLIENT,
+  getRedisSetName,
 } from '@121-service/src/payments/redis-client';
 import { Process, Processor } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
