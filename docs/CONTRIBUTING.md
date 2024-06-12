@@ -6,7 +6,7 @@ Thanks for helping out!
 
 We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".
 
-When committing your changes, provide a commit message that starts with an appropriate keyword:
+When committing your changes, provide a commit message(-subject) that starts with an appropriate keyword:
 
 - `feat`: new feature for the user
 - `fix`: bug fix for the user
@@ -16,8 +16,29 @@ When committing your changes, provide a commit message that starts with an appro
 - `test`: adding missing tests, refactoring tests; no production code change
 - `chore`: cleanups, version updates etc; no production code change
 
-Add an Azure DevOps task ID at the end of the commit message.  
-For example: "`feat: new feature added to the profile page AB#123456`".
+Let the message be an _*imperative*_ description of the changes. (Don't tell what _you did_, but what this commit will **do** when applied to the code.)  
+So in your head, finish the sentence: "**This commit will... `<verb> <subject> ...`**".
+
+Some examples:
+
+- `feat:` (This commit will) `Add info-button to Profile-page header`
+- `docs:` (This commit will) `Remove confusing/inconsistent terms from helper-functions examples`
+- `refactor:` (This commit will) `Load the program-list fast again`
+- `fix:` (This commit will) `Prevent the user from submitting an empty form`
+
+Also add an Azure DevOps task-ID in the body(after the first line) of the commit message. This will make it a clickable link on GitHub. A mention in the title only gives a one-way link from DevOps to GitHub, not vice-versa.
+
+For example:
+
+```txt
+feat: Add transaction-history to the profile page
+
+See AB#123456
+```
+
+Some additional reading:
+
+- [Commit Often, Perfect Later, Publish Once: Git Best Practices](https://sethrobertson.github.io/GitBestPractices/)
 
 ### Updating dependencies
 
