@@ -280,12 +280,15 @@ export class UserController {
     description: 'No user detectable from cookie or no cookie present',
   })
   public async findMe(@Req() req): Promise<UserRO> {
-    const username = req.user.username;
-    if (!username) {
+    if (!req.user || !req.user.username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return await this.userService.getUserRoByUsernameOrThrow(username);
+
+    return await this.userService.getUserRoByUsernameOrThrow(
+      req.user.username,
+      req.user.exp,
+    );
   }
 
   // This endpoint searches users accross all programs, which is needed to add a user to a program
