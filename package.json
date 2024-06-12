@@ -45,6 +45,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@types/artillery": "^1.7.4"
+    "dotenv": "^16.4.5"
   }
 }
