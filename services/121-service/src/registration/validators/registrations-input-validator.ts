@@ -184,23 +184,24 @@ export class RegistrationsInputValidator {
             } else {
               importRecord[att.name] = row[att.name] ? row[att.name] : ''; // If the phone number is empty use an empty string
             }
-            /*
-             * ============================================================
-             * If an attribute is a numeric or boolean, validate it as such
-             * ============================================================
-             */
-          } else if (validationConfig.validateDynamicAttributes) {
-            const errorObj = this.validateNumericOrBoolean(
-              row[att.name],
-              att.type,
-              att.name,
-              i,
-            );
-            if (errorObj && Object.keys(row).includes(att.name)) {
-              errors.push(errorObj);
-            } else {
-              importRecord[att.name] = row[att.name];
-            }
+            return;
+          }
+
+          /*
+           * ============================================================
+           * If an attribute is anything else, validate it as such
+           * ============================================================
+           */
+          const errorObj = this.validateNonTelephoneDynamicAttribute(
+            row[att.name],
+            att.type,
+            att.name,
+            i,
+          );
+          if (errorObj && Object.keys(row).includes(att.name)) {
+            errors.push(errorObj);
+          } else {
+            importRecord[att.name] = row[att.name];
           }
         }),
       );
@@ -485,13 +486,13 @@ export class RegistrationsInputValidator {
     return { errorObj: undefined, sanitized };
   }
 
-  private validateNumericOrBoolean(
+  private validateNonTelephoneDynamicAttribute(
     value: string,
     type: string,
     columnName: string,
     i: number,
   ): ValidateRegistrationErrorObjectDto | undefined {
-    const cleanedValue = this.cleanNumericOrBoolean(value, type);
+    const cleanedValue = this.cleanNonTelephoneDynamicAttribute(value, type);
     if (cleanedValue === null) {
       const errorObj = {
         lineNumber: i + 1,
@@ -503,22 +504,27 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private cleanNumericOrBoolean(
+  private cleanNonTelephoneDynamicAttribute(
     value: string,
     type: string,
   ): number | boolean | string | null {
-    if (type === AnswerTypes.numeric) {
-      // Convert the value to a number and return it
-      // If the value is not a number, return null
-      return isNaN(Number(value)) ? null : Number(value);
-    } else if (type === CustomAttributeType.boolean) {
-      // Convert the value to a boolean and return it
-      // If the value is not a boolean, return null
-      const convertedValue =
-        RegistrationsInputValidatorHelpers.stringToBoolean(value);
-      return convertedValue === undefined ? null : convertedValue;
+    switch (type) {
+      case AnswerTypes.numeric:
+        if (value == null) {
+          return null;
+        }
+        // Convert the value to a number and return it
+        // If the value is not a number, return null
+        return isNaN(Number(value)) ? null : Number(value);
+      case CustomAttributeType.boolean:
+        // Convert the value to a boolean and return it
+        // If the value is not a boolean, return null
+        const convertedValue =
+          RegistrationsInputValidatorHelpers.stringToBoolean(value);
+        return convertedValue === undefined ? null : convertedValue;
+      default:
+        // If the type is neither numeric nor boolean, return the original value
+        return value;
     }
-    // If the type is neither numeric nor boolean, return the original value
-    return value;
   }
 }
