@@ -29,7 +29,7 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
+import { DataSource, QueryFailedError, Repository } from 'typeorm';
 
 interface FoundProgram
   extends Omit<
@@ -153,14 +153,11 @@ export class ProgramService {
     const user =
       await this.userService.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map((p) => p.program.id);
-    const programs = await this.programRepository.find({
-      where: { id: In(programIds) },
-      select: ['id'],
-    });
-    const programsCount = programs.length;
+
+    const programsCount = programIds.length;
     return {
       programsCount,
-      programIds: programs.map((p) => p.id),
+      programIds: programIds,
     };
   }
 
