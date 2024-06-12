@@ -4,8 +4,8 @@ import {
 } from '@121-service/src/payments/enum/queue.names.enum';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import {
-  getRedisSetName,
   REDIS_CLIENT,
+  getRedisSetName,
 } from '@121-service/src/payments/redis-client';
 import { Process, Processor } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';

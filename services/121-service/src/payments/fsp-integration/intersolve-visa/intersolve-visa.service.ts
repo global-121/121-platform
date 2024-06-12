@@ -6,15 +6,10 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   PaTransactionResultDto,
   TransactionNotificationObject,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/payments/enum/queue.names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import {
   BlockReasonEnum,
@@ -48,7 +43,10 @@ import {
 import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { IntersolveVisaTransferDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-transfer.dto';
 import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
+import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import {
   IntersolveVisaPaymentInfoEnum,
   IntersolveVisaPaymentInfoEnumBackupName,
@@ -62,11 +60,11 @@ import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integrat
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import {
-  getRedisSetName,
   REDIS_CLIENT,
+  getRedisSetName,
 } from '@121-service/src/payments/redis-client';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationsRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
@@ -79,26 +77,15 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
 import Redis from 'ioredis';
-import { Equal, Repository } from 'typeorm';
+import { Equal } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
-//TODO: Remove this import, as queueing logic moves to the TransferQueuesModule
-import { IntersolveVisaTransferDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-transfer.dto';
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 
 @Injectable()
 export class IntersolveVisaService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
-
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -106,9 +93,8 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
-    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
-    private readonly paymentIntersolveVisaQueue: Queue,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationsRepository,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
     private intersolveVisaCustomerScopedRepo: ScopedRepository<IntersolveVisaCustomerEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVisaWalletEntity))
@@ -243,25 +229,8 @@ export class IntersolveVisaService
     return reversed;
   }
 
-  // TODO: Remove this function, remaining logic (only add to queue stuff) goes into TransferQueuesService.addIntersolveVisaTransferJobs
-  public async sendPayment(
-    paymentList: PaPaymentDataDto[],
-    programId: number,
-    paymentNr: number,
-  ): Promise<void> {
-    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
-
-    for (const paymentDetails of paymentDetailsArray) {
-      paymentDetails.programId = programId;
-      paymentDetails.paymentNr = paymentNr;
-      paymentDetails.bulkSize = paymentList[0].bulkSize;
-      paymentDetails.programId = programId;
-      const job = await this.paymentIntersolveVisaQueue.add(
-        ProcessNamePayment.sendPayment,
-        paymentDetails,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+  public async sendPayment(): Promise<void> {
+    // TODO: REFACTOR: Remove this function when the other FSP Services have been refactored
   }
 
   private async getTransactionAmountPerRegistration(
@@ -290,8 +259,11 @@ export class IntersolveVisaService
     } else {
       // If no programId is provided, use Bull's method to get the total delayed count
       // This requires an instance of the Bull queue
-      const delayedCount =
-        await this.paymentIntersolveVisaQueue.getDelayedCount();
+
+      // TODO: Find out how to get the total delayed count without an instance of the queue
+      // const delayedCount =
+      //   await this.paymentIntersolveVisaQueue.getDelayedCount();
+      const delayedCount = 0;
       return delayedCount;
     }
   }
@@ -315,29 +287,6 @@ export class IntersolveVisaService
       paymentRequestResultPerPa,
       transactionRelationDetails,
     );
-  }
-
-  // TODO: Remove this function (logic moves to PaymentsService.createIntersolveVisaTransferJobs and/or related private funcions in PaymentsService)
-  private async getPaPaymentDetails(
-    paymentList: PaPaymentDataDto[],
-  ): Promise<PaymentDetailsDto[]> {
-    const referenceIds = paymentList.map((pa) => pa.referenceId);
-    const relationOptions = await this.getRelationOptionsForVisa(
-      referenceIds[0],
-    );
-    const visaAddressInfoDtoArray =
-      await this.registrationDataQueryService.getPaDetails(
-        referenceIds,
-        relationOptions,
-      );
-
-    // Maps the registration data back to the correct amounts using referenceID
-    const result = visaAddressInfoDtoArray.map((v) => ({
-      ...v,
-      ...paymentList.find((s) => s.referenceId === v.referenceId),
-    }));
-
-    return result;
   }
 
   // TODO: Remove this function (logic moves to PaymentsService.createIntersolveVisaTransferJobs and/or related private funcions in PaymentsService)
