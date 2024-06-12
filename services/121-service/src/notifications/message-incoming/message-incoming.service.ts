@@ -1,4 +1,4 @@
-import { API_PATHS, EXTERNAL_API } from '@121-service/src/config';
+import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   MessageContentType,
@@ -28,6 +28,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -340,9 +341,9 @@ export class MessageIncomingService {
       .getMany();
 
     if (!registrationsWithPhoneNumber.length) {
-      const phoneNumberLog = !!process.env.MOCK_TWILIO
+      const phoneNumberLog = DEBUG
         ? phoneNumber
-        : phoneNumber.substr(-5).padStart(phoneNumber.length, '*');
+        : maskValueKeepEnd(phoneNumber, 5);
       console.log(
         'Incoming WhatsApp-message from non-registered phone-number: ',
         phoneNumberLog,

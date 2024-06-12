@@ -1,3 +1,5 @@
+import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
@@ -171,19 +173,24 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
-          request.payload,
-        )}`;
-        const responseContent = `Response: ${response.status} ${
-          response.statusText
-        } - Body: ${JSON.stringify(response.data)}`;
+        const requestPayload = JSON.stringify(
+          this.redactSensitiveDataProperties(request.payload),
+        );
+        const responseBody = JSON.stringify(
+          this.redactSensitiveDataProperties(response.data),
+        );
+
+        const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
+        const responseContent = `Response: ${response.status} ${response.statusText} - Body: ${responseBody}`;
+
         // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
+        const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}`;
+
         this.defaultClient.trackTrace({
-          message: `${requestContent.substring(
-            0,
-            16000,
-          )} - ${responseContent.substring(0, 16000)}`,
-          properties: { externalUrl: request.url },
+          message,
+          properties: {
+            externalUrl: request.url,
+          },
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -198,21 +205,24 @@ export class CustomHttpService {
   ): void {
     if (this.defaultClient) {
       try {
-        const requestContent = `URL: ${request.url}. Payload: ${this.stringify(
-          request.payload,
-        )}`;
-        const responseContent = `Response error: ${error.status} ${
-          error.statusText
-        } - Body: ${this.stringify(error.data)}`;
+        const requestPayload = this.stringify(
+          this.redactSensitiveDataProperties(request.payload),
+        );
+        const responseBody = this.stringify(
+          this.redactSensitiveDataProperties(error.data),
+        );
+
+        const requestContent = `URL: ${request.url}. Payload: ${requestPayload}`;
+        const responseContent = `Response error: ${error.status} ${error.statusText} - Body: ${responseBody}`;
+
+        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
+        const message = `${requestContent.substring(0, 16_000)} - ${responseContent.substring(0, 16_000)}}`;
+
         this.defaultClient.trackException({
-          // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
-          exception: new Error(
-            `${requestContent.substring(
-              0,
-              16000,
-            )} - ${responseContent.substring(0, 16000)}}`,
-          ),
-          properties: { externalUrl: request.url },
+          exception: new Error(message),
+          properties: {
+            externalUrl: request.url,
+          },
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -236,5 +246,33 @@ export class CustomHttpService {
     });
     cache = null; // reset the cache
     return str;
+  }
+
+  /**
+   * Overwrite and/or mask sensitive data (only for specific properties, 1-level deep)
+   * @param data - Any key-value object
+   * @returns - A copy of the input-object with some specific data overwritten/redacted
+   */
+  private redactSensitiveDataProperties(data: any) {
+    const sensitiveProperties = [
+      'password',
+      CookieNames.general,
+      CookieNames.portal,
+    ];
+
+    const redactedData = { ...data }; // Shallow copy to avoid mutating the original object
+
+    for (const property of sensitiveProperties) {
+      if (redactedData[property]) {
+        redactedData[property] = '**REDACTED**';
+      }
+    }
+
+    // Explicitly mask the username/email:
+    if (redactedData.username) {
+      redactedData.username = maskValueKeepStart(redactedData.username, 3);
+    }
+
+    return redactedData;
   }
 }
