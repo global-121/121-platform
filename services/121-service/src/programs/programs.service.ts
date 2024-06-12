@@ -20,7 +20,6 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-con
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramsRO } from '@121-service/src/programs/program.interface';
 import { overwriteProgramFspDisplayName } from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
@@ -147,18 +146,6 @@ export class ProgramService {
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(programEntity);
     return programDto;
-  }
-
-  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
-    const user =
-      await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = user.programAssignments.map((p) => p.program.id);
-
-    const programsCount = programIds.length;
-    return {
-      programsCount,
-      programIds: programIds,
-    };
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {

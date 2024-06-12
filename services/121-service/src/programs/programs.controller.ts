@@ -13,7 +13,6 @@ import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.d
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramsRO } from '@121-service/src/programs/program.interface';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -93,23 +92,6 @@ export class ProgramController {
     } else {
       return await this.programService.findProgramOrThrow(programId, userId);
     }
-  }
-
-  @AuthenticatedUser()
-  @ApiOperation({ summary: 'Get all assigned programs for a user' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Return all assigned programs for a user.',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
-  // TODO: REFACTOR: into GET /api/users/:userid/programs
-  @Get('assigned/all')
-  public async getAssignedPrograms(@Req() req: any): Promise<ProgramsRO> {
-    const userId = req.user.id;
-    return await this.programService.getAssignedPrograms(userId);
   }
 
   @AuthenticatedUser({ isAdmin: true })

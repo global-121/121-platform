@@ -42,6 +42,16 @@ export class AuthService {
     return this.getUserFromStorage() !== null;
   }
 
+  public getAssignedProgramIds(user?: User | null): number[] {
+    if (!user) {
+      user = this.getUserFromStorage();
+    }
+    const assignedProgramIds = user
+      ? Object.keys(user.permissions).map(Number)
+      : [];
+    return assignedProgramIds;
+  }
+
   private isAssignedToProgram(programId: number, user?: User | null): boolean {
     if (!user) {
       user = this.getUserFromStorage();
