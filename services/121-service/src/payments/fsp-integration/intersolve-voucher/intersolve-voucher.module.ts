@@ -14,7 +14,7 @@ import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.
 import { RedisModule } from '@121-service/src/payments/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
@@ -39,7 +39,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
-      ProgramFspConfigurationEntity,
+      ProgramFinancialServiceProviderConfigurationEntity,
       ProgramAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
     ]),
