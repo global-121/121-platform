@@ -5,11 +5,11 @@ const baseUrl = __ENV.API_BASE_URL || 'http://localhost:3000';
 export default class loginModel
 {
   constructor() {}
-  createPayment() {
+  login() {
     const url = `${baseUrl}/api/users/login`;
     const payload = JSON.stringify({
-      username: "admin@example.org",
-      password: "password"
+      username: __ENV.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      password: __ENV.USERCONFIG_121_SERVICE_PASSWORD_ADMIN
     });
     const params = {
       headers: {

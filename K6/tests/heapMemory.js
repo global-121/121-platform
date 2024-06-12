@@ -2,10 +2,12 @@ import { sleep, check } from 'k6';
 import resetModel from '../models/reset.js';
 import paymentsModel from '../models/payments.js';
 import loginModel from '../models/login.js';
+import programsModel from '../models/programs.js';
 
 const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
+const programsPage = new programsModel();
 
 export const options = {
   thresholds: {
@@ -28,7 +30,7 @@ export default function () {
   });
 
   // login
-  const login = loginPage.createPayment();
+  const login = loginPage.login();
   check(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
@@ -40,7 +42,7 @@ export default function () {
   });
 
   // create payment
-  const payment = paymentsPage.createPayment('2');
+  const payment = paymentsPage.createPayment('3');
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
     'Payment time is less than 400ms': (r) => {
@@ -51,7 +53,17 @@ export default function () {
     },
   });
 
-  // ADD SEND BULK MESSAGE OR STATUS CHANGE BULK
+  // send bulk message
+  const message = programsPage.sendBulkMessage(3);
+  check(message, {
+    'Message succesfull status was 202': (r) => r.status == 202,
+    'Message time is less than 400ms': (r) => {
+      if (r.timings.duration >= 400) {
+        console.log(`Message time was ${r.timings.duration}ms`);
+      }
+      return r.timings.duration < 400;
+    },
+  });
 
   sleep(1);
 }
