@@ -282,8 +282,9 @@ export class RegistrationsBulkService {
     includeSendMessageProperties = false,
     includeStatusChangeProperties = false,
     usedPlaceholders?: string[],
+    selectColumns: string[] = [],
   ): PaginateQuery {
-    query.select = ['referenceId', 'programId'];
+    query.select = ['referenceId', 'programId', ...selectColumns];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
       query.select.push('financialServiceProvider');
@@ -307,6 +308,23 @@ export class RegistrationsBulkService {
     return query;
   }
 
+  public getRegistrationsForPaymentQuery(
+    referenceIds: string[],
+    dataFieldNames: string[],
+  ) {
+    return this.setQueryPropertiesBulkAction(
+      {
+        path: '',
+        filter: { referenceId: `$in:${referenceIds.join(',')}` },
+      },
+      true,
+      false,
+      false,
+      [],
+      dataFieldNames,
+    );
+  }
+  y;
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
     registrationStatus?: RegistrationStatusEnum,
