@@ -4,8 +4,8 @@ import {
   ScopedUserRequestWithUser,
 } from '@121-service/src/shared/scoped-user-request';
 import {
-  convertToScopedOptions,
   FindOptionsCombined,
+  convertToScopedOptions,
 } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';

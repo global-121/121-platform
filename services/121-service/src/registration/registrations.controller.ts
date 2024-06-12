@@ -55,7 +55,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
+import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
