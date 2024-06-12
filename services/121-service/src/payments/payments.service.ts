@@ -2,6 +2,7 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
 import {
   CsvInstructions,
   ExportFileType,
@@ -46,6 +47,8 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { CreateIntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/create-intersolve-visa-transfer-job.dto';
+import { TransferQueuesService } from '@121-service/src/transfer-queues/transfer-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -61,6 +64,7 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   private fspWithQueueServiceMapping = {
+    // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
     [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
     [FinancialServiceProviderName.intersolveVoucherPaper]:
       this.intersolveVoucherService,
@@ -83,6 +87,7 @@ export class PaymentsService {
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
+    // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly intersolveJumboService: IntersolveJumboService,
     private readonly africasTalkingService: AfricasTalkingService,
@@ -97,6 +102,8 @@ export class PaymentsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
+    private readonly transferQueuesService: TransferQueuesService,
+    private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
   ) {
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
@@ -107,6 +114,7 @@ export class PaymentsService {
         this.intersolveVoucherService,
         false,
       ],
+      // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
       [FinancialServiceProviderName.intersolveVisa]: [
         this.intersolveVisaService,
       ],
@@ -273,7 +281,7 @@ export class PaymentsService {
         payment,
         amount,
         referenceIds,
-        registrationsForPayment.length,
+        referenceIds.length,
       )
         .catch((e) => {
           this.azureLogService.logError(e, true);
@@ -583,31 +591,74 @@ export class PaymentsService {
     );
   }
 
-  // TODO: Needed to add _'s to allow unused parameters, as this function is not yet implemented
+  /**
+   * Creates and adds Intersolve Visa transfer jobs.
+   *
+   * This method is responsible for creating transfer jobs for Intersolve Visa. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transfer queue.
+   *
+   * @param {string[]} referenceIds - The reference IDs for the transfer jobs.
+   * @param {number} programId - The ID of the program.
+   * @param {number} paymentAmount - The amount to be transferred.
+   * @param {number} paymentNumber - The payment number.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transfer jobs have been created and added.
+   *
+   */
   private async createAndAddIntersolveVisaTransferJobs(
     referenceIds: string[],
-    _programId: number,
-    _paymentAmount: number,
-    _paymentNumber: number,
+    programId: number,
+    paymentAmount: number,
+    paymentNumber: number,
   ): Promise<void> {
-    /* TODO: continue implementing this function:
-    - Call getPaymentListForRetry to determine if this is a retry attempt, then get the transfer amount from the transaction instead of calculating it with paymentAmountMultiplier. REFACTOR: with segregation of duties implementation.
-    - Get necessary PA data (see getPaPaymentDetails etc. logic in IntersolveVisaService.sendPayment)
-    - Map PA data to FSP specific DTO: CreateIntersolveVisaTransferJobDto, see Miro for how the DTO will look like
-    - Call to be created TransferQueues.addIntersolveVisaTransferJobs(createIntersolveVisaTransferJobDto[])
-    */
-
-    // TODO: Fill with the list of fields we want
-    // TODO: Get these fieldNames from the FinancialServiceProviderQuestions
-    const dataFieldNames = [];
-
-    // Get necessary Registration and RegistrationData data
-    await this.registrationScopedRepository.getRegistrationsWithData(
-      referenceIds,
-      dataFieldNames,
+    const intersolveVisaQuestions =
+      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+        FinancialServiceProviderName.intersolveVisa,
+      );
+    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
+      (q) => q.name,
     );
-    // TODO: Map name dynamically with the help of ProgramFinancialServiceProviderConfigurations
-    // TODO: Add missing call to addIntersolveVisaTransferJobs() here
+    const dataFieldNames = [
+      'fullName',
+      'phoneNumber',
+      ...intersolveVisaQuestionNames,
+    ];
+    const paginateQuery =
+      this.registrationsBulkService.getRegistrationsForPaymentQuery(
+        referenceIds,
+        dataFieldNames,
+      );
+
+    const registrationViews =
+      await this.registrationsPaginationService.getRegistrationsChunked(
+        programId,
+        paginateQuery,
+        4000,
+      );
+
+    const intersolveVisaTransferJobs: CreateIntersolveVisaTransferJobDto[] =
+      registrationViews.map(
+        (registrationView): CreateIntersolveVisaTransferJobDto => {
+          return {
+            programId: programId,
+            paymentNumber: paymentNumber,
+            referenceId: registrationView.referenceId,
+            transactionAmount: paymentAmount,
+            bulkSize: referenceIds.length,
+            name: registrationView['fullName'],
+            addressStreet: registrationView['addressStreet'],
+            addressHouseNumber: registrationView['addressHouseNumber'],
+            addressHouseNumberAddition:
+              registrationView['addressHouseNumberAddition'],
+            addressPostalCode: registrationView['addressPostalCode'],
+            addressCity: registrationView['addressCity'],
+            phoneNumber: registrationView.phoneNumber,
+          };
+        },
+      );
+    await this.transferQueuesService.addIntersolveVisaTransferJobs(
+      intersolveVisaTransferJobs,
+    );
   }
 
   private failedTransactionForRegistrationAndPayment(
