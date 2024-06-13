@@ -5,9 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.121.0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.122.0...main)
 
 ---
+
+## [1.122.0](https://github.com/global-121/121-platform/compare/v1.121.0...v1.122.0)- 2024-06-13
+
+### Added
+
+- [AB#28400](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28400) Filter for "payments so far"
+- [AB#28574](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28574) Log proper errors on null dynamic attributes
+
+### Fixed
+
+- [AB#28422](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28422) Fix default sort order (by registration created) in PA table
+- [AB#28503](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28503) Fix card status colors
+- [AB#28210](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28210) Fix NLRC programs loading slowly
+
+### Technical
+
+- [AB#27995](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27995) Enable strict mode
+- [AB#28493](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28493) Change instance to organisation
+- [AB#28559](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28559) Redact specific data before logging it
 
 ## [1.121.0](https://github.com/global-121/121-platform/compare/v1.120.0...v1.121.0)- 2024-06-05
 
