@@ -8,8 +8,8 @@ export default class paymentsModel
   createPayment(programId) {
     const url = `${baseUrl}/api/programs/${programId}/payments`;
     const payload = JSON.stringify({
-      payment: 1,
-      amount: 10
+      payment: 3,
+      amount: 10,
     });
     const params = {
       headers: {

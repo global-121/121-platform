@@ -35,6 +35,7 @@ export default function () {
 
   // do the payment
   const payment = paymentsPage.createPayment(3);
+  console.log(payment.body);
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
   });
