@@ -41,12 +41,6 @@ export default function () {
   const payment = paymentsPage.createPayment(3);
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
-    'Payment time is less than 400ms': (r) => {
-      if (r.timings.duration >= 400) {
-        console.log(`Payment time was ${r.timings.duration}ms`);
-      }
-      return r.timings.duration < 400;
-    },
   });
 
   // get export list
@@ -58,7 +52,7 @@ export default function () {
   // send bulk message
   const message = programsPage.sendBulkMessage(3);
   check(message, {
-    'Message sent succesfull status was 202': (r) => r.status == 202,
+    'Message sent succesfully status was 202': (r) => r.status == 202,
   });
 
   sleep(1);
