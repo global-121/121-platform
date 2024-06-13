@@ -240,6 +240,7 @@ export class MetricsService {
         preferredLanguage: null,
         financialserviceprovider: null,
         paymentAmountMultiplier: null,
+        paymentCount: null,
       };
       return {
         ...objectOrder,
@@ -395,6 +396,7 @@ export class MetricsService {
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.registrationCreatedDate,
       GenericAttributes.fspDisplayName,
+      GenericAttributes.paymentCount,
     ] as string[];
 
     const program = await this.programRepository.findOneByOrFail({
@@ -529,7 +531,7 @@ export class MetricsService {
     return columnDetails.map((row) => {
       const filteredRow = {};
       for (const key in row) {
-        if (row[key]) {
+        if (row[key] != null) {
           filteredRow[key] = row[key];
         }
       }

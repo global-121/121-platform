@@ -42,16 +42,23 @@ export class ProgramAttributesService {
       (paAttribute: Attribute) => paAttribute.name,
     );
 
-    let filterableAttributeNames = [
-      {
-        group: 'payments',
-        filters: [
-          'failedPayment',
-          'waitingPayment',
-          'successPayment',
-          'notYetSentPayment',
-        ],
-      },
+    const paymentGroup = {
+      group: 'payments',
+      filters: [
+        'failedPayment',
+        'waitingPayment',
+        'successPayment',
+        'notYetSentPayment',
+        'paymentCount',
+      ],
+    };
+    if (program.enableMaxPayments) {
+      paymentGroup.filters.push('maxPayments');
+      paymentGroup.filters.push('paymentCountRemaining');
+    }
+
+    const filterableAttributeNames = [
+      paymentGroup,
       {
         group: 'messages',
         filters: ['lastMessageStatus'],
@@ -63,17 +70,6 @@ export class ProgramAttributesService {
         ],
       },
     ];
-    if (program.enableMaxPayments) {
-      filterableAttributeNames = [
-        ...filterableAttributeNames,
-        ...[
-          {
-            group: 'maxPayments',
-            filters: ['maxPayments', 'paymentCount', 'paymentCountRemaining'],
-          },
-        ],
-      ];
-    }
 
     const filterableAttributes: {
       group: string;
