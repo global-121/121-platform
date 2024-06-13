@@ -20,7 +20,6 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-con
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramsRO } from '@121-service/src/programs/program.interface';
 import { overwriteProgramFspDisplayName } from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
@@ -29,8 +28,7 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { omit } from 'lodash';
-import { DataSource, In, QueryFailedError, Repository } from 'typeorm';
+import { DataSource, QueryFailedError, Repository } from 'typeorm';
 
 interface FoundProgram
   extends Omit<
@@ -77,7 +75,6 @@ export class ProgramService {
     }
 
     const relations = [
-      'programQuestions',
       'financialServiceProviders',
       'financialServiceProviders.questions',
       'programFspConfiguration',
@@ -92,11 +89,14 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // Program attributes are queried separately because the performance is bad when using relations
+    // Program attributes and questions are queried separately because the performance is bad when using relations
     program.programCustomAttributes =
       await this.programCustomAttributeRepository.find({
         where: { program: { id: programId } },
       });
+    program.programQuestions = await this.programQuestionRepository.find({
+      where: { program: { id: programId } },
+    });
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
@@ -146,46 +146,6 @@ export class ProgramService {
     const programDto: ProgramReturnDto =
       this.fillProgramReturnDto(programEntity);
     return programDto;
-  }
-
-  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
-    const user =
-      await this.userService.findUserProgramAssignmentsOrThrow(userId);
-    const programIds = user.programAssignments.map((p) => p.program.id);
-    const programs = await this.programRepository.find({
-      where: { id: In(programIds) },
-      relations: [
-        'programQuestions',
-        'programCustomAttributes',
-        'financialServiceProviders',
-        'financialServiceProviders.questions',
-        'programFspConfiguration',
-      ],
-    });
-    const programsCount = programs.length;
-
-    if (programsCount <= 0) {
-      return {
-        programs: [],
-        programsCount,
-      };
-    }
-
-    return {
-      programsCount,
-      programs: programs.map((program) => {
-        if (program.financialServiceProviders.length > 0) {
-          program.financialServiceProviders = overwriteProgramFspDisplayName(
-            program.financialServiceProviders,
-            program.programFspConfiguration,
-          );
-
-          return omit(program, ['programFspConfiguration']);
-        }
-
-        return program;
-      }),
-    };
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {

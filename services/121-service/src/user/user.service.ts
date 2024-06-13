@@ -32,7 +32,7 @@ import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
-import { UserRO } from '@121-service/src/user/user.interface';
+import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
@@ -493,7 +493,10 @@ export class UserService {
     return user;
   }
 
-  public async getUserRoByUsernameOrThrow(username: string): Promise<UserRO> {
+  public async getUserRoByUsernameOrThrow(
+    username: string,
+    tokenExpiration?: number,
+  ): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: username },
       relations: [
@@ -506,7 +509,8 @@ export class UserService {
       const errors = `User not found'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return await this.buildUserRO(user);
+
+    return await this.buildUserRO(user, tokenExpiration);
   }
 
   public generateJWT(user: UserEntity): string {
@@ -546,10 +550,13 @@ export class UserService {
     }
   }
 
-  private async buildUserRO(user: UserEntity): Promise<UserRO> {
+  private async buildUserRO(
+    user: UserEntity,
+    tokenExpiration?: number,
+  ): Promise<UserRO> {
     const permissions = await this.buildPermissionsObject(user.id);
 
-    const userRO = {
+    const userData: UserData = {
       id: user.id,
       username: user.username ?? undefined,
       permissions,
@@ -557,7 +564,17 @@ export class UserService {
       isEntraUser: user.isEntraUser,
       lastLogin: user.lastLogin ?? undefined,
     };
-    return { user: userRO };
+
+    // For SSO-users, token expiration is handled by Azure
+    if (
+      !process.env.USE_SSO_AZURE_ENTRA &&
+      !user.isEntraUser &&
+      tokenExpiration
+    ) {
+      userData.expires = new Date(tokenExpiration * 1_000);
+    }
+
+    return { user: userData };
   }
 
   private async buildPermissionsObject(userId: number): Promise<any> {

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AppRoutes } from './app-routes.enum';
 import { AuthService } from './auth/auth.service';
 import { LanguageService } from './services/language.service';
 import { LoggingService } from './services/logging.service';
@@ -32,13 +33,22 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnInit(): void {
+  public async ngOnInit() {
     if (this.useSso) {
       this.authService.logoutNonSsoUser();
 
       this.msalSubscription = this.msalService
         .handleRedirectObservable()
         .subscribe();
+    }
+
+    if (
+      // Do not check the current users' logged-in state on "login-related" pages:
+      ![AppRoutes.login, AppRoutes.auth].includes(
+        window.location.pathname.substring(1) as AppRoutes,
+      )
+    ) {
+      this.authService.refreshCurrentUser();
     }
   }
 

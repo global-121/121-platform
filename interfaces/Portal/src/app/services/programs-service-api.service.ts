@@ -102,21 +102,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getAllPrograms(): Promise<Program[]> {
-    return this.apiService
-      .get(environment.url_121_service_api, '/programs/assigned/all')
-      .then((response) => {
-        if (response && response.programs) {
-          return response.programs;
-        }
-        return [];
-      })
-      .catch((error) => {
-        console.error('Error: ', error);
-        return [];
-      });
-  }
-
   async getAllProgramsStats(programIds: number[]): Promise<ProgramStats[]> {
     const programStats: ProgramStats[] = [];
 

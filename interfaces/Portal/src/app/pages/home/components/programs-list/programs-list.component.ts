@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/auth.service';
 import { Program, ProgramStats } from '../../../../models/program.model';
 import { ProgramsServiceApiService } from '../../../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../../../services/translatable-string.service';
@@ -15,6 +16,7 @@ export class ProgramsListComponent implements OnInit {
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private authService: AuthService,
     private translatableString: TranslatableStringService,
   ) {}
 
@@ -27,9 +29,13 @@ export class ProgramsListComponent implements OnInit {
 
   private async refresh() {
     this.loading = true;
-    const programs = await this.programsService.getAllPrograms();
-    this.programStats = await this.programsService.getAllProgramsStats(
-      programs.map((p) => p.id),
+    const programIds = this.authService.getAssignedProgramIds();
+    this.programStats =
+      await this.programsService.getAllProgramsStats(programIds);
+    const programs = await Promise.all(
+      programIds.map((programId) =>
+        this.programsService.getProgramById(programId),
+      ),
     );
     this.items = this.translateProperties(programs).sort((a, b) =>
       a.created <= b.created ? -1 : 1,
