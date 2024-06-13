@@ -3,7 +3,6 @@ import {
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
-  BlockReasonEnum,
   IntersolveBlockWalletDto,
   IntersolveBlockWalletResponseDto,
   UnblockReasonEnum,
@@ -21,6 +20,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { DataSource, QueryRunner } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
@@ -41,7 +41,7 @@ export class MigrateVisaService {
 
   public async migrateData(): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
-    await this.DELETE_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(queryRunner);
+    // await this.DELETE_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(queryRunner);
     const programIds =
       await this.selectProgramIdsForInstanceWithVisa(queryRunner);
     for (const programId of programIds) {
@@ -118,14 +118,17 @@ export class MigrateVisaService {
   ): Promise<IntersolveVisaParentWalletEntity> {
     const createWalletReponse = await this.postCreateActiveWallet(
       {
-        reference: visaCustomer.referenceId,
-        quantities: [],
+        reference: uuid(),
         activate: true,
+        quantities: [],
       },
       brandCode,
     );
     if (!createWalletReponse?.data?.success) {
-      console.log(createWalletReponse);
+      console.log(
+        '🚀 ~ MigrateVisaService ~ createWalletReponse.data.errors:',
+        createWalletReponse?.data?.errors,
+      );
       throw new Error(
         `Failed to create wallet for customer ${visaCustomer.id}, referenceId ${visaCustomer.referenceId}`,
       );
@@ -133,15 +136,18 @@ export class MigrateVisaService {
     const tokenCode = createWalletReponse.data?.data?.token?.code;
     const linkToCustomerReponse = await this.postLinkCustomerToWallet(
       {
-        holderId: visaCustomer.referenceId,
+        holderId: visaCustomer.holderId,
       },
       tokenCode,
     );
 
     if (!this.isSuccessResponseStatus(linkToCustomerReponse.status)) {
-      console.log(linkToCustomerReponse);
+      console.log(
+        '🚀 ~ MigrateVisaService ~ linkToCustomerReponse.data.errors:',
+        linkToCustomerReponse?.data?.errors,
+      );
       throw new Error(
-        `Failed to create wallet for customer ${visaCustomer.id}, referenceId ${visaCustomer.referenceId}`,
+        `Failed to link wallet to customer ${visaCustomer.id}, referenceId ${visaCustomer.referenceId}`,
       );
     }
 
@@ -182,7 +188,7 @@ export class MigrateVisaService {
       await this.postToggleBlockWallet(
         originalWallet.tokenCode,
         {
-          reasonCode: BlockReasonEnum.BLOCK_GENERAL,
+          reasonCode: UnblockReasonEnum.UNBLOCK_GENERAL,
         },
         false,
       );
@@ -191,7 +197,6 @@ export class MigrateVisaService {
         parentWallet.tokenCode,
       );
       if (!this.isSuccessResponseStatus(postLinkTokenResult.status)) {
-        console.log(postLinkTokenResult);
         throw new Error(
           `Failed to link child wallet ${childWallet.id} to parent wallet ${parentWallet.id}`,
         );
@@ -398,15 +403,15 @@ export class MigrateVisaService {
   ): Promise<IntersolveBlockWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'pointofsale-payments'
-      : 'pointofsale';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${childTokenCode}/link-token`;
+      ? 'wallet-payments'
+      : 'wallet';
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${parentTokenCode}/link-token`;
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     const payload = {
-      tokenCode: parentTokenCode,
+      tokenCode: childTokenCode,
     };
     const linkResult = await this.httpService.post<any>(url, payload, headers);
     return linkResult;
