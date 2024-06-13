@@ -133,7 +133,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Update customer phonnumber' })
-  @Post('/pointofsale/v1/tokens/:childTokenCode/link-token')
+  @Post('/wallet/v1/tokens/:childTokenCode/link-token')
   public linkToken(
     @Body() payload: Record<string, string>,
     @Param('childTokenCode') childTokenCode: string,
