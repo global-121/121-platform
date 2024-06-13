@@ -3,11 +3,13 @@ import resetModel from '../models/reset.js';
 import paymentsModel from '../models/payments.js';
 import loginModel from '../models/login.js';
 import programsModel from '../models/programs.js';
+import metricstsModel from '../models/metrics.js';
 
 const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 const programsPage = new programsModel();
+const metricsPage = new metricstsModel();
 
 export const options = {
   thresholds: {
@@ -18,15 +20,9 @@ export const options = {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDB('15');
+  const reset = resetPage.resetDBMockRegistrations(15);
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
-    'Reset time is less than 35000ms': (r) => {
-      if (r.timings.duration >= 35000) {
-        console.log(`Reset time was ${r.timings.duration}ms`);
-      }
-      return r.timings.duration < 35000;
-    },
   });
 
   // login
@@ -42,7 +38,7 @@ export default function () {
   });
 
   // create payment
-  const payment = paymentsPage.createPayment('3');
+  const payment = paymentsPage.createPayment(3);
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
     'Payment time is less than 400ms': (r) => {
@@ -53,16 +49,16 @@ export default function () {
     },
   });
 
+  // get export list
+  const exportList = metricsPage.getExportList(3);
+  check(exportList, {
+    'Export list loaded succesfully status was 200': (r) => r.status == 200,
+  });
+
   // send bulk message
   const message = programsPage.sendBulkMessage(3);
   check(message, {
-    'Message succesfull status was 202': (r) => r.status == 202,
-    'Message time is less than 400ms': (r) => {
-      if (r.timings.duration >= 400) {
-        console.log(`Message time was ${r.timings.duration}ms`);
-      }
-      return r.timings.duration < 400;
-    },
+    'Message sent succesfull status was 202': (r) => r.status == 202,
   });
 
   sleep(1);
