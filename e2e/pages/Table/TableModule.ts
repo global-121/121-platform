@@ -1,5 +1,9 @@
 import { expect } from '@playwright/test';
+import { error } from 'console';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Locator, Page } from 'playwright';
+import * as XLSX from 'xlsx';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 interface PersonLeft {
@@ -25,6 +29,7 @@ class TableModule {
   readonly filterStatusDropdown: Locator;
   readonly exportDataButton: Locator;
   readonly bulkImportRegistrationsButton: Locator;
+  readonly debitCardDataExportButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -47,6 +52,9 @@ class TableModule {
     );
     this.bulkImportRegistrationsButton = this.page.getByTestId(
       'registration-validation-bulk-import-button',
+    );
+    this.debitCardDataExportButton = this.page.getByTestId(
+      'confirm-prompt-button-default',
     );
   }
 
@@ -317,6 +325,63 @@ class TableModule {
     await okButton.click();
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
+  }
+
+  async exportDebitCardData() {
+    const expectedColumns = [
+      'paId',
+      'referenceId',
+      'registrationStatus',
+      'cardNumber',
+      'cardStatus121',
+      'issuedDate',
+      'balance',
+      'explanation',
+      'spentThisMonth',
+      'isCurrentWallet',
+    ];
+
+    const okButton = this.page.getByRole('button', { name: 'OK' });
+    const exportButton = this.debitCardDataExportButton.filter({
+      hasText: 'Export debit card usage',
+    });
+
+    await exportButton.click();
+    await okButton.waitFor({ state: 'visible' });
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      okButton.click(),
+    ]);
+
+    // Wait for the download to complete
+    const downloadDir = './downloads';
+    if (!fs.existsSync(downloadDir)) {
+      fs.mkdirSync(downloadDir);
+    }
+    const filePath = path.join(downloadDir, download.suggestedFilename());
+    await download.saveAs(filePath);
+
+    // Read and parse the .xlsx file
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    // Extract the column names from the first object in the array
+    const firstRow = data[0] as Record<string, unknown>;
+    const actualColumns = Object.keys(firstRow);
+
+    // Validate the column names
+    const columnsPresent = expectedColumns.every((col) =>
+      actualColumns.includes(col),
+    );
+    const correctColumns =
+      actualColumns.length === expectedColumns.length && columnsPresent;
+    if (correctColumns) {
+      console.log('Column validation passed');
+    } else {
+      throw error('Column validation failed');
+    }
   }
 }
 
