@@ -5,7 +5,6 @@ export class ValidationConfigDto {
   validateScope = true;
   validatePhoneNumberEmpty = true;
   validatePhoneNumberLookup = true;
-  validateDynamicAttributes = true;
   validateClassValidator = true;
 
   constructor(init?: Partial<ValidationConfigDto>) {

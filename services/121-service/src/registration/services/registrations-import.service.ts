@@ -309,7 +309,7 @@ export class RegistrationsImportService {
       if (att.relation.fspQuestionId && att.fspId !== registration.fspId) {
         continue;
       }
-      let values: (boolean | string | undefined)[] = [];
+      let values: unknown[] = [];
       if (att.type === CustomAttributeType.boolean) {
         values.push(
           RegistrationsInputValidatorHelpers.stringToBoolean(
@@ -325,9 +325,12 @@ export class RegistrationsImportService {
         values.push(customData[att.name]);
       }
       for (const value of values) {
+        if (value == null) {
+          throw new Error(`Missing value for attribute ${att.name}`);
+        }
         const registrationData = new RegistrationDataEntity();
         registrationData.registration = registration;
-        registrationData.value = String(value);
+        registrationData.value = value as string;
         registrationData.programCustomAttributeId =
           att.relation.programCustomAttributeId ?? null;
         registrationData.programQuestionId =
@@ -462,7 +465,6 @@ export class RegistrationsImportService {
       validateUniqueReferenceId: true,
       validateScope: true,
       validatePreferredLanguage: true,
-      validateDynamicAttributes: true,
     });
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     return (await this.registrationsInputValidator.validateAndCleanRegistrationsInput(
@@ -497,7 +499,6 @@ export class RegistrationsImportService {
       validateUniqueReferenceId: false,
       validateScope: true,
       validatePreferredLanguage: true,
-      validateDynamicAttributes: true,
     });
 
     const dynamicAttributes = await this.getDynamicAttributes(programId);
