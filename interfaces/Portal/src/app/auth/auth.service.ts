@@ -152,7 +152,7 @@ export class AuthService {
     return {
       username: user.username,
       permissions: user.permissions,
-      expires: user.expires ? user.expires : '',
+      expires: user.expires ? user.expires : undefined,
       isAdmin: user.isAdmin,
       isEntraUser: user.isEntraUser,
     };
@@ -191,19 +191,22 @@ export class AuthService {
     });
   }
 
-  // TODO: Think of a better name for this method
-  public async processAzureAuthSuccess(redirectToHome = false): Promise<void> {
+  public async refreshCurrentUser() {
     const userDto = await this.programsService.getCurrentUser();
 
     if (!userDto || !userDto.user) {
-      localStorage.removeItem(USER_KEY);
-      this.router.navigate(['/', AppRoutes.login]);
+      await this.logout();
       return;
     }
 
-    await this.checkSsoTokenExpirationDate();
     this.setUserInStorage(userDto.user);
     this.updateAuthenticationState();
+  }
+
+  // TODO: Think of a better name for this method
+  public async processAzureAuthSuccess(redirectToHome = false) {
+    await this.refreshCurrentUser();
+    await this.checkSsoTokenExpirationDate();
 
     if (redirectToHome) {
       setTimeout(() => {
