@@ -13,6 +13,7 @@
       }
     ],
     "watchAssets": true,
+    "deleteOutDir": true,
     "builder": {
       "type": "swc",
       "typeCheck": true,
