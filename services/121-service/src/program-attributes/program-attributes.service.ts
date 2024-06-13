@@ -37,7 +37,6 @@ export class ProgramAttributesService {
       'inclusionScore',
       'paymentAmountMultiplier',
       'financialServiceProvider',
-      'paymentCount',
     ];
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
