@@ -55,21 +55,44 @@ export class OnafriqService
     paymentNr: number,
   ): Promise<void> {
     const referenceIds = paymentList.map((payment) => payment.referenceId);
-    const userInfo = await this.getUserInfo(referenceIds);
+    const userInfo = await this.getRegisteredInformations(referenceIds);
 
-    for (const paPaymentData of paymentList) {
-      const job = await this.paymentOnafriqQueue.add(
-        ProcessNamePayment.sendPayment,
-        {
-          userInfo: userInfo,
-          paPaymentData: paPaymentData,
-          programId: programId,
-          paymentNr: paymentNr,
-          userId: paPaymentData.userId,
-        },
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    // Push them to job queue
+    await Promise.all(
+      paymentList.map(async (paPaymentData) => {
+        const job = await this.paymentOnafriqQueue.add(
+          ProcessNamePayment.sendPayment,
+          {
+            userInfo: userInfo,
+            paPaymentData: paPaymentData,
+            programId: programId,
+            paymentNr: paymentNr,
+            userId: paPaymentData.userId,
+          },
+        );
+        await this.redisClient.sadd(
+          getRedisSetName(job.data.programId),
+          job.id,
+        );
+      }),
+    );
+  }
+
+  public async getRegisteredInformations(
+    referenceIds: string[],
+  ): Promise<{ id: string; referenceId: string; value: string }[]> {
+    return await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        'registration."registrationProgramId" AS id',
+        'registration.referenceId AS "referenceId"',
+        'data.value AS value',
+      ])
+      .where('registration.referenceId IN (:...referenceIds)', {
+        referenceIds: referenceIds,
+      })
+      .leftJoin('registration.data', 'data')
+      .getRawMany();
   }
 
   public async getQueueProgress(programId?: number): Promise<number> {
@@ -89,6 +112,12 @@ export class OnafriqService
     const resultUser = jobData.userInfo.find(
       (user) => user.referenceId == jobData.paPaymentData.referenceId,
     );
+
+    if (!resultUser) {
+      throw new Error(
+        `User not found in processQueuedPayment for referenceId ${jobData.paPaymentData.referenceId}`,
+      );
+    }
 
     const payload = this.createPayloadPerPa(
       jobData.paPaymentData,
@@ -119,24 +148,6 @@ export class OnafriqService
       paymentRequestResultPerPa,
       transaction,
     );
-  }
-
-  // TODO refactor this to a different name RegistrationInfo?
-  public async getUserInfo(
-    referenceIds: string[],
-  ): Promise<{ id: string; referenceId: string; value: string }[]> {
-    return await this.registrationRepository
-      .createQueryBuilder('registration')
-      .select([
-        'registration."registrationProgramId" AS id',
-        'registration.referenceId AS "referenceId"',
-        'data.value AS value',
-      ])
-      .where('registration.referenceId IN (:...referenceIds)', {
-        referenceIds: referenceIds,
-      })
-      .leftJoin('registration.data', 'data')
-      .getRawMany();
   }
 
   public createPayloadPerPa(

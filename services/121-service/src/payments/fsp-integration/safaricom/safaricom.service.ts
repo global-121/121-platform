@@ -54,7 +54,7 @@ export class SafaricomService
     paymentNr: number,
   ): Promise<void> {
     const referenceIds = paymentList.map((payment) => payment.referenceId);
-    const userInfo = await this.getUserInfo(referenceIds);
+    const userInfo = await this.getRegisteredInformations(referenceIds);
 
     for (const paPaymentData of paymentList) {
       const job = await this.paymentSafaricomQueue.add(
@@ -127,8 +127,7 @@ export class SafaricomService
     );
   }
 
-  // TODO refactor this to a different name RegistrationInfo?
-  public async getUserInfo(
+  public async getRegisteredInformations(
     referenceIds: string[],
   ): Promise<{ id: string; referenceId: string; value: string }[]> {
     return await this.registrationRepository
