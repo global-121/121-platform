@@ -5,6 +5,7 @@ import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { IntersolveVisaController } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.controller';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer-scoped.repository';
 import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
@@ -18,6 +19,7 @@ import { RegistrationDataScopedQueryService } from '@121-service/src/utils/regis
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { Module } from '@nestjs/common';
     QueueMessageModule,
     RegistrationDataModule,
     ProgramFinancialServiceProviderConfigurationsModule,
+    TypeOrmModule.forFeature([IntersolveVisaCustomerEntity]),
   ],
   providers: [
     IntersolveVisaService,
@@ -37,9 +40,9 @@ import { Module } from '@nestjs/common';
     IntersolveVisaStatusMappingService,
     AzureLogService,
     RegistrationScopedRepository,
+    IntersolveVisaCustomerScopedRepository,
     createScopedRepositoryProvider(IntersolveVisaParentWalletEntity),
     createScopedRepositoryProvider(IntersolveVisaChildWalletEntity),
-    createScopedRepositoryProvider(IntersolveVisaCustomerEntity),
   ],
   controllers: [IntersolveVisaController],
   exports: [IntersolveVisaService, IntersolveVisaExportService],
