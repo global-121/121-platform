@@ -29,7 +29,7 @@ exports[`Import a registration should throw an error with a dropdown custom atri
 ]
 `;
 
-exports[`Import a registration should throw an error with a numberic custom atribute set to null 1`] = `
+exports[`Import a registration should throw an error with a numeric custom atribute set to null 1`] = `
 [
   {
     "column": "addressHouseNumber",
