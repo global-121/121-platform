@@ -1,4 +1,4 @@
-import { exec as execCallback, execSync } from 'child_process';
+import { SpawnOptions, execSync, spawn } from 'child_process';
 import * as fs from 'fs';
 import * as net from 'net';
 import * as path from 'path';
@@ -8,7 +8,7 @@ import {
   StartedDockerComposeEnvironment,
   Wait,
 } from 'testcontainers';
-import { promisify } from 'util';
+// import { promisify } from 'util';
 
 let environment: StartedDockerComposeEnvironment;
 const composeFilePath = path.resolve(__dirname, './'); // '../../../../services'; // Adjust the path as needed
@@ -17,8 +17,7 @@ const envFilePath = path.resolve(composeFilePath, '.env');
 const backupEnvFilePath = path.resolve(composeFilePath, '.env.backup');
 
 async function startEnvironment(): Promise<number> {
-  //startSerive
-  // let servicePort: Number;
+  // let servicePort: number;
   // servicePort = 3000;
   const servicePort = await startService();
   //start up portal
@@ -74,23 +73,28 @@ async function startService(): Promise<number> {
 
 async function startPortal(servicePort: number): Promise<number> {
   const currentDir = process.cwd();
-  console.log(currentDir);
+  console.log('currentDir' + currentDir);
   const interfaceDir = path.resolve(currentDir, '../interfaces/Portal');
+  console.log('interfaceDir' + interfaceDir);
   const rootdir = path.resolve(currentDir, '../');
+  console.log('rootdir' + rootdir);
   process.chdir(interfaceDir);
+  console.log('currentDir' + process.cwd());
 
   // Install dependencies
   execSync('npm install', { stdio: 'inherit' });
 
   // Check if default port is available otherwise find one
-  const port = await checkPort(8888);
+  const port = await checkPort(8088);
   console.log(`Port ${port} is available`);
 
   const serviceApiUrl = `http://localhost:${servicePort}/api`;
-  process.chdir(rootdir);
+  // process.chdir(rootdir);
+  const currentDir2 = process.cwd();
+  console.log('2:' + currentDir2);
   // const command = `NG_URL_121_SERVICE_API=${serviceApiUrl} npm run build:prod && npx http-server ./www/ -c30 --gzip --brotli --port ${port} > portal-server-logs.txt 2>&1 &`;
   // const command = `NG_URL_121_SERVICE_API=${serviceApiUrl} npm start --prefix interfaces/Portal/ -- --port  ${port}`;
-  const command = `npm start --prefix interfaces/Portal/ -- --port  ${port}`;
+  const command = `npm start --prefix  -- --port  ${port}`;
   const options = {
     cwd: rootdir,
     env: { ...process.env, NG_URL_121_SERVICE_API: serviceApiUrl },
@@ -107,11 +111,10 @@ async function startPortal(servicePort: number): Promise<number> {
   //   }
   //   console.log(`stdout: ${stdout}`);
   // });
-  const exec = promisify(execCallback);
+
   try {
-    const { stdout, stderr } = await exec(command, options);
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
+    await runNpmCommand('npm', [command], options);
+    console.log('npm  completed successfully');
   } catch (error) {
     if (error instanceof Error) {
       console.error(`Error: ${error.message}`);
@@ -119,7 +122,21 @@ async function startPortal(servicePort: number): Promise<number> {
       console.error('An unknown error occurred');
     }
   }
+
+  // const exec = promisify(execCallback);
+  // try {
+  //   const { stdout, stderr } = await exec(command, options);
+  //   console.log(`stdout: ${stdout}`);
+  //   console.error(`stderr: ${stderr}`);
+  // } catch (error) {
+  //   if (error instanceof Error) {
+  //     console.error(`Error: ${error.message}`);
+  //   } else {
+  //     console.error('An unknown error occurred');
+  //   }
+  // }
   // Wait for the server to be up and running
+  process.chdir(currentDir);
   await waitForServer(`http://localhost:${port}`);
   return port;
 }
@@ -133,8 +150,8 @@ async function stopEnvironment() {
 
 async function waitForServer(
   url?: string,
-  timeout = 2000000,
-  interval = 10000,
+  timeout = 240000,
+  interval = 5000,
 ): Promise<boolean> {
   const start = Date.now();
 
@@ -225,7 +242,7 @@ async function checkPort(port: number): Promise<number> {
       await tryPort(port);
       return port;
     } catch (err) {
-      if (err.code === 'EADDRINUSE') {
+      if (isErrnoException(err) && err.code === 'EADDRINUSE') {
         port++;
       } else {
         throw err;
@@ -233,7 +250,9 @@ async function checkPort(port: number): Promise<number> {
     }
   }
 }
-
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return typeof error === 'object' && error !== null && 'code' in error;
+}
 function tryPort(port: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const server = net.createServer();
@@ -249,6 +268,28 @@ function tryPort(port: number): Promise<void> {
     });
 
     server.listen(port);
+  });
+}
+
+async function runNpmCommand(
+  command: string,
+  args: string[],
+  options?: SpawnOptions,
+) {
+  return new Promise<void>((resolve, reject) => {
+    const npmProcess = spawn(command, args, { stdio: 'inherit', ...options });
+
+    npmProcess.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`npm command '${command}' failed with code ${code}`));
+      }
+    });
+
+    npmProcess.on('error', (err) => {
+      reject(err);
+    });
   });
 }
 
