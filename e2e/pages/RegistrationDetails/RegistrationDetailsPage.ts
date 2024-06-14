@@ -33,6 +33,7 @@ class RegistrationDetails {
   readonly personAffectedCustomAttribute: Locator;
   readonly personAffectedPopUpSaveButton: Locator;
   readonly personAffectedHouseNumber: Locator;
+  readonly personAffectedNumberInputForm: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -115,6 +116,9 @@ class RegistrationDetails {
     );
     this.personAffectedHouseNumber = this.page.getByTestId(
       'update-property-item-numeric-input',
+    );
+    this.personAffectedNumberInputForm = this.page.getByTestId(
+      'update-property-item-number-input-form',
     );
   }
 
@@ -625,6 +629,32 @@ class RegistrationDetails {
       alert,
       reasonText: (newValue) => `Change phoneNumber to ${newValue}`,
     });
+  }
+
+  async typeStringInNumberInputForm({
+    saveButtonName,
+  }: {
+    saveButtonName: string;
+  }) {
+    const birthDateForm = this.personAffectedNumberInputForm.filter({
+      hasText: 'Birth date',
+    });
+    const birthDateInput = birthDateForm.getByRole('textbox');
+    const formSaveButton = birthDateForm.getByRole('button', {
+      name: saveButtonName,
+    });
+    const saveButton = this.page.getByRole('button', {
+      name: saveButtonName,
+    });
+
+    await birthDateInput.fill('string');
+
+    await formSaveButton.waitFor({ state: 'visible' });
+    await formSaveButton.click({ force: true });
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Type string in number input form`);
+    await saveButton.click();
   }
 }
 
