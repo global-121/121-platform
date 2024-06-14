@@ -55,7 +55,6 @@ describe('Export CBE validation report', () => {
       [registrationCbe],
       accessToken,
     );
-    console.log('🚀 ~ it ~ result:', result);
     await startCbeValidationProcess(programId, accessToken);
 
     // Act
