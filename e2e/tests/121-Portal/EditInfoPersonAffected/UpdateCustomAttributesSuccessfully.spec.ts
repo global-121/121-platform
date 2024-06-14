@@ -17,27 +17,12 @@ import {
 const dynamicBaseURL = test.extend<{ baseURL: string }>({
   // Define the modifier function
   baseURL: async ({}, use: (url: string) => Promise<void>) => {
-    // Your logic here
-    // const dynamicURL = 'http://example.com'; // Replace with your logic to generate the dynamic URL
     const port = await startEnvironment();
     const dynamicURL = `http://localhost:${port}`;
     await use(dynamicURL);
   },
 });
 
-// dynamicBaseURL.beforeAll(async () => {
-//   // const port = await startEnvironment();
-//   // //need to wait for portal is ready
-//   // // const iportal =
-//   // //   baseURL?.replace('8088', String(port)) || process.env.BASE_URL;
-//   // // console.log(baseURL);
-//   // let iportal=`http://localhost:${port}`;
-//   // // baseURL = iportal;
-//   // if (process.env.BASE_URL) {
-//   //    process.env.BASE_URL=iportal;
-//   }
-//   console.log(iportal);
-// });
 
 dynamicBaseURL.afterAll(async () => {
   await stopEnvironment();
@@ -49,7 +34,6 @@ dynamicBaseURL.beforeEach(async ({ page, baseURL }) => {
   const OcwProgramId = programIdOCW;
 
   await seedPaidRegistrations(registrationsOCW, OcwProgramId);
-  await page.goto(baseURL);
   const loginPage = new LoginPage(page);
   await page.goto('/login');
   await loginPage.login(
