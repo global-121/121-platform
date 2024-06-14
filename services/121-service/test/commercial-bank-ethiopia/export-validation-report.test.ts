@@ -25,7 +25,7 @@ describe('Export CBE validation report', () => {
     fullName: 'ANDUALEM MOHAMMED YIMER',
     idNumber: '39231855170',
     age: '48',
-    gender: 'Male',
+    gender: 'male',
     howManyFemale: '1',
     howManyMale: '2',
     totalFamilyMembers: '3',
@@ -50,7 +50,12 @@ describe('Export CBE validation report', () => {
 
   it('should succesfully generate a report of CBE validation data', async () => {
     // // Arrange
-    await importRegistrations(programId, [registrationCbe], accessToken);
+    const result = await importRegistrations(
+      programId,
+      [registrationCbe],
+      accessToken,
+    );
+    console.log('🚀 ~ it ~ result:', result);
     await startCbeValidationProcess(programId, accessToken);
 
     // Act
