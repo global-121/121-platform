@@ -187,6 +187,27 @@ export class RegistrationsInputValidator {
             return;
           }
 
+          if (att.type === AnswerTypes.dropdown) {
+            const optionNames = att.options
+              ? att.options?.map((option) => option.option)
+              : [];
+            if (!optionNames.includes(row[att.name])) {
+              const optionNamesErrorString = optionNames.length
+                ? optionNames.join(', ')
+                : 'No options available';
+              const errorObj = {
+                lineNumber: i + 1,
+                column: att.name,
+                value: row[att.name],
+                error: `Value '${row[att.name]}' is not in the allowed options: '${optionNamesErrorString}' for attribute '${att.name}'`,
+              };
+              errors.push(errorObj);
+            } else {
+              importRecord[att.name] = row[att.name];
+            }
+            return;
+          }
+
           /*
            * ============================================================
            * If an attribute is anything else, validate it as such

@@ -18,7 +18,18 @@ exports[`Import a registration should give me a CSV template when I request it 1
 ]
 `;
 
-exports[`Import a registration should throw an error with a custom atribute set to null 1`] = `
+exports[`Import a registration should throw an error with a dropdown custom atribute set to null 1`] = `
+[
+  {
+    "column": "house",
+    "error": "Value 'null' is not in the allowed options: 'lannister, stark, greyjoy' for attribute 'house'",
+    "lineNumber": 1,
+    "value": null,
+  },
+]
+`;
+
+exports[`Import a registration should throw an error with a numberic custom atribute set to null 1`] = `
 [
   {
     "column": "addressHouseNumber",
