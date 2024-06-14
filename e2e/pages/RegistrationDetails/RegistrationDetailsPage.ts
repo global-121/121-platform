@@ -460,7 +460,7 @@ class RegistrationDetails {
     whatsappLabel: string;
     saveButtonName: string;
   }) {
-    const fspAttribute = await this.personAffectedCustomAttribute.filter({
+    const fspAttribute = await this.personAffectedNumberInputForm.filter({
       hasText: whatsappLabel,
     });
     const saveButton = this.personAffectedPopUpSaveButton.filter({
