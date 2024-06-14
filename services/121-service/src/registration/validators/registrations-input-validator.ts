@@ -191,20 +191,26 @@ export class RegistrationsInputValidator {
             const optionNames = att.options
               ? att.options?.map((option) => option.option)
               : [];
-            if (!optionNames.includes(row[att.name])) {
-              const optionNamesErrorString = optionNames.length
+
+            if (optionNames.includes(row[att.name])) {
+              // Validation passed
+              importRecord[att.name] = row[att.name];
+              return;
+            }
+
+            // validation error
+            const optionNamesErrorString =
+              optionNames.length > 0
                 ? optionNames.join(', ')
                 : 'No options available';
-              const errorObj = {
-                lineNumber: i + 1,
-                column: att.name,
-                value: row[att.name],
-                error: `Value '${row[att.name]}' is not in the allowed options: '${optionNamesErrorString}' for attribute '${att.name}'`,
-              };
-              errors.push(errorObj);
-            } else {
-              importRecord[att.name] = row[att.name];
-            }
+            const errorObj = {
+              lineNumber: i + 1,
+              column: att.name,
+              value: row[att.name],
+              error: `Value '${row[att.name]}' is not in the allowed options: '${optionNamesErrorString}' for attribute '${att.name}'`,
+            };
+            errors.push(errorObj);
+
             return;
           }
 
