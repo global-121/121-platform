@@ -1,0 +1,16 @@
+
+> prestart
+> npm run set-env-variables -- env=dev
+
+
+> set-env-variables
+> node ./_set-env-variables.js env=dev
+
+Output generated at: ./src/environments/environment.dev.ts
+
+> start
+> ng serve --port 0 --port 8089
+
+[1m[33mOption 'port' has been specified multiple times. The value '8089' will be used.[39m[22m
+[32m?[39m [1mPort 8089 is already in use.[22m
+[1mWould you like to use a different port?[22m[0m [0m[2m(Y/n) [22m[46D[46C
