@@ -9,6 +9,23 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+import {
+  startEnvironment,
+  stopEnvironment,
+  waitForServer,
+} from '../../../parallel_test_containers/testContainer_compose';
+
+test.beforeAll(async ({ baseURL }) => {
+  const port = await startEnvironment();
+  //need to wait for portal is ready
+  const iportal =
+    baseURL?.replace('8888', String(port)) || process.env.BASE_URL;
+  await waitForServer(iportal);
+});
+
+test.afterAll(async () => {
+  await stopEnvironment();
+});
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -16,7 +33,6 @@ test.beforeEach(async ({ page }) => {
   const OcwProgramId = programIdOCW;
 
   await seedPaidRegistrations(registrationsOCW, OcwProgramId);
-
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/login');

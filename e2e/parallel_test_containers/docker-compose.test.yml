@@ -1,0 +1,80 @@
+services:
+  121db:
+    container_name: 121db
+    image: 'postgres:14'
+    init: true
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DBNAME}
+    volumes:
+      - '../../services/postgresql.conf:/etc/postgresql.conf'
+      - '../../services/init.sql:/docker-entrypoint-initdb.d/init.sql'
+    ports:
+      - '5432'
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DBNAME}'",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  121-redis:
+    container_name: 121queue
+    image: 'redis:6.0-alpine'
+    restart: unless-stopped
+    ports:
+      - '6379'
+
+  mock-service:
+    container_name: mock-service
+    build:
+      context: ../../services/mock-service
+      target: production
+    init: true
+    env_file: .env
+    ports:
+      - '3001'
+    stdin_open: true
+    tty: true
+    restart: on-failure
+    healthcheck:
+      test: curl --fail http://localhost:3001/api/v1/PhoneNumbers/123 || exit 1
+      interval: 15s
+      retries: 15
+      start_period: 60s
+      timeout: 300s
+
+  121-service:
+    container_name: 121-service
+    build:
+      context: ../../services/121-service
+      target: production
+    init: true
+    env_file: .env
+    environment:
+      - GLOBAL_121_VERSION
+      # - POSTGRES_PORT=${PORT_121DB}
+      # - REDIS_PORT=${PORT_121_REDIS}
+      # - MOCK_SERVICE_URL=${MOCK_SERVICE_URL}
+    ports:
+      - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
+    stdin_open: true
+    tty: true
+    depends_on:
+      121-redis:
+        condition: service_started
+      121db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: curl --fail http://localhost:${PORT_121_SERVICE}/api/organization || exit 1
+      interval: 15s
+      retries: 15
+      start_period: 60s
+      timeout: 300s
