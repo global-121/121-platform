@@ -1,4 +1,4 @@
-import { SpawnOptions, execSync, spawn } from 'child_process';
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as net from 'net';
 import * as path from 'path';
@@ -8,7 +8,8 @@ import {
   StartedDockerComposeEnvironment,
   Wait,
 } from 'testcontainers';
-// import { promisify } from 'util';
+
+import { runNpmCommand } from './runNpmCommand_shell_treekill';
 
 let environment: StartedDockerComposeEnvironment;
 const composeFilePath = path.resolve(__dirname, './'); // '../../../../services'; // Adjust the path as needed
@@ -73,11 +74,9 @@ async function startService(): Promise<number> {
 
 async function startPortal(servicePort: number): Promise<number> {
   const currentDir = process.cwd();
-  console.log('currentDir' + currentDir);
   const interfaceDir = path.resolve(currentDir, '../interfaces/Portal');
-  console.log('interfaceDir' + interfaceDir);
   const rootdir = path.resolve(currentDir, '../');
-  console.log('rootdir' + rootdir);
+  console.log(rootdir);
   process.chdir(interfaceDir);
   console.log('currentDir' + process.cwd());
 
@@ -85,60 +84,16 @@ async function startPortal(servicePort: number): Promise<number> {
   execSync('npm install', { stdio: 'inherit' });
 
   // Check if default port is available otherwise find one
-  const port = await checkPort(8088);
-  console.log(`Port ${port} is available`);
+  const availablePort = await checkPort(8889);
+  console.log(`Port ${availablePort} is available`);
 
   const serviceApiUrl = `http://localhost:${servicePort}/api`;
-  // process.chdir(rootdir);
   const currentDir2 = process.cwd();
   console.log('2:' + currentDir2);
-  // const command = `NG_URL_121_SERVICE_API=${serviceApiUrl} npm run build:prod && npx http-server ./www/ -c30 --gzip --brotli --port ${port} > portal-server-logs.txt 2>&1 &`;
-  // const command = `NG_URL_121_SERVICE_API=${serviceApiUrl} npm start --prefix interfaces/Portal/ -- --port  ${port}`;
-  const command = `npm start --prefix  -- --port  ${port}`;
-  const options = {
-    cwd: rootdir,
-    env: { ...process.env, NG_URL_121_SERVICE_API: serviceApiUrl },
-  };
-
-  // exec(command, options, (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`Error: ${error.message}`);
-  //     return;
-  //   }
-  //   if (stderr) {
-  //     console.error(`stderr: ${stderr}`);
-  //     return;
-  //   }
-  //   console.log(`stdout: ${stdout}`);
-  // });
-
-  try {
-    await runNpmCommand('npm', [command], options);
-    console.log('npm  completed successfully');
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(`Error: ${error.message}`);
-    } else {
-      console.error('An unknown error occurred');
-    }
-  }
-
-  // const exec = promisify(execCallback);
-  // try {
-  //   const { stdout, stderr } = await exec(command, options);
-  //   console.log(`stdout: ${stdout}`);
-  //   console.error(`stderr: ${stderr}`);
-  // } catch (error) {
-  //   if (error instanceof Error) {
-  //     console.error(`Error: ${error.message}`);
-  //   } else {
-  //     console.error('An unknown error occurred');
-  //   }
-  // }
-  // Wait for the server to be up and running
   process.chdir(currentDir);
-  await waitForServer(`http://localhost:${port}`);
-  return port;
+  await runNpmCommand(availablePort, serviceApiUrl);
+  await waitForServer(`http://localhost:${availablePort}`);
+  return availablePort;
 }
 
 async function stopEnvironment() {
@@ -213,29 +168,7 @@ function updateEnvWithPorts(
     console.error('Error updating .env file:', err);
   }
 }
-// function checkPort(port: number): Promise<number> {
-//   return new Promise((resolve, reject) => {
-//     const server = net.createServer();
 
-//     server.once('error', (err: NodeJS.ErrnoException) => {
-//       if (err.code === 'EADDRINUSE') {
-//         server.close();
-//         checkPort(port + 1)
-//           .then(resolve)
-//           .catch(reject);
-//       } else {
-//         reject(err);
-//       }
-//     });
-
-//     server.once('listening', () => {
-//       server.close();
-//       resolve(port);
-//     });
-
-//     server.listen(port);
-//   });
-// }
 async function checkPort(port: number): Promise<number> {
   while (true) {
     try {
@@ -271,39 +204,4 @@ function tryPort(port: number): Promise<void> {
   });
 }
 
-async function runNpmCommand(
-  command: string,
-  args: string[],
-  options?: SpawnOptions,
-) {
-  return new Promise<void>((resolve, reject) => {
-    const npmProcess = spawn(command, args, { stdio: 'inherit', ...options });
-
-    npmProcess.on('exit', (code) => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(new Error(`npm command '${command}' failed with code ${code}`));
-      }
-    });
-
-    npmProcess.on('error', (err) => {
-      reject(err);
-    });
-  });
-}
-
 export { startEnvironment, stopEnvironment, waitForServer };
-
-// (async () => {
-//   try {
-//     await startEnvironment(
-//       '/path/to/your/docker-compose',
-//       'docker-compose.yml',
-//     );
-//   } catch (error) {
-//     console.error(error);
-//   } finally {
-//     await stopEnvironment();
-//   }
-// })();
