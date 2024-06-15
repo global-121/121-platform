@@ -1,7 +1,6 @@
 import { ChildProcess, spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import treeKill from 'tree-kill';
 
 export async function runNpmCommand(
   port: number,
@@ -54,59 +53,4 @@ export async function runNpmCommand(
     );
   }
   return null;
-}
-
-export async function stopNpmCommand(
-  child: ChildProcess | null,
-): Promise<void> {
-  try {
-    if (child && child.pid) {
-      const childPid = child.pid;
-      console.log(`Stopping shell process with PID: ${childPid}`);
-
-      treeKill(childPid, 'SIGKILL', (err) => {
-        if (err) {
-          console.error(`Error stopping shell process: ${err}`);
-        } else {
-          console.log(`Stopped shell process with PID: ${childPid}`);
-        }
-      });
-
-      // Wait for a brief moment to allow the shell process to clean up
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
-      // Check if there are any child processes spawned by the shell
-      const pidFilePath = 'process.pid';
-
-      if (fs.existsSync(pidFilePath)) {
-        const fileContent = fs.readFileSync(pidFilePath, 'utf-8').trim();
-        const childProcessPids = fileContent
-          .split('\n')
-          .map((line) => parseInt(line, 10))
-          .filter((pid) => !isNaN(pid)); // Filter out invalid numbers
-
-        // Terminate each child process
-        for (const pid of childProcessPids) {
-          treeKill(pid, 'SIGKILL', (err) => {
-            if (err) {
-              console.error(
-                `Error stopping child process with PID ${pid}: ${err}`,
-              );
-            } else {
-              console.log(`Stopped child process with PID: ${pid}`);
-            }
-          });
-        }
-
-        // Clean up the PID file
-        fs.unlinkSync(pidFilePath);
-      } else {
-        console.warn(`PID file not found: ${pidFilePath}`);
-      }
-    } else {
-      throw new Error('Child process or child PID is null.');
-    }
-  } catch (error) {
-    console.error(`Error stopping npm command: ${error}`);
-  }
 }
