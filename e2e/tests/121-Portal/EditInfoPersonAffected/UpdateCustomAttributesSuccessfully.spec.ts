@@ -23,12 +23,11 @@ const dynamicBaseURL = test.extend<{ baseURL: string }>({
   },
 });
 
-
 dynamicBaseURL.afterAll(async () => {
   await stopEnvironment();
 });
 
-dynamicBaseURL.beforeEach(async ({ page, baseURL }) => {
+dynamicBaseURL.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
