@@ -131,4 +131,16 @@ export class IntersolveVisaMockController {
   ): { status: number } {
     return this.intersolveVisaMockService.updateCustomerAddress();
   }
+
+  @ApiOperation({ summary: 'Update customer phonnumber' })
+  @Post('/wallet/v1/tokens/:childTokenCode/link-token')
+  public linkToken(
+    @Body() payload: Record<string, string>,
+    @Param('childTokenCode') childTokenCode: string,
+  ): { status: number } {
+    return this.intersolveVisaMockService.linkToken(
+      childTokenCode,
+      payload.tokenCode,
+    );
+  }
 }
