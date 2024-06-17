@@ -2,11 +2,9 @@ import {
   ExportCardsDto,
   ExportWalletData,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
-import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { IntersolveVisaChildWalletScopedRepository } from '../repositories/intersolve-visa-child-wallet.scoped.repository';
 
 // TODO: REFACTOR: IMO Move into IntersolveVisaService. Make sure it does not depend on anything outside of this Module.
 
@@ -14,8 +12,7 @@ import { Inject, Injectable } from '@nestjs/common';
 @Injectable()
 export class IntersolveVisaExportService {
   constructor(
-    @Inject(getScopedRepositoryProviderName(IntersolveVisaChildWalletEntity))
-    private intersolveVisaWalletScopedRepository: ScopedRepository<IntersolveVisaChildWalletEntity>,
+    private intersolveVisaWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
