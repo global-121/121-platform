@@ -549,4 +549,10 @@ export class IntersolveVisaMockService {
       status: HttpStatus.OK,
     };
   }
+
+  public linkToken(_childTokenCode: string, _parentTokenCode: string): any {
+    return {
+      status: HttpStatus.OK,
+    };
+  }
 }

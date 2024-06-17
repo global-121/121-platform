@@ -40,7 +40,7 @@ export class IntersolveVisaParentWalletEntity extends Base121Entity {
   public balance: number;
 
   // Last time we got an update from Intersolve about the wallet status or balance or when it was last used
-  @Column()
+  @Column({ type: 'timestamp', nullable: true })
   public lastExternalUpdate: Date;
 
   // This is euro cents
