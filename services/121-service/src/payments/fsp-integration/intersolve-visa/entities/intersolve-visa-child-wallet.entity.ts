@@ -14,6 +14,9 @@ export class IntersolveVisaChildWalletEntity extends Base121Entity {
       intersolveVisaParentWallet.intersolveVisaChildWallets,
   )
   public intersolveVisaParentWallet: Relation<IntersolveVisaParentWalletEntity>;
+  @Index()
+  @Column()
+  public intersolveVisaParentWalletId: number;
 
   @Index()
   @Column({ unique: true })
@@ -22,7 +25,7 @@ export class IntersolveVisaChildWalletEntity extends Base121Entity {
   @Column({ default: false })
   public isLinkedToParentWallet: boolean;
 
-  @Column() // TODO: Can we assume a new child wallet is not blocked by default?
+  @Column({ default: false })
   public isTokenBlocked: boolean;
 
   @Column({ default: false })
@@ -38,6 +41,6 @@ export class IntersolveVisaChildWalletEntity extends Base121Entity {
   public lastUsedDate: Date | null;
 
   // Last time we got an update from Intersolve about the wallet status or when it was last used
-  @Column()
-  public lastExternalUpdate: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  public lastExternalUpdate: Date | null;
 }

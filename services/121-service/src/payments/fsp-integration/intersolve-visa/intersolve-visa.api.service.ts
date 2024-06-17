@@ -78,7 +78,6 @@ export class IntersolveVisaApiService {
       ? 'customer-payments'
       : 'customer';
     const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/create-individual`;
-    console.log('🚀 ~ IntersolveVisaApiService ~ url:', url);
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
