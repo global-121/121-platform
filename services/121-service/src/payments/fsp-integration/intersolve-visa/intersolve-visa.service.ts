@@ -3,6 +3,8 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { CreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-customer.dto';
 import { CreatePhysicalCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-physical-card.dto';
 import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-physical-card-return.dto';
@@ -47,8 +49,6 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { IntersolveVisaTokenStatus } from './enum/intersolve-visa-token-status.enum';
 
 @Injectable()
@@ -236,7 +236,7 @@ export class IntersolveVisaService
     // Check if at least one child wallet exists
     if (
       !intersolveVisaCustomer.intersolveVisaParentWallet
-        .intersolveVisaChildWallets.length
+        ?.intersolveVisaChildWallets?.length
     ) {
       // TODO: Check if this is the correct way to check if a child wallet does not exist
       // If not, create child wallet
@@ -741,7 +741,7 @@ export class IntersolveVisaService
       - This function is a re-implementation and optimization/refactoring of this.reissueWalletAndCard(), according to the new Intersolve Integration Manual.
       - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
       - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
-      - 
+      -
     */
     throw new Error('Method not implemented.');
   }

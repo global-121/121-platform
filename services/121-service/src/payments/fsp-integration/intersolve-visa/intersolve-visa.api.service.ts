@@ -485,7 +485,6 @@ export class IntersolveVisaApiService {
       tokenCode: childTokenCode,
     };
 
-    let linkTokenResponse;
     // Send the request
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
@@ -497,7 +496,7 @@ export class IntersolveVisaApiService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     // On success this returns a 204 No Content
-    linkTokenResponse = await this.httpService.post<any>(
+    const linkTokenResponse = await this.httpService.post<any>(
       url,
       linkTokenRequest,
       headers,
@@ -591,8 +590,8 @@ export class IntersolveVisaApiService {
     // TODO: If the IntersolveVisaApiMockService is removed, then also remove all these if (process.env.MOCK_INTERSOLVE) checks in all functions?
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'pointofsale-payments'
-      : 'pointofsale';
+      ? 'wallet-payments'
+      : 'wallet';
     const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${transferDto.fromTokenCode}/transfer`;
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },

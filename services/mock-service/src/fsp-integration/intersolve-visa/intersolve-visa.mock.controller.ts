@@ -137,10 +137,20 @@ export class IntersolveVisaMockController {
   public linkToken(
     @Body() payload: Record<string, string>,
     @Param('childTokenCode') childTokenCode: string,
-  ): { status: number } {
+  ): IntersolveVisaMockResponseDto {
     return this.intersolveVisaMockService.linkToken(
       childTokenCode,
       payload.tokenCode,
     );
+  }
+
+  @ApiOperation({ summary: 'Transfer' })
+  @Post('/wallet/v1/tokens/:fromToken/transfer')
+  public transfer(
+    @Body() _payload: Record<string, any>,
+    @Param('fromToken') _fromToken: string,
+  ): IntersolveVisaMockResponseDto {
+    const toToken = _payload.creditor.tokenCode;
+    return this.intersolveVisaMockService.transfer(toToken);
   }
 }
