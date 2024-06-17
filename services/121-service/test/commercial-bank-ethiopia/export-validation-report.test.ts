@@ -50,11 +50,7 @@ describe('Export CBE validation report', () => {
 
   it('should succesfully generate a report of CBE validation data', async () => {
     // // Arrange
-    const result = await importRegistrations(
-      programId,
-      [registrationCbe],
-      accessToken,
-    );
+    await importRegistrations(programId, [registrationCbe], accessToken);
     await startCbeValidationProcess(programId, accessToken);
 
     // Act
