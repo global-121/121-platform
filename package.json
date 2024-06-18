@@ -34,6 +34,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.8",
     "eslint-plugin-no-relative-import-paths": "^1.5.4",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
