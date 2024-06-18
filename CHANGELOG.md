@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.122.1](https://github.com/global-121/121-platform/compare/v1.121.0...v1.122.1)- 2024-06-18
+## [1.122.1](https://github.com/global-121/121-platform/compare/v1.122.0...v1.122.1)- 2024-06-18
 
 ### Fixed
 
