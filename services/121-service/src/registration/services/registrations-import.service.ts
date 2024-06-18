@@ -396,6 +396,7 @@ export class RegistrationsImportService {
         id: c.id,
         name: c.name,
         type: c.answerType,
+        options: c.options,
         questionType: QuestionType.programQuestion,
       } as AttributeWithOptionalLabel;
     });
@@ -442,6 +443,7 @@ export class RegistrationsImportService {
           id: curr.id,
           name: curr.name,
           type: curr.type,
+          options: curr.options,
           fspNames: curr.fspName ? [curr.fspName] : [],
           questionTypes: curr.questionType ? [curr.questionType] : [],
         });

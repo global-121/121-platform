@@ -25,7 +25,7 @@ describe('Export CBE validation report', () => {
     fullName: 'ANDUALEM MOHAMMED YIMER',
     idNumber: '39231855170',
     age: '48',
-    gender: 'Male',
+    gender: 'male',
     howManyFemale: '1',
     howManyMale: '2',
     totalFamilyMembers: '3',
