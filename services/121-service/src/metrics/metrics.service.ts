@@ -847,6 +847,7 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select([
         'registration.referenceId as "referenceId"',
+        'registration.registrationProgramId as "id"',
         'transaction.status as "status"',
         'transaction.payment as "payment"',
         'transaction.created as "timestamp"',

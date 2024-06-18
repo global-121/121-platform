@@ -22,18 +22,16 @@ import {
 import {
   programIdOCW,
   programIdPV,
+  registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
 import { HttpStatus } from '@nestjs/common';
 
 describe('Import a registration', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
-  });
-
   it('should import registrations', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
     // Act
@@ -66,6 +64,7 @@ describe('Import a registration', () => {
 
   it('should fail import registrations due to program is not published yet', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
     // unpublish a program
@@ -85,6 +84,7 @@ describe('Import a registration', () => {
 
   it('should import registration scoped', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     const accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
 
     // Act
@@ -119,6 +119,7 @@ describe('Import a registration', () => {
 
   it('should not import any registration if one of them has different scope than user', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     const accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
 
     // Act
@@ -168,6 +169,7 @@ describe('Import a registration', () => {
 
   it('should import registrations with empty phoneNumber, when program allows this', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
@@ -205,8 +207,9 @@ describe('Import a registration', () => {
     }
   });
 
-  it('should throw an error with a custom atribute set to null', async () => {
+  it('should throw an error with a numeric custom atribute set to null', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
     // @ts-expect-error we are forcing something to be null when it shouldn't be
@@ -232,8 +235,38 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
+  it('should throw an error with a dropdown custom atribute set to null', async () => {
+    // Arrange
+    await resetDB(SeedScript.test);
+    accessToken = await getAccessToken();
+    const registrationWesteros1Copy = { ...registrationWesteros1 };
+    const programIdWestoros = 1;
+    // @ts-expect-error we are forcing something to be null when it shouldn't be
+    registrationWesteros1Copy.house = null;
+
+    // Act
+    const response = await importRegistrations(
+      programIdWestoros,
+      [registrationWesteros1Copy],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body).toMatchSnapshot();
+
+    const result = await searchRegistrationByReferenceId(
+      registrationWesteros1Copy.referenceId,
+      programIdWestoros,
+      accessToken,
+    );
+
+    const registration = result.body.data;
+    expect(registration).toHaveLength(0);
+  });
+
   it('should give me a CSV template when I request it', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
     const response = await getImportRegistrationsTemplate(programIdOCW);
