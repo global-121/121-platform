@@ -32,7 +32,8 @@
   "dependencies": {
     "@alex_neo/playwright-azure-reporter": "^1.9.1",
     "dotenv": "16.4.5",
-    "playwright": "^1.45.3",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
+    "playwright": "^1.43.1",
+    "uuid": "^10.0.0",
+    "xlsx": "^0.18.5"
   }
 }
