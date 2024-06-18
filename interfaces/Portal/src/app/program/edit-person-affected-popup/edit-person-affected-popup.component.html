@@ -8,7 +8,7 @@
         'page.program.program-people-affected.edit-person-affected-popup.popup-title'
           | translate
             : {
-                pa: person.personAffectedSequence
+                pa: person.personAffectedSequence,
               }
       }}
     </ion-title>
@@ -89,7 +89,7 @@
                 ? ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-payments'
                   | translate
                     : {
-                        alreadyReceivedPayments: person?.paymentCount || 0
+                        alreadyReceivedPayments: person?.paymentCount || 0,
                       })
                 : ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-no-payments'
                   | translate)
