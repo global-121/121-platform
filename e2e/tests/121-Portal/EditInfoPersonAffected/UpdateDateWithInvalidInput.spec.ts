@@ -21,7 +21,7 @@ test.beforeEach(async ({ page }) => {
 
   await importRegistrationsCSV(
     programIdWesteros,
-    './test-registration-data/test-registrations-OCW.csv',
+    './test-registration-data/test-registrations-westeros-20.csv',
     accessToken,
   );
 
