@@ -9,7 +9,6 @@ import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
-import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -71,27 +70,25 @@ export class MessageService {
           throw new Error(`No phoneNumber provided for ${processtype}`);
         }
         await this.storePendingMessageAndSendWhatsappTemplate(
-          messageText,
-          messageJobDto.phoneNumber, // use phoneNumber as whatsappPhoneNumber
-          null,
-          null,
-          messageJobDto.registrationId,
-          messageJobDto.messageContentType,
-          true, // tryWhatsapp = true
+          {
+            message: messageText,
+            recipientPhoneNr: messageJobDto.phoneNumber,
+            registrationId: messageJobDto.registrationId,
+            messageContentType: messageJobDto.messageContentType,
+            tryWhatsapp: true,
+          }, // tryWhatsapp = true
         );
       } else if (processtype === MessageProcessType.whatsappTemplateGeneric) {
         if (!messageJobDto.whatsappPhoneNumber) {
           throw new Error(`No whatsappPhoneNumber provided for ${processtype}`);
         }
-        await this.storePendingMessageAndSendWhatsappTemplate(
-          messageText,
-          messageJobDto.whatsappPhoneNumber,
-          null,
-          null,
-          messageJobDto.registrationId,
-          messageJobDto.messageContentType,
-          false,
-        );
+        await this.storePendingMessageAndSendWhatsappTemplate({
+          message: messageText,
+          recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+          registrationId: messageJobDto.registrationId,
+          messageContentType: messageJobDto.messageContentType,
+          tryWhatsapp: false,
+        });
       } else if (processtype === MessageProcessType.whatsappPendingMessage) {
         await this.processWhatsappPendingMessage(messageJobDto);
       } else if (processtype === MessageProcessType.whatsappTemplateVoucher) {
@@ -103,18 +100,15 @@ export class MessageService {
         processtype === MessageProcessType.whatsappVoucherInstructions ||
         processtype === MessageProcessType.whatsappDefaultReply
       ) {
-        if (!messageJobDto.whatsappPhoneNumber) {
-          throw new Error(`No whatsappPhoneNumber provided for ${processtype}`);
-        }
-        await this.whatsappService.sendWhatsapp(
-          messageText,
-          messageJobDto.whatsappPhoneNumber,
-          messageJobDto.mediaUrl,
-          messageJobDto.registrationId,
-          messageJobDto.messageContentType,
-          messageJobDto.messageProcessType,
-          messageJobDto.customData?.existingMessageSid,
-        );
+        await this.whatsappService.sendWhatsapp({
+          message: messageText,
+          recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+          mediaUrl: messageJobDto.mediaUrl,
+          registrationId: messageJobDto.registrationId,
+          messageContentType: messageJobDto.messageContentType,
+          messageProcessType: messageJobDto.messageProcessType,
+          existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
+        });
       }
     } catch (error) {
       this.azureLogService.logError(error, false);
@@ -126,21 +120,16 @@ export class MessageService {
   private async processWhatsappPendingMessage(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
-    if (!messageJobDto.whatsappPhoneNumber || !messageJobDto.message) {
-      throw new Error(
-        `No whatsappPhoneNumber/message provided for processWhatsappPendingMessage`,
-      );
-    }
     await this.whatsappService
-      .sendWhatsapp(
-        messageJobDto.message,
-        messageJobDto.whatsappPhoneNumber,
-        messageJobDto.mediaUrl,
-        messageJobDto.registrationId,
-        messageJobDto.messageContentType,
-        messageJobDto.messageProcessType,
-        messageJobDto.customData?.existingMessageSid,
-      )
+      .sendWhatsapp({
+        message: messageJobDto.message,
+        recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+        mediaUrl: messageJobDto.mediaUrl,
+        registrationId: messageJobDto.registrationId,
+        messageContentType: messageJobDto.messageContentType,
+        messageProcessType: messageJobDto.messageProcessType,
+        existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
+      })
       .then(async () => {
         if (!messageJobDto.customData?.pendingMessageId) {
           return;
@@ -154,22 +143,17 @@ export class MessageService {
   private async processWhatsappTemplateVoucher(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
-    if (!messageJobDto.whatsappPhoneNumber || !messageJobDto.message) {
-      throw new Error(
-        `No whatsappPhoneNumber/message provided for processWhatsappTemplateVoucher`,
-      );
-    }
     let messageSid: string | undefined;
     let errorMessage: any;
     await this.whatsappService
-      .sendWhatsapp(
-        messageJobDto.message,
-        messageJobDto.whatsappPhoneNumber,
-        messageJobDto.mediaUrl,
-        messageJobDto.registrationId,
-        messageJobDto.messageContentType,
-        messageJobDto.messageProcessType,
-      )
+      .sendWhatsapp({
+        message: messageJobDto.message,
+        recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+        mediaUrl: messageJobDto.mediaUrl,
+        registrationId: messageJobDto.registrationId,
+        messageContentType: messageJobDto.messageContentType,
+        messageProcessType: messageJobDto.messageProcessType,
+      })
       .then(
         (response) => {
           messageSid = response;
@@ -182,40 +166,33 @@ export class MessageService {
     const transactionStep = 1;
     const status = messageSid ? StatusEnum.waiting : StatusEnum.error;
 
-    if (!messageJobDto.customData?.payment) {
-      throw new Error(`No payment provided for processWhatsappTemplateVoucher`);
+    if (messageJobDto.customData?.payment) {
+      await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
+        messageJobDto.customData.payment,
+        messageJobDto.registrationId,
+        status,
+        transactionStep,
+        status === StatusEnum.error ? undefined : messageSid, // else = 'waiting'
+        status === StatusEnum.error ? errorMessage : undefined, // else = 'waiting'
+      );
     }
-
-    await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
-      messageJobDto.customData.payment,
-      messageJobDto.registrationId,
-      status,
-      transactionStep,
-      status === StatusEnum.error ? undefined : messageSid, // else = 'waiting'
-      status === StatusEnum.error ? errorMessage : undefined, // else = 'waiting'
-    );
   }
 
   private async processWhatsappPendingVoucher(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
-    if (!messageJobDto.whatsappPhoneNumber || !messageJobDto.message) {
-      throw new Error(
-        `No whatsappPhoneNumber/message provided for processWhatsappTemplateVoucher`,
-      );
-    }
     let messageSid: string | undefined;
     let errorMessage: any;
     await this.whatsappService
-      .sendWhatsapp(
-        messageJobDto.message,
-        messageJobDto.whatsappPhoneNumber,
-        messageJobDto.mediaUrl,
-        messageJobDto.registrationId,
-        messageJobDto.messageContentType,
-        messageJobDto.messageProcessType,
-        messageJobDto.customData?.existingMessageSid,
-      )
+      .sendWhatsapp({
+        message: messageJobDto.message,
+        recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+        mediaUrl: messageJobDto.mediaUrl,
+        registrationId: messageJobDto.registrationId,
+        messageContentType: messageJobDto.messageContentType,
+        messageProcessType: messageJobDto.messageProcessType,
+        existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
+      })
       .then(
         (response) => {
           messageSid = response;
@@ -229,43 +206,43 @@ export class MessageService {
     const status = StatusEnum.success;
 
     if (
-      !messageJobDto.customData?.payment ||
-      !messageJobDto.customData.amount
+      messageJobDto.customData?.payment &&
+      messageJobDto.customData.amount != undefined
     ) {
-      throw new Error(
-        `No payment/amount provided for processWhatsappPendingVoucher`,
+      await this.intersolveVoucherService.storeTransactionResult(
+        messageJobDto.customData.payment,
+        messageJobDto.customData.amount,
+        messageJobDto.registrationId,
+        transactionStep,
+        status,
+        errorMessage,
+        messageJobDto.programId,
+        {
+          messageSid,
+          intersolveVoucherId: messageJobDto.customData.intersolveVoucherId,
+        },
       );
     }
-
-    await this.intersolveVoucherService.storeTransactionResult(
-      messageJobDto.customData.payment,
-      messageJobDto.customData.amount,
-      messageJobDto.registrationId,
-      transactionStep,
-      status,
-      errorMessage,
-      messageJobDto.programId,
-      {
-        messageSid,
-        intersolveVoucherId: messageJobDto.customData.intersolveVoucherId,
-      },
-    );
   }
 
-  private async storePendingMessageAndSendWhatsappTemplate(
-    message: string,
-    recipientPhoneNr: string,
-    messageType: null | IntersolveVoucherPayoutStatus,
-    mediaUrl: null | string,
-    registrationId: number,
-    messageContentType?: MessageContentType,
+  private async storePendingMessageAndSendWhatsappTemplate({
+    message,
+    recipientPhoneNr,
+    registrationId,
+    messageContentType,
     tryWhatsapp = false,
-  ): Promise<void> {
+  }: {
+    message: string;
+    recipientPhoneNr: string;
+    registrationId: number;
+    messageContentType?: MessageContentType;
+    tryWhatsapp?: boolean;
+  }): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
     pendingMesssage.to = recipientPhoneNr;
-    pendingMesssage.mediaUrl = mediaUrl;
-    pendingMesssage.messageType = messageType;
+    pendingMesssage.mediaUrl = null;
+    pendingMesssage.messageType = null;
     pendingMesssage.registrationId = registrationId;
     pendingMesssage.contentType =
       messageContentType ?? MessageContentType.custom;
@@ -281,14 +258,13 @@ export class MessageService {
       ProgramNotificationEnum.whatsappGenericMessage,
       registration?.program.id,
     );
-    const sid = await this.whatsappService.sendWhatsapp(
-      whatsappGenericMessage,
+    const sid = await this.whatsappService.sendWhatsapp({
+      message: whatsappGenericMessage,
       recipientPhoneNr,
-      null,
       registrationId,
-      MessageContentType.genericTemplated,
-      MessageProcessType.whatsappTemplateGeneric,
-    );
+      messageContentType: MessageContentType.genericTemplated,
+      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+    });
     if (tryWhatsapp) {
       const tryWhatsapp = {
         sid,

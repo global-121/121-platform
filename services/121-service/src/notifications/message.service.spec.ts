@@ -128,14 +128,13 @@ describe('MessageService', () => {
       // Assert
       expect(getNotificationTextMock).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith(
-        testNotificationText,
-        testMessageJob.phoneNumber,
-        null,
-        testMessageJob.registrationId,
-        MessageContentType.genericTemplated,
-        MessageProcessType.whatsappTemplateGeneric,
-      );
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: testNotificationText,
+        recipientPhoneNr: testMessageJob.phoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: MessageContentType.genericTemplated,
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      });
       expect(smsService.sendSms).toHaveBeenCalledTimes(0);
     });
 
@@ -158,14 +157,13 @@ describe('MessageService', () => {
       // Assert
       expect(getNotificationTextMock).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith(
-        testNotificationText,
-        testMessageJob.whatsappPhoneNumber,
-        null,
-        testMessageJob.registrationId,
-        MessageContentType.genericTemplated,
-        testMessageJob.messageProcessType,
-      );
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: testNotificationText,
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: MessageContentType.genericTemplated,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
     });
 
     it('should call whatsappService and intersolveVoucherService when processType = whatsappTemplateVoucher', async () => {
@@ -191,14 +189,13 @@ describe('MessageService', () => {
 
       // Assert
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith(
-        testMessageJob.message,
-        testMessageJob.whatsappPhoneNumber,
-        undefined,
-        testMessageJob.registrationId,
-        testMessageJob.messageContentType,
-        testMessageJob.messageProcessType,
-      );
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: testMessageJob.message,
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: testMessageJob.messageContentType,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
 
       expect(
         intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
