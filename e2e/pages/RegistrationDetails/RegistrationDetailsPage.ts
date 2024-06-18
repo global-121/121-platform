@@ -1,3 +1,4 @@
+import programTestTranslations from '@121-service/src/seed-data/program/program-test.json';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
@@ -33,7 +34,7 @@ class RegistrationDetails {
   readonly personAffectedCustomAttribute: Locator;
   readonly personAffectedPopUpSaveButton: Locator;
   readonly personAffectedHouseNumber: Locator;
-  readonly personAffectedNumberInputForm: Locator;
+  readonly personAffectedInputForm: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -117,8 +118,8 @@ class RegistrationDetails {
     this.personAffectedHouseNumber = this.page.getByTestId(
       'update-property-item-numeric-input',
     );
-    this.personAffectedNumberInputForm = this.page.getByTestId(
-      'update-property-item-number-input-form',
+    this.personAffectedInputForm = this.page.getByTestId(
+      'update-property-item-input-form',
     );
   }
 
@@ -460,7 +461,7 @@ class RegistrationDetails {
     whatsappLabel: string;
     saveButtonName: string;
   }) {
-    const fspAttribute = await this.personAffectedNumberInputForm.filter({
+    const fspAttribute = await this.personAffectedInputForm.filter({
       hasText: whatsappLabel,
     });
     const saveButton = this.personAffectedPopUpSaveButton.filter({
@@ -631,13 +632,13 @@ class RegistrationDetails {
     });
   }
 
-  async typeStringInNumberInputForm({
+  async typeStringInDateInputForm({
     saveButtonName,
   }: {
     saveButtonName: string;
   }) {
-    const birthDateForm = this.personAffectedNumberInputForm.filter({
-      hasText: 'Birth date',
+    const birthDateForm = this.personAffectedInputForm.filter({
+      hasText: programTestTranslations.programQuestions[1].label.en,
     });
     const birthDateInput = birthDateForm.getByRole('textbox');
     const formSaveButton = birthDateForm.getByRole('button', {

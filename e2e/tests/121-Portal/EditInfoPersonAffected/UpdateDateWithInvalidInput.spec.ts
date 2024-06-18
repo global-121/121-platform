@@ -50,7 +50,7 @@ test('[28047] Update "date" answer with invalid value', async ({ page }) => {
   await test.step('Update date with a string', async () => {
     const [dialog] = await Promise.all([
       page.waitForEvent('dialog'),
-      registration.typeStringInNumberInputForm({
+      registration.typeStringInDateInputForm({
         saveButtonName: englishTranslations.common.save,
       }),
     ]);
