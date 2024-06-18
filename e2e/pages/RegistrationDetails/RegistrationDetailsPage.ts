@@ -1,3 +1,4 @@
+import programTestTranslations from '@121-service/src/seed-data/program/program-test.json';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
@@ -30,9 +31,9 @@ class RegistrationDetails {
   readonly personAffectedPhoneNumber: Locator;
   readonly personAffectedPaymentMultiplier: Locator;
   readonly personAffectedLanguage: Locator;
-  readonly personAffectedCustomAttribute: Locator;
   readonly personAffectedPopUpSaveButton: Locator;
   readonly personAffectedHouseNumber: Locator;
+  readonly personAffectedInputForm: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -107,14 +108,14 @@ class RegistrationDetails {
     this.personAffectedLanguage = this.page.getByTestId(
       'preferred-language-dropdown',
     );
-    this.personAffectedCustomAttribute = this.page.getByTestId(
-      'update-property-item-label',
-    );
     this.personAffectedPopUpSaveButton = this.page.getByTestId(
       'confirm-prompt-button-default',
     );
     this.personAffectedHouseNumber = this.page.getByTestId(
       'update-property-item-numeric-input',
+    );
+    this.personAffectedInputForm = this.page.getByTestId(
+      'update-property-item-input-form',
     );
   }
 
@@ -456,7 +457,7 @@ class RegistrationDetails {
     whatsappLabel: string;
     saveButtonName: string;
   }) {
-    const fspAttribute = await this.personAffectedCustomAttribute.filter({
+    const fspAttribute = await this.personAffectedInputForm.filter({
       hasText: whatsappLabel,
     });
     const saveButton = this.personAffectedPopUpSaveButton.filter({
@@ -625,6 +626,32 @@ class RegistrationDetails {
       alert,
       reasonText: (newValue) => `Change phoneNumber to ${newValue}`,
     });
+  }
+
+  async typeStringInDateInputForm({
+    saveButtonName,
+  }: {
+    saveButtonName: string;
+  }) {
+    const birthDateForm = this.personAffectedInputForm.filter({
+      hasText: programTestTranslations.programQuestions[1].label.en,
+    });
+    const birthDateInput = birthDateForm.getByRole('textbox');
+    const formSaveButton = birthDateForm.getByRole('button', {
+      name: saveButtonName,
+    });
+    const saveButton = this.page.getByRole('button', {
+      name: saveButtonName,
+    });
+
+    await birthDateInput.fill('string');
+
+    await formSaveButton.waitFor({ state: 'visible' });
+    await formSaveButton.click({ force: true });
+    await this.updateReasonTextArea
+      .locator('textarea')
+      .fill(`Test reason:  Type a string in a date input`);
+    await saveButton.click();
   }
 }
 
