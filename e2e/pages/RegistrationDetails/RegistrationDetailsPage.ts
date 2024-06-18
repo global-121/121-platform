@@ -31,7 +31,6 @@ class RegistrationDetails {
   readonly personAffectedPhoneNumber: Locator;
   readonly personAffectedPaymentMultiplier: Locator;
   readonly personAffectedLanguage: Locator;
-  readonly personAffectedCustomAttribute: Locator;
   readonly personAffectedPopUpSaveButton: Locator;
   readonly personAffectedHouseNumber: Locator;
   readonly personAffectedInputForm: Locator;
@@ -108,9 +107,6 @@ class RegistrationDetails {
     );
     this.personAffectedLanguage = this.page.getByTestId(
       'preferred-language-dropdown',
-    );
-    this.personAffectedCustomAttribute = this.page.getByTestId(
-      'update-property-item-label',
     );
     this.personAffectedPopUpSaveButton = this.page.getByTestId(
       'confirm-prompt-button-default',
