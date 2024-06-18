@@ -12,10 +12,10 @@ import {
 import { runNpmCommand } from './runNpmCommand_shell_treekill';
 
 let environment: StartedDockerComposeEnvironment;
-const composeFilePath = path.resolve(__dirname, './'); // '../../../../services'; // Adjust the path as needed
+const composeFilePath = path.resolve(__dirname, '../../services');
 const composeFileName = 'docker-compose.test.yml';
 const envFilePath = path.resolve(composeFilePath, '.env');
-const backupEnvFilePath = path.resolve(composeFilePath, '.env.backup');
+// const backupEnvFilePath = path.resolve(composeFilePath, '.env.backup');
 
 async function startEnvironment(): Promise<number> {
   // let servicePort: number;
@@ -54,7 +54,7 @@ async function startService(): Promise<number> {
 
   // Step 3: Update the environment variables for the 121-service container
 
-  fs.copyFileSync(envFilePath, backupEnvFilePath);
+  // fs.copyFileSync(envFilePath, backupEnvFilePath);
   updateEnvWithPorts(dbPort, redisPort, mockServicePort);
   // Restart the 121-service container with the updated environment variables
   try {
@@ -100,7 +100,7 @@ async function stopEnvironment() {
   if (environment) {
     await environment.stop();
   }
-  fs.copyFileSync(backupEnvFilePath, envFilePath);
+  // fs.copyFileSync(backupEnvFilePath, envFilePath);
 }
 
 async function waitForServer(
