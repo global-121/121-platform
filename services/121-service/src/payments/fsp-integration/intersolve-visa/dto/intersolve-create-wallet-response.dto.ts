@@ -1,7 +1,7 @@
 import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 import { TokenResponseAsset } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/token-response-asset';
 import { TokenResponseBalance } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/token-response-balance';
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-wallet-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
 
 // TODO: Make properties readonly
 export class IssueTokenResponseDto {
