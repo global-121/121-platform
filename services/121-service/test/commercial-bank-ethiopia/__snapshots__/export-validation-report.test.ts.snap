@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Export CBE validation report should succesfully generate a report of CBE validation data 1`] = `
+{
+  "bankAccountNumberUsedForCall": "407951684723597",
+  "cbeName": "ANDUALEM MOHAMMED YIMER",
+  "cbeStatus": "CREDIT ALLOWED",
+  "errorMessage": null,
+  "fullNameUsedForTheMatch": "ANDUALEM MOHAMMED YIMER",
+  "referenceId": "registration-cbe-1",
+  "registrationProgramId": 1,
+}
+`;
