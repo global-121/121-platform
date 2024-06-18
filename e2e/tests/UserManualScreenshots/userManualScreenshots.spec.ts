@@ -57,7 +57,7 @@ test.beforeEach(async () => {
   await importRegistrations(programIdVisa, [registrationVisa], accessToken);
 });
 
-test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
+test('Navigates to the portal and takes screenshots', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const helpers = new Helpers(page);
   const homePage = new HomePage(page);
@@ -145,10 +145,10 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'ProgramDetails',
   });
 
-  await helpers.takePartialScreenshot({
-    elementId: 'design-table-element',
-    fileName: 'ProgramDetailsTable',
-  });
+  // await helpers.takePartialScreenshot({
+  //   elementId: 'design-table-element',
+  //   fileName: 'ProgramDetailsTable',
+  // });
 
   await page.goto(AppRoutes.home);
   await page.waitForTimeout(1000);
