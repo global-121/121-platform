@@ -551,10 +551,7 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public linkToken(
-    _childTokenCode: string,
-    parentTokenCode: string,
-  ): IntersolveVisaMockResponseDto {
+  public linkToken(parentTokenCode: string): IntersolveVisaMockResponseDto {
     if (parentTokenCode.includes('mock-fail-link-token')) {
       return {
         status: HttpStatus.NOT_FOUND,
@@ -580,10 +577,10 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public transfer(parentTokenCode: string): IntersolveVisaMockResponseDto {
-    if (parentTokenCode.includes('mock-fail-transfer')) {
+  public transfer(fromToken: string): IntersolveVisaMockResponseDto {
+    if (fromToken.includes('mock-fail-transfer')) {
       // We assume this is the correct response for a failed transfer
-      // However I do not know a scenario where this would fail, maybe when our token code does not exist
+      // However I do not know a scenario where this would fail, maybe when our token code does not exist or is out of funding
       return {
         status: HttpStatus.NOT_FOUND,
         statusText: 'Not Found',

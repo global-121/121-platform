@@ -132,25 +132,22 @@ export class IntersolveVisaMockController {
     return this.intersolveVisaMockService.updateCustomerAddress();
   }
 
-  @ApiOperation({ summary: 'Update customer phonnumber' })
+  @ApiOperation({ summary: 'Link token' })
   @Post('/wallet/v1/tokens/:childTokenCode/link-token')
   public linkToken(
     @Body() payload: Record<string, string>,
-    @Param('childTokenCode') childTokenCode: string,
+    @Param('childTokenCode') _childTokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.linkToken(
-      childTokenCode,
-      payload.tokenCode,
-    );
+    return this.intersolveVisaMockService.linkToken(payload.tokenCode);
   }
 
   @ApiOperation({ summary: 'Transfer' })
   @Post('/wallet/v1/tokens/:fromToken/transfer')
   public transfer(
-    @Body() _payload: Record<string, any>,
+    @Body() payload: Record<string, any>,
     @Param('fromToken') _fromToken: string,
   ): IntersolveVisaMockResponseDto {
-    const toToken = _payload.creditor.tokenCode;
+    const toToken = payload.creditor.tokenCode;
     return this.intersolveVisaMockService.transfer(toToken);
   }
 }
