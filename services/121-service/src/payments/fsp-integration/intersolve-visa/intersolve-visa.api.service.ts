@@ -529,36 +529,29 @@ export class IntersolveVisaApiService {
 
     let linkTokenResponse;
     // Send the request
-    if (process.env.MOCK_INTERSOLVE) {
-      // TODO: Implement Mock function:
-      // linkTokenResponse = await this.intersolveVisaApiMockService.linkTokenMock();
-    } else {
-      const authToken = await this.getAuthenticationToken();
-      const apiPath = process.env.INTERSOLVE_VISA_PROD
-        ? 'wallet-payments'
-        : 'wallet';
-      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${parentTokenCode}/link-token`;
-      const headers = [
-        { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-      ];
-      // On success this returns a 204 No Content
-      linkTokenResponse = await this.httpService.post<any>(
-        url,
-        linkTokenRequest,
-        headers,
-      );
-    }
+    const authToken = await this.getAuthenticationToken();
+    const apiPath = process.env.INTERSOLVE_VISA_PROD
+      ? 'wallet-payments'
+      : 'wallet';
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${parentTokenCode}/link-token`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+    // On success this returns a 204 No Content
+    linkTokenResponse = await this.httpService.post<any>(
+      url,
+      linkTokenRequest,
+      headers,
+    );
 
     // Handle the response
+    // TODO: REFACTOR: Check with Peter if this would be a good way to handle the response. If so, then refactor all methods that send requests in this Service accordingly.
+    const errorMessage =
+      this.createErrorMessageIfRequestFailed(linkTokenResponse);
     // If the response contains errors
-    if (!this.isSuccessResponseStatus(linkTokenResponse.status)) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `LINK TOKEN ERROR: ${
-        this.convertResponseErrorsToMessage(linkTokenResponse.data?.errors) ||
-        `${linkTokenResponse.status} - ${linkTokenResponse.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`LINK TOKEN ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -800,6 +793,28 @@ export class IntersolveVisaApiService {
 
   private isSuccessResponseStatus(status: number): boolean {
     return status >= 200 && status < 300;
+  }
+
+  // TODO: REFACTOR: Can we accept anything other than any as input paramter? A "base response DTO" with status and optional errors? Still it could be undefined, since http.post returns undefined if the URL could not be found I think.
+  // Funtion returns undefined if no error message could be created, which is when the request succeeded.
+  private createErrorMessageIfRequestFailed(response: any): string | undefined {
+    if (!response) {
+      return 'Intersolve URL could not be reached.';
+    }
+    if (!response.status) {
+      return "Intersolve response did not contain a 'status' field.";
+    }
+    if (!response.statusText) {
+      return "Intersolve response did not contain a 'statusText' field.";
+    }
+    if (!this.isSuccessResponseStatus(response.status)) {
+      return `${
+        this.convertResponseErrorsToMessage(response.data?.errors) ||
+        `${response.status} - ${response.statusText}`
+      }`;
+    } else {
+      return undefined;
+    }
   }
 
   private getTwoMonthsAgo(): Date {
