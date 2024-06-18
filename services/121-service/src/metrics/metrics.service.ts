@@ -447,6 +447,7 @@ export class MetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
+        `registration."referenceId" AS "referenceId"`,
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
         `fsp."fsp" AS fsp`,
@@ -693,6 +694,7 @@ export class MetricsService {
         }
       }
     }
+
     // TODO: refactor this to use the paginate functionality
     return this.getRegisrationsForDuplicates(
       duplicatesMap,

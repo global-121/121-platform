@@ -502,6 +502,7 @@ export class CommercialBankEthiopiaService
           statusValues: ['deleted', 'paused'],
         })
         .select([
+          `registration."referenceId" as "referenceId"`,
           'registration.registrationProgramId as "registrationProgramId"',
           'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
           'cbe.cbeName as "cbeName"',
