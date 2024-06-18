@@ -654,7 +654,7 @@ class RegistrationDetails {
     await formSaveButton.click({ force: true });
     await this.updateReasonTextArea
       .locator('textarea')
-      .fill(`Type string in number input form`);
+      .fill(`Test reason:  Type a string in a date input`);
     await saveButton.click();
   }
 }
