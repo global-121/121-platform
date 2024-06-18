@@ -254,6 +254,10 @@ export class CustomHttpService {
    * @returns - A copy of the input-object with some specific data overwritten/redacted
    */
   private redactSensitiveDataProperties(data: any) {
+    if (typeof data !== 'object' || data === null) {
+      return data;
+    }
+
     const sensitiveProperties = [
       'password',
       CookieNames.general,
