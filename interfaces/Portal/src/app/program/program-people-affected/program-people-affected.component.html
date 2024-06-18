@@ -42,7 +42,7 @@
         (confirm)="
           applyAction({
             message: $event?.message,
-            messageTemplateKey: $event?.messageTemplateKey
+            messageTemplateKey: $event?.messageTemplateKey,
           })
         "
         [subHeader]="
@@ -69,7 +69,7 @@
         data-testid="registration-validation-bulk-import-button"
         *appIfPermissions="[
           Permission.RegistrationCREATE,
-          Permission.RegistrationImportTemplateREAD
+          Permission.RegistrationImportTemplateREAD,
         ]"
         [programId]="programId"
       ></app-bulk-import>
@@ -127,7 +127,7 @@
   [messages]="{
     emptyMessage: 'ngx-datatable.empty-message' | translate,
     totalMessage: 'ngx-datatable.total-message' | translate,
-    selectedMessage: 'ngx-datatable.selected-message' | translate
+    selectedMessage: 'ngx-datatable.selected-message' | translate,
   }"
 >
   <ngx-datatable-column
@@ -303,7 +303,7 @@
           "
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
-            'is-error': hasMessageError(row.lastMessageStatus)
+            'is-error': hasMessageError(row.lastMessageStatus),
           }"
           (click)="openMessageHistoryPopup(row, programId)"
         >
@@ -386,7 +386,7 @@
           "
           (click)="paymentHistoryPopup(row)"
           [ngClass]="{
-            'ion-no-padding popup-button status-pop-up payment-history-button': true
+            'ion-no-padding popup-button status-pop-up payment-history-button': true,
           }"
         >
           {{ value }}
@@ -408,7 +408,7 @@
             | translate
               : {
                   selectedCount: selectedCount | number: '1.0-0',
-                  totalCount: pageMetaData?.totalItems || 0 | number: '1.0-0'
+                  totalCount: pageMetaData?.totalItems || 0 | number: '1.0-0',
                 }
         }}
       </div>
