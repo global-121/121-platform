@@ -7,8 +7,8 @@ import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.jso
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+import { test } from '../../../parallel_test_containers/test';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -16,8 +16,6 @@ test.beforeEach(async ({ page }) => {
   const OcwProgramId = programIdOCW;
 
   await seedPaidRegistrations(registrationsOCW, OcwProgramId);
-
-  // Login
   const loginPage = new LoginPage(page);
   await page.goto('/login');
   await loginPage.login(
