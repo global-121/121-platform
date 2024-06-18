@@ -32,12 +32,13 @@ export class MessagesService {
     }));
   }
 
-  private getMessageBody(message: Message): string {
-    if (!message.body && !!message.mediaUrl) {
-      return this.translate.instant('entity.message.body-image-placeholder');
-    }
+  private getMessageBody(messageObject: Message): string {
+    const message = messageObject.body ?? '';
 
-    return message.body || '';
+    if (!messageObject.mediaUrl) {
+      return message;
+    }
+    return `${this.translate.instant('entity.message.body-image-placeholder')}\n\n${message}`;
   }
 
   private getMessageStatus(twilioStatus: TwilioStatus): MessageStatus {
