@@ -33,7 +33,7 @@ import {
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
@@ -136,16 +136,13 @@ export class IntersolveVisaApiService {
 
     // Handle the response
 
+    // TODO: REFACTOR: Check with Peter if this would be a good way to handle the response. If not, then optimize. Also all other methods where we send a request to Intersolve.
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      createCustomerResponseDto,
+    );
     // If the response contains errors
-    if (!createCustomerResponseDto.data?.success) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `CREATE CUSTOMER ERROR: ${
-        this.convertResponseErrorsToMessage(
-          createCustomerResponseDto.data?.errors,
-        ) ||
-        `${createCustomerResponseDto.status} - ${createCustomerResponseDto.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`CREATE CUSTOMER ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -184,16 +181,12 @@ export class IntersolveVisaApiService {
 
     // Handle the response
 
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      issueTokenResponseDto,
+    );
     // If the response contains errors
-    if (!issueTokenResponseDto.data?.success) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `ISSUE TOKEN ERROR: ${
-        this.convertResponseErrorsToMessage(
-          issueTokenResponseDto.data?.errors,
-        ) ||
-        `${issueTokenResponseDto.status} - ${issueTokenResponseDto.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`ISSUE TOKEN ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -239,22 +232,11 @@ export class IntersolveVisaApiService {
 
     // Handle the response
 
+    const errorMessage =
+      this.createErrorMessageIfRequestFailed(getTokenResponseDto);
     // If the response contains errors
-    // TODO: Unlike in this.createCustomer(), this.issueToken() etc. we throw an HTTP 500 exception here instead of a "normal" error. I got this from refactoring (the old) intersolveVisaService.getUpdateWalletDetails().
-    // I think this is because this function is also called from the cronjob to update wallet details as well as processing a transfer job. How to deal with this optimally? For simplicity, throw an HTTP 500 in every function,
-    // which for processing transfer jobs is caught "higher up" (in the TransferService) and not re-thrown?
-    // TODO: Then, nicely format what is sent in the error message, like in the other functions. Because that ends up in the transfer/transaction message. For the 500 in our logs, that message format should also be fine(?).
-    if (!getTokenResponseDto.data?.success) {
-      const errors =
-        getTokenResponseDto.data?.errors ||
-        'Intersolve-visa: Get wallet API-call failed';
-      console.error(errors);
-      throw new HttpException(
-        {
-          errors: errors,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (errorMessage) {
+      throw new Error(`GET TOKEN ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -305,22 +287,12 @@ export class IntersolveVisaApiService {
 
     // Handle the response
 
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      getPhysicalCardResponseDto,
+    );
     // If the response contains errors
-    // TODO: Unlike in this.createCustomer(), this.issueToken() etc. we throw an HTTP 500 exception here instead of a "normal" error. I got this from refactoring (the old) intersolveVisaService.getUpdateWalletDetails().
-    // I think this is because this function is also called from the cronjob to update wallet details as well as processing a transfer job. How to deal with this optimally? For simplicity, throw an HTTP 500 in every function,
-    // which for processing transfer jobs is caught "higher up" (in the TransferService) and not re-thrown?
-    // TODO: Then, nicely format what is sent in the error message, like in the other functions. Because that ends up in the transfer/transaction message. For the 500 in our logs, that message format should also be fine(?).
-    if (!getPhysicalCardResponseDto.data?.success) {
-      const errors =
-        getPhysicalCardResponseDto.data?.errors ||
-        'Intersolve-visa: Get physical card API-call failed';
-      console.error(errors);
-      throw new HttpException(
-        {
-          errors: errors,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (errorMessage) {
+      throw new Error(`GET PHYSICAL CARD ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -401,22 +373,12 @@ export class IntersolveVisaApiService {
     );
     // Handle the response
 
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      getTransactionsResponseDto,
+    );
     // If the response contains errors
-    // TODO: Unlike in this.createCustomer(), this.issueToken() etc. we throw an HTTP 500 exception here instead of a "normal" error. I got this from refactoring (the old) intersolveVisaService.getUpdateWalletDetails().
-    // I think this is because this function is also called from the cronjob to update wallet details as well as processing a transfer job. How to deal with this optimally? For simplicity, throw an HTTP 500 in every function,
-    // which for processing transfer jobs is caught "higher up" (in the TransferService) and not re-thrown?
-    // TODO: Then, nicely format what is sent in the error message, like in the other functions. Because that ends up in the transfer/transaction message. For the 500 in our logs, that message format should also be fine(?).
-    if (!getTransactionsResponseDto.data?.success) {
-      const error =
-        getTransactionsResponseDto.data?.errors ||
-        'Intersolve-visa: Get transactions API-call failed';
-      console.error(error);
-      throw new HttpException(
-        {
-          errors: error,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR, // This is 500 so that when this fails in a non-payment use case it will lead to an alert
-      );
+    if (errorMessage) {
+      throw new Error(`GET TRANSACTIONS ERROR: ${errorMessage}`);
     }
 
     return getTransactionsResponseDto;
@@ -497,16 +459,12 @@ export class IntersolveVisaApiService {
 
     // Handle the response
 
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      registerHolderResponse,
+    );
     // If the response contains errors
-    if (!this.isSuccessResponseStatus(registerHolderResponse.status)) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `REGISTER HOLDER ERROR: ${
-        this.convertResponseErrorsToMessage(
-          registerHolderResponse.data?.errors,
-        ) ||
-        `${registerHolderResponse.status} - ${registerHolderResponse.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`REGISTER HOLDER ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -546,7 +504,6 @@ export class IntersolveVisaApiService {
     );
 
     // Handle the response
-    // TODO: REFACTOR: Check with Peter if this would be a good way to handle the response. If so, then refactor all methods that send requests in this Service accordingly.
     const errorMessage =
       this.createErrorMessageIfRequestFailed(linkTokenResponse);
     // If the response contains errors
@@ -601,16 +558,13 @@ export class IntersolveVisaApiService {
     );
 
     // Handle the response
+
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      createPhysicalCardResponse,
+    );
     // If the response contains errors
-    if (!this.isSuccessResponseStatus(createPhysicalCardResponse.status)) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `CREATE PHYSICAL CARD ERROR: ${
-        this.convertResponseErrorsToMessage(
-          createPhysicalCardResponse.data?.errors,
-        ) ||
-        `${createPhysicalCardResponse.status} - ${createPhysicalCardResponse.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`CREATE PHYSICAL CARD ERROR: ${errorMessage}`);
     }
 
     // If the response does not contain errors
@@ -651,15 +605,14 @@ export class IntersolveVisaApiService {
     );
 
     // Handle the response
+
+    const errorMessage =
+      this.createErrorMessageIfRequestFailed(transferResponse);
     // If the response contains errors
-    if (!this.isSuccessResponseStatus(transferResponse.status)) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `TRANSFER ERROR: ${
-        this.convertResponseErrorsToMessage(transferResponse.data?.errors) ||
-        `${transferResponse.status} - ${transferResponse.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`TRANSFER ERROR: ${errorMessage}`);
     }
+
     // If the response does not contain errors
     return;
   }
@@ -747,6 +700,7 @@ export class IntersolveVisaApiService {
   }
 
   // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
+  // TODO: Remove this function, since it is not used (anymore)?
   public async activateWallet({
     tokenCode,
     payload,
@@ -772,7 +726,6 @@ export class IntersolveVisaApiService {
 
   // Helper function to convert errors in an Intersolve API Response into a message string.
   // TODO: REFACTOR: Change this function to a private function once it is no longer used in the IntersolveVisaService.
-  // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   public convertResponseErrorsToMessage(
     errorsInResponseDto: ErrorsInResponseDto[] | undefined,
   ): string {
