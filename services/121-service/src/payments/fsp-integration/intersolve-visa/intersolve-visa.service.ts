@@ -32,7 +32,6 @@ import {
   IntersolveVisaPaymentInfoEnum,
   IntersolveVisaPaymentInfoEnumBackupName,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-payment-info.enum';
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-wallet-status.enum';
 import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
@@ -50,6 +49,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
+import { IntersolveVisaTokenStatus } from './enum/intersolve-visa-token-status.enum';
 
 @Injectable()
 export class IntersolveVisaService
