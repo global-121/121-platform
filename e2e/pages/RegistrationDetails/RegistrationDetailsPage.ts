@@ -699,6 +699,54 @@ class RegistrationDetails {
       .fill(`Test reason:  Type a string in a date input`);
     await saveButton.click();
   }
+
+  async updatefinancialServiceProvider({
+    fspNewName,
+    fspOldName,
+    saveButtonName,
+    okButtonName,
+  }: {
+    fspNewName: string;
+    fspOldName: string;
+    saveButtonName: string;
+    okButtonName: string;
+  }) {
+    await this.validateFspNamePresentInEditPopUp(fspOldName);
+    await this.financialServiceProviderDropdown.click();
+    const dropdown = this.page.getByRole('radio');
+    await dropdown.getByText(fspNewName).click();
+    const warning =
+      englishTranslations['page'].program['program-people-affected'][
+        'edit-person-affected-popup'
+      ].fspChangeWarning;
+    await this.validateFspWarningInEditPopUp(warning);
+    const oldValue = 'Teststraat';
+    const newValue = oldValue + '_new';
+    const fieldSelector = this.personAffectedPopUpFsp;
+    const okButton = this.page.getByRole('button', { name: okButtonName });
+    await fieldSelector.scrollIntoViewIfNeeded();
+    const fieldInput = await fieldSelector.getByRole('textbox').nth(0);
+    await fieldInput.fill(newValue);
+    const fieldInput2 = fieldSelector.getByRole('textbox').nth(1);
+    await fieldInput2.click();
+    await this.page.waitForLoadState('networkidle');
+    await fieldSelector.getByText(saveButtonName).click();
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
+  async validateFspWarningInEditPopUp(warning: string) {
+    await this.page.waitForLoadState('networkidle');
+    const element = this.page.locator('ion-text.ion-padding.md.hydrated');
+    const text = await element.textContent();
+    expect(text).toContain(warning);
+  }
+  async validateRowPATable(fsp: string) {
+    const personAfected = this.page.getByRole('rowgroup').nth(1);
+    const element = personAfected.getByRole('row').nth(3);
+    await expect(personAfected).toBeVisible();
+    expect(await element.textContent()).toContain(fsp);
+  }
 }
 
 export default RegistrationDetails;
