@@ -1,4 +1,8 @@
+<!-- markdownlint-disable MD033 -->
+
 # <p align="center"> K6 performance testing suite </p>
+
+<!-- markdownlint-disable MD033 -->
 
 <p align="center">
   <a href="https://k6.io/docs/">
@@ -7,12 +11,13 @@
 </p>
 
 **<p align="center">
-  This documentation is still work in progress. Few main things that it touches upon is brief explanation of what is "K6", how to run it locally and where to set up tests to run on CI.**
+This documentation is still work in progress. Few main things that it touches upon is brief explanation of what is "K6", how to run it locally and where to set up tests to run on CI.**
+
 </p>
 
 # <p align="center"> What is K6? </p>
 
-**K6 is an open-source load testing tool and framework designed for testing the performance of APIs, microservices, and websites. Developed by Grafana Labs, 
+**K6 is an open-source load testing tool and framework designed for testing the performance of APIs, microservices, and websites. Developed by Grafana Labs,
 K6 allows developers and QA engineers to create and run performance tests using JavaScript.**
 
 ## Key Features
@@ -25,7 +30,6 @@ K6 allows developers and QA engineers to create and run performance tests using 
 - **Extensible**: Supports plugins and can be extended with custom functionality.
 - **Results Analysis**: Provides detailed metrics and results that can be integrated with other tools for further analysis.
 
-
 # <p align="center"> How to run it locally? </p>
 
 **Install K6 dependecies:**
@@ -33,6 +37,7 @@ K6 allows developers and QA engineers to create and run performance tests using 
 ```shell
 cd /k6
 ```
+
 Then:
 
 ```shell
@@ -44,6 +49,7 @@ npm install
 ```shell
 cd /k6
 ```
+
 Then:
 
 ```shell
@@ -59,18 +65,12 @@ npx dotenv -e ../services/.env -- k6 run tests/ <script name>.js
 ```shell
 cd /.github/workflows/test_k6.yml
 ```
+
 **And edit current setup or add more tests to run. Keep in mind that load tests tend to be much "heavier" to execute then API integration tests:**
 
-```
+```shell
 - name: Run k6 tests
   working-directory: ${{ env.k6TestsPath }}
   run: |
     npx dotenv -e ../services/.env -- ./k6 run tests/pvProgramPerformance.j
 ```
-
-
-
-
-
-
-
