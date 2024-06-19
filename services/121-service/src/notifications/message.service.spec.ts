@@ -211,5 +211,61 @@ describe('MessageService', () => {
         undefined,
       );
     });
+    it('should call whatsappService and intersolveVoucherService when processType = whatsappPendingVoucher and message = empty string', async () => {
+      // Arrange
+      const mediaUrl = 'https://test.com';
+
+      const testMessageJob = {
+        ...defaultMessageJob,
+        message: '',
+        messageTemplateKey: undefined,
+        mediaUrl,
+        messageProcessType: MessageProcessType.whatsappPendingVoucher,
+        messageContentType: MessageContentType.paymentTemplated,
+        whatsappPhoneNumber: '94287277',
+        customData: {
+          payment: 1,
+          amount: 123,
+          intersolveVoucherId: 456,
+        },
+      };
+      const testMessageID = 'SM' + testMessageJob.whatsappPhoneNumber;
+      jest
+        .spyOn(whatsappService, 'sendWhatsapp')
+        .mockResolvedValueOnce(testMessageID);
+
+      // Act
+      await messageService.sendTextMessage(testMessageJob);
+
+      // Assert
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: '', // it's important that this stays empty
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        mediaUrl: testMessageJob.mediaUrl,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: testMessageJob.messageContentType,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
+
+      expect(
+        intersolveVoucherService.storeTransactionResult,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        intersolveVoucherService.storeTransactionResult,
+      ).toHaveBeenCalledWith(
+        testMessageJob.customData.payment,
+        testMessageJob.customData.amount,
+        testMessageJob.registrationId,
+        2,
+        StatusEnum.success,
+        undefined,
+        testMessageJob.programId,
+        {
+          messageSid: testMessageID,
+          intersolveVoucherId: testMessageJob.customData.intersolveVoucherId,
+        },
+      );
+    });
   });
 });
