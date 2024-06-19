@@ -63,7 +63,7 @@ export class MessageService {
               registrationId: messageJobDto.registrationId,
               messageContentType: messageJobDto.messageContentType,
               tryWhatsapp: true,
-            }, // tryWhatsapp = true
+            },
           );
           break;
         case MessageProcessType.whatsappTemplateGeneric:
