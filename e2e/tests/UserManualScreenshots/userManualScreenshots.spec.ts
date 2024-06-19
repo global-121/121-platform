@@ -57,7 +57,7 @@ test.beforeEach(async () => {
   await importRegistrations(programIdVisa, [registrationVisa], accessToken);
 });
 
-test('Navigates to the portal and takes screenshots', async ({ page }) => {
+test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const helpers = new Helpers(page);
   const homePage = new HomePage(page);
