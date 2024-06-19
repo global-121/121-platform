@@ -32,6 +32,6 @@
     "@alex_neo/playwright-azure-reporter": "^1.9.0",
     "dotenv": "16.4.5",
     "playwright": "^1.43.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   }
 }
