@@ -56,15 +56,13 @@ export class MessageService {
           if (!messageJobDto.phoneNumber) {
             throw new Error(`No phoneNumber provided for ${processtype}`);
           }
-          await this.storePendingMessageAndSendWhatsappTemplate(
-            {
-              message: messageText,
-              recipientPhoneNr: messageJobDto.phoneNumber,
-              registrationId: messageJobDto.registrationId,
-              messageContentType: messageJobDto.messageContentType,
-              tryWhatsapp: true,
-            },
-          );
+          await this.storePendingMessageAndSendWhatsappTemplate({
+            message: messageText,
+            recipientPhoneNr: messageJobDto.phoneNumber,
+            registrationId: messageJobDto.registrationId,
+            messageContentType: messageJobDto.messageContentType,
+            tryWhatsapp: true,
+          });
           break;
         case MessageProcessType.whatsappTemplateGeneric:
           if (!messageJobDto.whatsappPhoneNumber) {
