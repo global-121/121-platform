@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesfully pay-out 1`] = `
+[
+  {
+    "body": "",
+    "contentType": "payment-instructions",
+    "errorCode": null,
+    "from": "MG",
+    "mediaUrl": "http://localhost:3000/api/programs/2/financial-service-providers/intersolve-voucher/instructions/",
+    "status": "read",
+    "to": "whatsapp:+14155238886",
+    "type": "whatsapp",
+  },
+  {
+    "body": "This is a message from the Red Cross.
+
+With this message you will receive:
+1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.
+2. An explanation on how to use the voucher in Albert Heijn.
+
+If you received more than one voucher this is because you had not yet received vouchers from previous weeks.
+
+ The amount that you receive is written on the top of the voucher.
+You can spend the vouchers at any Albert Heijn supermarket in the Netherlands.
+
+You don’t have to spend everything at once. So keep the vouchers and re-use them until the complete amount is finished.
+
+You will receive your Albert Heijn voucher every week on Tuesday. When we end the support you will receive a message from us, explaining you when and why we end the support.
+
+Do you have questions? Send us a message on WhatsApp: https://wa.me/3197010286964",
+    "contentType": "payment-voucher",
+    "errorCode": null,
+    "from": "MG",
+    "mediaUrl": "http://localhost:3000/api/notifications/imageCode/secret",
+    "status": "read",
+    "to": "whatsapp:+14155238886",
+    "type": "whatsapp",
+  },
+  {
+    "body": "This is a message from the Red Cross.
+
+Your Albert Heijn supermarket voucher is ready to be sent.
+
+Please reply “yes” to this message in order to receive:
+1. This week's voucher.
+2. Any previous vouchers you haven't received yet.
+",
+    "contentType": "payment-templated",
+    "errorCode": null,
+    "from": "MG",
+    "mediaUrl": null,
+    "status": "read",
+    "to": "whatsapp:+14155238886",
+    "type": "whatsapp",
+  },
+]
+`;
