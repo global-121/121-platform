@@ -58,14 +58,8 @@ describe('Export CBE validation report', () => {
 
     // Assert
     expect(exportResult.body.fileName).toBe('cbe-validation-report');
-    expect(exportResult.body.data[0].registrationProgramId).toBeGreaterThan(0);
-    expect(exportResult.body.data[0].fullNameUsedForTheMatch).toBeDefined();
-    expect(
-      exportResult.body.data[0].bankAccountNumberUsedForCall,
-    ).toBeDefined();
-    expect(exportResult.body.data[0].cbeName).toBeDefined();
-    expect(exportResult.body.data[0].cbeStatus).toBeDefined();
-    expect(exportResult.body.data[0].errorMessage).toBeDefined();
-    expect(exportResult.body.data[0].updated).toBeDefined();
+    // We remove updated, because aways changes
+    const { updated: _updated, ...result } = exportResult.body.data[0];
+    expect(result).toMatchSnapshot();
   });
 });

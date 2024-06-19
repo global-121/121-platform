@@ -22,8 +22,8 @@ export class IntersolveVisaExportService {
       .leftJoin('wallet.intersolveVisaCustomer', 'customer')
       .leftJoin('customer.registration', 'registration')
       .select([
-        `registration."registrationProgramId" as "paId"`,
         `registration."referenceId" as "referenceId"`,
+        `registration."registrationProgramId" as "paId"`,
         `registration."registrationStatus" as "registrationStatus"`,
         'wallet."tokenCode" as "cardNumber"',
         'wallet.created as "issuedDate"',
