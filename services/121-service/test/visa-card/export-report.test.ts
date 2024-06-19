@@ -1,5 +1,4 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -82,17 +81,12 @@ describe('Export Visa debit card report', () => {
 
     // Assert
     expect(exportResult.body.fileName).toBe('card-balances');
-    expect(exportResult.body.data[0].cardStatus121).toBe(
-      WalletCardStatus121.Active,
-    );
-    expect(exportResult.body.data[0].balance).toBe(25);
-    expect(exportResult.body.data[0].registrationStatus).toBe(
-      RegistrationStatusEnum.included,
-    );
-    expect(exportResult.body.data[0].paId).toBeGreaterThan(0);
-    expect(exportResult.body.data[0].issuedDate).toBeDefined();
-    expect(exportResult.body.data[0].lastUsedDate).toBeDefined();
-    expect(exportResult.body.data[0].referenceId).toBeDefined();
-    expect(exportResult.body.data[0].cardNumber).toBeDefined();
+    // we remove issuedDate and cardNumber, because aways changes
+    const {
+      issuedDate: _issuedDate,
+      cardNumber: _cardNumber,
+      ...result
+    } = exportResult.body.data[0];
+    expect(result).toMatchSnapshot();
   });
 });
