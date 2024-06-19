@@ -8,9 +8,11 @@ import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import {
   doPayment,
   getTransactions,
+  waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
+  getMessageHistory,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -101,6 +103,42 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
       expect(getTransactionsBody[0].user).toMatchObject(adminOwnerDto);
+
+      await waitForMessagesToComplete(
+        programId,
+        [registrationAh.referenceId],
+        accessToken,
+        10_000,
+        3,
+      );
+
+      const { body: messages } = await getMessageHistory(
+        programId,
+        registrationAh.referenceId,
+        accessToken,
+      );
+
+      let imageCodeSecret;
+
+      expect(
+        messages.map((message) => {
+          // we need to remove the "created" field from the messages
+          // because it is dynamic and it would make the snapshot fail
+          delete message.created;
+
+          if (message.mediaUrl?.includes('imageCode')) {
+            const [mediaUrlPath, mediaUrlSecret] =
+              message.mediaUrl.split('imageCode/');
+            imageCodeSecret = mediaUrlSecret;
+            // override the actual mediaUrl with a fixed value to avoid snapshot mismatches
+            message.mediaUrl = mediaUrlPath + 'imageCode/secret';
+          }
+
+          return message;
+        }),
+      ).toMatchSnapshot();
+
+      expect(imageCodeSecret).toHaveLength(200);
     });
   });
 });
