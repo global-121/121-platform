@@ -56,7 +56,7 @@ cd /k6
 Then:
 
 ```shell
-npx dotenv -e ../services/.env -- k6 run tests/ <script name>.js
+npm run test -- tests/<name of the test>.js
 ```
 
 **The results of the tests will be then displayed in your terminal.**
