@@ -34,7 +34,6 @@ K6 allows developers and QA engineers to create and run performance tests using 
 
 First you must [install k6](https://k6.io/docs/get-started/installation/). (For mac users, the easiest way is with `brew install k6`)
 
-
 **Install K6 dependecies:**
 
 ```shell
