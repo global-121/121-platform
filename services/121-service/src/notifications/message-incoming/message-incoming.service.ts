@@ -453,14 +453,12 @@ export class MessageIncomingService {
         return;
       } else {
         // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
-        await this.whatsappService.sendWhatsapp(
-          this.genericDefaultReplies[this.fallbackLanguage],
-          fromNumber,
-          null,
-          undefined,
-          MessageContentType.defaultReply,
-          MessageProcessType.whatsappDefaultReply,
-        );
+        await this.whatsappService.sendWhatsapp({
+          message: this.genericDefaultReplies[this.fallbackLanguage],
+          recipientPhoneNr: fromNumber,
+          messageContentType: MessageContentType.defaultReply,
+          messageProcessType: MessageProcessType.whatsappDefaultReply,
+        });
         return;
       }
     }

@@ -35,15 +35,23 @@ export class WhatsappService {
     private readonly messageTemplateServices: MessageTemplateService,
   ) {}
 
-  public async sendWhatsapp(
-    message: string,
-    recipientPhoneNr: string,
-    mediaUrl?: null | string,
-    registrationId?: number,
-    messageContentType?: MessageContentType,
-    messageProcessType?: MessageProcessType,
-    existingSidToUpdate?: string,
-  ): Promise<string> {
+  public async sendWhatsapp({
+    message,
+    recipientPhoneNr,
+    mediaUrl,
+    registrationId,
+    messageContentType,
+    messageProcessType,
+    existingSidToUpdate,
+  }: {
+    message?: string;
+    recipientPhoneNr?: string;
+    mediaUrl?: null | string;
+    registrationId?: number;
+    messageContentType?: MessageContentType;
+    messageProcessType?: MessageProcessType;
+    existingSidToUpdate?: string;
+  }): Promise<string> {
     const payload = {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,

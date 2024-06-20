@@ -128,14 +128,13 @@ describe('MessageService', () => {
       // Assert
       expect(getNotificationTextMock).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith(
-        testNotificationText,
-        testMessageJob.phoneNumber,
-        null,
-        testMessageJob.registrationId,
-        MessageContentType.genericTemplated,
-        MessageProcessType.whatsappTemplateGeneric,
-      );
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: testNotificationText,
+        recipientPhoneNr: testMessageJob.phoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: MessageContentType.genericTemplated,
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      });
       expect(smsService.sendSms).toHaveBeenCalledTimes(0);
     });
 
@@ -158,14 +157,13 @@ describe('MessageService', () => {
       // Assert
       expect(getNotificationTextMock).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith(
-        testNotificationText,
-        testMessageJob.whatsappPhoneNumber,
-        null,
-        testMessageJob.registrationId,
-        MessageContentType.genericTemplated,
-        testMessageJob.messageProcessType,
-      );
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: testNotificationText,
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: MessageContentType.genericTemplated,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
     });
 
     it('should call whatsappService and intersolveVoucherService when processType = whatsappTemplateVoucher', async () => {
@@ -191,14 +189,13 @@ describe('MessageService', () => {
 
       // Assert
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
-      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith(
-        testMessageJob.message,
-        testMessageJob.whatsappPhoneNumber,
-        undefined,
-        testMessageJob.registrationId,
-        testMessageJob.messageContentType,
-        testMessageJob.messageProcessType,
-      );
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: testMessageJob.message,
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: testMessageJob.messageContentType,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
 
       expect(
         intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
@@ -212,6 +209,62 @@ describe('MessageService', () => {
         1,
         testMessageID,
         undefined,
+      );
+    });
+    it('should call whatsappService and intersolveVoucherService when processType = whatsappPendingVoucher and message = empty string', async () => {
+      // Arrange
+      const mediaUrl = 'https://test.com';
+
+      const testMessageJob = {
+        ...defaultMessageJob,
+        message: '',
+        messageTemplateKey: undefined,
+        mediaUrl,
+        messageProcessType: MessageProcessType.whatsappPendingVoucher,
+        messageContentType: MessageContentType.paymentTemplated,
+        whatsappPhoneNumber: '94287277',
+        customData: {
+          payment: 1,
+          amount: 123,
+          intersolveVoucherId: 456,
+        },
+      };
+      const testMessageID = 'SM' + testMessageJob.whatsappPhoneNumber;
+      jest
+        .spyOn(whatsappService, 'sendWhatsapp')
+        .mockResolvedValueOnce(testMessageID);
+
+      // Act
+      await messageService.sendTextMessage(testMessageJob);
+
+      // Assert
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: '', // it's important that this stays empty
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        mediaUrl: testMessageJob.mediaUrl,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: testMessageJob.messageContentType,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
+
+      expect(
+        intersolveVoucherService.storeTransactionResult,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        intersolveVoucherService.storeTransactionResult,
+      ).toHaveBeenCalledWith(
+        testMessageJob.customData.payment,
+        testMessageJob.customData.amount,
+        testMessageJob.registrationId,
+        2,
+        StatusEnum.success,
+        undefined,
+        testMessageJob.programId,
+        {
+          messageSid: testMessageID,
+          intersolveVoucherId: testMessageJob.customData.intersolveVoucherId,
+        },
       );
     });
   });
