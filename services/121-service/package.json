@@ -86,7 +86,7 @@
     "@compodoc/compodoc": "^1.1.25",
     "@nestjs/cli": "^10.3.2",
     "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.5.7",
+    "@swc/core": "^1.6.3",
     "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.5",
