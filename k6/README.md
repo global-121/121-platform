@@ -63,7 +63,7 @@ npx dotenv -e ../services/.env -- k6 run tests/ <script name>.js
 **To view .yml file navigate:**
 
 ```shell
-cd /.github/workflows/test_k6.yml
+code /.github/workflows/test_k6.yml
 ```
 
 **And edit current setup or add more tests to run. Keep in mind that load tests tend to be much "heavier" to execute then API integration tests:**
