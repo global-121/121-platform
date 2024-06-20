@@ -72,5 +72,5 @@ code /.github/workflows/test_k6.yml
 - name: Run k6 tests
   working-directory: ${{ env.k6TestsPath }}
   run: |
-    npx dotenv -e ../services/.env -- ./k6 run tests/pvProgramPerformance.j
+    npx dotenv -e ../services/.env -- ./k6 run tests/pvProgramPerformance.js
 ```
