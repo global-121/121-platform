@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -29,7 +29,8 @@ test.beforeEach(async ({ page }) => {
 test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
+
   const alertPattern = englishTranslations.common['error-with-message'];
   function createAlertMessage(pattern: string, phoneNumber: string): string {
     const error = `The value '${phoneNumber}' given for the attribute 'phoneNumber' does not have the correct format for type 'tel'`;
@@ -46,7 +47,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
 
   await test.step('Update phone number with empty string', async () => {
     const phoneNumber = '';
-    await registration.updatePhoneNumber({
+    await piiPopUp.updatePhoneNumber({
       phoneNumber: phoneNumber,
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
@@ -62,7 +63,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   await test.step('Update phone number with longer(18 digit) number', async () => {
     const phoneNumber = '123456789012345678';
     const alertMessage = createAlertMessage(alertPattern, phoneNumber);
-    await registration.updatePhoneNumber({
+    await piiPopUp.updatePhoneNumber({
       phoneNumber: phoneNumber,
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
@@ -73,7 +74,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   await test.step('Update phone number with shorter(7 digit) number', async () => {
     const phoneNumber = '1234567';
     const alertMessage = createAlertMessage(alertPattern, phoneNumber);
-    await registration.updatePhoneNumber({
+    await piiPopUp.updatePhoneNumber({
       phoneNumber: phoneNumber,
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,

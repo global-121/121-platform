@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import ProgramTest from '@121-service/src/seed-data/program/program-test.json';
@@ -37,7 +37,7 @@ test.beforeEach(async ({ page }) => {
 test('[28047] Update "date" answer with invalid value', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(ProgramTest.titlePortal.en);
@@ -50,7 +50,7 @@ test('[28047] Update "date" answer with invalid value', async ({ page }) => {
   await test.step('Update date with a string', async () => {
     const [dialog] = await Promise.all([
       page.waitForEvent('dialog'),
-      registration.typeStringInDateInputForm({
+      piiPopUp.typeStringInDateInputForm({
         saveButtonName: englishTranslations.common.save,
       }),
     ]);

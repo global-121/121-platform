@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import fspIntersolveJumbo from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
@@ -32,7 +32,7 @@ test('[28037] Open the popup to view and edit information', async ({
 }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -43,7 +43,7 @@ test('[28037] Open the popup to view and edit information', async ({
   });
 
   await test.step('Validate information shown', async () => {
-    await registration.validatePiiPopUp({
+    await piiPopUp.validatePiiPopUp({
       paId: 'PA #4',
       whatsappLabel: fspIntersolveJumbo.questions[5].label.en,
       saveButtonName: englishTranslations.common.save,

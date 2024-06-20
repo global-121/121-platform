@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -31,9 +31,8 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
 }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
   const alertPattern = englishTranslations.common['error-with-message'];
-  // const alert = alertPattern.substring(0,alertPattern.indexOf("{"));
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -44,7 +43,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
   });
 
   await test.step('Update payment amount multiplier with empty string', async () => {
-    await registration.updatepaymentAmountMultiplier({
+    await piiPopUp.updatepaymentAmountMultiplier({
       amount: '',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
@@ -56,7 +55,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
   });
 
   await test.step('Update payment amount multiplier with negative number', async () => {
-    await registration.updatepaymentAmountMultiplier({
+    await piiPopUp.updatepaymentAmountMultiplier({
       amount: '-1',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
@@ -68,7 +67,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
   });
 
   await test.step('Update payment amount multiplier with a string', async () => {
-    await registration.updatepaymentAmountMultiplier({
+    await piiPopUp.updatepaymentAmountMultiplier({
       amount: 'Mutiplier',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,

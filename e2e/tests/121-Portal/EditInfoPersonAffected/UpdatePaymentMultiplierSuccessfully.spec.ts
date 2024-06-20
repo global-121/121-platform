@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -31,7 +31,7 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
 }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -42,7 +42,7 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
   });
 
   await test.step('Update payment amount multiplier', async () => {
-    await registration.updatepaymentAmountMultiplier({
+    await piiPopUp.updatepaymentAmountMultiplier({
       amount: '2',
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
@@ -52,6 +52,6 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
   await test.step('Validate payment multiplier updated', async () => {
     await page.reload();
     await table.openPaPersonalInformation({});
-    await registration.validateAmountMultiplier({ amount: '2' });
+    await piiPopUp.validateAmountMultiplier({ amount: '2' });
   });
 });
