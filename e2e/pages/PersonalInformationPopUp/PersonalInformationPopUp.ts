@@ -5,8 +5,6 @@ import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.j
 
 class PersonalInformationPopup {
   readonly page: Page;
-  readonly editPersonAffectedPopUp: Locator;
-  readonly tileInformationPlaceHolder: Locator;
   readonly updateReasonTextArea: Locator;
   readonly personAffectedEditPopUpTitle: Locator;
   readonly personAffectedPopUpFsp: Locator;
