@@ -1,4 +1,5 @@
 import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -33,6 +34,7 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
   const navigationModule = new NavigationModule(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
@@ -51,7 +53,7 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
     );
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
-    await registration.validateFspNamePresentInEditPopUp(
+    await piiPopUp.validateFspNamePresentInEditPopUp(
       visaFspIntersolve.displayName.en,
     );
   });
