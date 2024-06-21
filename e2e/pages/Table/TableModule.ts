@@ -385,24 +385,6 @@ class TableModule {
     }
   }
 
-  async tableRow(rowIndex: number) {
-    return `//datatable-row-wrapper[${rowIndex}]`;
-  }
-  async getCellValueTableLeft(row: number, collumn: number) {
-    return (
-      TableModule.getRow(row) +
-      TableModule.getTable(1) +
-      TableModule.getCollumn(collumn)
-    );
-  }
-  async getCellValueTableRight(row: number, collumn: number) {
-    return (
-      TableModule.getRow(row) +
-      TableModule.getTable(2) +
-      TableModule.getCollumn(collumn)
-    );
-  }
-
   async selectNonVisaFspPA() {
     await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
 
