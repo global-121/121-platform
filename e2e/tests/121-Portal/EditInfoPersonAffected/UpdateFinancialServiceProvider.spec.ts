@@ -32,12 +32,15 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
+
+  let rowNumber: number;
+
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({ buttonIndex: 3 });
+    rowNumber = await table.selectNonVisaFspPA();
   });
 
   await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {
@@ -50,6 +53,9 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   });
 
   await test.step('Validate Finacial service provider be updated', async () => {
-    await registration.validateRowPATable(visaFspIntersolve.displayName.en);
+    await table.validateFspCell({
+      rowNumber: rowNumber,
+      fspName: visaFspIntersolve.displayName.en,
+    });
   });
 });

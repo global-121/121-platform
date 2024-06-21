@@ -1,3 +1,4 @@
+import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import { expect } from '@playwright/test';
 import { error } from 'console';
 import * as fs from 'fs';
@@ -382,6 +383,53 @@ class TableModule {
     } else {
       throw error('Column validation failed');
     }
+  }
+
+  async tableRow(rowIndex: number) {
+    return `//datatable-row-wrapper[${rowIndex}]`;
+  }
+  async getCellValueTableLeft(row: number, collumn: number) {
+    return (
+      TableModule.getRow(row) +
+      TableModule.getTable(1) +
+      TableModule.getCollumn(collumn)
+    );
+  }
+  async getCellValueTableRight(row: number, collumn: number) {
+    return (
+      TableModule.getRow(row) +
+      TableModule.getTable(2) +
+      TableModule.getCollumn(collumn)
+    );
+  }
+
+  async selectNonVisaFspPA() {
+    await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
+
+    const count = await this.paCell.count();
+    for (let i = 1; i <= count; i++) {
+      const fsp = this.page.locator(TableModule.getCellValueTableRight(i, 4));
+      const fspText = (await fsp.textContent())?.trim();
+      if (fspText !== visaFspIntersolve.displayName.en) {
+        await this.openPaPersonalInformation({ buttonIndex: i - 1 });
+        return i;
+      }
+    }
+    return 400;
+  }
+
+  async validateFspCell({
+    rowNumber,
+    fspName,
+  }: {
+    rowNumber: number;
+    fspName: string;
+  }) {
+    const fsp = this.page.locator(
+      TableModule.getCellValueTableRight(rowNumber, 4),
+    );
+    const fspText = (await fsp.textContent())?.trim();
+    expect(fspText).toBe(fspName);
   }
 }
 
