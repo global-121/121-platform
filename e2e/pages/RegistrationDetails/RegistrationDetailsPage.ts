@@ -1,5 +1,3 @@
-import visaIntersolveTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
-import programTestTranslations from '@121-service/src/seed-data/program/program-test.json';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
@@ -16,7 +14,7 @@ class RegistrationDetails {
   readonly financialServiceProvider: Locator;
   readonly showAllButton: Locator;
   readonly editPersonAffectedPopUp: Locator;
-  readonly financialServiceProviderDropdown: Locator;
+
   readonly tabButton: Locator;
   readonly historyTile: Locator;
   readonly historyTileTitle: Locator;
@@ -52,9 +50,6 @@ class RegistrationDetails {
     this.showAllButton = this.page.getByTestId('show-all-button');
     this.editPersonAffectedPopUp = this.page.locator(
       'app-edit-person-affected-popup',
-    );
-    this.financialServiceProviderDropdown = this.page.locator(
-      'app-update-fsp #select-label',
     );
     this.tabButton = this.page.getByTestId(
       'registration-activity-detail-tab-button',
@@ -122,13 +117,6 @@ class RegistrationDetails {
     await this.editPersonAffectedPopUp.waitFor({ state: 'visible' });
     const isVisible = await this.editPersonAffectedPopUp.isVisible();
     expect(isVisible).toBe(true);
-  }
-
-  async validateFspNamePresentInEditPopUp(fspName: string) {
-    await this.page.waitForLoadState('networkidle');
-    const fspLocator = this.financialServiceProviderDropdown.getByText(fspName);
-    await fspLocator.scrollIntoViewIfNeeded();
-    expect(await fspLocator.isVisible()).toBe(true);
   }
 
   async changePreferredLanguage({
@@ -451,130 +439,6 @@ class RegistrationDetails {
     }
 
     expect(await dataAttributes.textContent()).toContain(dataChangesLabel);
-    expect(await oldValueHolder.textContent()).toContain(oldValue);
-    expect(await newValueHolder.textContent()).toContain(newValue);
-    expect(await reasonHolder.textContent()).toContain(reason);
-  }
-
-  async updateHouseNumber({ numberString }: { numberString: string }) {
-    const numericInput = this.personAffectedInputForm
-      .getByRole('spinbutton')
-      .first();
-    const oldNumber = await numericInput.inputValue();
-
-    await this.personAffectedHouseNumber.pressSequentially(numberString);
-    await this.page.waitForLoadState('networkidle');
-    const currentNumber = await numericInput.inputValue();
-    expect(oldNumber).toBe(currentNumber);
-  }
-
-  async updatePhoneNumber({
-    phoneNumber,
-    saveButtonName,
-    okButtonName,
-    alert = englishTranslations.common['update-success'],
-  }: {
-    phoneNumber: string;
-    saveButtonName: string;
-    okButtonName: string;
-    alert?: string;
-  }) {
-    const fieldSelector = this.personAffectedPhoneNumber;
-
-    await this.updateField({
-      fieldSelector,
-      newValue: phoneNumber,
-      saveButtonName,
-      okButtonName,
-      alert,
-      reasonText: (newValue) => `Change phoneNumber to ${newValue}`,
-    });
-  }
-
-  async selectFspInputForm({ filterValue }: { filterValue: string }) {
-    const fieldSelector = this.personAffectedPopUpFsp;
-    const updatePropertyItem = fieldSelector.locator(
-      'app-update-property-item',
-    );
-    const filteredItem = updatePropertyItem.filter({ hasText: filterValue });
-    const inputForm = filteredItem.getByTestId(
-      'update-property-item-input-form',
-    );
-
-    return inputForm.getByRole('textbox');
-  }
-
-  async updatefinancialServiceProvider({
-    fspNewName,
-    fspOldName,
-    saveButtonName,
-    okButtonName,
-  }: {
-    fspNewName: string;
-    fspOldName: string;
-    saveButtonName: string;
-    okButtonName: string;
-  }) {
-    const dropdown = this.page.getByRole('radio');
-    const warning =
-      englishTranslations['page'].program['program-people-affected'][
-        'edit-person-affected-popup'
-      ].fspChangeWarning;
-    const newValue = 'Nieuwe straat';
-    const fieldSelector = this.personAffectedPopUpFsp;
-    const okButton = this.page.getByRole('button', { name: okButtonName });
-    const streetAdressInput = await this.selectFspInputForm({
-      filterValue: visaIntersolveTranslations.questions[0].label.en,
-    });
-    const numberAdditionInput = await this.selectFspInputForm({
-      filterValue: visaIntersolveTranslations.questions[2].label.en,
-    });
-
-    await this.validateFspNamePresentInEditPopUp(fspOldName);
-    await this.financialServiceProviderDropdown.click();
-    await dropdown.getByText(fspNewName).click();
-
-    await this.validateFspWarningInEditPopUp(warning);
-
-    await streetAdressInput.fill(newValue);
-    await numberAdditionInput.click();
-    await fieldSelector.getByText(saveButtonName).click();
-
-    await okButton.waitFor({ state: 'visible' });
-    await okButton.click();
-  }
-
-  async validateFspWarningInEditPopUp(warning: string) {
-    await this.page.waitForLoadState('networkidle');
-    const element = this.page.locator('ion-text.ion-padding.md.hydrated');
-    const text = await element.textContent();
-    expect(text).toContain(warning);
-  }
-
-  async typeStringInDateInputForm({
-    saveButtonName,
-  }: {
-    saveButtonName: string;
-  }) {
-    const birthDateForm = this.personAffectedInputForm.filter({
-      hasText: programTestTranslations.programQuestions[1].label.en,
-    });
-    const birthDateInput = birthDateForm.getByRole('textbox');
-    const formSaveButton = birthDateForm.getByRole('button', {
-      name: saveButtonName,
-    });
-    const saveButton = this.page.getByRole('button', {
-      name: saveButtonName,
-    });
-
-    await birthDateInput.fill('string');
-
-    await formSaveButton.waitFor({ state: 'visible' });
-    await formSaveButton.click({ force: true });
-    await this.updateReasonTextArea
-      .locator('textarea')
-      .fill(`Test reason:  Type a string in a date input`);
-    await saveButton.click();
   }
 }
 

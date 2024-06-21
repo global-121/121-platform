@@ -1,6 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import fspIntersolveJumbo from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
 test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
-  const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
 
   let rowNumber: number;
 
@@ -44,7 +44,7 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   });
 
   await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {
-    await registration.updatefinancialServiceProvider({
+    await piiPopUp.updatefinancialServiceProvider({
       fspNewName: visaFspIntersolve.displayName.en,
       fspOldName: fspIntersolveJumbo.displayName.en,
       saveButtonName: englishTranslations.common.save,
