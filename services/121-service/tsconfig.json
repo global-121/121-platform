@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    // Sadly, no way around this, because of TypeORM limitations: https://github.com/typeorm/typeorm/issues/2797#issuecomment-644769490
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804
     "strictPropertyInitialization": false,
     // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28419
     "noImplicitAny": false,
