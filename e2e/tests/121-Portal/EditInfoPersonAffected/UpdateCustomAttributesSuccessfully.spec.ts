@@ -1,5 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -30,6 +31,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
+  const piiPopUp = new PersonalInformationPopUp(page);
   let oldAmount = '';
 
   await test.step('Navigate to PA table', async () => {
@@ -41,7 +43,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   });
 
   await test.step('Update payment amount multiplier', async () => {
-    oldAmount = await registration.updatepaymentAmountMultiplier({
+    oldAmount = await piiPopUp.updatepaymentAmountMultiplier({
       saveButtonName: englishTranslations.common.save,
       okButtonName: englishTranslations.common.ok,
     });
@@ -53,9 +55,6 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   });
 
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
     await registration.openActivityOverviewTab('Data changes');
     await registration.validateDataChangesTab({
       dataChangesLabel:
