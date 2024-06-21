@@ -3,7 +3,7 @@ import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
-class RegistrationDetails {
+class PersonalInformationPopup {
   readonly page: Page;
   readonly editPersonAffectedPopUp: Locator;
   readonly tileInformationPlaceHolder: Locator;
