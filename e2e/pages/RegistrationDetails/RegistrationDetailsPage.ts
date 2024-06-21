@@ -14,7 +14,7 @@ class RegistrationDetails {
   readonly financialServiceProvider: Locator;
   readonly showAllButton: Locator;
   readonly editPersonAffectedPopUp: Locator;
-  readonly financialServiceProviderDropdown: Locator;
+
   readonly tabButton: Locator;
   readonly historyTile: Locator;
   readonly historyTileTitle: Locator;
@@ -50,9 +50,6 @@ class RegistrationDetails {
     this.showAllButton = this.page.getByTestId('show-all-button');
     this.editPersonAffectedPopUp = this.page.locator(
       'app-edit-person-affected-popup',
-    );
-    this.financialServiceProviderDropdown = this.page.locator(
-      'app-update-fsp #select-label',
     );
     this.tabButton = this.page.getByTestId(
       'registration-activity-detail-tab-button',
@@ -120,13 +117,6 @@ class RegistrationDetails {
     await this.editPersonAffectedPopUp.waitFor({ state: 'visible' });
     const isVisible = await this.editPersonAffectedPopUp.isVisible();
     expect(isVisible).toBe(true);
-  }
-
-  async validateFspNamePresentInEditPopUp(fspName: string) {
-    await this.page.waitForLoadState('networkidle');
-    const fspLocator = this.financialServiceProviderDropdown.getByText(fspName);
-    await fspLocator.scrollIntoViewIfNeeded();
-    expect(await fspLocator.isVisible()).toBe(true);
   }
 
   async changePreferredLanguage({

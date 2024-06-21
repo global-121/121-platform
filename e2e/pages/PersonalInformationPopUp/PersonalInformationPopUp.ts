@@ -1,3 +1,4 @@
+import visaIntersolveTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import programTestTranslations from '@121-service/src/seed-data/program/program-test.json';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
@@ -5,6 +6,8 @@ import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.j
 
 class PersonalInformationPopup {
   readonly page: Page;
+  readonly editPersonAffectedPopUp: Locator;
+  readonly tileInformationPlaceHolder: Locator;
   readonly updateReasonTextArea: Locator;
   readonly personAffectedEditPopUpTitle: Locator;
   readonly personAffectedPopUpFsp: Locator;
@@ -14,6 +17,7 @@ class PersonalInformationPopup {
   readonly personAffectedPopUpSaveButton: Locator;
   readonly personAffectedHouseNumber: Locator;
   readonly personAffectedInputForm: Locator;
+  readonly financialServiceProviderDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -49,6 +53,9 @@ class PersonalInformationPopup {
     );
     this.personAffectedInputForm = this.page.getByTestId(
       'update-property-item-input-form',
+    );
+    this.financialServiceProviderDropdown = this.page.locator(
+      'app-update-fsp #select-label',
     );
   }
 
@@ -215,6 +222,85 @@ class PersonalInformationPopup {
       .locator('textarea')
       .fill(`Test reason:  Type a string in a date input`);
     await saveButton.click();
+  }
+
+  async updateHouseNumber({ numberString }: { numberString: string }) {
+    const numericInput = this.personAffectedInputForm
+      .getByRole('spinbutton')
+      .first();
+    const oldNumber = await numericInput.inputValue();
+
+    await this.personAffectedHouseNumber.pressSequentially(numberString);
+    await this.page.waitForLoadState('networkidle');
+    const currentNumber = await numericInput.inputValue();
+    expect(oldNumber).toBe(currentNumber);
+  }
+
+  async validateFspNamePresentInEditPopUp(fspName: string) {
+    await this.page.waitForLoadState('networkidle');
+    const fspLocator = this.financialServiceProviderDropdown.getByText(fspName);
+    await fspLocator.scrollIntoViewIfNeeded();
+    expect(await fspLocator.isVisible()).toBe(true);
+  }
+
+  async selectFspInputForm({ filterValue }: { filterValue: string }) {
+    const fieldSelector = this.personAffectedPopUpFsp;
+    const updatePropertyItem = fieldSelector.locator(
+      'app-update-property-item',
+    );
+    const filteredItem = updatePropertyItem.filter({ hasText: filterValue });
+    const inputForm = filteredItem.getByTestId(
+      'update-property-item-input-form',
+    );
+
+    return inputForm.getByRole('textbox');
+  }
+
+  async updatefinancialServiceProvider({
+    fspNewName,
+    fspOldName,
+    saveButtonName,
+    okButtonName,
+  }: {
+    fspNewName: string;
+    fspOldName: string;
+    saveButtonName: string;
+    okButtonName: string;
+  }) {
+    const dropdown = this.page.getByRole('radio');
+    const warning =
+      englishTranslations['page'].program['program-people-affected'][
+        'edit-person-affected-popup'
+      ].fspChangeWarning;
+    const newValue = 'Nieuwe straat';
+    const fieldSelector = this.personAffectedPopUpFsp;
+    const okButton = this.page.getByRole('button', { name: okButtonName });
+    const streetAdressInput = await this.selectFspInputForm({
+      filterValue: visaIntersolveTranslations.questions[0].label.en,
+    });
+    const numberAdditionInput = await this.selectFspInputForm({
+      filterValue: visaIntersolveTranslations.questions[2].label.en,
+    });
+
+    await this.validateFspNamePresentInEditPopUp(fspOldName);
+    await this.financialServiceProviderDropdown.click();
+    await dropdown.getByText(fspNewName).click();
+
+    await this.validateFspWarningInEditPopUp(warning);
+
+    await streetAdressInput.fill(newValue);
+    await numberAdditionInput.click();
+    await fieldSelector.getByText(saveButtonName).click();
+
+    await okButton.waitFor({ state: 'visible' });
+    await okButton.click();
+  }
+
+  async validateFspWarningInEditPopUp(warning: string) {
+    await this.page.waitForLoadState('networkidle');
+    const element = this.page.locator('ion-text.ion-padding.md.hydrated');
+    const text = await element.textContent();
+    expect(text).toContain(warning);
   }
 }
 

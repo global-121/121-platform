@@ -1,6 +1,9 @@
-import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import fspIntersolveJumbo from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -8,10 +11,6 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
-import HomePage from '../../../pages/Home/HomePage';
-import LoginPage from '../../../pages/Login/LoginPage';
-import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
-import TableModule from '../../../pages/Table/TableModule';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -29,32 +28,34 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[27659][27611] Open the edit PA popup', async ({ page }) => {
+test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   const table = new TableModule(page);
-  const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
-  const navigationModule = new NavigationModule(page);
   const piiPopUp = new PersonalInformationPopUp(page);
+
+  let rowNumber: number;
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
   });
 
-  await test.step('Should open first uploaded PA', async () => {
-    await table.clickOnPaNumber(2);
+  await test.step('Open information pop-up', async () => {
+    rowNumber = await table.selectNonVisaFspPA();
   });
 
-  await test.step('Should open PA profile and open edit pop-up', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
-    await registration.openEditPaPopUp();
-    await registration.validateEditPaPopUpOpened();
-    await piiPopUp.validateFspNamePresentInEditPopUp(
-      visaFspIntersolve.displayName.en,
-    );
+  await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {
+    await piiPopUp.updatefinancialServiceProvider({
+      fspNewName: visaFspIntersolve.displayName.en,
+      fspOldName: fspIntersolveJumbo.displayName.en,
+      saveButtonName: englishTranslations.common.save,
+      okButtonName: englishTranslations.common.ok,
+    });
+  });
+
+  await test.step('Validate Finacial service provider be updated', async () => {
+    await table.validateFspCell({
+      rowNumber: rowNumber,
+      fspName: visaFspIntersolve.displayName.en,
+    });
   });
 });
