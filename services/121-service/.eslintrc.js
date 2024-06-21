@@ -63,6 +63,21 @@ module.exports = {
             rootDir: '.',
           },
         ],
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector:
+              "ObjectExpression > .properties[key.name='where'] > .value.properties > .value:not(CallExpression[callee.name='Equal'])",
+            message:
+              'Unsafe where condition, that can leak data. Use Equal() instead.',
+          },
+          {
+            selector:
+              "ObjectExpression > .properties[key.name='andWhere'] > .value.properties > .value:not(CallExpression[callee.name='Equal'])",
+            message:
+              'Unsafe where condition, that can leak data. Use Equal() instead.',
+          },
+        ],
       },
     },
   ],

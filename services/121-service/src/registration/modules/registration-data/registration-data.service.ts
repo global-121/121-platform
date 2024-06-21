@@ -14,7 +14,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class RegistrationDataService {
@@ -189,7 +189,7 @@ export class RegistrationDataService {
     return await this.registrationScopedRepository.findOneOrFail({
       relations: ['data'],
       where: {
-        id: registration.id,
+        id: Equal(registration.id),
       },
     });
   }

@@ -30,7 +30,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { In, Not, Repository } from 'typeorm';
+import { Equal, In, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -607,7 +607,10 @@ export class RegistrationsBulkService {
     messageTemplateKey: string,
   ): Promise<void> {
     const template = await this.messageTemplateRepository.findOne({
-      where: { programId: programId, type: messageTemplateKey },
+      where: {
+        programId: Equal(programId),
+        type: Equal(messageTemplateKey),
+      },
     });
     if (!template) {
       throw new HttpException(

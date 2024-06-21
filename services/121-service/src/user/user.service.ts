@@ -133,7 +133,7 @@ export class UserService {
     userId: number,
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: Equal(userId) },
       relations: [
         'programAssignments',
         'programAssignments.program',
@@ -170,7 +170,7 @@ export class UserService {
     userRoleData: CreateUserRoleDto,
   ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.userRoleRepository.findOne({
-      where: { role: userRoleData.role },
+      where: { role: Equal(userRoleData.role) },
     });
     if (existingRole) {
       throw new HttpException('Role exists already', HttpStatus.BAD_REQUEST);
@@ -306,7 +306,7 @@ export class UserService {
     assignAidworkerToProgram: CreateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: Equal(userId) },
       relations: [
         'programAssignments',
         'programAssignments.program',
@@ -375,7 +375,7 @@ export class UserService {
     assignAidworkerToProgram: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: Equal(userId) },
       relations: [
         'programAssignments',
         'programAssignments.program',
@@ -438,7 +438,7 @@ export class UserService {
 
   public async delete(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOneOrFail({
-      where: { id: userId },
+      where: { id: Equal(userId) },
       relations: ['programAssignments', 'programAssignments.roles'],
     });
 
@@ -459,7 +459,7 @@ export class UserService {
 
   public async findById(id: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: { id: id },
+      where: { id: Equal(id) },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -498,7 +498,7 @@ export class UserService {
     tokenExpiration?: number,
   ): Promise<UserRO> {
     const user = await this.userRepository.findOne({
-      where: { username: username },
+      where: { username: Equal(username) },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -579,7 +579,7 @@ export class UserService {
 
   private async buildPermissionsObject(userId: number): Promise<any> {
     const user = await this.userRepository.findOneOrFail({
-      where: { id: userId },
+      where: { id: Equal(userId) },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -662,7 +662,7 @@ export class UserService {
         lastLogin: true,
       },
       where: {
-        userType: UserType.aidWorker,
+        userType: Equal(UserType.aidWorker),
       },
     });
   }
@@ -758,7 +758,7 @@ export class UserService {
     assignAidworkerToProgram: UpdateProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO> {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: Equal(userId) },
       relations: [
         'programAssignments',
         'programAssignments.program',

@@ -34,7 +34,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
-import { In, IsNull, Not, Repository } from 'typeorm';
+import { Equal, In, IsNull, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageIncomingService {
@@ -145,8 +145,12 @@ export class MessageIncomingService {
       callbackData.MessageStatus === TwilioStatus.delivered ||
       callbackData.MessageStatus === TwilioStatus.failed
     ) {
+      const sidCondition = callbackData.SmsSid
+        ? Equal(callbackData.SmsSid)
+        : undefined;
+
       const tryWhatsapp = await this.tryWhatsappRepository.findOne({
-        where: { sid: callbackData.SmsSid },
+        where: sidCondition ? { sid: sidCondition } : {},
         relations: ['registration'],
       });
       if (tryWhatsapp) {
@@ -162,7 +166,7 @@ export class MessageIncomingService {
       )
     ) {
       const message = await this.twilioMessageRepository.findOne({
-        where: { sid: callbackData.MessageSid },
+        where: { sid: Equal(callbackData.MessageSid) },
       });
       if (
         message &&
@@ -199,7 +203,10 @@ export class MessageIncomingService {
     if (relevantStatuses.includes(callbackData.MessageStatus)) {
       const messageWithTransaction = await this.twilioMessageRepository.findOne(
         {
-          where: { sid: callbackData.MessageSid, transactionId: Not(IsNull()) },
+          where: {
+            sid: Equal(callbackData.MessageSid),
+            transactionId: Not(IsNull()),
+          },
           select: ['transactionId'],
         },
       );
@@ -234,7 +241,7 @@ export class MessageIncomingService {
     }
 
     const registration = await this.registrationRepository.findOneOrFail({
-      where: { id: message.registrationId },
+      where: { id: Equal(message.registrationId) },
     });
 
     if (!message.processType) {
@@ -273,7 +280,7 @@ export class MessageIncomingService {
       // Send pending message via sms
       const whatsappPendingMessages =
         await this.whatsappPendingMessageRepo.find({
-          where: { to: tryWhatsapp.registration.phoneNumber },
+          where: { to: Equal(tryWhatsapp.registration.phoneNumber) },
           relations: ['registration'],
         });
       for (const w of whatsappPendingMessages) {
@@ -294,7 +301,7 @@ export class MessageIncomingService {
       // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
-        where: { id: tryWhatsapp.registration.programId },
+        where: { id: Equal(tryWhatsapp.registration.programId) },
         relations: ['financialServiceProviders'],
       });
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(

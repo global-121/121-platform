@@ -17,7 +17,7 @@ import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { HttpException, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
-import { DataSource, DeepPartial, In } from 'typeorm';
+import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 @Injectable()
 export class SeedHelper {
@@ -122,7 +122,7 @@ export class SeedHelper {
     }
     const userRepository = this.dataSource.getRepository(UserEntity);
     const user = await userRepository.findOne({
-      where: { username: userInput.username },
+      where: { username: Equal(userInput.username) },
     });
     if (user) {
       return user;
@@ -206,13 +206,13 @@ export class SeedHelper {
 
     // Remove original fsp and add it to a separate variable
     const foundProgram = await programRepository.findOneOrFail({
-      where: { id: programReturn.id },
+      where: { id: Equal(programReturn.id) },
     });
     const fsps = program.financialServiceProviders;
     foundProgram.financialServiceProviders = [];
     for (const fsp of fsps) {
       const fspReturn = await fspRepository.findOneOrFail({
-        where: { fsp: fsp.fsp },
+        where: { fsp: Equal(fsp.fsp) },
       });
       foundProgram.financialServiceProviders.push(fspReturn);
       if (fsp.configuration && fsp.configuration.length > 0) {
@@ -278,7 +278,7 @@ export class SeedHelper {
       user: user,
       program: await programRepository.findOne({
         where: {
-          id: programId,
+          id: Equal(programId),
         },
       }),
       roles: await userRoleRepository.find({
@@ -291,8 +291,13 @@ export class SeedHelper {
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
+    const adminEmail = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN
+      ? Equal(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN)
+      : undefined;
     const adminUser = await userRepository.findOneOrFail({
-      where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
+      where: {
+        username: adminEmail,
+      },
     });
     await this.assignAidworker(adminUser.id, programId, [
       DefaultUserRole.Admin,

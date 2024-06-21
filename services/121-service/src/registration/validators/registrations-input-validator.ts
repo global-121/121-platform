@@ -25,7 +25,7 @@ import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsInputValidator {
@@ -428,7 +428,7 @@ export class RegistrationsInputValidator {
   ): Promise<ValidateRegistrationErrorObjectDto | undefined> {
     if (validationConfig.validateExistingReferenceId && row.referenceId) {
       const registration = await this.registrationRepository.findOne({
-        where: { referenceId: row.referenceId },
+        where: { referenceId: Equal(row.referenceId) },
       });
       if (registration) {
         return {

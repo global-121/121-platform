@@ -3,13 +3,16 @@ import {
   convertToScopedOptions,
   FindOptionsCombined,
 } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
-import { FindOperator } from 'typeorm';
+import { Equal, FindOperator } from 'typeorm';
 
 describe('createFindWhereOptions helper', () => {
   it('should return correct scoped whereFilters', () => {
     // Arrange
     const options: FindOptionsCombined<RegistrationDataEntity> = {
-      where: { program: { id: 3 }, registrationStatus: 'included' },
+      where: {
+        program: { id: Equal(3) },
+        registrationStatus: Equal('included'),
+      },
     } as unknown as FindOptionsCombined<RegistrationDataEntity>;
     const relationArrayToRegistration = [];
     const requestScope = 'utrecht';
