@@ -220,4 +220,4 @@ class PersonalInformationPopup {
   }
 }
 
-export default RegistrationDetails;
+export default PersonalInformationPopup;
