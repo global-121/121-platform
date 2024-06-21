@@ -39,7 +39,7 @@ test('[28044] Update HouseNumber with invalid value', async ({ page }) => {
   });
 
   await test.step('Update house number with a string', async () => {
-    await registration.updatehousenumber({
+    await registration.updateHouseNumber({
       numberString: 'house number',
     });
   });

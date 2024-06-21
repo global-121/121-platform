@@ -1,3 +1,4 @@
+import visaIntersolveTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import programTestTranslations from '@121-service/src/seed-data/program/program-test.json';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
@@ -595,8 +596,10 @@ class RegistrationDetails {
     expect(await reasonHolder.textContent()).toContain(reason);
   }
 
-  async updatehousenumber({ numberString }: { numberString: string }) {
-    const numericInput = this.personAffectedHouseNumber.getByRole('spinbutton');
+  async updateHouseNumber({ numberString }: { numberString: string }) {
+    const numericInput = this.personAffectedInputForm
+      .getByRole('spinbutton')
+      .first();
     const oldNumber = await numericInput.inputValue();
 
     await this.personAffectedHouseNumber.pressSequentially(numberString);
@@ -627,6 +630,20 @@ class RegistrationDetails {
       reasonText: (newValue) => `Change phoneNumber to ${newValue}`,
     });
   }
+
+  async selectFspInputForm({ filterValue }: { filterValue: string }) {
+    const fieldSelector = this.personAffectedPopUpFsp;
+    const updatePropertyItem = fieldSelector.locator(
+      'app-update-property-item',
+    );
+    const filteredItem = updatePropertyItem.filter({ hasText: filterValue });
+    const inputForm = filteredItem.getByTestId(
+      'update-property-item-input-form',
+    );
+
+    return inputForm.getByRole('textbox');
+  }
+
   async updatefinancialServiceProvider({
     fspNewName,
     fspOldName,
@@ -638,26 +655,31 @@ class RegistrationDetails {
     saveButtonName: string;
     okButtonName: string;
   }) {
-    await this.validateFspNamePresentInEditPopUp(fspOldName);
-    await this.financialServiceProviderDropdown.click();
     const dropdown = this.page.getByRole('radio');
-    await dropdown.getByText(fspNewName).click();
     const warning =
       englishTranslations['page'].program['program-people-affected'][
         'edit-person-affected-popup'
       ].fspChangeWarning;
-    await this.validateFspWarningInEditPopUp(warning);
-    const oldValue = 'Teststraat';
-    const newValue = oldValue + '_new';
+    const newValue = 'Nieuwe straat';
     const fieldSelector = this.personAffectedPopUpFsp;
     const okButton = this.page.getByRole('button', { name: okButtonName });
-    await fieldSelector.scrollIntoViewIfNeeded();
-    const fieldInput = await fieldSelector.getByRole('textbox').nth(0);
-    await fieldInput.fill(newValue);
-    const fieldInput2 = fieldSelector.getByRole('textbox').nth(1);
-    await fieldInput2.click();
-    await this.page.waitForLoadState('networkidle');
+    const streetAdressInput = await this.selectFspInputForm({
+      filterValue: visaIntersolveTranslations.questions[0].label.en,
+    });
+    const numberAdditionInput = await this.selectFspInputForm({
+      filterValue: visaIntersolveTranslations.questions[2].label.en,
+    });
+
+    await this.validateFspNamePresentInEditPopUp(fspOldName);
+    await this.financialServiceProviderDropdown.click();
+    await dropdown.getByText(fspNewName).click();
+
+    await this.validateFspWarningInEditPopUp(warning);
+
+    await streetAdressInput.fill(newValue);
+    await numberAdditionInput.click();
     await fieldSelector.getByText(saveButtonName).click();
+
     await okButton.waitFor({ state: 'visible' });
     await okButton.click();
   }
@@ -667,12 +689,6 @@ class RegistrationDetails {
     const element = this.page.locator('ion-text.ion-padding.md.hydrated');
     const text = await element.textContent();
     expect(text).toContain(warning);
-  }
-  async validateRowPATable(fsp: string) {
-    const personAfected = this.page.getByRole('rowgroup').nth(1);
-    const element = personAfected.getByRole('row').nth(3);
-    await expect(personAfected).toBeVisible();
-    expect(await element.textContent()).toContain(fsp);
   }
 
   async typeStringInDateInputForm({
