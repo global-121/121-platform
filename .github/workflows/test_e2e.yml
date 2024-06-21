@@ -18,7 +18,7 @@ on:
       - '!**.md'
 
 env:
-  e2eTestsPath: 'e2e/'
+  e2eTestsPath: './e2e'
 
 jobs:
   test:
@@ -35,9 +35,18 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
 
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npm ci --omit=optional --no-fund --no-audit
+
+      - name: Lint E2E-Tests code
+        working-directory: ${{ env.e2eTestsPath }}
+        run: 'npm run lint'
+
       - name: Set ENV-variables for test-environment
         run: |
-          cp ./services/.env.example services/.env
+          cp services/.env.example services/.env
 
       - name: Run Services with Docker
         working-directory: ./services
@@ -52,28 +61,23 @@ jobs:
           npm install
           npm run start:debug-production > portal-server-logs.txt 2>&1 &
 
-      - name: Install e2e dependencies
-        working-directory: ${{ env.e2eTestsPath }}
-        run: |
-          npm ci --omit=optional --no-fund --no-audit
-          npx playwright install chromium --with-deps
-
-      - name: Lint e2e tests
-        working-directory: ${{ env.e2eTestsPath }}
-        run: 'npm run lint'
-
-      - name: Install service dependencies
+      - name: Install 121-Service dependencies
         # This step is necessary because the tests run functions in this folder
         working-directory: ./services/121-service
         run: |
           npm install
 
+      - name: Install E2E-Tests runtime-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npx playwright install chromium --with-deps
+
       - name: Wait for Portal
         run: |
           timeout 90s sh -c 'until curl http://localhost:8088 -I; do echo "Waiting for the Portal to be running..."; sleep 1; done'
 
-      - name: Run e2e tests with Playwright
-        working-directory: ./e2e
+      - name: Run E2E-Tests with Playwright
+        working-directory: ${{ env.e2eTestsPath }}
         env:
           BASE_URL: http://localhost:8088
         run: |
@@ -84,7 +88,7 @@ jobs:
         with:
           name: test-result-artifacts
           path: |
-            ./e2e/test-results/
+            ${{ env.e2eTestsPath }}/test-results/
             ./interfaces/Portal/portal-server-logs.txt
           retention-days: 30
 
