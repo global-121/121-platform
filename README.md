@@ -322,9 +322,8 @@ See notable changes and the currently release version in the [CHANGELOG](CHANGEL
 This is how we create and publish a new release of the 121-platform.
 (See [the glossary](#glossary) for definitions of some terms.)
 
-- [ ] Define the date/time of the release. (Notify the dev-team for a code-freeze.)
 - [ ] Define what code gets released. ("_Is the current `main`-branch working?_")
-- [ ] Define the `version`(-number) for the upcoming release.
+- [ ] Define the [`version`](#glossary)-name for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Create a PR with the changes on the changelog.
   - [ ] Merge the changes to main.
@@ -343,13 +342,12 @@ This is how we create and publish a new release of the 121-platform.
 
 This follows a similar process to regular release + deployment, with some small changes.
 
-- Code does not need to be frozen.
-- Checkout the `<version>` tag which contains the code that you want to hotfix from.
-- Create a new local hotfix branch using that tag as the head (e.g. `hotfix/<v1.x.1>`) and make the changes
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
+- Checkout the `<version>` tag which contains the code that you want to hotfix.
+- Create a new local hotfix branch using that tag as the head (e.g. `hotfix/<v24.6.x>`) and make the changes
+- Add the hotfix-release (with an increased `MICRO`-number) to the [CHANGELOG](CHANGELOG.md)
 - Push this branch to the upstream/origin repository.
-- Create a new release + tag (see above) selecting the `hotfix` branch as target, and publish it.
-- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created tag (**not the branch**) to production (for each instance)
+- Create a new release + tag (see above) selecting the `hotfix/v*` branch as target, and publish it.
+- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
 - After the hotfix has been released to production, follow standard procedures to merge the hotfix branch into main
 
 **Note:** it is important that you do not rebase the `hotfix` branch on the head of `main` until AFTER you have successfully deployed the hotfix to production. The hotfix branch was created from a "dangling" commit, so this makes the GitHub UI confused when you look at a PR between the newly created `hotfix` branch and `main`, but you can ignore any conflict warnings from GitHub while you release.
@@ -408,8 +406,8 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 
 | Term          | Definition (_we_ use)                                                                                        |
 | ------------- | ------------------------------------------------------------------------------------------------------------ |
-| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `1.1.0`                  |
-| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v1.1.0`                 |
+| `version`     | A name specified in the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICRO`                         |
+| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v22.1.0`                |
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
 | `environment` | A machine that can run code (with specified settings); i.e. a service, or your local machine                 |

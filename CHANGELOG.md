@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).  
+This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICRO`.
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.122.1...main)
+
+### Changed
+
+- Version-format changed from `SemVer`("v`MAJOR`.`MINOR`.`PATCH`"; i.e. `v123.0.0`) to `CalVer`("v`YY`.`MM`-`MICRO`"; i.e `v24.6-0`)
 
 ---
 
