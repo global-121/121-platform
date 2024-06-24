@@ -15,6 +15,7 @@ import { FspQuestionEntity } from '@121-service/src/financial-service-providers/
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',
@@ -38,6 +39,16 @@ export class RegistrationDataEntity extends Base121Entity {
   @Index()
   @Column()
   public registrationId: number;
+
+  @ManyToOne(
+    (_type) => ProgramRegistrationAttributeEntity,
+    (programRegistrationAttribute) =>
+      programRegistrationAttribute.registrationData,
+  )
+  @JoinColumn({ name: 'programRegistrationAttributeId' })
+  public programRegistrationAttribute: ProgramRegistrationAttributeEntity;
+  @Column({ type: 'integer', nullable: true })
+  public programRegistrationAttributeId: number | null;
 
   @ManyToOne(
     (_type) => ProgramQuestionEntity,

@@ -19,6 +19,7 @@ import { ValidationInfo } from '@121-service/src/programs/dto/validation-info.dt
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
 import {
   AnswerTypes,
@@ -99,6 +100,14 @@ export class ProgramEntity extends CascadeDeleteEntity {
     (programQuestions) => programQuestions.program,
   )
   public programQuestions: Relation<ProgramQuestionEntity[]>;
+
+  @OneToMany(
+    () => ProgramRegistrationAttributeEntity,
+    (programRegistrationAttributes) => programRegistrationAttributes.program,
+  )
+  public programRegistrationAttributes: Relation<
+    ProgramRegistrationAttributeEntity[]
+  >;
 
   @OneToMany(
     () => ProgramCustomAttributeEntity,
