@@ -54,7 +54,7 @@ All interfaces use a common set of dependencies/frameworks/libraries.
 
 ### Continuous Integration (CI)
 
-Every interface has their own Azure Pipeline set up to run tests and generate 'builds'.  
+Every interface has their own GitHub Actions-workflows set up to run tests and generate 'builds'.  
 See their status on the [main README](../README.md#status).
 
 The appropriate tests will run automatically when relevant files are changed in a PR.
