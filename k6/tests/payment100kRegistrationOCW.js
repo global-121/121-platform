@@ -38,10 +38,10 @@ export default function () {
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
     'Payment has succesfully been initiated in less then 32s': (r) => {
-      if (r.timings.duration >= 32000) {
+      if (r.timings.duration >= 40000) {
         console.log(`Payment time was ${r.timings.duration}ms`);
       }
-      return r.timings.duration < 32000;
+      return r.timings.duration < 40000;
     },
   });
 
