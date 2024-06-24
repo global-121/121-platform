@@ -9,6 +9,7 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
+import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
@@ -20,7 +21,7 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/login');
+  await page.goto(AppRoutes.login);
   await loginPage.login(
     process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,

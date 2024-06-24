@@ -10,7 +10,6 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { importRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -19,6 +18,7 @@ import {
 import { test } from '@playwright/test';
 import { Page } from 'playwright';
 import { BulkActionId } from '../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
+import { AppRoutes } from '../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const TIMEOUT_DURATION = 200;
@@ -61,7 +61,7 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   const registration = new RegistrationDetails(page);
   const table = new TableModule(page);
 
-  await page.goto('/login');
+  await page.goto(AppRoutes.login);
   await page.waitForLoadState('domcontentloaded');
   await homePage.closeBrowserCompatibilityBanner();
   await helpers.takeFullScreenShot({ fileName: 'loginScreen' });
@@ -145,12 +145,7 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'ProgramDetailsTable',
   });
 
-  await page.goto('/home');
-  await homePage.openPAsForRegistrationOcwProgram({
-    programName: NLRCProgram.titlePortal.en,
-    buttonName: englishTranslations.page.program.phases.design.btnText,
-    okButtonName: englishTranslations.common.ok,
-  });
+  await page.goto(AppRoutes.home);
   await page.waitForTimeout(1000);
   await helpers.takeFullScreenShot({
     fileName: 'RegistrationPageOverview',
@@ -187,7 +182,7 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'ChangewithreasonPAprofile',
   });
 
-  await page.goto(`/program/${PROGRAM_ID}/registrationValidation`);
+  await page.goto(`${AppRoutes.program}/${PROGRAM_ID}/registrationValidation`);
   await table.openFilterDropdown();
   await helpers.takeFullScreenShot({
     fileName: 'FilterFunctionFieldsSearch',
