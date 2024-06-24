@@ -45,12 +45,12 @@ type EntityRelations = Record<string, string[]>;
 // Define here any entities that do have an INDIRECT relation to registration
 const indirectRelationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
-  IntersolveVisaChildWalletEntity: ['intersolveVisaCustomer', 'registration'],
-  IntersolveVisaParentWalletEntity: [
+  IntersolveVisaChildWalletEntity: [
     'intersolveVisaParentWallet',
     'intersolveVisaCustomer',
     'registration',
   ],
+  IntersolveVisaParentWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
 };
