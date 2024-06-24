@@ -1,0 +1,64 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [Training] Interface: Portal'
+
+env:
+  workingDirectory: interfaces/Portal
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL:
+        required: true
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy Job
+    runs-on: ubuntu-latest
+    environment: 'client-training'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build Interface
+        id: build
+        uses: ./.github/actions/build-interface
+        with:
+          interfacePath: ${{ env.workingDirectory }}
+          envIcon: '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'
+          envContentSecurityPolicy: >-
+            connect-src 'self' https://training.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
+            form-action https://training.121.global;
+            frame-src 'self' https://app.powerbi.com;
+        env:
+          NG_ENV_NAME: 'Training'
+          NG_LOCALES: 'en'
+          NG_URL_121_SERVICE_API: 'https://training.121.global/api'
+          NG_AI_IKEY: '3a30e5f3-5a14-47f9-8bc1-ebf811b3a0ef'
+          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=3a30e5f3-5a14-47f9-8bc1-ebf811b3a0ef;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/;ApplicationId=c4983c75-b65a-43f5-8ad4-4f74c044aa3b'
+
+      # More information on Static Web App workflow configurations,
+      # See: https://aka.ms/swaworkflowconfig
+      - name: Deploy to Azure Static Web App
+        id: deploy_to_aswa
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          config_file_location: '${{ env.workingDirectory }}/'
+          app_location: '${{ env.workingDirectory }}/www'
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
