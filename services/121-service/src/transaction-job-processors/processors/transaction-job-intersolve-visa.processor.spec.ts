@@ -1,59 +1,57 @@
-import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
+import { TransactionJobProcessorsService } from '../transaction-job-processors.service';
 
 const mockPaymentJob = {
+  id: 11,
+  programId: 3,
+  userId: 1,
+  paymentNumber: 3,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
-  phoneNumber: '14155238886',
-  preferredLanguage: LanguageEnum.en,
-  paymentAmountMultiplier: 1,
-  firstName: 'Test',
-  lastName: 'mock-fail-create-debit-card',
+  transactionAmount: 25,
+  isRetry: false,
+  bulkSize: 10,
+  name: 'mock-fail-create-debit-card',
   addressStreet: 'Straat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: 'A',
   addressPostalCode: '1234AB',
   addressCity: 'Den Haag',
-  id: 11,
-  fspName: 'Intersolve-visa',
-  paymentAddress: '14155238886',
-  transactionAmount: 25,
-  transactionId: 38,
-  programId: 3,
-  paymentNr: 3,
+  phoneNumber: '14155238886',
 };
 const testJob = { data: mockPaymentJob } as Job;
 
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
-  let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
+  let transactionJobProcessorsService: jest.Mocked<TransactionJobProcessorsService>;
   let paymentProcessor: TransactionJobProcessorIntersolveVisa;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(
       TransactionJobProcessorIntersolveVisa,
     )
-      .mock(IntersolveVisaService)
-      .using(intersolveVisaService)
+      .mock(TransactionJobProcessorsService)
+      .using(transactionJobProcessorsService)
       .compile();
 
     paymentProcessor = unit;
-    intersolveVisaService = unitRef.get(IntersolveVisaService);
+    transactionJobProcessorsService = unitRef.get(
+      TransactionJobProcessorsService,
+    );
   });
 
-  it('should call sendQueuePayment', async () => {
+  it('should call processIntersolveVisaTransactionJob', async () => {
     // Arrange
     //intersolveVisaService.processQueuedPayment.mockResolvedValue();
-    // TODO: Fix this, according to re-implemented and refactored code.
-    //intersolveVisaService.processQueuedPayment.mockResolvedValue(null);
+    transactionJobProcessorsService.processIntersolveVisaTransactionJob.mockResolvedValue();
 
     // Act
-    await paymentProcessor.handleSendPayment(testJob);
+    await paymentProcessor.handleIntersolveVisaTransactionJob(testJob);
 
     // Assert
-    // TODO: Fix this, according to re-implemented and refactored code.
-    //expect(intersolveVisaService.processQueuedPayment).toHaveBeenCalledTimes(1);
+    expect(
+      paymentProcessor.handleIntersolveVisaTransactionJob,
+    ).toHaveBeenCalledTimes(1);
   });
 });
