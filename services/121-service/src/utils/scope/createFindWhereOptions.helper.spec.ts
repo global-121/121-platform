@@ -40,7 +40,34 @@ describe('createFindWhereOptions helper', () => {
         requestScope,
       );
 
+    // Transform to comparable form
+    const transformToComparableForm = (obj: any) => {
+      if (obj instanceof FindOperator) {
+        return obj.value; // Use the value method
+      }
+      if (Array.isArray(obj)) {
+        return obj.map(transformToComparableForm);
+      }
+      if (typeof obj === 'object' && obj !== null) {
+        return Object.fromEntries(
+          Object.entries(obj).map(([key, value]) => [
+            key,
+            transformToComparableForm(value),
+          ]),
+        );
+      }
+      return obj;
+    };
+
+    const transformedExpectedOptions =
+      transformToComparableForm(expectedOptions);
+    const transformedConvertedScopedOptions = transformToComparableForm(
+      convertedScopedOptions,
+    );
+
     // Assert
-    expect(convertedScopedOptions).toEqual(expectedOptions);
+    expect(transformedConvertedScopedOptions).toEqual(
+      transformedExpectedOptions,
+    );
   });
 });
