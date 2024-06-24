@@ -11,6 +11,12 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const save = englishTranslations.common.save;
+const ok = englishTranslations.common.ok;
+const arabic =
+  englishTranslations.page.program['program-people-affected'].language.ar;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -33,7 +39,7 @@ test('[28041] Update preferredLanguage successfully', async ({ page }) => {
   const registration = new RegistrationDetails(page);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Open information pop-up', async () => {
@@ -42,10 +48,9 @@ test('[28041] Update preferredLanguage successfully', async ({ page }) => {
 
   await test.step('Update preferredLanguage', async () => {
     await registration.changePreferredLanguage({
-      language:
-        englishTranslations.page.program['program-people-affected'].language.ar,
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      language: arabic,
+      saveButtonName: save,
+      okButtonName: ok,
     });
   });
 
@@ -53,8 +58,7 @@ test('[28041] Update preferredLanguage successfully', async ({ page }) => {
     await page.reload();
     await table.openPaPersonalInformation({});
     await registration.validatePreferredLanguage({
-      language:
-        englishTranslations.page.program['program-people-affected'].language.ar,
+      language: arabic,
     });
   });
 });
