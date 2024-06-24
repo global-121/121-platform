@@ -4,6 +4,7 @@ import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/Pe
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import fspIntersolveJumbo from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
+import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -27,26 +28,34 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28037] Open the popup to view and edit information', async ({
-  page,
-}) => {
+test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const piiPopUp = new PersonalInformationPopUp(page);
+
+  let rowNumber: number;
 
   await test.step('Navigate to PA table', async () => {
     await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    rowNumber = await table.selectNonVisaFspPA();
   });
 
-  await test.step('Validate information shown', async () => {
-    await piiPopUp.validatePiiPopUp({
-      paId: 'PA #4',
-      whatsappLabel: fspIntersolveJumbo.questions[5].label.en,
+  await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {
+    await piiPopUp.updatefinancialServiceProvider({
+      fspNewName: visaFspIntersolve.displayName.en,
+      fspOldName: fspIntersolveJumbo.displayName.en,
       saveButtonName: englishTranslations.common.save,
+      okButtonName: englishTranslations.common.ok,
+    });
+  });
+
+  await test.step('Validate Finacial service provider be updated', async () => {
+    await table.validateFspCell({
+      rowNumber: rowNumber,
+      fspName: visaFspIntersolve.displayName.en,
     });
   });
 });
