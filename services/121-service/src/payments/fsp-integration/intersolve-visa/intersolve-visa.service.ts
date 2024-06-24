@@ -38,6 +38,9 @@ import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integra
 import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
+import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
+import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
+import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
@@ -46,10 +49,8 @@ import { ErrorEnum } from '@121-service/src/registration/errors/registration-dat
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class IntersolveVisaService
@@ -62,14 +63,9 @@ export class IntersolveVisaService
     private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProviderName(IntersolveVisaCustomerEntity))
-    private intersolveVisaCustomerScopedRepository: ScopedRepository<IntersolveVisaCustomerEntity>,
-    // TODO: Replace this "auto generated" repo with a custom repo? Once figured out how to do that for IntersolveVisaCustomerRepository, than also for IntersolveVisaParentWallet
-    @Inject(getScopedRepositoryProviderName(IntersolveVisaParentWalletEntity))
-    private intersolveVisaParentWalletScopedRepository: ScopedRepository<IntersolveVisaParentWalletEntity>,
-    // TODO: Replace this "auto generated" repo with a custom repo? Once figured out how to do that for IntersolveVisaCustomerRepository, than also for IntersolveVisaParentWallet
-    @Inject(getScopedRepositoryProviderName(IntersolveVisaChildWalletEntity))
-    private intersolveVisaChildWalletScopedRepository: ScopedRepository<IntersolveVisaChildWalletEntity>,
+    private readonly intersolveVisaCustomerScopedRepository: IntersolveVisaCustomerScopedRepository,
+    private readonly intersolveVisaParentWalletScopedRepository: IntersolveVisaParentWalletScopedRepository,
+    private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
 
   // TODO: Remove this function when refactored out of all FSP integrations.
@@ -150,9 +146,10 @@ export class IntersolveVisaService
     const returnData = new IntersolveVisaDoTransferOrIssueCardReturnDto();
 
     // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
-    let intersolveVisaCustomer = await this.getCustomerEntityIfExists(
-      input.registrationId,
-    );
+    let intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationId(
+        input.registrationId,
+      );
     // TODO: REFACTOR: When the custom repository is implemented, replace this with a call to that repository:
     //  await this.intersolveVisaCustomerScopedRepository.getIntersolveCustomerAndWalletsByRegistrationId(input.registrationId);
 
@@ -367,20 +364,7 @@ export class IntersolveVisaService
     return returnData;
   }
 
-  // TODO: REFACTOR: This function can be removed after we implement the Custom Repo for IntersolveVisaCustomer, and the code to get the data lives there.
-  private async getCustomerEntityIfExists(
-    registrationId: number,
-  ): Promise<IntersolveVisaCustomerEntity | null> {
-    return await this.intersolveVisaCustomerScopedRepository.findOne({
-      relations: [
-        'intersolveVisaParentWallet',
-        'intersolveVisaParentWallet.intersolveVisaChildWallets',
-      ],
-      where: { registrationId: registrationId },
-    });
-  }
-
-  public async retrieveAndUpdateParentWallet(
+  private async retrieveAndUpdateParentWallet(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {
     // Get balance on the parent wallet
@@ -513,7 +497,10 @@ export class IntersolveVisaService
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const visaCustomer = await this.getCustomerEntityIfExists(registration.id);
+    const visaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationId(
+        registration.id,
+      );
     if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
       const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -531,7 +518,7 @@ export class IntersolveVisaService
   // TODO: Fix and this function as code it depends on has changed with the Visa re-implementation.
   // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
   public async toggleBlockWallet(
-    tokenCode: string | null,
+    tokenCode: string,
     block: boolean,
   ): Promise<IntersolveBlockWalletResponseDto> {
     const payload: IntersolveBlockWalletDto = {
@@ -553,7 +540,7 @@ export class IntersolveVisaService
         ))
     ) {
       await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
-        { tokenCode: tokenCode ?? undefined },
+        { tokenCode: tokenCode },
         { isTokenBlocked: block },
       );
     }
@@ -655,7 +642,10 @@ export class IntersolveVisaService
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: referenceId, programId: programId },
     });
-    const visaCustomer = await this.getCustomerEntityIfExists(registration.id);
+    const visaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationId(
+        registration.id,
+      );
 
     const errors: string[] = [];
 
@@ -752,10 +742,12 @@ export class IntersolveVisaService
   }
 
   private async tryToBlockWallet(tokenCode: string | null): Promise<void> {
-    try {
-      await this.toggleBlockWallet(tokenCode, true);
-    } catch (e) {
-      console.log('error: ', e);
+    if (tokenCode) {
+      try {
+        await this.toggleBlockWallet(tokenCode, true);
+      } catch (e) {
+        console.log('error: ', e);
+      }
     }
   }
 
