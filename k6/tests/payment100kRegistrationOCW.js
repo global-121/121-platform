@@ -35,9 +35,14 @@ export default function () {
 
   // do the payment
   const payment = paymentsPage.createPayment(3);
-  console.log(payment.body);
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
+    'Payment has succesfully been initiated in less then 32s': (r) => {
+      if (r.timings.duration >= 32000) {
+        console.log(`Payment time was ${r.timings.duration}ms`);
+      }
+      return r.timings.duration < 32000;
+    },
   });
 
   sleep(1);
