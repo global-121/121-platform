@@ -1,6 +1,6 @@
 # Portal
 
-The front-end for the _Humanitarian Organization_ web portal, where 121-programs can be created and monitored, etc.
+The front-end for the _Humanitarian Organization_ web portal, where users can interact with the 121 Platform.
 
 ## Configuration
 

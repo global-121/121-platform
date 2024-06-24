@@ -17,7 +17,7 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ### Fixed
 
-- Error in processWhatsappPendingVoucher (and other places in message.service.ts) introduced in #5275
+- Error in `processWhatsappPendingVoucher` (and other places in message.service.ts) introduced in #5275
 
 ## [1.122.0](https://github.com/global-121/121-platform/compare/v1.121.0...v1.122.0)- 2024-06-13
 
@@ -35,7 +35,7 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 ### Technical
 
 - [AB#27995](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27995) Enable strict mode
-- [AB#28493](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28493) Change instance to organisation
+- [AB#28493](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28493) Change instance to organization
 - [AB#28559](https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28559) Redact specific data before logging it
 
 ## [1.121.0](https://github.com/global-121/121-platform/compare/v1.120.0...v1.121.0)- 2024-06-05
@@ -131,7 +131,7 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ### Fixed
 
-- Export registrations fix fsp displayname and make it default always english
+- Export registrations fix FSP `displayname` and make it default always english
 
 ## [1.116.9](https://github.com/global-121/121-platform/compare/v1.116.8...v1.116.9)- 2024-04-22
 
@@ -223,7 +223,7 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ### Fixed
 
-- Security policy rwanda
+- Security-Policy Rwanda
 
 ## [1.115.1](https://github.com/global-121/121-platform/compare/v1.115.0...v1.115.1)- 2024-03-20
 
