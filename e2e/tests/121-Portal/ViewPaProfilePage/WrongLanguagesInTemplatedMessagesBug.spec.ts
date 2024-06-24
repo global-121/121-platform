@@ -10,6 +10,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
+import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const programIdOCW = 3;
@@ -22,7 +23,7 @@ test.beforeEach(async ({ page }) => {
 
   // Login
   const loginPage = new LoginPage(page);
-  await page.goto('/login');
+  await page.goto(AppRoutes.login);
   await loginPage.login(
     process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
@@ -51,7 +52,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
   });
 
   await test.step('Send messages to two different PAs with different preferred languages', async () => {
-    await page.goto(`/program/${programIdOCW}/payment`);
+    await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.applyBulkAction(BulkActionId.sendMessage);
     await table.selectFieldsforCustomMessage({
       selectFieldDropdownName:
@@ -86,7 +87,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
       messageContent: messageTemplateNlrc.whatsappGenericMessage.message.ar,
     });
     // Validate Dutch message
-    await page.goto(`/program/${programIdOCW}/payment`);
+    await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.clickOnPaNumber(2);
     await registration.openActivityOverviewTab(
       englishTranslations['registration-details']['activity-overview'].filters
