@@ -12,7 +12,7 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
       development:
@@ -40,7 +40,7 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
       development:
@@ -62,9 +62,9 @@ updates:
   - package-ecosystem: npm
     directory: '/interfaces/Portal'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
       development:
