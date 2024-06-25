@@ -3,7 +3,7 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-export class ProgramFinancialServiceProviderConfigurationsRepository extends Repository<ProgramFinancialServiceProviderConfigurationEntity> {
+export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProgramFinancialServiceProviderConfigurationEntity> {
   constructor(
     @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
     private baseRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>,

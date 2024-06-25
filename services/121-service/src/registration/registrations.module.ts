@@ -100,6 +100,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RegistrationsBulkService,
     RegistrationsPaginationService,
     RegistrationsImportService,
+    RegistrationScopedRepository,
   ],
 })
 export class RegistrationsModule {}
