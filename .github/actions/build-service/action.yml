@@ -11,7 +11,6 @@ inputs:
   downloadDatabaseCertificate:
     description: Whether to download a certificate for the database-connection.
     required: false
-    default: 'false'
 
 outputs:
   build_version:
@@ -68,16 +67,9 @@ runs:
       working-directory: ${{ inputs.servicePath }}
       run: |
         npm prune --omit=dev --no-fund --no-audit
-        rm -r .vscode/
-        rm -r test/
-        rm -r ./*.md
-        rm .dockerignore
-        rm .eslintrc.js
-        rm .gitignore
-        rm .prettier*
-        rm Dockerfile
-        rm jest.unit.config.js
-        rm jest.e2e.config.js
+        rm -r -f .vscode/
+        rm -r -f test/
+        rm -r -f ./*.md
 
     - name: Creating ZIP package
       shell: bash
