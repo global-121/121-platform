@@ -8,6 +8,7 @@ import {
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { ReferenceIdAndTransactionAmountDto } from '@121-service/src/payments/dto/internal/referenceid-transaction-amount.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
@@ -47,8 +48,8 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { CreateIntersolveVisaTransferJobDto } from '@121-service/src/transfer-queues/dto/create-intersolve-visa-transfer-job.dto';
-import { TransferQueuesService } from '@121-service/src/transfer-queues/transfer-queues.service';
+import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -102,7 +103,7 @@ export class PaymentsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
-    private readonly transferQueuesService: TransferQueuesService,
+    private readonly transactionQueuesService: TransactionQueuesService,
     private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
   ) {
     this.financialServiceProviderNameToServiceMap = {
@@ -361,7 +362,12 @@ export class PaymentsService {
         bulkSize,
       );
 
-      const result = await this.payout(paPaymentDataList, programId, payment);
+      const result = await this.payout({
+        paPaymentDataList,
+        programId,
+        payment,
+        isRetry: false,
+      });
 
       paymentTransactionResult += result;
     }
@@ -396,7 +402,7 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    void this.payout(paPaymentDataList, programId, payment)
+    void this.payout({ paPaymentDataList, programId, payment, isRetry: true })
       .catch((e) => {
         this.azureLogService.logError(e, true);
       })
@@ -439,15 +445,21 @@ export class PaymentsService {
     return program;
   }
 
-  public async payout(
-    paPaymentDataList: PaPaymentDataDto[],
-    programId: number,
-    payment: number,
-  ): Promise<number> {
+  public async payout({
+    paPaymentDataList,
+    programId,
+    payment,
+    isRetry,
+  }: {
+    paPaymentDataList: PaPaymentDataDto[];
+    programId: number;
+    payment: number;
+    isRetry: boolean;
+  }): Promise<number> {
     // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    await this.makePaymentRequest(paLists, programId, payment);
+    await this.makePaymentRequest({ paLists, programId, payment, isRetry });
 
     return paPaymentDataList.length;
   }
@@ -554,29 +566,44 @@ export class PaymentsService {
   }
 
   // TODO: REFACTOR: This method does not make payment requests, but results in jobs added to queues. Rename to reflect this.
-  private async makePaymentRequest(
-    paLists: SplitPaymentListDto,
-    programId: number,
-    payment: number,
-  ): Promise<void> {
+  private async makePaymentRequest({
+    paLists,
+    programId,
+    payment,
+    isRetry,
+  }: {
+    paLists: SplitPaymentListDto;
+    programId: number;
+    payment: number;
+    isRetry: boolean;
+  }): Promise<void> {
     await Promise.all(
       Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
         if (fsp === FinancialServiceProviderName.intersolveVisa) {
           /*
             TODO: REFACTOR: We need to refactor the Payments Service during segregation of duties implementation, so that the Payments Service calls a private function per FSP with a list of ReferenceIds (or RegistrationIds ?!)
-            which then gathers the necessary data to create transfer jobs for the FSP.
+            which then gathers the necessary data to create transaction jobs for the FSP.
 
             Until then, we do a temporary hack here for Intersolve Visa, mapping paPaymentList to only a list of referenceIds. The only thing is we do not know here if this is a retry.
             See this.createIntersolveVisaTransferJobs() of how this is handled.
           */
 
           // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
-          return await this.createAndAddIntersolveVisaTransferJobs(
-            paPaymentList.map((paPaymentData) => paPaymentData.referenceId),
+          // TODO: Pass in the transactionAmount for each PA. It should be in paLists or something.
+          return await this.createAndAddIntersolveVisaTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
             programId,
-            paPaymentList[0].transactionAmount,
-            payment,
-          );
+            paymentNumber: payment,
+            isRetry,
+          });
         }
 
         const [paymentService, useWhatsapp] =
@@ -592,25 +619,33 @@ export class PaymentsService {
   }
 
   /**
-   * Creates and adds Intersolve Visa transfer jobs.
+   * Creates and adds Intersolve Visa transaction jobs.
    *
-   * This method is responsible for creating transfer jobs for Intersolve Visa. It fetches necessary PA data and maps it to a FSP specific DTO.
-   * It then adds these jobs to the transfer queue.
+   * This method is responsible for creating transaction jobs for Intersolve Visa. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
    *
-   * @param {string[]} referenceIds - The reference IDs for the transfer jobs.
+   * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
    * @param {number} programId - The ID of the program.
    * @param {number} paymentAmount - The amount to be transferred.
    * @param {number} paymentNumber - The payment number.
+   * @param {boolean} isRetry - Whether this is a retry.
    *
-   * @returns {Promise<void>} A promise that resolves when the transfer jobs have been created and added.
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
    *
    */
-  private async createAndAddIntersolveVisaTransferJobs(
-    referenceIds: string[],
-    programId: number,
-    paymentAmount: number,
-    paymentNumber: number,
-  ): Promise<void> {
+  private async createAndAddIntersolveVisaTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountDto[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
+  }): Promise<void> {
     const intersolveVisaQuestions =
       await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
         FinancialServiceProviderName.intersolveVisa,
@@ -623,6 +658,9 @@ export class PaymentsService {
       'phoneNumber',
       ...intersolveVisaQuestionNames,
     ];
+    const referenceIds = referenceIdsTransactionAmounts.map(
+      (r) => r.referenceId,
+    );
     const paginateQuery =
       this.registrationsBulkService.getRegistrationsForPaymentQuery(
         referenceIds,
@@ -636,14 +674,18 @@ export class PaymentsService {
         4000,
       );
 
-    const intersolveVisaTransferJobs: CreateIntersolveVisaTransferJobDto[] =
+    const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
-        (registrationView): CreateIntersolveVisaTransferJobDto => {
+        (registrationView): IntersolveVisaTransactionJobDto => {
           return {
             programId: programId,
+            userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
-            transactionAmount: paymentAmount,
+            transactionAmount: referenceIdsTransactionAmounts.find(
+              (r) => r.referenceId === registrationView.referenceId,
+            )!.transactionAmount,
+            isRetry,
             bulkSize: referenceIds.length,
             name: registrationView['fullName'],
             addressStreet: registrationView['addressStreet'],
@@ -656,7 +698,7 @@ export class PaymentsService {
           };
         },
       );
-    await this.transferQueuesService.addIntersolveVisaTransferJobs(
+    await this.transactionQueuesService.addIntersolveVisaTransactionJobs(
       intersolveVisaTransferJobs,
     );
   }

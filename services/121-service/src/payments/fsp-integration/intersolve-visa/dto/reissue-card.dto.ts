@@ -13,19 +13,19 @@ export class ReissueCardDto {
   name: string;
 
   @IsNotEmpty()
-  street: string;
+  addressStreet: string;
 
   @IsNotEmpty()
-  houseNumber: string;
+  addressHouseNumber: string;
 
   @IsNotEmpty()
-  houseNumberAddition: string;
+  addressHouseNumberAddition: string;
 
   @IsNotEmpty()
-  postalCode: string;
+  addressPostalCode: string;
 
   @IsNotEmpty()
-  city: string;
+  addressCity: string;
 
   @IsNotEmpty()
   phoneNumber: string;
