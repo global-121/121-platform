@@ -2,20 +2,18 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/issue-token-request.dto';
 import {
   IntersolveBlockWalletDto,
   IntersolveBlockWalletResponseDto,
   UnblockReasonEnum,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
-import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
-import { IntersolveCreateWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet.dto';
+import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import {
-  IntersolveVisaWalletEntity,
-  IntersolveVisaWalletStatus,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
@@ -120,7 +118,6 @@ export class MigrateVisaService {
       {
         reference: uuid(),
         activate: true,
-        quantities: [],
       },
       brandCode,
     );
@@ -179,7 +176,7 @@ export class MigrateVisaService {
       childWallet.isDebitCardCreated = originalWallet.debitCardCreated;
       childWallet.walletStatus = originalWallet.walletStatus
         ? originalWallet.walletStatus
-        : IntersolveVisaWalletStatus.Active; // Deals with the factor that the old walletStatus was nullable
+        : IntersolveVisaTokenStatus.Active; // Deals with the factor that the old walletStatus was nullable
       childWallet.cardStatus = originalWallet.cardStatus;
       childWallet.lastUsedDate = originalWallet.lastUsedDate;
       childWallet.lastExternalUpdate = originalWallet.lastExternalUpdate;
@@ -329,9 +326,9 @@ export class MigrateVisaService {
   }
 
   public async postCreateActiveWallet(
-    payload: IntersolveCreateWalletDto,
+    payload: IssueTokenRequestDto,
     brandCode: string,
-  ): Promise<IntersolveCreateWalletResponseDto> {
+  ): Promise<IssueTokenResponseDto> {
     const authToken = await this.getAuthenticationToken();
 
     const apiPath = process.env.INTERSOLVE_VISA_PROD
@@ -342,7 +339,7 @@ export class MigrateVisaService {
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
-    return await this.httpService.post<IntersolveCreateWalletResponseDto>(
+    return await this.httpService.post<IssueTokenResponseDto>(
       url,
       payload,
       headers,

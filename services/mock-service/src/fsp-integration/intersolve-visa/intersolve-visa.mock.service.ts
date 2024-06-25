@@ -95,6 +95,7 @@ export class IntersolveVisaMockService {
     response.data.data.token.blockReasonCode = 'string';
     response.data.data.token.tier = 'string';
     response.data.data.token.brandTypeCode = 'string';
+    response.data.data.token.status = 'INACTIVE';
     response.data.data.token.holderId = 'string';
     response.data.data.token.balances = [
       {
@@ -550,9 +551,58 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public linkToken(_childTokenCode: string, _parentTokenCode: string): any {
+  public linkToken(parentTokenCode: string): IntersolveVisaMockResponseDto {
+    if (parentTokenCode.includes('mock-fail-link-token')) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        statusText: 'Not Found',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'NOT_FOUND',
+              description: 'We mocked that linking the token failed',
+            },
+          ],
+        },
+      };
+    }
     return {
       status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+      errors: [],
+    };
+  }
+
+  public transfer(fromToken: string): IntersolveVisaMockResponseDto {
+    if (fromToken.includes('mock-fail-transfer')) {
+      // We assume this is the correct response for a failed transfer
+      // However I do not know a scenario where this would fail, maybe when our token code does not exist or is out of funding
+      return {
+        status: HttpStatus.NOT_FOUND,
+        statusText: 'Not Found',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'NOT_FOUND',
+              description: 'We mocked that transfer failed',
+            },
+          ],
+        },
+      };
+    }
+
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+      errors: [],
     };
   }
 }

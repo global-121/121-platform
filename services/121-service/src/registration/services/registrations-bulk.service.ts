@@ -324,7 +324,7 @@ export class RegistrationsBulkService {
       dataFieldNames,
     );
   }
-  y;
+
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
     registrationStatus?: RegistrationStatusEnum,

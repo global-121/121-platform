@@ -1,6 +1,5 @@
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
   BeforeRemove,
@@ -8,7 +7,6 @@ import {
   Entity,
   Index,
   JoinColumn,
-  OneToMany,
   OneToOne,
   Relation,
 } from 'typeorm';
@@ -17,8 +15,8 @@ import {
 @Entity('intersolve_visa_customer')
 export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @Index()
-  @Column({ type: 'character varying', nullable: true }) // TODO: Why is this nullable?
-  public holderId: string | null;
+  @Column({ type: 'character varying' })
+  public holderId: string;
 
   @OneToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
@@ -32,13 +30,6 @@ export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
       intersolveVisaParentWallet.intersolveVisaCustomer,
   )
   public intersolveVisaParentWallet: Relation<IntersolveVisaParentWalletEntity>;
-
-  // TODO: Remove this when all references to this have been refactored.
-  @OneToMany(
-    (_type) => IntersolveVisaWalletEntity,
-    (visaWallets) => visaWallets.intersolveVisaCustomer,
-  )
-  public visaWallets: Relation<IntersolveVisaWalletEntity[]>;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

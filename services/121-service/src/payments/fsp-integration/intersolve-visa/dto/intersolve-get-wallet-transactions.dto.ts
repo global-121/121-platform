@@ -1,26 +1,25 @@
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 
 export class TransactionInfoVisa {
   public lastUsedDate: Date | null;
   public spentThisMonth: number;
 }
 
-export class GetTransactionsDetailsResponseDto {
-  data: GetTransactionsDetailsResponseBodyDto;
-  status: number;
-  statusText: string;
-}
-
-class GetTransactionsDetailsResponseBodyDto {
-  public success: boolean;
-  public errors?: IntersolveReponseErrorDto[];
-  public code: string;
-  public correlationId: string;
-  public data?: IntersolveGetTransactionsResponseDataDto[];
-  public start?: number;
-  public limit?: number;
-  public count?: number;
-  public total?: number;
+// TODO: Make properties readonly
+export class GetTransactionsResponseDto {
+  public data: {
+    success: boolean;
+    errors?: ErrorsInResponseDto[];
+    code: string;
+    correlationId: string;
+    data?: IntersolveGetTransactionsResponseDataDto[];
+    start?: number;
+    limit?: number;
+    count?: number;
+    total?: number;
+  };
+  public status: number;
+  public statusText: string;
 }
 
 export class IntersolveGetTransactionsResponseDataDto {

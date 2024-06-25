@@ -1,4 +1,4 @@
-import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
+import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 
 export class IntersolveBlockWalletDto {
   public reasonCode: BlockReasonEnum | UnblockReasonEnum;
@@ -20,7 +20,7 @@ export class IntersolveBlockWalletResponseDto {
 
 class IntersolveBlockWalletResponseBodyDto {
   public success?: boolean;
-  public errors?: IntersolveReponseErrorDto[];
+  public errors?: ErrorsInResponseDto[];
   public code?: string;
   public correlationId?: string;
 }

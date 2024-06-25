@@ -110,4 +110,10 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     // This is as risk though that someone uses this expecting it to be scoped
     return this.repository.update(criteria, partialEntity);
   }
+
+  async getRegistrationByReferenceId(referenceId: string) {
+    return await this.repository.findOne({
+      where: { referenceId: referenceId },
+    });
+  }
 }

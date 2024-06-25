@@ -46,4 +46,8 @@ export class IntersolveVisaParentWalletEntity extends Base121Entity {
   // This is euro cents
   @Column({ default: 0 })
   public spentThisMonth: number;
+
+  // This is the date of the latest transaction
+  @Column({ type: 'date', nullable: true })
+  public lastUsedDate: Date | null;
 }

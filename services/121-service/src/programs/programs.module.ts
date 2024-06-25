@@ -13,6 +13,7 @@ import { ProgramQuestionEntity } from '@121-service/src/programs/program-questio
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { UserModule } from '@121-service/src/user/user.module';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
@@ -39,8 +40,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     KoboConnectModule,
     ProgramFinancialServiceProviderConfigurationsModule,
   ],
-  providers: [ProgramService],
+  providers: [ProgramService, ProgramRepository],
   controllers: [ProgramController],
-  exports: [ProgramService],
+  exports: [ProgramService, ProgramRepository],
 })
 export class ProgramModule {}

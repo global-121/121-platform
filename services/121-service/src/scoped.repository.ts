@@ -9,10 +9,7 @@ import {
 } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { InjectDataSource } from '@nestjs/typeorm';
 import {
-  DataSource,
-  DeepPartial,
   DeleteResult,
   EntityMetadata,
   FindOptionsWhere,
@@ -25,7 +22,6 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
-import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class ScopedQueryBuilder<
@@ -49,6 +45,12 @@ type EntityRelations = Record<string, string[]>;
 // Define here any entities that do have an INDIRECT relation to registration
 const indirectRelationConfig: EntityRelations = {
   IntersolveVisaWalletEntity: ['intersolveVisaCustomer', 'registration'],
+  IntersolveVisaChildWalletEntity: [
+    'intersolveVisaParentWallet',
+    'intersolveVisaCustomer',
+    'registration',
+  ],
+  IntersolveVisaParentWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
 };
@@ -60,20 +62,16 @@ export function hasUserScope(
 }
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
-export class ScopedRepository<T extends ObjectLiteral> {
-  private repository: Repository<T>;
-
+export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   // Use for entities that have an INDIRECT relation to registration
   // Else the relation is found automatically in the constructor
   public relationArrayToRegistration: string[];
 
   constructor(
-    target: EntityTarget<T>,
-    @InjectDataSource() dataSource: DataSource,
     @Inject(REQUEST) private request: ScopedUserRequest,
+    private repository: Repository<T>,
   ) {
-    this.repository = dataSource.createEntityManager().getRepository(target);
-
+    super(repository.target, repository.manager, repository.queryRunner);
     if (indirectRelationConfig[this.repository.metadata.name]) {
       this.relationArrayToRegistration =
         indirectRelationConfig[this.repository.metadata.name];
@@ -243,16 +241,6 @@ export class ScopedRepository<T extends ObjectLiteral> {
     // we don't use update anywhere yet in a way where it should be scoped
     // This is as risk though that someone uses this expecting it to be scoped
     return this.repository.update(criteria, partialEntity);
-  }
-
-  public create(entityLike: DeepPartial<T>): T;
-  public create(entityLikeArray: DeepPartial<T>[]): T[];
-  public create(entityLikeOrArray: DeepPartial<T> | DeepPartial<T>[]): T | T[] {
-    if (Array.isArray(entityLikeOrArray)) {
-      return this.repository.create(entityLikeOrArray as DeepPartial<T>[]);
-    } else {
-      return this.repository.create(entityLikeOrArray as DeepPartial<T>);
-    }
   }
 
   ////////////////////////////////////////////////////////////////
