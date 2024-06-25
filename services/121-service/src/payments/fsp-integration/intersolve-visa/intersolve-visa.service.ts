@@ -139,19 +139,16 @@ export class IntersolveVisaService
     return registrationDataOptions;
   }
 
+  // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
   public async doTransferOrIssueCard(
     input: IntersolveVisaDoTransferOrIssueCardDto,
   ): Promise<IntersolveVisaDoTransferOrIssueCardReturnDto> {
-    // TODO: Can we optimize gathering the data returned to the called? This now uses a DTO with non-readonly properties, which is not ideal.
     const returnData = new IntersolveVisaDoTransferOrIssueCardReturnDto();
 
-    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
     let intersolveVisaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
         input.registrationId,
       );
-    // TODO: REFACTOR: When the custom repository is implemented, replace this with a call to that repository:
-    //  await this.intersolveVisaCustomerScopedRepository.getIntersolveCustomerAndWalletsByRegistrationId(input.registrationId);
 
     // Check if customer exists
     if (!intersolveVisaCustomer) {
@@ -498,7 +495,7 @@ export class IntersolveVisaService
     }
 
     const visaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
         registration.id,
       );
     if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
@@ -643,7 +640,7 @@ export class IntersolveVisaService
       where: { referenceId: referenceId, programId: programId },
     });
     const visaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
         registration.id,
       );
 
