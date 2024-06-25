@@ -10,6 +10,8 @@ export const ROOT_URL = DEVELOPMENT
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
 
+export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
+
 let appTitle = packageJson.name;
 if (process.env.ENV_NAME) {
   appTitle += ` [${process.env.ENV_NAME}]`;
