@@ -8,6 +8,10 @@ inputs:
   servicePath:
     description: Location of the service code.
     required: true
+  downloadDatabaseCertificate:
+    description: Whether to download a certificate for the database-connection.
+    required: false
+    default: 'false'
 
 outputs:
   build_version:
@@ -54,6 +58,7 @@ runs:
         echo "build_version=${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_OUTPUT
 
     - name: Download database certificate
+      if: ${{ inputs.downloadDatabaseCertificate }}
       shell: bash
       working-directory: ${{ inputs.servicePath }}
       run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
