@@ -3,7 +3,7 @@ import { FinancialServiceProviderEntity } from '@121-service/src/financial-servi
 import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramFspConfigurationController } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.controller';
-import { ProgramFinancialServiceProviderConfigurationsRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,11 +20,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   providers: [
     ProgramFinancialServiceProviderConfigurationsService,
-    ProgramFinancialServiceProviderConfigurationsRepository,
+    ProgramFinancialServiceProviderConfigurationRepository,
   ],
   controllers: [ProgramFspConfigurationController],
   exports: [
-    ProgramFinancialServiceProviderConfigurationsRepository,
+    ProgramFinancialServiceProviderConfigurationRepository,
     ProgramFinancialServiceProviderConfigurationsService,
   ],
 })
