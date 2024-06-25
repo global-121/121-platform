@@ -19,6 +19,14 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
+const ok = englishTranslations.common.ok;
+const programActions =
+  englishTranslations.page.program['program-people-affected'].actions.include;
+const peopleAffectedLabel =
+  englishTranslations.page.program.tab['people-affected'].label;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
@@ -50,17 +58,13 @@ test('[28450] OCW: Retry payment for all failed payments of PAs', async ({
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab['people-affected'].label,
-    );
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
+    await navigationModule.navigateToProgramTab(peopleAffectedLabel);
   });
 
   await test.step('Include registrations', async () => {
     await tableModule.applyBulkAction({
-      label:
-        englishTranslations.page.program['program-people-affected'].actions
-          .include,
+      label: programActions,
     });
     await tableModule.acceptBulkAction();
   });
@@ -68,9 +72,7 @@ test('[28450] OCW: Retry payment for all failed payments of PAs', async ({
   await test.step('Make first failed payment', async () => {
     const accessToken = await getAccessToken();
 
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
+    await navigationModule.navigateToProgramTab(paymentLabel);
     await doPaymentForAllPAs({
       programId: programIdOCW,
       paymentNr: 1,
@@ -91,7 +93,7 @@ test('[28450] OCW: Retry payment for all failed payments of PAs', async ({
       accessToken,
     );
     await paymentsPage.retryPayment({
-      buttonName: englishTranslations.common.ok,
+      buttonName: ok,
     });
     await paymentsPage.validateSuccessfulPaymentStatus({
       payments: numberOfPas,
