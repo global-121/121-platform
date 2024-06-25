@@ -16,7 +16,7 @@ export const options = {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(17, '7m');
+  const reset = resetPage.resetDBMockRegistrations(15, '7m');
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
@@ -37,7 +37,7 @@ export default function () {
   const payment = paymentsPage.createPayment(3);
   check(payment, {
     'Payment succesfull status was 202': (r) => r.status == 202,
-    'Payment has succesfully been initiated in less then 32s': (r) => {
+    'Payment has succesfully been initiated in less then 40s': (r) => {
       if (r.timings.duration >= 40000) {
         console.log(`Payment time was ${r.timings.duration}ms`);
       }
