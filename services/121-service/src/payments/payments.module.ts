@@ -30,7 +30,7 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { TransferQueuesModule } from '@121-service/src/transfer-queues/transfer-queues.module';
+import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -69,7 +69,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ProgramModule,
     RegistrationUtilsModule,
     RegistrationDataModule,
-    TransferQueuesModule,
+    TransactionQueuesModule,
     FinancialServiceProvidersModule,
   ],
   providers: [

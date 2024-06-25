@@ -19,3 +19,5 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 17dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,succeed,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
 18dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-fail-create-order,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
 19dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-address-city-fail,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,
+20dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-fail-transfer,14155238858,Intersolve-visa,14155238888,Straat,1,A,1234AB,
+21dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-fail-link-token,14155238859,Intersolve-visa,14155238889,Straat,1,A,1234AB,
