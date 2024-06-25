@@ -16,7 +16,7 @@ export const options = {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(15, '7m');
+  const reset = resetPage.resetDBMockRegistrations(17, '7m');
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
