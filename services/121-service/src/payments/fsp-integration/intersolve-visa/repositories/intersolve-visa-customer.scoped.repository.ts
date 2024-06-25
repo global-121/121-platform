@@ -15,11 +15,12 @@ export class IntersolveVisaCustomerScopedRepository extends ScopedRepository<Int
     super(request, scopedRepository);
   }
 
-  public async findOneByRegistrationId(
-    registrationId: number,
-  ): Promise<IntersolveVisaCustomerEntity | null> {
+  public async findOneAndWalletsByRegistrationId(registrationId: number) {
     return await this.findOne({
-      // relations: ['intersolveVisaParentWallet'],
+      relations: [
+        'intersolveVisaParentWallet',
+        'intersolveVisaParentWallet.intersolveVisaChildWallets',
+      ],
       where: { registrationId: Equal(registrationId) },
     });
   }
