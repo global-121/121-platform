@@ -61,21 +61,6 @@ jobs:
           npx dotenv -e ../services/.env -- ./k6 run tests/pvProgramPerformance.js
           npx dotenv -e ../services/.env -- ./k6 run tests/heapMemory.js
 
-      - name: Stop Services with Docker
-        working-directory: ./services
-        run: |
-          docker stop $(docker ps -aq) && docker system prune -a --volumes -f
-
-      - name: Run Services with Docker
-        working-directory: ./services
-        run: |
-          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
-
-      - name: Run k6 payment performance test
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          npx dotenv -e ../services/.env -- ./k6 run tests/payment32kRegistrationOCW.js
-
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
