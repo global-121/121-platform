@@ -15,7 +15,5 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 13dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-spent-4000,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,
 14dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-current-balance-14000,14155238876,Intersolve-visa,14155238886,Straat,1,A,1234AB,
 15dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-current-balance-8000-mock-spent-7000,14155238856,Intersolve-visa,14155238886,Straat,1,A,1234AB,
-16dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,,,,,
-17dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-18dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-fail-create-order,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-19dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-address-city-fail,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+20dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-fail-transfer,14155238858,Intersolve-visa,14155238888,Straat,1,A,1234AB,
+21dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test,mock-fail-link-token,14155238859,Intersolve-visa,14155238889,Straat,1,A,1234AB,

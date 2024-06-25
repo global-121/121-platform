@@ -39,31 +39,32 @@
         {
           "name": "coverLetterCode",
           "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
+        },
+        {
+          "name": "fundingTokenCode",
+          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
         }
       ]
     }
   ],
   "targetNrRegistrations": 100000,
   "tryWhatsAppFirst": true,
-  "programCustomAttributes": [
+  "programQuestions": [
     {
-      "name": "firstName",
+      "name": "fullName",
       "label": {
-        "en": "First name"
+        "en": "Full Name"
       },
-      "type": "text",
+      "answerType": "text",
+      "questionType": "standard",
+      "pattern": null,
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "editableInPortal": true,
       "showInPeopleAffectedTable": false
     },
-    {
-      "name": "lastName",
-      "label": {
-        "en": "Last name"
-      },
-      "type": "text",
-      "showInPeopleAffectedTable": false
-    }
-  ],
-  "programQuestions": [
     {
       "name": "phoneNumber",
       "label": {

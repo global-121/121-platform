@@ -16,6 +16,7 @@ export enum FinancialServiceProviderConfigurationEnum {
   brandCode = 'brandCode',
   displayName = 'displayName',
   coverLetterCode = 'coverLetterCode',
+  fundingTokenCode = 'fundingTokenCode',
 }
 
 export const FinancialServiceProviderConfigurationMapping: {
@@ -35,6 +36,7 @@ export const FinancialServiceProviderConfigurationMapping: {
     FinancialServiceProviderConfigurationEnum.brandCode,
     FinancialServiceProviderConfigurationEnum.coverLetterCode,
     FinancialServiceProviderConfigurationEnum.displayName,
+    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
   ],
   [FinancialServiceProviderName.vodacash]: [
     FinancialServiceProviderConfigurationEnum.displayName,
