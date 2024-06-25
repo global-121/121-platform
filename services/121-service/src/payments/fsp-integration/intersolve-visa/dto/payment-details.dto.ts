@@ -1,3 +1,4 @@
+// TODO: Remove, this DTO is replaced by IntersolveVisaTransferDto (and CreateIntersolveVisaTransferJobDto sort-of, the logic moves)
 export class PaymentDetailsDto {
   public firstName: string;
   public lastName: string;
