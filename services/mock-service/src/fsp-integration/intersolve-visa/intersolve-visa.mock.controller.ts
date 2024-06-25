@@ -144,7 +144,7 @@ export class IntersolveVisaMockController {
   @ApiOperation({ summary: 'Transfer' })
   @Post('/wallet/v1/tokens/:fromToken/transfer')
   public transfer(
-    @Body() payload: Record<string, any>,
+    @Body() payload: Record<string, unknown>,
     @Param('fromToken') _fromToken: string,
   ): IntersolveVisaMockResponseDto {
     const toToken = payload.creditor.tokenCode;
