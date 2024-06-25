@@ -4,7 +4,7 @@
 name: 'Deploy [test] Mock-Service'
 
 env:
-  AZURE_WEBAPP_NAME: '121-mock'
+  AZURE_WEBAPP_NAME: '121-mock-test'
   AZURE_WEBAPP_PACKAGE_PATH: services/mock-service
 
 defaults:
@@ -13,6 +13,7 @@ defaults:
 
 permissions:
   actions: read
+  deployments: write
 
 on:
   workflow_call:
@@ -36,24 +37,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js version
-        uses: actions/setup-node@v4
         with:
-          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-          node-version-file: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/.node-version'
-          cache: 'npm'
-          cache-dependency-path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/package-lock.json'
+          fetch-depth: 0
 
-      - name: Install
-        run: npm ci --no-fund --no-audit
-
-      - name: Build
-        shell: bash
-        run: 'npm run build'
-
-      - name: Creating ZIP package
-        run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
+      - name: Build Service
+        id: build
+        uses: ./.github/actions/build-service
+        with:
+          servicePath: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy to Azure App Service
         id: deploy_to_aas
@@ -67,4 +58,5 @@ jobs:
 
       - name: Finish
         run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY

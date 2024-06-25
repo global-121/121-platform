@@ -43,6 +43,7 @@ jobs:
         id: build
         uses: ./.github/actions/build-service
         with:
+          downloadDatabaseCertificate: true
           servicePath: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy to Azure App Service
