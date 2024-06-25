@@ -67,6 +67,11 @@ jobs:
         run: |
           docker stop $(docker ps -aq) && docker system prune -a --volumes -f
 
+      - name: Run Services with Docker
+        working-directory: ./services
+        run: |
+          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
+
       - name: Run k6 payment performance test
         working-directory: ${{ env.k6TestsPath }}
         run: |
