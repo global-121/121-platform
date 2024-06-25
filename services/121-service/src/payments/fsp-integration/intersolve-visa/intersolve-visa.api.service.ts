@@ -12,7 +12,6 @@ import {
   CreateCustomerResponseDto,
   CreateCustomerResponseExtensionDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-response.dto';
-import { CreatePhysicalCardRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-physical-card-request.dto';
 import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 import { GetPhysicalCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/get-physical-card-response.dto';
 import { GetTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/get-token-response.dto';
@@ -32,9 +31,9 @@ import {
   IntersolveGetTransactionsResponseDataDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
+import { v4 as uuid } from 'uuid';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
@@ -105,7 +104,7 @@ export class IntersolveVisaApiService {
             addressLine1: createCustomerDto.addressStreet,
             city: createCustomerDto.addressCity,
             postalCode: createCustomerDto.addressPostalCode,
-            country: 'NLD',
+            country: 'NL',
           },
         ],
         phoneNumbers: [
@@ -158,7 +157,8 @@ export class IntersolveVisaApiService {
   ): Promise<IssueTokenResultDto> {
     // Create the request body to send
     const issueTokenRequestDto: IssueTokenRequestDto = {
-      reference: issueTokenDto.reference,
+      //reference: issueTokenDto.reference,
+      reference: uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
       activate: issueTokenDto.activate,
       // TODO: Can we just leave out quantities altogether from the request like this? Or does it need to be an empty array like it shows in the Integration Manual?
     };
@@ -515,35 +515,36 @@ export class IntersolveVisaApiService {
     return;
   }
 
-  public async createPhysicalCard(
-    createPhysicalCardDto: CreatePhysicalCardDto,
-  ): Promise<void> {
+  public async createPhysicalCard(input: CreatePhysicalCardDto): Promise<void> {
     // Create the request body to send
-    const createPhysicalCardRequestDto = new CreatePhysicalCardRequestDto();
-    createPhysicalCardRequestDto.firstName = ''; // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name, so just give an empty string
-    createPhysicalCardRequestDto.lastName = createPhysicalCardDto.name;
-    createPhysicalCardRequestDto.mobileNumber = formatPhoneNumber(
-      createPhysicalCardDto.phoneNumber,
-    ); // TODO: Removed the check-for-null statement, since formatPhoneNumber already throws an error if the phone number is null
-    createPhysicalCardRequestDto.cardAddress = {
-      address1:
-        `${createPhysicalCardDto.addressStreet} ${createPhysicalCardDto.addressHouseNumber} ${createPhysicalCardDto.addressHouseNumberAddition}`.trim(),
-      city: createPhysicalCardDto.addressCity,
-      country: 'NLD',
-      postalCode: createPhysicalCardDto.addressPostalCode,
+    // TODO: As per new good practices: this request structure is not a DTO anymore, but created inline. Do the same for the request objects in all other methods in this class. Or should they be interfaces?
+    const request = {
+      brand: 'VISA_CARD',
+      firstName: '',
+      lastName: input.name,
+      // TODO: We need to add a "+" for Intersolve's API to work. Do we have a generic helper function for this?
+      mobileNumber: '+' + input.phoneNumber, // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
+      cardAddress: {
+        address1:
+          `${input.addressStreet} ${input.addressHouseNumber} ${input.addressHouseNumberAddition}`.trim(),
+        city: input.addressCity,
+        country: 'NLD',
+        postalCode: input.addressPostalCode,
+      },
+      pinAddress: {
+        address1:
+          `${input.addressStreet} ${input.addressHouseNumber} ${input.addressHouseNumberAddition}`.trim(),
+        city: input.addressCity,
+        country: 'NLD',
+        postalCode: input.addressPostalCode,
+      },
+      pinStatus: 'D',
+      coverLetterCode: input.coverLetterCode,
     };
-    createPhysicalCardRequestDto.pinAddress = {
-      address1:
-        `${createPhysicalCardDto.addressStreet} ${createPhysicalCardDto.addressHouseNumber} ${createPhysicalCardDto.addressHouseNumberAddition}`.trim(),
-      city: createPhysicalCardDto.addressCity,
-      country: 'NLD',
-      postalCode: createPhysicalCardDto.addressPostalCode,
-    };
-    createPhysicalCardRequestDto.pinStatus = 'D';
 
     // Send the request
     const authToken = await this.getAuthenticationToken();
-    const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${createPhysicalCardDto.tokenCode}/create-physical-card`;
+    const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${input.tokenCode}/create-physical-card`;
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -552,7 +553,7 @@ export class IntersolveVisaApiService {
     // TODO: Replace <any> with something else, a DTO.
     const createPhysicalCardResponse = await this.httpService.post<any>(
       url,
-      createPhysicalCardRequestDto,
+      request,
       headers,
     );
 
@@ -581,9 +582,8 @@ export class IntersolveVisaApiService {
       creditor: {
         tokenCode: transferDto.toTokenCode,
       },
-      // TODO: What to put in reference? In the Integration Manual it says "Budget Week 13" => Do the OCW and PV program teams see this text in their financial reports? If so, what do they want here? Check with Tijs.
-      reference: '',
-      operationReference: transferDto.operationReference,
+      reference: uuid(), // TODO: Reference needs to be unique for every transfer on a wallet. What do we want to put here? Check with Tijs if the project team needs it. In the Intersolve docs it says "Budget Week 13" as example value.
+      operationReference: uuid(), // TODO: What is operationReference for? It needs to be a UUID, but Swagger docs not helpful: https://service-integration.intersolve.nl/wallet/swagger/index.html, "Gets or sets the operation reference."
     };
 
     // Send the request
