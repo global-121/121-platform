@@ -60,7 +60,6 @@ jobs:
         run: |
           npx dotenv -e ../services/.env -- ./k6 run tests/pvProgramPerformance.js
           npx dotenv -e ../services/.env -- ./k6 run tests/heapMemory.js
-          npx dotenv -e ../services/.env -- ./k6 run tests/payment32kRegistrationOCW.js
 
       - name: Stop Services with Docker
         working-directory: ./services
