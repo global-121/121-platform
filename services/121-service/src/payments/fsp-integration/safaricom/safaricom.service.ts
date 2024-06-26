@@ -53,10 +53,10 @@ export class SafaricomService
     programId: number,
     paymentNr: number,
   ): Promise<void> {
-    const referenceIds = paymentList.map((payment) => payment.referenceId);
-    const userInfo = await this.getUserInfo(referenceIds);
+    // const referenceIds = paymentList.map((payment) => payment.referenceId);
 
     for (const paPaymentData of paymentList) {
+      const userInfo = await this.getUserInfo([paPaymentData.referenceId]);
       const job = await this.paymentSafaricomQueue.add(
         ProcessNamePayment.sendPayment,
         {
@@ -85,6 +85,7 @@ export class SafaricomService
   }
 
   public async processQueuedPayment(jobData: SafaricomJobDto): Promise<void> {
+    console.log('🚀 ~ processQueuedPayment ~ jobData:', jobData.userInfo);
     await this.safaricomApiService.authenticate();
     const resultUser = jobData.userInfo.find(
       (user) => user.referenceId == jobData.paPaymentData.referenceId,
