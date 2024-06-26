@@ -13,6 +13,11 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
+const physicalCardTitle =
+  englishTranslations['registration-details']['physical-cards-overview'].title;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -36,30 +41,25 @@ test('[28516] View Visa cards', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
+    await navigationModule.navigateToProgramTab(paymentLabel);
     await table.clickOnPaNumber(2);
   });
 
   await test.step('Should validate all possible card statuses at once: Paused, Active, Blocked/Substitued', async () => {
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Active,
     );
     await physicalCard.issueNewVisaDebitCard();
     // FOR NOW STATUS SHOULD BE BLOCKED BUT AFTER NEW CHANGES ARE APPLIED THIS SHOULD BE CHANGED INTO "SUBSTITUTED"
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Blocked,
     );
     await physicalCard.pauseVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Paused,
     );
   });

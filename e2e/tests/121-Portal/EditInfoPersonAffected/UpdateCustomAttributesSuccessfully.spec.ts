@@ -12,6 +12,14 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const save = englishTranslations.common.save;
+const ok = englishTranslations.common.ok;
+const dataChangesLabel =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ].label;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -36,7 +44,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   let oldAmount = '';
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Open information pop-up', async () => {
@@ -45,8 +53,8 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
 
   await test.step('Update payment amount multiplier', async () => {
     oldAmount = await piiPopUp.updatepaymentAmountMultiplier({
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      saveButtonName: save,
+      okButtonName: ok,
     });
   });
 
@@ -58,9 +66,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
     await registration.openActivityOverviewTab('Data changes');
     await registration.validateDataChangesTab({
-      dataChangesLabel:
-        englishTranslations['registration-details']['activity-overview']
-          .activities['data-changes'].label,
+      dataChangesLabel: dataChangesLabel,
       oldValue: oldAmount,
       newValue: String(Number(oldAmount) + 1),
     });

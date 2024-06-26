@@ -11,6 +11,10 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const save = englishTranslations.common.save;
+const ok = englishTranslations.common.ok;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -35,7 +39,7 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
   const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Open information pop-up', async () => {
@@ -45,8 +49,8 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
   await test.step('Update payment amount multiplier', async () => {
     await piiPopUp.updatepaymentAmountMultiplier({
       amount: '2',
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      saveButtonName: save,
+      okButtonName: ok,
     });
   });
 

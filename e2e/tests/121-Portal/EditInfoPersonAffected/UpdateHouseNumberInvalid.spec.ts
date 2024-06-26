@@ -10,6 +10,8 @@ import { registrationsOCW } from '@121-service/test/registrations/pagination/pag
 import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -32,7 +34,7 @@ test('[28044] Update HouseNumber with invalid value', async ({ page }) => {
   const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Open information pop-up', async () => {
