@@ -25,7 +25,10 @@ export class SafaricomMockService {
   public async transfer(
     transferDto: SafaricomTransferPayload,
   ): Promise<SafaricomTransferResponseBodyDto> {
-    const mockScenario: MockScenario = MockScenario.success;
+    let mockScenario: MockScenario = MockScenario.success;
+    if (!transferDto.PartyB) {
+      mockScenario = MockScenario.otherFailure;
+    }
 
     const transferResponse = {
       ConversationID: 'AG_20191219_00005797af5d7d75f652',
