@@ -3,6 +3,7 @@ import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
+import { isPlainObject } from 'lodash';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
 export class Header {
@@ -254,6 +255,10 @@ export class CustomHttpService {
    * @returns - A copy of the input-object with some specific data overwritten/redacted
    */
   private redactSensitiveDataProperties(data: any) {
+    if (!isPlainObject(data)) {
+      return data;
+    }
+
     const sensitiveProperties = [
       'password',
       CookieNames.general,
