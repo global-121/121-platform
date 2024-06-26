@@ -1,14 +1,12 @@
 import packageJson = require('../package.json');
 
 export const DEVELOPMENT = process.env.NODE_ENV === 'development';
-export const PORT = DEVELOPMENT ? 3001 : 8080;
-
-export const ROOT_URL = DEVELOPMENT
-  ? `http://localhost:${PORT}/`
-  : process.env.MOCK_SERVICE_URL;
+export const PORT = DEVELOPMENT ? process.env.PORT_MOCK_SERVICE : 8080;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
+
+export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
 
 let appTitle = packageJson.name;
 if (process.env.ENV_NAME) {

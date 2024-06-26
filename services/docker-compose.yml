@@ -38,13 +38,15 @@ services:
       target: production
     init: true
     env_file: .env
+    environment:
+      - GLOBAL_121_VERSION
     ports:
-      - '3001:3001'
+      - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
     stdin_open: true
     tty: true
     restart: on-failure
     healthcheck:
-      test: curl --fail http://localhost:3001/api/v1/PhoneNumbers/123 || exit 1
+      test: curl --fail http://mock-service:${PORT_MOCK_SERVICE}/api/instance/version || exit 1
       interval: 15s
       retries: 15
       start_period: 60s

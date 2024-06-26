@@ -26,6 +26,8 @@ services:
   mock-service:
     build:
       target: development
+    ports:
+      - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
     volumes:
       - 'mock_service_node_modules:/home/node/app/node_modules'
       - './mock-service:/home/node/app'

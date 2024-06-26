@@ -1,23 +1,23 @@
 {
+  "$schema": "https://json.schemastore.org/nest-cli.json",
   "compilerOptions": {
     "assets": [
       {
         "include": "**/*.json",
-        "outDir": "dist",
-        "watchAssets": true
+        "outDir": "dist"
       },
       {
         "include": "**/*.csv",
-        "outDir": "dist",
-        "watchAssets": true
+        "outDir": "dist"
       }
     ],
     "watchAssets": true,
+    "deleteOutDir": true,
     "builder": {
       "type": "swc",
       "typeCheck": true,
       "options": {
-        "extensions": [".js", ".ts", ".jsx", ".tsx"],
+        "extensions": [".js", ".ts"],
         "swcrcPath": ".swcrc"
       }
     }

@@ -11,6 +11,10 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 - Version-format changed from `SemVer`("v`MAJOR`.`MINOR`.`PATCH`"; i.e. `v123.0.0`) to `CalVer`("v`YY`.`MM`-`MICRO`"; i.e `v24.6-0`)
 
+### Added
+
+- Port number of Mock-Service is now configurable via the ENV-variable `MOCK_SERVICE_PORT`. Update you local `.env`-file.
+
 ---
 
 ## [1.122.1](https://github.com/global-121/121-platform/compare/v1.122.0...v1.122.1)- 2024-06-18
