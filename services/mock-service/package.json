@@ -14,7 +14,7 @@
     "fix": "npm run lint -- --fix",
     "test": "echo 'No tests available' && exit 0",
     "build": "nest build -p tsconfig.json",
-    "start": "node dist/main.js",
+    "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
     "prestart:dev": "npm install --no-fund --no-audit",
     "start:dev": "nest start -r tsconfig-paths/register -b swc -w -p tsconfig.json"
   },

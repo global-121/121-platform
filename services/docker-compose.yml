@@ -38,6 +38,8 @@ services:
       target: production
     init: true
     env_file: .env
+    environment:
+      - GLOBAL_121_VERSION
     ports:
       - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
     stdin_open: true
