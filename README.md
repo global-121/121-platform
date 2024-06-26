@@ -115,13 +115,14 @@ To start all services, after setup, from the root of this repository, run:
 
     npm run start:services
 
-To see the status/logs of all/a specific Docker-container(s), run: (Where `<container-name>` is optional)
+To see the status/logs of all/a specific Docker-container(s), run: (Where `<container-name>` is optional; See container-names in [`docker-compose.yml`](services/docker-compose.yml)).
 
     npm run logs:services <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
 
-- 121-service: <http://localhost:3000/docs/>
+- 121-Service: <http://localhost:3000/docs/>
+- Mock-Service: <http://localhost:3001/docs/>
 
 ---
 
