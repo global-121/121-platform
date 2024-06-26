@@ -23,6 +23,11 @@ import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.j
 
 const TIMEOUT_DURATION = 200;
 const PROGRAM_ID = 3;
+const actions =
+  englishTranslations['registration-details']['activity-overview'].actions;
+const save = englishTranslations.common.save;
+const arabic =
+  englishTranslations.page.program['program-people-affected'].language.ar;
 
 async function navigateAndScreenshot({
   page,
@@ -153,8 +158,7 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
 
   await table.clickOnPaNumber(1);
   await registration.clickActionButton({
-    button:
-      englishTranslations['registration-details']['activity-overview'].actions,
+    button: actions,
   });
   await page.waitForTimeout(TIMEOUT_DURATION);
   await helpers.takeFullScreenShot({
@@ -173,9 +177,8 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   });
 
   await registration.openReasonForChangePopUp({
-    language:
-      englishTranslations.page.program['program-people-affected'].language.ar,
-    saveButtonName: englishTranslations.common.save,
+    language: arabic,
+    saveButtonName: save,
   });
   await page.waitForTimeout(TIMEOUT_DURATION);
   await helpers.takeFullScreenShot({

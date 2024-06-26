@@ -32,6 +32,20 @@ import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/e
 import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const fspChangeLable =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'fsp-change'
+  ].label;
+const oldValue =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ].old;
+const newValue =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ].new;
 
 test.beforeEach(async ({ page }) => {
   // Set WhatsApp-number for ALL tests in this suite only
@@ -101,26 +115,21 @@ test('[27496] View Activity overview in FSP column on PA profile page', async ({
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.clickOnPaNumber(1);
   });
 
   await test.step('Validate Status histor tab on PA Activity Overview table', async () => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     await registration.openActivityOverviewTab('All');
     await registration.validateChangeLogTile(
-      englishTranslations['registration-details']['activity-overview']
-        .activities['fsp-change'].label,
+      fspChangeLable,
       userName,
       await Helpers.getTodaysDate(),
-      englishTranslations['registration-details']['activity-overview']
-        .activities['data-changes'].old,
-      englishTranslations['registration-details']['activity-overview']
-        .activities['data-changes'].new,
+      oldValue,
+      newValue,
     );
   });
 });

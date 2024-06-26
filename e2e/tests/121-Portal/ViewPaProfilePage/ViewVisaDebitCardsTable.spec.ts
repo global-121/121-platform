@@ -12,6 +12,10 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const physicalCardTitle =
+  englishTranslations['registration-details']['physical-cards-overview'].title;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -35,20 +39,18 @@ test('[27494] View Visa debit cards table', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.clickOnPaNumber(2);
   });
 
   await test.step('Should validate PA profile opened succesfully and Visa Card Details are presented correctly with status: Active', async () => {
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Active,
     );
     await physicalCard.issueNewVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Blocked,
     );
   });

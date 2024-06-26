@@ -12,6 +12,20 @@ import englishTranslations from '../../../../../121-platform/interfaces/Portal/s
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import Helpers from '../../../pages/Helpers/Helpers';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const oldValue =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ].old;
+const newValue =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ].new;
+const statusLable =
+  englishTranslations['registration-details']['activity-overview'].activities
+    .status.label;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -34,7 +48,7 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.clickOnPaNumber(1);
   });
 
@@ -42,19 +56,14 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
     const userName =
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? 'defaultUserName';
 
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     await registration.openActivityOverviewTab('Status history');
     await registration.validateChangeLogTile(
-      englishTranslations['registration-details']['activity-overview']
-        .activities.status.label,
+      statusLable,
       userName,
       await Helpers.getTodaysDate(),
-      englishTranslations['registration-details']['activity-overview']
-        .activities['data-changes'].old,
-      englishTranslations['registration-details']['activity-overview']
-        .activities['data-changes'].new,
+      oldValue,
+      newValue,
     );
   });
 });

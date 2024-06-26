@@ -11,6 +11,11 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import { default as englishTranslations } from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
+const paymentStatus = englishTranslations.entity.payment.status.success;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -33,19 +38,17 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.clickOnPaNumber(2);
   });
 
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     await registration.openActivityOverviewTab('Payments');
     await registration.validatePaymentsTab({
-      paymentLabel: englishTranslations.page.program.tab.payment.label,
+      paymentLabel: paymentLabel,
       paymentNumber: 1,
-      statusLabel: englishTranslations.entity.payment.status.success,
+      statusLabel: paymentStatus,
     });
   });
 });

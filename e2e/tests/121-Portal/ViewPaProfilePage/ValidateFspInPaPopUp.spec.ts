@@ -14,6 +14,10 @@ import LoginPage from '../../../pages/Login/LoginPage';
 import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '../../../pages/Table/TableModule';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const visaFspName = visaFspIntersolve.displayName.en;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -38,7 +42,7 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   const piiPopUp = new PersonalInformationPopUp(page);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await navigationModule.navigateToProgramTab(
       englishTranslations.page.program.tab.payment.label,
     );
@@ -49,13 +53,9 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   });
 
   await test.step('Should open PA profile and open edit pop-up', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
-    await piiPopUp.validateFspNamePresentInEditPopUp(
-      visaFspIntersolve.displayName.en,
-    );
+    await piiPopUp.validateFspNamePresentInEditPopUp(visaFspName);
   });
 });

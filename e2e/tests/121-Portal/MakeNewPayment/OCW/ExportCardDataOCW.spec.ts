@@ -12,6 +12,7 @@ import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.e
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -36,9 +37,7 @@ test('[28648] Export Visa Card Data', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
+    await navigationModule.navigateToProgramTab(paymentLabel);
   });
 
   await test.step('Should export all debit card data', async () => {

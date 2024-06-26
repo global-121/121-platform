@@ -27,6 +27,9 @@ const paymentFilterByMessage =
 const messageContext =
   englishTranslations.entity.message['content-type'].payment;
 const messageType = englishTranslations.entity.message.type.whatsapp;
+const paymentFilterByTab =
+  englishTranslations['registration-details']['activity-overview'].filters
+    .message;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -84,10 +87,7 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
       statusLabel: paymentStatus,
     });
 
-    await registrationPage.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .message,
-    );
+    await registrationPage.openActivityOverviewTab(paymentFilterByTab);
     await registrationPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
       messageContext: messageContext,

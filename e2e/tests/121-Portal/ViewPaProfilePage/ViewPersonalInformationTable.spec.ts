@@ -13,6 +13,13 @@ import LoginPage from '../../../pages/Login/LoginPage';
 import RegistrationDetails from '../../../pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '../../../pages/Table/TableModule';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const status = englishTranslations.entity.registration.status.included;
+const language =
+  englishTranslations.page.program['program-people-affected'].language.nl;
+const visaFsp = visaFspTranslations.displayName.en;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -35,7 +42,7 @@ test('[27492] View Personal information table', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Should open first uploaded PA', async () => {
@@ -43,19 +50,17 @@ test('[27492] View Personal information table', async ({ page }) => {
   });
 
   await test.step('Should validate PA profile includes Personal information with details', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     // Reload the page to make asynchronous data available
     await page.reload();
     // Reload should be removed after fixing the issue with the data not being available https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27568
     await registration.validatePersonalInformationTable(
       'Luis Garcia',
-      englishTranslations.entity.registration.status.included,
+      status,
       await Helpers.getTodaysDate(),
-      englishTranslations.page.program['program-people-affected'].language.nl,
+      language,
       '+14155235555',
-      visaFspTranslations.displayName.en,
+      visaFsp,
     );
   });
 });

@@ -15,6 +15,10 @@ import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/e
 
 let accessToken: string;
 const save = englishTranslations.common.save;
+const message =
+  englishTranslations.page.program['program-people-affected'][
+    'edit-person-affected-popup'
+  ]['error-alert']['invalid-date'];
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.test);
@@ -56,11 +60,7 @@ test('[28047] Update "date" answer with invalid value', async ({ page }) => {
         saveButtonName: save,
       }),
     ]);
-    expect(dialog.message()).toBe(
-      englishTranslations.page.program['program-people-affected'][
-        'edit-person-affected-popup'
-      ]['error-alert']['invalid-date'],
-    );
+    expect(dialog.message()).toBe(message);
     await dialog.accept();
   });
 });
