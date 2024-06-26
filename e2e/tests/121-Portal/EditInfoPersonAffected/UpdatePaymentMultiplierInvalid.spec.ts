@@ -73,7 +73,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
 
   await test.step('Update payment amount multiplier with a string', async () => {
     await piiPopUp.updatepaymentAmountMultiplier({
-      amount: 'Mutiplier',
+      amount: 'Multiplier',
       saveButtonName: save,
       okButtonName: ok,
       alert: alertPattern.replace('{{error}}', 'Input should be an integer'),

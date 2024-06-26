@@ -15,6 +15,10 @@ import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/e
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const save = englishTranslations.common.save;
 const ok = englishTranslations.common.ok;
+const dataChangesLabel =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ].label;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -62,9 +66,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
     await registration.openActivityOverviewTab('Data changes');
     await registration.validateDataChangesTab({
-      dataChangesLabel:
-        englishTranslations['registration-details']['activity-overview']
-          .activities['data-changes'].label,
+      dataChangesLabel: dataChangesLabel,
       oldValue: oldAmount,
       newValue: String(Number(oldAmount) + 1),
     });
