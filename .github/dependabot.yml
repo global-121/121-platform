@@ -107,3 +107,23 @@ updates:
         update-types:
           ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'zone.js'
+
+  - package-ecosystem: npm
+    directory: '/interfaces/Portalicous'
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      development:
+        patterns:
+          - '@types/*'
+          - '*eslint*'
+          - '*prettier*'
+          - 'karma*'
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - 'zone.js'
