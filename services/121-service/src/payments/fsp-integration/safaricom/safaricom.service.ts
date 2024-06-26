@@ -53,19 +53,16 @@ export class SafaricomService
     programId: number,
     paymentNr: number,
   ): Promise<void> {
-    // const referenceIds = paymentList.map((payment) => payment.referenceId);
-
     for (const paPaymentData of paymentList) {
-      const userInfo = await this.getUserInfo([paPaymentData.referenceId]);
+      const jobData: SafaricomJobDto = {
+        paPaymentData: paPaymentData,
+        programId: programId,
+        paymentNr: paymentNr,
+        userId: paPaymentData.userId,
+      };
       const job = await this.paymentSafaricomQueue.add(
         ProcessNamePayment.sendPayment,
-        {
-          userInfo: userInfo,
-          paPaymentData: paPaymentData,
-          programId: programId,
-          paymentNr: paymentNr,
-          userId: paPaymentData.userId,
-        },
+        jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
@@ -85,23 +82,22 @@ export class SafaricomService
   }
 
   public async processQueuedPayment(jobData: SafaricomJobDto): Promise<void> {
-    console.log('🚀 ~ processQueuedPayment ~ jobData:', jobData.userInfo);
     await this.safaricomApiService.authenticate();
-    const resultUser = jobData.userInfo.find(
-      (user) => user.referenceId == jobData.paPaymentData.referenceId,
+
+    // TODO Refactor this to
+    const registrationData = await this.getRegistrationProgramIdAndNationalId(
+      jobData.paPaymentData.referenceId,
     );
 
-    if (!resultUser) {
-      throw new Error(
-        `User not found in processQueuedPayment for referenceId ${jobData.paPaymentData.referenceId}`,
-      );
-    }
+    const nationalId = registrationData?.nationalId;
+    const registrationProgramId = registrationData?.registrationProgramId;
 
     const payload = this.createPayloadPerPa(
       jobData.paPaymentData,
       jobData.programId,
       jobData.paymentNr,
-      resultUser,
+      nationalId,
+      registrationProgramId,
     );
 
     const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -129,32 +125,34 @@ export class SafaricomService
   }
 
   // TODO refactor this to a different name RegistrationInfo?
-  public async getUserInfo(
-    referenceIds: string[],
-  ): Promise<{ id: string; referenceId: string; value: string }[]> {
+  public async getRegistrationProgramIdAndNationalId(
+    referenceId: string,
+  ): Promise<
+    { registrationProgramId: number; nationalId: string } | undefined
+  > {
     return await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
-        'registration."registrationProgramId" AS id',
-        'registration.referenceId AS "referenceId"',
-        'data.value AS value',
+        'registration."registrationProgramId" AS "registrationProgramId"',
+        'data.value AS "nationalId"',
       ])
-      .where('registration.referenceId IN (:...referenceIds)', {
-        referenceIds: referenceIds,
+      .where('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
       })
       .andWhere('programQuestion.name IN (:...names)', {
         names: ['nationalId'],
       })
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
-      .getRawMany();
+      .getRawOne();
   }
 
   public createPayloadPerPa(
     paymentData: PaPaymentDataDto,
     programId: number,
     paymentNr: number,
-    userInfo: { id: string; referenceId: string; value: string },
+    nationalId: string | undefined,
+    registrationProgramId: number | undefined,
   ): SafaricomTransferPayload {
     function padTo2Digits(num: number): string {
       return num.toString().padStart(2, '0');
@@ -179,11 +177,11 @@ export class SafaricomService
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
       Occassion: paymentData.referenceId,
-      OriginatorConversationID: `P${programId}PA${userInfo.id}_${formatDate(
+      OriginatorConversationID: `P${programId}PA${registrationProgramId}_${formatDate(
         new Date(),
       )}_${generateRandomString(3)}`,
       IDType: process.env.SAFARICOM_IDTYPE!,
-      IDNumber: userInfo.value,
+      IDNumber: nationalId,
     };
   }
 
