@@ -12,6 +12,8 @@ import HomePage from '../../../pages/Home/HomePage';
 import LoginPage from '../../../pages/Login/LoginPage';
 import TableModule from '../../../pages/Table/TableModule';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+
 test.beforeEach(async ({ page }) => {
   // Reset the DB to the required state
   const response = await resetDB(SeedScript.nlrcMultiple);
@@ -40,7 +42,7 @@ test.skip('[27614] Quick filter through available PAs and apply bulk action', as
   const homePage = new HomePage(page);
 
   await test.step('Should open popup to send message to correct amount of filtered PAs', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
 
     await table.quickFilter('succeed');
     // Really bad solution to tackle flickering issue of FE

@@ -11,6 +11,9 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -34,7 +37,7 @@ test('[27411] Open PA profile page', async ({ page }) => {
 
   await test.step('Should display correct amount of runnig projects and open PAs for registration', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
@@ -49,8 +52,6 @@ test('[27411] Open PA profile page', async ({ page }) => {
   });
 
   await test.step('Should validate PA profile opened succesfully', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
   });
 });

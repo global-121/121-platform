@@ -15,6 +15,28 @@ import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/e
 
 const programIdOCW = 3;
 const OcwProgramId = programIdOCW;
+const save = englishTranslations.common.save;
+const ok = englishTranslations.common.ok;
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const paymentFilterByTab =
+  englishTranslations['registration-details']['activity-overview'].filters
+    .message;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const arabic =
+  englishTranslations.page.program['program-people-affected'].language.ar;
+const whatsappGenericMessageNL =
+  messageTemplateNlrc.whatsappGenericMessage.message.nl;
+const whatsappGenericMessageAr =
+  messageTemplateNlrc.whatsappGenericMessage.message.ar;
+const selectFieldDropdownName =
+  englishTranslations.page.program['program-people-affected']['action-inputs'][
+    'placeholder-typeahead-placeholder'
+  ];
+const firstNameOption = NLRCProgram.programCustomAttributes[0].label.en;
+const addPersonalizedFieldName =
+  englishTranslations.page.program['program-people-affected']['action-inputs'][
+    'add-placeholder'
+  ];
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -38,16 +60,15 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page and change the language to Arabic', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.selectTable('Payment');
     await table.clickOnPaNumber(1);
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
     await registration.changePreferredLanguage({
-      language:
-        englishTranslations.page.program['program-people-affected'].language.ar,
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      language: arabic,
+      saveButtonName: save,
+      okButtonName: ok,
     });
   });
 
@@ -55,46 +76,32 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.applyBulkAction(BulkActionId.sendMessage);
     await table.selectFieldsforCustomMessage({
-      selectFieldDropdownName:
-        englishTranslations.page.program['program-people-affected'][
-          'action-inputs'
-        ]['placeholder-typeahead-placeholder'],
-      firstNameOption: NLRCProgram.programCustomAttributes[0].label.en,
-      addPersonalizedFieldName:
-        englishTranslations.page.program['program-people-affected'][
-          'action-inputs'
-        ]['add-placeholder'],
-      okButtonName: englishTranslations.common.ok,
+      selectFieldDropdownName: selectFieldDropdownName,
+      firstNameOption: firstNameOption,
+      addPersonalizedFieldName: addPersonalizedFieldName,
+      okButtonName: ok,
     });
   });
 
   await test.step('Validate messages are sent both in Arabic and Dutch', async () => {
     // Validate Arabic message
     await table.clickOnPaNumber(1);
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
-    await registration.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .message,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
+    await registration.openActivityOverviewTab(paymentFilterByTab);
     // Waiting for the request to finalize
     await page.waitForTimeout(2000);
     await page.reload();
     await page.waitForLoadState('networkidle');
     // --------------- This is not a good method but given the circumastances no other wanted to work-------------------------
     await registration.validateMessageContent({
-      messageContent: messageTemplateNlrc.whatsappGenericMessage.message.ar,
+      messageContent: whatsappGenericMessageAr,
     });
     // Validate Dutch message
     await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.clickOnPaNumber(2);
-    await registration.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .message,
-    );
+    await registration.openActivityOverviewTab(paymentFilterByTab);
     await registration.validateMessageContent({
-      messageContent: messageTemplateNlrc.whatsappGenericMessage.message.nl,
+      messageContent: whatsappGenericMessageNL,
     });
   });
 });
