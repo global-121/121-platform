@@ -17,6 +17,7 @@ updates:
     groups:
       development:
         patterns:
+          - '@swc/*'
           - '@types/*'
           - '*eslint*'
           - '*prettier*'
@@ -45,6 +46,7 @@ updates:
     groups:
       development:
         patterns:
+          - '@swc/*'
           - '@types/*'
           - '*eslint*'
           - '*prettier*'
