@@ -1,6 +1,6 @@
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-wallet-status.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
-import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
