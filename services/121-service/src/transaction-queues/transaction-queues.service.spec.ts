@@ -2,11 +2,11 @@ import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '@121-service/src/payments/enum/queue.names.enum';
+import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
-import { IntersolveVisaTransactionJobDto } from './dto/intersolve-visa-transaction-job.dto';
-import { TransactionQueuesService } from './transaction-queues.service';
 
 const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
   {

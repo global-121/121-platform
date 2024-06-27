@@ -1,21 +1,21 @@
-preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName,phoneNumber,fspName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-card-CARD_OK,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-card-CARD_BLOCKED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-card-CARD_EXPIRED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-card-SUSPECTED_FRAUD,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-card-CARD_LOST,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-get-card-CARD_CLOSED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-load-balance,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-spent-4000,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-current-balance-14000,14155238876,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-current-balance-8000-mock-spent-7000,14155238856,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-fail-create-order,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
-en,1,,Test,mock-address-city-fail,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,fspName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+en,1,,Test succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-card-CARD_OK,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-card-CARD_BLOCKED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-card-CARD_EXPIRED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-card-SUSPECTED_FRAUD,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-card-CARD_LOST,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-get-card-CARD_CLOSED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-load-balance,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-spent-4000,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-current-balance-14000,14155238876,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-current-balance-8000-mock-spent-7000,14155238856,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-fail-create-order,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+en,1,,Test mock-address-city-fail,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
