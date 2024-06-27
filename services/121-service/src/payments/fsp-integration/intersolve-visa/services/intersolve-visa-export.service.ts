@@ -2,9 +2,9 @@ import {
   ExportCardsDto,
   ExportWalletData,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
+import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { Injectable } from '@nestjs/common';
-import { IntersolveVisaChildWalletScopedRepository } from '../repositories/intersolve-visa-child-wallet.scoped.repository';
 
 // TODO: REFACTOR: IMO Move into IntersolveVisaService. Make sure it does not depend on anything outside of this Module.
 
