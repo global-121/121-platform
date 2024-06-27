@@ -4,6 +4,7 @@ name: 'Deploy [staging] All'
 
 permissions:
   actions: read
+  deployments: write
 
 on:
   workflow_call:
