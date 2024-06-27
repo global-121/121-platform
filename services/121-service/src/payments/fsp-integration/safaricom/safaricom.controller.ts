@@ -1,6 +1,7 @@
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('callbacks/safaricom')
 // TODO: REFACTOR: rename to /callbacks/safaricom
@@ -8,6 +9,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class SafaricomController {
   public constructor(private safaricomService: SafaricomService) {}
 
+  @SkipThrottle()
   @ApiOperation({
     summary:
       'Notification callback used by Safaricom to notify status of payment to us.',
