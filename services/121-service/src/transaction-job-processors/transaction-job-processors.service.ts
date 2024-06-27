@@ -63,25 +63,31 @@ export class TransactionJobProcessorsService {
     if (!financialServiceProvider) {
       throw new Error('Financial Service Provider not found');
     }
-    await Promise.all(
-      Object.keys(input).map(async (key) => {
-        if (key !== 'addressHouseNumberAddition' && input[key] === undefined) {
-          // TODO: Group all missing keys and throw them at once instead of throwing only one
-          const errorText = `Property ${key} is undefined`;
-          await this.createTransaction({
-            amount: input.transactionAmount,
-            registration: registration,
-            financialServiceProviderId: financialServiceProvider.id,
-            programId: input.programId,
-            paymentNumber: input.paymentNumber,
-            userId: input.userId,
-            status: StatusEnum.error,
-            errorMessage: errorText,
-          });
-          throw new Error(errorText);
-        }
-      }),
-    );
+
+    // Check if all required properties are present. If not, create a failed transaction and throw an error.
+    for (const key in input) {
+      if (key === 'addressHouseNumberAddition') continue; // Skip non-required property
+
+      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
+      if (
+        input[key] === null ||
+        input[key] === undefined ||
+        input[key] === ''
+      ) {
+        const errorText = `Property ${key} is undefined`;
+        await this.createTransaction({
+          amount: input.transactionAmount,
+          registration: registration,
+          financialServiceProviderId: financialServiceProvider.id,
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
+          status: StatusEnum.error,
+          errorMessage: errorText,
+        });
+        throw new Error(errorText);
+      }
+    }
 
     const intersolveVisaConfig =
       await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
@@ -113,7 +119,7 @@ export class TransactionJobProcessorsService {
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
-          reference: input.referenceId,
+          reference: input.referenceId, // TODO: Not used at the moment, see Task where we find out how to use references in Intersolve's API
           name: input.name!,
           addressStreet: input.addressStreet!,
           addressHouseNumber: input.addressHouseNumber!,

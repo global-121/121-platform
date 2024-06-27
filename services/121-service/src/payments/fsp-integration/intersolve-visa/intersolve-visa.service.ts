@@ -188,7 +188,6 @@ export class IntersolveVisaService
 
       const issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
-        reference: intersolveVisaCustomer.holderId, // TODO: Why do we put the holderId here? Is that a requirement of the Intersolve API?
         activate: true, // Parent Wallets are always created activated
       });
 
@@ -233,7 +232,6 @@ export class IntersolveVisaService
       // If not, create child wallet
       const issueTokenDto: IssueTokenDto = {
         brandCode: input.brandCode,
-        reference: intersolveVisaCustomer.holderId, // TODO: Why do we put the holderId here? Is that a requirement of the Intersolve API?
         activate: false, // Child Wallets are always created deactivated
       };
 
@@ -250,6 +248,8 @@ export class IntersolveVisaService
       newIntersolveVisaChildWallet.walletStatus =
         issueTokenResult.status as IntersolveVisaTokenStatus;
       newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
+      intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets =
+        [];
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.push(
         await this.intersolveVisaChildWalletScopedRepository.save(
           newIntersolveVisaChildWallet,
@@ -352,7 +352,6 @@ export class IntersolveVisaService
         fromTokenCode: input.fundingTokenCode,
         toTokenCode:
           intersolveVisaCustomer.intersolveVisaParentWallet.tokenCode,
-        operationReference: input.reference,
         amount: transferAmount,
       });
       returnData.transferDone = true;

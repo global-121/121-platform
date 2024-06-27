@@ -1,7 +1,7 @@
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
+import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
-import { TransactionJobProcessorsService } from '../transaction-job-processors.service';
 
 const mockPaymentJob = {
   id: 11,
