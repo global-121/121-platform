@@ -116,11 +116,11 @@ updates:
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
-      dependencies:
-        patterns:
-          - "*"
       angular:
         patterns:
           - '@angular/*'
           - '@angular-devkit/*'
           - 'zone.js'
+      dependencies:
+        patterns:
+          - '*'
