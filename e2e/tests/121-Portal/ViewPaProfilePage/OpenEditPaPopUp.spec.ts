@@ -11,6 +11,9 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -33,7 +36,7 @@ test('[27493] Open the edit PA popup', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Should open first uploaded PA', async () => {
@@ -41,9 +44,7 @@ test('[27493] Open the edit PA popup', async ({ page }) => {
   });
 
   await test.step('Should open PA profile and open edit pop-up', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
   });

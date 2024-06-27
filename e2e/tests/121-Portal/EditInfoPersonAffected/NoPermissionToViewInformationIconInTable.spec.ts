@@ -9,6 +9,8 @@ import { registrationsOCW } from '@121-service/test/registrations/pagination/pag
 import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -30,7 +32,7 @@ test('[28036] No permission to view information', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Validate information icons are not available in the table', async () => {

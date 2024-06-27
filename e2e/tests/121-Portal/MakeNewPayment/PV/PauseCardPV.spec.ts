@@ -13,6 +13,11 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcPVProgrammeTitle = NLRCProgramPV.titlePortal.en;
+const physicalCardTitle =
+  englishTranslations['registration-details']['physical-cards-overview'].title;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
@@ -36,29 +41,24 @@ test('[28480] Pause Visa debit cards', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgramPV.titlePortal.en);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
+    await homePage.navigateToProgramme(nlrcPVProgrammeTitle);
+    await navigationModule.navigateToProgramTab(paymentLabel);
     await table.clickOnPaNumber(1);
   });
 
   await test.step('Should Pause Visa Card and details are presented correctly with status: Paused', async () => {
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Active,
     );
     await physicalCard.pauseVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Paused,
     );
     await physicalCard.unPauseVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
-      englishTranslations['registration-details']['physical-cards-overview']
-        .title,
+      physicalCardTitle,
       WalletCardStatus121.Active,
     );
   });

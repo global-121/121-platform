@@ -11,6 +11,16 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const ok = englishTranslations.common.ok;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const actions =
+  englishTranslations['registration-details']['activity-overview'].actions;
+const addNote =
+  englishTranslations['registration-details']['activity-overview'].action[
+    'add-note'
+  ];
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -34,7 +44,7 @@ test('[27500] Unsuccessfully add note', async ({ page }) => {
 
   await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
@@ -42,17 +52,10 @@ test('[27500] Unsuccessfully add note', async ({ page }) => {
   });
 
   await test.step('Should validate PA profile opened succesfully, adds note without content and validate that "ok" button is disabled', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
-    await registration.addNote(
-      englishTranslations['registration-details']['activity-overview'].actions,
-      englishTranslations['registration-details']['activity-overview'].action[
-        'add-note'
-      ],
-    );
+    await registration.validateHeaderToContainText(pageTitle);
+    await registration.addNote(actions, addNote);
     await registration.addEmptyNote({
-      buttonName: englishTranslations.common.ok,
+      buttonName: ok,
     });
   });
 });

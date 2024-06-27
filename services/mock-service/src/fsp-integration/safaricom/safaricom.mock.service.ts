@@ -5,6 +5,7 @@ import {
 } from '@mock-service/src/fsp-integration/safaricom/safaricom.dto';
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
 
 enum MockScenario {
@@ -24,7 +25,10 @@ export class SafaricomMockService {
   public async transfer(
     transferDto: SafaricomTransferPayload,
   ): Promise<SafaricomTransferResponseBodyDto> {
-    const mockScenario: MockScenario = MockScenario.success;
+    let mockScenario: MockScenario = MockScenario.success;
+    if (!transferDto.PartyB) {
+      mockScenario = MockScenario.otherFailure;
+    }
 
     const transferResponse = {
       ConversationID: 'AG_20191219_00005797af5d7d75f652',
@@ -36,7 +40,9 @@ export class SafaricomMockService {
           : 'Mock error message',
     };
 
-    await this.sendStatusCallback(transferResponse, mockScenario);
+    this.sendStatusCallback(transferResponse, mockScenario).catch((error) =>
+      console.log(error),
+    );
 
     return transferResponse;
   }
@@ -45,6 +51,7 @@ export class SafaricomMockService {
     transferResponse: SafaricomTransferResponseBodyDto,
     mockScenario: MockScenario,
   ): Promise<void> {
+    await setTimeout(300);
     const successStatus = {
       Result: {
         ResultType: 0,

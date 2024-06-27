@@ -8,6 +8,9 @@ inputs:
   servicePath:
     description: Location of the service code.
     required: true
+  downloadDatabaseCertificate:
+    description: Whether to download a certificate for the database-connection.
+    required: false
 
 outputs:
   build_version:
@@ -54,6 +57,7 @@ runs:
         echo "build_version=${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_OUTPUT
 
     - name: Download database certificate
+      if: ${{ inputs.downloadDatabaseCertificate }}
       shell: bash
       working-directory: ${{ inputs.servicePath }}
       run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
@@ -63,16 +67,9 @@ runs:
       working-directory: ${{ inputs.servicePath }}
       run: |
         npm prune --omit=dev --no-fund --no-audit
-        rm -r .vscode/
-        rm -r test/
-        rm -r ./*.md
-        rm .dockerignore
-        rm .eslintrc.js
-        rm .gitignore
-        rm .prettier*
-        rm Dockerfile
-        rm jest.unit.config.js
-        rm jest.e2e.config.js
+        rm -r -f .vscode/
+        rm -r -f test/
+        rm -r -f ./*.md
 
     - name: Creating ZIP package
       shell: bash

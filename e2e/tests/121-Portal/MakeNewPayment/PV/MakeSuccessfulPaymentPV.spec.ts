@@ -16,6 +16,22 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcPVProgrammeTitle = NLRCProgramPV.titlePortal.en;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
+const paymentStatus = englishTranslations.entity.payment.status.success;
+const defaultTransferValue = NLRCProgramPV.fixedTransferValue;
+const paymentFilter =
+  englishTranslations['registration-details']['activity-overview'].filters
+    .payment;
+const paymentFilterByNotification =
+  englishTranslations.entity.message['content-type']['payment-templated'];
+const messageContext =
+  englishTranslations.entity.message['content-type']['payment-voucher'];
+const messageType = englishTranslations.entity.message.type.whatsapp;
+const paymentFilterByTab =
+  englishTranslations['registration-details']['activity-overview'].filters
+    .message;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
@@ -39,18 +55,14 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   const homePage = new HomePage(page);
   const registrationPage = new RegistrationDetails(page);
   const paymentsPage = new PaymentsPage(page);
-
   const numberOfPas = registrationsPV.length;
-  const defaultTransferValue = NLRCProgramPV.fixedTransferValue;
   const maxTransferValue = registrationsPV.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgramPV.titlePortal.en);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
+    await homePage.navigateToProgramme(nlrcPVProgrammeTitle);
+    await navigationModule.navigateToProgramTab(paymentLabel);
   });
 
   await test.step('Do payment #1', async () => {
@@ -67,26 +79,18 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
 
     await registrationPage.validateQuantityOfActivity({ quantity: 8 });
 
-    await registrationPage.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .payment,
-    );
+    await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
-      paymentLabel: englishTranslations.page.program.tab.payment.label,
+      paymentLabel: paymentLabel,
       paymentNumber: 1,
-      statusLabel: englishTranslations.entity.payment.status.success,
+      statusLabel: paymentStatus,
     });
 
-    await registrationPage.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .message,
-    );
+    await registrationPage.openActivityOverviewTab(paymentFilterByTab);
     await registrationPage.validateSentMessagesTab({
-      messageNotification:
-        englishTranslations.entity.message['content-type']['payment-templated'],
-      messageContext:
-        englishTranslations.entity.message['content-type']['payment-voucher'],
-      messageType: englishTranslations.entity.message.type.whatsapp,
+      messageNotification: paymentFilterByNotification,
+      messageContext: messageContext,
+      messageType: messageType,
     });
   });
 });

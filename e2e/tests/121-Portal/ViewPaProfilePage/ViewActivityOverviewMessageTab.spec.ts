@@ -11,6 +11,14 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const paymentFilterByMessage =
+  englishTranslations.entity.message['content-type']['generic-templated'];
+const messageContext =
+  englishTranslations.entity.message['content-type'].payment;
+const messageType = englishTranslations.entity.message.type.whatsapp;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -33,21 +41,17 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.clickOnPaNumber(1);
   });
 
   await test.step('Validate the "Messages" tab on the PA Activity Overview table to Contain WhatsApp notifications and correct message content', async () => {
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
+    await registration.validateHeaderToContainText(pageTitle);
     await registration.openActivityOverviewTab('Messages');
     await registration.validateSentMessagesTab({
-      messageNotification:
-        englishTranslations.entity.message['content-type']['generic-templated'],
-      messageContext:
-        englishTranslations.entity.message['content-type'].payment,
-      messageType: englishTranslations.entity.message.type.whatsapp,
+      messageNotification: paymentFilterByMessage,
+      messageContext: messageContext,
+      messageType: messageType,
     });
   });
 });

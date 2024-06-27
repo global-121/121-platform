@@ -13,6 +13,12 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const save = englishTranslations.common.save;
+const ok = englishTranslations.common.ok;
+const jumboFspName = fspIntersolveJumbo.displayName.en;
+const visaFspName = visaFspIntersolve.displayName.en;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -37,7 +43,7 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   let rowNumber: number;
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Open information pop-up', async () => {
@@ -46,17 +52,17 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
 
   await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {
     await piiPopUp.updatefinancialServiceProvider({
-      fspNewName: visaFspIntersolve.displayName.en,
-      fspOldName: fspIntersolveJumbo.displayName.en,
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      fspNewName: visaFspName,
+      fspOldName: jumboFspName,
+      saveButtonName: save,
+      okButtonName: ok,
     });
   });
 
   await test.step('Validate Finacial service provider be updated', async () => {
     await table.validateFspCell({
       rowNumber: rowNumber,
-      fspName: visaFspIntersolve.displayName.en,
+      fspName: visaFspName,
     });
   });
 });

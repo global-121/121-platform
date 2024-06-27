@@ -16,6 +16,21 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const paymentLabel = englishTranslations.page.program.tab.payment.label;
+const paymentStatus = englishTranslations.entity.payment.status.success;
+const paymentFilter =
+  englishTranslations['registration-details']['activity-overview'].filters
+    .payment;
+const paymentFilterByMessage =
+  englishTranslations.entity.message['content-type']['generic-templated'];
+const messageContext =
+  englishTranslations.entity.message['content-type'].payment;
+const messageType = englishTranslations.entity.message.type.whatsapp;
+const paymentFilterByTab =
+  englishTranslations['registration-details']['activity-overview'].filters
+    .message;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -47,10 +62,8 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
   }, 0);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
-    await navigationModule.navigateToProgramTab(
-      englishTranslations.page.program.tab.payment.label,
-    );
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
+    await navigationModule.navigateToProgramTab(paymentLabel);
   });
 
   await test.step('Do payment #1', async () => {
@@ -67,26 +80,18 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
 
     await registrationPage.validateQuantityOfActivity({ quantity: 5 });
 
-    await registrationPage.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .payment,
-    );
+    await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
-      paymentLabel: englishTranslations.page.program.tab.payment.label,
+      paymentLabel: paymentLabel,
       paymentNumber: 1,
-      statusLabel: englishTranslations.entity.payment.status.success,
+      statusLabel: paymentStatus,
     });
 
-    await registrationPage.openActivityOverviewTab(
-      englishTranslations['registration-details']['activity-overview'].filters
-        .message,
-    );
+    await registrationPage.openActivityOverviewTab(paymentFilterByTab);
     await registrationPage.validateSentMessagesTab({
-      messageNotification:
-        englishTranslations.entity.message['content-type']['generic-templated'],
-      messageContext:
-        englishTranslations.entity.message['content-type'].payment,
-      messageType: englishTranslations.entity.message.type.whatsapp,
+      messageNotification: paymentFilterByMessage,
+      messageContext: messageContext,
+      messageType: messageType,
     });
   });
 });

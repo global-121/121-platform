@@ -12,6 +12,28 @@ import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const pageTitle = englishTranslations['registration-details'].pageTitle;
+const actions =
+  englishTranslations['registration-details']['activity-overview'].actions;
+const addNote =
+  englishTranslations['registration-details']['activity-overview'].action[
+    'add-note'
+  ];
+const notePlaceHolder =
+  englishTranslations['registration-details']['activity-overview'][
+    'add-note-popup'
+  ]['note-textarea-placeholder'];
+
+const noteVisible =
+  englishTranslations['registration-details']['activity-overview'][
+    'add-note-popup'
+  ]['note-visible'];
+
+const columnNote =
+  englishTranslations.page.program['program-people-affected'].column.note;
+const ok = englishTranslations.common.ok;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -35,7 +57,7 @@ test('[27499] Successfully add note', async ({ page }) => {
 
   await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.validateNumberOfActivePrograms(2);
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
@@ -44,34 +66,18 @@ test('[27499] Successfully add note', async ({ page }) => {
 
   await test.step('Should validate PA profile opened succesfully, add a note and validate new note log tile', async () => {
     const userName = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!;
-    await registration.validateHeaderToContainText(
-      englishTranslations['registration-details'].pageTitle,
-    );
-    await registration.addNote(
-      englishTranslations['registration-details']['activity-overview'].actions,
-      englishTranslations['registration-details']['activity-overview'].action[
-        'add-note'
-      ],
-    );
+    await registration.validateHeaderToContainText(pageTitle);
+    await registration.addNote(actions, addNote);
     await registration.writeNote({
-      placeholder:
-        englishTranslations['registration-details']['activity-overview'][
-          'add-note-popup'
-        ]['note-textarea-placeholder'],
-      note: englishTranslations['registration-details']['activity-overview'][
-        'add-note-popup'
-      ]['note-visible'],
-      buttonName: englishTranslations.common.ok,
+      placeholder: notePlaceHolder,
+      note: noteVisible,
+      buttonName: ok,
     });
     await registration.validateNoteTile({
-      changeTitle:
-        englishTranslations.page.program['program-people-affected'].column.note,
+      changeTitle: columnNote,
       userName: userName,
       date: await Helpers.getTodaysDate(),
-      noteContent:
-        englishTranslations['registration-details']['activity-overview'][
-          'add-note-popup'
-        ]['note-visible'],
+      noteContent: noteVisible,
     });
   });
 });

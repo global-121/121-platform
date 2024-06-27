@@ -12,11 +12,12 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
       development:
         patterns:
+          - '@swc/*'
           - '@types/*'
           - '*eslint*'
           - '*prettier*'
@@ -40,11 +41,12 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
       development:
         patterns:
+          - '@swc/*'
           - '@types/*'
           - '*eslint*'
           - '*prettier*'
@@ -62,9 +64,9 @@ updates:
   - package-ecosystem: npm
     directory: '/interfaces/Portal'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
       development:
@@ -105,3 +107,20 @@ updates:
         update-types:
           ['version-update:semver-major', 'version-update:semver-minor']
       - dependency-name: 'zone.js'
+
+  - package-ecosystem: npm
+    directory: '/interfaces/Portalicous'
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - 'zone.js'
+      dependencies:
+        patterns:
+          - '*'

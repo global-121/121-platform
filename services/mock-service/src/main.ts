@@ -2,9 +2,9 @@ import { ApplicationModule } from '@mock-service/src/app.module';
 import {
   APP_FAVICON,
   APP_TITLE,
+  APP_VERSION,
   DEVELOPMENT,
   PORT,
-  ROOT_URL,
   SWAGGER_CUSTOM_CSS,
 } from '@mock-service/src/config';
 import {
@@ -39,7 +39,7 @@ async function bootstrap(): Promise<void> {
 
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
-    .addServer(ROOT_URL)
+    .setVersion(APP_VERSION)
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {

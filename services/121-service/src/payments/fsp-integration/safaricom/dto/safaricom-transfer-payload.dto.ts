@@ -11,7 +11,7 @@ export class SafaricomTransferPayload {
   public Occassion: string;
   public OriginatorConversationID: string;
   public IDType: string;
-  public IDNumber: string;
+  public IDNumber: string | undefined;
   public conversationId?: string;
   public status?: string;
   public requestResult?: Record<string, unknown>;

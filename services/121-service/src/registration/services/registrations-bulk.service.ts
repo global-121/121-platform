@@ -397,6 +397,7 @@ export class RegistrationsBulkService {
         order: {
           id: 'ASC',
         },
+        loadEagerRelations: false,
       });
 
     const statusKey: keyof RegistrationViewEntity = 'status';

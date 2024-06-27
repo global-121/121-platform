@@ -11,6 +11,15 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
+const save = englishTranslations.common.save;
+const ok = englishTranslations.common.ok;
+const noneEmptyPhoneNumberAlert =
+  englishTranslations['page'].program['program-people-affected'][
+    'edit-person-affected-popup'
+  ].properties.error['not-empty'];
+const alertPattern = englishTranslations.common['error-with-message'];
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -32,14 +41,13 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   const homePage = new HomePage(page);
   const piiPopUp = new PersonalInformationPopUp(page);
 
-  const alertPattern = englishTranslations.common['error-with-message'];
   function createAlertMessage(pattern: string, phoneNumber: string): string {
     const error = `The value '${phoneNumber}' given for the attribute 'phoneNumber' does not have the correct format for type 'tel'`;
     return pattern.replace('{{error}}', error);
   }
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
   });
 
   await test.step('Open information pop-up', async () => {
@@ -50,14 +58,9 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
     const phoneNumber = '';
     await piiPopUp.updatePhoneNumber({
       phoneNumber: phoneNumber,
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
-      alert: alertPattern.replace(
-        '{{error}}',
-        englishTranslations['page'].program['program-people-affected'][
-          'edit-person-affected-popup'
-        ].properties.error['not-empty'],
-      ),
+      saveButtonName: save,
+      okButtonName: ok,
+      alert: alertPattern.replace('{{error}}', noneEmptyPhoneNumberAlert),
     });
   });
 
@@ -66,8 +69,8 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
     const alertMessage = createAlertMessage(alertPattern, phoneNumber);
     await piiPopUp.updatePhoneNumber({
       phoneNumber: phoneNumber,
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      saveButtonName: save,
+      okButtonName: ok,
       alert: alertMessage,
     });
   });
@@ -77,8 +80,8 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
     const alertMessage = createAlertMessage(alertPattern, phoneNumber);
     await piiPopUp.updatePhoneNumber({
       phoneNumber: phoneNumber,
-      saveButtonName: englishTranslations.common.save,
-      okButtonName: englishTranslations.common.ok,
+      saveButtonName: save,
+      okButtonName: ok,
       alert: alertMessage,
     });
   });
