@@ -142,15 +142,12 @@ export class MessageIncomingService {
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     if (
-      callbackData.MessageStatus === TwilioStatus.delivered ||
-      callbackData.MessageStatus === TwilioStatus.failed
+      (callbackData.MessageStatus === TwilioStatus.delivered ||
+        callbackData.MessageStatus === TwilioStatus.failed) &&
+      callbackData.SmsSid
     ) {
-      const sidCondition = callbackData.SmsSid
-        ? Equal(callbackData.SmsSid)
-        : undefined;
-
       const tryWhatsapp = await this.tryWhatsappRepository.findOne({
-        where: sidCondition ? { sid: sidCondition } : {},
+        where: { sid: Equal(callbackData.SmsSid) },
         relations: ['registration'],
       });
       if (tryWhatsapp) {

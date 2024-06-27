@@ -291,12 +291,9 @@ export class SeedHelper {
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
-    const adminEmail = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN
-      ? Equal(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN)
-      : undefined;
     const adminUser = await userRepository.findOneOrFail({
       where: {
-        username: adminEmail,
+        username: Equal(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!),
       },
     });
     await this.assignAidworker(adminUser.id, programId, [

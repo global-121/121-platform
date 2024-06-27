@@ -200,13 +200,12 @@ export class WhatsappService {
   public async storeTemplateTestResult(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const sidCondition = callbackData.SmsSid
-      ? Equal(callbackData.SmsSid)
-      : undefined;
-
+    if (!callbackData.SmsSid) {
+      throw new HttpException('SmsSid not provided', HttpStatus.BAD_REQUEST);
+    }
     const tryWhatsappTemplateEntity =
       await this.whatsappTemplateTestRepository.findOne({
-        where: sidCondition ? { sid: sidCondition } : {},
+        where: { sid: callbackData.SmsSid },
       });
     if (tryWhatsappTemplateEntity) {
       if (!tryWhatsappTemplateEntity.succes) {
