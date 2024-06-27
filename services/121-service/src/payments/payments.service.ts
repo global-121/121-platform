@@ -807,7 +807,7 @@ export class PaymentsService {
       await this.programRepository.findOneOrFail({
         where: {
           id: Equal(programId),
-          financialServiceProviders: { hasReconciliation: true },
+          financialServiceProviders: { hasReconciliation: Equal(true) },
         },
         relations: ['financialServiceProviders'],
       });

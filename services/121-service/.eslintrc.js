@@ -67,13 +67,13 @@ module.exports = {
           'error',
           {
             selector:
-              "ObjectExpression > .properties[key.name='where'] > .value.properties > .value:not(CallExpression[callee.name='Equal'])",
+              "ObjectExpression > .properties[key.name='where'] > .value > .properties:not(:has(CallExpression)), ObjectExpression > .properties[key.name='where'] > .value > .properties > .value > .properties:not(:has(CallExpression))",
             message:
               'Unsafe where condition, that can leak data. Use Equal() instead.',
           },
           {
             selector:
-              "ObjectExpression > .properties[key.name='andWhere'] > .value.properties > .value:not(CallExpression[callee.name='Equal'])",
+              "ObjectExpression > .properties[key.name='andWhere'] > .value > .properties:not(:has(CallExpression)), ObjectExpression > .properties[key.name='where'] > .value > .properties > .value > .properties:not(:has(CallExpression))",
             message:
               'Unsafe where condition, that can leak data. Use Equal() instead.',
           },

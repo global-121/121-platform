@@ -205,7 +205,7 @@ export class WhatsappService {
     }
     const tryWhatsappTemplateEntity =
       await this.whatsappTemplateTestRepository.findOne({
-        where: { sid: callbackData.SmsSid },
+        where: { sid: Equal(callbackData.SmsSid) },
       });
     if (tryWhatsappTemplateEntity) {
       if (!tryWhatsappTemplateEntity.succes) {
