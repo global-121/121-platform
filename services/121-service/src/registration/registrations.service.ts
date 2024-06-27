@@ -57,6 +57,11 @@ import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Repository } from 'typeorm';
 
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+
 @Injectable()
 export class RegistrationsService {
   @InjectRepository(UserEntity)
@@ -894,5 +899,36 @@ export class RegistrationsService {
       - Put it in the MessageQueue.
       - See to be removed method: IntersolveVisaService.sendMessageReissueCard()
     */
+  }
+
+  public async pauseCardAndSendMessage(
+    referenceId: string,
+    tokenCode: string,
+    pause: boolean,
+  ): Promise<IntersolveVisaChildWalletEntity> {
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId(
+        referenceId,
+      );
+    if (!registration) {
+      throw new HttpException(
+        `Registration not found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
+      tokenCode,
+      pause,
+    );
+    await this.queueMessageService.addMessageToQueue({
+      registration: registration,
+      messageTemplateKey: pause
+        ? ProgramNotificationEnum.pauseVisaCard
+        : ProgramNotificationEnum.unpauseVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
+    return updatedWallet;
   }
 }
