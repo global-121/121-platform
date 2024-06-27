@@ -14,12 +14,6 @@ import { AddressDto } from '@121-service/src/payments/fsp-integration/intersolve
 import { CreateCustomerResponseExtensionDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-response.dto';
 import { IssueTokenDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token.dto';
 import {
-  BlockReasonEnum,
-  IntersolveBlockWalletDto,
-  IntersolveBlockWalletResponseDto,
-  UnblockReasonEnum,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
-import {
   GetWalletDetailsResponseDto,
   GetWalletsResponseDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
@@ -515,83 +509,6 @@ export class IntersolveVisaService
     return { registration: registration, visaCustomer: visaCustomer };
   }
 
-  // TODO: Fix and this function as code it depends on has changed with the Visa re-implementation.
-  // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
-  public async toggleBlockWallet(
-    tokenCode: string,
-    block: boolean,
-  ): Promise<IntersolveBlockWalletResponseDto> {
-    const payload: IntersolveBlockWalletDto = {
-      reasonCode: block
-        ? BlockReasonEnum.BLOCK_GENERAL // If using 'TOKEN_DISABLED' the wallet will supposably be blocked forever
-        : UnblockReasonEnum.UNBLOCK_GENERAL,
-    };
-    const result = await this.intersolveVisaApiService.toggleBlockWallet({
-      tokenCode,
-      payload,
-      block,
-    });
-    if (
-      this.isSuccessResponseStatus(result.status) ||
-      (result.status === 405 &&
-        result.data?.code &&
-        ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
-          result.data.code,
-        ))
-    ) {
-      await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
-        { tokenCode: tokenCode },
-        { isTokenBlocked: block },
-      );
-    }
-
-    return result;
-  }
-
-  // TODO: Fix and this function as code it depends on has changed with the Visa re-implementation.
-  // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
-  public async toggleBlockWalletNotification(
-    tokenCode: string,
-    block: boolean,
-    programId: number,
-  ): Promise<IntersolveBlockWalletResponseDto> {
-    const qb = this.intersolveVisaParentWalletScopedRepository
-      .createQueryBuilder('wallet')
-      .leftJoinAndSelect(
-        'wallet.intersolveVisaCustomer',
-        'intersolveVisaCustomer',
-      )
-      .leftJoinAndSelect('intersolveVisaCustomer.registration', 'registration')
-      .andWhere('wallet.tokenCode = :tokenCode', { tokenCode });
-    const wallet = await qb.getOne();
-
-    if (
-      !wallet ||
-      !wallet.intersolveVisaCustomer ||
-      !wallet.intersolveVisaCustomer.registration ||
-      wallet.intersolveVisaCustomer.registration.programId !== programId
-    ) {
-      const errors = `No wallet found with tokenCode ${tokenCode}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const result = await this.toggleBlockWallet(tokenCode, block);
-
-    let notificationKey: string;
-    block
-      ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
-      : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
-
-    await this.queueMessageService.addMessageToQueue({
-      registration: wallet.intersolveVisaCustomer.registration,
-      messageTemplateKey: notificationKey,
-      messageContentType: MessageContentType.custom,
-      messageProcessType:
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-    });
-    return result;
-  }
-
   // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
   private createCustomerAddressPayload(
     paymentDetails: PaymentDetailsDto,
@@ -747,16 +664,6 @@ export class IntersolveVisaService
     });
   }
 
-  private async tryToBlockWallet(tokenCode: string | null): Promise<void> {
-    if (tokenCode) {
-      try {
-        await this.toggleBlockWallet(tokenCode, true);
-      } catch (e) {
-        console.log('error: ', e);
-      }
-    }
-  }
-
   // TODO: Re-implement and refactor this function according to the new Visa Integration Manual.
   public async updateVisaDebitWalletDetails(): Promise<void> {
     // NOTE: This currently happens for all the Visa Wallets across programs/instances
@@ -804,5 +711,21 @@ export class IntersolveVisaService
     } else {
       return 0;
     }
+  }
+
+  public async pauseCardOrThrow(
+    tokenCode: string,
+    pause: boolean,
+  ): Promise<IntersolveVisaChildWalletEntity> {
+    const wallet =
+      await this.intersolveVisaChildWalletScopedRepository.findOneOrFail({
+        where: { tokenCode: Equal(tokenCode) },
+      });
+    if (wallet.isTokenBlocked === pause) {
+      throw new Error(`Token is already ${pause ? 'blocked' : 'unblocked'}`);
+    }
+    await this.intersolveVisaApiService.setTokenBlocked(tokenCode, pause);
+    wallet.isTokenBlocked = pause;
+    return await this.intersolveVisaChildWalletScopedRepository.save(wallet);
   }
 }

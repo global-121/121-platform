@@ -35,6 +35,7 @@ import {
   HttpStatus,
   Param,
   ParseArrayPipe,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -720,8 +721,44 @@ export class RegistrationsController {
   )
   public async reissueCard(): Promise<void> {
     /* TODO: Implement this function:
-      - Add ReissueCardResponseDto, can be imported from the IntersolveVisa Module if the same DTO is used there as well? Should at least NOT be called "IntersolveBlockWalletResponseDto" as it is now.
-      - Call this.registrationsService.reissueCard()
+    - Add ReissueCardResponseDto, can be imported from the IntersolveVisa Module if the same DTO is used there as well? Should at least NOT be called "IntersolveBlockWalletResponseDto" as it is now.
+    - Call this.registrationsService.reissueCard()
     */
+  }
+
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
+  @ApiOperation({
+    summary: '[SCOPED] [EXTERNALLY USED] Block Intersolve Visa Child wallet',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiQuery({ name: 'pause', type: 'boolean' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Patch(
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/cards/:tokenCode',
+  )
+  public async pauseCardAndSendMessage(
+    @Param('programId', ParseIntPipe) _programId: number,
+    @Param('referenceId') referenceId: string,
+    @Param('tokenCode') tokenCode: string,
+    @Query('pause', ParseBoolPipe) pause: boolean,
+  ) {
+    if (pause === undefined) {
+      throw new HttpException(
+        'No pause value (true/false) provided in query parameter',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return await this.registrationsService.pauseCardAndSendMessage(
+      referenceId,
+      tokenCode,
+      pause,
+    );
   }
 }

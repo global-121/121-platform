@@ -5,6 +5,10 @@ import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integrat
 import { GetTokenResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-token-result.dto';
 import { GetTransactionInformationResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-transaction-information-result.dto';
 import {
+  BlockWalletReasonCodeEnum,
+  BlockWalletResponseDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/block-wallet-response.dto';
+import {
   AddressDto,
   CreateCustomerRequestDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-request.dto';
@@ -21,10 +25,6 @@ import { TransferResponseDto } from '@121-service/src/payments/fsp-integration/i
 import { IssueTokenResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token-result.dto';
 import { IssueTokenDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token.dto';
 import { TransferDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/transfer.dto';
-import {
-  IntersolveBlockWalletDto,
-  IntersolveBlockWalletResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
 import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
 import {
   GetTransactionsResponseDto,
@@ -615,33 +615,41 @@ export class IntersolveVisaApiService {
     return;
   }
 
-  // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
-  public async toggleBlockWallet({
-    tokenCode,
-    payload,
-    block,
-  }: {
-    tokenCode: string | null;
-    payload: IntersolveBlockWalletDto;
-    block: boolean;
-  }): Promise<IntersolveBlockWalletResponseDto> {
+  public async setTokenBlocked(
+    tokenCode: string,
+    blocked: boolean,
+  ): Promise<BlockWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
       : 'pointofsale';
     const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/${
-      block ? 'block' : 'unblock'
+      blocked ? 'block' : 'unblock'
     }`;
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
+    const payload = {
+      reasonCode: blocked
+        ? BlockWalletReasonCodeEnum.BLOCK_GENERAL
+        : BlockWalletReasonCodeEnum.UNBLOCK_GENERAL,
+    };
     const blockResult = await this.httpService.post<any>(url, payload, headers);
-    const result: IntersolveBlockWalletResponseDto = {
+
+    // Handle the response
+    const result: BlockWalletResponseDto = {
       status: blockResult.status,
       statusText: blockResult.statusText,
       data: blockResult.data,
     };
+
+    const errorMessage = this.createErrorMessageIfRequestFailed(blockResult);
+    // If the response contains errors
+    if (errorMessage) {
+      throw new Error(`BLOCK TOKEN ERROR: ${errorMessage}`);
+    }
+
     return result;
   }
 
