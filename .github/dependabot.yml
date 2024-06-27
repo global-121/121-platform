@@ -116,12 +116,9 @@ updates:
     open-pull-requests-limit: 5
     versioning-strategy: increase
     groups:
-      development:
+      dependencies:
         patterns:
-          - '@types/*'
-          - '*eslint*'
-          - '*prettier*'
-          - 'karma*'
+          - "*"
       angular:
         patterns:
           - '@angular/*'
