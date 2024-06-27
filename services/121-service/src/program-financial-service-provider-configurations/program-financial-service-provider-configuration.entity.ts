@@ -51,7 +51,7 @@ export class ProgramFinancialServiceProviderConfigurationEntity extends CascadeD
             return parsedValue;
           }
 
-          return parsedValue.toString();
+          return value;
         } catch (error) {
           return value;
         }
