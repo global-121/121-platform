@@ -68,7 +68,7 @@ export class RegistrationDataEntity extends Base121Entity {
   @Column()
   public value: string;
 
-  public async getDataName(): Promise<string | undefined> {
+  public async getDataName(): Promise<string | void> {
     const repo = AppDataSource.getRepository(RegistrationDataEntity);
     const dataWithRelations = await repo.findOneOrFail({
       where: { id: this.id },
