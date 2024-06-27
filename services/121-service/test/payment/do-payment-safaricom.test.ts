@@ -166,7 +166,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         3001,
-        Object.values(StatusEnum),
+        [StatusEnum.success, StatusEnum.error],
       );
 
       // Assert
