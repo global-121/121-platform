@@ -84,7 +84,7 @@ export class SafaricomService
   public async processQueuedPayment(jobData: SafaricomJobDto): Promise<void> {
     await this.safaricomApiService.authenticate();
 
-    // TODO Refactor this to
+    // TODO Refactor this to get all this data before the job is created at once
     const registrationData = await this.getRegistrationProgramIdAndNationalId(
       jobData.paPaymentData.referenceId,
     );
