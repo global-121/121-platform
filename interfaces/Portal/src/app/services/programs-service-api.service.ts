@@ -545,16 +545,15 @@ export class ProgramsServiceApiService {
     return res;
   }
 
-  public async toggleBlockWallet(
+  public async pauseCard(
     programId: number,
+    referenceId: string,
     tokenCode: string,
-    block: boolean,
+    pause: boolean,
   ): Promise<any> {
-    return await this.apiService.post(
+    return await this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/${
-        block ? 'block' : 'unblock'
-      }`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/cards/${tokenCode}?pause=${pause}`,
       {},
     );
   }
