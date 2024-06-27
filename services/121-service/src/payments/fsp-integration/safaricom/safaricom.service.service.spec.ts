@@ -26,13 +26,6 @@ const sendPaymentData: PaPaymentDataDto[] = [
 ];
 
 const paymentDetailsResult: SafaricomJobDto = {
-  userInfo: [
-    {
-      id: '5',
-      referenceId: 'bbe2ea6e-3711-4677-b82f-2f0081054d14',
-      value: '32121321',
-    },
-  ],
   paPaymentData: sendPaymentData[0],
   programId: programId,
   paymentNr: paymentNr,
@@ -55,10 +48,6 @@ describe('SafaricomService', () => {
   });
 
   it('should add payment to queue', async () => {
-    jest
-      .spyOn(safaricomService as any, 'getUserInfo')
-      .mockImplementation(() => paymentDetailsResult.userInfo);
-
     jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
       data: {
         id: 1,
