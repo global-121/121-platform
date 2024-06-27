@@ -2,12 +2,11 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/issue-token-request.dto';
 import {
-  IntersolveBlockWalletDto,
-  IntersolveBlockWalletResponseDto,
-  UnblockReasonEnum,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
+  BlockWalletReasonCodeEnum,
+  BlockWalletResponseDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/block-wallet-response.dto';
+import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/issue-token-request.dto';
 import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
@@ -185,7 +184,7 @@ export class MigrateVisaService {
       await this.postToggleBlockWallet(
         originalWallet.tokenCode,
         {
-          reasonCode: UnblockReasonEnum.UNBLOCK_GENERAL,
+          reasonCode: BlockWalletReasonCodeEnum.UNBLOCK_GENERAL,
         },
         false,
       );
@@ -207,7 +206,7 @@ export class MigrateVisaService {
         await this.postToggleBlockWallet(
           originalWallet.tokenCode,
           {
-            reasonCode: UnblockReasonEnum.UNBLOCK_GENERAL,
+            reasonCode: BlockWalletReasonCodeEnum.UNBLOCK_GENERAL,
           },
           true,
         );
@@ -371,9 +370,11 @@ export class MigrateVisaService {
 
   public async postToggleBlockWallet(
     tokenCode: string | null,
-    payload: IntersolveBlockWalletDto,
+    payload: {
+      reasonCode: BlockWalletReasonCodeEnum;
+    },
     block: boolean,
-  ): Promise<IntersolveBlockWalletResponseDto> {
+  ): Promise<BlockWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
@@ -386,7 +387,7 @@ export class MigrateVisaService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     const blockResult = await this.httpService.post<any>(url, payload, headers);
-    const result: IntersolveBlockWalletResponseDto = {
+    const result: BlockWalletResponseDto = {
       status: blockResult.status,
       statusText: blockResult.statusText,
       data: blockResult.data,
@@ -397,7 +398,7 @@ export class MigrateVisaService {
   public async postLinkToken(
     childTokenCode: string | null,
     parentTokenCode: string | null,
-  ): Promise<IntersolveBlockWalletResponseDto> {
+  ): Promise<BlockWalletResponseDto> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'wallet-payments'
