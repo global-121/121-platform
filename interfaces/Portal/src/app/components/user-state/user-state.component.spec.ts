@@ -8,6 +8,7 @@ import { User } from 'src/app/models/user.model';
 import { UserStateComponent } from './user-state.component';
 
 const mockUser: User = {
+  id: 42,
   username: 'test@example.org',
   permissions: {
     1: [Permission.ProgramMetricsREAD],

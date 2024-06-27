@@ -1,14 +1,7 @@
-import Permission from '../auth/permission.enum';
+import { UserController } from '@121-service/src/user/user.controller';
+import { Dto121Service } from '../shared/utils/dto-type';
 
-export class User {
-  username: string;
-  permissions: {
-    [programId: number]: Permission[];
-  };
-  expires?: string;
-  isAdmin?: boolean;
-  isEntraUser?: boolean;
-}
+export type User = Dto121Service<UserController['login']>['user'];
 
 export enum UserType {
   admin = 'admin',

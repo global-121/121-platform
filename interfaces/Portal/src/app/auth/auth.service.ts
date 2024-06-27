@@ -105,7 +105,7 @@ export class AuthService {
   }
 
   private setUserInStorage(user: User): void {
-    const userToStore: User = {
+    const userToStore: Partial<User> = {
       username: user.username,
       permissions: user.permissions,
       isAdmin: user.isAdmin,
@@ -150,6 +150,7 @@ export class AuthService {
     }
 
     return {
+      id: user.id,
       username: user.username,
       permissions: user.permissions,
       expires: user.expires ? user.expires : undefined,

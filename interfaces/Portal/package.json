@@ -26,7 +26,8 @@
     "test:all": "npm run lint && npm test",
     "test:dev": "ng test",
     "test": "ng test --configuration=ci",
-    "upgrade:angular": "ng update @angular/core @angular/cli @angular-eslint/schematics --create-commits"
+    "upgrade:angular": "ng update @angular/core @angular/cli @angular-eslint/schematics --create-commits",
+    "postinstall": "cd ../../services/121-service && npm ci --omit=optional --no-fund --no-audit"
   },
   "private": true,
   "engines": {
