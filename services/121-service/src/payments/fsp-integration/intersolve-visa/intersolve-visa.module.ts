@@ -1,5 +1,7 @@
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
+import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { IntersolveVisaController } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.controller';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -19,8 +21,6 @@ import { RegistrationDataScopedQueryService } from '@121-service/src/utils/regis
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { IntersolveVisaChildWalletEntity } from './entities/intersolve-visa-child-wallet.entity';
-import { IntersolveVisaParentWalletEntity } from './entities/intersolve-visa-parent-wallet.entity';
 
 @Module({
   imports: [

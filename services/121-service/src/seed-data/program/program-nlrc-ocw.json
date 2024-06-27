@@ -90,7 +90,7 @@
   "aboutProgram": {
     "en": "This is the OCW program."
   },
-  "fullnameNamingConvention": ["firstName", "lastName"],
+  "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "nl", "ar", "tr"],
   "enableMaxPayments": false,
   "enableScope": false,
