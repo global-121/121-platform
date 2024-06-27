@@ -4,11 +4,11 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
   patchProgram,
+  waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
@@ -161,29 +161,28 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        Object.values(StatusEnum),
+      );
+
       // Assert
-      let getTransactionsBody: any[] = [];
-      while (getTransactionsBody.length <= 0) {
-        getTransactionsBody = (
-          await getTransactions(
-            programId,
-            payment,
-            registrationSafaricom.referenceId,
-            accessToken,
-          )
-        ).body;
-        if (getTransactionsBody.length > 0) {
-          break;
-        }
-        await waitFor(2_000);
-      }
+      const getTransactionsBody = await getTransactions(
+        programId,
+        payment,
+        registrationSafaricom.referenceId,
+        accessToken,
+      );
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
-      expect(getTransactionsBody[0].errorMessage).toBe(null);
+      expect(getTransactionsBody.body[0].status).toBe(StatusEnum.success);
+      expect(getTransactionsBody.body[0].errorMessage).toBe(null);
     });
 
     it('should give error about phoneNumber', async () => {
@@ -219,29 +218,28 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        Object.values(StatusEnum),
+      );
+
       // Assert
-      let getTransactionsBody: any[] = [];
-      while (getTransactionsBody.length <= 0) {
-        getTransactionsBody = (
-          await getTransactions(
-            programId,
-            payment,
-            registrationSafaricom.referenceId,
-            accessToken,
-          )
-        ).body;
-        if (getTransactionsBody.length > 0) {
-          break;
-        }
-        await waitFor(2_000);
-      }
+      const getTransactionsBody = await getTransactions(
+        programId,
+        payment,
+        registrationSafaricom.referenceId,
+        accessToken,
+      );
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody[0].status).toBe(StatusEnum.error);
-      expect(getTransactionsBody[0].errorMessage).toBe(
+      expect(getTransactionsBody.body[0].status).toBe(StatusEnum.error);
+      expect(getTransactionsBody.body[0].errorMessage).toBe(
         'The initiator information is invalid.',
       );
     });
