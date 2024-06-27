@@ -3,8 +3,8 @@ import {
   QueueNamePayment,
 } from '@121-service/src/payments/enum/queue.names.enum';
 import {
-  getRedisSetName,
   REDIS_CLIENT,
+  getRedisSetName,
 } from '@121-service/src/payments/redis-client';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 import { Process, Processor } from '@nestjs/bull';
