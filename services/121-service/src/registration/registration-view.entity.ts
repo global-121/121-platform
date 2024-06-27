@@ -131,18 +131,12 @@ export class RegistrationViewEntity {
   @OneToMany(
     () => RegistrationDataEntity,
     (registrationData) => registrationData.registration,
-    {
-      eager: true,
-    },
   )
   public data: RegistrationDataEntity[];
 
   @OneToMany(
     () => RegistrationDataEntity,
     (registrationData) => registrationData.registration,
-    {
-      eager: true,
-    },
   )
   public dataSearchBy: RegistrationDataEntity[];
 
