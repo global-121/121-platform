@@ -29,7 +29,6 @@ const noteVisible =
   englishTranslations['registration-details']['activity-overview'][
     'add-note-popup'
   ]['note-visible'];
-
 const columnNote =
   englishTranslations.page.program['program-people-affected'].column.note;
 const ok = englishTranslations.common.ok;
