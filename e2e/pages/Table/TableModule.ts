@@ -7,6 +7,9 @@ import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const paymentLabel =
+  englishTranslations.page.program['program-people-affected'].actions.doPayment;
+
 interface PersonLeft {
   personAffected?: string;
   firstName?: string;
@@ -313,9 +316,10 @@ class TableModule {
   }
 
   async doPayment(paymentNr: number) {
-    const doPaymentLabel = englishTranslations.page.program[
-      'program-people-affected'
-    ].actions.doPayment.replace('{{paymentNr}}', paymentNr.toString());
+    const doPaymentLabel = paymentLabel.replace(
+      '{{paymentNr}}',
+      paymentNr.toString(),
+    );
 
     await this.applyBulkAction({ label: doPaymentLabel });
   }

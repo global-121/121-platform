@@ -2,7 +2,18 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
-// import Helpers from '../Helpers/Helpers';
+
+const includedLabel =
+  englishTranslations.page.program['program-payout']['make-payment'][
+    'number-included'
+  ];
+const maxAmountLabel =
+  englishTranslations.page.program['program-payout']['total-amount'];
+const succesfullLabel =
+  englishTranslations.page.program['program-payout']['result'].api;
+const ok = englishTranslations.common.ok;
+const startPayout =
+  englishTranslations.page.program['program-payout']['start-payout'];
 
 class PaymentsPage {
   readonly page: Page;
@@ -19,7 +30,7 @@ class PaymentsPage {
       'make-payment-amount',
     );
     this.paymentPopupMakePaymentButton = this.page.getByRole('button', {
-      name: englishTranslations.page.program['program-payout']['start-payout'],
+      name: startPayout,
     });
     this.paymentStatus = this.page.getByTestId('program-payout-in-progress');
     this.paymentRetryButton = this.page.getByTestId(
@@ -47,12 +58,11 @@ class PaymentsPage {
     // In case of UI delay page should refresh and do payment again with TableModule
     const tableModule = new TableModule(this.page);
     // --------------------------------------------------------------- //
-    const paIncludedLabel = englishTranslations.page.program['program-payout'][
-      'make-payment'
-    ]['number-included'].replace('{{number}}', numberOfPas.toString());
-    const maximumAmountLabel = englishTranslations.page.program[
-      'program-payout'
-    ]['total-amount'].replace(
+    const paIncludedLabel = includedLabel.replace(
+      '{{number}}',
+      numberOfPas.toString(),
+    );
+    const maximumAmountLabel = maxAmountLabel.replace(
       '{{totalCost}}',
       `EUR ${maxTransferValue.toString()}`,
     );
@@ -94,10 +104,9 @@ class PaymentsPage {
 
     // make sure the payment was successful
     // need to split up the label to avoid issues with the <br> tag
-    const paSuccessfulLabel =
-      englishTranslations.page.program['program-payout']['result'].api;
+    const paSuccessfulLabel = succesfullLabel;
     let paSuccessfulLabelChunk = paSuccessfulLabel.split('<br>')[0];
-    await expect(paSuccessfulLabelChunk).toContain('{{nrPa}}');
+    expect(paSuccessfulLabelChunk).toContain('{{nrPa}}');
     paSuccessfulLabelChunk = paSuccessfulLabelChunk.replace(
       '{{nrPa}}',
       numberOfPas.toString(),
@@ -107,7 +116,7 @@ class PaymentsPage {
     // Close popup
     await this.page
       .getByRole('button', {
-        name: englishTranslations.common.ok,
+        name: ok,
       })
       .click();
   }
@@ -149,7 +158,7 @@ class PaymentsPage {
     const paymentsNumber = Number(paymentsText);
 
     await expect(this.paymentStatus).toBeHidden();
-    await expect(paymentsNumber).toBe(payments);
+    expect(paymentsNumber).toBe(payments);
   }
 
   async validateFailedPaymentStatus({ payments }: { payments: number }) {
