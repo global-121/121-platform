@@ -24,8 +24,12 @@ export const assertArraysAreEqual = (
   }
 };
 
-export function sortByFspName(array: { fsp: string }[]): any[] {
+export function sortByFspName(array: any[]): any[] {
   return array.slice().sort((a, b) => {
+    if (typeof a === 'string' && typeof b === 'string') {
+      return a.localeCompare(b);
+    }
+
     const nameA = a.fsp;
     const nameB = b.fsp;
 
