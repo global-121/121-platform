@@ -507,10 +507,7 @@ class TableModule {
       const rowText = (await getRow.textContent())?.trim();
       const isRequiredLanguage = rowText?.includes(language);
 
-      if (
-        (language && isRequiredLanguage) ||
-        (!language && !isRequiredLanguage)
-      ) {
+      if (isRequiredLanguage) {
         await this.clickOnPaNumber(i);
         return i;
       }
