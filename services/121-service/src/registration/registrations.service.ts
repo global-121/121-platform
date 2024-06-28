@@ -62,10 +62,8 @@ import { FinancialServiceProviderQuestionRepository } from '@121-service/src/fin
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -91,7 +89,6 @@ export class RegistrationsService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly userService: UserService,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -915,6 +912,7 @@ export class RegistrationsService {
       );
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
+    /*
     const intersolveVisaQuestions =
       await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
         FinancialServiceProviderName.intersolveVisa,
@@ -993,6 +991,7 @@ export class RegistrationsService {
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     });
+    */
   }
 
   public async pauseCardAndSendMessage(
