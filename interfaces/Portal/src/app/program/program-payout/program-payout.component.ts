@@ -18,6 +18,8 @@ import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
 
+const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
+
 @Component({
   selector: 'app-program-payout',
   templateUrl: './program-payout.component.html',
@@ -295,7 +297,10 @@ export class ProgramPayoutComponent implements OnInit {
       this.exportPaymentAvailable = true;
     }
     if (Number(this.exportPaymentId) < 0) {
-      this.minPayment = 1;
+      this.minPayment =
+        this.lastPaymentId > MAX_NUMBER_OF_PAYMENTS_TO_EXPORT
+          ? this.lastPaymentId - MAX_NUMBER_OF_PAYMENTS_TO_EXPORT
+          : 1;
       this.maxPayment = this.lastPaymentId;
     } else if (this.exportPaymentId > 0) {
       this.minPayment = this.exportPaymentId;

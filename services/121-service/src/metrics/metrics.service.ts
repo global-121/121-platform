@@ -42,6 +42,8 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
+
 @Injectable()
 export class MetricsService {
   @InjectRepository(ProgramEntity)
@@ -109,6 +111,17 @@ export class MetricsService {
             HttpStatus.BAD_REQUEST,
           );
         }
+
+        if (
+          (maxPayment || 0) - (minPayment || 0) >
+          MAX_NUMBER_OF_PAYMENTS_TO_EXPORT
+        ) {
+          throw new HttpException(
+            `the difference between maxPayment & minPayment should limit to ${MAX_NUMBER_OF_PAYMENTS_TO_EXPORT}`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
         return this.getPaymentDetails(programId, minPayment, maxPayment);
       }
       case ExportType.unusedVouchers: {

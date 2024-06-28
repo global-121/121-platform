@@ -257,7 +257,7 @@
         "titlePortal": "Title portal"
       },
       "program-payout": {
-        "all-closed-payments": "All closed payments",
+        "all-closed-payments": "Last 5 closed payments",
         "calculating-transfer-amount": "Calculating total transfer amount",
         "cbe": {
           "btn": "CBE verification report",
