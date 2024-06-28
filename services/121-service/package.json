@@ -53,7 +53,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "africastalking": "^0.6.7",
     "applicationinsights": "^2.9.5",
-    "bull": "^4.12.2",
+    "bull": "^4.14.0",
     "bwip-js": "^2.0.11",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
