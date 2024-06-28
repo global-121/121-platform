@@ -37,7 +37,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 const BATCH_SIZE = 500;
@@ -211,7 +211,7 @@ export class RegistrationsImportService {
         }
       }
       const fsp = await this.fspRepository.findOneOrFail({
-        where: { fsp: record.fspName },
+        where: { fsp: Equal(record.fspName) },
       });
       registration.fsp = fsp;
       registrations.push(registration);
@@ -288,7 +288,7 @@ export class RegistrationsImportService {
   private async programHasInclusionScore(programId: number): Promise<boolean> {
     const programQuestions = await this.programQuestionRepository.find({
       where: {
-        programId: programId,
+        programId: Equal(programId),
       },
     });
     for (const q of programQuestions) {
@@ -364,7 +364,7 @@ export class RegistrationsImportService {
   ): Promise<Attribute[]> {
     return (
       await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
+        where: { program: { id: Equal(programId) } },
       })
     ).map((c) => {
       return {
@@ -389,7 +389,7 @@ export class RegistrationsImportService {
 
     const programQuestions = (
       await this.programQuestionRepository.find({
-        where: { program: { id: programId } },
+        where: { program: { id: Equal(programId) } },
       })
     ).map((c) => {
       return {

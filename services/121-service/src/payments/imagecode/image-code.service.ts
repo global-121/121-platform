@@ -8,7 +8,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import Jimp from 'jimp';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class ImageCodeService {
@@ -43,7 +43,7 @@ export class ImageCodeService {
 
     imageCodeExportVouchersEntity.registration =
       await this.registrationRepository.findOneOrFail({
-        where: { referenceId: referenceId },
+        where: { referenceId: Equal(referenceId) },
       });
     imageCodeExportVouchersEntity.voucher = intersolveVoucherEntity;
 

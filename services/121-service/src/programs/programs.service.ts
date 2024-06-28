@@ -28,7 +28,7 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryFailedError, Repository } from 'typeorm';
+import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 interface FoundProgram
   extends Omit<
@@ -81,7 +81,7 @@ export class ProgramService {
     ];
 
     const program = await this.programRepository.findOne({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: relations,
     });
     if (!program) {
@@ -92,10 +92,10 @@ export class ProgramService {
     // Program attributes and questions are queried separately because the performance is bad when using relations
     program.programCustomAttributes =
       await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
+        where: { program: { id: Equal(programId) } },
       });
     program.programQuestions = await this.programQuestionRepository.find({
-      where: { program: { id: programId } },
+      where: { program: { id: Equal(programId) } },
     });
 
     program.editableAttributes =
@@ -164,7 +164,7 @@ export class ProgramService {
     for (const fsp of programData.financialServiceProviders) {
       const fspEntity =
         await this.financialServiceProviderRepository.findOneOrFail({
-          where: { fsp: fsp.fsp },
+          where: { fsp: Equal(fsp.fsp) },
           relations: ['questions'],
         });
       for (const question of fspEntity.questions) {
@@ -272,7 +272,7 @@ export class ProgramService {
       savedProgram.financialServiceProviders = [];
       for (const fspItem of programData.financialServiceProviders) {
         const fsp = await this.financialServiceProviderRepository.findOne({
-          where: { fsp: fspItem.fsp },
+          where: { fsp: Equal(fspItem.fsp) },
         });
         if (!fsp) {
           const errors = `Create program error: No fsp found with name ${fspItem.fsp}`;
@@ -353,7 +353,7 @@ export class ProgramService {
           )
         ) {
           const fsp = await this.financialServiceProviderRepository.findOne({
-            where: { fsp: fspItem.fsp },
+            where: { fsp: Equal(fspItem.fsp) },
           });
           if (!fsp) {
             const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
@@ -459,7 +459,10 @@ export class ProgramService {
   ): Promise<ProgramCustomAttributeEntity> {
     const customAttribute = await this.programCustomAttributeRepository.findOne(
       {
-        where: { id: customAttributeId, programId: programId },
+        where: {
+          id: Equal(customAttributeId),
+          programId: Equal(programId),
+        },
       },
     );
     if (!customAttribute) {
@@ -580,8 +583,8 @@ export class ProgramService {
   ): Promise<ProgramQuestionEntity> {
     const programQuestion = await this.programQuestionRepository.findOne({
       where: {
-        id: programQuestionId,
-        programId: programId,
+        id: Equal(programQuestionId),
+        programId: Equal(programId),
       },
     });
     if (!programQuestion) {
@@ -619,7 +622,7 @@ export class ProgramService {
     const relations: RegistrationDataInfo[] = [];
     const programCustomAttributes =
       await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
+        where: { program: { id: Equal(programId) } },
       });
     for (const attribute of programCustomAttributes) {
       relations.push({
@@ -632,7 +635,7 @@ export class ProgramService {
     }
 
     const programQuestions = await this.programQuestionRepository.find({
-      where: { program: { id: programId } },
+      where: { program: { id: Equal(programId) } },
     });
 
     for (const question of programQuestions) {

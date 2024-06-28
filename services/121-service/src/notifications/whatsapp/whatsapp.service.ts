@@ -18,7 +18,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -200,9 +200,12 @@ export class WhatsappService {
   public async storeTemplateTestResult(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
+    if (!callbackData.SmsSid) {
+      throw new HttpException('SmsSid not provided', HttpStatus.BAD_REQUEST);
+    }
     const tryWhatsappTemplateEntity =
       await this.whatsappTemplateTestRepository.findOne({
-        where: { sid: callbackData.SmsSid },
+        where: { sid: Equal(callbackData.SmsSid) },
       });
     if (tryWhatsappTemplateEntity) {
       if (!tryWhatsappTemplateEntity.succes) {
@@ -221,9 +224,7 @@ export class WhatsappService {
   public async getWhatsappTemplateResult(sessionId: string): Promise<object> {
     const tryWhatsappTemplateEntity =
       await this.whatsappTemplateTestRepository.findOne({
-        where: {
-          sessionId: sessionId,
-        },
+        where: { sessionId: Equal(sessionId) },
       });
     if (!tryWhatsappTemplateEntity) {
       return {
@@ -269,10 +270,10 @@ export class WhatsappService {
       const whatsappTemplateTestEntity =
         await this.whatsappTemplateTestRepository.findOne({
           where: {
-            language: messageTemplate.language,
-            messageKey: messageTemplate.type,
-            programId: messageTemplate.programId,
-            sessionId: sessionId,
+            language: Equal(messageTemplate.language),
+            messageKey: Equal(messageTemplate.type),
+            programId: Equal(messageTemplate.programId),
+            sessionId: Equal(sessionId),
           },
           order: { created: 'ASC' },
         });
