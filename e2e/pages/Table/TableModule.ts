@@ -481,7 +481,7 @@ class TableModule {
         return i;
       }
     }
-    return 400;
+    return -1;
   }
 
   async validateFspCell({
