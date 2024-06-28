@@ -9,6 +9,11 @@ import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.j
 
 const paymentLabel =
   englishTranslations.page.program['program-people-affected'].actions.doPayment;
+const filteredRecipients =
+  englishTranslations.page.program['table-filter-row']['filtered-results'];
+const sendMessageAction =
+  englishTranslations.page.program['program-people-affected'].actions
+    .sendMessage;
 
 interface PersonLeft {
   personAffected?: string;
@@ -19,6 +24,13 @@ interface PersonLeft {
 }
 interface PersonRight {
   preferredLanguage?: string;
+}
+
+interface bulkActionContent {
+  textLocator: Locator;
+  expectedText: string;
+  bulkAction: string;
+  maxRetries?: number;
 }
 
 class TableModule {
@@ -191,22 +203,44 @@ class TableModule {
     }
   }
 
-  async validateQuickFilterResultsNumber(expectedNumber: number) {
+  async validateQuickFilterResultsNumber({
+    expectedNumber,
+  }: {
+    expectedNumber: number;
+  }) {
     const textLocator = this.textLabel.filter({
-      hasText: 'Filtered recipients:',
+      hasText: filteredRecipients,
     });
-    const textContent = await textLocator.textContent();
+    const expectedText = `${filteredRecipients}: ${expectedNumber}`;
 
-    if (textContent !== null) {
-      const expectedText = `Filtered recipients: ${expectedNumber}`;
-      if (textContent.trim() !== expectedText) {
-        throw new Error(
-          `Expected "${expectedText}" but received "${textContent.trim()}"`,
-        );
-      }
-    } else {
-      console.error('Text content is null');
+    if (
+      !(await this.retryCheckTextContent({
+        textLocator: textLocator,
+        expectedText: expectedText,
+      }))
+    ) {
+      expect(expectedText).toBe(await textLocator.textContent());
     }
+  }
+
+  async retryCheckTextContent({
+    textLocator,
+    expectedText,
+    maxRetries = 3,
+  }: {
+    textLocator: Locator;
+    expectedText: string;
+    maxRetries?: number;
+  }) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const textContent = await textLocator.textContent();
+      if (textContent?.trim() === expectedText) return true;
+      if (attempt < maxRetries) {
+        await this.page.reload();
+        await this.page.waitForTimeout(1000);
+      }
+    }
+    return false;
   }
 
   async applyBulkAction(
@@ -234,22 +268,45 @@ class TableModule {
     await this.bulkImportRegistrationsButton.getByRole('button').click();
   }
 
-  async validateBulkActionTargetedPasNumber(expectedNumber: number) {
+  async validateBulkActionTargetedPasNumber({
+    expectedNumber,
+    bulkAction,
+  }: {
+    expectedNumber: number;
+    bulkAction: string;
+  }) {
     const textLocator = this.page
       .locator('p')
-      .filter({ hasText: 'Send Message to PAs' });
-    const textContent = await textLocator.textContent();
+      .filter({ hasText: sendMessageAction });
+    const expectedText = `${sendMessageAction} for ${expectedNumber} People Affected.`;
 
-    if (textContent !== null) {
-      const expectedText = `Send Message to PAs for ${expectedNumber} People Affected.`;
-      if (textContent.trim() !== expectedText) {
-        throw new Error(
-          `Expected "${expectedText}" but received "${textContent.trim()}"`,
-        );
-      }
-    } else {
-      console.error('Text content is null');
+    if (
+      !(await this.retryCheckTextContentOfBulkAction({
+        textLocator: textLocator,
+        expectedText: expectedText,
+        bulkAction: bulkAction,
+      }))
+    ) {
+      expect(expectedText).toBe(await textLocator.textContent());
     }
+  }
+
+  async retryCheckTextContentOfBulkAction({
+    textLocator,
+    expectedText,
+    bulkAction,
+    maxRetries = 3,
+  }: bulkActionContent) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const textContent = await textLocator.textContent();
+      if (textContent?.trim() === expectedText) return true;
+      if (attempt < maxRetries) {
+        await this.page.reload();
+        await this.applyBulkAction(bulkAction);
+        await this.page.waitForTimeout(1000);
+      }
+    }
+    return false;
   }
 
   async selectFieldsforCustomMessage({

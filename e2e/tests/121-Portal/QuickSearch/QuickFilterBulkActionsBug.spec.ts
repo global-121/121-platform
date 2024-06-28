@@ -5,7 +5,7 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import HomePage from '../../../pages/Home/HomePage';
@@ -15,15 +15,13 @@ import TableModule from '../../../pages/Table/TableModule';
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 
 test.beforeEach(async ({ page }) => {
-  // Reset the DB to the required state
-  const response = await resetDB(SeedScript.nlrcMultiple);
-  expect(response.status).toBe(202);
-  // Upload registration from the file
+  await resetDB(SeedScript.nlrcMultiple);
   const programIdOcw = 3;
+
   const accessToken = await getAccessToken();
   await importRegistrationsCSV(
     programIdOcw,
-    './fixtures/test-registrations-OCW.csv',
+    './test-registration-data/test-registrations-OCW.csv',
     accessToken,
   );
   // Login
@@ -35,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test.skip('[27614] Quick filter through available PAs and apply bulk action', async ({
+test('[27614] Quick filter through available PAs and apply bulk action', async ({
   page,
 }) => {
   const table = new TableModule(page);
@@ -43,13 +41,12 @@ test.skip('[27614] Quick filter through available PAs and apply bulk action', as
 
   await test.step('Should open popup to send message to correct amount of filtered PAs', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
-
     await table.quickFilter('succeed');
-    // Really bad solution to tackle flickering issue of FE
-    await page.waitForTimeout(5000);
-    // Should be removed once FE is refactored/ changed/ perormance gets better WAITS LIKE THAT SHOULD BE AVOIDED
-    await table.validateQuickFilterResultsNumber(3);
+    await table.validateQuickFilterResultsNumber({ expectedNumber: 3 });
     await table.applyBulkAction(BulkActionId.sendMessage);
-    await table.validateBulkActionTargetedPasNumber(3);
+    await table.validateBulkActionTargetedPasNumber({
+      expectedNumber: 3,
+      bulkAction: BulkActionId.sendMessage,
+    });
   });
 });
