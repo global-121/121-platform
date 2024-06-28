@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
-import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const paymentLabel =
   englishTranslations.page.program['program-people-affected'].actions.doPayment;
