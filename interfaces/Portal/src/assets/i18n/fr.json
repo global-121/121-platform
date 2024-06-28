@@ -292,7 +292,7 @@
         "choose-payment": "Choisissez le paiement...",
         "closed": "Fermé",
         "in-progress": "Paiement en cours",
-        "last-closed-five-payments": "{{maxNumberOfPayment}} derniers paiements clôturés",
+        "last-closed-payments": "{{maxNumberOfPayment}} derniers paiements clôturés",
         "last-payment": {
           "confirm-prompt": "Cela réessaiera UNIQUEMENT le(s) paiement(s) {{number}} ayant échoué.",
           "error": "Raté",

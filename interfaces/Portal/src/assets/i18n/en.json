@@ -266,7 +266,7 @@
         "choose-payment": "Choose payment...",
         "closed": "Closed",
         "in-progress": "Payment in progress",
-        "last-closed-five-payments": "Last {{maxNumberOfPayment}} closed payments",
+        "last-closed-payments": "Last {{maxNumberOfPayment}} closed payments",
         "last-payment": {
           "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s).",
           "error": "Failed",
