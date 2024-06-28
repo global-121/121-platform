@@ -9,9 +9,6 @@ import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.j
 
 const paymentLabel =
   englishTranslations.page.program['program-people-affected'].actions.doPayment;
-
-const paymentLabel =
-  englishTranslations.page.program['program-people-affected'].actions.doPayment;
 const filteredRecipients =
   englishTranslations.page.program['table-filter-row']['filtered-results'];
 const sendMessageAction =
@@ -20,17 +17,6 @@ const sendMessageAction =
 const debitCardUsage =
   englishTranslations.page.program['export-list']['card-balances']['btn-text'];
 const OK = englishTranslations.common.ok;
-
-interface PersonLeft {
-  personAffected?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  status?: string;
-}
-interface PersonRight {
-  preferredLanguage?: string;
-}
 
 interface bulkActionContent {
   textLocator: Locator;
