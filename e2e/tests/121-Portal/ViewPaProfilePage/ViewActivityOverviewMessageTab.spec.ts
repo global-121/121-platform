@@ -42,7 +42,7 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Validate the "Messages" tab on the PA Activity Overview table to Contain WhatsApp notifications and correct message content', async () => {

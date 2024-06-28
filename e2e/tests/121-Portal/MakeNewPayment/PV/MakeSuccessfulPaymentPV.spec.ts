@@ -50,7 +50,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[28463] PV: Make Successful payment', async ({ page }) => {
-  const tableModule = new TableModule(page);
+  const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
   const registrationPage = new RegistrationDetails(page);
@@ -66,7 +66,7 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   });
 
   await test.step('Do payment #1', async () => {
-    await tableModule.doPayment(1);
+    await table.doPayment(1);
     await paymentsPage.executePayment({
       numberOfPas,
       defaultTransferValue,
@@ -75,7 +75,7 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   });
 
   await test.step('Check PA payments and messages', async () => {
-    await tableModule.clickOnPaNumber(2);
+    await table.openFspProfile({ shouldIncludeVisa: false });
 
     await registrationPage.validateQuantityOfActivity({ quantity: 8 });
 

@@ -39,7 +39,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
-    await table.clickOnPaNumber(2);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {

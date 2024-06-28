@@ -46,7 +46,7 @@ test('[27492] View Personal information table', async ({ page }) => {
   });
 
   await test.step('Should open first uploaded PA', async () => {
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate PA profile includes Personal information with details', async () => {

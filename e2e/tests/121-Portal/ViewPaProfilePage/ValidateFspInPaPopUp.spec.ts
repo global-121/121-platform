@@ -49,7 +49,7 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
   });
 
   await test.step('Should open first uploaded PA', async () => {
-    await table.clickOnPaNumber(2);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should open PA profile and open edit pop-up', async () => {
