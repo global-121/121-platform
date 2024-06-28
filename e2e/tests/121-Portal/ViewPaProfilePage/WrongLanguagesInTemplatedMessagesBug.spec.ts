@@ -21,9 +21,10 @@ const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const paymentFilterByTab =
   englishTranslations['registration-details']['activity-overview'].filters
     .message;
-const pageTitle = englishTranslations['registration-details'].pageTitle;
 const arabic =
   englishTranslations.page.program['program-people-affected'].language.ar;
+const dutch =
+  englishTranslations.page.program['program-people-affected'].language.nl;
 const whatsappGenericMessageNL =
   messageTemplateNlrc.whatsappGenericMessage.message.nl;
 const whatsappGenericMessageAr =
@@ -59,10 +60,12 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
 
+  let paNumber = 0;
+
   await test.step('Should navigate to PA profile page and change the language to Arabic', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.selectTable('Payment');
-    await table.clickOnPaNumber(1);
+    paNumber = await table.selectPaByLanguage({ language: dutch });
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
     await registration.changePreferredLanguage({
@@ -85,8 +88,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
 
   await test.step('Validate messages are sent both in Arabic and Dutch', async () => {
     // Validate Arabic message
-    await table.clickOnPaNumber(1);
-    await registration.validateHeaderToContainText(pageTitle);
+    await table.clickOnPaNumber(paNumber);
     await registration.openActivityOverviewTab(paymentFilterByTab);
     // Waiting for the request to finalize
     await page.waitForTimeout(2000);
@@ -98,7 +100,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     });
     // Validate Dutch message
     await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
-    await table.clickOnPaNumber(2);
+    await table.selectPaByLanguage({ language: dutch });
     await registration.openActivityOverviewTab(paymentFilterByTab);
     await registration.validateMessageContent({
       messageContent: whatsappGenericMessageNL,
