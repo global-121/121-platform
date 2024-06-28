@@ -66,6 +66,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.selectTable('Payment');
     paNumber = await table.selectPaByLanguage({ language: dutch });
+    expect(paNumber). toBeGreaterThanOrEqual(0);
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
     await registration.changePreferredLanguage({
