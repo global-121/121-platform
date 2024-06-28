@@ -5,4 +5,5 @@ export enum WalletCardStatus121 {
   Paused = 'Paused',
   SuspectedFraud = 'Suspected Fraud',
   Unknown = 'Unknown',
+  Substituted = 'Substituted',
 }

@@ -8,6 +8,15 @@
 "FALSE";"ACTIVE";"CARD_STOLEN";"TRUE";"Blocked";"Visa marked card as stolen";"Issue New Card"
 "FALSE";"ACTIVE";"CARD_CLOSED";"TRUE";"Blocked";"Visa marked card as closed";"Issue New Card"
 "FALSE";"ACTIVE";"CARD_EXPIRED";"TRUE";"Blocked";"Card has expired";"Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_OK";"TRUE";"Substituted";"Card has been substituted for a new card";"Pause, Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_BLOCKED";"TRUE";"Substituted";"Card has been substituted for a new card";"Issue New Card"
+"FALSE";"SUBSTITUTED";"SUSPECTED_FRAUD";"TRUE";"Substituted";"Card has been substituted for a new card";"Pause, Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_CLOSED_DUE_TO_FRAUD";"TRUE";"Substituted";"Card has been substituted for a new card";"Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_NO_RENEWAL";"TRUE";"Substituted";"Card has been substituted for a new card";"Pause, Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_LOST";"TRUE";"Substituted";"Card has been substituted for a new card";"Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_STOLEN";"TRUE";"Substituted";"Card has been substituted for a new card";"Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_CLOSED";"TRUE";"Substituted";"Card has been substituted for a new card";"Issue New Card"
+"FALSE";"SUBSTITUTED";"CARD_EXPIRED";"TRUE";"Substituted";"Card has been substituted for a new card";"Issue New Card"
 "FALSE";"INACTIVE";"CARD_OK";"TRUE";"Issued";;"Pause, Issue New Card"
 "FALSE";"INACTIVE";"CARD_BLOCKED";"TRUE";"Blocked";"Visa blocked card";"Issue New Card"
 "FALSE";"INACTIVE";"SUSPECTED_FRAUD";"TRUE";"Suspected Fraud";"Card temporarily blocked for investigation";"Pause, Issue New Card"
@@ -26,6 +35,15 @@
 "TRUE";"ACTIVE";"CARD_STOLEN";"TRUE";"Blocked";"Visa marked card as stolen";"Issue New Card"
 "TRUE";"ACTIVE";"CARD_CLOSED";"TRUE";"Blocked";"Visa marked card as closed";"Issue New Card"
 "TRUE";"ACTIVE";"CARD_EXPIRED";"TRUE";"Blocked";"Card has expired";"Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_OK";"TRUE";"Paused";"Card has been substituted for a new card";"Unpause, Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_BLOCKED";"TRUE";"Blocked";"Card has been substituted for a new card";"Issue New Card"
+"TRUE";"SUBSTITUTED";"SUSPECTED_FRAUD";"TRUE";"Suspected Fraud";"Card has been substituted for a new card";"Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_CLOSED_DUE_TO_FRAUD";"TRUE";"Blocked";"Card has been substituted for a new card";"Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_NO_RENEWAL";"TRUE";"Paused";"Card has been substituted for a new card";"Unpause, Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_LOST";"TRUE";"Blocked";"Card has been substituted for a new card";"Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_STOLEN";"TRUE";"Blocked";"Card has been substituted for a new card";"Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_CLOSED";"TRUE";"Blocked";"Card has been substituted for a new card";"Issue New Card"
+"TRUE";"SUBSTITUTED";"CARD_EXPIRED";"TRUE";"Blocked";"Card has been substituted for a new card";"Issue New Card"
 "TRUE";"INACTIVE";"CARD_OK";"TRUE";"Paused";"Card not yet activated";"Unpause, Issue New Card"
 "TRUE";"INACTIVE";"CARD_BLOCKED";"TRUE";"Blocked";"Visa blocked card";"Issue New Card"
 "TRUE";"INACTIVE";"SUSPECTED_FRAUD";"TRUE";"Suspected Fraud";"Card temporarily blocked for investigation";"Issue New Card"
@@ -44,6 +62,15 @@
 "TRUE";"ACTIVE";"CARD_STOLEN";"FALSE";"Blocked";;
 "TRUE";"ACTIVE";"CARD_CLOSED";"FALSE";"Blocked";;
 "TRUE";"ACTIVE";"CARD_EXPIRED";"FALSE";"Blocked";;
+"TRUE";"SUBSTITUTED";"CARD_OK";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_BLOCKED";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"SUSPECTED_FRAUD";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_CLOSED_DUE_TO_FRAUD";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_NO_RENEWAL";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_LOST";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_STOLEN";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_CLOSED";"FALSE";"Substituted";;
+"TRUE";"SUBSTITUTED";"CARD_EXPIRED";"FALSE";"Substituted";;
 "TRUE";"INACTIVE";"CARD_OK";"FALSE";"Blocked";;
 "TRUE";"INACTIVE";"CARD_BLOCKED";"FALSE";"Blocked";;
 "TRUE";"INACTIVE";"SUSPECTED_FRAUD";"FALSE";"Blocked";;
