@@ -36,6 +36,14 @@ interface bulkActionContent {
   maxRetries?: number;
 }
 
+interface ExportDebitCardAssertionData {
+  registrationStatus: string;
+  paId: number;
+  balance: number;
+  spentThisMonth: number;
+  isCurrentWallet: boolean;
+}
+
 class TableModule {
   readonly page: Page;
   readonly filterInput: Locator;
@@ -398,13 +406,7 @@ class TableModule {
     balance,
     spentThisMonth,
     isCurrentWallet,
-  }: {
-    registrationStatus: string;
-    paId: number;
-    balance: number;
-    spentThisMonth: number;
-    isCurrentWallet: boolean;
-  }) {
+  }: ExportDebitCardAssertionData) {
     const expectedColumns = [
       'paId',
       'referenceId',
