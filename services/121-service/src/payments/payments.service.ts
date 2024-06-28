@@ -646,6 +646,7 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
+    //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaQuestions =
       await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
         FinancialServiceProviderName.intersolveVisa,

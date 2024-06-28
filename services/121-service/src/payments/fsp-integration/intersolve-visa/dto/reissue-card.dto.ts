@@ -1,38 +1,10 @@
-import { IsNotEmpty } from 'class-validator';
+import { PersonalData } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/personal-data';
 
-export class ReissueCardDto {
+export interface ReissueCardDto {
   // Used to find the IntersolveVisaCustomer Entity related to the Registration and continue from there.
-  @IsNotEmpty()
   registrationId: number;
-
-  // Only used to send as CorrelationId to Intersolve. Not used internally, since the IntersolveVisa Module does not "know about" Registrations.
-  @IsNotEmpty()
-  referenceId: string;
-
-  @IsNotEmpty()
-  name: string;
-
-  @IsNotEmpty()
-  addressStreet: string;
-
-  @IsNotEmpty()
-  addressHouseNumber: string;
-
-  @IsNotEmpty()
-  addressHouseNumberAddition: string;
-
-  @IsNotEmpty()
-  addressPostalCode: string;
-
-  @IsNotEmpty()
-  addressCity: string;
-
-  @IsNotEmpty()
-  phoneNumber: string;
-
-  @IsNotEmpty()
+  reference: string;
+  personalData: PersonalData;
   brandCode: string;
-
-  @IsNotEmpty()
   coverLetterCode: string;
 }

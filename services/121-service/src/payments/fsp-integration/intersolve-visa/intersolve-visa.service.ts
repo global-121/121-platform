@@ -665,8 +665,7 @@ export class IntersolveVisaService
     // TODO: Add a call to the new this.syncIntersolveCustomerWith121() function here. Creating this function is part of the re-implementation of sending data to Intersolve after Registration changes.
 
     if (childWalletToReplace.isTokenBlocked) {
-      // TODO: Call function to unblock wallet, re-implemented in the Pause card Task.
-      this.intersolveVisaApiService.setTokenBlocked(
+      await this.intersolveVisaApiService.setTokenBlocked(
         childWalletToReplace.tokenCode,
         false,
       );
@@ -719,13 +718,13 @@ export class IntersolveVisaService
     // Create new card
     await this.intersolveVisaApiService.createPhysicalCard({
       tokenCode: newChildWallet.tokenCode,
-      name: input.name,
-      addressStreet: input.addressStreet,
-      addressHouseNumber: input.addressHouseNumber,
-      addressHouseNumberAddition: input.addressHouseNumberAddition,
-      addressPostalCode: input.addressPostalCode,
-      addressCity: input.addressCity,
-      phoneNumber: input.phoneNumber,
+      name: input.personalData.name,
+      addressStreet: input.personalData.addressStreet,
+      addressHouseNumber: input.personalData.addressHouseNumber,
+      addressHouseNumberAddition: input.personalData.addressHouseNumberAddition,
+      addressPostalCode: input.personalData.addressPostalCode,
+      addressCity: input.personalData.addressCity,
+      phoneNumber: input.personalData.phoneNumber,
       coverLetterCode: input.coverLetterCode,
     });
 
