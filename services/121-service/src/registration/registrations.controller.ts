@@ -706,24 +706,28 @@ export class RegistrationsController {
   @ApiTags('financial-service-providers/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
-    summary:
-      '[SCOPED] Re-issue card: replace existing child wallet and card with new ones. The newly created wallet will not be blocked.',
+    summary: '[SCOPED] Re-issue card: replace existing card with a new card.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Child wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Post(
-    'programs/:programId/registrations/:referenceid/financial-service-providers/intersolve-visa/child-wallets',
+    'programs/:programId/registrations/:referenceid/financial-service-providers/intersolve-visa/cards',
   )
-  public async reissueCard(): Promise<void> {
-    /* TODO: Implement this function:
-    - Add ReissueCardResponseDto, can be imported from the IntersolveVisa Module if the same DTO is used there as well? Should at least NOT be called "IntersolveBlockWalletResponseDto" as it is now.
-    - Call this.registrationsService.reissueCard()
-    */
+  // TODO: When a data structure has been created in the view cards task use that (or a subset).
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async reissueCardAndSendMessage(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+  ): Promise<void> {
+    await this.registrationsService.reissueCardAndSendMessage(
+      referenceId,
+      programId,
+    );
   }
 
   @ApiTags('financial-service-providers/intersolve-visa')
