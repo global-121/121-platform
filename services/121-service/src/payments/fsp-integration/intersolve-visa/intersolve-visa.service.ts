@@ -624,25 +624,11 @@ export class IntersolveVisaService
   }
 
   public async reissueCard(input: ReissueCardDto): Promise<void> {
-    /* TODO: Implement this function:
-      - Add a ResponseDto
-      - See Sequence Diagram in Miro Scratch Board.
-      - Remove _ from input parameter
-      - This function is called by RegistrationsService.reissueCard()
-      - This function takes an ReissueCardDto as input parameter
-      - This function is a re-implementation and optimization/refactoring of this.reissueWalletAndCard(), according to the new Intersolve Integration Manual.
-      - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
-      - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
-      - 
-    */
-
     // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
         input.registrationId,
       );
-    // TODO: REFACTOR: When the custom repository is implemented, replace this with a call to that repository:
-    //  await this.intersolveVisaCustomerScopedRepository.getIntersolveCustomerAndWalletsByRegistrationId(input.registrationId);
 
     if (!intersolveVisaCustomer) {
       throw new Error(
@@ -654,7 +640,6 @@ export class IntersolveVisaService
         'This Registration does not have an Intersolve Visa Parent Wallet. Cannot reissue card.',
       );
     }
-    // TODO: Check if this is the correct way to check if a child wallet does not exist
     if (
       !intersolveVisaCustomer.intersolveVisaParentWallet
         .intersolveVisaChildWallets.length
@@ -681,12 +666,15 @@ export class IntersolveVisaService
 
     if (childWalletToReplace.isTokenBlocked) {
       // TODO: Call function to unblock wallet, re-implemented in the Pause card Task.
+      this.intersolveVisaApiService.setTokenBlocked(
+        childWalletToReplace.tokenCode,
+        false,
+      );
     }
 
     // Create new token at Intersolve
     const issueTokenDto: IssueTokenDto = {
       brandCode: input.brandCode,
-      reference: intersolveVisaCustomer.holderId, // TODO: Why do we put the holderId here? Is that a requirement of the Intersolve API?
       activate: false, // Child Wallets are always created deactivated
     };
 

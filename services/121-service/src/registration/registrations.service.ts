@@ -879,7 +879,7 @@ export class RegistrationsService {
     });
   }
 
-  public async reissueCard(_referenceId: string): Promise<void> {
+  public async reissueCardAndSendMessage(_referenceId: string): Promise<void> {
     /* TODO: Implement this method:
       - Get the registration data using the referenceId, by using the PaginationRegistrationService, see how that is done for do Intersolve Visa payment (PaymentsService)
       - Get the brand code and cover letter code for IntersolveVisa as configured for this program, also see how that is done for do Intersolve Visa payment (PaymentsService)

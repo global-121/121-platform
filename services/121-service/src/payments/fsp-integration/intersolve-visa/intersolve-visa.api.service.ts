@@ -644,17 +644,15 @@ export class IntersolveVisaApiService {
     );
 
     // Handle the response
+
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      substituteTokenResponse,
+    );
     // If the response contains errors
-    if (!this.isSuccessResponseStatus(substituteTokenResponse.status)) {
-      // TODO: I do not understand the magic going on here behind the || part. If there are no errors, then what happens?
-      const errorMessage = `TRANSFER ERROR: ${
-        this.convertResponseErrorsToMessage(
-          substituteTokenResponse.data?.errors,
-        ) ||
-        `${substituteTokenResponse.status} - ${substituteTokenResponse.statusText}`
-      }`;
-      throw new Error(errorMessage);
+    if (errorMessage) {
+      throw new Error(`SUBSTITUTE TOKEN ERROR: ${errorMessage}`);
     }
+
     // If the response does not contain errors
     return;
   }
