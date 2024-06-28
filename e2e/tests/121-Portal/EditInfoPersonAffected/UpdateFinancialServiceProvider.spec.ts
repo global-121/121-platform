@@ -47,7 +47,7 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   });
 
   await test.step('Open information pop-up', async () => {
-    rowNumber = await table.selectNonVisaFspPA();
+    rowNumber = await table.selectFspPaPii({ shouldSelectVisa: false });
   });
 
   await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {

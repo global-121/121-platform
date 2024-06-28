@@ -43,7 +43,7 @@ test('[28041] Update preferredLanguage successfully', async ({ page }) => {
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Update preferredLanguage', async () => {
@@ -56,7 +56,7 @@ test('[28041] Update preferredLanguage successfully', async ({ page }) => {
 
   await test.step('Validate preferredLanguage updated', async () => {
     await page.reload();
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
     await registration.validatePreferredLanguage({
       language: arabic,
     });

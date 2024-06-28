@@ -43,7 +43,7 @@ test('[28516] View Visa cards', async ({ page }) => {
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
-    await table.clickOnPaNumber(2);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate all possible card statuses at once: Paused, Active, Blocked/Substitued', async () => {

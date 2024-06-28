@@ -43,7 +43,7 @@ test('[28462] Pause Visa debit cards', async ({ page }) => {
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
-    await table.clickOnPaNumber(2);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should Pause Visa Card and details are presented correctly with status: Paused', async () => {

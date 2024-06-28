@@ -43,7 +43,7 @@ test('[28479] Re-issue Visa debit cards', async ({ page }) => {
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcPVProgrammeTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should Re-Issue Visa Card and details are presented correctly with status: Active and Blocked/ Substituted', async () => {

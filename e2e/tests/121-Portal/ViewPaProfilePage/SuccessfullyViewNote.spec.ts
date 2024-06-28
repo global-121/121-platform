@@ -60,7 +60,7 @@ test('[27501] Successfully view note', async ({ page }) => {
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate PA profile opened succesfully, add a note and validate new note log tile', async () => {

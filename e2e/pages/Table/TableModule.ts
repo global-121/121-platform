@@ -18,17 +18,6 @@ const debitCardUsage =
   englishTranslations.page.program['export-list']['card-balances']['btn-text'];
 const OK = englishTranslations.common.ok;
 
-interface PersonLeft {
-  personAffected?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  status?: string;
-}
-interface PersonRight {
-  preferredLanguage?: string;
-}
-
 interface bulkActionContent {
   textLocator: Locator;
   expectedText: string;
@@ -107,86 +96,6 @@ class TableModule {
       TableModule.getTable(2) +
       TableModule.getCollumn(collumn)
     );
-  }
-
-  async waitForElementDisplayed(selector: string) {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.locator(selector).waitFor({ state: 'visible' });
-  }
-
-  async getElementText(locator: string) {
-    return await this.page.locator(locator).textContent();
-  }
-
-  async waitForElementToContainText(selector: string, text: string) {
-    await this.waitForElementDisplayed(selector);
-    let i = 0;
-    let content = '';
-    while (!content.includes(text) && i < 10) {
-      await this.page.waitForTimeout(500);
-      const elementText = await this.getElementText(selector);
-      content = elementText !== null ? elementText : '';
-      i++;
-    }
-    if (content.includes(text)) {
-      return;
-    } else {
-      throw new Error(
-        `Element ${selector} did not contain text "${text}", instead it contained "${content}"`,
-      );
-    }
-  }
-
-  async verifiyProfilePersonalnformationTableLeft(
-    rowIndex: number,
-    person: PersonLeft,
-  ) {
-    const { personAffected, firstName, lastName, phoneNumber, status } = person;
-
-    if (personAffected !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 2),
-        personAffected,
-      );
-    }
-    if (firstName !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 3),
-        firstName,
-      );
-    }
-    if (lastName !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 4),
-        lastName,
-      );
-    }
-    if (phoneNumber !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 5),
-        phoneNumber,
-      );
-    }
-    if (status !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 6),
-        status,
-      );
-    }
-  }
-
-  async verifiyProfilePersonalnformationTableRight(
-    rowIndex: number,
-    person: PersonRight,
-  ) {
-    const { preferredLanguage } = person;
-
-    if (preferredLanguage !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableRight(rowIndex, 1),
-        preferredLanguage,
-      );
-    }
   }
 
   async clickOnPaNumber(rowIndex: number) {
@@ -469,15 +378,40 @@ class TableModule {
     }
   }
 
-  async selectNonVisaFspPA() {
+  async selectFspPaPii({ shouldSelectVisa }: { shouldSelectVisa: boolean }) {
     await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
 
     const count = await this.paCell.count();
     for (let i = 1; i <= count; i++) {
-      const fsp = this.page.locator(TableModule.getCellValueTableRight(i, 4));
+      const fsp = this.page.locator(TableModule.getRow(i));
       const fspText = (await fsp.textContent())?.trim();
-      if (fspText !== visaFspIntersolve.displayName.en) {
+      const isVisaFsp = fspText?.includes(visaFspIntersolve.displayName.en);
+
+      if (
+        (shouldSelectVisa && isVisaFsp) ||
+        (!shouldSelectVisa && !isVisaFsp)
+      ) {
         await this.openPaPersonalInformation({ buttonIndex: i - 1 });
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  async openFspProfile({ shouldIncludeVisa }: { shouldIncludeVisa: boolean }) {
+    await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
+
+    const count = await this.paCell.count();
+    for (let i = 1; i <= count; i++) {
+      const fsp = this.page.locator(TableModule.getRow(i));
+      const fspText = (await fsp.textContent())?.trim();
+      const isVisaFsp = fspText?.includes(visaFspIntersolve.displayName.en);
+
+      if (
+        (shouldIncludeVisa && isVisaFsp) ||
+        (!shouldIncludeVisa && !isVisaFsp)
+      ) {
+        await this.clickOnPaNumber(i);
         return i;
       }
     }

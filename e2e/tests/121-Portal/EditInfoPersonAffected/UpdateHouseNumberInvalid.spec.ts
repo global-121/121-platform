@@ -38,7 +38,7 @@ test('[28044] Update HouseNumber with invalid value', async ({ page }) => {
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Update house number with a string', async () => {

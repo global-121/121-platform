@@ -49,7 +49,7 @@ test('[27495] View Activity Overview on PA profile page', async ({ page }) => {
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Validate the "Status history" tab on the PA Activity Overview table', async () => {
