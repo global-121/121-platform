@@ -26,6 +26,13 @@ interface PersonRight {
   preferredLanguage?: string;
 }
 
+interface bulkActionContent {
+  textLocator: Locator;
+  expectedText: string;
+  bulkAction: string;
+  maxRetries?: number;
+}
+
 class TableModule {
   readonly page: Page;
   readonly filterInput: Locator;
@@ -289,12 +296,7 @@ class TableModule {
     expectedText,
     bulkAction,
     maxRetries = 3,
-  }: {
-    textLocator: Locator;
-    expectedText: string;
-    bulkAction: string;
-    maxRetries?: number;
-  }) {
+  }: bulkActionContent) {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       const textContent = await textLocator.textContent();
       if (textContent?.trim() === expectedText) return true;
