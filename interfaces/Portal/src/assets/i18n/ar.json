@@ -292,7 +292,7 @@
         "choose-payment": "اختر الدفع...",
         "closed": "مغلق",
         "in-progress": "الدفع قيد التنفيذ",
-        "last-closed-five-payments": "آخر {{maxNumberOfPayment}} دفعات مغلقة",
+        "last-closed-payments": "آخر {{maxNumberOfPayment}} دفعات مغلقة",
         "last-payment": {
           "confirm-prompt": "سيؤدي هذا إلى إعادة محاولة الدفع (المدفوعات) الفاشلة {{number}} فقط.",
           "error": "فشل",
