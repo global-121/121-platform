@@ -16,6 +16,7 @@
     "lint:translations": "tsx _lint-translations.ts",
     "fix": "ng lint --fix",
     "prebuild": "npm run set-env-variables -- env=prod && npm run check:assets-translations",
+    "postbuild": "shx cp node_modules/@angular/service-worker/safety-worker.js www/ngsw-worker.js",
     "preserve:static": "shx cp www/index.html www/404.html",
     "serve:static": "npx http-server ./www/ -c30 --gzip --brotli --port 8088",
     "set-env-variables": "node ./_set-env-variables.js",

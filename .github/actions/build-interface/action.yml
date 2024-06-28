@@ -12,6 +12,10 @@ inputs:
     description: Base-64 encoded version of the favicon.ico file.
     required: false
     default: ''
+  envIconPath:
+    description: Path of where the favicon.ico file should be saved.
+    required: false
+    default: 'src/favicon.ico'
   envContentSecurityPolicyBase:
     description: Value of a 'baseline' Content-Security-Policy to use. (all non-enviroment-specific) (All lines should end with a ";"!)
     required: false
@@ -64,7 +68,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
-        echo "${{ inputs.envIcon }}" | base64 --decode > src/favicon.ico
+        echo "${{ inputs.envIcon }}" | base64 --decode > ${{ inputs.envIconPath }}
 
     - name: Build
       shell: bash
@@ -78,12 +82,6 @@ runs:
         NG_AI_IKEY: ${{ env.NG_AI_IKEY }}
         NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
         APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-
-    - name: 'Add/Override safety-workaround for Service-worker'
-      shell: bash
-      working-directory: ${{ inputs.interfacePath }}
-      run: |
-        cp -f -v node_modules/@angular/service-worker/safety-worker.js ./www/ngsw-worker.js
 
     - name: Add/Override environment-specific Content-Security-Policy
       if: ${{ inputs.envContentSecurityPolicy }} != ''

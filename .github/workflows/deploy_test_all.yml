@@ -17,6 +17,12 @@ jobs:
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003 }}
 
+  deploy_portalicious:
+    name: 'Build + Deploy: Portalicious'
+    uses: ./.github/workflows/deploy_test_portalicious.yml
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS }}
+
   deploy_service:
     name: 'Build + Deploy: 121-Service'
     uses: ./.github/workflows/deploy_test_service.yml
