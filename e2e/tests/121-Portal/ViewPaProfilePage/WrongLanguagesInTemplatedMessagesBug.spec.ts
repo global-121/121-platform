@@ -8,7 +8,7 @@ import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.jso
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
@@ -66,7 +66,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
     await table.selectTable('Payment');
     paNumber = await table.selectPaByLanguage({ language: dutch });
-    expect(paNumber). toBeGreaterThanOrEqual(0);
+    expect(paNumber).toBeGreaterThanOrEqual(0);
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
     await registration.changePreferredLanguage({
