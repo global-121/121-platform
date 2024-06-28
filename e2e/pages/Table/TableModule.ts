@@ -14,6 +14,9 @@ const filteredRecipients =
 const sendMessageAction =
   englishTranslations.page.program['program-people-affected'].actions
     .sendMessage;
+const debitCardUsage =
+  englishTranslations.page.program['export-list']['card-balances']['btn-text'];
+const OK = englishTranslations.common.ok;
 
 interface PersonLeft {
   personAffected?: string;
@@ -31,6 +34,14 @@ interface bulkActionContent {
   expectedText: string;
   bulkAction: string;
   maxRetries?: number;
+}
+
+interface ExportDebitCardAssertionData {
+  registrationStatus: string;
+  paId: number;
+  balance: number;
+  spentThisMonth: number;
+  isCurrentWallet: boolean;
 }
 
 class TableModule {
@@ -389,7 +400,13 @@ class TableModule {
     await okButton.click();
   }
 
-  async exportDebitCardData() {
+  async exportDebitCardData({
+    registrationStatus,
+    paId,
+    balance,
+    spentThisMonth,
+    isCurrentWallet,
+  }: ExportDebitCardAssertionData) {
     const expectedColumns = [
       'paId',
       'referenceId',
@@ -403,9 +420,9 @@ class TableModule {
       'isCurrentWallet',
     ];
 
-    const okButton = this.page.getByRole('button', { name: 'OK' });
+    const okButton = this.page.getByRole('button', { name: OK });
     const exportButton = this.debitCardDataExportButton.filter({
-      hasText: 'Export debit card usage',
+      hasText: debitCardUsage,
     });
 
     await exportButton.click();
@@ -433,15 +450,21 @@ class TableModule {
     const firstRow = data[0] as Record<string, unknown>;
     const actualColumns = Object.keys(firstRow);
 
+    // Assert the values of the first row
+    expect(firstRow.registrationStatus).toBe(registrationStatus);
+    expect(firstRow.paId).toBe(paId);
+    expect(firstRow.balance).toBe(balance);
+    expect(firstRow.spentThisMonth).toBe(spentThisMonth);
+    expect(firstRow.isCurrentWallet).toBe(isCurrentWallet);
+
     // Validate the column names
     const columnsPresent = expectedColumns.every((col) =>
       actualColumns.includes(col),
     );
     const correctColumns =
       actualColumns.length === expectedColumns.length && columnsPresent;
-    if (correctColumns) {
-      console.log('Column validation passed');
-    } else {
+
+    if (!correctColumns) {
       throw error('Column validation failed');
     }
   }

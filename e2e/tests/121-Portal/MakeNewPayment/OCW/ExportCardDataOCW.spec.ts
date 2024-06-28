@@ -14,6 +14,12 @@ import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 
+const registrationStatus = 'included';
+const paId = 2;
+const balance = 0;
+const spentThisMonth = 0;
+const isCurrentWallet = true;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -41,6 +47,12 @@ test('[28648] Export Visa Card Data', async ({ page }) => {
   });
 
   await test.step('Should export all debit card data', async () => {
-    await table.exportDebitCardData();
+    await table.exportDebitCardData({
+      registrationStatus: registrationStatus,
+      paId: paId,
+      balance: balance,
+      spentThisMonth: spentThisMonth,
+      isCurrentWallet: isCurrentWallet,
+    });
   });
 });
