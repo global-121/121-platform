@@ -111,7 +111,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return this.repository.update(criteria, partialEntity);
   }
 
-  async getRegistrationByReferenceId(referenceId: string) {
+  public async getRegistrationByReferenceId(referenceId: string) {
     return await this.repository.findOne({
       where: { referenceId: referenceId },
     });

@@ -57,6 +57,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
+import { RegistrationDataScopedRepository } from './modules/registration-data/repositories/registration-data.scoped.repository';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -65,6 +66,7 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -723,10 +725,15 @@ export class RegistrationsController {
   public async reissueCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-  ): Promise<void> {
-    await this.registrationsService.reissueCardAndSendMessage(
-      referenceId,
-      programId,
+  ): Promise<any> {
+    // await this.registrationsService.reissueCardAndSendMessage(
+    //   referenceId,
+    //   programId,
+    // );
+    // TODO: HIER VERDER CONTINUE HERE: test if this function actually works!
+    return await this.registrationDataScopedRepository.getRegistrationsWithData(
+      [...referenceId],
+      ['addressCity', 'addressStreet'],
     );
   }
 

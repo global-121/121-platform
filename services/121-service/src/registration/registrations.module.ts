@@ -44,6 +44,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProgramFinancialServiceProviderConfigurationsModule } from '../program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 
 @Module({
   imports: [
@@ -72,6 +73,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RegistrationUtilsModule,
     EventsModule,
     QueueRegistrationUpdateModule,
+    ProgramFinancialServiceProviderConfigurationsModule,
+    RegistrationDataModule,
   ],
   providers: [
     RegistrationsService,

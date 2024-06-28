@@ -6,6 +6,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RegistrationDataScopedRepository } from './repositories/registration-data.scoped.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProgramEntity, OrganizationEntity])],
@@ -13,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RegistrationDataService,
     createScopedRepositoryProvider(RegistrationDataEntity),
     RegistrationScopedRepository,
+    RegistrationDataScopedRepository,
   ],
   exports: [RegistrationDataService],
 })
