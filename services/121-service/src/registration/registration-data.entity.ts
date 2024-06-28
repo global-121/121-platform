@@ -7,6 +7,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import {
   Column,
   Entity,
+  Equal,
   Index,
   JoinColumn,
   ManyToOne,
@@ -71,7 +72,7 @@ export class RegistrationDataEntity extends Base121Entity {
   public async getDataName(): Promise<string | undefined> {
     const repo = AppDataSource.getRepository(RegistrationDataEntity);
     const dataWithRelations = await repo.findOneOrFail({
-      where: { id: this.id },
+      where: { id: Equal(this.id) },
       relations: ['programQuestion', 'fspQuestion', 'programCustomAttribute'],
     });
     if (dataWithRelations.programQuestion) {

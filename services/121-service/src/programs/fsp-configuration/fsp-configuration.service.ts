@@ -5,7 +5,7 @@ import { UpdateProgramFspConfigurationDto } from '@121-service/src/programs/dto/
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class ProgramFspConfigurationService {
@@ -19,7 +19,7 @@ export class ProgramFspConfigurationService {
   ): Promise<ProgramFspConfigurationEntity[]> {
     const programFspConfigurations =
       await this.programFspConfigurationRepository.find({
-        where: { programId: programId },
+        where: { programId: Equal(programId) },
       });
 
     return programFspConfigurations;
@@ -30,7 +30,7 @@ export class ProgramFspConfigurationService {
     programFspConfigurationDto: CreateProgramFspConfigurationDto,
   ): Promise<number> {
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { id: programFspConfigurationDto.fspId },
+      where: { id: Equal(programFspConfigurationDto.fspId) },
     });
     if (!fsp) {
       throw new HttpException(
@@ -89,8 +89,8 @@ export class ProgramFspConfigurationService {
   ): Promise<number> {
     const result = await this.programFspConfigurationRepository.findOne({
       where: {
-        id: programFspConfigurationId,
-        programId: programId,
+        id: Equal(programFspConfigurationId),
+        programId: Equal(programId),
       },
     });
     if (!result) {
@@ -108,8 +108,8 @@ export class ProgramFspConfigurationService {
   ): Promise<void> {
     const result = await this.programFspConfigurationRepository.findOne({
       where: {
-        id: programFspConfigurationId,
-        programId: programId,
+        id: Equal(programFspConfigurationId),
+        programId: Equal(programId),
       },
     });
     if (!result) {

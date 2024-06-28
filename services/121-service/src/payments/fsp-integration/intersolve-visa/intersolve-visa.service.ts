@@ -85,7 +85,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -313,7 +313,7 @@ export class IntersolveVisaService
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
@@ -367,7 +367,7 @@ export class IntersolveVisaService
     const transactionNotifications: TransactionNotificationObject[] = [];
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: paymentDetails.referenceId },
+      where: { referenceId: Equal(paymentDetails.referenceId) },
     });
     let visaCustomer = await this.getCustomerEntity(registration.id);
 
@@ -577,7 +577,7 @@ export class IntersolveVisaService
   private async getCustomerEntity(registrationId: number) {
     return await this.intersolveVisaCustomerScopedRepo.findOne({
       relations: ['visaWallets'],
-      where: { registrationId: registrationId },
+      where: { registrationId: Equal(registrationId) },
     });
   }
 
@@ -649,9 +649,9 @@ export class IntersolveVisaService
     const brandCodeConfig =
       await this.programFspConfigurationRepository.findOne({
         where: {
-          programId: programId,
-          name: FinancialServiceProviderConfigurationEnum.brandCode,
-          fsp: { fsp: FinancialServiceProviderName.intersolveVisa },
+          programId: Equal(programId),
+          name: Equal(FinancialServiceProviderConfigurationEnum.brandCode),
+          fsp: { fsp: Equal(FinancialServiceProviderName.intersolveVisa) },
         },
         relations: ['fsp'],
       });
@@ -670,9 +670,11 @@ export class IntersolveVisaService
     const coverLetterCodeConfig =
       await this.programFspConfigurationRepository.findOne({
         where: {
-          programId: programId,
-          name: FinancialServiceProviderConfigurationEnum.coverLetterCode,
-          fsp: { fsp: FinancialServiceProviderName.intersolveVisa },
+          programId: Equal(programId),
+          name: Equal(
+            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          ),
+          fsp: { fsp: Equal(FinancialServiceProviderName.intersolveVisa) },
         },
         relations: ['fsp'],
       });
@@ -956,7 +958,10 @@ export class IntersolveVisaService
     visaCustomer: IntersolveVisaCustomerEntity;
   }> {
     const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: referenceId, programId: programId },
+      where: {
+        referenceId: Equal(referenceId),
+        programId: Equal(programId),
+      },
       relations: ['fsp'],
     });
     if (!registration) {
@@ -1096,7 +1101,10 @@ export class IntersolveVisaService
       return;
     }
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: referenceId, programId: programId },
+      where: {
+        referenceId: Equal(referenceId),
+        programId: Equal(programId),
+      },
     });
     const visaCustomer = await this.getCustomerEntity(registration.id);
 
@@ -1391,7 +1399,10 @@ export class IntersolveVisaService
     programId: number,
   ): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: referenceId, programId: programId },
+      where: {
+        referenceId: Equal(referenceId),
+        programId: Equal(programId),
+      },
     });
     await this.queueMessageService.addMessageToQueue({
       registration,

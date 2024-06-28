@@ -26,7 +26,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class QueueMessageService {
@@ -130,9 +130,9 @@ export class QueueMessageService {
     if (messageTemplateKey) {
       const messageTemplate = await this.messageTemplateRepository.findOne({
         where: {
-          type: messageTemplateKey,
-          programId: programId,
-          language: 'en', // use english to determine which placeholders are used
+          type: Equal(messageTemplateKey),
+          programId: Equal(programId),
+          language: Equal('en'), // use English to determine which placeholders are used
         },
       });
       messageText = messageTemplate?.message;

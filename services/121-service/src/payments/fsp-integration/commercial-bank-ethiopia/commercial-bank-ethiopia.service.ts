@@ -38,7 +38,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
@@ -391,7 +391,7 @@ export class CommercialBankEthiopiaService
       }
       const existingRecord =
         await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.findOne({
-          where: { registrationId: pa.id },
+          where: { registrationId: Equal(pa.id) },
         });
 
       if (existingRecord) {

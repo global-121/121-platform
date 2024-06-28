@@ -16,7 +16,7 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageService {
@@ -270,7 +270,7 @@ export class MessageService {
     await this.whatsappPendingMessageRepo.save(pendingMesssage);
 
     const registration = await this.registrationRepository.findOne({
-      where: { id: registrationId },
+      where: { id: Equal(registrationId) },
       relations: ['program'],
     });
     const language = registration?.preferredLanguage || this.fallbackLanguage;

@@ -25,7 +25,7 @@ import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
-import { DataSource } from 'typeorm';
+import { DataSource, Equal } from 'typeorm';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -78,7 +78,7 @@ export class SeedInit implements InterfaceScript {
     const permissionEntities: PermissionEntity[] = [];
     for (const permissionName of Object.values(PermissionEnum)) {
       let permissionEntity = await permissionsRepository.findOne({
-        where: { name: permissionName },
+        where: { name: Equal(permissionName) },
       });
       if (!permissionEntity) {
         const permission = new PermissionEntity();

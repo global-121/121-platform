@@ -18,7 +18,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -62,7 +62,7 @@ export class IntersolveVoucherCronService {
       await this.intersolveVoucherRequestRepository.find({
         where: {
           updated: Between(twoWeeksAgo, tenMinutesAgo),
-          toCancel: true,
+          toCancel: Equal(true),
         },
       });
 
@@ -163,7 +163,7 @@ export class IntersolveVoucherCronService {
       for (const unsentIntersolveVoucher of unsentIntersolveVouchers) {
         const referenceId = unsentIntersolveVoucher.referenceId;
         const registration = await this.registrationRepository.findOneOrFail({
-          where: { referenceId: referenceId },
+          where: { referenceId: Equal(referenceId) },
           relations: ['program'],
         });
         const fromNumber =
@@ -198,7 +198,7 @@ export class IntersolveVoucherCronService {
         });
         const reminderVoucher =
           await this.intersolveVoucherRepository.findOneOrFail({
-            where: { id: unsentIntersolveVoucher.id },
+            where: { id: Equal(unsentIntersolveVoucher.id) },
           });
 
         reminderVoucher.reminderCount =

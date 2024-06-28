@@ -39,7 +39,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
-import { FindOperator, In, Not, Repository } from 'typeorm';
+import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -257,7 +257,7 @@ export class MetricsService {
   ): Promise<RegistrationDataOptions[]> {
     const relationOptions: RegistrationDataOptions[] = [];
     const program = await this.programRepository.findOneOrFail({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: [
         'programQuestions',
         'programCustomAttributes',
@@ -488,8 +488,8 @@ export class MetricsService {
         const dropdownProgramQuestion =
           await this.programQuestionRepository.findOne({
             where: {
-              id: option.relation.programQuestionId,
-              answerType: AnswerTypes.dropdown,
+              id: Equal(option.relation.programQuestionId),
+              answerType: Equal(AnswerTypes.dropdown),
             },
           });
         if (dropdownProgramQuestion) {
@@ -502,8 +502,8 @@ export class MetricsService {
       if (option.relation?.fspQuestionId) {
         const dropdownFspQuestion = await this.fspQuestionRepository.findOne({
           where: {
-            id: option.relation.fspQuestionId,
-            answerType: AnswerTypes.dropdown,
+            id: Equal(option.relation.fspQuestionId),
+            answerType: Equal(AnswerTypes.dropdown),
           },
         });
         if (dropdownFspQuestion) {
@@ -546,7 +546,7 @@ export class MetricsService {
     const program = await this.programRepository.findOneOrFail({
       relations: ['programQuestions', 'programCustomAttributes'],
       where: {
-        id: programId,
+        id: Equal(programId),
       },
     });
     const relationOptions: RegistrationDataOptions[] = [];
@@ -588,9 +588,9 @@ export class MetricsService {
     const programQuestions = await this.programQuestionRepository.find({
       where: {
         program: {
-          id: programId,
+          id: Equal(programId),
         },
-        duplicateCheck: true,
+        duplicateCheck: Equal(true),
       },
     });
     const programQuestionIds = programQuestions.map((question) => {
@@ -600,9 +600,9 @@ export class MetricsService {
       await this.programCustomAttributeRepository.find({
         where: {
           program: {
-            id: programId,
+            id: Equal(programId),
           },
-          duplicateCheck: true,
+          duplicateCheck: Equal(true),
         },
       });
     const programCustomAttributeIds = programCustomAttributes.map((att) => {
@@ -611,8 +611,8 @@ export class MetricsService {
     const fspQuestions = await this.fspQuestionRepository.find({
       relations: ['fsp', 'fsp.program'],
       where: {
-        duplicateCheck: true,
-        fsp: { program: { id: programId } },
+        duplicateCheck: Equal(true),
+        fsp: { program: { id: Equal(programId) } },
       },
     });
 
@@ -621,7 +621,7 @@ export class MetricsService {
     });
 
     const program = await this.programRepository.findOneOrFail({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: ['financialServiceProviders', 'programFspConfiguration'],
     });
 
@@ -720,7 +720,7 @@ export class MetricsService {
         registrationProgramId: In([
           ...Array.from(uniqueRegistrationProgramIds),
         ]),
-        programId: program.id,
+        programId: Equal(program.id),
       },
       select: ['registrationProgramId', 'fspId'],
     });
@@ -948,7 +948,7 @@ export class MetricsService {
     programId: number,
   ): Promise<string[]> {
     const program = await this.programRepository.findOneOrFail({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: ['financialServiceProviders'],
     });
     let fields: string[] = [];
@@ -1006,10 +1006,10 @@ export class MetricsService {
     const currentPaymentRegistrationsAndCount =
       await this.transactionScopedRepository.findAndCount({
         where: {
-          program: { id: programId },
-          status: StatusEnum.success,
-          payment: payment,
-          transactionStep: transactionStepOfInterest,
+          program: { id: Equal(programId) },
+          status: Equal(StatusEnum.success),
+          payment: Equal(payment),
+          transactionStep: Equal(transactionStepOfInterest),
         },
         relations: ['registration'],
       });
@@ -1059,8 +1059,8 @@ export class MetricsService {
 
     const includedPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: programId },
-        registrationStatus: RegistrationStatusEnum.included,
+        program: { id: Equal(programId) },
+        registrationStatus: Equal(RegistrationStatusEnum.included),
       },
     });
 
