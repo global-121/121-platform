@@ -481,7 +481,7 @@ class TableModule {
         return i;
       }
     }
-    return 400;
+    return -1;
   }
 
   async validateFspCell({
@@ -496,6 +496,23 @@ class TableModule {
     );
     const fspText = (await fsp.textContent())?.trim();
     expect(fspText).toBe(fspName);
+  }
+
+  async selectPaByLanguage({ language }: { language: string }) {
+    await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
+
+    const count = await this.paCell.count();
+    for (let i = 1; i <= count; i++) {
+      const getRow = this.page.locator(TableModule.getRow(i));
+      const rowText = (await getRow.textContent())?.trim();
+      const isRequiredLanguage = rowText?.includes(language);
+
+      if (isRequiredLanguage) {
+        await this.clickOnPaNumber(i);
+        return i;
+      }
+    }
+    return -1;
   }
 }
 
