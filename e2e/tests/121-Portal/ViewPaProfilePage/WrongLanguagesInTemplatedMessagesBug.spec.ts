@@ -60,7 +60,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
 
-  let paNumber = 0;
+  let paNumber = -1;
 
   await test.step('Should navigate to PA profile page and change the language to Arabic', async () => {
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
