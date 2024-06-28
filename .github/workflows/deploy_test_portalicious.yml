@@ -58,6 +58,8 @@ jobs:
             form-action https://test.121.global;
             frame-src blob: 'self' https://app.powerbi.com https://*.ciamlogin.com;
             frame-ancestors 'self' https://flex.twilio.com;
+            style-src 'self' https://fonts.googleapis.com;
+            font-src 'self' https://fonts.gstatic.com;
         env:
           NG_ENV_NAME: 'test'
           NG_LOCALES: 'ar,en,es,fr,nl'
