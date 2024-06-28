@@ -65,6 +65,8 @@ export class ProgramPayoutComponent implements OnInit {
 
   public showCbeValidationButton: boolean;
 
+  public maxNumberOfPayment = MAX_NUMBER_OF_PAYMENTS_TO_EXPORT;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,

@@ -19,7 +19,10 @@
         [value]="-1"
         [disabled]="lastPaymentId < 1"
       >
-        {{ 'page.program.program-payout.all-closed-payments' | translate }}
+        {{
+          'page.program.program-payout.last-closed-five-payments'
+            | translate: { maxNumberOfPayment }
+        }}
       </option>
       <option
         *ngFor="let payment of payments"
