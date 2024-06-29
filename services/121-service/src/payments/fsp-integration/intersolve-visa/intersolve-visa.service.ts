@@ -830,4 +830,22 @@ export class IntersolveVisaService
     wallet.isTokenBlocked = pause;
     return await this.intersolveVisaChildWalletScopedRepository.save(wallet);
   }
+
+  public async retrieveAndUpdateAllWalletsAndCards(): Promise<void> {
+    const customers =
+      await this.intersolveVisaCustomerScopedRepository.findAndWallets();
+    for (const customer of customers) {
+      for (const childWallet of customer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets) {
+        if (
+          childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted
+        ) {
+          await this.retrieveAndUpdateChildWallet(childWallet);
+        }
+      }
+      await this.retrieveAndUpdateParentWallet(
+        customer.intersolveVisaParentWallet,
+      );
+    }
+  }
 }
