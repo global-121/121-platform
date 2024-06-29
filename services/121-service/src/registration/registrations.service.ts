@@ -1024,4 +1024,6 @@ export class RegistrationsService {
     });
     return updatedWallet;
   }
+
+  public async getIntersolveVisaBalanceExportData(): Promise<void> {}
 }

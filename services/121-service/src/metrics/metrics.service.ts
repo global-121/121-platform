@@ -121,7 +121,7 @@ export class MetricsService {
         return this.getDuplicates(programId);
       }
       case ExportType.cardBalances: {
-        return this.getCardBalances(programId);
+        return this.createIntersolveVisaBalanceExport(programId);
       }
       default:
         throw new HttpException(
@@ -1084,7 +1084,7 @@ export class MetricsService {
     };
   }
 
-  private async getCardBalances(programId: number): Promise<{
+  private async createIntersolveVisaBalanceExport(programId: number): Promise<{
     fileName: ExportType;
     data: any[];
   }> {
