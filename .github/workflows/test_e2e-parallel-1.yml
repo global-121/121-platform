@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test: E2E'
+name: 'Test: E2E parallel 1'
 
 on:
   workflow_dispatch:
@@ -82,6 +82,8 @@ jobs:
           BASE_URL: http://localhost:8088
         run: |
           npx playwright test --project=chromium e2e/tests/121-Portal/EditInfoPersonAffected
+          npx playwright test --project=chromium e2e/tests/121-Portal/MakeNewPayment/OCW
+          npx playwright test --project=chromium e2e/tests/121-Portal/QuickSearch
 
       - uses: actions/upload-artifact@v4
         if: always()
