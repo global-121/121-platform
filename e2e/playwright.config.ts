@@ -42,7 +42,7 @@ export default defineConfig({
     // ],
   ],
   /* Shared settings for all the projects below. See https://playwright.devdocs/api/class-testoptions. */
-  workers: 1,
+  workers: 3,
   outputDir: './test-results',
   timeout: 60000,
   use: {
