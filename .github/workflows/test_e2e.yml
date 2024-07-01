@@ -51,25 +51,18 @@ jobs:
         run: |
           cp services/.env.example services/.env
 
-      - name: Set up Docker Compose for Partition ${{ matrix.partition }}
+      - name: Run Services with Docker
+        working-directory: ./services
         run: |
-          mkdir -p ./services/partition-${{ matrix.partition }}
-          cp docker-compose.yml ./services/partition-${{ matrix.partition }}/docker-compose.yml
-          sed -i 's|version: "3.9"|version: "3.9"\nservices:\n  partition-${{ matrix.partition }}:\n    container_name: partition-${{ matrix.partition }}|' ./services/partition-${{ matrix.partition }}/docker-compose.yml
-          sed -i 's|app:|app-${{ matrix.partition }}:|' ./services/partition-${{ matrix.partition }}/docker-compose.yml
+          docker-compose -p service-${{ matrix.partition }} up -d --build
 
-      - name: Run Services with Docker Compose for Partition ${{ matrix.partition }}
-        working-directory: ./services/partition-${{ matrix.partition }}
-        run: |
-          docker-compose up -d --quiet-pull --wait --wait-timeout 300
-
-      - name: Start Portal for Partition ${{ matrix.partition }}
+      - name: Start Portal
         working-directory: ./interfaces/Portal
         env:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm install
-          npm run start:debug-production > portal-server-logs-${{ matrix.partition }}.txt 2>&1 &
+          npm run start:debug-production > portal-server-logs.txt 2>&1 &
 
       - name: Install 121-Service dependencies
         working-directory: ./services/121-service
@@ -81,16 +74,23 @@ jobs:
         run: |
           npx playwright install chromium --with-deps
 
-      - name: Wait for Portal for Partition ${{ matrix.partition }}
+      - name: Wait for Portal
         run: |
           timeout 90s sh -c 'until curl http://localhost:8088 -I; do echo "Waiting for the Portal to be running..."; sleep 1; done'
 
-      - name: Run E2E-Tests with Playwright for Partition ${{ matrix.partition }}
+      - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npx playwright test --project=chromium tests/partition${{ matrix.partition }}
+          if [ ${{ matrix.partition }} -eq 0 ]; then
+            npx playwright test --project=chromium e2e/tests/121-Portal/EditInfoPersonAffected
+          elif [ ${{ matrix.partition }} -eq 1 ]; then
+            npx playwright test --project=chromium e2e/tests/121-Portal/MakeNewPayment
+          elif [ ${{ matrix.partition }} -eq 2 ]; then
+            npx playwright test --project=chromium e2e/tests/121-Portal/QuickSearch
+            npx playwright test --project=chromium e2e/tests/121-Portal/ViewPaProfilePage
+          fi
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -98,9 +98,14 @@ jobs:
           name: test-result-artifacts-${{ matrix.partition }}
           path: |
             ${{ env.e2eTestsPath }}/test-results/
-            ./interfaces/Portal/portal-server-logs-${{ matrix.partition }}.txt
+            ./interfaces/Portal/portal-server-logs.txt
           retention-days: 30
 
-      - name: Docker logs for Partition ${{ matrix.partition }}
+      - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
+
+      - name: Tear down Docker
+        if: always()
+        run: |
+          docker-compose -p service-${{ matrix.partition }} down
