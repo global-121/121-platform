@@ -704,7 +704,7 @@ export class IntersolveVisaApiService {
       phoneNumbers: [
         {
           type: 'MOBILE',
-          value: phoneNumber,
+          value: phoneNumber, // TODO: Do we need to format this phone number in some way?
         },
       ],
     };
