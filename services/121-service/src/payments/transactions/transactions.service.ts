@@ -32,7 +32,7 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
@@ -159,10 +159,10 @@ export class TransactionsService {
       id: relationDetails.programId,
     });
     const fsp = await this.financialServiceProviderRepository.findOneOrFail({
-      where: { fsp: transactionResponse.fspName },
+      where: { fsp: Equal(transactionResponse.fspName) },
     });
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: transactionResponse.referenceId },
+      where: { referenceId: Equal(transactionResponse.referenceId) },
     });
 
     const transaction = new TransactionEntity();
@@ -363,7 +363,7 @@ export class TransactionsService {
       id: transactionRelationDetails.programId,
     });
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { fsp: transactionResults[0].fspName },
+      where: { fsp: Equal(transactionResults[0].fspName) },
     });
 
     const transactionsToSave = transactionResults.map(
@@ -418,10 +418,10 @@ export class TransactionsService {
   ): Promise<void> {
     const foundTransaction = await this.transactionScopedRepository.findOne({
       where: {
-        payment,
-        registrationId: regisrationId,
-        transactionStep,
-        status: StatusEnum.waiting,
+        payment: Equal(payment),
+        registrationId: Equal(regisrationId),
+        transactionStep: Equal(transactionStep),
+        status: Equal(StatusEnum.waiting),
       },
     });
     if (foundTransaction) {

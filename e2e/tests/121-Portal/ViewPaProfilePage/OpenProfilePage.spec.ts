@@ -41,14 +41,7 @@ test('[27411] Open PA profile page', async ({ page }) => {
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.verifiyProfilePersonalnformationTableLeft(1, {
-      personAffected: 'PA #4',
-      firstName: undefined,
-      lastName: undefined,
-      phoneNumber: undefined,
-      status: undefined,
-    });
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate PA profile opened succesfully', async () => {

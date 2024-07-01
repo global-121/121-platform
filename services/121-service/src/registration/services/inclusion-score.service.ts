@@ -7,7 +7,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class InclusionScoreService {
@@ -29,7 +29,7 @@ export class InclusionScoreService {
     }
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
       relations: ['data'],
     });
     const formulaParts = program.paymentAmountMultiplierFormula
@@ -54,14 +54,14 @@ export class InclusionScoreService {
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
       relations: ['program'],
     });
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
     const program = await this.programRepository.findOneOrFail({
-      where: { id: registration.program.id },
+      where: { id: Equal(registration.program.id) },
       relations: ['programQuestions'],
     });
     const score = this.calculateScoreAllProgramQuestions(
@@ -78,7 +78,7 @@ export class InclusionScoreService {
     referenceId: string,
   ): Promise<object> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
       relations: ['data', 'data.programQuestion'],
     });
     const scoreList = {};

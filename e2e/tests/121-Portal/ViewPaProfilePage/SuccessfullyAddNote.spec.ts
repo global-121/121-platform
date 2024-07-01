@@ -29,7 +29,6 @@ const noteVisible =
   englishTranslations['registration-details']['activity-overview'][
     'add-note-popup'
   ]['note-visible'];
-
 const columnNote =
   englishTranslations.page.program['program-people-affected'].column.note;
 const ok = englishTranslations.common.ok;
@@ -61,7 +60,7 @@ test('[27499] Successfully add note', async ({ page }) => {
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate PA profile opened succesfully, add a note and validate new note log tile', async () => {

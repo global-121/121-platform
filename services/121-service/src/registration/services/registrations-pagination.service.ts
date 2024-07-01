@@ -36,6 +36,7 @@ import {
 import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
 import {
   Brackets,
+  Equal,
   FindOperator,
   FindOperatorType,
   Not,
@@ -155,6 +156,7 @@ export class RegistrationsPaginationService {
     if (hasPersonalReadPermission) {
       paginateConfigCopy.relations = ['data'];
     } else {
+      paginateConfigCopy.relations = [];
       paginateConfigCopy.searchableColumns = [];
     }
 
@@ -330,7 +332,7 @@ export class RegistrationsPaginationService {
     programId: number,
   ): Promise<string[]> {
     const program = await this.programRepository.findOneOrFail({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       select: ['fullnameNamingConvention'],
     });
     if (program.fullnameNamingConvention)
@@ -498,7 +500,7 @@ export class RegistrationsPaginationService {
     programId: number;
   }) {
     const program = await this.programRepository.findOneOrFail({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: ['financialServiceProviders', 'programFspConfiguration'],
     });
     const fspDisplayNameMapping = getFspDisplayNameMapping(program);

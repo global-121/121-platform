@@ -1,7 +1,7 @@
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class removeRegistrationPersonalSEARCH1669718138929
   implements MigrationInterface
@@ -61,7 +61,7 @@ export class removeRegistrationPersonalSEARCH1669718138929
     permissionRepo: any,
   ): Promise<void> {
     const permission = await permissionRepo.findOne({
-      where: { name: perminssionName },
+      where: { name: Equal(perminssionName) },
       relations: ['roles'],
     });
     if (permission) {

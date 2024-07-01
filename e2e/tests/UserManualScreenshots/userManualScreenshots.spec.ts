@@ -156,7 +156,8 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'RegistrationPageOverview',
   });
 
-  await table.clickOnPaNumber(1);
+  await table.openFspProfile({ shouldIncludeVisa: true });
+  1;
   await registration.clickActionButton({
     button: actions,
   });
@@ -225,12 +226,4 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await helpers.takeFullScreenShot({
     fileName: 'RegistrationRejected',
   });
-
-  // MARK AS VALIDATED DOES NOT EXIST ANYMORE
-
-  // await page.reload();
-  // await table.selectBulkAction({ option: BulkActionId.markAsValidated });
-  // await helpers.takeFullScreenShot({
-  //   fileName: 'RegistrationValidation',
-  // });
 });

@@ -48,7 +48,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Update payment amount multiplier', async () => {
@@ -60,7 +60,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
 
   await test.step('navigate to PA profile page in data changes table', async () => {
     await page.reload();
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {

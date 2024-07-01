@@ -7,7 +7,7 @@ import { ProgramAttributesService } from '@121-service/src/program-attributes/pr
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageTemplateService {
@@ -44,9 +44,9 @@ export class MessageTemplateService {
   ): Promise<void> {
     const existingTemplate = await this.messageTemplateRepository.findOne({
       where: {
-        programId: programId,
-        type: postData.type,
-        language: postData.language,
+        programId: Equal(programId),
+        type: Equal(postData.type),
+        language: Equal(postData.language),
       },
     });
     if (existingTemplate) {
@@ -75,7 +75,11 @@ export class MessageTemplateService {
     updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     const template = await this.messageTemplateRepository.findOne({
-      where: { programId: programId, type: type, language: language },
+      where: {
+        programId: Equal(programId),
+        type: Equal(type),
+        language: Equal(language),
+      },
     });
     if (!template) {
       const errors = `No message template found with type '${type}' and language '${language}' in program ${programId}`;

@@ -1,7 +1,7 @@
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class permissionReadAidworkers1681916727770
   implements MigrationInterface
@@ -26,7 +26,7 @@ export class permissionReadAidworkers1681916727770
     const permission = new PermissionEntity();
     permission.name = newPermission;
     let permissionEntity = await permissionsRepository.findOne({
-      where: { name: newPermission },
+      where: { name: Equal(newPermission) },
     });
     if (!permissionEntity) {
       permissionEntity = await permissionsRepository.save(permission);

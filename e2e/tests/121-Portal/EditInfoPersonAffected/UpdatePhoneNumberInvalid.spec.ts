@@ -51,7 +51,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Update phone number with empty string', async () => {

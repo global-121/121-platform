@@ -7,15 +7,30 @@ import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
-interface PersonLeft {
-  personAffected?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  status?: string;
+const paymentLabel =
+  englishTranslations.page.program['program-people-affected'].actions.doPayment;
+const filteredRecipients =
+  englishTranslations.page.program['table-filter-row']['filtered-results'];
+const sendMessageAction =
+  englishTranslations.page.program['program-people-affected'].actions
+    .sendMessage;
+const debitCardUsage =
+  englishTranslations.page.program['export-list']['card-balances']['btn-text'];
+const OK = englishTranslations.common.ok;
+
+interface bulkActionContent {
+  textLocator: Locator;
+  expectedText: string;
+  bulkAction: string;
+  maxRetries?: number;
 }
-interface PersonRight {
-  preferredLanguage?: string;
+
+interface ExportDebitCardAssertionData {
+  registrationStatus: string;
+  paId: number;
+  balance: number;
+  spentThisMonth: number;
+  isCurrentWallet: boolean;
 }
 
 class TableModule {
@@ -83,86 +98,6 @@ class TableModule {
     );
   }
 
-  async waitForElementDisplayed(selector: string) {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.locator(selector).waitFor({ state: 'visible' });
-  }
-
-  async getElementText(locator: string) {
-    return await this.page.locator(locator).textContent();
-  }
-
-  async waitForElementToContainText(selector: string, text: string) {
-    await this.waitForElementDisplayed(selector);
-    let i = 0;
-    let content = '';
-    while (!content.includes(text) && i < 10) {
-      await this.page.waitForTimeout(500);
-      const elementText = await this.getElementText(selector);
-      content = elementText !== null ? elementText : '';
-      i++;
-    }
-    if (content.includes(text)) {
-      return;
-    } else {
-      throw new Error(
-        `Element ${selector} did not contain text "${text}", instead it contained "${content}"`,
-      );
-    }
-  }
-
-  async verifiyProfilePersonalnformationTableLeft(
-    rowIndex: number,
-    person: PersonLeft,
-  ) {
-    const { personAffected, firstName, lastName, phoneNumber, status } = person;
-
-    if (personAffected !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 2),
-        personAffected,
-      );
-    }
-    if (firstName !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 3),
-        firstName,
-      );
-    }
-    if (lastName !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 4),
-        lastName,
-      );
-    }
-    if (phoneNumber !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 5),
-        phoneNumber,
-      );
-    }
-    if (status !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableLeft(rowIndex, 6),
-        status,
-      );
-    }
-  }
-
-  async verifiyProfilePersonalnformationTableRight(
-    rowIndex: number,
-    person: PersonRight,
-  ) {
-    const { preferredLanguage } = person;
-
-    if (preferredLanguage !== undefined) {
-      await this.waitForElementToContainText(
-        TableModule.getCellValueTableRight(rowIndex, 1),
-        preferredLanguage,
-      );
-    }
-  }
-
   async clickOnPaNumber(rowIndex: number) {
     await this.page
       .locator(TableModule.getCellValueTableLeft(rowIndex, 2))
@@ -188,22 +123,44 @@ class TableModule {
     }
   }
 
-  async validateQuickFilterResultsNumber(expectedNumber: number) {
+  async validateQuickFilterResultsNumber({
+    expectedNumber,
+  }: {
+    expectedNumber: number;
+  }) {
     const textLocator = this.textLabel.filter({
-      hasText: 'Filtered recipients:',
+      hasText: filteredRecipients,
     });
-    const textContent = await textLocator.textContent();
+    const expectedText = `${filteredRecipients}: ${expectedNumber}`;
 
-    if (textContent !== null) {
-      const expectedText = `Filtered recipients: ${expectedNumber}`;
-      if (textContent.trim() !== expectedText) {
-        throw new Error(
-          `Expected "${expectedText}" but received "${textContent.trim()}"`,
-        );
-      }
-    } else {
-      console.error('Text content is null');
+    if (
+      !(await this.retryCheckTextContent({
+        textLocator: textLocator,
+        expectedText: expectedText,
+      }))
+    ) {
+      expect(expectedText).toBe(await textLocator.textContent());
     }
+  }
+
+  async retryCheckTextContent({
+    textLocator,
+    expectedText,
+    maxRetries = 3,
+  }: {
+    textLocator: Locator;
+    expectedText: string;
+    maxRetries?: number;
+  }) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const textContent = await textLocator.textContent();
+      if (textContent?.trim() === expectedText) return true;
+      if (attempt < maxRetries) {
+        await this.page.reload();
+        await this.page.waitForTimeout(1000);
+      }
+    }
+    return false;
   }
 
   async applyBulkAction(
@@ -231,22 +188,45 @@ class TableModule {
     await this.bulkImportRegistrationsButton.getByRole('button').click();
   }
 
-  async validateBulkActionTargetedPasNumber(expectedNumber: number) {
+  async validateBulkActionTargetedPasNumber({
+    expectedNumber,
+    bulkAction,
+  }: {
+    expectedNumber: number;
+    bulkAction: string;
+  }) {
     const textLocator = this.page
       .locator('p')
-      .filter({ hasText: 'Send Message to PAs' });
-    const textContent = await textLocator.textContent();
+      .filter({ hasText: sendMessageAction });
+    const expectedText = `${sendMessageAction} for ${expectedNumber} People Affected.`;
 
-    if (textContent !== null) {
-      const expectedText = `Send Message to PAs for ${expectedNumber} People Affected.`;
-      if (textContent.trim() !== expectedText) {
-        throw new Error(
-          `Expected "${expectedText}" but received "${textContent.trim()}"`,
-        );
-      }
-    } else {
-      console.error('Text content is null');
+    if (
+      !(await this.retryCheckTextContentOfBulkAction({
+        textLocator: textLocator,
+        expectedText: expectedText,
+        bulkAction: bulkAction,
+      }))
+    ) {
+      expect(expectedText).toBe(await textLocator.textContent());
     }
+  }
+
+  async retryCheckTextContentOfBulkAction({
+    textLocator,
+    expectedText,
+    bulkAction,
+    maxRetries = 3,
+  }: bulkActionContent) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const textContent = await textLocator.textContent();
+      if (textContent?.trim() === expectedText) return true;
+      if (attempt < maxRetries) {
+        await this.page.reload();
+        await this.applyBulkAction(bulkAction);
+        await this.page.waitForTimeout(1000);
+      }
+    }
+    return false;
   }
 
   async selectFieldsforCustomMessage({
@@ -313,9 +293,10 @@ class TableModule {
   }
 
   async doPayment(paymentNr: number) {
-    const doPaymentLabel = englishTranslations.page.program[
-      'program-people-affected'
-    ].actions.doPayment.replace('{{paymentNr}}', paymentNr.toString());
+    const doPaymentLabel = paymentLabel.replace(
+      '{{paymentNr}}',
+      paymentNr.toString(),
+    );
 
     await this.applyBulkAction({ label: doPaymentLabel });
   }
@@ -328,7 +309,13 @@ class TableModule {
     await okButton.click();
   }
 
-  async exportDebitCardData() {
+  async exportDebitCardData({
+    registrationStatus,
+    paId,
+    balance,
+    spentThisMonth,
+    isCurrentWallet,
+  }: ExportDebitCardAssertionData) {
     const expectedColumns = [
       'paId',
       'referenceId',
@@ -342,9 +329,9 @@ class TableModule {
       'isCurrentWallet',
     ];
 
-    const okButton = this.page.getByRole('button', { name: 'OK' });
+    const okButton = this.page.getByRole('button', { name: OK });
     const exportButton = this.debitCardDataExportButton.filter({
-      hasText: 'Export debit card usage',
+      hasText: debitCardUsage,
     });
 
     await exportButton.click();
@@ -372,32 +359,63 @@ class TableModule {
     const firstRow = data[0] as Record<string, unknown>;
     const actualColumns = Object.keys(firstRow);
 
+    // Assert the values of the first row
+    expect(firstRow.registrationStatus).toBe(registrationStatus);
+    expect(firstRow.paId).toBe(paId);
+    expect(firstRow.balance).toBe(balance);
+    expect(firstRow.spentThisMonth).toBe(spentThisMonth);
+    expect(firstRow.isCurrentWallet).toBe(isCurrentWallet);
+
     // Validate the column names
     const columnsPresent = expectedColumns.every((col) =>
       actualColumns.includes(col),
     );
     const correctColumns =
       actualColumns.length === expectedColumns.length && columnsPresent;
-    if (correctColumns) {
-      console.log('Column validation passed');
-    } else {
+
+    if (!correctColumns) {
       throw error('Column validation failed');
     }
   }
 
-  async selectNonVisaFspPA() {
+  async selectFspPaPii({ shouldSelectVisa }: { shouldSelectVisa: boolean }) {
     await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
 
     const count = await this.paCell.count();
     for (let i = 1; i <= count; i++) {
-      const fsp = this.page.locator(TableModule.getCellValueTableRight(i, 4));
+      const fsp = this.page.locator(TableModule.getRow(i));
       const fspText = (await fsp.textContent())?.trim();
-      if (fspText !== visaFspIntersolve.displayName.en) {
+      const isVisaFsp = fspText?.includes(visaFspIntersolve.displayName.en);
+
+      if (
+        (shouldSelectVisa && isVisaFsp) ||
+        (!shouldSelectVisa && !isVisaFsp)
+      ) {
         await this.openPaPersonalInformation({ buttonIndex: i - 1 });
         return i;
       }
     }
-    return 400;
+    return -1;
+  }
+
+  async openFspProfile({ shouldIncludeVisa }: { shouldIncludeVisa: boolean }) {
+    await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
+
+    const count = await this.paCell.count();
+    for (let i = 1; i <= count; i++) {
+      const fsp = this.page.locator(TableModule.getRow(i));
+      const fspText = (await fsp.textContent())?.trim();
+      const isVisaFsp = fspText?.includes(visaFspIntersolve.displayName.en);
+
+      if (
+        (shouldIncludeVisa && isVisaFsp) ||
+        (!shouldIncludeVisa && !isVisaFsp)
+      ) {
+        await this.clickOnPaNumber(i);
+        return i;
+      }
+    }
+    return -1;
   }
 
   async validateFspCell({
@@ -412,6 +430,23 @@ class TableModule {
     );
     const fspText = (await fsp.textContent())?.trim();
     expect(fspText).toBe(fspName);
+  }
+
+  async selectPaByLanguage({ language }: { language: string }) {
+    await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 4));
+
+    const count = await this.paCell.count();
+    for (let i = 1; i <= count; i++) {
+      const getRow = this.page.locator(TableModule.getRow(i));
+      const rowText = (await getRow.textContent())?.trim();
+      const isRequiredLanguage = rowText?.includes(language);
+
+      if (isRequiredLanguage) {
+        await this.clickOnPaNumber(i);
+        return i;
+      }
+    }
+    return -1;
   }
 }
 

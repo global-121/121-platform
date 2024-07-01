@@ -44,12 +44,12 @@ test('[28037] Open the popup to view and edit information', async ({
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Validate information shown', async () => {
     await piiPopUp.validatePiiPopUp({
-      paId: 'PA #4',
+      paId: 'PA #',
       whatsappLabel: whatsappLabel,
       saveButtonName: save,
     });

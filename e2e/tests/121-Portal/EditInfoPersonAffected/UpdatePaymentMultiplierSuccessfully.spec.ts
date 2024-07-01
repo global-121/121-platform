@@ -43,7 +43,7 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Update payment amount multiplier', async () => {
@@ -56,7 +56,7 @@ test('[28038] Update paymentAmountMultiplier successfully', async ({
 
   await test.step('Validate payment multiplier updated', async () => {
     await page.reload();
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
     await piiPopUp.validateAmountMultiplier({ amount: '2' });
   });
 });

@@ -34,18 +34,23 @@ describe('RegistrationBulkService', () => {
     jest
       .spyOn(messageTemplateRepository as any, 'findOne')
       .mockImplementation((arg: any) => {
-        if (arg.where.type === RegistrationStatusEnum.registered) {
+        const programIdValue = arg.where.programId._value;
+        const typeValue = arg.where.type._value;
+
+        if (
+          programIdValue === programId &&
+          typeValue === RegistrationStatusEnum.registered
+        ) {
           return Promise.resolve({
             id: 1,
             name: 'test',
             language: LanguageEnum.en,
-            type: 'test',
-            message: 'test',
+            type: RegistrationStatusEnum.registered,
+            message: 'test message',
             programId: 2,
           });
-        } else {
-          return null;
         }
+        return Promise.resolve(null);
       });
 
     const dbQueryResult = null;

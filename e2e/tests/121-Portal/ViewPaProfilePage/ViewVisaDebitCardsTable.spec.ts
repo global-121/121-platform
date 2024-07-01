@@ -38,9 +38,8 @@ test('[27494] View Visa debit cards table', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should navigate to PA profile page in Payment table', async () => {
-    await homePage.validateNumberOfActivePrograms(2);
     await homePage.navigateToProgramme(nlrcOcwProgrammeTitle);
-    await table.clickOnPaNumber(2);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate PA profile opened succesfully and Visa Card Details are presented correctly with status: Active', async () => {

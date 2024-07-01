@@ -44,7 +44,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
   });
 
   await test.step('Open information pop-up', async () => {
-    await table.openPaPersonalInformation({});
+    await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
   await test.step('Update payment amount multiplier with empty string', async () => {

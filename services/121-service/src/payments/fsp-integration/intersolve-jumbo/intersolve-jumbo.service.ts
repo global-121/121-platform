@@ -18,7 +18,7 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveJumboService
@@ -100,7 +100,7 @@ export class IntersolveJumboService
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
     const registration = await this.registrationRepository.findOneOrFail({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(IntersolveJumboPaymentInfoEnum)) {

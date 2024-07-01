@@ -52,7 +52,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import crypto from 'crypto';
 import Redis from 'ioredis';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -156,7 +156,7 @@ export class IntersolveVoucherService
     }
 
     const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: paResult.referenceId },
+      where: { referenceId: Equal(paResult.referenceId) },
     });
     if (!registration) {
       throw new HttpException(
@@ -363,7 +363,7 @@ export class IntersolveVoucherService
     result.referenceId = paymentInfo.referenceId;
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: paymentInfo.referenceId },
+      where: { referenceId: Equal(paymentInfo.referenceId) },
     });
 
     const programId = registration.programId;
@@ -513,7 +513,10 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<IntersolveVoucherEntity> {
     const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: referenceId, programId: programId },
+      where: {
+        referenceId: Equal(referenceId),
+        programId: Equal(programId),
+      },
       relations: ['images', 'images.voucher'],
     });
     if (!registration) {
@@ -538,7 +541,7 @@ export class IntersolveVoucherService
   public async getInstruction(programId: number): Promise<any> {
     const intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
-        where: { programId: programId },
+        where: { programId: Equal(programId) },
       });
 
     if (!intersolveInstructionsEntity) {
@@ -557,7 +560,7 @@ export class IntersolveVoucherService
   ): Promise<any> {
     let intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
-        where: { programId: programId },
+        where: { programId: Equal(programId) },
       });
 
     if (!intersolveInstructionsEntity) {
@@ -648,7 +651,7 @@ export class IntersolveVoucherService
     const toCancelVouchers = await this.intersolveVoucherRequestRepository.find(
       {
         where: {
-          toCancel: true,
+          toCancel: Equal(true),
         },
       },
     );
@@ -746,7 +749,7 @@ export class IntersolveVoucherService
     if (options.intersolveVoucherId) {
       const intersolveVoucher =
         await this.intersolveVoucherScopedRepository.findOneOrFail({
-          where: { id: options.intersolveVoucherId },
+          where: { id: Equal(options.intersolveVoucherId) },
         });
       intersolveVoucher.send = true;
       await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
@@ -792,7 +795,10 @@ export class IntersolveVoucherService
     payment: number,
   ) {
     const transaction = await this.transactionRepository.findOne({
-      where: { registrationId: registrationId, payment: payment },
+      where: {
+        registrationId: Equal(registrationId),
+        payment: Equal(payment),
+      },
       order: { created: 'DESC' },
       select: ['userId'],
     });
@@ -808,7 +814,7 @@ export class IntersolveVoucherService
     messageSid?: string,
   ): Promise<PaTransactionResultDto> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { id: registrationId },
+      where: { id: Equal(registrationId) },
       relations: ['fsp', 'program'],
     });
 

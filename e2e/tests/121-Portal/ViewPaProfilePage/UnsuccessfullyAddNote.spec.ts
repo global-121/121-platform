@@ -48,7 +48,7 @@ test('[27500] Unsuccessfully add note', async ({ page }) => {
   });
 
   await test.step('Should validate first row with uploaded PAs', async () => {
-    await table.clickOnPaNumber(1);
+    await table.openFspProfile({ shouldIncludeVisa: true });
   });
 
   await test.step('Should validate PA profile opened succesfully, adds note without content and validate that "ok" button is disabled', async () => {

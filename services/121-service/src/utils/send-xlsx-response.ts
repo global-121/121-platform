@@ -19,7 +19,9 @@ export function sendXlsxReponse(
 }
 
 function arrayToXlsx(array: any[]): Buffer {
-  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(array);
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(array, {
+    dense: true,
+  });
   const workbook: XLSX.WorkBook = {
     Sheets: { data: worksheet },
     SheetNames: ['data'],

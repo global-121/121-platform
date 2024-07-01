@@ -51,7 +51,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class PaymentsService {
@@ -407,7 +407,7 @@ export class PaymentsService {
     programId: number,
   ): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: ['financialServiceProviders'],
     });
     if (!program) {
@@ -508,7 +508,11 @@ export class PaymentsService {
     }
 
     const programsWithFsp = await this.programRepository.find({
-      where: { financialServiceProviders: { fsp: fsp } },
+      where: {
+        financialServiceProviders: {
+          fsp: Equal(fsp),
+        },
+      },
     });
     const nrPending = await service.getQueueProgress(
       programsWithFsp.length > 0 ? programId : null,
@@ -719,7 +723,7 @@ export class PaymentsService {
     )) {
       const registration =
         await this.registrationScopedRepository.findOneOrFail({
-          where: { referenceId: transaction.referenceId },
+          where: { referenceId: Equal(transaction.referenceId) },
           relations: ['fsp'],
         });
 
@@ -802,8 +806,8 @@ export class PaymentsService {
     const programWithReconciliationFsps =
       await this.programRepository.findOneOrFail({
         where: {
-          id: programId,
-          financialServiceProviders: { hasReconciliation: true },
+          id: Equal(programId),
+          financialServiceProviders: { hasReconciliation: Equal(true) },
         },
         relations: ['financialServiceProviders'],
       });

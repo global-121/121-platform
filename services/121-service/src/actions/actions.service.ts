@@ -8,7 +8,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class ActionsService {
@@ -26,7 +26,7 @@ export class ActionsService {
   ): Promise<ActionReturnDto> {
     const savedAction = await this.saveAction(userId, programId, actionType);
     const actionWithRelations = await this.actionRepository.findOne({
-      where: { id: savedAction.id },
+      where: { id: Equal(savedAction.id) },
       relations: ['user'],
     });
     return ActionMapper.entityToActionReturnDto(actionWithRelations!);
@@ -59,7 +59,10 @@ export class ActionsService {
     actionType: ActionType,
   ): Promise<ActionReturnDto | null> {
     const action = await this.actionRepository.findOne({
-      where: { program: { id: programId }, actionType: actionType },
+      where: {
+        program: { id: Equal(programId) },
+        actionType: Equal(actionType),
+      },
       relations: ['user'],
       order: { created: 'DESC' },
     });

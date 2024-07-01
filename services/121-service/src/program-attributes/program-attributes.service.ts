@@ -15,7 +15,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
-import { In, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 @Injectable()
 export class ProgramAttributesService {
   @InjectRepository(ProgramEntity)
@@ -157,7 +157,7 @@ export class ProgramAttributesService {
     programId: number,
   ): Promise<Attribute[]> {
     const hasMaxPayments = await this.programRepository.findOne({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       select: ['enableMaxPayments'],
     });
     const defaultAttributes: Attribute[] = [
@@ -187,7 +187,7 @@ export class ProgramAttributesService {
   ): Promise<Attribute[]> {
     const customAttributes = (
       await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
+        where: { program: { id: Equal(programId) } },
       })
     ).map((c) => {
       return {
@@ -198,7 +198,10 @@ export class ProgramAttributesService {
     });
     const programQuestions = (
       await this.programQuestionRepository.find({
-        where: { program: { id: programId }, editableInPortal: true },
+        where: {
+          program: { id: Equal(programId) },
+          editableInPortal: Equal(true),
+        },
       })
     ).map((c) => {
       return {
@@ -266,7 +269,7 @@ export class ProgramAttributesService {
     filterShowInPeopleAffectedTable?: boolean,
   ): Promise<Attribute[]> {
     const program = await this.programRepository.findOneOrFail({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: ['financialServiceProviders'],
     });
     const fspIds = program.financialServiceProviders.map((f) => f.id);

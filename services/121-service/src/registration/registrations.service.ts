@@ -54,7 +54,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsService {
@@ -115,7 +115,7 @@ export class RegistrationsService {
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { id: Equal(userId) },
     });
     if (!user) {
       const errors = 'This user is not known.';
@@ -149,7 +149,7 @@ export class RegistrationsService {
   ): Promise<RegistrationViewEntity> {
     const registrationBeforeUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
-        where: { referenceId: referenceId },
+        where: { referenceId: Equal(referenceId) },
         select: ['id', 'status'],
       });
     await this.registrationScopedRepository.updateUnscoped(
@@ -158,7 +158,7 @@ export class RegistrationsService {
     );
     const registrationAfterUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
-        where: { referenceId: referenceId },
+        where: { referenceId: Equal(referenceId) },
         select: ['id', 'status'],
       });
     await this.eventsService.log(
@@ -235,7 +235,7 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
       relations: relations,
     });
     if (!registration) {
@@ -254,7 +254,7 @@ export class RegistrationsService {
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
     const fsp = await this.fspRepository.findOneOrFail({
-      where: { id: fspId },
+      where: { id: Equal(fspId) },
       relations: ['questions'],
     });
     registration.fsp = fsp;
@@ -309,13 +309,13 @@ export class RegistrationsService {
 
     const answersTypeTel: string[] = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
-      where: { answerType: AnswerTypes.tel },
+      where: { answerType: Equal(AnswerTypes.tel) },
     });
     for (const fspAttr of fspAttributesTypeTel) {
       answersTypeTel.push(fspAttr.name);
     }
     const programQuestionsTypeTel = await this.programQuestionRepository.find({
-      where: { answerType: AnswerTypes.tel },
+      where: { answerType: Equal(AnswerTypes.tel) },
     });
     for (const question of programQuestionsTypeTel) {
       answersTypeTel.push(question.name);
@@ -413,7 +413,7 @@ export class RegistrationsService {
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
-      where: { id: programId },
+      where: { id: Equal(programId) },
       relations: ['programCustomAttributes'],
     });
     if (!program) {
@@ -612,7 +612,7 @@ export class RegistrationsService {
 
     const matchingRegistrations = (
       await this.registrationScopedRepository.find({
-        where: { phoneNumber: phoneNumber },
+        where: { phoneNumber: Equal(phoneNumber) },
       })
     ).map((r) => {
       return {
@@ -680,8 +680,8 @@ export class RegistrationsService {
         // Filters out registrations of a program to which this user is assigned, but not to the scope of the registration
         const findProgramOption = {
           where: {
-            programId: registration.programId,
-            referenceId: registration.referenceId,
+            programId: Equal(registration.programId),
+            referenceId: Equal(registration.referenceId),
           },
         };
         const findOption = convertToScopedOptions<RegistrationEntity>(
@@ -713,7 +713,7 @@ export class RegistrationsService {
   }) {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
-      where: { fsp: newFspName },
+      where: { fsp: Equal(newFspName) },
       relations: ['questions'],
     });
     if (!newFsp) {
@@ -869,7 +869,10 @@ export class RegistrationsService {
     paId: number,
   ): Promise<RegistrationEntity | null> {
     return await this.registrationScopedRepository.findOne({
-      where: { programId: programId, registrationProgramId: paId },
+      where: {
+        programId: Equal(programId),
+        registrationProgramId: Equal(paId),
+      },
     });
   }
 }

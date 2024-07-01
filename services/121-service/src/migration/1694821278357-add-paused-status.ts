@@ -1,7 +1,7 @@
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class addPausedStatus1694821278357 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -24,7 +24,7 @@ export class addPausedStatus1694821278357 implements MigrationInterface {
     const permission = new PermissionEntity();
     permission.name = newPermission;
     let permissionEntity = await permissionsRepository.findOne({
-      where: { name: newPermission },
+      where: { name: Equal(newPermission) },
     });
     if (!permissionEntity) {
       permissionEntity = await permissionsRepository.save(permission);

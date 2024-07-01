@@ -3,6 +3,13 @@ import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../Helpers/Helpers';
 
+const updateSuccesfullNotification =
+  englishTranslations.common['update-success'];
+const dataChangesKeyValuePair =
+  englishTranslations['registration-details']['activity-overview'].activities[
+    'data-changes'
+  ];
+
 class RegistrationDetails {
   readonly page: Page;
   readonly personalInformationTable: Locator;
@@ -150,7 +157,7 @@ class RegistrationDetails {
     await saveButton.click();
 
     await expect(
-      this.page.getByText(englishTranslations.common['update-success']),
+      this.page.getByText(updateSuccesfullNotification),
     ).toBeVisible();
 
     await okButton.waitFor({ state: 'visible' });
@@ -422,9 +429,7 @@ class RegistrationDetails {
     });
 
     type DataChangeField = 'new' | 'old' | 'reason';
-    const getField = (field: DataChangeField) =>
-      englishTranslations['registration-details']['activity-overview']
-        .activities['data-changes'][field];
+    const getField = (field: DataChangeField) => dataChangesKeyValuePair[field];
     const getHolder = (field: DataChangeField) =>
       this.tileInformationPlaceHolder
         .filter({ hasText: getField(field) })

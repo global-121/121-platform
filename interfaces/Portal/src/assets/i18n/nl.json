@@ -290,7 +290,6 @@
         "titlePortal": "Titel portal"
       },
       "program-payout": {
-        "all-closed-payments": "Alle afgesloten betalingen",
         "calculating-transfer-amount": "Totaalbedrag berekenen",
         "cbe": {
           "btn": "CBE verificatierapport",
@@ -300,6 +299,7 @@
         "choose-payment": "Kies betaling...",
         "closed": "Gesloten",
         "in-progress": "Betaling in uitvoering",
+        "last-closed-payments": "De laatste {{maxNumberOfPayment}} gesloten betalingen",
         "last-payment": {
           "confirm-prompt": "Hiermee wordt ALLEEN de {{number}} mislukte betaling(en) opnieuw geprobeerd.",
           "error": "Mislukt",

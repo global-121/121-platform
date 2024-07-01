@@ -15,7 +15,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
 export class RegistrationDataTypeClassValidator
@@ -38,7 +38,7 @@ export class RegistrationDataTypeClassValidator
     const registrationRepository =
       AppDataSource.getRepository(RegistrationEntity);
     const registration = await registrationRepository.findOne({
-      where: { referenceId: referenceId },
+      where: { referenceId: Equal(referenceId) },
       relations: ['program'],
     });
     if (!registration) {
@@ -90,7 +90,7 @@ export class RegistrationDataTypeClassValidator
     orignalReferenceId: string,
   ): Promise<boolean> {
     const registration = await registrationRepository.findOne({
-      where: { referenceId: value },
+      where: { referenceId: Equal(value) },
       relations: ['program'],
     });
     if (registration && registration.referenceId !== orignalReferenceId) {
@@ -123,7 +123,7 @@ export class RegistrationDataTypeClassValidator
       ProgramAidworkerAssignmentEntity,
     );
     const assignment = await assignmentRepo.findOne({
-      where: { userId: userId, programId: programId },
+      where: { userId: Equal(userId), programId: Equal(programId) },
     });
     const requestScope = assignment?.scope ? assignment.scope : '';
     const scopeValid =

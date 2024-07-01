@@ -1,7 +1,7 @@
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class RemoveSelectForValidation1707311790028
   implements MigrationInterface
@@ -51,7 +51,7 @@ export class RemoveSelectForValidation1707311790028
       const permission = new PermissionEntity();
       permission.name = name;
       let permissionEntity = await permissionsRepository.findOne({
-        where: { name: name },
+        where: { name: Equal(name) },
       });
       if (!permissionEntity) {
         permissionEntity = await permissionsRepository.save(permission);
@@ -84,7 +84,7 @@ export class RemoveSelectForValidation1707311790028
     const oldPermissionName =
       'registration:status:selectedForValidation.update' as any;
     const oldPermission = await permissionsRepository.findOne({
-      where: { name: oldPermissionName },
+      where: { name: Equal(oldPermissionName) },
       relations: ['roles'],
     });
     if (oldPermission) {

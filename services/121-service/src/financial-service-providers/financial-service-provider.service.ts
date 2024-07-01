@@ -8,7 +8,7 @@ import { FspQuestionEntity } from '@121-service/src/financial-service-providers/
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class FinancialServiceProvidersService {
@@ -19,7 +19,7 @@ export class FinancialServiceProvidersService {
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOneOrFail({
-      where: { id: id },
+      where: { id: Equal(id) },
       relations: ['questions'],
     });
     if (fsp) {
@@ -40,7 +40,7 @@ export class FinancialServiceProvidersService {
 
   private async getPaEditableAttributesFsp(fspId): Promise<Attribute[]> {
     const fspAttributes = await this.fspAttributeRepository.find({
-      where: { fspId: fspId },
+      where: { fspId: Equal(fspId) },
     });
 
     const attrs = fspAttributes.map((c) => {
@@ -61,7 +61,7 @@ export class FinancialServiceProvidersService {
     updateFspDto: UpdateFinancialServiceProviderDto,
   ): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { id: fspId },
+      where: { id: Equal(fspId) },
     });
     if (!fsp) {
       const errors = `No fsp found with id ${fspId}`;
@@ -84,7 +84,7 @@ export class FinancialServiceProvidersService {
     fspAttributeDto: UpdateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     const fspAttributes = await this.fspAttributeRepository.find({
-      where: { name: attributeName },
+      where: { name: Equal(attributeName) },
       relations: ['fsp'],
     });
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
@@ -107,7 +107,7 @@ export class FinancialServiceProvidersService {
     fspAttributeDto: CreateFspAttributeDto,
   ): Promise<FspQuestionEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { id: fspId },
+      where: { id: Equal(fspId) },
     });
     if (!fsp) {
       const errors = `Fsp with id '${fspId}' not found.'`;
@@ -115,7 +115,7 @@ export class FinancialServiceProvidersService {
     }
 
     const fspAttributes = await this.fspAttributeRepository.find({
-      where: { name: fspAttributeDto.name },
+      where: { name: Equal(fspAttributeDto.name) },
       relations: ['fsp'],
     });
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
@@ -138,7 +138,10 @@ export class FinancialServiceProvidersService {
     attributeName: string,
   ): Promise<FspQuestionEntity> {
     const fspAttribute = await this.fspAttributeRepository.findOne({
-      where: { name: attributeName, fsp: { id: fspId } },
+      where: {
+        name: Equal(attributeName),
+        fsp: { id: Equal(fspId) },
+      },
       relations: ['fsp'],
     });
     if (!fspAttribute) {

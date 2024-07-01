@@ -4,6 +4,18 @@ import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
+const updateSuccesfullNotification =
+  englishTranslations.common['update-success'];
+const programWesterosQuestionName =
+  programTestTranslations.programQuestions[1].label.en;
+const fspCahngeWarning =
+  englishTranslations['page'].program['program-people-affected'][
+    'edit-person-affected-popup'
+  ].fspChangeWarning;
+const visaQuestionStreet = visaIntersolveTranslations.questions[0].label.en;
+const visaQuestionHouseNumberAddition =
+  visaIntersolveTranslations.questions[2].label.en;
+
 class PersonalInformationPopup {
   readonly page: Page;
   readonly editPersonAffectedPopUp: Locator;
@@ -93,7 +105,7 @@ class PersonalInformationPopup {
     newValue,
     saveButtonName,
     okButtonName,
-    alert = englishTranslations.common['update-success'],
+    alert = updateSuccesfullNotification,
     reasonText,
   }: {
     fieldSelector: Locator;
@@ -131,7 +143,7 @@ class PersonalInformationPopup {
     amount = 'default',
     saveButtonName,
     okButtonName,
-    alert = englishTranslations.common['update-success'],
+    alert = updateSuccesfullNotification,
   }: {
     amount?: string;
     saveButtonName: string;
@@ -179,7 +191,7 @@ class PersonalInformationPopup {
     phoneNumber,
     saveButtonName,
     okButtonName,
-    alert = englishTranslations.common['update-success'],
+    alert = updateSuccesfullNotification,
   }: {
     phoneNumber: string;
     saveButtonName: string;
@@ -204,7 +216,7 @@ class PersonalInformationPopup {
     saveButtonName: string;
   }) {
     const birthDateForm = this.personAffectedInputForm.filter({
-      hasText: programTestTranslations.programQuestions[1].label.en,
+      hasText: programWesterosQuestionName,
     });
     const birthDateInput = birthDateForm.getByRole('textbox');
     const formSaveButton = birthDateForm.getByRole('button', {
@@ -268,18 +280,15 @@ class PersonalInformationPopup {
     okButtonName: string;
   }) {
     const dropdown = this.page.getByRole('radio');
-    const warning =
-      englishTranslations['page'].program['program-people-affected'][
-        'edit-person-affected-popup'
-      ].fspChangeWarning;
+    const warning = fspCahngeWarning;
     const newValue = 'Nieuwe straat';
     const fieldSelector = this.personAffectedPopUpFsp;
     const okButton = this.page.getByRole('button', { name: okButtonName });
     const streetAdressInput = await this.selectFspInputForm({
-      filterValue: visaIntersolveTranslations.questions[0].label.en,
+      filterValue: visaQuestionStreet,
     });
     const numberAdditionInput = await this.selectFspInputForm({
-      filterValue: visaIntersolveTranslations.questions[2].label.en,
+      filterValue: visaQuestionHouseNumberAddition,
     });
 
     await this.validateFspNamePresentInEditPopUp(fspOldName);
