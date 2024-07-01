@@ -1,4 +1,3 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -13,12 +12,9 @@ import { GetTransactionInformationResultDto } from '@121-service/src/payments/fs
 import { AddressDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-request.dto';
 import { CreateCustomerResponseExtensionDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-response.dto';
 import { IssueTokenDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token.dto';
-import {
-  GetWalletDetailsResponseDto,
-  GetWalletsResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card-return.dto';
 import { IntersolveVisaDoTransferOrIssueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card.dto';
+import { IntersolveVisaParentWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-parent-wallet.dto';
 import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
 import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
@@ -29,19 +25,17 @@ import {
   IntersolveVisaPaymentInfoEnumBackupName,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-payment-info.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
-import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
+import { IntersolveVisaMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
-import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -55,7 +49,6 @@ export class IntersolveVisaService
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly registrationDataService: RegistrationDataService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
-    private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly queueMessageService: QueueMessageService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly intersolveVisaCustomerScopedRepository: IntersolveVisaCustomerScopedRepository,
@@ -355,6 +348,45 @@ export class IntersolveVisaService
     return returnData;
   }
 
+  public async getUpdateParentWalletDto(
+    registrationId: number,
+    referenceId: string,
+    programId: number,
+  ): Promise<IntersolveVisaParentWalletDto> {
+    const intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
+        registrationId,
+      );
+
+    if (!intersolveVisaCustomer) {
+      throw new HttpException(
+        { errors: 'No customer found' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // Retrieve the parent wallet, child wallets from Intersolve and update the database
+    const intersolveVisaParentWallet = await this.retrieveAndUpdateParentWallet(
+      intersolveVisaCustomer.intersolveVisaParentWallet,
+    );
+    if (!intersolveVisaParentWallet) {
+      throw new HttpException(
+        { errors: 'No parent wallet found' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    // sort child wallets by newest creation date first
+    intersolveVisaParentWallet.intersolveVisaChildWallets.sort((a, b) =>
+      a.created < b.created ? 1 : -1,
+    );
+
+    return IntersolveVisaMapper.parentWalletEntityToDto(
+      intersolveVisaParentWallet,
+      programId,
+      referenceId,
+    );
+  }
+
   private async retrieveAndUpdateParentWallet(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {
@@ -411,102 +443,6 @@ export class IntersolveVisaService
         intersolveVisaChildWallet,
       );
     return intersolveVisaChildWallet;
-  }
-
-  // TODO: Fix and this function as code it depends on has changed with the Visa re-implementation.
-  // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
-  public async getVisaWalletsAndDetails(
-    referenceId: string,
-    programId: number,
-  ): Promise<GetWalletsResponseDto> {
-    const { registration: _registration, visaCustomer } =
-      await this.getRegistrationAndVisaCustomer(referenceId, programId);
-
-    const walletsResponse = new GetWalletsResponseDto();
-    walletsResponse.wallets = [];
-
-    for await (let wallet of visaCustomer.intersolveVisaParentWallet
-      .intersolveVisaChildWallets) {
-      //wallet = await this.getUpdateWalletDetails(wallet, visaCustomer, false); // Temp fix this line with the next:
-      wallet = new IntersolveVisaChildWalletEntity();
-
-      const walletDetailsResponse = new GetWalletDetailsResponseDto();
-      walletDetailsResponse.tokenCode = wallet.tokenCode ?? undefined;
-      //walletDetailsResponse.balance = wallet.balance ?? undefined;
-
-      // Map Intersolve status to 121 status for the frontend
-      const statusInfo =
-        this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.isTokenBlocked ?? false,
-          wallet.walletStatus,
-          wallet.cardStatus,
-          wallet.tokenCode ===
-            visaCustomer.intersolveVisaParentWallet
-              .intersolveVisaChildWallets[0].tokenCode,
-          {
-            tokenCode: wallet.tokenCode ?? '',
-            programId: programId,
-            referenceId: referenceId,
-          },
-        );
-      walletDetailsResponse.status = statusInfo.walletStatus121;
-      walletDetailsResponse.explanation = statusInfo.explanation;
-      walletDetailsResponse.links = statusInfo.links;
-      walletDetailsResponse.issuedDate = wallet.created;
-      //walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
-      //walletDetailsResponse.spentThisMonth = wallet.spentThisMonth;
-
-      // These properties are not used in the frontend but are very useful for debugging
-      walletDetailsResponse.intersolveVisaCardStatus =
-        wallet.cardStatus ?? undefined;
-      walletDetailsResponse.intersolveVisaWalletStatus =
-        wallet.walletStatus ?? undefined;
-
-      walletDetailsResponse.maxToSpendPerMonth =
-        maximumAmountOfSpentCentPerMonth;
-
-      walletsResponse.wallets.push(walletDetailsResponse);
-    }
-    return walletsResponse;
-  }
-
-  // TODO: Fix and this function as code it depends on has changed with the Visa re-implementation.
-  // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
-  private async getRegistrationAndVisaCustomer(
-    referenceId: string,
-    programId: number,
-  ): Promise<{
-    registration: RegistrationEntity;
-    visaCustomer: IntersolveVisaCustomerEntity;
-  }> {
-    const registration = await this.registrationScopedRepository.findOne({
-      where: {
-        referenceId: Equal(referenceId),
-        programId: Equal(programId),
-      },
-      relations: ['fsp'],
-    });
-    if (!registration) {
-      const errors = `No registration found with referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const visaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
-        registration.id,
-      );
-    if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
-      const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    if (!visaCustomer) {
-      const errors = `${VisaErrorCodes.NoCustomerYet} with referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    visaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.sort(
-      (a, b) => (a.created > b.created ? -1 : 1),
-    );
-    return { registration: registration, visaCustomer: visaCustomer };
   }
 
   // TODO: Re-implement and refactor this function according to new Module dependency model and encapsulate API details in IntersolveVisaApiService
