@@ -257,7 +257,6 @@
         "titlePortal": "Title portal"
       },
       "program-payout": {
-        "all-closed-payments": "All closed payments",
         "calculating-transfer-amount": "Calculating total transfer amount",
         "cbe": {
           "btn": "CBE verification report",
@@ -267,6 +266,7 @@
         "choose-payment": "Choose payment...",
         "closed": "Closed",
         "in-progress": "Payment in progress",
+        "last-closed-payments": "Last {{maxNumberOfPayment}} closed payments",
         "last-payment": {
           "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s).",
           "error": "Failed",
