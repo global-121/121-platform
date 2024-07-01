@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        partition: [0, 1, 2] # Define 3 partitions
+        partition: [0, 1, 2]
 
     steps:
       - name: Check out repository code
@@ -83,7 +83,7 @@ jobs:
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npx playwright test --project=chromium --grep "partition-${{ matrix.partition }}" --max-failures=3
+          npx playwright test --project=chromium tests/partition${{ matrix.partition }}
 
       - uses: actions/upload-artifact@v4
         if: always()
