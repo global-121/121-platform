@@ -4,7 +4,7 @@ name: 'Deploy [test] All'
 
 permissions:
   actions: read
-  pull-requests: write
+  deployments: write
 
 on:
   workflow_call:
@@ -28,3 +28,9 @@ jobs:
     uses: ./.github/workflows/deploy_test_service.yml
     secrets:
       AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+  deploy_mock-service:
+    name: 'Build + Deploy: Mock-Service'
+    uses: ./.github/workflows/deploy_test_mock-service.yml
+    secrets:
+      AZURE_WEBAPP_PUBLISH_PROFILE_MOCK_SERVICE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_MOCK_SERVICE }}
