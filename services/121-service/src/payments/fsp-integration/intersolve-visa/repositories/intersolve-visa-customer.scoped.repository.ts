@@ -24,4 +24,17 @@ export class IntersolveVisaCustomerScopedRepository extends ScopedRepository<Int
       where: { registrationId: Equal(registrationId) },
     });
   }
+
+  public async findOneByRegistrationIdOrFail(registrationId: number) {
+    const customer = await this.findOne({
+      where: { registrationId: Equal(registrationId) },
+    });
+    if (!customer) {
+      throw new Error(
+        `IntersolveVisaCustomerEntity with registrationId ${registrationId} not found.`,
+      );
+    } else {
+      return customer;
+    }
+  }
 }

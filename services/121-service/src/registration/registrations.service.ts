@@ -585,22 +585,10 @@ export class RegistrationsService {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      try {
-        await this.intersolveVisaService.syncIntersolveCustomerWith121(
-          registration.referenceId,
-          registration.programId,
-          attributes,
-        );
-      } catch (error) {
-        if (error?.response?.errors?.length > 0) {
-          const errors = `ERROR SYNCING TO INTERSOLVE: ${error.response.errors.join(
-            ' ',
-          )} The update in 121 did succeed.`;
-          throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-          throw error;
-        }
-      }
+      // TODO: Apply some magic here to get the data to fill ContactInformationDto to send to sendUpdatedContactInformation
+      this.intersolveVisaService.sendUpdatedContactInformation({
+        registrationId: registration.id,
+      });
     }
   }
 
