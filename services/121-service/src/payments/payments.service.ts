@@ -680,6 +680,7 @@ export class PaymentsService {
         4000,
       );
 
+    // TODO: Why not call addIntersolveVisaTransactionJobs one by one instead of creating an array of jobs first? Would that not prevent a big array being created and hence be more efficient in memory use?
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
@@ -688,6 +689,7 @@ export class PaymentsService {
             userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
+            // TODO: I am a bit worried that this find will not perform for 100k PAs.
             transactionAmount: referenceIdsTransactionAmounts.find(
               (r) => r.referenceId === registrationView.referenceId,
             )!.transactionAmount,
