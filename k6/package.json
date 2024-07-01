@@ -1,7 +1,5 @@
 {
   "name": "121-service-k6-tests",
-  "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "directories": {
     "test": "tests"
@@ -11,8 +9,6 @@
     "fix": "npm run lint -- --fix",
     "test": "dotenv -e ../services/.env -- k6 run"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.4.0",
     "eslint": "^9.4.0",
