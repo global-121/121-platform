@@ -62,6 +62,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { ContactInformationDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
+import { IntersolveVisaParentWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-parent-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
@@ -910,6 +911,22 @@ export class RegistrationsService {
     });
   }
 
+  public async getUpdateVisaParentWalletDto(
+    referenceId: string,
+    programId: number,
+  ): Promise<IntersolveVisaParentWalletDto> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      [],
+      programId,
+    );
+    return await this.intersolveVisaService.getUpdateParentWalletDto(
+      registration.id,
+      referenceId,
+      programId,
+    );
+  }
+
   public async reissueCardAndSendMessage(
     referenceId: string,
     programId: number,
@@ -925,7 +942,6 @@ export class RegistrationsService {
         HttpStatus.NOT_FOUND,
       );
     }
-
     const intersolveVisaConfig =
       await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
         {

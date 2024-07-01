@@ -2,8 +2,8 @@ import {
   ExportCardsDto,
   ExportWalletData,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
+import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
-import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { Injectable } from '@nestjs/common';
 
 // TODO: REFACTOR: IMO Move into IntersolveVisaService. Make sure it does not depend on anything outside of this Module.
@@ -13,7 +13,6 @@ import { Injectable } from '@nestjs/common';
 export class IntersolveVisaExportService {
   constructor(
     private intersolveVisaWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
-    private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
   public async getCards(programId: number): Promise<ExportCardsDto[]> {
@@ -55,18 +54,17 @@ export class IntersolveVisaExportService {
       const isCurrentWallet =
         previousRegistrationProgramId === wallet.paId ? false : true;
 
-      const statusInfo =
-        this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.tokenBlocked ?? false,
-          wallet.walletStatus,
-          wallet.cardStatus,
-          isCurrentWallet,
-          {
-            programId,
-            tokenCode: wallet.cardNumber,
-            referenceId: wallet.referenceId,
-          },
-        );
+      const statusInfo = IntersolveVisaStatusMapper.map121StatusInfo({
+        tokenBlocked: wallet.tokenBlocked ?? false,
+        walletStatus: wallet.walletStatus,
+        cardStatus: wallet.cardStatus,
+        isCurrentWallet: isCurrentWallet,
+        linkCreationInfo: {
+          programId: programId,
+          tokenCode: wallet.cardNumber,
+          referenceId: wallet.referenceId,
+        },
+      });
 
       exportWalletData.push({
         paId: wallet.paId,

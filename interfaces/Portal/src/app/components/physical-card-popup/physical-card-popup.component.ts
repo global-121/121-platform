@@ -7,7 +7,7 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
-import { PhysicalCard } from '../../models/physical-card.model';
+import { PhysicalCard } from '../../models/intersolve-visa-wallet.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -109,23 +109,15 @@ export class PhysicalCardPopupComponent implements OnInit {
     const block = this.card.status !== WalletCardStatus121.Paused;
     this.progamsServiceApiService
       .pauseCard(this.programId, this.referenceId, this.card.tokenCode, block)
-      .then((response) => {
-        let message = '';
-        if (response.status === 204) {
-          message = block
-            ? this.translate.instant(
-                'registration-details.physical-cards-overview.action-result.pause-success',
-              )
-            : this.translate.instant(
-                'registration-details.physical-cards-overview.action-result.unpause-success',
-              );
-        } else if (response.status === 405) {
-          message = this.translate.instant('common.error-with-message', {
-            error: response.data?.code,
-          });
-        } else {
-          message = this.translate.instant('common.unknown-error');
-        }
+      .then(() => {
+        const message = block
+          ? this.translate.instant(
+              'registration-details.physical-cards-overview.action-result.pause-success',
+            )
+          : this.translate.instant(
+              'registration-details.physical-cards-overview.action-result.unpause-success',
+            );
+
         actionResult(this.alertController, this.translate, message, true);
       })
       .catch((error) => {

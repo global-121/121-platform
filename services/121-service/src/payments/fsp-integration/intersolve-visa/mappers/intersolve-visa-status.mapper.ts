@@ -1,13 +1,16 @@
 import { EXTERNAL_API } from '@121-service/src/config';
+import { VisaCardActionLinkDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-action-link.dto';
+import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-action.enum';
+import { VisaCardMethod } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-method.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
-import { ApiProperty } from '@nestjs/swagger';
 import csvParser from 'csv-parser';
 import fs from 'fs';
 import * as path from 'path';
 
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
+
 interface VisaStatusMapInterface {
   ChildTokenBlocked: boolean;
   ChildTokenStatus: string;
@@ -17,36 +20,23 @@ interface VisaStatusMapInterface {
   '121Actions': string;
 }
 
-class VisaStatusInfoDto {
-  public walletStatus121: WalletCardStatus121;
-  public explanation: string;
-  public links: VisaCardActionLink[];
+interface Visa121StatusInfoDto {
+  walletStatus121: WalletCardStatus121;
+  explanation: string;
+  links: VisaCardActionLinkDto[];
 }
 
-class VisaCardLinkCreationInfo {
-  public referenceId: string; // ReferenceId of the registration
-  public programId: number;
-  public tokenCode: string;
+interface MapVisaStatusInfoParams {
+  tokenBlocked: boolean;
+  walletStatus: IntersolveVisaTokenStatus | null;
+  cardStatus: IntersolveVisaCardStatus | null;
+  linkCreationInfo: VisaCardLinkCreationInfo;
 }
 
-enum VisaCardMethod {
-  POST = 'POST',
-  PUT = 'PUT',
-}
-
-enum VisaCardAction {
-  pause = 'pause',
-  unpause = 'unpause',
-  reissue = 'reissue',
-}
-
-export class VisaCardActionLink {
-  @ApiProperty()
-  href: string;
-  @ApiProperty({ enum: VisaCardAction })
-  action: VisaCardAction;
-  @ApiProperty({ enum: VisaCardMethod })
-  method: VisaCardMethod;
+interface VisaCardLinkCreationInfo {
+  referenceId: string;
+  programId: number;
+  tokenCode: string;
 }
 
 const VisaCardActionsMapping = {
@@ -55,16 +45,15 @@ const VisaCardActionsMapping = {
   'Issue New Card': VisaCardAction.reissue,
 };
 
-// TODO: REFACTOR: IMO Move into IntersolveVisaService. Make sure it does not depend on anything outside of this Module.
-export class IntersolveVisaStatusMappingService {
-  private readonly mapping: VisaStatusMapInterface[] = [];
+export class IntersolveVisaStatusMapper {
+  private static mapping: VisaStatusMapInterface[] = [];
 
   constructor() {
     this.loadMapping();
   }
 
   private loadMapping(): void {
-    const csvFilePath = path.join(__dirname, 'visaStatusMap.csv'); // Adjust the path to your CSV file
+    const csvFilePath = path.join(__dirname, 'visaStatusMap.csv');
     fs.createReadStream(csvFilePath)
       .pipe(csvParser({ separator: ';' }))
       .on('data', (row) => {
@@ -82,29 +71,24 @@ export class IntersolveVisaStatusMappingService {
             : '',
           '121Actions': row.Actions ? row.Actions.trim() : null,
         };
-        this.mapping.push(mappingRow);
+        IntersolveVisaStatusMapper.mapping.push(mappingRow);
       });
   }
 
-  public determine121StatusInfo(
-    tokenBlocked: boolean,
-    walletStatus: IntersolveVisaTokenStatus | null,
-    cardStatus: IntersolveVisaCardStatus | null,
-    linkCreationInfo: VisaCardLinkCreationInfo,
-  ): VisaStatusInfoDto {
-    const matchingRow = this.mapping.find(
+  public static map121StatusInfo(
+    params: MapVisaStatusInfoParams,
+  ): Visa121StatusInfoDto {
+    const matchingRow = IntersolveVisaStatusMapper.mapping.find(
       (row) =>
-        row.ChildTokenBlocked === tokenBlocked &&
-        row.ChildTokenStatus === walletStatus &&
-        row.CardStatus === cardStatus,
+        row.ChildTokenBlocked === params.tokenBlocked &&
+        row.ChildTokenStatus === params.walletStatus &&
+        row.CardStatus === params.cardStatus,
     );
     if (matchingRow) {
       return {
-        walletStatus121: matchingRow[
-          '121VisaCardStatus'
-        ] as WalletCardStatus121,
-        explanation: matchingRow['121VisaCardStatusExplanation'],
-        links: this.getLinks(matchingRow['121Actions'], linkCreationInfo),
+        walletStatus121: matchingRow['121Status'] as WalletCardStatus121,
+        explanation: matchingRow['Explanation'],
+        links: this.getLinks(matchingRow['Actions'], params.linkCreationInfo),
       };
     } else {
       return {
@@ -115,15 +99,15 @@ export class IntersolveVisaStatusMappingService {
     }
   }
 
-  private getLinks(
+  private static getLinks(
     actions: string,
     linkCreationInfo: VisaCardLinkCreationInfo,
-  ): VisaCardActionLink[] {
+  ): VisaCardActionLinkDto[] {
     if (!actions) {
       return [];
     }
 
-    const links: VisaCardActionLink[] = [];
+    const links: VisaCardActionLinkDto[] = [];
     const actionsArray = actions.split(',');
 
     for (const rawAction of actionsArray) {
@@ -138,8 +122,8 @@ export class IntersolveVisaStatusMappingService {
           action: VisaCardActionsMapping[action],
           method:
             VisaCardAction.reissue === VisaCardActionsMapping[action]
-              ? VisaCardMethod.PUT
-              : VisaCardMethod.POST,
+              ? VisaCardMethod.POST
+              : VisaCardMethod.PATCH,
         };
         links.push(link);
       }
@@ -147,17 +131,17 @@ export class IntersolveVisaStatusMappingService {
     return links;
   }
 
-  private buildHref(
+  private static buildHref(
     action: VisaCardAction,
     linkCreationInfo: VisaCardLinkCreationInfo,
   ): string {
     switch (action) {
       case VisaCardAction.pause:
-        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/block`;
+        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/registrations/${linkCreationInfo.referenceId}/financial-service-providers/cards/${linkCreationInfo.tokenCode}?pause=true`;
       case VisaCardAction.unpause:
-        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/wallets/${linkCreationInfo.tokenCode}/unblock`;
+        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/registrations/${linkCreationInfo.referenceId}/financial-service-providers/cards/${linkCreationInfo.tokenCode}?pause=false`;
       case VisaCardAction.reissue:
-        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/financial-service-providers/intersolve-visa/customers/${linkCreationInfo.referenceId}/wallets`;
+        return `${EXTERNAL_API.rootApi}/programs/${linkCreationInfo.programId}/registrations/${linkCreationInfo.referenceId}/financial-service-providers/cards`;
     }
   }
 }

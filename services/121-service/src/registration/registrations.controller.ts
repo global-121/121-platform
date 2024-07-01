@@ -1,6 +1,7 @@
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { IntersolveVisaParentWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-parent-wallet.dto';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
@@ -766,6 +767,34 @@ export class RegistrationsController {
       programId,
       tokenCode,
       pause,
+    );
+  }
+
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] [EXTERNALLY USED] Patch Intersolve Visa wallet data related to a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'Wallets data updated from intersolve and retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+    type: IntersolveVisaParentWalletDto,
+  })
+  @Patch(
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallets',
+  )
+  public async getUpdateVisaParentWallet(
+    @Param('referenceId') referenceId: string,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<IntersolveVisaParentWalletDto> {
+    return await this.registrationsService.getUpdateVisaParentWalletDto(
+      referenceId,
+      programId,
     );
   }
 
