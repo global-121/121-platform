@@ -64,46 +64,6 @@
       </ion-label>
     </ion-item>
 
-    <!-- Current balance -->
-    <ion-item>
-      <ion-label class="card-key-value">
-        {{
-          'registration-details.physical-cards-overview.current-balance'
-            | translate
-        }}:
-      </ion-label>
-      <ion-label class="card-key-value ion-text-end">
-        <strong>
-          {{
-            card?.balance / 100 | currency: currency : 'code' : '1.2-2' : locale
-          }}
-        </strong>
-      </ion-label>
-    </ion-item>
-
-    <!-- Spend this month -->
-    <ion-item>
-      <ion-label class="card-key-value">
-        {{
-          'registration-details.physical-cards-overview.spent-this-month'
-            | translate
-              : {
-                  maxAmount:
-                    card?.maxToSpendPerMonth / 100
-                    | currency: currency : 'code' : '1.2-2' : locale,
-                }
-        }}:
-      </ion-label>
-      <ion-label class="card-key-value ion-text-end">
-        <strong>
-          {{
-            card?.spentThisMonth / 100
-              | currency: currency : 'code' : '1.2-2' : locale
-          }}
-        </strong>
-      </ion-label>
-    </ion-item>
-
     <!-- Issued on -->
     <ion-item>
       <ion-label class="card-key-value">
@@ -120,25 +80,7 @@
         </strong>
       </ion-label>
     </ion-item>
-    <!-- Last used -->
-    <ion-item>
-      <ion-label class="card-key-value">
-        {{
-          'registration-details.physical-cards-overview.date-last-used'
-            | translate
-        }}:
-      </ion-label>
-      <ion-label class="card-key-value ion-text-end">
-        <strong>
-          {{
-            (card?.lastUsedDate
-              | date: DateFormat.dayAndTimeAlternative : locale) ||
-              'registration-details.physical-cards-overview.not-used-yet'
-              | translate
-          }}
-        </strong>
-      </ion-label>
-    </ion-item>
+
     <ion-row
       *ngIf="showButtons"
       class="ion-padding ion-justify-content-end"

@@ -15,15 +15,74 @@
       class="ion-no-padding"
     >
       <ion-list>
+        <!-- Current balance -->
+        <ion-item>
+          <ion-label class="label-card-overview">
+            {{
+              'registration-details.physical-cards-overview.current-balance'
+                | translate
+            }}:
+          </ion-label>
+          <ion-label class="label-card-overview ion-text-end">
+            <strong>
+              {{
+                wallet?.balance / 100
+                  | currency: currency : 'code' : '1.2-2' : locale
+              }}
+            </strong>
+          </ion-label>
+        </ion-item>
+
+        <!-- Spend this month -->
+        <ion-item>
+          <ion-label class="label-card-overview">
+            {{
+              'registration-details.physical-cards-overview.spent-this-month'
+                | translate
+                  : {
+                      maxAmount:
+                        card?.maxToSpendPerMonth / 100
+                        | currency: currency : 'code' : '1.2-2' : locale,
+                    }
+            }}:
+          </ion-label>
+          <ion-label class="label-card-overview ion-text-end">
+            <strong>
+              {{
+                wallet?.spentThisMonth / 100
+                  | currency: currency : 'code' : '1.2-2' : locale
+              }}
+            </strong>
+          </ion-label>
+        </ion-item>
+        <!-- Last used -->
+        <ion-item>
+          <ion-label class="label-card-overview">
+            {{
+              'registration-details.physical-cards-overview.date-last-used'
+                | translate
+            }}:
+          </ion-label>
+          <ion-label class="label-card-overview ion-text-end">
+            <strong>
+              {{
+                (wallet?.lastUsedDate
+                  | date: DateFormat.dayAndTimeAlternative : locale) ||
+                  'registration-details.physical-cards-overview.not-used-yet'
+                  | translate
+              }}
+            </strong>
+          </ion-label>
+        </ion-item>
         <ion-item
-          *ngFor="let card of physicalCards"
+          *ngFor="let card of wallet?.cards"
           button
           [detail]="true"
           [detail-icon]="'card'"
           (click)="openCardDetails(card)"
         >
           <ion-label
-            class="physical-card-number util--half-margin-end"
+            class="label-card-overview util--half-margin-end"
             [title]="card.tokenCode"
           >
             <code>{{ card.tokenCode }}</code>

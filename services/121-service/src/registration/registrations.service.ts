@@ -60,6 +60,7 @@ import { Equal, Repository } from 'typeorm';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { IntersolveVisaParentWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-parent-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 
 @Injectable()
@@ -880,6 +881,22 @@ export class RegistrationsService {
         registrationProgramId: Equal(paId),
       },
     });
+  }
+
+  public async getUpdateVisaParentWalletDto(
+    referenceId: string,
+    programId: number,
+  ): Promise<IntersolveVisaParentWalletDto> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      [],
+      programId,
+    );
+    return await this.intersolveVisaService.getUpdateParentWalletDto(
+      registration.id,
+      referenceId,
+      programId,
+    );
   }
 
   public async reissueCard(_referenceId: string): Promise<void> {
