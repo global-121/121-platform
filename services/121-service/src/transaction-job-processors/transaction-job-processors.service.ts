@@ -46,9 +46,9 @@ export class TransactionJobProcessorsService {
     input: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId(
-        input.referenceId,
-      );
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
+        referenceId: input.referenceId,
+      });
     if (!registration) {
       throw new Error(
         `Registration was not found for referenceId ${input.referenceId}`,

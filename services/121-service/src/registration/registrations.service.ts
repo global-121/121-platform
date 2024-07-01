@@ -1,9 +1,6 @@
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -244,10 +241,11 @@ export class RegistrationsService {
       const errors = `ReferenceId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const registration = await this.registrationScopedRepository.findOne({
-      where: { referenceId: Equal(referenceId) },
-      relations: relations,
-    });
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
+        referenceId,
+        relations,
+      });
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -891,9 +889,10 @@ export class RegistrationsService {
     programId: number,
   ): Promise<void> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId(
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
         referenceId,
-      );
+        programId,
+      });
     if (!registration) {
       throw new HttpException(
         `Registration not found for referenceId: ${referenceId}`,
@@ -901,18 +900,18 @@ export class RegistrationsService {
       );
     }
 
-    const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
-        {
-          programId: programId,
-          financialServiceProviderName:
-            FinancialServiceProviderName.intersolveVisa,
-          names: [
-            FinancialServiceProviderConfigurationEnum.brandCode,
-            FinancialServiceProviderConfigurationEnum.coverLetterCode,
-          ],
-        },
-      );
+    // const intersolveVisaConfig =
+    //   await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+    //     {
+    //       programId: programId,
+    //       financialServiceProviderName:
+    //         FinancialServiceProviderName.intersolveVisa,
+    //       names: [
+    //         FinancialServiceProviderConfigurationEnum.brandCode,
+    //         FinancialServiceProviderConfigurationEnum.coverLetterCode,
+    //       ],
+    //     },
+    //   );
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
     /*
@@ -999,13 +998,15 @@ export class RegistrationsService {
 
   public async pauseCardAndSendMessage(
     referenceId: string,
+    programId: number,
     tokenCode: string,
     pause: boolean,
   ): Promise<IntersolveVisaChildWalletEntity> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId(
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
         referenceId,
-      );
+        programId,
+      });
     if (!registration) {
       throw new HttpException(
         `Registration not found for referenceId: ${referenceId}`,

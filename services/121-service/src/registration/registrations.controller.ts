@@ -17,6 +17,7 @@ import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom
 import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
@@ -57,7 +58,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
-import { RegistrationDataScopedRepository } from './modules/registration-data/repositories/registration-data.scoped.repository';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -755,7 +755,7 @@ export class RegistrationsController {
     'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/cards/:tokenCode',
   )
   public async pauseCardAndSendMessage(
-    @Param('programId', ParseIntPipe) _programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
     @Query('pause', ParseBoolPipe) pause: boolean,
@@ -768,6 +768,7 @@ export class RegistrationsController {
     }
     return await this.registrationsService.pauseCardAndSendMessage(
       referenceId,
+      programId,
       tokenCode,
       pause,
     );
