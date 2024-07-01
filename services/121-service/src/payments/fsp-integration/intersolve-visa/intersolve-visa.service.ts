@@ -375,10 +375,6 @@ export class IntersolveVisaService
         HttpStatus.NOT_FOUND,
       );
     }
-    // sort child wallets by newest creation date first
-    intersolveVisaParentWallet.intersolveVisaChildWallets.sort((a, b) =>
-      a.created < b.created ? 1 : -1,
-    );
 
     return IntersolveVisaMapper.parentWalletEntityToDto(
       intersolveVisaParentWallet,
