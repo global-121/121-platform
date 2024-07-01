@@ -16,14 +16,6 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
-        },
-      ],
       '@angular-eslint/component-selector': [
         'error',
         {
@@ -32,6 +24,22 @@ module.exports = tseslint.config(
           style: 'kebab-case',
         },
       ],
+      '@angular-eslint/directive-selector': [
+        'error',
+        {
+          type: 'attribute',
+          prefix: 'app',
+          style: 'camelCase',
+        },
+      ],
+      '@angular-eslint/no-async-lifecycle-method': ['error'],
+      '@angular-eslint/no-conflicting-lifecycle': ['error'],
+      '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
+      '@angular-eslint/prefer-output-readonly': ['error'],
+      '@angular-eslint/prefer-standalone': ['error'],
+      '@angular-eslint/sort-lifecycle-methods': ['error'],
+      '@angular-eslint/use-component-selector': ['error'],
+      '@angular-eslint/use-lifecycle-interface': ['error'],
     },
   },
   {
@@ -41,6 +49,18 @@ module.exports = tseslint.config(
       ...angular.configs.templateAccessibility,
       eslintPluginPrettierRecommended,
     ],
+    rules: {
+      'prettier/prettier': [
+        'error',
+        {
+          parser: 'angular',
+        },
+      ],
+    },
+  },
+  {
+    files: ['**/*.js'],
+    extends: [eslintPluginPrettierRecommended],
     rules: {},
   },
 );
