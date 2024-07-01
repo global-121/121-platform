@@ -34,6 +34,7 @@ export enum PermissionEnum {
 
   // Payment(s) - Voucher(s)
   PaymentVoucherREAD = 'payment:voucher.read',
+  PaymentVoucherExport = 'payment:voucher.export',
 
   // Fsp integration - Debit card(s)
   FspDebitCardREAD = 'fsp:debit-card.read',
@@ -61,6 +62,7 @@ export enum PermissionEnum {
   RegistrationPersonalForValidationREAD = 'registration:personal:for-valdation.read',
   RegistrationPersonalEXPORT = 'registration:personal.export',
   RegistrationPersonalUPDATE = 'registration:personal.update',
+  RegistrationPaymentExport = 'registration:payment.export',
 
   // Registration(s) - Status
   RegistrationStatusMarkAsValidatedUPDATE = 'registration:status:markAsValidated.update',
