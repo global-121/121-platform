@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).  
 This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICRO`.
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v24.6-1...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v24.7-0...main)
 
 ---
+
+## [24.7-0](https://github.com/global-121/121-platform/compare/v24.6-1...v24.7-0)- 2024-07-01
+
+- Export last 5 payments instead of all payments
 
 ## [24.6-1](https://github.com/global-121/121-platform/compare/v24.6-0...v24.6-1)- 2024-06-27
 
