@@ -78,7 +78,8 @@
     "typeorm": "^0.3.17",
     "typescript": "^5.5.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
