@@ -45,7 +45,6 @@ jobs:
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
-          AZURE_ENTRA_DOMAINS: ${{ vars.AZURE_ENTRA_DOMAINS }}
           AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
 
       # More information on Static Web App workflow configurations,
