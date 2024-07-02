@@ -36,26 +36,29 @@ import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
 import { PaginationFilter, PaginationSort } from './filter.service';
 
+import { UsersService } from '121-service-angular-api';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private usersService: UsersService,
+  ) {}
 
   login(username: string, password: string): Promise<User | null> {
     console.log('ProgramsService : login()');
 
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        ApiPath.usersLogin,
-        {
-          username,
-          password,
-        },
-        true,
-      )
+    return this.usersService
+      .userControllerLogin({
+        username,
+        password,
+      })
+      .toPromise()
       .then((response) => {
+        // this works
+        // but response is typed as 'any' 🙈
         if (response) {
           return response;
         }
