@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "alexkrechik.cucumberautocomplete",
+    "bradlc.vscode-tailwindcss",
     "angular.ng-template",
     "dotiful.dotfiles-syntax-highlighting",
     "editorconfig.editorconfig",

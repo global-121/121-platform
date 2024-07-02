@@ -1,0 +1,86 @@
+<p-toolbar styleClass="bg-navy border-none rounded-none">
+  <ng-template pTemplate="start">
+    <p-button
+      icon="pi pi-bars"
+      plain
+      rounded
+      text
+      class="[&_button:not(:hover)]:text-white"
+      (click)="sidebarVisible = true"
+    />
+    <h1 class="ml-2 text-xl text-white">
+      121 Portal<span class="font-normal"> | NLRC</span>
+    </h1>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="flex items-center gap-2">
+      <p-button
+        (click)="userMenu.toggle($event)"
+        icon="pi pi-user"
+        plain
+        rounded
+        text
+        class="[&_button:not(:hover)]:text-white"
+      />
+      <p-menu
+        [model]="userMenuOptions"
+        #userMenu
+        popup
+      >
+        <ng-template pTemplate="start">
+          <p class="mb-2 border-b border-b-grey-300 px-3 py-2">
+            Logged in as:
+            <span class="underline">admin&#64;example.org</span>
+          </p>
+        </ng-template>
+      </p-menu>
+    </div>
+  </ng-template>
+</p-toolbar>
+<p-sidebar [(visible)]="sidebarVisible">
+  <div class="flex h-full w-full flex-col">
+    <div class="mb-auto">
+      <a
+        routerLink="/"
+        class="p-button p-button-text p-button-secondary w-full"
+      >
+        All projects
+      </a>
+      <a
+        routerLink="/"
+        class="p-button p-button-text p-button-secondary w-full"
+      >
+        Users
+      </a>
+      <a
+        routerLink="/"
+        class="p-button p-button-text p-button-secondary w-full"
+      >
+        Roles and permissions
+      </a>
+      <a
+        href="https://manual.121.global/"
+        class="p-button p-button-text p-button-secondary w-full"
+        target="_blank"
+      >
+        Manual
+        <span
+          class="p-button-icon p-button-icon-right pi pi-external-link"
+        ></span>
+      </a>
+    </div>
+    <p-dropdown
+      [options]="languages"
+      [(ngModel)]="selectedLanguage"
+      [showClear]="false"
+      styleClass="w-full"
+    >
+      <ng-template pTemplate="selectedItem">
+        <div class="flex w-full items-center gap-2">
+          <i class="pi pi-globe text-xl"></i>
+          <div>Language: {{ selectedLanguageLabel() }}</div>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</p-sidebar>
