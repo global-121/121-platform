@@ -7,7 +7,12 @@
  * @returns {boolean} - Returns true if pop-ups are blocked, otherwise false.
  */
 export function isPopupBlocked(): boolean {
-  const testPopup = window.open('', '_blank', 'width=100,height=100');
+  const testPopup = window.open(
+    'about:blank',
+    '_blank',
+    'width=100,height=100',
+  );
+
   if (
     !testPopup ||
     testPopup.closed ||
