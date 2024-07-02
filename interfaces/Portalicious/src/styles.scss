@@ -1,1 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
+@layer tailwind-base, primeng, tailwind-utilities;
+
+// Please take note of the order in which these are imported
+@import 'tailwindcss/base.css' layer(tailwind-base);
+
+@import 'primeng/resources/primeng.css';
+@import 'primeng/resources/themes/aura-light-blue/theme.css';
+@import 'primeicons/primeicons.css';
+
+@import 'tailwindcss/components.css' layer(tailwind-utilities);
+@import 'tailwindcss/utilities.css' layer(tailwind-utilities);
+
+body {
+  @apply bg-grey-100;
+  overflow-y: scroll; /* Always show scrollbars to avoid page skipping about */
+}
+
+// For now we're just overriding some defaults here
+// instead of extending the whole theme, while we wait
+// for PrimeNG v18 to be released with the new theming system.
+
+@layer tailwind-base {
+  html {
+    @apply font-body;
+  }
+}
+
+@layer primeng {
+  .p-button,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+    @apply font-bold;
+  }
+
+  h1 {
+    font-size: 20px;
+    line-height: 140%;
+  }
+
+  h2 {
+    font-size: 18px;
+    line-height: 140%;
+  }
+
+  h3 {
+    font-size: 16px;
+    line-height: 140%;
+  }
+
+  .p-card-title {
+    @apply font-display;
+    @apply font-bold;
+    @apply text-black;
+    font-size: 18px;
+    line-height: 140%;
+  }
+}
