@@ -1,3 +1,5 @@
+// TODO: Can this be removed after getting the questions from the FinancialServiceProviderQuestions table?
+// TODO: Otherwise this enum should be moved to the payments module
 export enum IntersolveVisaPaymentInfoEnum {
   firstName = 'firstName',
   lastName = 'lastName',

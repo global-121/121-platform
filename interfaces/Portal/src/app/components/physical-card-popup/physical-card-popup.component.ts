@@ -108,7 +108,7 @@ export class PhysicalCardPopupComponent implements OnInit {
     this.pauseLoading = true;
     const block = this.card.status !== WalletCardStatus121.Paused;
     this.progamsServiceApiService
-      .toggleBlockWallet(this.programId, this.card.tokenCode, block)
+      .pauseCard(this.programId, this.referenceId, this.card.tokenCode, block)
       .then((response) => {
         let message = '';
         if (response.status === 204) {

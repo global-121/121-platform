@@ -35,6 +35,7 @@ import {
   HttpStatus,
   Param,
   ParseArrayPipe,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -697,6 +698,67 @@ export class RegistrationsController {
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,
+    );
+  }
+
+  // Re-issue card: creates a new IntersolveVisa Child Wallet and Card for a Registration, and makes the old ones unusable. This endpoint needs data from Registration, which is why it is not in the IntersolveVisaController.
+  // TODO: REFACTOR: Can we think of a better place for this endpoint? Or conceptually a better way to deal with re-issuing cards?
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] Re-issue card: replace existing child wallet and card with new ones. The newly created wallet will not be blocked.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Child wallet and card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceid/financial-service-providers/intersolve-visa/child-wallets',
+  )
+  public async reissueCard(): Promise<void> {
+    /* TODO: Implement this function:
+    - Add ReissueCardResponseDto, can be imported from the IntersolveVisa Module if the same DTO is used there as well? Should at least NOT be called "IntersolveBlockWalletResponseDto" as it is now.
+    - Call this.registrationsService.reissueCard()
+    */
+  }
+
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
+  @ApiOperation({
+    summary: '[SCOPED] [EXTERNALLY USED] Block Intersolve Visa Child wallet',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiQuery({ name: 'pause', type: 'boolean' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked) - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Patch(
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/cards/:tokenCode',
+  )
+  public async pauseCardAndSendMessage(
+    @Param('programId', ParseIntPipe) _programId: number,
+    @Param('referenceId') referenceId: string,
+    @Param('tokenCode') tokenCode: string,
+    @Query('pause', ParseBoolPipe) pause: boolean,
+  ) {
+    if (pause === undefined) {
+      throw new HttpException(
+        'No pause value (true/false) provided in query parameter',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return await this.registrationsService.pauseCardAndSendMessage(
+      referenceId,
+      tokenCode,
+      pause,
     );
   }
 }

@@ -9,6 +9,8 @@ graph LR
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
+  ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
+  ProgramFinancialServiceProviderConfigurationsModule-->FinancialServiceProvidersModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
@@ -42,7 +44,7 @@ graph LR
   IntersolveVisaModule-->TransactionsModule
   IntersolveVisaModule-->QueueMessageModule
   IntersolveVisaModule-->RegistrationDataModule
-  IntersolveVisaModule-->RedisModule
+  IntersolveVisaModule-->ProgramFinancialServiceProviderConfigurationsModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
@@ -83,6 +85,9 @@ graph LR
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationDataModule
+  PaymentsModule-->TransactionQueuesModule
+  TransactionQueuesModule-->RedisModule
+  PaymentsModule-->FinancialServiceProvidersModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
@@ -94,4 +99,14 @@ graph LR
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
   AuthModule-->PassportModule
+  TransactionJobProcessorsModule-->RedisModule
+  TransactionJobProcessorsModule-->IntersolveVisaModule
+  TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  TransactionJobProcessorsModule-->RegistrationsModule
+  TransactionJobProcessorsModule-->ProgramModule
+  TransactionJobProcessorsModule-->TransactionsModule
+  TransactionJobProcessorsModule-->QueueMessageModule
+  TransactionJobProcessorsModule-->FinancialServiceProvidersModule
+  TransactionJobProcessorsModule-->EventsModule
+  TransactionJobProcessorsModule-->MessageTemplateModule
 ```

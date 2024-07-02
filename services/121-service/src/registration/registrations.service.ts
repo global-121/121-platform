@@ -8,6 +8,7 @@ import { LookupService } from '@121-service/src/notifications/lookup/lookup.serv
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
+import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -55,6 +56,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
+
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 
 @Injectable()
 export class RegistrationsService {
@@ -874,5 +880,58 @@ export class RegistrationsService {
         registrationProgramId: Equal(paId),
       },
     });
+  }
+
+  public async reissueCard(_referenceId: string): Promise<void> {
+    /* TODO: Implement this method:
+      - Get the registration data using the referenceId, by using the PaginationRegistrationService, see how that is done for do Intersolve Visa payment (PaymentsService)
+      - Get the brand code and cover letter code for IntersolveVisa as configured for this program, also see how that is done for do Intersolve Visa payment (PaymentsService)
+      - Fill a ReissueCardDto object
+      - Call this.IntersolveVisaService.reissueCard(ReissueCardDto)
+      - Call this.sendMessageReissueCard() to build a message and add it to the queue.
+      - This function can probably simply pass on the ResponseDto it gets back to the calling Controller function.
+
+    */
+    // TODO: Remove _ when used.
+    const _reissueCardDto = new ReissueCardDto();
+  }
+
+  public async sendMessageReissueCard(): Promise<void> {
+    /* TODO: Implement this method:
+      - Build a message object thing
+      - Put it in the MessageQueue.
+      - See to be removed method: IntersolveVisaService.sendMessageReissueCard()
+    */
+  }
+
+  public async pauseCardAndSendMessage(
+    referenceId: string,
+    tokenCode: string,
+    pause: boolean,
+  ): Promise<IntersolveVisaChildWalletEntity> {
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId(
+        referenceId,
+      );
+    if (!registration) {
+      throw new HttpException(
+        `Registration not found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
+      tokenCode,
+      pause,
+    );
+    await this.queueMessageService.addMessageToQueue({
+      registration: registration,
+      messageTemplateKey: pause
+        ? ProgramNotificationEnum.pauseVisaCard
+        : ProgramNotificationEnum.unpauseVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+    });
+    return updatedWallet;
   }
 }
