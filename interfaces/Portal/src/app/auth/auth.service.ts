@@ -272,29 +272,9 @@ export class AuthService {
       return;
     }
 
-    const idTokenClaims = currentUser.idTokenClaims;
-    const preferredUsername =
-      idTokenClaims?.preferred_username || currentUser.username;
-    const emailDomain = preferredUsername.split('@')[1];
-    let authority;
-    let account;
-
-    const enabledDomains = environment.azure_ad_domains
-      .trim()
-      .toLowerCase()
-      .split(/\s*,\s*/);
-
-    if (enabledDomains.includes(emailDomain)) {
-      account = currentUser;
-      authority = `${environment.azure_ad_url}/${currentUser.tenantId}`;
-    } else {
-      account = this.msalService.instance.getActiveAccount();
-      authority = `${environment.azure_ad_url}/consumers`;
-    }
-
-    const logoutRequest: any = {
-      account,
-      authority,
+    const logoutRequest: Record<string, unknown> = {
+      account: currentUser,
+      authority: `${environment.azure_ad_url}/${currentUser.tenantId}`,
       mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
       postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
     };
