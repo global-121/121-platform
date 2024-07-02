@@ -7,6 +7,15 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v24.7-0...main)
 
+### Added
+
+- For Azure SSO Multi-tenancy, add the new Poral ENV-variable `AZURE_ENTRA_URL` to the [GitHub (client-)environment](https://github.com/global-121/121-platform/settings/environments):  
+  See [`.env.example`](./interfaces/Portal/.env.example)
+
+### Removed
+
+- The configuration-value of the `AZURE_ENTRA_TENANT_ID` is no longer used in the 121-service. It can be removed from the App Service configuration in Azure.
+
 ---
 
 ## [24.7-0](https://github.com/global-121/121-platform/compare/v24.6-1...v24.7-0)- 2024-07-01
