@@ -24,6 +24,5 @@ export const environment = {
   use_sso_azure_entra: false, // Enable Azure AD login
   azure_ad_client_id: '',
   azure_ad_tenant_id: '',
-  azure_ad_domains: '',
   azure_ad_url: '',
 };
