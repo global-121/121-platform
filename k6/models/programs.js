@@ -45,4 +45,35 @@ export default class programsModel {
     const res = http.get(url);
     return res;
   }
+
+  createProgramQuestion(programId, question) {
+    const url = `${baseUrl}api/programs/${programId}/program-questions`;
+    const payload = JSON.stringify({
+      name: `question${question}`,
+      options: ['string'],
+      scoring: {},
+      persistence: true,
+      pattern: 'string',
+      showInPeopleAffectedTable: false,
+      editableInPortal: true,
+      export: ['all-people-affected', 'included'],
+      placeholder: {
+        en: '+31 6 00 00 00 00',
+      },
+      duplicateCheck: false,
+      label: {
+        en: 'Please enter your last name:',
+        fr: 'Remplissez votre nom, sil vous plaît:',
+      },
+      answerType: 'text',
+      questionType: 'standard',
+    });
+    const params = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = http.post(url, payload, params);
+    return res;
+  }
 }
