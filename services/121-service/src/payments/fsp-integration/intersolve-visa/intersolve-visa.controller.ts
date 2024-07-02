@@ -11,7 +11,6 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post,
   Put,
   Query,
   UseGuards,
