@@ -254,7 +254,7 @@ export class CustomHttpService {
    * @param data - Any key-value object
    * @returns - A copy of the input-object with some specific data overwritten/redacted
    */
-  private redactSensitiveDataProperties(data: any) {
+  private redactSensitiveDataProperties<T>(data: T): T {
     if (!isPlainObject(data)) {
       return data;
     }
@@ -274,7 +274,12 @@ export class CustomHttpService {
     }
 
     // Explicitly mask the username/email:
-    if (redactedData.username) {
+    if (
+      redactedData &&
+      typeof redactedData === 'object' &&
+      'username' in redactedData &&
+      typeof redactedData.username === 'string'
+    ) {
       redactedData.username = maskValueKeepStart(redactedData.username, 3);
     }
 
