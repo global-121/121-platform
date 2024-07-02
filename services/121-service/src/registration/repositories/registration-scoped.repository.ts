@@ -6,6 +6,7 @@ import { REQUEST } from '@nestjs/core';
 import {
   DataSource,
   DeleteResult,
+  Equal,
   FindOptionsWhere,
   InsertResult,
   ObjectId,
@@ -111,9 +112,22 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return this.repository.update(criteria, partialEntity);
   }
 
-  async getRegistrationByReferenceId(referenceId: string) {
+  public async getRegistrationByReferenceId({
+    referenceId,
+    programId,
+    relations = [],
+  }: {
+    referenceId: string;
+    programId?: number;
+    relations?: string[];
+  }) {
+    const whereOptions = {
+      referenceId: Equal(referenceId),
+      ...(programId != undefined ? { programId: Equal(programId) } : {}),
+    };
     return await this.repository.findOne({
-      where: { referenceId: referenceId },
+      where: whereOptions,
+      relations: relations,
     });
   }
 }

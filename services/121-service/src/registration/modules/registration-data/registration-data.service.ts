@@ -6,13 +6,12 @@ import {
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
@@ -21,8 +20,7 @@ export class RegistrationDataService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   public constructor(
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 

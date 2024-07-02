@@ -17,6 +17,7 @@ import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -72,6 +73,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RegistrationUtilsModule,
     EventsModule,
     QueueRegistrationUpdateModule,
+    ProgramFinancialServiceProviderConfigurationsModule,
   ],
   providers: [
     RegistrationsService,
