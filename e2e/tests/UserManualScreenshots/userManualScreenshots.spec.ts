@@ -145,10 +145,10 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'ProgramDetails',
   });
 
-  await helpers.takePartialScreenshot({
-    elementId: 'design-table-element',
-    fileName: 'ProgramDetailsTable',
-  });
+  // await helpers.takePartialScreenshot({
+  //   elementId: 'design-table-element',
+  //   fileName: 'ProgramDetailsTable',
+  // });
 
   await page.goto(AppRoutes.home);
   await page.waitForTimeout(1000);
