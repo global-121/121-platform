@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/staticwebapp.config.json",
+  "routes": [
+    {
+      "route": "/*.js",
+      "headers": {
+        "Cache-Control": "immutable, no-transform, max-age=31536000"
+      }
+    },
+    {
+      "route": "/*.css",
+      "headers": {
+        "Cache-Control": "immutable, no-transform, max-age=31536000"
+      }
+    },
+    {
+      "route": "/assets/*",
+      "headers": {
+        "Cache-Control": "must-revalidate, no-transform, max-age=31536000"
+      }
+    },
+    {
+      "route": "/.well-known/change-password",
+      "redirect": "/user",
+      "statusCode": 302
+    }
+  ],
+  "trailingSlash": "auto",
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": ["/assets/*"]
+  },
+  "responseOverrides": {
+    "404": {
+      "redirect": "/"
+    }
+  },
+  "globalHeaders": {
+    "Referrer-Policy": "same-origin",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+  }
+}

@@ -1,20 +1,20 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test: E2E'
+name: 'Test: E2E (Portalicious)'
 
 on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/test_e2e.yml'
+      - '.github/workflows/test_e2e_portalicious.yml'
       - 'e2e/**'
       - 'services/.env.example'
       - 'services/**'
       - '!services/**.test.ts'
       - '!services/**.spec.ts'
-      - 'interfaces/Portal/**'
-      - '!interfaces/Portal/**.test.ts'
-      - '!interfaces/Portal/**.spec.ts'
+      - 'interfaces/Portalicious/**'
+      - '!interfaces/Portalicious/**.test.ts'
+      - '!interfaces/Portalicious/**.spec.ts'
       - '!**.md'
 
 env:
@@ -38,7 +38,7 @@ jobs:
       - name: Install E2E-Tests code-dependencies
         working-directory: ${{ env.e2eTestsPath }}
         run: |
-          npm ci --omit=optional --no-fund --no-audit
+          npm ci --no-fund --no-audit
 
       - name: Lint E2E-Tests code
         working-directory: ${{ env.e2eTestsPath }}
@@ -53,13 +53,13 @@ jobs:
         run: |
           docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
 
-      - name: Start Portal
-        working-directory: ./interfaces/Portal
+      - name: Start Portalicious
+        working-directory: ./interfaces/Portalicious
         env:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm install
-          npm run start:debug-production > portal-server-logs.txt 2>&1 &
+          npm run start:debug-production > portalicious-server-logs.txt 2>&1 &
 
       - name: Install 121-Service dependencies
         # This step is necessary because the tests run functions in this folder
@@ -72,16 +72,16 @@ jobs:
         run: |
           npx playwright install chromium --with-deps
 
-      - name: Wait for Portal
+      - name: Wait for Portalicious
         run: |
-          timeout 90s sh -c 'until curl http://localhost:8088 -I; do echo "Waiting for the Portal to be running..."; sleep 1; done'
+          timeout 90s sh -c 'until curl http://localhost:8088 -I; do echo "Waiting for Portalicious to be running..."; sleep 1; done'
 
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npm test
+          npm run test:portalicious
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -89,7 +89,7 @@ jobs:
           name: test-result-artifacts
           path: |
             ${{ env.e2eTestsPath }}/test-results/
-            ./interfaces/Portal/portal-server-logs.txt
+            ./interfaces/Portalicious/portalicious-server-logs.txt
           retention-days: 30
 
       - name: Docker logs

@@ -21,10 +21,12 @@ Static analysis, formatting, code-style, functionality, integration, etc:
 - [![Test: Formatting](https://github.com/global-121/121-platform/actions/workflows/test_formatting.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_formatting.yml)
 - [![Test: Code scanning with CodeQL](https://github.com/global-121/121-platform/actions/workflows/test_codeql-analysis.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_codeql-analysis.yml)
 - [![Test Interface: Portal](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml)
+- [![Test Interface: Portalicious](https://github.com/global-121/121-platform/actions/workflows/test_interface_portalicious.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portalicious.yml)
 - [![Test Mock-Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_mock-service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_mock-service_code.yml)
 - [![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
 - [![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
-- [![Test: E2E](https://github.com/global-121/121-platform/actions/workflows/test_e2e.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_e2e.yml)
+- [![Test: E2E (Portal)](https://github.com/global-121/121-platform/actions/workflows/test_e2e_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_e2e_portal.yml)
+- [![Test: E2E (Portalicious)](https://github.com/global-121/121-platform/actions/workflows/test_e2e_portalicious.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_e2e_portalicious.yml)
 - [![Test: Performance](https://github.com/global-121/121-platform/actions/workflows/test_k6.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_k6.yml)
 
 See also: [Testing](#testing)
