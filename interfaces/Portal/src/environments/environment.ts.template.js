@@ -23,7 +23,6 @@ export const environment = {
   use_sso_azure_entra: ${process.env.USE_SSO_AZURE_ENTRA || 'false'},
   azure_ad_client_id: '${process.env.AZURE_ENTRA_CLIENT_ID || ''}',
   azure_ad_tenant_id: '${process.env.AZURE_ENTRA_TENANT_ID || ''}',
-  azure_ad_domains: '${process.env.AZURE_ENTRA_DOMAINS || ''}',
   azure_ad_url: '${process.env.AZURE_ENTRA_URL || ''}',
 };
 `;
