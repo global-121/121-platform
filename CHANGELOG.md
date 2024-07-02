@@ -9,10 +9,8 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ### Added
 
-- For Azure SSO Multi-tenancy, add these new Poral ENV-variables to the [GitHub (client-)environment](https://github.com/global-121/121-platform/settings/environments):  
+- For Azure SSO Multi-tenancy, add the new Poral ENV-variable `AZURE_ENTRA_URL` to the [GitHub (client-)environment](https://github.com/global-121/121-platform/settings/environments):  
   See [`.env.example`](./interfaces/Portal/.env.example)
-  - `AZURE_ENTRA_DOMAINS`
-  - `AZURE_ENTRA_URL`
 
 ### Removed
 
