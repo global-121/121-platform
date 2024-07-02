@@ -28,7 +28,7 @@ jobs:
 
       - name: Install
         working-directory: ${{ env.interfacePath }}
-        run: 'npm ci --omit=optional --no-fund --no-audit'
+        run: 'npm ci --no-fund --no-audit'
 
       - name: Lint
         working-directory: ${{ env.interfacePath }}

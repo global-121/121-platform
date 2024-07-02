@@ -56,7 +56,7 @@ runs:
       working-directory: ${{ inputs.interfacePath }}
       env:
         HUSKY: '0'
-      run: 'npm ci --omit=optional --no-fund --no-audit'
+      run: 'npm ci --no-fund --no-audit'
 
     - name: Set VERSION of build/deployment
       shell: bash

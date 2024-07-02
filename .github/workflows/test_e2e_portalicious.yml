@@ -38,7 +38,7 @@ jobs:
       - name: Install E2E-Tests code-dependencies
         working-directory: ${{ env.e2eTestsPath }}
         run: |
-          npm ci --omit=optional --no-fund --no-audit
+          npm ci --no-fund --no-audit
 
       - name: Lint E2E-Tests code
         working-directory: ${{ env.e2eTestsPath }}
