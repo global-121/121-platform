@@ -1,0 +1,9 @@
+# See: https://prettier.io/docs/en/options.html
+#
+arrowParens: always
+semi: true
+singleAttributePerLine: true
+singleQuote: true
+trailingComma: all
+plugins:
+  - prettier-plugin-organize-imports
