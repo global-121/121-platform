@@ -43,7 +43,6 @@ jobs:
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
-          AZURE_ENTRA_DOMAINS: ${{ vars.AZURE_ENTRA_DOMAINS }}
           AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
           NG_AI_IKEY: '2aad0652-5b2a-4c01-8533-e1416879c7ac'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
