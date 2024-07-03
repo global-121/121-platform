@@ -8,7 +8,6 @@ import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -33,6 +32,8 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { UserService } from '@121-service/src/user/user.service';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -43,6 +44,15 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
+const userPermissionMapByExportType = {
+  [ExportType.allPeopleAffected]: [PermissionEnum.RegistrationPersonalEXPORT],
+  [ExportType.included]: [PermissionEnum.RegistrationPersonalEXPORT],
+  [ExportType.payment]: [PermissionEnum.RegistrationPaymentExport],
+  [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
+  [ExportType.vouchersWithBalance]: [PermissionEnum.PaymentVoucherExport],
+  [ExportType.duplicates]: [PermissionEnum.RegistrationPaymentExport],
+  [ExportType.cardBalances]: [PermissionEnum.FspDebitCardEXPORT],
+};
 
 @Injectable()
 export class MetricsService {
@@ -63,12 +73,12 @@ export class MetricsService {
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionsService,
-    private readonly paymentsService: PaymentsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly userService: UserService,
   ) {}
 
   public async getExportList({
@@ -87,6 +97,17 @@ export class MetricsService {
     paginationQuery?: PaginateQuery;
   }): Promise<FileDto> {
     await this.actionService.saveAction(userId, programId, type);
+
+    const permission = userPermissionMapByExportType[type];
+    const hasPermission = await this.userService.canActivate(
+      permission,
+      programId,
+      userId,
+    );
+    if (!hasPermission) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
     switch (type) {
       case ExportType.allPeopleAffected: {
         if (!paginationQuery) {
