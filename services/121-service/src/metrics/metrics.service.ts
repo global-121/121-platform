@@ -105,7 +105,10 @@ export class MetricsService {
       userId,
     );
     if (!hasPermission) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        "Forbidden! User doesn't have enough permission to export requested data.",
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     switch (type) {

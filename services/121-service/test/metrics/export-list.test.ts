@@ -14,6 +14,7 @@ import {
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getAccessTokenCvaManager,
   getAccessTokenScoped,
   getServer,
   resetDB,
@@ -180,5 +181,25 @@ describe('Metric export list', () => {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
     expect(Buffer.isBuffer(getRegistrationsResponse.body)).toBe(true);
+  });
+
+  it("should export failed when user doesn't have enough permission", async () => {
+    const accessTokenCvaManager = await getAccessTokenCvaManager();
+
+    const response = await getServer()
+      .get(`/programs/${PvProgramId}/metrics/export-list/payment`)
+      .set('Cookie', [accessTokenCvaManager])
+      .responseType('blob')
+      .query({
+        format: 'xlsx',
+      })
+      .send();
+
+    // Assert check if error returned
+    const jsonResponse = JSON.parse(response.body.toString());
+    expect(jsonResponse.statusCode).toBe(HttpStatus.FORBIDDEN);
+    expect(jsonResponse.message).toBe(
+      "Forbidden! User doesn't have enough permission to export requested data.",
+    );
   });
 });
