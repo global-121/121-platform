@@ -8,14 +8,8 @@ import {
   BlockWalletReasonCodeEnum,
   BlockWalletResponseDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/block-wallet-response.dto';
-import {
-  AddressDto,
-  CreateCustomerRequestDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-request.dto';
-import {
-  CreateCustomerResponseDto,
-  CreateCustomerResponseExtensionDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-response.dto';
+import { CreateCustomerRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-request.dto';
+import { CreateCustomerResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/create-customer-response.dto';
 import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/error-in-response.dto';
 import { GetPhysicalCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/get-physical-card-response.dto';
 import { GetTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/get-token-response.dto';
@@ -680,6 +674,7 @@ export class IntersolveVisaApiService {
     const blockResult = await this.httpService.post<any>(url, payload, headers);
 
     // Handle the response
+    // TODO: There is no value in returning these data fields: the caller does not do anything with them. Simply return (void).
     const result: BlockWalletResponseDto = {
       status: blockResult.status,
       statusText: blockResult.statusText,
@@ -698,11 +693,23 @@ export class IntersolveVisaApiService {
   // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   public async updateCustomerPhoneNumber({
     holderId,
-    payload,
+    phoneNumber,
   }: {
-    holderId: string | null;
-    payload: CreateCustomerResponseExtensionDto;
+    holderId: string;
+    phoneNumber: string;
   }): Promise<any> {
+    // Create the request
+    // TODO: Is there value in defining a DTO for the request format? (and any other request formats in this class for that matter?) See: CreateCustomerResponseExtensionDto
+    const requestBody = {
+      phoneNumbers: [
+        {
+          type: 'MOBILE',
+          value: phoneNumber, // TODO: Do we need to format this phone number in some way?
+        },
+      ],
+    };
+
+    // Send the request
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'customer-payments'
@@ -712,23 +719,45 @@ export class IntersolveVisaApiService {
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
-    const rawResult = await this.httpService.put<any>(url, payload, headers);
-    const result = {
-      status: rawResult.status,
-      statusText: rawResult.statusText,
-      data: rawResult.data,
-    };
-    return result;
+    const response = await this.httpService.put<any>(url, requestBody, headers);
+
+    // Handle the response
+    const errorMessage = this.createErrorMessageIfRequestFailed(response);
+    // If the response contains errors
+    if (errorMessage) {
+      throw new Error(`UPDATE PHONE NUMBER ERROR: ${errorMessage}`);
+    }
   }
 
   // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   public async updateCustomerAddress({
     holderId,
-    payload,
+    addressStreet,
+    addressHouseNumber,
+    addressHouseNumberAddition,
+    addressPostalCode,
+    addressCity,
   }: {
-    holderId: string | null;
-    payload: AddressDto;
-  }): Promise<any> {
+    holderId: string;
+    addressStreet: string;
+    addressHouseNumber: string;
+    addressHouseNumberAddition: string | undefined;
+    addressPostalCode: string;
+    addressCity: string;
+  }): Promise<void> {
+    // Create the request
+    // TODO: Is there value in defining a DTO for the request format? (and any other request formats in this class for that matter?) See: createCustomerAddressPayload
+    const requestBody = {
+      type: 'HOME',
+      addressLine1: `${
+        addressStreet + ' ' + addressHouseNumber + addressHouseNumberAddition
+      }`,
+      city: addressCity,
+      postalCode: addressPostalCode,
+      country: 'NL',
+    };
+
+    // Send the request
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'customer-payments'
@@ -738,13 +767,16 @@ export class IntersolveVisaApiService {
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
-    const rawResult = await this.httpService.put<any>(url, payload, headers);
-    const result = {
-      status: rawResult.status,
-      statusText: rawResult.statusText,
-      data: rawResult.data,
-    };
-    return result;
+    const response = await this.httpService.put<any>(url, requestBody, headers);
+
+    // Handle the response
+    const errorMessage = this.createErrorMessageIfRequestFailed(response);
+    // If the response contains errors
+    if (errorMessage) {
+      throw new Error(`UPDATE PHONE NUMBER ERROR: ${errorMessage}`);
+    }
+
+    return;
   }
 
   // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.

@@ -41,9 +41,6 @@ graph LR
   RegistrationsModule-->FinancialServiceProvidersModule
   RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->QueueMessageModule
-  IntersolveVisaModule-->RegistrationDataModule
   IntersolveVisaModule-->ProgramFinancialServiceProviderConfigurationsModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
