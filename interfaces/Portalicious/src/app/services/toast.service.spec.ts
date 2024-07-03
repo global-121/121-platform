@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ToastService } from './toast.service';
+import { ToastService } from '~/services/toast.service';
 
 describe('ToastService', () => {
   let service: ToastService;
