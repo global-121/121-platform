@@ -13,7 +13,6 @@ import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/p
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -47,9 +46,9 @@ export class TransactionJobProcessorsService {
     input: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId(
-        input.referenceId,
-      );
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
+        referenceId: input.referenceId,
+      });
     if (!registration) {
       throw new Error(
         `Registration was not found for referenceId ${input.referenceId}`,
@@ -88,31 +87,18 @@ export class TransactionJobProcessorsService {
         throw new Error(errorText);
       }
     }
-
     const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
-        input.programId,
-        FinancialServiceProviderName.intersolveVisa,
+      await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+        {
+          programId: input.programId,
+          financialServiceProviderName:
+            FinancialServiceProviderName.intersolveVisa,
+          names: [
+            FinancialServiceProviderConfigurationEnum.brandCode,
+            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          ],
+        },
       );
-
-    const coverLetterCode =
-      this.getProgramFinancialServiceProviderConfigurationValueByName({
-        intersolveVisaConfig,
-        name: FinancialServiceProviderConfigurationEnum.coverLetterCode,
-        programId: input.programId,
-      });
-    const brandCode =
-      this.getProgramFinancialServiceProviderConfigurationValueByName({
-        intersolveVisaConfig,
-        name: FinancialServiceProviderConfigurationEnum.brandCode,
-        programId: input.programId,
-      });
-    const fundingTokenCode =
-      this.getProgramFinancialServiceProviderConfigurationValueByName({
-        intersolveVisaConfig,
-        name: FinancialServiceProviderConfigurationEnum.fundingTokenCode,
-        programId: input.programId,
-      });
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: IntersolveVisaDoTransferOrIssueCardReturnDto;
     try {
@@ -128,9 +114,20 @@ export class TransactionJobProcessorsService {
           addressCity: input.addressCity!,
           phoneNumber: input.phoneNumber!,
           transferAmount: input.transactionAmount,
-          brandCode: brandCode,
-          coverLetterCode: coverLetterCode,
-          fundingTokenCode: fundingTokenCode,
+          brandCode: intersolveVisaConfig.find(
+            (c) =>
+              c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+          )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+          coverLetterCode: intersolveVisaConfig.find(
+            (c) =>
+              c.name ===
+              FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+          fundingTokenCode: intersolveVisaConfig.find(
+            (c) =>
+              c.name ===
+              FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+          )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
       await this.createTransaction({
@@ -281,26 +278,6 @@ export class TransactionJobProcessorsService {
     }
 
     await this.registrationScopedRepository.save(registration);
-  }
-
-  private getProgramFinancialServiceProviderConfigurationValueByName({
-    intersolveVisaConfig,
-    name,
-    programId,
-  }: {
-    intersolveVisaConfig: ProgramFinancialServiceProviderConfigurationEntity[];
-    name: FinancialServiceProviderConfigurationEnum;
-    programId: number;
-  }) {
-    const value = intersolveVisaConfig.find(
-      (config) => config.name === name,
-    )?.value;
-    if (!value && typeof value !== 'string') {
-      throw new Error(
-        `No ${name} found or incorrect format for program ${programId}. Please update the program financial service provider configuration.`,
-      );
-    }
-    return value as string;
   }
 
   private async createMessageAndAddToQueue({
