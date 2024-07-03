@@ -33,7 +33,8 @@
     "migration:run": "npm run typeorm migration:run -- -d ./src/datasource-manage-migrations.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/datasource-manage-migrations.ts",
     "knip": "knip",
-    "knip:fix": "knip --fix-type files,exports,types"
+    "knip:fix": "knip --fix-type files,exports,types",
+    "install:dependencies-for-portal": "npm ci --omit=dev --no-fund --no-audit"
   },
   "private": true,
   "dependencies": {
