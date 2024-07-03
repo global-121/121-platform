@@ -11,7 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
-import { ToastService } from '../../services/toast.service';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-header',

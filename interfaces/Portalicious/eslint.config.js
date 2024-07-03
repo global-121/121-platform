@@ -4,6 +4,7 @@ const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
+const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
 
 module.exports = tseslint.config(
   {
@@ -16,6 +17,7 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.ts'],
+    plugins: { 'no-relative-import-paths': eslintPluginNoRelativePaths },
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.strictTypeChecked,
@@ -25,6 +27,13 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      'no-relative-import-paths/no-relative-import-paths': [
+        'error',
+        {
+          prefix: '~',
+          rootDir: './src/app',
+        },
+      ],
       '@typescript-eslint/no-extraneous-class': [
         'error',
         {

@@ -3,6 +3,7 @@
 .vscode/
 !.vscode/extensions.json
 !.vscode/launch.json
+!.vscode/settings.json
 
 # Third-party code
 node_modules
