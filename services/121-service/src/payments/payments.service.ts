@@ -650,6 +650,7 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
+    //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaQuestions =
       await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
         FinancialServiceProviderName.intersolveVisa,
@@ -671,6 +672,7 @@ export class PaymentsService {
         dataFieldNames,
       );
 
+    // TODO: FIX: registrationViews does not contain any name field of the Registration. Where/how to get it?
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationsChunked(
         programId,
@@ -678,6 +680,7 @@ export class PaymentsService {
         4000,
       );
 
+    // TODO: Why not call addIntersolveVisaTransactionJobs one by one instead of creating an array of jobs first? Would that not prevent a big array being created and hence be more efficient in memory use?
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
@@ -686,6 +689,7 @@ export class PaymentsService {
             userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
+            // TODO: I am a bit worried that this find will not perform for 100k PAs.
             transactionAmount: referenceIdsTransactionAmounts.find(
               (r) => r.referenceId === registrationView.referenceId,
             )!.transactionAmount,
