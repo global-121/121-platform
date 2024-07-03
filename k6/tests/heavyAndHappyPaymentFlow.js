@@ -1,11 +1,18 @@
 import { check, sleep } from 'k6';
 import loginModel from '../models/login.js';
+import paymentsModel from '../models/payments.js';
 import programsModel from '../models/programs.js';
 import resetModel from '../models/reset.js';
 
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 const programsPage = new programsModel();
+const paymentsPage = new paymentsModel();
+
+const duplicateNumber = 15;
+const programId = 3;
+const paymentId = 3;
+const minPassRatePercentage = 10;
 
 export const options = {
   thresholds: {
@@ -16,7 +23,7 @@ export const options = {
 
 export default function () {
   // reset db to 32k registrations
-  const reset = resetPage.resetDBMockRegistrations(10);
+  const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
@@ -35,7 +42,7 @@ export default function () {
 
   // add 50 program questions to generate a bigger load
   for (let i = 1; i <= 50; i++) {
-    const programQuestions = programsPage.createProgramQuestion(3, i);
+    const programQuestions = programsPage.createProgramQuestion(programId, i);
     check(programQuestions, {
       'Program questions added successfully status was 201': (r) => {
         if (r.status != 201) {
@@ -48,7 +55,7 @@ export default function () {
 
   // add 15 custom attributes to generate bigger load
   for (let i = 1; i <= 15; i++) {
-    const customAttributes = programsPage.updateCustomeAttributes(3, i);
+    const customAttributes = programsPage.updateCustomeAttributes(programId, i);
     check(customAttributes, {
       'Custom attribute added succesfull status was 201': (r) =>
         r.status == 201,
@@ -56,8 +63,8 @@ export default function () {
   }
 
   // get programme by id and validte load time is less than 200ms
-  const programme = programsPage.getProgrammeById(3);
-  check(programme, {
+  const program = programsPage.getProgrammeById(programId);
+  check(program, {
     'Programme loaded succesfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -68,7 +75,10 @@ export default function () {
   });
 
   // Change status of all PAs to paused and check response
-  let responsePaused = programsPage.updateRegistrationStatusAndLog(3, 'paused');
+  const responsePaused = programsPage.updateRegistrationStatusAndLog(
+    programId,
+    'paused',
+  );
   check(responsePaused, {
     'Status successfully changed to paused: 202': (r) => {
       if (r.status != 202) {
@@ -79,8 +89,8 @@ export default function () {
   });
 
   // Change status of all PAs to included and check response
-  let responseIncluded = programsPage.updateRegistrationStatusAndLog(
-    3,
+  const responseIncluded = programsPage.updateRegistrationStatusAndLog(
+    programId,
     'included',
   );
   check(responseIncluded, {
@@ -90,6 +100,28 @@ export default function () {
       }
       return r.status == 202;
     },
+  });
+
+  // Do the payment
+  const doPayment = paymentsPage.createPayment(programId);
+  check(doPayment, {
+    'Payment successfully done status 202': (r) => {
+      if (r.status != 202) {
+        console.log(r.body);
+      }
+      return r.status == 202;
+    },
+  });
+
+  // Monitor that 10% of payments is succesfull and then stop the test
+  const monitorPayment = paymentsPage.getPaymentResults(
+    programId,
+    paymentId,
+    duplicateNumber,
+    minPassRatePercentage,
+  );
+  check(monitorPayment, {
+    'Payment results loaded succesfully status was 200': (r) => r.status == 200,
   });
 
   sleep(1);
