@@ -61,7 +61,6 @@ import { FinancialServiceProviderQuestionRepository } from '@121-service/src/fin
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
@@ -967,7 +966,8 @@ export class RegistrationsService {
         throw new HttpException(errorText, HttpStatus.BAD_REQUEST);
       }
     }
-    const reissueCardDto: ReissueCardDto = {
+
+    await this.intersolveVisaService.reissueCard({
       registrationId: registration.id,
       // Why do we need this?
       reference: registration.referenceId,
@@ -988,9 +988,7 @@ export class RegistrationsService {
         (c) =>
           c.name === FinancialServiceProviderConfigurationEnum.coverLetterCode,
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-    };
-
-    await this.intersolveVisaService.reissueCard(reissueCardDto);
+    });
 
     await this.queueMessageService.addMessageToQueue({
       registration: registration,

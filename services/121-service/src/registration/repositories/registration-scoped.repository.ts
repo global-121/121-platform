@@ -121,12 +121,11 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     programId?: number;
     relations?: string[];
   }) {
-    const whereOptions = {
-      referenceId: Equal(referenceId),
-      ...(programId != undefined ? { programId: Equal(programId) } : {}),
-    };
     return await this.repository.findOne({
-      where: whereOptions,
+      where: {
+        referenceId: Equal(referenceId),
+        ...(programId != undefined ? { programId: Equal(programId) } : {}),
+      },
       relations: relations,
     });
   }

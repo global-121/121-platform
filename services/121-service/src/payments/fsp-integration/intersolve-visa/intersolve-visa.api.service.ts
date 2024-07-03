@@ -637,7 +637,7 @@ export class IntersolveVisaApiService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     // On success this returns a 204 No Content
-    const substituteTokenResponse = await this.httpService.post<any>(
+    const substituteTokenResponse = await this.httpService.post(
       url,
       substituteTokenRequestDto,
       headers,

@@ -5,6 +5,7 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { PersonalData } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/personal-data';
 import { CreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-customer.dto';
 import { CreatePhysicalCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-physical-card.dto';
 import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-physical-card-return.dto';
@@ -20,7 +21,6 @@ import {
 import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card-return.dto';
 import { IntersolveVisaDoTransferOrIssueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card.dto';
 import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
@@ -629,7 +629,13 @@ export class IntersolveVisaService
     console.log('reissueWalletAndCard' + referenceId + programId);
   }
 
-  public async reissueCard(input: ReissueCardDto): Promise<void> {
+  public async reissueCard(input: {
+    registrationId: number;
+    reference: string;
+    personalData: PersonalData;
+    brandCode: string;
+    coverLetterCode: string;
+  }): Promise<void> {
     // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
