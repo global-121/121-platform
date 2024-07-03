@@ -141,7 +141,7 @@ export class IntersolveVisaService
     const returnData = new IntersolveVisaDoTransferOrIssueCardReturnDto();
 
     let intersolveVisaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         input.registrationId,
       );
 
@@ -492,7 +492,7 @@ export class IntersolveVisaService
     }
 
     const visaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registration.id,
       );
     if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
@@ -563,7 +563,7 @@ export class IntersolveVisaService
       },
     });
     const visaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registration.id,
       );
 
@@ -638,7 +638,7 @@ export class IntersolveVisaService
   }): Promise<void> {
     // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
     const intersolveVisaCustomer =
-      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         input.registrationId,
       );
 
@@ -833,7 +833,7 @@ export class IntersolveVisaService
 
   public async retrieveAndUpdateAllWalletsAndCards(): Promise<void> {
     const customers =
-      await this.intersolveVisaCustomerScopedRepository.findAndWallets();
+      await this.intersolveVisaCustomerScopedRepository.findWithWallets();
     for (const customer of customers) {
       for (const childWallet of customer.intersolveVisaParentWallet
         .intersolveVisaChildWallets) {
