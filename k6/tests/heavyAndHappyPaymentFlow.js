@@ -16,7 +16,7 @@ export const options = {
 
 export default function () {
   // reset db to 32k registrations
-  const reset = resetPage.resetDBMockRegistrations(15);
+  const reset = resetPage.resetDBMockRegistrations(10);
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
@@ -38,7 +38,6 @@ export default function () {
     const programQuestions = programsPage.createProgramQuestion(3, i);
     check(programQuestions, {
       'Program questions added successfully status was 201': (r) => {
-        console.log(r.status);
         if (r.status != 201) {
           console.log(r.body);
         }
@@ -65,6 +64,31 @@ export default function () {
         console.log(`Programme time was ${r.timings.duration}ms`);
       }
       return r.timings.duration < 200;
+    },
+  });
+
+  // Change status of all PAs to paused and check response
+  let responsePaused = programsPage.updateRegistrationStatusAndLog(3, 'paused');
+  check(responsePaused, {
+    'Status successfully changed to paused: 202': (r) => {
+      if (r.status != 202) {
+        console.log(r.body);
+      }
+      return r.status == 202;
+    },
+  });
+
+  // Change status of all PAs to included and check response
+  let responseIncluded = programsPage.updateRegistrationStatusAndLog(
+    3,
+    'included',
+  );
+  check(responseIncluded, {
+    'Status successfully changed to included: 202': (r) => {
+      if (r.status != 202) {
+        console.log(r.body);
+      }
+      return r.status == 202;
     },
   });
 
