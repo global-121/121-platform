@@ -20,6 +20,7 @@ import { ErrorsInResponseDto } from '@121-service/src/payments/fsp-integration/i
 import { GetPhysicalCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/get-physical-card-response.dto';
 import { GetTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/get-token-response.dto';
 import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/issue-token-request.dto';
+import { SubstituteTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/substitute-token-request.dto';
 import { TransferRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/transfer-request.dto';
 import { TransferResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/transfer-response.dto';
 import { IssueTokenResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token-result.dto';
@@ -615,6 +616,47 @@ export class IntersolveVisaApiService {
     return;
   }
 
+  public async substituteToken(
+    oldTokenCode: string,
+    newTokenCode: string,
+  ): Promise<void> {
+    // Create the request body to send
+
+    const substituteTokenRequestDto: SubstituteTokenRequestDto = {
+      tokenCode: newTokenCode,
+    };
+
+    // Send the request
+    const authToken = await this.getAuthenticationToken();
+    const apiPath = process.env.INTERSOLVE_VISA_PROD
+      ? 'wallet-payments'
+      : 'wallet';
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${oldTokenCode}/substitute-token`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+    // On success this returns a 204 No Content
+    const substituteTokenResponse = await this.httpService.post(
+      url,
+      substituteTokenRequestDto,
+      headers,
+    );
+
+    // Handle the response
+
+    const errorMessage = this.createErrorMessageIfRequestFailed(
+      substituteTokenResponse,
+    );
+    // If the response contains errors
+    if (errorMessage) {
+      throw new Error(`SUBSTITUTE TOKEN ERROR: ${errorMessage}`);
+    }
+
+    // If the response does not contain errors
+    return;
+  }
+
   public async setTokenBlocked(
     tokenCode: string,
     blocked: boolean,
@@ -732,6 +774,7 @@ export class IntersolveVisaApiService {
 
   // Helper function to convert errors in an Intersolve API Response into a message string.
   // TODO: REFACTOR: Change this function to a private function once it is no longer used in the IntersolveVisaService.
+  // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   public convertResponseErrorsToMessage(
     errorsInResponseDto: ErrorsInResponseDto[] | undefined,
   ): string {
