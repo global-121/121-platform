@@ -64,6 +64,7 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
+import { ContactInformationDto } from '../payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -572,7 +573,7 @@ export class RegistrationsService {
     }
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.syncUpdatesWithThirdParties(registration, [attribute]);
+      await this.sendContactInformationToIntersolve(registration);
     }
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
@@ -580,29 +581,55 @@ export class RegistrationsService {
     ]);
   }
 
-  private async syncUpdatesWithThirdParties(
+  private async sendContactInformationToIntersolve(
     registration: RegistrationEntity,
-    attributes: Attributes[] | string[],
   ): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      try {
-        await this.intersolveVisaService.syncIntersolveCustomerWith121(
-          registration.referenceId,
-          registration.programId,
-          attributes,
+      // TODO: REFACTOR: Find a way to not have the data fields hardcoded in this function.
+      type ContactInformationKeys = keyof ContactInformationDto;
+      const fieldNames: ContactInformationKeys[] = [
+        'addressStreet',
+        'addressHouseNumber',
+        'addressHouseNumberAddition',
+        'addressPostalCode',
+        'addressCity',
+        'phoneNumber',
+      ];
+      const registrationData =
+        await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+          registration,
+          fieldNames,
         );
-      } catch (error) {
-        if (error?.response?.errors?.length > 0) {
-          const errors = `ERROR SYNCING TO INTERSOLVE: ${error.response.errors.join(
-            ' ',
-          )} The update in 121 did succeed.`;
-          throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-          throw error;
-        }
+
+      if (!registrationData || registrationData.length === 0) {
+        throw new HttpException(
+          `No registration data found for referenceId: ${registration.referenceId}`,
+          HttpStatus.NOT_FOUND,
+        );
       }
+
+      const mappedRegistrationData = registrationData.reduce(
+        (acc, { name, value }) => {
+          acc[name] = value;
+          return acc;
+        },
+        {},
+      );
+
+      await this.intersolveVisaService.sendUpdatedContactInformation({
+        registrationId: registration.id,
+        contactInformation: {
+          addressStreet: mappedRegistrationData[`addressStreet`],
+          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
+          addressHouseNumberAddition:
+            mappedRegistrationData[`addressHouseNumberAddition`],
+          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
+          addressCity: mappedRegistrationData[`addressCity`],
+          phoneNumber: mappedRegistrationData[`phoneNumber`],
+        },
+      });
     }
   }
 
@@ -808,10 +835,7 @@ export class RegistrationsService {
       );
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.syncUpdatesWithThirdParties(
-        updatedRegistration,
-        Object.keys(newFspAttributes),
-      );
+      await this.sendContactInformationToIntersolve(updatedRegistration);
     }
 
     // Log change
@@ -971,8 +995,8 @@ export class RegistrationsService {
       registrationId: registration.id,
       // Why do we need this?
       reference: registration.referenceId,
-      personalData: {
-        name: mappedRegistrationData['fullName'],
+      name: mappedRegistrationData['fullName'],
+      contactInformation: {
         addressStreet: mappedRegistrationData['addressStreet'],
         addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
         addressHouseNumberAddition:
@@ -1030,5 +1054,23 @@ export class RegistrationsService {
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
     });
     return updatedWallet;
+  }
+
+  public async getRegistrationAndSendContactInformationToIntersolve(
+    referenceId: string,
+    programId: number,
+  ): Promise<void> {
+    const registration =
+      await this.registrationScopedRepository.getRegistrationByReferenceId({
+        referenceId,
+        programId,
+      });
+    if (!registration) {
+      throw new HttpException(
+        `Registration not found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    await this.sendContactInformationToIntersolve(registration);
   }
 }
