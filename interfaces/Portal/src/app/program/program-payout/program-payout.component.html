@@ -46,6 +46,7 @@
     </select>
 
     <app-export-list
+      *ngIf="canMakePaymentExport"
       [programId]="programId"
       [exportType]="exportPaymentType"
       [minPayment]="minPayment"
@@ -71,7 +72,7 @@
   </ion-row>
   <ion-row class="ion-margin-vertical">
     <app-export-list
-      *ngIf="programHasVoucherSupport"
+      *ngIf="programHasVoucherSupport && canMakeVoucherExport"
       [programId]="programId"
       [exportType]="enumExportType.unusedVouchers"
       class="ion-margin-end"
