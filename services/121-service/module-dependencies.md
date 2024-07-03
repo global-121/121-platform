@@ -49,6 +49,7 @@ graph LR
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->QueueRegistrationUpdateModule
+  RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->ActionsModule
@@ -78,6 +79,7 @@ graph LR
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
+  MetricsModule-->RegistrationDataModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule

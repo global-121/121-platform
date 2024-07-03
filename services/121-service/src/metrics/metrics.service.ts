@@ -24,7 +24,7 @@ import {
   GenericAttributes,
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -68,8 +68,7 @@ export class MetricsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionsService,

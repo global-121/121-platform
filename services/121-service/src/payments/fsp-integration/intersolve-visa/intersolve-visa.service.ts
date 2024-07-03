@@ -5,6 +5,7 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { PersonalData } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/personal-data';
 import { CreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-customer.dto';
 import { CreatePhysicalCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-physical-card.dto';
 import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-physical-card-return.dto';
@@ -20,7 +21,6 @@ import {
 import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card-return.dto';
 import { IntersolveVisaDoTransferOrIssueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card.dto';
 import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
-import { ReissueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/reissue-card.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
@@ -629,19 +629,121 @@ export class IntersolveVisaService
     console.log('reissueWalletAndCard' + referenceId + programId);
   }
 
-  public async reissueCard(_reissueCardDto: ReissueCardDto): Promise<void> {
-    /* TODO: Implement this function:
-      - Add a ResponseDto
-      - See Sequence Diagram in Miro Scratch Board.
-      - Remove _ from input parameter
-      - This function is called by RegistrationsService.reissueCard()
-      - This function takes an ReissueCardDto as input parameter
-      - This function is a re-implementation and optimization/refactoring of this.reissueWalletAndCard(), according to the new Intersolve Integration Manual.
-      - See the "TO-BE" and "AS-IS" Sequence Diagrams for how we re-designed this function and the functions it calls.
-      - Note: additional to the TO-BE sequence diagram, there may be optimization in refactoring what is done in this function into additional private functions, each with a single responsibility.
-      -
-    */
-    throw new Error('Method not implemented.');
+  public async reissueCard(input: {
+    registrationId: number;
+    reference: string;
+    personalData: PersonalData;
+    brandCode: string;
+    coverLetterCode: string;
+  }): Promise<void> {
+    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
+    const intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneAndWalletsByRegistrationId(
+        input.registrationId,
+      );
+
+    if (!intersolveVisaCustomer) {
+      throw new Error(
+        'This Registration does not have an Intersolve Visa Customer. Cannot reissue card.',
+      );
+    }
+    if (!intersolveVisaCustomer.intersolveVisaParentWallet) {
+      throw new Error(
+        'This Registration does not have an Intersolve Visa Parent Wallet. Cannot reissue card.',
+      );
+    }
+    if (
+      !intersolveVisaCustomer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets.length
+    ) {
+      throw new Error(
+        'This Registration does not have an Intersolve Visa Child Wallet. Cannot reissue card.',
+      );
+    }
+    // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
+    intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.sort(
+      (a, b) => (a.created < b.created ? 1 : -1),
+    );
+    let childWalletToReplace =
+      intersolveVisaCustomer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets[0];
+
+    if (!childWalletToReplace.isDebitCardCreated) {
+      throw new Error(
+        'This Intersolve Visa Child Wallet to be replaced does not have a card created for it. Cannot reissue card.',
+      );
+    }
+    // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
+    // TODO: Add a call to the new this.syncIntersolveCustomerWith121() function here. Creating this function is part of the re-implementation of sending data to Intersolve after Registration changes.
+
+    if (childWalletToReplace.isTokenBlocked) {
+      await this.intersolveVisaApiService.setTokenBlocked(
+        childWalletToReplace.tokenCode,
+        false,
+      );
+    }
+
+    // Create new token at Intersolve
+    const issueTokenDto: IssueTokenDto = {
+      brandCode: input.brandCode,
+      activate: false, // Child Wallets are always created deactivated
+    };
+
+    const issueTokenResult =
+      await this.intersolveVisaApiService.issueToken(issueTokenDto);
+
+    // Create child wallet entity
+    const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
+    newIntersolveVisaChildWallet.intersolveVisaParentWallet =
+      intersolveVisaCustomer.intersolveVisaParentWallet;
+    newIntersolveVisaChildWallet.tokenCode = issueTokenResult.code;
+    newIntersolveVisaChildWallet.isTokenBlocked = issueTokenResult.blocked;
+    newIntersolveVisaChildWallet.walletStatus =
+      issueTokenResult.status as IntersolveVisaTokenStatus;
+    newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
+    let newChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        newIntersolveVisaChildWallet,
+      );
+    intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.push(
+      newChildWallet,
+    );
+
+    // Substitute the old token with the new token at Intersolve
+    await this.intersolveVisaApiService.substituteToken(
+      childWalletToReplace.tokenCode,
+      newChildWallet.tokenCode,
+    );
+
+    // Update old child wallet: set status to SUBSTITUTED
+    childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
+    childWalletToReplace =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        childWalletToReplace,
+      );
+
+    // Update new child wallet: set linkedToParentWallet to true
+    newChildWallet.isLinkedToParentWallet = true;
+    newChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
+
+    // Create new card
+    await this.intersolveVisaApiService.createPhysicalCard({
+      tokenCode: newChildWallet.tokenCode,
+      name: input.personalData.name,
+      addressStreet: input.personalData.addressStreet,
+      addressHouseNumber: input.personalData.addressHouseNumber,
+      addressHouseNumberAddition: input.personalData.addressHouseNumberAddition,
+      addressPostalCode: input.personalData.addressPostalCode,
+      addressCity: input.personalData.addressCity,
+      phoneNumber: input.personalData.phoneNumber,
+      coverLetterCode: input.coverLetterCode,
+    });
+
+    // Update child wallet: set isDebitCardCreated to true
+    newChildWallet.isDebitCardCreated = true;
+    newChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
   }
 
   // TODO: REFACTOR: Remove this method, the message is sent from RegistrationsService.sendMessageReissueCard()
