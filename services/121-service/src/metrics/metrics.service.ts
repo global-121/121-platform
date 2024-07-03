@@ -42,7 +42,7 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
+const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 10;
 
 @Injectable()
 export class MetricsService {
