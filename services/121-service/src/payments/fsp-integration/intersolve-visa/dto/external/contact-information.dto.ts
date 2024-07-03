@@ -1,5 +1,4 @@
-export interface PersonalData {
-  name: string;
+export interface ContactInformationDto {
   addressStreet: string;
   addressHouseNumber: string;
   addressHouseNumberAddition: string;
