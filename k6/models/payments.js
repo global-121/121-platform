@@ -45,7 +45,7 @@ export default class paymentsModel {
     }
 
     return {
-      status: 500, // Or another appropriate status code
+      status: 500,
       body: JSON.stringify({
         error: `Failed after ${maxAttempts} attempts without reaching the pass rate of ${passRate}%. Last recorded pass rate was ${successPercentage}%.`,
       }),
