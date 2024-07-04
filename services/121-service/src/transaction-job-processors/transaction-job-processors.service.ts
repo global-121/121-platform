@@ -46,7 +46,7 @@ export class TransactionJobProcessorsService {
     input: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId({
+      await this.registrationScopedRepository.getByReferenceId({
         referenceId: input.referenceId,
       });
     if (!registration) {

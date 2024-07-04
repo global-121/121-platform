@@ -718,7 +718,7 @@ export class RegistrationsController {
       'Card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/cards',
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet/cards',
   )
   // TODO: When a data structure has been created in the view cards task use that (or a subset).
   @HttpCode(HttpStatus.NO_CONTENT)

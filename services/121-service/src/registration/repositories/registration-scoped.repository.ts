@@ -112,7 +112,39 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return this.repository.update(criteria, partialEntity);
   }
 
-  public async getRegistrationByReferenceId({
+  public async getWithRelationsByReferenceId({
+    referenceId,
+    relations = [],
+  }: {
+    referenceId: string;
+    relations: string[];
+  }) {
+    return await this.getWithRelationsByReferenceIdAndProgramId({
+      referenceId,
+      relations,
+    });
+  }
+
+  public async getByReferenceIdAndProgramId({
+    referenceId,
+    programId,
+  }: {
+    referenceId: string;
+    programId: number;
+  }) {
+    return await this.getWithRelationsByReferenceIdAndProgramId({
+      referenceId,
+      programId,
+    });
+  }
+
+  public async getByReferenceId({ referenceId }: { referenceId: string }) {
+    return await this.getWithRelationsByReferenceIdAndProgramId({
+      referenceId,
+    });
+  }
+
+  private async getWithRelationsByReferenceIdAndProgramId({
     referenceId,
     programId,
     relations = [],
