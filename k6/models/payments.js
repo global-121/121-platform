@@ -22,7 +22,7 @@ export default class paymentsModel {
   }
 
   getPaymentResults(programId, paymentNr, totalAmountPowerOfTwo, passRate) {
-    const maxAttempts = 120;
+    const maxAttempts = 200;
     let attempts = 0;
     let successPercentage = 0;
 
