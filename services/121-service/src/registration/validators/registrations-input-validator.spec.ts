@@ -1,6 +1,10 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import {
+  AttributeWithOptionalLabel,
+  QuestionType,
+} from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -9,6 +13,84 @@ import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+const programId = 1;
+const userId = 1;
+const dynamicAttributes: AttributeWithOptionalLabel[] = [
+  {
+    id: 8,
+    name: 'addressStreet',
+    type: 'text',
+    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    questionTypes: [QuestionType.fspQuestion],
+  },
+  {
+    id: 9,
+    name: 'addressHouseNumber',
+    type: 'numeric',
+    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    questionTypes: [QuestionType.fspQuestion],
+  },
+  {
+    id: 10,
+    name: 'addressHouseNumberAddition',
+    type: 'text',
+    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    questionTypes: [QuestionType.fspQuestion],
+  },
+  {
+    id: 11,
+    name: 'addressPostalCode',
+    type: 'text',
+    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    questionTypes: [QuestionType.fspQuestion],
+  },
+  {
+    id: 12,
+    name: 'addressCity',
+    type: 'text',
+    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    questionTypes: [QuestionType.fspQuestion],
+  },
+  {
+    id: 13,
+    name: 'whatsappPhoneNumber',
+    type: 'tel',
+    fspNames: [
+      FinancialServiceProviderName.intersolveVisa,
+      FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    ],
+    questionTypes: [QuestionType.fspQuestion],
+  },
+  {
+    id: 3,
+    name: 'fullName',
+    type: 'text',
+    options: null,
+    fspNames: [],
+    questionTypes: [QuestionType.programQuestion],
+  },
+  {
+    id: 4,
+    name: 'phoneNumber',
+    type: 'tel',
+    options: null,
+    fspNames: [],
+    questionTypes: [QuestionType.programQuestion],
+  },
+  {
+    id: 5,
+    name: 'house',
+    type: 'dropdown',
+    options: [
+      { option: 'lannister', label: { en: 'Lannister' } },
+      { option: 'stark', label: { en: 'Stark' } },
+      { option: 'greyjoy', label: { en: 'Greyjoy' } },
+    ],
+    fspNames: [],
+    questionTypes: [QuestionType.programQuestion],
+  },
+];
 
 describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
@@ -38,7 +120,9 @@ describe('RegistrationsInputValidator', () => {
         },
         {
           provide: LookupService,
-          useValue: {},
+          useValue: {
+            lookupAndCorrect: jest.fn().mockResolvedValue('1234567890'),
+          },
         },
       ],
     }).compile();
@@ -69,11 +153,9 @@ describe('RegistrationsInputValidator', () => {
         addressHouseNumberAddition: 'Ground',
         fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
         scope: 'country',
+        house: 'stark',
       },
     ];
-    const programId = 1;
-    const userId = 1;
-    const dynamicAttributes = [];
 
     const result = await validator.validateAndCleanRegistrationsInput(
       csvArray,
@@ -113,9 +195,6 @@ describe('RegistrationsInputValidator', () => {
         scope: 'country',
       },
     ];
-    const programId = 1;
-    const userId = 1;
-    const dynamicAttributes = [];
 
     await expect(
       validator.validateAndCleanRegistrationsInput(
@@ -128,7 +207,7 @@ describe('RegistrationsInputValidator', () => {
     ).rejects.toThrow(HttpException);
   });
 
-  it('should report errors for rows missing mandatory fields', async () => {
+  it('should report errors for rows missing mandatory fields on import', async () => {
     const csvArray = [
       {
         fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
@@ -146,6 +225,25 @@ describe('RegistrationsInputValidator', () => {
         userId,
         dynamicAttributes,
         RegistrationCsvValidationEnum.importAsRegistered,
+      ),
+    ).rejects.toThrow(HttpException);
+  });
+
+  it('should not report errors for rows missing mandatory fields on bulk update', async () => {
+    const csvArray = [
+      {
+        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        preferredLanguage: 'en',
+      },
+    ];
+
+    await expect(
+      validator.validateAndCleanRegistrationsInput(
+        csvArray,
+        programId,
+        userId,
+        dynamicAttributes,
+        RegistrationCsvValidationEnum.bulkUpdate,
       ),
     ).rejects.toThrow(HttpException);
   });
