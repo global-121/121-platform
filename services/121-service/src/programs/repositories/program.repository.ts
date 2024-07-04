@@ -1,6 +1,6 @@
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 export class ProgramRepository extends Repository<ProgramEntity> {
   constructor(
@@ -14,8 +14,10 @@ export class ProgramRepository extends Repository<ProgramEntity> {
     );
   }
 
-  public async getById(id: number): Promise<ProgramEntity> {
-    const program = await this.baseRepository.findOne({ where: { id: id } });
+  public async findByIdOrFail(id: number): Promise<ProgramEntity> {
+    const program = await this.baseRepository.findOne({
+      where: { id: Equal(id) },
+    });
     if (!program) {
       throw new Error(`Program with id ${id} not found`);
     }
