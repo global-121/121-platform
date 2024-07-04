@@ -53,7 +53,6 @@ export class IntersolveVisaMapper {
       tokenBlocked: wallet.isTokenBlocked,
       walletStatus: wallet.walletStatus,
       cardStatus: wallet.cardStatus,
-      isCurrentWallet: param.isCurrentWallet,
       linkCreationInfo: {
         referenceId: param.referenceId,
         programId: param.programId,

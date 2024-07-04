@@ -12,8 +12,8 @@ import * as path from 'path';
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
 
 interface VisaStatusMapInterface {
-  ChildTokenBlocked: boolean;
-  ChildTokenStatus: string;
+  TokenBlocked: boolean;
+  TokenStatus: string;
   CardStatus: string;
   '121VisaCardStatus': string;
   '121VisaCardStatusExplanation': string;
@@ -49,19 +49,17 @@ export class IntersolveVisaStatusMapper {
   private static mapping: VisaStatusMapInterface[] = [];
 
   constructor() {
-    this.loadMapping();
+    IntersolveVisaStatusMapper.loadMapping();
   }
 
-  private loadMapping(): void {
+  public static loadMapping(): void {
     const csvFilePath = path.join(__dirname, 'visaStatusMap.csv');
     fs.createReadStream(csvFilePath)
       .pipe(csvParser({ separator: ';' }))
       .on('data', (row) => {
         const mappingRow: VisaStatusMapInterface = {
-          ChildTokenBlocked: row.TokenBlocked
-            ? row.TokenBlocked === 'TRUE'
-            : false,
-          ChildTokenStatus: row.WalletStatus ? row.WalletStatus.trim() : '',
+          TokenBlocked: row.TokenBlocked ? row.TokenBlocked === 'TRUE' : false,
+          TokenStatus: row.TokenStatus ? row.TokenStatus.trim() : '',
           CardStatus: row.CardStatus ? row.CardStatus.trim() : '',
           '121VisaCardStatus': row['121VisaCardStatus']
             ? row['121VisaCardStatus'].trim()
@@ -80,8 +78,8 @@ export class IntersolveVisaStatusMapper {
   ): Visa121StatusInfoDto {
     const matchingRow = IntersolveVisaStatusMapper.mapping.find(
       (row) =>
-        row.ChildTokenBlocked === params.tokenBlocked &&
-        row.ChildTokenStatus === params.walletStatus &&
+        row.TokenBlocked === params.tokenBlocked &&
+        row.TokenStatus === params.walletStatus &&
         row.CardStatus === params.cardStatus,
     );
     if (matchingRow) {

@@ -785,7 +785,7 @@ export class RegistrationsController {
     type: IntersolveVisaParentWalletDto,
   })
   @Patch(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallets',
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet',
   )
   public async getUpdateVisaParentWallet(
     @Param('referenceId') referenceId: string,

@@ -9,6 +9,7 @@ import {
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
+import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import {
   BadRequestException,
@@ -69,6 +70,7 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 }
 
 async function bootstrap(): Promise<void> {
+  IntersolveVisaStatusMapper.loadMapping(); // TODO: change where this is loaded
   const app = await NestFactory.create(ApplicationModule);
 
   if (!process.env.REDIS_PREFIX) {

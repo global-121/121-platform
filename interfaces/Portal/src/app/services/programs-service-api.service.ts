@@ -526,7 +526,7 @@ export class ProgramsServiceApiService {
   ): Promise<ParentWallet> {
     const result = await this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallets`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
       {},
     );
     return result;

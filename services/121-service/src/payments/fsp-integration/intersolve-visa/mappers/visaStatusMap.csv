@@ -1,4 +1,4 @@
-ChildTokenStatus,ChildTokenBlocked,CardStatus,121VisaCardStatus,121VisaCardStatusExplanation,121Actions
+TokenStatus,TokenBlocked,CardStatus,121VisaCardStatus,121VisaCardStatusExplanation,121Actions
 INACTIVE,FALSE,CARD_OK,Issued,,"Pause, Issue New Card"
 INACTIVE,FALSE,CARD_BLOCKED,Blocked,Visa blocked card,Issue New Card
 INACTIVE,FALSE,SUSPECTED_FRAUD,Suspected Fraud,Card temporarily blocked for investigation,"Pause, Issue New Card"
