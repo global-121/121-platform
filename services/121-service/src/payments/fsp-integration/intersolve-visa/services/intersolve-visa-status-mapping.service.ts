@@ -1,6 +1,6 @@
 import { EXTERNAL_API } from '@121-service/src/config';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-wallet-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import csvParser from 'csv-parser';
@@ -9,13 +9,12 @@ import * as path from 'path';
 
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
 interface VisaStatusMapInterface {
-  TokenBlocked: boolean;
-  WalletStatus: string;
+  ChildTokenBlocked: boolean;
+  ChildTokenStatus: string;
   CardStatus: string;
-  IsCurrentWallet: boolean;
-  '121Status': string;
-  Explanation: string;
-  Actions: string;
+  '121VisaCardStatus': string;
+  '121VisaCardStatusExplanation': string;
+  '121Actions': string;
 }
 
 class VisaStatusInfoDto {
@@ -70,17 +69,18 @@ export class IntersolveVisaStatusMappingService {
       .pipe(csvParser({ separator: ';' }))
       .on('data', (row) => {
         const mappingRow: VisaStatusMapInterface = {
-          TokenBlocked: row.TokenBlocked ? row.TokenBlocked === 'TRUE' : false,
-          WalletStatus: row.WalletStatus ? row.WalletStatus.trim() : '',
-          CardStatus: row.CardStatus ? row.CardStatus.trim() : '',
-          IsCurrentWallet: row.IsCurrentWallet
-            ? row.IsCurrentWallet.trim() === 'TRUE'
+          ChildTokenBlocked: row.TokenBlocked
+            ? row.TokenBlocked === 'TRUE'
             : false,
-          '121Status': row['121Status']
-            ? row['121Status'].trim()
+          ChildTokenStatus: row.WalletStatus ? row.WalletStatus.trim() : '',
+          CardStatus: row.CardStatus ? row.CardStatus.trim() : '',
+          '121VisaCardStatus': row['121VisaCardStatus']
+            ? row['121VisaCardStatus'].trim()
             : WalletCardStatus121.Unknown,
-          Explanation: row.Explanation ? row.Explanation.trim() : '',
-          Actions: row.Actions ? row.Actions.trim() : null,
+          '121VisaCardStatusExplanation': row.Explanation
+            ? row.Explanation.trim()
+            : '',
+          '121Actions': row.Actions ? row.Actions.trim() : null,
         };
         this.mapping.push(mappingRow);
       });
@@ -95,16 +95,17 @@ export class IntersolveVisaStatusMappingService {
   ): VisaStatusInfoDto {
     const matchingRow = this.mapping.find(
       (row) =>
-        row.TokenBlocked === tokenBlocked &&
-        row.WalletStatus === walletStatus &&
-        row.CardStatus === cardStatus &&
-        row.IsCurrentWallet === isCurrentWallet,
+        row.ChildTokenBlocked === tokenBlocked &&
+        row.ChildTokenStatus === walletStatus &&
+        row.CardStatus === cardStatus,
     );
     if (matchingRow) {
       return {
-        walletStatus121: matchingRow['121Status'] as WalletCardStatus121,
-        explanation: matchingRow['Explanation'],
-        links: this.getLinks(matchingRow['Actions'], linkCreationInfo),
+        walletStatus121: matchingRow[
+          '121VisaCardStatus'
+        ] as WalletCardStatus121,
+        explanation: matchingRow['121VisaCardStatusExplanation'],
+        links: this.getLinks(matchingRow['121Actions'], linkCreationInfo),
       };
     } else {
       return {
