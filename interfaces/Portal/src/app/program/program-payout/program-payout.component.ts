@@ -18,7 +18,7 @@ import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { actionResult } from '../../shared/action-result';
 
-const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 7;
+const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 8;
 
 @Component({
   selector: 'app-program-payout',
