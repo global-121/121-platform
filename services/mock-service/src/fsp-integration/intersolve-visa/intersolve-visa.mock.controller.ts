@@ -144,10 +144,19 @@ export class IntersolveVisaMockController {
   @ApiOperation({ summary: 'Transfer' })
   @Post('/wallet/v1/tokens/:fromToken/transfer')
   public transfer(
-    @Body() payload: Record<string, unknown>,
+    @Body() payload: Record<string, any>,
     @Param('fromToken') _fromToken: string,
   ): IntersolveVisaMockResponseDto {
     const toToken = payload.creditor.tokenCode;
     return this.intersolveVisaMockService.transfer(toToken);
+  }
+
+  @ApiOperation({ summary: 'Substitute token' })
+  @Post('wallet/v1/tokens/:oldTokenCode/substitute-token')
+  async substituteToken(
+    @Body() _substituteTokenRequestDto: Record<string, unknown>,
+    @Param('oldTokenCode') oldTokenCode: string,
+  ) {
+    return this.intersolveVisaMockService.substituteToken(oldTokenCode);
   }
 }

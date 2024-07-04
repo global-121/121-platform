@@ -684,6 +684,8 @@
         "suffix": "<br><br>Cela enverra automatiquement un message à la personne concernée.",
         "unpause": "Réactiver cette carte ?"
       },
+      "wallet-number": "Numéro de portefeuille",
+      "card-number": "Numéro de carte",
       "current-balance": "Solde actuel",
       "date-issued": "Délivré",
       "date-last-used": "Dernière utilisation",

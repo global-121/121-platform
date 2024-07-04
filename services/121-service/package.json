@@ -14,7 +14,7 @@
     "fix": "npm run lint -- --fix",
     "build": "nest build -p tsconfig.json",
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
-    "start:dev": "nodemon --watch src/**/*.json --exec npm run start:dev:nest",
+    "start:dev": "nodemon --watch src/**/*.json --watch src/**/*.csv --exec npm run start:dev:nest",
     "start:dev:nest": "nest start -r tsconfig-paths/register -d 0.0.0.0:9229 -w -p tsconfig.json",
     "start:dev:windows": "nodemon --legacy-watch --watch src --ext ts,js,json --exec 'npm run start:dev:nest:windows'",
     "start:dev:nest:windows": "nest start -r tsconfig-paths/register -d 0.0.0.0:9229 -p tsconfig.json",

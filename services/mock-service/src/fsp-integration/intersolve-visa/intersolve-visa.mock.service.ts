@@ -335,6 +335,7 @@ export class IntersolveVisaMockService {
       correlationId: 'string',
       data: {
         code: 'string',
+        blocked: false,
         status: IntersolveVisaWalletStatus.Active,
         balances: [
           {
@@ -590,6 +591,36 @@ export class IntersolveVisaMockService {
             {
               code: 'NOT_FOUND',
               description: 'We mocked that transfer failed',
+            },
+          ],
+        },
+      };
+    }
+
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+      errors: [],
+    };
+  }
+
+  public substituteToken(token: string): IntersolveVisaMockResponseDto {
+    // TODO create API for this and add to import ocw registration .csv
+    if (token.includes('mock-fail-substitute')) {
+      // We assume this is the correct response for a failed substitution
+      // However, the exact failure scenario depends on your application's requirements
+      return {
+        status: HttpStatus.NOT_FOUND,
+        statusText: 'Not Found',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'NOT_FOUND',
+              description: 'We mocked that token substitution failed',
             },
           ],
         },
