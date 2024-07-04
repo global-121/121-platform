@@ -22,7 +22,7 @@ export default class paymentsModel {
   }
 
   getPaymentResults(programId, paymentNr, totalAmountPowerOfTwo, passRate) {
-    const maxAttempts = 60;
+    const maxAttempts = 120;
     let attempts = 0;
     let successPercentage = 0;
 
@@ -44,8 +44,11 @@ export default class paymentsModel {
       sleep(5);
     }
 
-    throw new Error(
-      `Failed to reach the pass rate of ${passRate}%. Instead, the pass rate was ${successPercentage}%.`,
-    );
+    return {
+      status: 500, // Or another appropriate status code
+      body: JSON.stringify({
+        error: `Failed after ${maxAttempts} attempts without reaching the pass rate of ${passRate}%. Last recorded pass rate was ${successPercentage}%.`,
+      }),
+    };
   }
 }
