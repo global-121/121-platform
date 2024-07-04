@@ -61,10 +61,10 @@ import { FinancialServiceProviderQuestionRepository } from '@121-service/src/fin
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { ContactInformationDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { ContactInformationDto } from '../payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -245,7 +245,7 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId({
+      await this.registrationScopedRepository.getWithRelationsByReferenceId({
         referenceId,
         relations,
       });
@@ -915,7 +915,7 @@ export class RegistrationsService {
     programId: number,
   ) {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId({
+      await this.registrationScopedRepository.getByReferenceIdAndProgramId({
         referenceId,
         programId,
       });
@@ -1030,7 +1030,7 @@ export class RegistrationsService {
     pause: boolean,
   ): Promise<IntersolveVisaChildWalletEntity> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId({
+      await this.registrationScopedRepository.getByReferenceIdAndProgramId({
         referenceId,
         programId,
       });
@@ -1061,7 +1061,7 @@ export class RegistrationsService {
     programId: number,
   ): Promise<void> {
     const registration =
-      await this.registrationScopedRepository.getRegistrationByReferenceId({
+      await this.registrationScopedRepository.getByReferenceIdAndProgramId({
         referenceId,
         programId,
       });
