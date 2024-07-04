@@ -115,9 +115,7 @@ export class UpdateFspComponent implements OnInit {
 
   public onFspChange({ detail }) {
     this.getFspAttributes(detail.value);
-    if (!this.selectedFspAttributes.length) {
-      this.enableUpdateBtn = true;
-    }
+    this.checkAttributesCorrectlyFilled();
   }
 
   public getFspAttributes(fspString: FspName) {
