@@ -11,7 +11,7 @@ on:
     tags:
       - 'v*'
   schedule:
-    # See: https://crontab.guru/#21_1_*_*_0
+    # See: https://crontab.guru/#21_1_*_*_SUN
     - cron: '21 1 * * SUN'
 
 jobs:
