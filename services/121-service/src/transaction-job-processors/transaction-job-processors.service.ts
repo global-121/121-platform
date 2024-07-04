@@ -107,12 +107,14 @@ export class TransactionJobProcessorsService {
           registrationId: registration.id,
           reference: input.referenceId, // TODO: Not used at the moment, see Task where we find out how to use references in Intersolve's API
           name: input.name!,
-          addressStreet: input.addressStreet!,
-          addressHouseNumber: input.addressHouseNumber!,
-          addressHouseNumberAddition: input.addressHouseNumberAddition,
-          addressPostalCode: input.addressPostalCode!,
-          addressCity: input.addressCity!,
-          phoneNumber: input.phoneNumber!,
+          contactInformation: {
+            addressStreet: input.addressStreet!,
+            addressHouseNumber: input.addressHouseNumber!,
+            addressHouseNumberAddition: input.addressHouseNumberAddition,
+            addressPostalCode: input.addressPostalCode!,
+            addressCity: input.addressCity!,
+            phoneNumber: input.phoneNumber!,
+          },
           transferAmount: input.transactionAmount,
           brandCode: intersolveVisaConfig.find(
             (c) =>
