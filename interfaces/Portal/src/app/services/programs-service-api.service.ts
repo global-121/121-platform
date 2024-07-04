@@ -532,13 +532,13 @@ export class ProgramsServiceApiService {
     return !!response && !!response.wallets ? response.wallets : [];
   }
 
-  public async issueNewCard(
+  public async reissueCard(
     programId: number,
     referenceId: string,
   ): Promise<any> {
-    const res = await this.apiService.put(
+    const res = await this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
+      `programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
       {},
     );
 

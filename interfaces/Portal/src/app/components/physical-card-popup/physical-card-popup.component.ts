@@ -153,7 +153,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   issueNewCardButtonClick() {
     this.issueLoading = true;
     this.progamsServiceApiService
-      .issueNewCard(this.programId, this.referenceId)
+      .reissueCard(this.programId, this.referenceId)
       .then(() => {
         actionResult(
           this.alertController,
