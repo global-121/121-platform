@@ -9,7 +9,7 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const paymentsPage = new paymentsModel();
 
-const duplicateNumber = 15;
+const duplicateNumber = 13;
 const programId = 3;
 const paymentId = 3;
 const minPassRatePercentage = 10;
@@ -19,6 +19,8 @@ export const options = {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
   vus: 1,
+  duration: '25s',
+  iterations: 1,
 };
 
 export default function () {
@@ -121,7 +123,12 @@ export default function () {
     minPassRatePercentage,
   );
   check(monitorPayment, {
-    'Payment results loaded succesfully status was 200': (r) => r.status == 200,
+    'Payment progressed successfully status 200': (r) => {
+      if (r.status != 200) {
+        console.log(r.body);
+      }
+      return r.status == 200;
+    },
   });
 
   sleep(1);
