@@ -9,7 +9,7 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const paymentsPage = new paymentsModel();
 
-const duplicateNumber = 13;
+const duplicateNumber = 15;
 const programId = 3;
 const paymentId = 3;
 const minPassRatePercentage = 10;
@@ -19,7 +19,7 @@ export const options = {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
   vus: 1,
-  duration: '25s',
+  duration: '20m',
   iterations: 1,
 };
 
