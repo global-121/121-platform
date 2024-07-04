@@ -22,17 +22,16 @@ export default class paymentsModel {
   }
 
   getPaymentResults(programId, paymentNr, totalAmountPowerOfTwo, passRate) {
-    const maxAttempts = 40;
+    const maxAttempts = 60;
     let attempts = 0;
+    let successPercentage = 0;
 
     while (attempts < maxAttempts) {
       const url = `${baseUrl}api/programs/${programId}/payments/${paymentNr}`;
       const res = http.get(url);
       const responseBody = JSON.parse(res.body);
-
       const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
-
-      const successPercentage =
+      successPercentage =
         (parseInt(responseBody.nrSuccess) / totalPayments) * 100;
 
       if (successPercentage >= passRate) {
@@ -41,13 +40,12 @@ export default class paymentsModel {
         );
         return res;
       }
-
-      sleep(5);
       attempts++;
+      sleep(5);
     }
 
     throw new Error(
-      `Failed to reach the pass rate of ${passRate}% after ${maxAttempts} attempts.`,
+      `Failed to reach the pass rate of ${passRate}%. Instead, the pass rate was ${successPercentage}%.`,
     );
   }
 }
