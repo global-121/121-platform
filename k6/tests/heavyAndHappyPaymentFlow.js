@@ -125,7 +125,8 @@ export default function () {
   check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
-        console.log(r.body);
+        const responseBody = JSON.parse(r.body);
+        console.log(responseBody.error || r.status);
       }
       return r.status == 200;
     },
