@@ -2,8 +2,8 @@ import {
   ExportCardsDto,
   ExportWalletData,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
+import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
-import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { Injectable } from '@nestjs/common';
 
 // TODO: REFACTOR: IMO Move into IntersolveVisaService. Make sure it does not depend on anything outside of this Module.
@@ -13,7 +13,6 @@ import { Injectable } from '@nestjs/common';
 export class IntersolveVisaExportService {
   constructor(
     private intersolveVisaWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
-    private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
   ) {}
 
   public async getCards(programId: number): Promise<ExportCardsDto[]> {
@@ -56,24 +55,18 @@ export class IntersolveVisaExportService {
         previousRegistrationProgramId === wallet.paId ? false : true;
 
       const statusInfo =
-        this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.tokenBlocked ?? false,
-          wallet.walletStatus,
-          wallet.cardStatus,
-          isCurrentWallet,
-          {
-            programId,
-            tokenCode: wallet.cardNumber,
-            referenceId: wallet.referenceId,
-          },
-        );
+        IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({
+          tokenBlocked: wallet.tokenBlocked ?? false,
+          walletStatus: wallet.walletStatus,
+          cardStatus: wallet.cardStatus,
+        });
 
       exportWalletData.push({
         paId: wallet.paId,
         referenceId: wallet.referenceId,
         registrationStatus: wallet.registrationStatus,
         cardNumber: wallet.cardNumber,
-        cardStatus121: statusInfo.walletStatus121,
+        cardStatus121: statusInfo.status,
         issuedDate: wallet.issuedDate,
         lastUsedDate: wallet.lastUsedDate,
         balance: wallet.balance / 100,
