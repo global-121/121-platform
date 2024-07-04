@@ -90,7 +90,6 @@ export class IntersolveVisaStatusMappingService {
     tokenBlocked: boolean,
     walletStatus: IntersolveVisaTokenStatus | null,
     cardStatus: IntersolveVisaCardStatus | null,
-    isCurrentWallet: boolean,
     linkCreationInfo: VisaCardLinkCreationInfo,
   ): VisaStatusInfoDto {
     const matchingRow = this.mapping.find(
