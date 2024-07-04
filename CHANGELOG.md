@@ -15,7 +15,7 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ## [24.6-1](https://github.com/global-121/121-platform/compare/v24.6-0...v24.6-1)- 2024-06-27
 
-- Deployment-sepecific issue in workflow-file
+- Deployment-specific issue in workflow-file
 
 ## [24.6-0](https://github.com/global-121/121-platform/compare/v1.122.0...v24.6-0)- 2024-06-27
 
