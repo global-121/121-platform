@@ -12,7 +12,7 @@ on:
       - 'v*'
   schedule:
     # See: https://crontab.guru/#21_1_*_*_0
-    - cron: '21 1 * * 0'
+    - cron: '21 1 * * SUN'
 
 jobs:
   analyze:
