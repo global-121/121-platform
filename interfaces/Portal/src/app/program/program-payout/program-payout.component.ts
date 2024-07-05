@@ -48,6 +48,8 @@ export class ProgramPayoutComponent implements OnInit {
   public canViewPayment: boolean;
   public canMakePayment: boolean;
   public canMakeExport: boolean;
+  public canMakePaymentExport: boolean;
+  public canMakeVoucherExport: boolean;
 
   public exportPaymentId = 0;
   public exportPaymentAvailable: boolean;
@@ -96,6 +98,8 @@ export class ProgramPayoutComponent implements OnInit {
     this.canMakePayment = this.checkCanMakePayment();
     this.canViewPayment = this.checkCanViewPayment();
     this.canMakeExport = this.checkCanMakeExport();
+    this.canMakePaymentExport = this.checkCanMakePaymetExport();
+    this.canMakeVoucherExport = this.checkCanMakeVoucherExport();
 
     if (!this.canViewPayment && !this.canMakeExport && !this.canMakePayment) {
       return;
@@ -122,6 +126,14 @@ export class ProgramPayoutComponent implements OnInit {
     return this.authService.hasAllPermissions(this.program.id, [
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
+    ]);
+  }
+
+  private checkCanMakePaymetExport(): boolean {
+    return this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
+      Permission.RegistrationPaymentExport,
     ]);
   }
 
@@ -316,6 +328,12 @@ export class ProgramPayoutComponent implements OnInit {
     } else {
       this.exportPaymentType = ExportType.payment;
     }
+  }
+
+  private checkCanMakeVoucherExport() {
+    return this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentVoucherExport,
+    ]);
   }
 
   private checkProgramHasVoucherSupport(

@@ -4,6 +4,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { UserService } from '@121-service/src/user/user.service';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 import {
   Controller,
@@ -13,6 +14,7 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -27,7 +29,10 @@ import {
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class EventsController {
-  public constructor(private readonly eventService: EventsService) {}
+  public constructor(
+    private readonly eventService: EventsService,
+    private readonly userService: UserService,
+  ) {}
 
   // We can later extend these permissions to different types when we get more types of events
   @AuthenticatedUser({
@@ -60,6 +65,7 @@ export class EventsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams: Record<string, string>,
     @Query('format') format = 'json',
+    @Req() req,
     @Res() res,
   ): Promise<GetEventDto[] | void> {
     // REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
@@ -69,6 +75,17 @@ export class EventsController {
     };
     const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {
+      const userId = req.user.id;
+      const hasPermission = await this.userService.canActivate(
+        [PermissionEnum.RegistrationPersonalEXPORT],
+        programId,
+        userId,
+      );
+
+      if (!hasPermission) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+
       const result = await this.eventService.getEventsXlsxDto(
         programId,
         searchOptions,
