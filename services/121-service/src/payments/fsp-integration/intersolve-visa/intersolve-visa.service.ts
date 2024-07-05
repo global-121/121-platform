@@ -2,7 +2,6 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { ContactInformationDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
-import { CreateCustomerDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-customer.dto';
 import { CreatePhysicalCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-physical-card.dto';
 import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-physical-card-return.dto';
 import { GetTokenResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-token-result.dto';
@@ -84,22 +83,20 @@ export class IntersolveVisaService
     // Check if customer exists
     if (!intersolveVisaCustomer) {
       // If not, create customer
-      const createCustomerDto: CreateCustomerDto = {
-        externalReference: input.reference,
-        name: input.name,
-        addressStreet: input.contactInformation.addressStreet,
-        addressHouseNumber: input.contactInformation.addressHouseNumber,
-        // TODO: Check if this is the correct way to handle optional fields
-        addressHouseNumberAddition:
-          input.contactInformation.addressHouseNumberAddition!,
-        addressPostalCode: input.contactInformation.addressPostalCode,
-        addressCity: input.contactInformation.addressCity,
-        phoneNumber: input.contactInformation.phoneNumber,
-        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
-      };
-
       const createCustomerResult =
-        await this.intersolveVisaApiService.createCustomer(createCustomerDto);
+        await this.intersolveVisaApiService.createCustomer({
+          externalReference: input.createCustomerReference,
+          name: input.name,
+          addressStreet: input.contactInformation.addressStreet,
+          addressHouseNumber: input.contactInformation.addressHouseNumber,
+          // TODO: Check if this is the correct way to handle optional fields
+          addressHouseNumberAddition:
+            input.contactInformation.addressHouseNumberAddition!,
+          addressPostalCode: input.contactInformation.addressPostalCode,
+          addressCity: input.contactInformation.addressCity,
+          phoneNumber: input.contactInformation.phoneNumber,
+          estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
+        });
 
       // if success, store customer
       const newIntersolveVisaCustomer = new IntersolveVisaCustomerEntity();
@@ -285,6 +282,7 @@ export class IntersolveVisaService
         toTokenCode:
           intersolveVisaCustomer.intersolveVisaParentWallet.tokenCode,
         amount: transferAmount,
+        reference: input.transferReference,
       });
       returnData.transferDone = true;
       returnData.amountTransferred = transferAmount;
