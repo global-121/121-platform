@@ -96,6 +96,7 @@ export class TransactionJobProcessorsService {
           names: [
             FinancialServiceProviderConfigurationEnum.brandCode,
             FinancialServiceProviderConfigurationEnum.coverLetterCode,
+            FinancialServiceProviderConfigurationEnum.fundingTokenCode,
           ],
         },
       );
@@ -105,7 +106,8 @@ export class TransactionJobProcessorsService {
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
-          reference: input.referenceId, // TODO: Not used at the moment, see Task where we find out how to use references in Intersolve's API
+          createCustomerReference: input.referenceId,
+          transferReference: `ReferenceId=${input.referenceId},PaymentNumber=${input.paymentNumber}`,
           name: input.name!,
           contactInformation: {
             addressStreet: input.addressStreet!,
@@ -263,7 +265,7 @@ export class TransactionJobProcessorsService {
     registration: RegistrationEntity,
     programId: number,
   ): Promise<void> {
-    const program = await this.programRepository.getById(programId);
+    const program = await this.programRepository.findByIdOrFail(programId);
     // TODO: Implement retry attempts for the paymentCount and status update.
     // See old code for counting the transactions
     // See if failed transactions also lead to status 'Completed' and is retryable

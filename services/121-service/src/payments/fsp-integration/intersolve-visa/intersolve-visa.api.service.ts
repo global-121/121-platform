@@ -85,7 +85,7 @@ export class IntersolveVisaApiService {
   ): Promise<CreateCustomerResultDto> {
     // Create the request body to send
     const createCustomerRequestDto: CreateCustomerRequestDto = {
-      externalReference: createCustomerDto.externalReference,
+      externalReference: createCustomerDto.externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
       individual: {
         firstName: '', // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name, so just give an empty string
         lastName: createCustomerDto.name,
@@ -130,7 +130,6 @@ export class IntersolveVisaApiService {
 
     // Handle the response
 
-    // TODO: REFACTOR: Check with Peter if this would be a good way to handle the response. If not, then optimize. Also all other methods where we send a request to Intersolve.
     const errorMessage = this.createErrorMessageIfRequestFailed(
       createCustomerResponseDto,
     );
@@ -156,7 +155,7 @@ export class IntersolveVisaApiService {
       activate: issueTokenDto.activate,
       // TODO: Can we just leave out quantities altogether from the request like this? Or does it need to be an empty array like it shows in the Integration Manual?
     };
-    // Send the request
+    // Send the request: https://service-integration.intersolve.nl/pointofsale/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
@@ -536,7 +535,7 @@ export class IntersolveVisaApiService {
       coverLetterCode: input.coverLetterCode,
     };
 
-    // Send the request
+    // Send the request: https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${input.tokenCode}/create-physical-card`;
     const headers = [
@@ -576,12 +575,11 @@ export class IntersolveVisaApiService {
       creditor: {
         tokenCode: transferDto.toTokenCode,
       },
-      reference: uuid(), // TODO: Reference needs to be unique for every transfer on a wallet. What do we want to put here? Check with Tijs if the project team needs it. In the Intersolve docs it says "Budget Week 13" as example value.
-      operationReference: uuid(), // TODO: What is operationReference for? It needs to be a UUID, but Swagger docs not helpful: https://service-integration.intersolve.nl/wallet/swagger/index.html, "Gets or sets the operation reference."
+      reference: transferDto.reference.slice(0, 128), // String of max 128 characters, does not need to be unique for every transfer. TODO: Asked Intersolve what the use case is of this field.
+      operationReference: uuid(), // Required to pass in a UUID, which needs be unique for all transfers, or all transfers on a Token. TODO: Asked Intersolve what the use case is of this field.
     };
 
-    // Send the request
-    // TODO: If the IntersolveVisaApiMockService is removed, then also remove all these if (process.env.MOCK_INTERSOLVE) checks in all functions?
+    // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'wallet-payments'
@@ -620,7 +618,7 @@ export class IntersolveVisaApiService {
       tokenCode: newTokenCode,
     };
 
-    // Send the request
+    // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'wallet-payments'
@@ -709,7 +707,7 @@ export class IntersolveVisaApiService {
       ],
     };
 
-    // Send the request
+    // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'customer-payments'
@@ -757,7 +755,7 @@ export class IntersolveVisaApiService {
       country: 'NL',
     };
 
-    // Send the request
+    // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'customer-payments'
