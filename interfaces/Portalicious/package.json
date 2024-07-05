@@ -17,7 +17,8 @@
     "fix": "ng lint --fix",
     "test:all": "npm run lint && npm test",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
-    "test": "ng test"
+    "test": "ng test",
+    "extract-i18n": "ng extract-i18n --output-path src/assets"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +27,7 @@
     "@angular/compiler": "^18.0.0",
     "@angular/core": "^18.0.0",
     "@angular/forms": "^18.0.0",
+    "@angular/localize": "~18.0.5",
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
@@ -36,6 +38,7 @@
     "primeng": "^17.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xliff": "^6.2.1",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

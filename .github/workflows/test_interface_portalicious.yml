@@ -34,6 +34,13 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm run lint'
 
+      - name: Check translations
+        working-directory: ${{ env.interfacePath }}
+        run: |
+          npm run set-env-variables -- env=development
+          npm run extract-i18n
+          git diff --exit-code --ignore-all-space
+
       - name: Test
         working-directory: ${{ env.interfacePath }}
         run: 'npm run test:ci'

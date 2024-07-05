@@ -2,9 +2,15 @@
   <app-header />
   <div class="flex-1">
     <div class="container">
-      <h1 class="pt-6 text-3xl font-bold text-navy underline">
+      <h1
+        i18n
+        class="pt-6 text-3xl font-bold text-navy underline"
+      >
         Welcome to Portalicious, baby!
       </h1>
+      <p>{{ componentVariable }}</p>
+      <p>{{ variableOutsideAngular }}</p>
+      <p>{{ date | date }}</p>
     </div>
     <router-outlet />
   </div>

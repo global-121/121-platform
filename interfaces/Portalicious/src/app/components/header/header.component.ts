@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  LOCALE_ID,
   computed,
+  effect,
   inject,
   model,
 } from '@angular/core';
@@ -12,6 +14,7 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastService } from '~/services/toast.service';
+import { changeLanguage } from '~/utils/locale';
 
 @Component({
   selector: 'app-header',
@@ -68,16 +71,24 @@ export class HeaderComponent {
     },
   ];
 
-  selectedLanguage = model('en');
+  locale = inject(LOCALE_ID);
+  selectedLanguage = model(this.locale);
   selectedLanguageLabel = computed(() => {
     return this.languages.find((lang) => lang.value === this.selectedLanguage())
       ?.label;
   });
 
   languages = [
-    { label: 'اللغة العربية', value: 'ar' },
-    { label: 'Türkçe', value: 'tr' },
     { label: 'Nederlands', value: 'nl' },
     { label: 'English', value: 'en' },
   ];
+
+  constructor() {
+    effect(() => {
+      if (this.selectedLanguage() === this.locale) {
+        return;
+      }
+      changeLanguage(this.selectedLanguage());
+    });
+  }
 }
