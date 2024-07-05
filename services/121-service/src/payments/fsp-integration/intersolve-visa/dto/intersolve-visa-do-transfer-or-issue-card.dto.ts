@@ -3,8 +3,8 @@ import { ContactInformationDto } from '@121-service/src/payments/fsp-integration
 export interface IntersolveVisaDoTransferOrIssueCardDto {
   // Used to find the IntersolveVisaCustomer Entity related to the Registration and continue from there.
   registrationId: number;
-  reference: string;
-  // TODO: REFACTOR: Use PersonalData from external/personal-data.ts
+  createCustomerReference: string;
+  transferReference: string;
   name: string;
   contactInformation: ContactInformationDto;
   transferAmount: number;
