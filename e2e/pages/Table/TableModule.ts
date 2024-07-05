@@ -1,6 +1,5 @@
 import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import { expect } from '@playwright/test';
-import { error } from 'console';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Locator, Page } from 'playwright';
@@ -16,7 +15,8 @@ const sendMessageAction =
     .sendMessage;
 const debitCardUsage =
   englishTranslations.page.program['export-list']['card-balances']['btn-text'];
-const OK = englishTranslations.common.ok;
+const paymentReport =
+  englishTranslations.page.program['export-list']['payment']['btn-text'];
 
 interface bulkActionContent {
   textLocator: Locator;
@@ -31,6 +31,11 @@ interface ExportDebitCardAssertionData {
   balance: number;
   spentThisMonth: number;
   isCurrentWallet: boolean;
+}
+
+interface ExportPaymentAssertionData {
+  status: string;
+  amount: number;
 }
 
 class TableModule {
@@ -101,6 +106,18 @@ class TableModule {
   async clickOnPaNumber(rowIndex: number) {
     await this.page
       .locator(TableModule.getCellValueTableLeft(rowIndex, 2))
+      .click();
+  }
+
+  async clickOnPaPayments(rowIndex: number) {
+    await this.page
+      .locator(TableModule.getCellValueTableRight(rowIndex, 7))
+      .click();
+  }
+
+  async clickOnPaMessage(rowIndex: number) {
+    await this.page
+      .locator(TableModule.getCellValueTableRight(rowIndex, 5))
       .click();
   }
 
@@ -178,6 +195,12 @@ class TableModule {
     await this.page.waitForTimeout(1000);
     await this.bulkActionsDropdown.selectOption(option);
     await this.page.getByLabel('Select', { exact: true }).click();
+  }
+
+  async GetBulkActionOptions() {
+    await this.page.waitForLoadState('networkidle');
+    await this.bulkActionsDropdown.click();
+    return await this.bulkActionsDropdown.allTextContents();
   }
 
   async openDataExportDropdown() {
@@ -329,11 +352,62 @@ class TableModule {
       'isCurrentWallet',
     ];
 
-    const okButton = this.page.getByRole('button', { name: OK });
-    const exportButton = this.debitCardDataExportButton.filter({
-      hasText: debitCardUsage,
-    });
+    const assertionData = {
+      registrationStatus,
+      paId,
+      balance,
+      spentThisMonth,
+      isCurrentWallet,
+    };
 
+    await this.exportAndAssertData(
+      expectedColumns,
+      assertionData,
+      debitCardUsage,
+    );
+  }
+
+  async exportPayMentData({ status, amount }: ExportPaymentAssertionData) {
+    const expectedColumns = [
+      'referenceId',
+      'id',
+      'status',
+      'payment',
+      'timestamp',
+      'registrationStatus',
+      'phoneNumber',
+      'paymentAmountMultiplier',
+      'amount',
+      'financialserviceprovider',
+      'firstName',
+      'lastName',
+      'whatsappPhoneNumber',
+      'addressCity',
+      'addressPostalCode',
+      'addressHouseNumberAddition',
+      'addressHouseNumber',
+      'addressStreet',
+    ];
+    const assertionData = {
+      status,
+      amount,
+    };
+    await this.exportAndAssertData(
+      expectedColumns,
+      assertionData,
+      paymentReport,
+    );
+  }
+
+  async exportAndAssertData(
+    expectedColumns: string[],
+    assertionData: Record<string, unknown>,
+    filterButtonText: string,
+  ) {
+    const okButton = this.page.getByRole('button', { name: 'OK' });
+    const exportButton = this.debitCardDataExportButton.filter({
+      hasText: filterButtonText,
+    });
     await exportButton.click();
     await okButton.waitFor({ state: 'visible' });
     const [download] = await Promise.all([
@@ -358,23 +432,18 @@ class TableModule {
     // Extract the column names from the first object in the array
     const firstRow = data[0] as Record<string, unknown>;
     const actualColumns = Object.keys(firstRow);
-
     // Assert the values of the first row
-    expect(firstRow.registrationStatus).toBe(registrationStatus);
-    expect(firstRow.paId).toBe(paId);
-    expect(firstRow.balance).toBe(balance);
-    expect(firstRow.spentThisMonth).toBe(spentThisMonth);
-    expect(firstRow.isCurrentWallet).toBe(isCurrentWallet);
-
+    Object.entries(assertionData).forEach(([key, value]) => {
+      expect(firstRow[key]).toBe(value);
+    });
     // Validate the column names
     const columnsPresent = expectedColumns.every((col) =>
       actualColumns.includes(col),
     );
     const correctColumns =
       actualColumns.length === expectedColumns.length && columnsPresent;
-
     if (!correctColumns) {
-      throw error('Column validation failed');
+      throw new Error('Column validation failed');
     }
   }
 
@@ -416,6 +485,11 @@ class TableModule {
       }
     }
     return -1;
+  }
+
+  async openPaymentHistory({ rowIndex = 1 }: { rowIndex: number }) {
+    await this.page.waitForSelector(TableModule.getCellValueTableRight(1, 7));
+    await this.clickOnPaPayments(rowIndex);
   }
 
   async validateFspCell({
