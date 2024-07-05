@@ -8,7 +8,7 @@ import * as path from 'path';
 
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
 
-interface VisaStatusMapInterface {
+interface VisaCard121StatusMapInterface {
   TokenBlocked: boolean;
   TokenStatus: string;
   CardStatus: string;
@@ -17,7 +17,7 @@ interface VisaStatusMapInterface {
   Actions121: string;
 }
 
-interface VisaCard121StatusInformationDto {
+interface VisaCard121StatusInformation {
   status: VisaCard121Status;
   explanation: string;
 }
@@ -29,18 +29,18 @@ const VisaCardActionsMapping = {
 };
 
 export class IntersolveVisaStatusMapper {
-  private static mapping: VisaStatusMapInterface[] = [];
+  private static mapping: VisaCard121StatusMapInterface[] = [];
 
   constructor() {
     IntersolveVisaStatusMapper.loadMapping();
   }
 
   public static loadMapping(): void {
-    const csvFilePath = path.join(__dirname, 'visaStatusMap.csv');
+    const csvFilePath = path.join(__dirname, 'visa-card-121-status-map.csv');
     fs.createReadStream(csvFilePath)
       .pipe(csvParser({ separator: ';' }))
       .on('data', (row) => {
-        const mappingRow: VisaStatusMapInterface = {
+        const mappingRow: VisaCard121StatusMapInterface = {
           TokenBlocked: row.TokenBlocked ? row.TokenBlocked === 'TRUE' : false,
           TokenStatus: row.TokenStatus ? row.TokenStatus.trim() : '',
           CardStatus: row.CardStatus ? row.CardStatus.trim() : '',
@@ -64,10 +64,7 @@ export class IntersolveVisaStatusMapper {
     tokenBlocked: boolean;
     walletStatus: IntersolveVisaTokenStatus | null;
     cardStatus: IntersolveVisaCardStatus | null;
-  }): VisaCard121StatusInformationDto {
-    // TODO: Temporary fix to reload mapping on every call
-    IntersolveVisaStatusMapper.loadMapping();
-
+  }): VisaCard121StatusInformation {
     const matchingRow = IntersolveVisaStatusMapper.mapping.find(
       (row) =>
         row.TokenBlocked === tokenBlocked &&
