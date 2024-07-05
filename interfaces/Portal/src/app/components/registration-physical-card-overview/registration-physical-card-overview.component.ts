@@ -1,13 +1,10 @@
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import {
-  ParentWallet,
-  PhysicalCard,
-} from 'src/app/models/intersolve-visa-wallet.model';
+import { Card, Wallet } from 'src/app/models/intersolve-visa-wallet.model';
 import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
@@ -42,9 +39,9 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   @Input()
   public registrationStatus: Person['status'];
 
-  public wallet: ParentWallet;
-  public WalletCardStatus121 = WalletCardStatus121;
-  public latestCard: PhysicalCard;
+  public wallet: Wallet;
+  public WalletCardStatus121 = VisaCard121Status;
+  public latestCard: Card;
 
   public DateFormat = DateFormat;
 
@@ -87,7 +84,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
     this.loading = false;
   }
 
-  public async openCardDetails(card: PhysicalCard) {
+  public async openCardDetails(card: Card) {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PhysicalCardPopupComponent,
       componentProps: {

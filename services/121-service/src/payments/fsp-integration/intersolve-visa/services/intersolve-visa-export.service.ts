@@ -54,24 +54,19 @@ export class IntersolveVisaExportService {
       const isCurrentWallet =
         previousRegistrationProgramId === wallet.paId ? false : true;
 
-      const statusInfo = IntersolveVisaStatusMapper.map121StatusInfo({
-        tokenBlocked: wallet.tokenBlocked ?? false,
-        walletStatus: wallet.walletStatus,
-        cardStatus: wallet.cardStatus,
-        isCurrentWallet: isCurrentWallet,
-        linkCreationInfo: {
-          programId: programId,
-          tokenCode: wallet.cardNumber,
-          referenceId: wallet.referenceId,
-        },
-      });
+      const statusInfo =
+        IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({
+          tokenBlocked: wallet.tokenBlocked ?? false,
+          walletStatus: wallet.walletStatus,
+          cardStatus: wallet.cardStatus,
+        });
 
       exportWalletData.push({
         paId: wallet.paId,
         referenceId: wallet.referenceId,
         registrationStatus: wallet.registrationStatus,
         cardNumber: wallet.cardNumber,
-        cardStatus121: statusInfo.walletStatus121,
+        cardStatus121: statusInfo.status,
         issuedDate: wallet.issuedDate,
         lastUsedDate: wallet.lastUsedDate,
         balance: wallet.balance / 100,

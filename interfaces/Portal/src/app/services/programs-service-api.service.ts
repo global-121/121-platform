@@ -15,7 +15,7 @@ import { Event } from '../models/event.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
-import { ParentWallet } from '../models/intersolve-visa-wallet.model';
+import { Wallet } from '../models/intersolve-visa-wallet.model';
 import { Message, MessageTemplate } from '../models/message.model';
 import { PaginationMetadata } from '../models/pagination-metadata.model';
 import { PaymentData } from '../models/payment.model';
@@ -523,7 +523,7 @@ export class ProgramsServiceApiService {
   public async getUpdateWalletAndCards(
     programId: number,
     referenceId: string,
-  ): Promise<ParentWallet> {
+  ): Promise<Wallet> {
     const result = await this.apiService.patch(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,

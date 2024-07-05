@@ -1,22 +1,22 @@
 import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-action.enum';
 import { VisaCardMethod } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-method.enum';
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 
-export interface ParentWallet {
+export interface Wallet {
   balance: number;
-  lastExternalUpdate: string;
   spentThisMonth: number;
   maxToSpendPerMonth: number;
   lastUsedDate: Date | null;
-  cards: PhysicalCard[];
+  lastExternalUpdate: string;
+  cards: Card[];
 }
 
-export interface PhysicalCard {
+export interface Card {
   tokenCode: string;
-  status: WalletCardStatus121;
+  status: VisaCard121Status;
+  explanation: string;
   issuedDate: Date;
   links: VisaCardActionLinkDto[];
-  explanation: string;
   debugInfo: unknown; // Not used by the frontend
 }
 

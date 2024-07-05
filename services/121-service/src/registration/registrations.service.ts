@@ -62,7 +62,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { ContactInformationDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
-import { IntersolveVisaParentWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-parent-wallet.dto';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
@@ -236,11 +236,15 @@ export class RegistrationsService {
     return result;
   }
 
-  public async getRegistrationFromReferenceId(
-    referenceId: string,
-    relations: string[] = [],
-    programId?: number,
-  ): Promise<RegistrationEntity> {
+  public async getRegistrationFromReferenceId({
+    referenceId,
+    relations = [],
+    programId,
+  }: {
+    referenceId: string;
+    relations?: string[];
+    programId?: number;
+  }): Promise<RegistrationEntity> {
     if (!referenceId) {
       const errors = `ReferenceId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -264,7 +268,9 @@ export class RegistrationsService {
     referenceId: string,
     fspId: number,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    const registration = await this.getRegistrationFromReferenceId({
+      referenceId,
+    });
     const fsp = await this.fspRepository.findOneOrFail({
       where: { id: Equal(fspId) },
       relations: ['questions'],
@@ -293,7 +299,9 @@ export class RegistrationsService {
     customDataKey: string,
     customDataValueRaw: string | string[],
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    const registration = await this.getRegistrationFromReferenceId({
+      referenceId,
+    });
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
       customDataKey,
       customDataValueRaw,
@@ -477,11 +485,11 @@ export class RegistrationsService {
     let nrAttributesUpdated = 0;
     const { data: partialRegistration } = updateRegistrationDto;
 
-    let registrationToUpdate = await this.getRegistrationFromReferenceId(
+    let registrationToUpdate = await this.getRegistrationFromReferenceId({
       referenceId,
-      ['program', 'fsp'],
+      relations: ['program', 'fsp'],
       programId,
-    );
+    });
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
@@ -568,18 +576,19 @@ export class RegistrationsService {
         registration.referenceId,
       );
     if (calculatedRegistration) {
-      return this.getRegistrationFromReferenceId(
-        calculatedRegistration.referenceId,
-      );
+      return this.getRegistrationFromReferenceId({
+        referenceId: calculatedRegistration.referenceId,
+      });
     }
 
     if (process.env.SYNC_WITH_THIRD_PARTIES) {
       await this.sendContactInformationToIntersolve(registration);
     }
 
-    return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
-      'program',
-    ]);
+    return this.getRegistrationFromReferenceId({
+      referenceId: savedRegistration.referenceId,
+      relations: ['program'],
+    });
   }
 
   private async sendContactInformationToIntersolve(
@@ -771,10 +780,10 @@ export class RegistrationsService {
     });
 
     // Get registration by referenceId
-    const registration = await this.getRegistrationFromReferenceId(
+    const registration = await this.getRegistrationFromReferenceId({
       referenceId,
-      ['fsp', 'fsp.questions'],
-    );
+      relations: ['fsp', 'fsp.questions'],
+    });
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
@@ -911,16 +920,16 @@ export class RegistrationsService {
     });
   }
 
-  public async getUpdateVisaParentWalletDto(
+  public async retrieveAndUpdateIntersolveVisaWalletAndCards(
     referenceId: string,
     programId: number,
-  ): Promise<IntersolveVisaParentWalletDto> {
-    const registration = await this.getRegistrationFromReferenceId(
+  ): Promise<IntersolveVisaWalletDto> {
+    const registration = await this.getRegistrationFromReferenceId({
       referenceId,
-      [],
+      relations: [],
       programId,
-    );
-    return await this.intersolveVisaService.getUpdateParentWalletDto(
+    });
+    return await this.intersolveVisaService.getRetrievedAndUpdatedWallet(
       registration.id,
       referenceId,
       programId,

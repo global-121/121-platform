@@ -1,6 +1,5 @@
-// TODO: REFACTOR: Rename to 121VisaCardStatus probably, also rename and refactor other status mapping stuff.
-
-export enum WalletCardStatus121 {
+// Not naming it 121VisaCardStatus, because starting a name with a number required it to be always in quotes, which is inconvenient.
+export enum VisaCard121Status {
   Active = 'Active',
   Issued = 'Issued',
   Blocked = 'Blocked',
