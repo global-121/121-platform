@@ -1,6 +1,5 @@
 import { registerLocaleData } from '@angular/common';
 import { loadTranslations } from '@angular/localize';
-import { xliffToJson } from '~/utils/xliff-to-json';
 
 export const localStorageLocaleKey = 'preferredLanguage';
 
@@ -16,13 +15,13 @@ export async function initLanguage(): Promise<void> {
     return;
   }
 
-  // Fetch XLIFF translation file and transform to JSON format (JSON translations can be used directly)
-  const json = await fetch('/assets/messages.' + locale + '.xlf')
-    .then((r) => r.text())
-    .then((t) => xliffToJson(t));
+  // Fetch translation file
+  const json = (await fetch('/assets/messages.' + locale + '.json').then((r) =>
+    r.json(),
+  )) as { translations: Record<string, string> };
 
   // Initialize translation
-  loadTranslations(json);
+  loadTranslations(json.translations);
   $localize.locale = locale;
 
   let localeModule;

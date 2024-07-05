@@ -1,0 +1,8 @@
+{
+  "locale": "en-US",
+  "translations": {
+    "welcomeMessage": " Welcome to Portalicious, baby! ",
+    "outsideVariable": "I am a variable outside of an angular class.",
+    "componentVariable": "I am a component variable."
+  }
+}

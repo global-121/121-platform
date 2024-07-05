@@ -7,7 +7,7 @@ import { FooterComponent } from '~/components/footer/footer.component';
 import { HeaderComponent } from '~/components/header/header.component';
 import { ToastService } from '~/services/toast.service';
 
-const variableOutsideAngular = $localize`I am a variable outside of an angular class.`;
+const variableOutsideAngular = $localize`:@@outsideVariable:I am a variable outside of an angular class.`;
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ const variableOutsideAngular = $localize`I am a variable outside of an angular c
 export class AppComponent {
   toastKey = ToastService.TOAST_KEY;
 
-  componentVariable = $localize`I am a component variable.`;
+  componentVariable = $localize`:@@componentVariable:I am a component variable.`;
   variableOutsideAngular = variableOutsideAngular;
   date = new Date();
 }

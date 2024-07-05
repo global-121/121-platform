@@ -17,7 +17,7 @@
         "sourceLocale": "en-US",
         "locales": {
           "nl": {
-            "translation": "src/assets/messages.nl.xlf"
+            "translation": "src/assets/messages.nl.json"
           }
         }
       },

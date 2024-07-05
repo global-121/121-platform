@@ -18,7 +18,7 @@
     "test:all": "npm run lint && npm test",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "test": "ng test",
-    "extract-i18n": "ng extract-i18n --output-path src/assets"
+    "extract-i18n": "ng extract-i18n --output-path src/assets --format=json"
   },
   "private": true,
   "dependencies": {
@@ -38,7 +38,6 @@
     "primeng": "^17.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "xliff": "^6.2.1",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

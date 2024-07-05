@@ -1,0 +1,8 @@
+{
+  "locale": "nl-NL",
+  "translations": {
+    "welcomeMessage": " Welkom bij het smakelijke Portaal, schat! ",
+    "outsideVariable": "Ik ben een variable buiten een angular class.",
+    "componentVariable": "Ik ben een component variable."
+  }
+}
