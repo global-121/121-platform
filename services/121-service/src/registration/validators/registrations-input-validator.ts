@@ -161,6 +161,14 @@ export class RegistrationsInputValidator {
 
       await Promise.all(
         dynamicAttributesForFsp.map(async (att) => {
+          // Skip validation if the attribute is not present in the row and it is a bulk update because you do not have to update all attributes in a bulk update
+          if (
+            typeOfInput === RegistrationCsvValidationEnum.bulkUpdate &&
+            row[att.name] == null
+          ) {
+            return;
+          }
+
           if (att.type === AnswerTypes.tel) {
             /*
              * ==================================================================
