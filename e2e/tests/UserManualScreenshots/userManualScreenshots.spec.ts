@@ -6,15 +6,12 @@ import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/Registration
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import UsersAndRoles from '@121-e2e/pages/UsersAndRoles/UsersAndRolesPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import {
-  programIdVisa,
-  registrationVisa as registrationVisaDefault,
-} from '@121-service/src/seed-data/mock/visa-card.data';
-import { importRegistrations } from '@121-service/test/helpers/registration.helper';
+import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
 import { Page } from 'playwright';
 import { BulkActionId } from '../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
@@ -23,6 +20,7 @@ import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.j
 
 const TIMEOUT_DURATION = 200;
 const PROGRAM_ID = 3;
+const OK = englishTranslations.common.ok;
 const actions =
   englishTranslations['registration-details']['activity-overview'].actions;
 const save = englishTranslations.common.save;
@@ -48,16 +46,16 @@ async function navigateAndScreenshot({
 let accessToken: string;
 
 test.beforeEach(async () => {
-  const registrationVisa = {
-    ...registrationVisaDefault,
-    whatsappPhoneNumber: registrationVisaDefault.phoneNumber,
-  };
   accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple);
-  await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+  await importRegistrationsCSV(
+    programIdOCW,
+    './test-registration-data/test-registrations-OCW.csv',
+    accessToken,
+  );
 });
 
-test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
+test('Navigates to the portal and takes screenshots', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const helpers = new Helpers(page);
   const homePage = new HomePage(page);
@@ -141,7 +139,7 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await navigateAndScreenshot({
     page: page,
     helpers: helpers,
-    url: `/program/${PROGRAM_ID}/design`,
+    url: `/program/${PROGRAM_ID}/overview`,
     fileName: 'ProgramDetails',
   });
 
@@ -150,14 +148,13 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
     fileName: 'ProgramDetailsTable',
   });
 
-  await page.goto(AppRoutes.home);
+  await page.goto(`/program/${PROGRAM_ID}/people-affected`);
   await page.waitForTimeout(1000);
   await helpers.takeFullScreenShot({
     fileName: 'RegistrationPageOverview',
   });
 
   await table.openFspProfile({ shouldIncludeVisa: true });
-  1;
   await registration.clickActionButton({
     button: actions,
   });
@@ -225,5 +222,23 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await table.selectBulkAction({ option: BulkActionId.markAsDeclined });
   await helpers.takeFullScreenShot({
     fileName: 'RegistrationRejected',
+  });
+
+  await page.reload();
+  await table.quickFilter('mock');
+  await table.applyBulkAction(BulkActionId.include);
+  await helpers.clickButton({ buttonName: OK });
+  await helpers.clickButton({ buttonName: OK });
+
+  await table.quickFilter('spent');
+  await table.applyBulkAction(BulkActionId.markAsDeclined);
+  await helpers.clickButton({ buttonName: OK });
+  await helpers.clickButton({ buttonName: OK });
+
+  await navigateAndScreenshot({
+    page: page,
+    helpers: helpers,
+    url: `/program/${PROGRAM_ID}/people-affected`,
+    fileName: 'PeopleAffectedDifferentStatus',
   });
 });

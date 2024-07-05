@@ -18,7 +18,10 @@ class Helpers {
   async takeFullScreenShot({ fileName }: { fileName: string }) {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForLoadState('networkidle');
-    // await this.page.screenshot({ path: `screenshots/${fileName}.png` });
+    await this.page.screenshot({
+      animations: 'disabled',
+      path: `screenshots/${fileName}.png`,
+    });
     await expect(this.page).toHaveScreenshot(`${fileName}.png`, {
       fullPage: true,
       animations: 'disabled',
@@ -35,10 +38,18 @@ class Helpers {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForLoadState('networkidle');
     const element = this.page.getByTestId(elementId);
-    // await element.screenshot({ path: `screenshots/${fileName}.png` });
+    await element.screenshot({
+      animations: 'disabled',
+      path: `screenshots/${fileName}.png`,
+    });
     await expect(element).toHaveScreenshot(`${fileName}.png`, {
       animations: 'disabled',
     });
+  }
+
+  async clickButton({ buttonName }: { buttonName: string }) {
+    const button = this.page.getByRole('button', { name: buttonName });
+    await button.click();
   }
 }
 
