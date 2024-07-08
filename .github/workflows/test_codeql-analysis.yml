@@ -8,10 +8,11 @@ name: 'Test: Code scanning with CodeQL'
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'release/*'
+    tags:
+      - 'v*'
   schedule:
-    - cron: '21 1 * * 0'
+    # See: https://crontab.guru/#21_1_*_*_SUN
+    - cron: '21 1 * * SUN'
 
 jobs:
   analyze:
