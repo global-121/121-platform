@@ -182,10 +182,10 @@ The process is:
 8. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
 9. If ever running into issues with migrations locally, the reset process is:
 
-- Delete all tables in the `121-service` database schema
-- Restart `121-service` container
-- This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
-- (Run seed)
+   - Delete all tables in the `121-service` database schema
+   - Restart `121-service` container
+   - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
+   - (Run seed)
 
 10. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
@@ -382,7 +382,7 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 - PR's to the branch `main` are automatically deployed to an individual preview-environment.
 - When merged, a separate deployment is done to the test-environment; for that interface only.
 
-### To "staging" and/or "production" environment(s)
+#### To "staging" and/or "production" environment(s)
 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
 
@@ -398,7 +398,7 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 - When merged, a separate deployment is done to the test-environment.
 - Make sure to update any environment-configuration in the Azure-portal as soon as possible, preferably before the merge & deploy.
 
-### To "staging" and/or "production" environment(s)
+#### To "staging" and/or "production" environment(s)
 
 #### On initial deployment (only)
 

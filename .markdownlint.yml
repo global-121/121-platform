@@ -1,0 +1,6 @@
+# See: https://github.com/DavidAnson/vscode-markdownlint#configure
+
+line-length: false
+code-block-style: false
+no-duplicate-heading:
+  siblings_only: true
