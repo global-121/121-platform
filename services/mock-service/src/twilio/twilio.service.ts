@@ -50,7 +50,7 @@ export class TwilioService {
       dateUpdated: new Date(),
       price: null,
       error_message: null,
-      uri: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}.json`,
+      uri: `/2010-04-01/Accounts/${accountSid}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}.json`,
       account_sid: accountSid,
       numMedia: twilioMessagesCreateDto.MediaUrl ? '1' : '0',
       status: 'accepted',
@@ -62,7 +62,7 @@ export class TwilioService {
       price_unit: null,
       api_version: '2010-04-01',
       subresourceUris: {
-        media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
+        media: `/2010-04-01/Accounts/${accountSid}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
       },
     };
 

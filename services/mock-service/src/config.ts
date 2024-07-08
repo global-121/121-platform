@@ -6,7 +6,7 @@ export const PORT = DEVELOPMENT ? process.env.PORT_MOCK_SERVICE : 8080;
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
 
-export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
+export const APP_VERSION = process.env.GLOBAL_121_VERSION ?? '';
 
 let appTitle = packageJson.name;
 if (process.env.ENV_NAME) {
