@@ -1,30 +1,35 @@
-INSERT
-	INTO
-	"121-service"."twilio_message" (
-	select
-		id + (
-		SELECT
-			count(id)
-		FROM
-			"121-service"."twilio_message"),
-		created  + (20 * interval '1 minute'),
-		"accountSid",
-		body,
-		"to",
-		"from",
-		concat('SM',substr(md5(random()::text), 0, 33)) as sid,
-		status,
-		"type",
-		"dateCreated",
-		"registrationId" + (
-		SELECT
-			max("registrationId")
-		FROM
-			"121-service"."twilio_message"),
-		"mediaUrl",
-		updated,
-		"contentType",
-		"errorCode",
-		"errorMessage"
-	from
-		"121-service".twilio_message);
+INSERT INTO "121-service"."twilio_message" (
+  created,
+  "accountSid",
+  body,
+  "to",
+  "from",
+  sid,
+  status,
+  "type",
+  "dateCreated",
+  "registrationId",
+  "mediaUrl",
+  updated,
+  "contentType",
+  "errorCode",
+  "errorMessage"
+)
+SELECT
+  created + (20 * INTERVAL '1 minute'),
+  "accountSid",
+  body,
+  "to",
+  "from",
+  CONCAT('SM', SUBSTR(MD5(RANDOM()::text), 0, 33)),
+  status,
+  "type",
+  "dateCreated",
+  "registrationId" + (SELECT MAX("registrationId") FROM "121-service"."twilio_message"),
+  "mediaUrl",
+  updated,
+  "contentType",
+  "errorCode",
+  "errorMessage"
+FROM
+  "121-service".twilio_message;
