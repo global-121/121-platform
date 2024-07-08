@@ -13,6 +13,7 @@ import {
   GetTransactionsResponseDto,
   IntersolveGetTransactionsResponseDataDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-get-wallet-transactions.dto';
+import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import {
   BlockTokenReasonCodeEnum,
   BlockTokenReturnType,
@@ -137,7 +138,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`CREATE CUSTOMER ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.createCustomerError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -151,10 +154,11 @@ export class IntersolveVisaApiService {
   public async issueToken(issueTokenParams: {
     brandCode: string;
     activate: boolean;
+    reference?: string;
   }): Promise<IssueTokenReturnType> {
     // Create the request body to send
     const issueTokenRequestDto: IssueTokenRequestDto = {
-      reference: uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
+      reference: issueTokenParams.reference ? issueTokenParams.reference : uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
       activate: issueTokenParams.activate,
       // TODO: Can we just leave out quantities altogether from the request like this? Or does it need to be an empty array like it shows in the Integration Manual?
     };
@@ -182,7 +186,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`ISSUE TOKEN ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.issueTokenError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -218,7 +224,9 @@ export class IntersolveVisaApiService {
       this.createErrorMessageIfRequestFailed(getTokenResponseDto);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`GET TOKEN ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.getTokenError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -274,7 +282,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`GET PHYSICAL CARD ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.getPhysicalCardError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -356,7 +366,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`GET TRANSACTIONS ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.getTransactionError}: ${errorMessage}`,
+      );
     }
 
     return getTransactionsResponseDto;
@@ -442,7 +454,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`REGISTER HOLDER ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.resgisterHolderError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -485,7 +499,9 @@ export class IntersolveVisaApiService {
       this.createErrorMessageIfRequestFailed(linkTokenResponse);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`LINK TOKEN ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.linkTokenError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -551,7 +567,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`CREATE PHYSICAL CARD ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.createPhysicalCardError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -605,7 +623,9 @@ export class IntersolveVisaApiService {
       this.createErrorMessageIfRequestFailed(transferResponse);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`TRANSFER ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.transferError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -649,7 +669,9 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`SUBSTITUTE TOKEN ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.substituteTokenError}: ${errorMessage}`,
+      );
     }
 
     // If the response does not contain errors
@@ -689,7 +711,9 @@ export class IntersolveVisaApiService {
     const errorMessage = this.createErrorMessageIfRequestFailed(blockResult);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`BLOCK TOKEN ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.blockTokenError}: ${errorMessage}`,
+      );
     }
 
     return result;
@@ -730,7 +754,9 @@ export class IntersolveVisaApiService {
     const errorMessage = this.createErrorMessageIfRequestFailed(response);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`UPDATE PHONE NUMBER ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.updatePhoneNumberError}: ${errorMessage}`,
+      );
     }
   }
 
@@ -778,7 +804,9 @@ export class IntersolveVisaApiService {
     const errorMessage = this.createErrorMessageIfRequestFailed(response);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(`UPDATE PHONE NUMBER ERROR: ${errorMessage}`);
+      throw new Error(
+        `${IntersolveVisa121ErrorText.updatePhoneNumberError}: ${errorMessage}`,
+      );
     }
 
     return;

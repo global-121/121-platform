@@ -1,4 +1,5 @@
 import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-121-error-text.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -136,7 +137,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('CREATE CUSTOMER ERROR');
+      expect(transactionsResponse.text).toContain(
+        IntersolveVisa121ErrorText.createCustomerError,
+      );
     });
 
     it('should fail pay-out Visa Debit (CREATE WALLET ERROR)', async () => {
@@ -180,7 +183,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('CREATE WALLET ERROR');
+      expect(transactionsResponse.text).toContain(
+        IntersolveVisa121ErrorText.issueTokenError,
+      );
     });
 
     it('should fail pay-out Visa Debit (LINK CUSTOMER ERROR)', async () => {
@@ -224,7 +229,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('LINK CUSTOMER ERROR');
+      expect(transactionsResponse.text).toContain(
+        IntersolveVisa121ErrorText.resgisterHolderError,
+      );
     });
 
     it('should fail pay-out Visa Debit (CREATE DEBIT CARD ERROR)', async () => {
@@ -268,7 +275,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(transactionsResponse.text).toContain('CREATE DEBIT CARD ERROR');
+      expect(transactionsResponse.text).toContain(
+        IntersolveVisa121ErrorText.createPhysicalCardError,
+      );
     });
 
     it('should fail pay-out Visa Debit (CALCULATE TOPUP AMOUNT ERROR)', async () => {
@@ -330,7 +339,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain(
-        'CALCULATE TOPUP AMOUNT ERROR',
+        IntersolveVisa121ErrorText.getTokenError,
       );
     });
 
@@ -634,12 +643,13 @@ describe('Do payment to 1 PA', () => {
 
       // Kyc requirement
       expect(transactionsResponse4.body[0].amount).toBe(
-        150 - (6000 * 2) / 100 - 0, // = 30
+        // 150 - 6000 / 100 - 0, // = 90 maximum of 90 can be put on this card so we expect the amount to be 75
+        75,
       );
       expect(transactionsResponse4.text).toContain(StatusEnum.success);
     });
 
-    it.skip('should faild pay-out by visa debit if coverletterCode is not configured for the program', async () => {
+    it('should faild pay-out by visa debit if coverletterCode is not configured for the program', async () => {
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
@@ -692,7 +702,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain(
-        "CREATE DEBIT CARD ERROR: 400 - No coverLetterCode found for financial service provider under program 3. Please update the program's financial service provider cofinguration.",
+        `Error: Configuration with name coverLetterCode not found for program ${programIdVisa} and FSP Intersolve-visa`,
       );
     });
   });

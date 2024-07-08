@@ -72,10 +72,10 @@ export class IntersolveVisaMockController {
   @ApiOperation({ summary: 'Create debit card' })
   @Post('/payment-instrument-payment/v1/tokens/:tokenCode/create-physical-card')
   public createDebitCard(
-    @Body() _payload: Record<string, unknown>,
-    @Param('tokenCode') tokenCode: string,
+    @Body() payload: Record<string, any>,
+    @Param('tokenCode') _tokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.createDebitCardMock(tokenCode);
+    return this.intersolveVisaMockService.createDebitCardMock(payload.lastName);
   }
 
   @ApiOperation({ summary: 'Load balance' }) // This will be depricated after the new visa flow is implemented, it has been added for the current flow to make that one work and mergable
