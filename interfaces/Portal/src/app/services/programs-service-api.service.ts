@@ -666,14 +666,18 @@ export class ProgramsServiceApiService {
 
   markAsDeclined(
     programId: number | string,
+    message: string,
     dryRun = false,
     filters?: PaginationFilter[],
+    messageTemplateKey?: string,
   ): Promise<any> {
     return this.updatePaStatus(
       RegistrationStatus.declined,
       programId,
       dryRun,
       filters,
+      message,
+      messageTemplateKey,
     );
   }
 
