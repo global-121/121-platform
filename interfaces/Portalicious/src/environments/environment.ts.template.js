@@ -15,8 +15,7 @@ export const environment = {
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API || ''}',
 
   // Third-party tokens:
-  ai_ikey: '${process.env.NG_AI_IKEY || ''}',
-  ai_endpoint: '${process.env.NG_AI_ENDPOINT || ''}',
+  applicationinsights_connection_string: '${process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || ''}',
 
   // Azure AD
   use_sso_azure_entra: ${process.env.USE_SSO_AZURE_ENTRA || 'false'},

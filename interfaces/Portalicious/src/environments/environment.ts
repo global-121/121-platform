@@ -16,8 +16,7 @@ export const environment = {
   url_121_service_api: 'http://localhost:3000/api',
 
   // Third-party tokens:
-  ai_ikey: '',
-  ai_endpoint: '',
+  applicationinsights_connection_string: '',
 
   // Azure AD
   use_sso_azure_entra: false, // Enable Azure AD login
