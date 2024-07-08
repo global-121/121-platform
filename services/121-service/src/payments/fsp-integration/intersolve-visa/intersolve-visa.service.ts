@@ -288,8 +288,6 @@ export class IntersolveVisaService
   // TODO: Remove referenceId and programId from input params.
   public async getRetrievedAndUpdatedWallet(
     registrationId: number,
-    referenceId: string,
-    programId: number,
   ): Promise<IntersolveVisaWalletDto> {
     const customer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
@@ -298,7 +296,9 @@ export class IntersolveVisaService
 
     if (!customer) {
       throw new HttpException(
-        { errors: `No Customer Entity found for Registration: ${referenceId}` },
+        {
+          errors: `No Customer Entity found for Registration: ${registrationId}`,
+        },
         HttpStatus.NOT_FOUND,
       );
     }
@@ -306,7 +306,7 @@ export class IntersolveVisaService
     if (!customer.intersolveVisaParentWallet) {
       throw new HttpException(
         {
-          errors: `No ParentWallet Entity found for Registration: ${referenceId}`,
+          errors: `No ParentWallet Entity found for Registration: ${registrationId}`,
         },
         HttpStatus.NOT_FOUND,
       );

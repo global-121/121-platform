@@ -17,15 +17,16 @@ interface VisaCard121StatusMapInterface {
   Actions121: string;
 }
 
-interface VisaCard121StatusInformation {
+interface VisaCard121StatusInformationAndActions {
   status: VisaCard121Status;
   explanation: string;
+  actions: VisaCardAction[];
 }
 
 const VisaCardActionsMapping = {
   Pause: VisaCardAction.pause,
   Unpause: VisaCardAction.unpause,
-  'Issue New Card': VisaCardAction.reissue,
+  Reissue: VisaCardAction.reissue,
 };
 
 export class IntersolveVisaStatusMapper {
@@ -47,10 +48,10 @@ export class IntersolveVisaStatusMapper {
           VisaCard121Status: row['VisaCard121Status']
             ? row['VisaCard121Status'].trim()
             : VisaCard121Status.Unknown,
-          VisaCard121StatusExplanation: row.Explanation
-            ? row.Explanation.trim()
+          VisaCard121StatusExplanation: row['VisaCard121StatusExplanation']
+            ? row['VisaCard121StatusExplanation'].trim()
             : '',
-          Actions121: row.Actions ? row.Actions.trim() : null,
+          Actions121: row['Actions121'] ? row['Actions121'].trim() : '',
         };
         IntersolveVisaStatusMapper.mapping.push(mappingRow);
       });
@@ -64,7 +65,10 @@ export class IntersolveVisaStatusMapper {
     tokenBlocked: boolean;
     walletStatus: IntersolveVisaTokenStatus | null;
     cardStatus: IntersolveVisaCardStatus | null;
-  }): VisaCard121StatusInformation {
+  }): VisaCard121StatusInformationAndActions {
+    // TODO: Temporarily load file on every call, for testing:
+    IntersolveVisaStatusMapper.loadMapping();
+
     const matchingRow = IntersolveVisaStatusMapper.mapping.find(
       (row) =>
         row.TokenBlocked === tokenBlocked &&
@@ -72,14 +76,22 @@ export class IntersolveVisaStatusMapper {
         row.CardStatus === cardStatus,
     );
     if (matchingRow) {
+      let actionsArray: VisaCardAction[] = [];
+      if (matchingRow.Actions121) {
+        actionsArray = matchingRow.Actions121.split(',').map(
+          (item) => item.trim() as VisaCardAction, // TODO: Is there a better way to do this then using 'as'?
+        );
+      }
       return {
         status: matchingRow['VisaCard121Status'] as VisaCard121Status,
         explanation: matchingRow['VisaCard121StatusExplanation'],
+        actions: actionsArray,
       };
     } else {
       return {
         status: VisaCard121Status.Unknown,
         explanation: StatusUnknownExplain,
+        actions: [],
       };
     }
   }

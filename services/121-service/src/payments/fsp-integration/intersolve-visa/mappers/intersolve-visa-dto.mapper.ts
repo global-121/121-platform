@@ -45,7 +45,7 @@ export class IntersolveVisaDtoMapper {
       status: statusInfo.status,
       explanation: statusInfo.explanation,
       issuedDate: childWallet.created,
-      actions: ['Pause', 'Issue new card'], // TODO: Do we want this as an array of strings? Change to what is optimal for the 121 Portal to have, and implement that. Also in the 121 Portal.
+      actions: statusInfo.actions,
       debugInformation: {
         intersolveVisaCardStatus: childWallet.cardStatus,
         intersolveVisaTokenStatus: childWallet.walletStatus,

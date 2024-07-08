@@ -1,3 +1,4 @@
+import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-action.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
@@ -22,7 +23,7 @@ export class IntersolveVisaCard {
   public issuedDate: Date;
 
   @ApiProperty()
-  public actions: string[];
+  public actions: WrapperType<VisaCardAction[]>;
 
   @ApiProperty()
   public debugInformation: WrapperType<IntersolveVisaCardDebugInformation>;

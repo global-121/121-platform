@@ -931,8 +931,6 @@ export class RegistrationsService {
     });
     return await this.intersolveVisaService.getRetrievedAndUpdatedWallet(
       registration.id,
-      referenceId,
-      programId,
     );
   }
 
