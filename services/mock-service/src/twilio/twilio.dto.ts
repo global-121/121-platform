@@ -26,7 +26,9 @@ export class TwilioMessagesCreateDto {
   @IsOptional()
   public readonly From?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The URL to POST to when the message is processed.',
+  })
   @IsString()
   public readonly StatusCallback: string;
 

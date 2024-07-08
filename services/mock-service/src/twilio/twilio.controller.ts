@@ -1,3 +1,4 @@
+import { TwilioMessagesCreateDto } from '@mock-service/src/twilio/twilio.dto';
 import { TwilioService } from '@mock-service/src/twilio/twilio.service';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -33,7 +34,7 @@ export class TwilioController {
   })
   @Post('2010-04-01/Accounts/:accountSid/Messages.json')
   public createMessage(
-    @Body() twilioMessagesCreateDto: any,
+    @Body() twilioMessagesCreateDto: TwilioMessagesCreateDto,
     @Param('accountSid') accountSid: string,
   ): object {
     console.info('POST api/2010-04-01/Accounts/:accountSid/Messages.json', {

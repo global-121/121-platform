@@ -20,6 +20,9 @@ enum MockPhoneNumbers {
   FailNoWhatsAppNumber = '16005550004',
 }
 
+// See: services/121-service/src/notifications/enum/message-type.enum.ts
+const TemplatedMessages = ['generic-templated', 'payment-templated'];
+
 @Injectable()
 export class TwilioService {
   public async fetchPhoneNumber(phoneNumber: string): Promise<{
@@ -142,7 +145,7 @@ export class TwilioService {
 
     // 3. and if applicable, send incoming whatsapp reply
     let isYesMessage = false;
-    for (const messageType of ['payment-templated', 'generic-templated']) {
+    for (const messageType of TemplatedMessages) {
       if (twilioMessagesCreateDto.StatusCallback.includes(messageType)) {
         isYesMessage = true;
       }
