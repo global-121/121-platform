@@ -232,7 +232,10 @@ export class TwilioService {
 
       const url = DEVELOPMENT
         ? `${EXTERNAL_API_ROOT}/${API_PATHS.whatsAppIncoming}`
-        : twilioMessagesCreateDto.StatusCallback.replace('status', 'incoming');
+        : twilioMessagesCreateDto.StatusCallback.replace(
+            API_PATHS.whatsAppStatus,
+            API_PATHS.whatsAppIncoming,
+          );
 
       const httpService = new HttpService();
       await lastValueFrom(httpService.post(url, request)).catch((error) =>
