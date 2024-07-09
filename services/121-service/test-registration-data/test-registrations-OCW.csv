@@ -1,0 +1,21 @@
+referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,fspName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+00dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+01dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+02dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-create-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+03dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-link-customer-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+04dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-wallet,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+05dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-card-CARD_OK,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+06dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-card-CARD_BLOCKED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+07dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-card-CARD_EXPIRED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+08dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-card-SUSPECTED_FRAUD,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+09dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-card-CARD_LOST,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+10dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-get-card-CARD_CLOSED,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+11dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-create-debit-card,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+12dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-load-balance,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
+13dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-spent-4000,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+14dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-current-balance-14000,14155238876,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+15dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-current-balance-8000-mock-spent-7000,14155238856,Intersolve-visa,14155238886,Straat,1,A,1234AB,
+16dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,succeed,14155238886,Intersolve-voucher-whatsapp,14155238886,,,,,
+17dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,succeed,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
+18dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-fail-create-order,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,Den Haag
+19dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,mock-address-city-fail,14155238886,Intersolve-jumbo-physical,14155238886,Straat,1,A,1234AB,
