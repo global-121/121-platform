@@ -3,7 +3,7 @@ import http from 'k6/http';
 import config from './config.js';
 const { baseUrl } = config;
 
-export default class resetModel {
+export default class ResetModel {
   constructor() {}
   resetDBMockRegistrations(powerNumberRegistrations, timeout = '180s') {
     const url = `${baseUrl}api/scripts/reset?mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true&isApiTests=false&script=nlrc-multiple-mock-data`;

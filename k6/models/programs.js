@@ -3,7 +3,7 @@ import http from 'k6/http';
 import config from './config.js';
 const { baseUrl } = config;
 
-export default class programsModel {
+export default class ProgramsModel {
   constructor() {}
   sendBulkMessage(programId) {
     const url = `${baseUrl}api/programs/${programId}/registrations/message`;
@@ -19,7 +19,7 @@ export default class programsModel {
     return res;
   }
 
-  updateCustomeAttributes(programId, nameAttribute) {
+  updateCustomAttributes(programId, nameAttribute) {
     const url = `${baseUrl}api/programs/${programId}/custom-attributes`;
     const payload = JSON.stringify({
       type: 'text',
