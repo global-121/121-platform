@@ -53,10 +53,10 @@ export class IntersolveVisaMockService {
         field: 'mock field',
         description: 'We mocked that creating customer failed',
       });
-      res.status = 404;
+      res.status = HttpStatus.NOT_FOUND;
       res.statusText = 'NOT_FOUND';
     } else {
-      res.status = 201;
+      res.status = HttpStatus.CREATED;
       res.statusText = 'OK';
     }
     // in all below cases,pass different holderId to use in follow-up API-call (which does not take lastName as input)
@@ -79,7 +79,7 @@ export class IntersolveVisaMockService {
     holderId: string | null,
   ): IntersolveVisaMockResponseDto {
     const response = new IntersolveVisaMockResponseDto();
-    response.status = 200;
+    response.status = HttpStatus.OK;
     response.statusText = 'OK';
 
     response.data = {};
@@ -187,7 +187,7 @@ export class IntersolveVisaMockService {
         field: 'mock field',
         description: 'We mocked that creating wallet failed',
       });
-      response.status = 404;
+      response.status = HttpStatus.NOT_FOUND;
       response.statusText = 'NOT_FOUND';
     }
     // in all below cases,pass different tokenCode to use in follow-up API-call (which does not take holderId as input)
@@ -223,7 +223,7 @@ export class IntersolveVisaMockService {
         field: 'mock field',
         description: 'We mocked that linking wallet to customer failed',
       });
-      res.status = 404;
+      res.status = HttpStatus.NOT_FOUND;
       res.statusText = 'NOT_FOUND';
     }
     return res;
@@ -245,7 +245,7 @@ export class IntersolveVisaMockService {
         field: 'mock field',
         description: 'We mocked that creating debit card failed',
       });
-      res.status = 404;
+      res.status = HttpStatus.NOT_FOUND;
       res.statusText = 'NOT_FOUND';
     }
     return res;
@@ -284,7 +284,7 @@ export class IntersolveVisaMockService {
         field: 'mock field',
         description: 'We mocked that the load balance call failed',
       });
-      response.status = 404;
+      response.status = HttpStatus.NOT_FOUND;
       response.statusText = 'NOT FOUND';
     }
     return response;
@@ -327,7 +327,7 @@ export class IntersolveVisaMockService {
       currentBalance = 2500;
     }
     const response = new IntersolveVisaMockResponseDto();
-    response.status = 200;
+    response.status = HttpStatus.OK;
     response.data = {
       success: true,
       code: 'string',
@@ -361,7 +361,7 @@ export class IntersolveVisaMockService {
         field: 'mock field',
         description: 'We mocked that the get wallet call failed',
       });
-      response.status = 404;
+      response.status = HttpStatus.NOT_FOUND;
       response.statusText = 'NOT FOUND';
     }
     return response;
@@ -379,7 +379,7 @@ export class IntersolveVisaMockService {
     }
 
     const response = new IntersolveVisaMockResponseDto();
-    response.status = 200;
+    response.status = HttpStatus.OK;
     response.data = {
       success: true,
       errors: [],
@@ -399,7 +399,7 @@ export class IntersolveVisaMockService {
     tokenCode: string | null,
   ): IntersolveVisaMockResponseDto {
     const response = new IntersolveVisaMockResponseDto();
-    response.status = 200;
+    response.status = HttpStatus.OK;
     response.data = {
       code: 'string',
       correlationId: 'string',
@@ -511,7 +511,7 @@ export class IntersolveVisaMockService {
     tokenCode: string | null,
   ): IntersolveVisaMockResponseDto {
     const response = new IntersolveVisaMockResponseDto();
-    response.status = 200;
+    response.status = HttpStatus.OK;
     response.data = {
       success: true,
       errors: [],
