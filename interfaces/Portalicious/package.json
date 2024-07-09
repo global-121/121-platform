@@ -2,6 +2,7 @@
   "name": "portalicious",
   "scripts": {
     "ng": "ng",
+    "postinstall": "cd ../../services/121-service && npm run install:dependencies-for-portal",
     "set-env-variables": "node ./_set-env-variables.js",
     "preserve:static": "shx cp www/index.html www/404.html",
     "serve:static": "npx http-server ./www/ -c30 --gzip --brotli --port 8088",
@@ -29,6 +30,7 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
+    "@tanstack/angular-query-experimental": "5.49.1",
     "chart.js": "^4.4.3",
     "chartjs-plugin-datalabels": "^2.2.0",
     "lodash": "^4.17.21",
@@ -42,6 +44,7 @@
     "@angular-devkit/build-angular": "^18.0.5",
     "@angular/cli": "^18.0.5",
     "@angular/compiler-cli": "^18.0.0",
+    "@tanstack/eslint-plugin-query": "^5.50.0",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.6",
     "angular-eslint": "^18.1.0",

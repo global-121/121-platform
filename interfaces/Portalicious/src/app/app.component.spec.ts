@@ -1,11 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from '~/app.component';
+import { appConfig } from '~/app.config';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      ...appConfig,
       imports: [AppComponent, RouterModule.forRoot([])],
+      teardown: { destroyAfterEach: false },
     }).compileComponents();
   });
 

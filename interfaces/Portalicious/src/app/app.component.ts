@@ -4,12 +4,19 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FooterComponent } from '~/components/footer/footer.component';
 import { HeaderComponent } from '~/components/header/header.component';
+import { HealthWidgetComponent } from '~/components/health-widget/health-widget.component';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, ToastModule],
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    FooterComponent,
+    ToastModule,
+    HealthWidgetComponent,
+  ],
   providers: [
     MessageService, // Needed by the ToastModule
   ],

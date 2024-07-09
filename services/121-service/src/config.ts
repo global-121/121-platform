@@ -1,5 +1,3 @@
-import packageJson = require('../package.json');
-
 export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV!);
 export const PORT = process.env.PORT_121_SERVICE!;
 
@@ -12,7 +10,7 @@ const rootUrl =
 // ---------------------------------------------------------------------------
 export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
 
-let appTitle = packageJson.name;
+let appTitle = '121-service';
 if (process.env.ENV_NAME) {
   appTitle += ` [${process.env.ENV_NAME}]`;
 }

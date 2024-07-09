@@ -5,6 +5,7 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
+const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
 
 module.exports = tseslint.config(
   {
@@ -23,6 +24,7 @@ module.exports = tseslint.config(
       ...tseslint.configs.strictTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
       ...angular.configs.tsRecommended,
+      ...eslintPluginQuery.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     processor: angular.processInlineTemplates,
