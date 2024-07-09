@@ -88,7 +88,15 @@ export class BulkActionsService {
       tabs: [ProgramTab.peopleAffected, ProgramTab.payment],
       showIfNoValidation: true,
       confirmConditions: {
-        provideInput: false,
+        promptType: PromptType.actionWithMessage,
+        checkbox:
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        checkboxChecked: false,
+        inputRequired: true,
+        inputConstraint: {
+          length: 1,
+          type: 'min',
+        },
       },
     },
     {
@@ -204,8 +212,10 @@ export class BulkActionsService {
       case BulkActionId.markAsDeclined:
         return await this.programsService.markAsDeclined(
           programId,
+          customBulkActionInput?.message,
           dryRun,
           filters,
+          customBulkActionInput?.messageTemplateKey,
         );
     }
   }
