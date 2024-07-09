@@ -35,7 +35,7 @@ export class TwilioController {
   })
   @Post('2010-04-01/Accounts/:accountSid/Messages.json')
   public createMessage(
-    @Body() twilioMessagesCreateDto: TwilioMessagesCreateDto,
+    @Body() twilioMessagesCreateDto: TwilioMessagesCreateDto | any,
     @Param('accountSid') accountSid: string,
   ): object {
     console.info(`POST api/2010-04-01/Accounts/${accountSid}/Messages.json`, {
