@@ -183,12 +183,12 @@ class PaymentsPage {
   }: {
     paymentNumber?: number;
   }) {
+    const currentPaymentLabel = `Payment #${paymentNumber}  Closed`;
+    const nextPaymentLabel = `Payment #${paymentNumber + 1}  Open`;
     await this.page.waitForLoadState('networkidle');
     await this.paymentDropdown.click();
     const contents = await this.paymentDropdown.allTextContents();
-    const currentPaymentLabel = `Payment #${paymentNumber}  Closed`;
     await this.verifyLabelExist(currentPaymentLabel, contents);
-    const nextPaymentLabel = `Payment #${paymentNumber + 1}  Open`;
     await this.verifyLabelExist(nextPaymentLabel, contents);
   }
 

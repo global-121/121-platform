@@ -18,6 +18,39 @@ const debitCardUsage =
 const paymentReport =
   englishTranslations.page.program['export-list']['payment']['btn-text'];
 
+const expectedColumnsDebitCard = [
+  'paId',
+  'referenceId',
+  'registrationStatus',
+  'cardNumber',
+  'cardStatus121',
+  'issuedDate',
+  'balance',
+  'explanation',
+  'spentThisMonth',
+  'isCurrentWallet',
+];
+
+const expectedColumnsPayment = [
+  'referenceId',
+  'id',
+  'status',
+  'payment',
+  'timestamp',
+  'registrationStatus',
+  'phoneNumber',
+  'paymentAmountMultiplier',
+  'amount',
+  'financialserviceprovider',
+  'firstName',
+  'lastName',
+  'whatsappPhoneNumber',
+  'addressCity',
+  'addressPostalCode',
+  'addressHouseNumberAddition',
+  'addressHouseNumber',
+  'addressStreet',
+];
 interface bulkActionContent {
   textLocator: Locator;
   expectedText: string;
@@ -339,19 +372,6 @@ class TableModule {
     spentThisMonth,
     isCurrentWallet,
   }: ExportDebitCardAssertionData) {
-    const expectedColumns = [
-      'paId',
-      'referenceId',
-      'registrationStatus',
-      'cardNumber',
-      'cardStatus121',
-      'issuedDate',
-      'balance',
-      'explanation',
-      'spentThisMonth',
-      'isCurrentWallet',
-    ];
-
     const assertionData = {
       registrationStatus,
       paId,
@@ -361,39 +381,19 @@ class TableModule {
     };
 
     await this.exportAndAssertData(
-      expectedColumns,
+      expectedColumnsDebitCard,
       assertionData,
       debitCardUsage,
     );
   }
 
   async exportPayMentData({ status, amount }: ExportPaymentAssertionData) {
-    const expectedColumns = [
-      'referenceId',
-      'id',
-      'status',
-      'payment',
-      'timestamp',
-      'registrationStatus',
-      'phoneNumber',
-      'paymentAmountMultiplier',
-      'amount',
-      'financialserviceprovider',
-      'firstName',
-      'lastName',
-      'whatsappPhoneNumber',
-      'addressCity',
-      'addressPostalCode',
-      'addressHouseNumberAddition',
-      'addressHouseNumber',
-      'addressStreet',
-    ];
     const assertionData = {
       status,
       amount,
     };
     await this.exportAndAssertData(
-      expectedColumns,
+      expectedColumnsPayment,
       assertionData,
       paymentReport,
     );
