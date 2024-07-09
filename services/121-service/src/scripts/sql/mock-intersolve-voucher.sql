@@ -1,17 +1,29 @@
-INSERT INTO "121-service"."intersolve_voucher"
+INSERT INTO "121-service"."intersolve_voucher" (
+  created,
+  payment,
+  "whatsappPhoneNumber",
+  pin,
+  barcode,
+  send,
+  "balanceUsed",
+  amount,
+  updated,
+  "updatedLastRequestedBalance",
+  "lastRequestedBalance",
+  "reminderCount"
+)
 SELECT
-    id + (SELECT COUNT(id) FROM "121-service"."intersolve_voucher"),
-    created,
-    payment,
-    "whatsappPhoneNumber",
-    pin,
-    barcode,
-    send,
-    "balanceUsed",
-    amount,
-    updated,
-    "updatedLastRequestedBalance",
-    "lastRequestedBalance",
-    "reminderCount"
+  created,
+  payment,
+  "whatsappPhoneNumber",
+  pin,
+  barcode,
+  send,
+  "balanceUsed",
+  amount,
+  updated,
+  "updatedLastRequestedBalance",
+  "lastRequestedBalance",
+  "reminderCount"
 FROM
-    "121-service"."intersolve_voucher";
+  "121-service"."intersolve_voucher";

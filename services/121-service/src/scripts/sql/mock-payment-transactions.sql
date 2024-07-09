@@ -1,6 +1,5 @@
 INSERT INTO "121-service"."transaction"
 (
-  id,
   created,
   status,
   "errorMessage",
@@ -15,10 +14,6 @@ INSERT INTO "121-service"."transaction"
   "userId"
 )
 SELECT
-  id + (
-    SELECT count(id)
-    FROM "121-service"."transaction"
-  ),
   created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY id),
   status,
   "errorMessage",
