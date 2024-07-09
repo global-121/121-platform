@@ -266,9 +266,6 @@ export class TransactionJobProcessorsService {
     programId: number,
   ): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
-    // TODO: Implement retry attempts for the paymentCount and status update.
-    // See old code for counting the transactions
-    // See if failed transactions also lead to status 'Completed' and is retryable
     registration.paymentCount = registration.paymentCount
       ? registration.paymentCount + 1
       : 1;
@@ -281,6 +278,7 @@ export class TransactionJobProcessorsService {
       registration.registrationStatus = RegistrationStatusEnum.completed;
     }
 
+    // TODO: REFACTOR: Instead of using .save refactor this function to do a .update, since that is more efficient and less risk of conflicts when another job is woring in the same table.
     await this.registrationScopedRepository.save(registration);
   }
 
