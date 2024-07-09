@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).  
 This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICRO`.
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v24.7-0...main)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v24.7-1...main)
 
 ---
+
+## [24.7-1](https://github.com/global-121/121-platform/compare/v24.7-0...v24.7-1)- 2024-07-09
+
+- AB#29083 Update fsp enable button by @RubenGeo in https://github.com/global-121/121-platform/pull/5532
+- Feat.implement permission based export 28920 by @ashishkumarbasak-accenture in https://github.com/global-121/121-platform/pull/5528
+- AB#29057 Bulk update bug on dropdown by @RubenGeo in https://github.com/global-121/121-platform/pull/5531
+- feat: enable send message option during decline PAs AB#29108 by @ashishkumarbasak-accenture in https://github.com/global-121/121-platform/pull/5559
 
 ## [24.7-0](https://github.com/global-121/121-platform/compare/v24.6-1...v24.7-0)- 2024-07-01
 
