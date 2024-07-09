@@ -1,3 +1,4 @@
+import { ExportWalletData } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -160,5 +161,39 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       },
       relations: relations,
     });
+  }
+
+  public async getIntersolveVisaBalancesData(
+    programId: number,
+  ): Promise<ExportWalletData[]> {
+    // TODO: Replace any with proper type
+
+    // TODO: HIER VERDER CONTINUE HERE: Re-create this query in RegistrationScopedRepository? I think so, then start from registration and not "wallet"
+    const wallets = await this.repository
+      .createQueryBuilder('wallet')
+      .leftJoin('wallet.intersolveVisaCustomer', 'customer')
+      .leftJoin('customer.registration', 'registration')
+      .select([
+        `registration."referenceId" as "referenceId"`,
+        `registration."registrationProgramId" as "paId"`,
+        `registration."registrationStatus" as "registrationStatus"`,
+        'wallet."tokenCode" as "cardNumber"',
+        'wallet.created as "issuedDate"',
+        'wallet."lastUsedDate" as "lastUsedDate"',
+        'wallet.balance as balance',
+        'wallet."lastExternalUpdate" as "lastExternalUpdate"',
+        'wallet."spentThisMonth" as "spentThisMonth"',
+        'wallet.cardStatus as "cardStatus"',
+        'wallet.walletStatus as "walletStatus"',
+        'wallet."tokenBlocked" as "tokenBlocked"',
+      ])
+      .andWhere('registration."programId" = :programId', { programId })
+      .orderBy({
+        'registration."registrationProgramId"': 'ASC', // Do not change this order by as it is used to determine if something is the lasest wallet
+        'wallet."created"': 'DESC',
+      })
+      .getRawMany();
+
+    return wallets;
   }
 }

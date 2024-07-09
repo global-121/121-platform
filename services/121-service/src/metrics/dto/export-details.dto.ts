@@ -10,7 +10,7 @@ export enum ExportType {
   vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
-  cardBalances = 'card-balances',
+  intersolveVisaBalances = 'intersolve-visa-balances',
 }
 
 export class ExportDetailsQueryParamsDto {

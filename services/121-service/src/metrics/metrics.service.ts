@@ -6,7 +6,11 @@ import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
-import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
+import {
+  ExportCardsDto,
+  ExportWalletData,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
+import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -66,7 +70,7 @@ export class MetricsService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
-    private readonly intersolveVisaExportService: IntersolveVisaExportService,
+    private readonly intersolveVisaStatusMappingService: IntersolveVisaStatusMappingService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
   ) {}
 
@@ -132,8 +136,8 @@ export class MetricsService {
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
       }
-      case ExportType.cardBalances: {
-        return this.getCardBalances(programId);
+      case ExportType.intersolveVisaBalances: {
+        return this.createIntersolveVisaBalancesExport(programId);
       }
       default:
         throw new HttpException(
@@ -1096,15 +1100,65 @@ export class MetricsService {
     };
   }
 
-  private async getCardBalances(programId: number): Promise<{
+  private async createIntersolveVisaBalancesExport(programId: number): Promise<{
     fileName: ExportType;
     data: any[];
   }> {
-    const data = await this.intersolveVisaExportService.getCards(programId);
+    const walletData =
+      await this.registrationScopedRepository.getIntersolveVisaBalancesData(
+        programId,
+      );
+
+    const mappedWallets = this.mapIntersolveVisaBalancesDataToDto(
+      walletData,
+      programId,
+    );
+
     return {
-      fileName: ExportType.cardBalances,
-      data,
+      fileName: ExportType.intersolveVisaBalances,
+      data: mappedWallets,
     };
+  }
+
+  private mapIntersolveVisaBalancesDataToDto(
+    wallets: ExportWalletData[],
+    programId: number,
+  ): ExportCardsDto[] {
+    let previousRegistrationProgramId: number | null = null;
+    const exportWalletData: ExportCardsDto[] = [];
+    for (const wallet of wallets) {
+      const isCurrentWallet =
+        previousRegistrationProgramId === wallet.paId ? false : true;
+
+      const statusInfo =
+        this.intersolveVisaStatusMappingService.determine121StatusInfo(
+          wallet.tokenBlocked ?? false,
+          wallet.walletStatus,
+          wallet.cardStatus,
+          isCurrentWallet,
+          {
+            programId,
+            tokenCode: wallet.cardNumber,
+            referenceId: wallet.referenceId,
+          },
+        );
+
+      exportWalletData.push({
+        paId: wallet.paId,
+        referenceId: wallet.referenceId,
+        registrationStatus: wallet.registrationStatus,
+        cardNumber: wallet.cardNumber,
+        cardStatus121: statusInfo.walletStatus121,
+        issuedDate: wallet.issuedDate,
+        lastUsedDate: wallet.lastUsedDate,
+        balance: wallet.balance / 100,
+        explanation: statusInfo.explanation,
+        spentThisMonth: wallet.spentThisMonth / 100,
+        isCurrentWallet: isCurrentWallet,
+      });
+      previousRegistrationProgramId = wallet.paId;
+    }
+    return exportWalletData;
   }
 
   public async getRegistrationStatusStats(
