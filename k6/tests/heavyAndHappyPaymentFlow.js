@@ -1,13 +1,16 @@
 import { check, sleep } from 'k6';
-import loginModel from '../models/login.js';
-import paymentsModel from '../models/payments.js';
-import programsModel from '../models/programs.js';
-import resetModel from '../models/reset.js';
+import { registrationVisa } from '../helpers/registration-default.data.js';
+import LoginModel from '../models/login.js';
+import PaymentsModel from '../models/payments.js';
+import ProgramsModel from '../models/programs.js';
+import RegistrationsModel from '../models/registrations.js';
+import ResetModel from '../models/reset.js';
 
-const resetPage = new resetModel();
-const loginPage = new loginModel();
-const programsPage = new programsModel();
-const paymentsPage = new paymentsModel();
+const resetPage = new ResetModel();
+const loginPage = new LoginModel();
+const programsPage = new ProgramsModel();
+const paymentsPage = new PaymentsModel();
+const registrationsPage = new RegistrationsModel();
 
 const duplicateNumber = 15;
 const programId = 3;
@@ -24,16 +27,10 @@ export const options = {
 };
 
 export default function () {
-  // reset db to 32k registrations
-  const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
-  check(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
-  });
-
   // login
   const login = loginPage.login();
   check(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
+    'Login successful status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -57,17 +54,41 @@ export default function () {
 
   // add 15 custom attributes to generate bigger load
   for (let i = 1; i <= 15; i++) {
-    const customAttributes = programsPage.updateCustomeAttributes(programId, i);
+    const customAttributes = programsPage.updateCustomAttributes(programId, i);
     check(customAttributes, {
-      'Custom attribute added succesfull status was 201': (r) =>
+      'Custom attribute added successful status was 201': (r) =>
         r.status == 201,
     });
   }
 
-  // get programme by id and validte load time is less than 200ms
+  // reset db
+  const reset = resetPage.resetDB();
+  check(reset, {
+    'Reset successful status was 202': (r) => r.status == 202,
+  });
+
+  // Upload registration
+  const res = registrationsPage.importRegistrations(
+    programId,
+    registrationVisa,
+  );
+
+  // Log response for debugging
+  console.log(res);
+  // const importRegistrations = registrationsPage.importRegistrations(
+  //   programId,
+  //   '../test-data/test-registrations-OCW.csv',
+  // );
+  // check(importRegistrations, {
+  //   'Import successful status was 201': (r) => r.status == 201,
+  // });
+
+  // Duplicate registrations between 20k - 50k
+
+  // get program by id and validate load time is less than 200ms
   const program = programsPage.getProgrammeById(programId);
   check(program, {
-    'Programme loaded succesfully status was 200': (r) => r.status == 200,
+    'Programme loaded successfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Programme time was ${r.timings.duration}ms`);
@@ -115,7 +136,7 @@ export default function () {
     },
   });
 
-  // Monitor that 10% of payments is succesfull and then stop the test
+  // Monitor that 10% of payments is successful and then stop the test
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
     paymentId,
