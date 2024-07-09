@@ -1,4 +1,8 @@
-import { API_PATHS, DEVELOPMENT, EXTERNAL_API } from '@mock-service/src/config';
+import {
+  API_PATHS,
+  DEVELOPMENT,
+  EXTERNAL_API_ROOT,
+} from '@mock-service/src/config';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
@@ -203,7 +207,7 @@ export class TwilioService {
       const path = twilioMessagesCreateDto.To.includes('whatsapp')
         ? API_PATHS.whatsAppStatus
         : API_PATHS.smsStatus;
-      url = `${EXTERNAL_API.rootApi}/${path}`;
+      url = `${EXTERNAL_API_ROOT}/${path}`;
     }
 
     const httpService = new HttpService();
@@ -227,7 +231,7 @@ export class TwilioService {
       request.To = formatWhatsAppNumber(twilioMessagesCreateDto.From);
 
       const url = DEVELOPMENT
-        ? `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`
+        ? `${EXTERNAL_API_ROOT}/${API_PATHS.whatsAppIncoming}`
         : twilioMessagesCreateDto.StatusCallback.replace('status', 'incoming');
 
       const httpService = new HttpService();

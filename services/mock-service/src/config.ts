@@ -36,10 +36,9 @@ export const API_PATHS = {
   whatsAppIncoming: 'notifications/whatsapp/incoming',
   safaricomCallback: 'payments/safaricom/transaction',
 };
-const rootApi121Service = DEVELOPMENT
-  ? `http://121-service:${process.env.PORT_121_SERVICE}/`
-  : process.env.EXTERNAL_121_SERVICE_URL;
 
-export const EXTERNAL_API = {
-  rootApi: `${rootApi121Service}api`,
-};
+export const EXTERNAL_API_ROOT = `${
+  DEVELOPMENT
+    ? `http://121-service:${process.env.PORT_121_SERVICE}/`
+    : process.env.EXTERNAL_121_SERVICE_URL
+}api`;
