@@ -173,7 +173,10 @@ export class UserService {
       where: { role: Equal(userRoleData.role) },
     });
     if (existingRole) {
-      throw new HttpException('Role exists already', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `Role already exists: ${userRoleData.role}`,
+        HttpStatus.CONFLICT,
+      );
     }
 
     const userRoleEntity = new UserRoleEntity();
@@ -181,11 +184,18 @@ export class UserService {
     userRoleEntity.label = userRoleData.label;
     const permissionEntities: PermissionEntity[] = [];
     for (const permission of userRoleData.permissions) {
-      permissionEntities.push(
-        await this.permissionRepository.findOneByOrFail({
-          name: permission,
-        }),
-      );
+      try {
+        const permissionEntity =
+          await this.permissionRepository.findOneByOrFail({
+            name: permission,
+          });
+        permissionEntities.push(permissionEntity);
+      } catch (e) {
+        throw new HttpException(
+          `Permission not valid: ${permission}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
     userRoleEntity.permissions = permissionEntities;
 

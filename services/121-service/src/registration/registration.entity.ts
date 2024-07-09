@@ -162,6 +162,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     // Please check if it still works if you change the order
     await this.deleteAllOneToMany([
       {
+        entityClass: EventEntity,
+        columnName: 'registration',
+      },
+      {
         entityClass: ImageCodeExportVouchersEntity,
         columnName: 'registration',
       },
