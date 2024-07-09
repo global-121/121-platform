@@ -326,7 +326,7 @@ See the [Guide: Writing tests](./guide-Writing-Tests.md)
 
 ## Releases
 
-See notable changes and the currently release version in the [CHANGELOG](CHANGELOG.md).
+See notable changes and the currently release version on the [Releases page](https://github.com/global-121/121-platform/releases).
 
 ### Release Checklist
 
@@ -334,14 +334,12 @@ This is how we create and publish a new release of the 121-platform.
 (See [the glossary](#glossary) for definitions of some terms.)
 
 - [ ] Define what code gets released. ("_Is the current `main`-branch working?_")
+- [ ] Check the changes since the last release, by replacing `vX.X-X` with the latest release in this URL: `https://github.com/global-121/121-platform/compare/vX.X-X...main`
+  - [ ] Check whether there are any changes to [`services/.env.example`](services/.env.example). If there are, then make any configuration changes to the staging-service in the Azure Portal, relating to new/changed/removed `ENV`-variables, changed values, etc.
 - [ ] Define the [`version`](#glossary)-name for the upcoming release.
-- [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
-  - [ ] Create a PR with the changes on the changelog.
-  - [ ] Merge the changes to the `main`-branch.
-- [ ] Make any configuration changes to the staging-service in the Azure Portal. According to instructions in the [CHANGELOG](CHANGELOG.md), relating to new/changed/removed `ENV`-variables, changed values, etc.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] For "Choose a tag": Insert the `version` to create a new tag
-  - [ ] For "Target": Choose the commit which was created as a result of merging the CHANGELOG changes into main
+  - [ ] For "Target": Choose the commit which you would like to release on main
   - [ ] Set the title of the release to `<version>`.  
          Only if necessary: Add a short description and/or link to relevant other documents
   - [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
@@ -356,7 +354,6 @@ This follows a similar process to regular release + deployment, with some small 
 
 - Checkout the `<version>` tag which contains the code that you want to hotfix.
 - Create a new local hotfix branch using that tag as the `HEAD` (e.g. `hotfix/<v24.6.x>`) and make the changes.
-- Add the hotfix-release (with an increased `MICRO`-number) to the [CHANGELOG](CHANGELOG.md).
 - Push this branch to the upstream/origin repository on GitHub.
 - Create a new release + tag (see above) selecting the `hotfix/v*`-branch as target, and publish it.
 - Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
@@ -411,7 +408,6 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 #### On next deployments
 
 - [ ] Decide on what `version` to deploy
-- [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
 - [ ] Prepare the environment accordingly (Setting all service-configuration in Azure Portal)
 - [ ] A manual deploy can be done using the GitHub UI, using "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag` (or `branch` for testing on the staging-environment).
 
