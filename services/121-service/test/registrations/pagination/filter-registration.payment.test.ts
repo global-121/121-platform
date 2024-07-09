@@ -29,7 +29,7 @@ import {
 
 describe('Load PA table', () => {
   describe('getting registration using paginate and filtering on payment', () => {
-    registrationOCW3.lastName = 'mock-fail-create-customer';
+    registrationOCW3.fullName = 'mock-fail-create-customer';
     // This number implies that in mock-service no incoming 'yes' is triggered, so that the transaction stays on 'waiting'
     registrationOCW5.whatsappPhoneNumber = '16005550002';
 
@@ -192,12 +192,12 @@ describe('Load PA table', () => {
       // Act
       const filter = {
         [`filter.${PaymentFilterEnum.successPayment}`]: `$eq:${payment1}`,
-        ['filter.lastName']: registrationOCW1.lastName,
+        ['filter.fullName']: registrationOCW1.fullName,
         ['filter.phoneNumber']: registrationOCW1.phoneNumber,
       };
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
-        attributes: ['referenceId', 'lastName'],
+        attributes: ['referenceId', 'fullName'],
         accessToken,
         filter,
       });
@@ -207,9 +207,9 @@ describe('Load PA table', () => {
       // Assert
       const expectedValueObjectSuccesSelect = {
         referenceId: registrationOCW1.referenceId,
-        lastName: registrationOCW1.lastName,
+        fullName: registrationOCW1.fullName,
       };
-      const expectedAttributesSelect = ['referenceId', 'lastName'];
+      const expectedAttributesSelect = ['referenceId', 'fullName'];
       expect(data[0]).toMatchObject(expectedValueObjectSuccesSelect);
       for (const attribute of expectedAttributesSelect) {
         expect(data[0]).toHaveProperty(attribute);
