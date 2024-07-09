@@ -208,7 +208,7 @@ export class TwilioService {
 
     const httpService = new HttpService();
     await lastValueFrom(httpService.post(url, request)).catch((error) =>
-      console.log(error),
+      console.error(error),
     );
   }
 
@@ -232,7 +232,7 @@ export class TwilioService {
 
       const httpService = new HttpService();
       await lastValueFrom(httpService.post(url, request)).catch((error) =>
-        console.log(error),
+        console.error(error),
       );
     }
   }
