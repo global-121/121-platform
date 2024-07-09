@@ -1,8 +1,8 @@
 import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-action.enum';
-import { VisaCardMethod } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-method.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 
 export interface Wallet {
+  tokenCode: string;
   balance: number;
   spentThisMonth: number;
   maxToSpendPerMonth: number;
@@ -16,12 +16,6 @@ export interface Card {
   status: VisaCard121Status;
   explanation: string;
   issuedDate: Date;
-  links: VisaCardActionLinkDto[];
-  debugInfo: unknown; // Not used by the frontend
-}
-
-interface VisaCardActionLinkDto {
-  href: string;
-  action: VisaCardAction;
-  method: VisaCardMethod;
+  actions: VisaCardAction[];
+  debugInformation: Record<string, string>; // Not used by the frontend
 }

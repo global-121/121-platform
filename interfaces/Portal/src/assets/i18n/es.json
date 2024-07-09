@@ -684,6 +684,8 @@
         "suffix": "<br><br>Esto enviará automáticamente un mensaje a la persona afectada.",
         "unpause": "¿Reanudar esta tarjeta?"
       },
+      "wallet-number": "Número de billetera",
+      "card-number": "Número de tarjeta",
       "current-balance": "Saldo actual",
       "date-issued": "Emitido",
       "date-last-used": "Último uso",

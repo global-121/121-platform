@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class IntersolveVisaWalletDto {
   @ApiProperty()
+  public tokenCode: string;
+  @ApiProperty()
   public balance: number;
   @ApiProperty()
   public spentThisMonth: number;

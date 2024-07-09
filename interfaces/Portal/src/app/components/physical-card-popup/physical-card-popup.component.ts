@@ -1,3 +1,4 @@
+import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-action.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
@@ -100,8 +101,8 @@ export class PhysicalCardPopupComponent implements OnInit {
         : false;
   }
 
-  public checkActionsInclude(actions: string[]) {
-    return this.card.links.some((link) => actions.includes(link.action));
+  public checkActionsInclude(actions: VisaCardAction[]) {
+    return this.card.actions.some((action) => actions.includes(action));
   }
 
   togglePauseButton() {

@@ -15,6 +15,20 @@
       class="ion-no-padding"
     >
       <ion-list>
+        <!-- Wallet Number -->
+        <ion-item>
+          <ion-label class="label-card-overview">
+            {{
+              'registration-details.physical-cards-overview.wallet-number'
+                | translate
+            }}:
+          </ion-label>
+          <ion-label class="label-card-overview ion-text-end">
+            <strong>
+              {{ wallet?.tokenCode }}
+            </strong>
+          </ion-label>
+        </ion-item>
         <!-- Current balance -->
         <ion-item>
           <ion-label class="label-card-overview">
@@ -41,7 +55,7 @@
                 | translate
                   : {
                       maxAmount:
-                        card?.maxToSpendPerMonth / 100
+                        wallet?.maxToSpendPerMonth / 100
                         | currency: currency : 'code' : '1.2-2' : locale,
                     }
             }}:
@@ -85,6 +99,10 @@
             class="label-card-overview util--half-margin-end"
             [title]="card.tokenCode"
           >
+            {{
+              'registration-details.physical-cards-overview.card-number'
+                | translate
+            }}:
             <code>{{ card.tokenCode }}</code>
           </ion-label>
           <span

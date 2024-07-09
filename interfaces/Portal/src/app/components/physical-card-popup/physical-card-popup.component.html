@@ -49,7 +49,7 @@
     </ion-item>
 
     <!-- Explanation -->
-    <ion-item>
+    <ion-item *ngIf="card?.explanation">
       <ion-label class="card-key-value">
         {{
           'registration-details.physical-cards-overview.explanation'

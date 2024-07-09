@@ -538,7 +538,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     const res = await this.apiService.post(
       environment.url_121_service_api,
-      `programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
       {},
     );
 
@@ -553,7 +553,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return await this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/cards/${tokenCode}?pause=${pause}`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=${pause}`,
       {},
     );
   }

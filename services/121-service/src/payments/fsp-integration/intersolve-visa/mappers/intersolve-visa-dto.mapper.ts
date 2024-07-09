@@ -20,6 +20,7 @@ export class IntersolveVisaDtoMapper {
     );
 
     const dto: IntersolveVisaWalletDto = {
+      tokenCode: intersolveVisaParentWalletEntity.tokenCode,
       balance: intersolveVisaParentWalletEntity.balance,
       spentThisMonth: intersolveVisaParentWalletEntity.spentThisMonth,
       maxToSpendPerMonth: maximumAmountOfSpentCentPerMonth,
