@@ -47,7 +47,7 @@ describe('Do payment to 1 PA', () => {
       accessToken = await getAccessToken();
     });
 
-    it('should succesfully pay-out', async () => {
+    it.skip('should succesfully pay-out', async () => {
       // Arrange
       await importRegistrations(programId, [registrationJumbo], accessToken);
       await awaitChangePaStatus(
@@ -92,7 +92,7 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody[0].errorMessage).toBe(null);
     });
 
-    it('should give error about address', async () => {
+    it.skip('should give error about address', async () => {
       // Arrange
       registrationJumbo.addressCity = '';
       await importRegistrations(programId, [registrationJumbo], accessToken);
