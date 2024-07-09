@@ -31,6 +31,7 @@ export class TwilioController {
     name: 'accountSid',
     required: true,
     type: 'string',
+    description: 'Starts with "AC".',
   })
   @Post('2010-04-01/Accounts/:accountSid/Messages.json')
   public createMessage(

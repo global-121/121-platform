@@ -1,4 +1,4 @@
-import { API_PATHS, EXTERNAL_API } from '@mock-service/src/config';
+import { API_PATHS, DEVELOPMENT, EXTERNAL_API } from '@mock-service/src/config';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
@@ -197,22 +197,19 @@ export class TwilioService {
     request.ErrorCode = response.error_code;
     request.ErrorMessage = response.error_message;
 
-    const httpService = new HttpService();
-    const urlExternal = twilioMessagesCreateDto.StatusCallback;
+    let url = twilioMessagesCreateDto.StatusCallback;
 
-    try {
-      // Try to reach 121-service through external API url
-      await lastValueFrom(httpService.post(urlExternal, request));
-    } catch (error) {
-      // In case external API is not reachable try internal network
+    if (DEVELOPMENT) {
       const path = twilioMessagesCreateDto.To.includes('whatsapp')
         ? API_PATHS.whatsAppStatus
         : API_PATHS.smsStatus;
-      const urlInternal = `${EXTERNAL_API.rootApi}/${path}`;
-      await lastValueFrom(httpService.post(urlInternal, request)).catch(
-        (error) => console.log(error),
-      );
+      url = `${EXTERNAL_API.rootApi}/${path}`;
     }
+
+    const httpService = new HttpService();
+    await lastValueFrom(httpService.post(url, request)).catch((error) =>
+      console.log(error),
+    );
   }
 
   private async sendIncomingWhatsapp(
@@ -227,23 +224,16 @@ export class TwilioService {
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
       request.From = twilioMessagesCreateDto.To;
+      request.To = formatWhatsAppNumber(twilioMessagesCreateDto.From);
 
-      const url = twilioMessagesCreateDto.StatusCallback.replace(
-        'status',
-        'incoming',
-      );
-      request.To = formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER);
+      const url = DEVELOPMENT
+        ? `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`
+        : twilioMessagesCreateDto.StatusCallback.replace('status', 'incoming');
+
       const httpService = new HttpService();
-      try {
-        // Try to reach 121-service through external API url
-        await lastValueFrom(httpService.post(url, request));
-      } catch (error) {
-        // In case external API is not reachable try internal network
-        const urlInternal = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`;
-        await lastValueFrom(httpService.post(urlInternal, request)).catch(
-          (error) => console.log(error),
-        );
-      }
+      await lastValueFrom(httpService.post(url, request)).catch((error) =>
+        console.log(error),
+      );
     }
   }
 
