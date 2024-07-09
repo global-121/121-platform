@@ -182,10 +182,10 @@ The process is:
 8. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
 9. If ever running into issues with migrations locally, the reset process is:
 
-- Delete all tables in the `121-service` database schema
-- Restart `121-service` container
-- This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
-- (Run seed)
+   - Delete all tables in the `121-service` database schema
+   - Restart `121-service` container
+   - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
+   - (Run seed)
 
 10. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
@@ -337,31 +337,33 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define the [`version`](#glossary)-name for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Create a PR with the changes on the changelog.
-  - [ ] Merge the changes to main.
-- [ ] Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
+  - [ ] Merge the changes to the `main`-branch.
+- [ ] Make any configuration changes to the staging-service in the Azure Portal. According to instructions in the [CHANGELOG](CHANGELOG.md), relating to new/changed/removed `ENV`-variables, changed values, etc.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] For "Choose a tag": Insert the `version` to create a new tag
   - [ ] For "Target": Choose the commit which was created as a result of merging the CHANGELOG changes into main
   - [ ] Set the title of the release to `<version>`.  
-         Add a short description and/or link to relevant other documents (only if applicable)
+         Only if necessary: Add a short description and/or link to relevant other documents
   - [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
-  - [ ] Check the deployed release on the staging environment
-  - [ ] Make any configuration changes (ENV-variables, etc.) on production-service(s)
-  - [ ] Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to production (for each instance)
+  - [ ] Check the deployed release on the staging-environment
+  - [ ] Make any configuration changes (`ENV`-variables, etc.) on production-service(s)
+  - [ ] Use the ["All" deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to each production-instance.
+    - [ ] Start with the "_**demo**_"-instance. This will **also** deploy the production Mock-Service.
 
 ### Patch/Hotfix Checklist
 
 This follows a similar process to regular release + deployment, with some small changes.
 
 - Checkout the `<version>` tag which contains the code that you want to hotfix.
-- Create a new local hotfix branch using that tag as the head (e.g. `hotfix/<v24.6.x>`) and make the changes
-- Add the hotfix-release (with an increased `MICRO`-number) to the [CHANGELOG](CHANGELOG.md)
-- Push this branch to the upstream/origin repository.
-- Create a new release + tag (see above) selecting the `hotfix/v*` branch as target, and publish it.
+- Create a new local hotfix branch using that tag as the `HEAD` (e.g. `hotfix/<v24.6.x>`) and make the changes.
+- Add the hotfix-release (with an increased `MICRO`-number) to the [CHANGELOG](CHANGELOG.md).
+- Push this branch to the upstream/origin repository on GitHub.
+- Create a new release + tag (see above) selecting the `hotfix/v*`-branch as target, and publish it.
 - Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
-- After the hotfix has been released to production, follow standard procedures to merge the hotfix branch into main
+- After the hotfix has been released to production, follow standard procedures to merge the hotfix-branch into the `main`-branch.
 
-**Note:** it is important that you do not rebase the `hotfix` branch on the head of `main` until AFTER you have successfully deployed the hotfix to production. The hotfix branch was created from a "dangling" commit, so this makes the GitHub UI confused when you look at a PR between the newly created `hotfix` branch and `main`, but you can ignore any conflict warnings from GitHub while you release.
+**Note:** Do not rebase/update the `hotfix/v*`-branch onto the `main`-branch until **AFTER** you have successfully deployed the hotfix to production.  
+The hotfix branch is created from a "dangling" commit, this makes the GitHub UI confused when you look at a PR between the newly created `hotfix`-branch and the `main`-branch. Any conflict warnings shown on GitHub are not relevant for the hotfix-_deployment_, they'll only need to be addressed to merge the hotfix into the `main`-branch afterwards.
 
 ---
 
@@ -378,25 +380,25 @@ If you deploy the 121-platform to a server for the first time it is recommended 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
 
 - PR's to the branch `main` are automatically deployed to an individual preview-environment.
-- When merged, a separate deployment is done to the test-environment; for that interface only
+- When merged, a separate deployment is done to the test-environment; for that interface only.
 
-### To "staging/production" environment(s)
+#### To "staging" and/or "production" environment(s)
 
 See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
 
-- Created releases are automatically deployed to the staging-environment
-- A manual deploy can also be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag`.
+- Created/published releases are automatically deployed to the staging-environment
+- A manual deploy can be done using the GitHub UI, using "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag` (or `branch` for testing on the staging-environment).
 
 ### Service(s)
 
 #### To "test" environment
 
-See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml` )
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`, `deploy_test_mock-service.yml` )
 
 - When merged, a separate deployment is done to the test-environment.
 - Make sure to update any environment-configuration in the Azure-portal as soon as possible, preferably before the merge & deploy.
 
-### To "staging/production" environment(s)
+#### To "staging" and/or "production" environment(s)
 
 #### On initial deployment (only)
 
@@ -408,10 +410,10 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 
 #### On next deployments
 
-- [ ] Decide on what version to deploy
+- [ ] Decide on what `version` to deploy
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
 - [ ] Prepare the environment accordingly (Setting all service-configuration in Azure Portal)
-- [ ] Build/Deploy the platform via the [GitHub Action(s)](https://github.com/global-121/121-platform/actions) by selecting the target release-version `tag`
+- [ ] A manual deploy can be done using the GitHub UI, using "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag` (or `branch` for testing on the staging-environment).
 
 ## Glossary
 

@@ -1,0 +1,4 @@
+# See: https://github.com/DavidAnson/vscode-markdownlint#configure
+
+extends: ../.markdownlint.yml
+first-line-h1: false

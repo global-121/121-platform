@@ -399,9 +399,6 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 - New default roles
 - Use placeholders in custom messages
 - Import max 1k registrations at once
-
-### Changed
-
 - Docker setup process (for API tests). Some ENV-variables where changed, so compare [`.env.example`](./services/.env.example) with your local `.env`-file.
 
 ## [1.106.3](https://github.com/global-121/121-platform/compare/v1.106.2...v1.106.3) - 2023-12-07
@@ -416,29 +413,29 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 
 ## [1.106.2](https://github.com/global-121/121-platform/compare/v1.106.1...v1.106.2) - 2023-11-29
 
-## Fixed
+### Fixed
 
 - Handle no template found scenario in send voucher flow
 - Delete message before inserting in latest message table (to avoid conflicts within then invite flow)
 
 ## [1.106.1](https://github.com/global-121/121-platform/compare/v1.106.0...v1.106.1) - 2023-11-28
 
-## Fixed
+### Fixed
 
 - Use message property of message template in default reply
 
 ## [1.106.0](https://github.com/global-121/121-platform/compare/v1.105.9...v1.106.0) - 2023-11-28
 
-## Added
+### Added
 
 - Using Redis for queues. See: a step in the "How to set up a new instance"-guide in the wiki.
 - Separate tables for message templates
 
-## Changed
+### Changed
 
 - Renamed HO-portal to Portal in code
 
-## Removed
+### Removed
 
 - CORS configuration should be handled via the Azure Portal for each App Service instance.
   See: A step in the "How to set up a new instance"-guide in the wiki.
@@ -1557,7 +1554,7 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 - 2021-12-28: Added 'manual deployment' via the `webhook.js`-script. See [tools/README](./tools/README.md#webhook-script).
 - 2021-12-29: Added `whatsappGenericMessage` to the NL program notifications.
 
-## Changed
+### Changed
 
 - 2021-12-28: "Automatic hotfix deployment" is now an opt-in behavior by setting the ENV-variable `DEPLOY_PATCH=1`. See [tools/README](./tools/README.md#webhook-script).
 
@@ -1815,15 +1812,13 @@ Hotfix: To run initial start-up without manual intervention.
 
 ### Added
 
+- 2021-03-09: Added new dependency `csv-parser` to 121-service;
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+
 - 2021-03-01: Add "read-only" user-role: `view`. See: [`services/.env`](services/.env.example)
 
   To use/add this role in an existing environment, a manual migration-step is required:
   Run `docker-compose exec 121-service npm run seed:dev` (See: [`seed-dev.ts`](services/121-service/src/scripts/seed-dev.ts) )
-
-### Added
-
-- 2021-03-09: Added new dependency `csv-parser` to 121-service;
-  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ## [0.19.1](https://github.com/global-121/121-platform/compare/v0.19.0...v0.19.1) - 2021-02-24
 
