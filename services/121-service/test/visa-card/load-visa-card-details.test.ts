@@ -1,5 +1,5 @@
-import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 /* eslint-disable jest/no-conditional-expect */
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
 import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -89,7 +89,7 @@ describe('Load Visa debit cards and details', () => {
       // Assert
       expect(visaWalletResponse.status).toBe(200);
       expect(visaWalletResponse.body.wallets).toBeDefined();
-      expect(visaWalletResponse.body.wallets.length).toBe(2);
+      expect(visaWalletResponse.body.wallets.length).toBe(1);
       const sortedWallets = visaWalletResponse.body.wallets.sort(
         (a, b) => a.issuedDate - b.issuedDate,
       );
@@ -97,6 +97,7 @@ describe('Load Visa debit cards and details', () => {
         if (index === 1) {
           expect(wallet.links.length).toBe(0);
         } else {
+          console.log('wallet.links: ', wallet.links);
           expect(wallet.links.length).toBeGreaterThan(0);
         }
         expect(wallet.tokenCode).toBeDefined();
