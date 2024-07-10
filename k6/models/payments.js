@@ -21,8 +21,14 @@ export default class paymentsModel {
     return res;
   }
 
-  getPaymentResults(programId, paymentNr, totalAmountPowerOfTwo, passRate) {
-    const maxAttempts = 200;
+  getPaymentResults(
+    programId,
+    maxTimeoutAttempts,
+    paymentNr,
+    totalAmountPowerOfTwo,
+    passRate,
+  ) {
+    const maxAttempts = maxTimeoutAttempts;
     let attempts = 0;
     let successPercentage = 0;
 

@@ -15,6 +15,7 @@ const registrationsPage = new RegistrationsModel();
 const duplicateNumber = 15;
 const programId = 3;
 const paymentId = 3;
+const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;
 
 export const options = {
@@ -135,6 +136,7 @@ export default function () {
   // Monitor that 10% of payments is successful and then stop the test
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
+    maxTimeoutAttempts,
     paymentId,
     duplicateNumber,
     minPassRatePercentage,
