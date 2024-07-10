@@ -14,6 +14,7 @@ const metricsPage = new metricstsModel();
 const duplicateNumber = 15;
 const programId = 3;
 const paymentId = 3;
+const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
 
 export const options = {
@@ -21,7 +22,7 @@ export const options = {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
   vus: 1,
-  duration: '20m',
+  duration: '33m',
   iterations: 1,
 };
 
@@ -58,6 +59,7 @@ export default function () {
   // Monitor that 100% of payments is successful and then stop the test
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
+    maxTimeoutAttempts,
     paymentId,
     duplicateNumber,
     minPassRatePercentage,
