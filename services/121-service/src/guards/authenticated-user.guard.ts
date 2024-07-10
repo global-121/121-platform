@@ -13,7 +13,7 @@ export class AuthenticatedUserGuard
     super();
   }
 
-  canActivate(
+  override canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const endpointParameters = this.reflector.get<AuthenticatedUserParameters>(

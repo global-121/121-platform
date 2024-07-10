@@ -3,16 +3,22 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
       "@121-service/*": ["./../../services/121-service/*"],
-      "~environment": ["environments/environment"],
-      "~/*": ["app/*"]
+      "~environment": ["./src/environments/environment"],
+      "~/*": ["./src/app/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804
+    "strictPropertyInitialization": false,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28419
+    "noImplicitAny": false,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27718
+    "useUnknownInCatchVariables": false,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -27,13 +33,10 @@
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "useUnknownInCatchVariables": false
+    "strictNullChecks": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
