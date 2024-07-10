@@ -396,6 +396,7 @@ class TableModule {
       expectedColumnsPayment,
       assertionData,
       paymentReport,
+      'Smith',
     );
   }
 
@@ -403,6 +404,7 @@ class TableModule {
     expectedColumns: string[],
     assertionData: Record<string, unknown>,
     filterButtonText: string,
+    filterContext?: string,
   ) {
     const okButton = this.page.getByRole('button', { name: 'OK' });
     const exportButton = this.debitCardDataExportButton.filter({
@@ -427,14 +429,30 @@ class TableModule {
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet);
+    const data = XLSX.utils.sheet_to_json(sheet) as Record<string, unknown>[];
 
+    let rowToAssert: Record<string, unknown> | undefined = data[0];
+    if (filterContext) {
+      // Find the row that matches the filter context
+      rowToAssert = data.find((row) => {
+        return Object.values(row).some((value) =>
+          value?.toString().includes(filterContext),
+        );
+      });
+
+      if (!rowToAssert) {
+        throw new Error('No row matches the filter context');
+      }
+    }
+
+    if (!rowToAssert) {
+      throw new Error('No data found to assert');
+    }
     // Extract the column names from the first object in the array
-    const firstRow = data[0] as Record<string, unknown>;
-    const actualColumns = Object.keys(firstRow);
-    // Assert the values of the first row
+    const actualColumns = Object.keys(rowToAssert);
+    // Assert the values of the row
     Object.entries(assertionData).forEach(([key, value]) => {
-      expect(firstRow[key]).toBe(value);
+      expect(rowToAssert[key]).toBe(value);
     });
     // Validate the column names
     const columnsPresent = expectedColumns.every((col) =>
