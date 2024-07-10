@@ -64,6 +64,7 @@ describe('Block visa debit card', () => {
       programIdVisa,
       tokencode,
       accessToken,
+      registrationVisa.referenceId,
     );
 
     const visaWalletResponseAfterBlock = await getVisaWalletsAndDetails(
@@ -115,7 +116,12 @@ describe('Block visa debit card', () => {
     );
     const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
 
-    await blockVisaCard(programIdVisa, tokencode, accessToken);
+    await blockVisaCard(
+      programIdVisa,
+      tokencode,
+      accessToken,
+      registrationVisa.referenceId,
+    );
     const unblockVisaResponse = await unblockVisaCard(
       programIdVisa,
       tokencode,

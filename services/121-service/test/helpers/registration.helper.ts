@@ -304,13 +304,18 @@ export function blockVisaCard(
   programId: number,
   tokenCode: string,
   accessToken: string,
+  referenceId: string,
 ): Promise<request.Response> {
+  const queryParams = {
+    pause: true,
+  };
   return getServer()
-    .post(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/block`,
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/block`,
     )
     .set('Cookie', [accessToken])
-    .send({});
+    .send({})
+    .query({ queryParams });
 }
 
 export function unblockVisaCard(
