@@ -33,4 +33,18 @@ export default class ResetModel {
     const res = http.post(url, payload, params);
     return res;
   }
+
+  duplicateRegistrations(powerNumberRegistration) {
+    const url = `${baseUrl}api/scripts/duplicate-registrations?mockPowerNumberRegistrations=${powerNumberRegistration}`;
+    const payload = JSON.stringify({
+      secret: 'fill_in_secret',
+    });
+    const params = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = http.post(url, payload, params);
+    return res;
+  }
 }
