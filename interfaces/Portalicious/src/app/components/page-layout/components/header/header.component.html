@@ -9,7 +9,10 @@
       (click)="sidebarVisible = true"
     />
     <h1 class="ml-2 text-xl text-white">
-      121 Portal<span class="font-normal"> | NLRC</span>
+      <a routerLink="/">121 Portal</a>
+      @if (programTitle()) {
+        <span class="font-normal"> | {{ programTitle() }}</span>
+      }
     </h1>
   </ng-template>
   <ng-template pTemplate="end">
@@ -40,24 +43,15 @@
 <p-sidebar [(visible)]="sidebarVisible">
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
-      <a
-        routerLink="/"
-        class="p-button p-button-text p-button-secondary w-full"
-      >
-        All projects
-      </a>
-      <a
-        routerLink="/"
-        class="p-button p-button-text p-button-secondary w-full"
-      >
-        Users
-      </a>
-      <a
-        routerLink="/"
-        class="p-button p-button-text p-button-secondary w-full"
-      >
-        Roles and permissions
-      </a>
+      @for (sidebarLink of sidebarLinks; track $index) {
+        <a
+          [routerLink]="sidebarLink.routerLink"
+          (click)="sidebarVisible = false"
+          class="p-button p-button-text p-button-secondary w-full"
+        >
+          {{ sidebarLink.label }}
+        </a>
+      }
       <a
         href="https://manual.121.global/"
         class="p-button p-button-text p-button-secondary w-full"
