@@ -46,10 +46,10 @@ export default class ProgramsModel {
     return res;
   }
 
-  createProgramQuestion(programId, question) {
+  createProgramQuestion(programId, questionName) {
     const url = `${baseUrl}api/programs/${programId}/program-questions`;
     const payload = JSON.stringify({
-      name: `question${question}`,
+      name: questionName,
       options: ['string'],
       scoring: {},
       persistence: true,
@@ -62,7 +62,7 @@ export default class ProgramsModel {
       },
       duplicateCheck: false,
       label: {
-        en: 'Please enter your last name:',
+        en: questionName,
         fr: 'Remplissez votre nom, sil vous plaît:',
       },
       answerType: 'text',

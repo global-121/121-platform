@@ -27,6 +27,12 @@ export const options = {
 };
 
 export default function () {
+  // reset db
+  const reset = resetPage.resetDB();
+  check(reset, {
+    'Reset successful status was 202': (r) => r.status == 202,
+  });
+
   // login
   const login = loginPage.login();
   check(login, {
@@ -41,7 +47,13 @@ export default function () {
 
   // add 50 program questions to generate a bigger load
   for (let i = 1; i <= 50; i++) {
-    const programQuestions = programsPage.createProgramQuestion(programId, i);
+    const questionName = `question${i}`;
+    const programQuestions = programsPage.createProgramQuestion(
+      programId,
+      questionName,
+    );
+    registrationVisa[questionName] = 'bla';
+
     check(programQuestions, {
       'Program questions added successfully status was 201': (r) => {
         if (r.status != 201) {
@@ -54,36 +66,34 @@ export default function () {
 
   // add 15 custom attributes to generate bigger load
   for (let i = 1; i <= 15; i++) {
-    const customAttributes = programsPage.updateCustomAttributes(programId, i);
+    const cutstomAttributeName = `nameAttribute${i}`;
+    const customAttributes = programsPage.updateCustomAttributes(
+      programId,
+      cutstomAttributeName,
+    );
+    registrationVisa[cutstomAttributeName] = 'bla';
+
     check(customAttributes, {
       'Custom attribute added successful status was 201': (r) =>
         r.status == 201,
     });
   }
 
-  // reset db
-  const reset = resetPage.resetDB();
-  check(reset, {
-    'Reset successful status was 202': (r) => r.status == 202,
-  });
-
   // Upload registration
-  const res = registrationsPage.importRegistrations(
+  const registrationImport = registrationsPage.importRegistrations(
     programId,
     registrationVisa,
   );
-
-  // Log response for debugging
-  console.log(res);
-  // const importRegistrations = registrationsPage.importRegistrations(
-  //   programId,
-  //   '../test-data/test-registrations-OCW.csv',
-  // );
-  // check(importRegistrations, {
-  //   'Import successful status was 201': (r) => r.status == 201,
-  // });
+  check(registrationImport, {
+    'Import of registration successful status was 201': (r) => r.status == 201,
+  });
 
   // Duplicate registrations between 20k - 50k
+  const duplicateRegistration =
+    resetPage.duplicateRegistrations(duplicateNumber);
+  check(duplicateRegistration, {
+    'Duplication successful status was 201': (r) => r.status == 201,
+  });
 
   // get program by id and validate load time is less than 200ms
   const program = programsPage.getProgrammeById(programId);

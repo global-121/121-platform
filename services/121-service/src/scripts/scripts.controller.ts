@@ -158,14 +158,14 @@ export class ScriptsController {
   @ApiQuery({
     name: 'mockPowerNumberRegistrations',
     required: false,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
+    description: `number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
     example: '1',
   })
   @ApiOperation({
     summary:
       'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
   })
-  @Post('/duplicate-registrationds')
+  @Post('/duplicate-registrations')
   public async duplicateData(
     @Body() body: SecretDto,
     @Query('mockPowerNumberRegistrations')
