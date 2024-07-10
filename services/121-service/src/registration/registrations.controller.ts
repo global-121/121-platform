@@ -769,6 +769,7 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('financial-service-providers/intersolve-visa')
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Send Visa Customer Information of a registration to Intersolve',
