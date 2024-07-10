@@ -4,7 +4,7 @@ name: 'Test: Overnight k6 load test'
 
 on:
   schedule:
-    - cron: '32 16 * * *'
+    - cron: '30 22 * * *'
 
 env:
   k6TestsPath: 'k6/'
