@@ -35,6 +35,10 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run lint'
 
+      - name: Check for TS errors
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run typecheck'
+
       - name: Test
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run test'

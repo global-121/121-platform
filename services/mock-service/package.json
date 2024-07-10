@@ -16,7 +16,9 @@
     "build": "nest build -p tsconfig.json",
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
     "prestart:dev": "npm install --no-fund --no-audit",
-    "start:dev": "nest start -r tsconfig-paths/register -b swc -w -p tsconfig.json"
+    "start:dev": "nest start -r tsconfig-paths/register --builder swc --watch --path tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "typecheck:dev": "tsc --noEmit --watch"
   },
   "private": true,
   "dependencies": {

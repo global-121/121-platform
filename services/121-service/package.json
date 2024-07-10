@@ -33,7 +33,9 @@
     "migration:run": "npm run typeorm migration:run -- -d ./src/datasource-manage-migrations.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/datasource-manage-migrations.ts",
     "knip": "knip",
-    "knip:fix": "knip --fix-type files,exports,types"
+    "knip:fix": "knip --fix-type files,exports,types",
+    "typecheck": "tsc --noEmit",
+    "typecheck:dev": "tsc --noEmit --watch"
   },
   "private": true,
   "dependencies": {
