@@ -35,4 +35,6 @@ class IntersolveVisaCardDebugInformation {
   public intersolveVisaCardStatus: WrapperType<IntersolveVisaCardStatus | null>;
   @ApiProperty({ example: IntersolveVisaTokenStatus.Active })
   public intersolveVisaTokenStatus: WrapperType<IntersolveVisaTokenStatus>;
+  @ApiProperty({ example: true })
+  public isTokenBlocked: boolean;
 }

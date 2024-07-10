@@ -50,6 +50,7 @@ export class IntersolveVisaDtoMapper {
       debugInformation: {
         intersolveVisaCardStatus: childWallet.cardStatus,
         intersolveVisaTokenStatus: childWallet.walletStatus,
+        isTokenBlocked: childWallet.isTokenBlocked,
       },
     };
     return cardDto;
