@@ -46,38 +46,38 @@ export default function () {
   });
 
   // add 50 program questions to generate a bigger load
-  // for (let i = 1; i <= 50; i++) {
-  //   const questionName = `question${i}`;
-  //   const programQuestions = programsPage.createProgramQuestion(
-  //     programId,
-  //     questionName,
-  //   );
-  //   registrationVisa[questionName] = 'bla';
+  for (let i = 1; i <= 50; i++) {
+    const questionName = `question${i}`;
+    const programQuestions = programsPage.createProgramQuestion(
+      programId,
+      questionName,
+    );
+    registrationVisa[questionName] = 'bla';
 
-  //   check(programQuestions, {
-  //     'Program questions added successfully status was 201': (r) => {
-  //       if (r.status != 201) {
-  //         console.log(r.body);
-  //       }
-  //       return r.status == 201;
-  //     },
-  //   });
-  // }
+    check(programQuestions, {
+      'Program questions added successfully status was 201': (r) => {
+        if (r.status != 201) {
+          console.log(r.body);
+        }
+        return r.status == 201;
+      },
+    });
+  }
 
-  // // add 15 custom attributes to generate bigger load
-  // for (let i = 1; i <= 15; i++) {
-  //   const cutstomAttributeName = `nameAttribute${i}`;
-  //   const customAttributes = programsPage.updateCustomAttributes(
-  //     programId,
-  //     cutstomAttributeName,
-  //   );
-  //   registrationVisa[cutstomAttributeName] = 'bla';
+  // add 15 custom attributes to generate bigger load
+  for (let i = 1; i <= 15; i++) {
+    const cutstomAttributeName = `nameAttribute${i}`;
+    const customAttributes = programsPage.updateCustomAttributes(
+      programId,
+      cutstomAttributeName,
+    );
+    registrationVisa[cutstomAttributeName] = 'bla';
 
-  //   check(customAttributes, {
-  //     'Custom attribute added successful status was 201': (r) =>
-  //       r.status == 201,
-  //   });
-  // }
+    check(customAttributes, {
+      'Custom attribute added successful status was 201': (r) =>
+        r.status == 201,
+    });
+  }
 
   // Upload registration
   const registrationImport = registrationsPage.importRegistrations(
@@ -106,20 +106,6 @@ export default function () {
       return r.timings.duration < 200;
     },
   });
-
-  // Change status of all PAs to paused and check response
-  // const responsePaused = programsPage.updateRegistrationStatusAndLog(
-  //   programId,
-  //   'paused',
-  // );
-  // check(responsePaused, {
-  //   'Status successfully changed to paused: 202': (r) => {
-  //     if (r.status != 202) {
-  //       console.log(r.body);
-  //     }
-  //     return r.status == 202;
-  //   },
-  // });
 
   // Change status of all PAs to included and check response
   const responseIncluded = programsPage.updateRegistrationStatusAndLog(
