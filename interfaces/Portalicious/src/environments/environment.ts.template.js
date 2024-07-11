@@ -6,7 +6,7 @@ export const environment = {
 
   // Configuration/Feature-switches:
   defaultLocale: 'en',
-  locales: '${process.env.NG_LOCALES || 'en,ar,fr,nl,es'}',
+  locales: '${process.env.NG_LOCALES || 'en,nl'}',
   envName: '${process.env.NG_ENV_NAME || ''}',
 
   twilio_error_codes_url: '${process.env.NG_TWILIO_ERROR_CODES_URL || ''}',

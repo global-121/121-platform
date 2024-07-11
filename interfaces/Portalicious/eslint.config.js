@@ -69,13 +69,20 @@ module.exports = tseslint.config(
     },
   },
   {
-    files: ['**/*.html'],
+    files: ['src/app/**/*.html'],
     extends: [
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
       eslintPluginPrettierRecommended,
     ],
     rules: {
+      '@angular-eslint/template/i18n': [
+        'error',
+        {
+          checkId: false,
+          ignoreAttributes: ['icon', 'styleClass'],
+        },
+      ],
       'prettier/prettier': [
         'error',
         {

@@ -18,6 +18,6 @@ test.beforeEach(async () => {
 // but for now, this is just a placeholder to make sure
 // we don't break the infrastructure that runs the tests.
 test('Load Homepage', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/en/');
   expect(await page.title()).toBe('121 Portal(icious)');
 });
