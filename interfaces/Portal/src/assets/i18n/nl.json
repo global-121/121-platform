@@ -703,6 +703,8 @@
         "suffix": "<br> <br> Er wordt automatisch een bericht naar de hulpvrager gestuurd.",
         "unpause": "deze kaart activeren?"
       },
+      "wallet-number": "Wallet nummer",
+      "card-number": "Kaart nummer",
       "current-balance": "Huidig saldo",
       "date-issued": "Uitgegeven",
       "date-last-used": "Laatst gebruikt",
@@ -711,7 +713,7 @@
       "not-used-yet": "Nog niet gebruikt",
       "pause-card": "Kaart pauzeren",
       "popup-title": "Visa kaart",
-      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}})",
+      "spent-this-month": "Uitgegeven deze maand (max. {{maxAmount}})",
       "status": "Status",
       "title": "Visa kaarten",
       "unpause-card": "Kaart activeren"
