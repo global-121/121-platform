@@ -44,7 +44,7 @@ test('[28446] OCW: Show maximum total amount (Dry Run)', async ({ page }) => {
   const PaymentNumber = 1;
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const maxTransferValue = registrationsOCW.reduce((output, pa) => {
+  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
 
@@ -58,7 +58,7 @@ test('[28446] OCW: Show maximum total amount (Dry Run)', async ({ page }) => {
     await paymentsPage.verifyPaymentPopupValues({
       numberOfPas,
       defaultTransferValue,
-      maxTransferValue,
+      defaultMaxTransferValue,
     });
   });
 });

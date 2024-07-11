@@ -55,7 +55,7 @@ test('[28445] OCW: Send payment instructions', async ({ page }) => {
   const paymentNumber = 1;
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const maxTransferValue = registrationsOCW.reduce((output, pa) => {
+  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
 
@@ -69,7 +69,7 @@ test('[28445] OCW: Send payment instructions', async ({ page }) => {
     await paymentsPage.executePayment({
       numberOfPas,
       defaultTransferValue,
-      maxTransferValue,
+      defaultMaxTransferValue,
     });
   });
 

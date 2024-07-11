@@ -56,7 +56,7 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   const registrationPage = new RegistrationDetails(page);
   const paymentsPage = new PaymentsPage(page);
   const numberOfPas = registrationsPV.length;
-  const maxTransferValue = registrationsPV.reduce((output, pa) => {
+  const defaultMaxTransferValue = registrationsPV.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
 
@@ -70,7 +70,7 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
     await paymentsPage.executePayment({
       numberOfPas,
       defaultTransferValue,
-      maxTransferValue,
+      defaultMaxTransferValue,
     });
   });
 

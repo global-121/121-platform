@@ -49,12 +49,16 @@ class PaymentsPage {
   async verifyPaymentPopupValues({
     numberOfPas,
     defaultTransferValue,
-    maxTransferValue,
+    defaultMaxTransferValue,
+    newTransferValue,
+    newMaxTransferValue,
     paymentNumber = 1,
   }: {
     numberOfPas: number;
     defaultTransferValue: number;
-    maxTransferValue: number;
+    defaultMaxTransferValue: number;
+    newTransferValue?: number;
+    newMaxTransferValue?: number;
     paymentNumber?: number;
   }) {
     // In case of UI delay page should refresh and do payment again with TableModule
@@ -64,9 +68,9 @@ class PaymentsPage {
       '{{number}}',
       numberOfPas.toString(),
     );
-    const maximumAmountLabel = maxAmountLabel.replace(
+    let maximumAmountLabel = maxAmountLabel.replace(
       '{{totalCost}}',
-      `EUR ${maxTransferValue.toString()}`,
+      `EUR ${defaultMaxTransferValue.toString()}`,
     );
 
     try {
@@ -75,35 +79,72 @@ class PaymentsPage {
       await expect(
         this.paymentPopupMakePaymentAmountInput.locator('input'),
       ).toHaveValue(defaultTransferValue.toString());
+      if (
+        newTransferValue != defaultTransferValue &&
+        newTransferValue != undefined &&
+        newMaxTransferValue != undefined
+      ) {
+        await this.updateTransferValue({
+          newTransferValue: newTransferValue.toString(),
+        });
+        maximumAmountLabel = maxAmountLabel.replace(
+          '{{totalCost}}',
+          `EUR ${newMaxTransferValue.toString()}`,
+        );
+        const paIncluded = this.page.getByText(paIncludedLabel);
+        await expect(paIncluded).toBeVisible();
+        await paIncluded.click();
+        await expect(this.page.getByText(maximumAmountLabel)).toBeVisible();
+      }
     } catch (error) {
       await this.page.reload();
       await tableModule.doPayment(paymentNumber);
       await this.verifyPaymentPopupValues({
         numberOfPas,
         defaultTransferValue,
-        maxTransferValue,
+        defaultMaxTransferValue,
+        newTransferValue,
       });
     }
+  }
+
+  async updateTransferValue({
+    newTransferValue,
+  }: {
+    newTransferValue: string;
+  }) {
+    const numericInput =
+      this.paymentPopupMakePaymentAmountInput.getByRole('spinbutton');
+    const oldValue = await numericInput.inputValue();
+    await numericInput.fill(newTransferValue);
+    await numericInput.click();
+    const newValue = await numericInput.inputValue();
+    expect(newValue).not.toEqual(oldValue);
   }
 
   async executePayment({
     numberOfPas,
     defaultTransferValue,
-    maxTransferValue,
+    defaultMaxTransferValue,
+    newTransferValue,
+    newMaxTransferValue,
   }: {
     numberOfPas: number;
     defaultTransferValue: number;
-    maxTransferValue: number;
+    defaultMaxTransferValue: number;
+    newTransferValue?: number;
+    newMaxTransferValue?: number;
   }) {
     await this.verifyPaymentPopupValues({
       numberOfPas,
       defaultTransferValue,
-      maxTransferValue,
+      defaultMaxTransferValue,
+      newTransferValue,
+      newMaxTransferValue,
     });
 
     // execute payment
     await this.paymentPopupMakePaymentButton.click();
-
     // make sure the payment was successful
     // need to split up the label to avoid issues with the <br> tag
     const paSuccessfulLabel = succesfullLabel;
@@ -114,7 +155,6 @@ class PaymentsPage {
       numberOfPas.toString(),
     );
     await expect(this.page.getByText(paSuccessfulLabelChunk)).toBeVisible();
-
     // Close popup
     await this.page
       .getByRole('button', {
@@ -139,9 +179,7 @@ class PaymentsPage {
 
   async retryPayment({ buttonName }: { buttonName: string }) {
     const okButton = this.page.getByRole('button', { name: buttonName });
-
     await this.paymentRetryButton.click();
-
     await okButton.click();
     await this.page.waitForLoadState('networkidle');
     await okButton.click();
