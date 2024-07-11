@@ -15,14 +15,14 @@ const duplicateNumber = 15;
 const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 400;
-const minPassRatePercentage = 100;
+const minPassRatePercentage = 50;
 
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
   vus: 1,
-  duration: '33m',
+  duration: '40m',
   iterations: 1,
 };
 

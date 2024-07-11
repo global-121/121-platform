@@ -55,3 +55,15 @@ jobs:
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
+
+      - name: Notify Teams
+        if: always()
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          curl -H 'Content-Type: application/json' \
+          -d '{
+                "title": "k6 Load Test Completed",
+                "text": "The k6 load test job has finished. Check the logs for more details."
+              }' \
+          $TEAMS_WEBHOOK_URL
