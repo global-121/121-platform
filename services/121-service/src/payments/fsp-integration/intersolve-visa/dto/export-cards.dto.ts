@@ -1,4 +1,4 @@
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -8,7 +8,7 @@ export class ExportCardsDto {
   referenceId: string;
   registrationStatus: RegistrationStatusEnum;
   cardNumber: string;
-  cardStatus121: WalletCardStatus121;
+  cardStatus121: VisaCard121Status;
   issuedDate: Date;
   lastUsedDate: Date;
   balance: number;

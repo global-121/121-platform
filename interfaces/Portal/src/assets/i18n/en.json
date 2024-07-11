@@ -668,6 +668,8 @@
         "suffix": "<br><br>This will automatically send a message to the person affected.",
         "unpause": "unpause this card?"
       },
+      "wallet-number": "Wallet number",
+      "card-number": "Card number",
       "current-balance": "Current balance",
       "date-issued": "Issued",
       "date-last-used": "Last used",
@@ -676,7 +678,7 @@
       "not-used-yet": "Not used yet",
       "pause-card": "Pause card",
       "popup-title": "Debit card",
-      "spent-this-month": "Spent this month (maximum {{maxAmount}})",
+      "spent-this-month": "Spent this month (max. {{maxAmount}})",
       "status": "Status",
       "title": "Debit cards",
       "unpause-card": "Unpause card"

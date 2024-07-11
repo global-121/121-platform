@@ -36,7 +36,7 @@ export class IntersolveVisaParentWalletEntity extends Base121Entity {
   @Column({ default: false })
   public isLinkedToVisaCustomer: boolean;
 
-  @Column({ default: 0 })
+  @Column({ default: 0 }) // This is euro cents
   public balance: number;
 
   // Last time we got an update from Intersolve about the wallet status or balance or when it was last used
