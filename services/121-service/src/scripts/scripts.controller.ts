@@ -1,3 +1,4 @@
+import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
@@ -37,6 +38,7 @@ export class ScriptsController {
     private readonly seedProgramTest: SeedTestProgram,
     private readonly seedProgramValidation: SeedProgramValidation,
     private readonly seedInit: SeedInit,
+    private readonly scriptsService: ScriptsService,
   ) {}
 
   @ApiQuery({
@@ -83,9 +85,9 @@ export class ScriptsController {
     @Body() body: SecretDto,
     @Query('script') script: WrapperType<SeedScript>,
     @Query('mockPowerNumberRegistrations')
-    mockPowerNumberRegistrations: number,
-    @Query('mockNumberPayments') mockNumberPayments: number,
-    @Query('mockPowerNumberMessages') mockPowerNumberMessages: number,
+    mockPowerNumberRegistrations: string,
+    @Query('mockNumberPayments') mockNumberPayments: string,
+    @Query('mockPowerNumberMessages') mockPowerNumberMessages: string,
     @Query('mockPv') mockPv: boolean,
     @Query('mockOcw') mockOcw: boolean,
     @Query('isApiTests') isApiTests: boolean,
@@ -151,5 +153,38 @@ export class ScriptsController {
     return res
       .status(HttpStatus.ACCEPTED)
       .send('Request received. Database should be reset.');
+  }
+
+  @ApiQuery({
+    name: 'mockPowerNumberRegistrations',
+    required: false,
+    description: `number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
+    example: '1',
+  })
+  @ApiOperation({
+    summary:
+      'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
+  })
+  @Post('/duplicate-registrations')
+  public async duplicateData(
+    @Body() body: SecretDto,
+    @Query('mockPowerNumberRegistrations')
+    mockPowerNumberRegistrations: string,
+
+    @Res() res,
+  ): Promise<void> {
+    if (body.secret !== process.env.RESET_SECRET) {
+      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+    }
+    if (!['development', 'test'].includes(process.env.NODE_ENV!)) {
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .send('Not allowed in this environment. Only for development and test');
+    }
+    await this.scriptsService.duplicateData(mockPowerNumberRegistrations);
+
+    return res
+      .status(HttpStatus.CREATED)
+      .send('Request received. Data should have been duplicated.');
   }
 }

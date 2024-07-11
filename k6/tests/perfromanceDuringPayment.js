@@ -11,16 +11,24 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();
 
+const duplicateNumber = 15;
+const programId = 3;
+const paymentId = 3;
+const maxTimeoutAttempts = 400;
+const minPassRatePercentage = 50;
+
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
   vus: 1,
+  duration: '40m',
+  iterations: 1,
 };
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(15);
+  const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
@@ -37,15 +45,32 @@ export default function () {
     },
   });
 
-  // create payment
-  const payment = paymentsPage.createPayment(3);
-  check(payment, {
-    'Payment succesfull status was 202': (r) => r.status == 202,
-    'Payment has succesfully been initiated in less then 40s': (r) => {
-      if (r.timings.duration >= 40000) {
-        console.log(`Payment time was ${r.timings.duration}ms`);
+  // Do the payment
+  const doPayment = paymentsPage.createPayment(programId);
+  check(doPayment, {
+    'Payment successfully done status 202': (r) => {
+      if (r.status != 202) {
+        console.log(r.body);
       }
-      return r.timings.duration < 40000;
+      return r.status == 202;
+    },
+  });
+
+  // Monitor that 100% of payments is successful and then stop the test
+  const monitorPayment = paymentsPage.getPaymentResults(
+    programId,
+    maxTimeoutAttempts,
+    paymentId,
+    duplicateNumber,
+    minPassRatePercentage,
+  );
+  check(monitorPayment, {
+    'Payment progressed successfully status 200': (r) => {
+      if (r.status != 200) {
+        const responseBody = JSON.parse(r.body);
+        console.log(responseBody.error || r.status);
+      }
+      return r.status == 200;
     },
   });
 

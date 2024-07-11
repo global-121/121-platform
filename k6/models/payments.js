@@ -1,3 +1,4 @@
+import { sleep } from 'k6';
 import http from 'k6/http';
 
 import config from './config.js';
@@ -18,5 +19,42 @@ export default class paymentsModel {
     };
     const res = http.post(url, payload, params);
     return res;
+  }
+
+  getPaymentResults(
+    programId,
+    maxTimeoutAttempts,
+    paymentNr,
+    totalAmountPowerOfTwo,
+    passRate,
+  ) {
+    const maxAttempts = maxTimeoutAttempts;
+    let attempts = 0;
+    let successPercentage = 0;
+
+    while (attempts < maxAttempts) {
+      const url = `${baseUrl}api/programs/${programId}/payments/${paymentNr}`;
+      const res = http.get(url);
+      const responseBody = JSON.parse(res.body);
+      const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
+      successPercentage =
+        (parseInt(responseBody.nrSuccess) / totalPayments) * 100;
+
+      if (successPercentage >= passRate) {
+        console.log(
+          `Success: The percentage of successful payments (${successPercentage}%) is at or above the pass rate (${passRate}%).`,
+        );
+        return res;
+      }
+      attempts++;
+      sleep(5);
+    }
+
+    return {
+      status: 500,
+      body: JSON.stringify({
+        error: `Failed after ${maxAttempts} attempts without reaching the pass rate of ${passRate}%. Last recorded pass rate was ${successPercentage}%.`,
+      }),
+    };
   }
 }

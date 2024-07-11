@@ -3,6 +3,7 @@ import { ORMConfig } from '@121-service/src/ormconfig';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueueSeedHelperModule } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.module';
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
+import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
@@ -34,6 +35,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
     HttpModule,
   ],
   providers: [
+    ScriptsService,
     SeedInit,
     SeedHelper,
     SeedProgramValidation,
@@ -60,8 +62,8 @@ export class ScriptsModule {}
 export interface InterfaceScript {
   run(
     isApiTests?: boolean,
-    squareString?: number,
-    nrPaymentsString?: number,
-    squareNumberBulkMessageString?: number,
+    squareString?: string,
+    nrPaymentsString?: string,
+    squareNumberBulkMessageString?: string,
   ): Promise<void>;
 }
