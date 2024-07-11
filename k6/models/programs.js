@@ -1,5 +1,5 @@
+import { sleep } from 'k6';
 import http from 'k6/http';
-
 import config from './config.js';
 const { baseUrl } = config;
 
@@ -92,6 +92,12 @@ export default class ProgramsModel {
     return res;
   }
 
+  getStatusOverview(programId) {
+    const url = `${baseUrl}api/programs/${programId}/metrics/registration-status`;
+    const res = http.get(url);
+    return res;
+  }
+
   logResponseDetails(responseBody) {
     console.log(
       `totalFilterCount: ${responseBody.totalFilterCount}, applicableCount: ${responseBody.applicableCount}, nonApplicableCount: ${responseBody.nonApplicableCount}`,
@@ -99,23 +105,30 @@ export default class ProgramsModel {
   }
 
   updateRegistrationStatusAndLog(programId, status) {
-    let lastResponse = null;
+    const responeStatusChange = this.updateRegistrationStatus(
+      programId,
+      status,
+    );
+    const responseBody = JSON.parse(responeStatusChange.body);
+    this.logResponseDetails(responseBody);
+    let registrationCount;
     try {
-      let responseBody;
       do {
-        const response = this.updateRegistrationStatus(programId, status);
-        lastResponse = response;
-        responseBody = JSON.parse(response.body);
-        this.logResponseDetails(responseBody);
-
-        if (response.status !== 202) {
-          console.log(response.body);
-          throw new Error('Check failed');
-        }
-      } while (responseBody.applicableCount !== 0);
+        registrationCount = this.updateGetRegistrationCountForStatus(
+          programId,
+          status,
+        );
+        sleep(3);
+      } while (responseBody.applicableCount === registrationCount);
     } catch (error) {
       console.log(error);
     }
-    return lastResponse;
+    return responseBody;
+  }
+
+  updateGetRegistrationCountForStatus(programId, status) {
+    const statusOverview = this.getStatusOverview(programId);
+    const statusOverviewBody = JSON.parse(statusOverview.body);
+    return statusOverviewBody[status];
   }
 }
