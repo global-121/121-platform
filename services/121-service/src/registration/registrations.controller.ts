@@ -1,6 +1,7 @@
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-wallet.dto';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
@@ -770,6 +771,33 @@ export class RegistrationsController {
   }
 
   @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] [EXTERNALLY USED] Retrieves and updates latest wallet and cards data for a Registration from Intersolve and returns it',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'Wallet and cards data retrieved from intersolve and updated in the 121 Platform. - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+    type: IntersolveVisaWalletDto,
+  })
+  @Patch(
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet',
+  )
+  public async retrieveAndUpdateIntersolveVisaWalletAndCards(
+    @Param('referenceId') referenceId: string,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    return await this.registrationsService.retrieveAndUpdateIntersolveVisaWalletAndCards(
+      referenceId,
+      programId,
+    );
+  }
+
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Send Visa Customer Information of a registration to Intersolve',
