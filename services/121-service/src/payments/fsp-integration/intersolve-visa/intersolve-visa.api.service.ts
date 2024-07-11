@@ -208,7 +208,7 @@ export class IntersolveVisaApiService {
   }
 
   public async getToken(tokenCode: string): Promise<GetTokenResultDto> {
-    // Send the request
+    // Send the request: https://service-integration.intersolve.nl/pointofsale/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
