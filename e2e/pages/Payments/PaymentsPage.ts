@@ -23,6 +23,7 @@ class PaymentsPage {
   readonly paymentRetryButton: Locator;
   readonly paymentSuccessfulLabel: Locator;
   readonly paymentsFailedLabel: Locator;
+  readonly paymentDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -42,6 +43,7 @@ class PaymentsPage {
     this.paymentsFailedLabel = this.page.getByTestId(
       'program-payout-failed-payment',
     );
+    this.paymentDropdown = this.page.getByTestId('program-payout-dropdown');
   }
 
   async verifyPaymentPopupValues({
@@ -175,6 +177,82 @@ class PaymentsPage {
     });
     await expect(this.paymentRetryButton).toBeHidden();
   }
-}
 
+  async verifyPaymentOptionUnderPaymentData({
+    paymentNumber = 1,
+  }: {
+    paymentNumber?: number;
+  }) {
+    const currentPaymentLabel = `Payment #${paymentNumber}  Closed`;
+    const nextPaymentLabel = `Payment #${paymentNumber + 1}  Open`;
+    await this.page.waitForLoadState('networkidle');
+    await this.paymentDropdown.click();
+    const contents = await this.paymentDropdown.allTextContents();
+    await this.verifyLabelExist(currentPaymentLabel, contents);
+    await this.verifyLabelExist(nextPaymentLabel, contents);
+  }
+
+  async selectPaymentOption(optionText: string) {
+    // Wait for the dropdown to be visible
+    await this.paymentDropdown.waitFor();
+    await this.paymentDropdown.click();
+    const options = this.paymentDropdown.locator('option');
+    // Find the option containing the specified text
+    const optionCount = await options.count();
+    let found = false;
+    for (let i = 0; i < optionCount; i++) {
+      const option = options.nth(i);
+      const optionValue = await option.textContent();
+      if (optionValue && optionValue.includes(optionText)) {
+        const optionLabel = await option.getAttribute('value');
+        if (optionLabel) {
+          // Select the option by value
+          await this.paymentDropdown.selectOption({ value: optionLabel });
+          found = true;
+          console.log(`Selected option containing text: ${optionText}`);
+          break;
+        }
+      }
+    }
+    // Verify that the option was found and selected
+    expect(found).toBe(true);
+    await this.paymentDropdown.click();
+  }
+
+  async verifyPaymentOptionUnderAction({
+    paymentNumber = 1,
+  }: {
+    paymentNumber?: number;
+  }) {
+    const tableModule = new TableModule(this.page);
+    const contents = await tableModule.GetBulkActionOptions();
+    // currently the payment which has been closed will show here too.
+    const currentPaymentLabel = `Do payment #${paymentNumber}`;
+    await this.verifyLabelExist(currentPaymentLabel, contents);
+    const nextPaymentLabel = `Do payment #${paymentNumber + 1}`;
+    await this.verifyLabelExist(nextPaymentLabel, contents);
+  }
+  async openPaymentHistory({ rowIndex = 1 }: { rowIndex?: number }) {
+    const tableModule = new TableModule(this.page);
+    await tableModule.clickOnPaPayments(rowIndex);
+  }
+
+  async openMessage({ rowIndex = 1 }: { rowIndex?: number }) {
+    const tableModule = new TableModule(this.page);
+    await tableModule.clickOnPaMessage(rowIndex);
+  }
+
+  async closePopup(buttonName: string) {
+    const cancelButton = this.page.getByRole('button', { name: buttonName });
+    await cancelButton.click();
+  }
+
+  async verifyLabelExist(label: string, contents: string[]) {
+    // Check if any of the dropdown options contain the specified payment label
+    const isPaymentPresent = contents.some((content) =>
+      content.includes(label),
+    );
+    expect(isPaymentPresent).toBe(true);
+  }
+}
 export default PaymentsPage;

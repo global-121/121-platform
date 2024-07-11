@@ -9,6 +9,7 @@
       [(ngModel)]="exportPaymentId"
       (change)="changeExportPayment()"
       class="styled-select ion-margin-end"
+      data-testid="program-payout-dropdown"
     >
       <option [value]="0">
         <ng-container>{{
