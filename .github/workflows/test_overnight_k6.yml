@@ -51,7 +51,7 @@ jobs:
       - name: Run k6 tests
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          npx dotenv -e ../services/.env -- ./k6 run tests/heavyAndHappyPaymentFlow.js
+          npx dotenv -e ../services/.env -- ./k6 run tests/statusChangePaymentInLargeProgram.js
 
       - name: Docker logs
         if: always()
