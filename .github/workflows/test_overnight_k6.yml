@@ -4,6 +4,7 @@ name: 'Test: Overnight k6 load test'
 
 on:
   schedule:
+    # https://crontab.guru/#30_22_*_*_*
     - cron: '30 22 * * *'
 
 env:
