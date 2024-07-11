@@ -43,7 +43,7 @@ test('[28464] PV: Show maximum total amount (Dry Run)', async ({ page }) => {
 
   const numberOfPas = registrationsPV.length;
   const defaultTransferValue = NLRCProgramPV.fixedTransferValue;
-  const maxTransferValue = registrationsPV.reduce((output, pa) => {
+  const defaultMaxTransferValue = registrationsPV.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
 
@@ -57,7 +57,7 @@ test('[28464] PV: Show maximum total amount (Dry Run)', async ({ page }) => {
     await paymentsPage.verifyPaymentPopupValues({
       numberOfPas,
       defaultTransferValue,
-      maxTransferValue,
+      defaultMaxTransferValue,
     });
   });
 });

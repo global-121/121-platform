@@ -30,6 +30,7 @@ const messageType = englishTranslations.entity.message.type.whatsapp;
 const paymentFilterByTab =
   englishTranslations['registration-details']['activity-overview'].filters
     .message;
+const defaultTransferValue = NLRCProgram.fixedTransferValue;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -48,7 +49,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28445] OCW: Make Successful payment', async ({ page }) => {
+test('[28447] OCW: Send payment instructions with changed transfer value', async ({
+  page,
+}) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
@@ -56,9 +59,14 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const numberOfPas = registrationsOCW.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
+  const newTransferValue = 15;
+
   const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
+  }, 0);
+
+  const newMaxTransferValue = registrationsOCW.reduce((output, pa) => {
+    return output + pa.paymentAmountMultiplier * newTransferValue;
   }, 0);
 
   await test.step('Navigate to PA table', async () => {
@@ -72,14 +80,14 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
       numberOfPas,
       defaultTransferValue,
       defaultMaxTransferValue,
+      newTransferValue,
+      newMaxTransferValue,
     });
   });
 
   await test.step('Check PA payments and messages', async () => {
     await table.openFspProfile({ shouldIncludeVisa: true });
-
     await registrationPage.validateQuantityOfActivity({ quantity: 5 });
-
     await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
       paymentLabel: paymentLabel,
