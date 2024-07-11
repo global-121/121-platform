@@ -1,9 +1,9 @@
-<div class="mt-8 bg-navy text-white">
+<div class="mt-8 bg-navy px-6 text-white">
   <div
-    class="container flex flex-wrap justify-between gap-6 py-12 font-extralight md:flex-nowrap"
+    class="container flex flex-wrap justify-between gap-6 py-12 md:flex-nowrap"
   >
-    <div class="md:w-1/4">
-      <h3 class="mb-6 text-xl font-bold">About 121 Portal</h3>
+    <div class="md:w-1/3">
+      <h3 class="mb-4">About 121 Portal</h3>
       <p>
         The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer
         and faster which enables humanitarian organizations to maximize their
@@ -12,23 +12,23 @@
       <p class="mt-8">&#64; 510 2024</p>
     </div>
     <div>
-      <h3 class="mb-6 text-xl font-bold">Find out more</h3>
+      <h3 class="mb-4">Find out more</h3>
       <ul>
-        <li class="mb-2 underline">
+        <li class="mb-2 [&:not(:hover)]:underline">
           <a
             href="https://121.global"
             target="_blank"
             >121.global</a
           >
         </li>
-        <li class="mb-2 underline">
+        <li class="mb-2 [&:not(:hover)]:underline">
           <a
             href="https://510.global"
             target="_blank"
             >510.global</a
           >
         </li>
-        <li class="mb-2 underline">
+        <li class="mb-2 [&:not(:hover)]:underline">
           <a
             href="https://data.ifrc.org"
             target="_blank"
@@ -38,16 +38,23 @@
       </ul>
     </div>
     <div>
-      <h3 class="mb-6 text-xl font-bold">Helpful links</h3>
+      <h3 class="mb-4">Helpful links</h3>
       <ul>
-        <li class="mb-2 underline">
+        <li class="mb-2 [&:not(:hover)]:underline">
           <a
             href="https://github.com/global-121/121-platform/"
             target="_blank"
             >Open Source Code</a
           >
         </li>
-        <li class="mb-2 underline">
+        <li class="mb-2 [&:not(:hover)]:underline">
+          <a
+            [href]="apiDocumentationUrl"
+            target="_blank"
+            >API Documentation</a
+          >
+        </li>
+        <li class="mb-2 [&:not(:hover)]:underline">
           <a
             href="https://manual.121.global/"
             target="_blank"
@@ -57,10 +64,10 @@
       </ul>
     </div>
     <div>
-      <h3 class="mb-6 text-xl font-bold">Questions or feedback? Contact us</h3>
+      <h3 class="mb-4">Questions or feedback? Contact us</h3>
       <a
         href="mailto:support@510.global"
-        class="p-button p-button-rounded p-button-outlined border-white font-normal text-white"
+        class="p-button p-button-rounded p-button-outlined p-button-secondary [&:not(:hover)]:text-white"
         >support&#64;510.global</a
       >
       <div class="mt-6 flex gap-3">
