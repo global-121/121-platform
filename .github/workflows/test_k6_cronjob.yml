@@ -1,0 +1,71 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test: k6 cronjob'
+
+on:
+  schedule:
+    # See: https://crontab.guru/#42_1_*_*_*
+    - cron: '42 1 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/test_k6_cronjob.yml'
+      - 'k6/run-all-tests.sh'
+      - 'k6/tests/**'
+
+env:
+  k6TestsPath: 'k6/'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '${{ env.k6TestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.k6TestsPath }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Run Services with Docker
+        working-directory: ./services
+        run: |
+          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
+
+      - name: Install k6 dependencies
+        working-directory: ${{ env.k6TestsPath }}
+        run: |
+          npm ci --omit=optional --no-fund --no-audit
+
+      - name: Download k6
+        working-directory: ${{ env.k6TestsPath }}
+        run: |
+          curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+
+      - name: Run all k6 tests
+        working-directory: ${{ env.k6TestsPath }}
+        run: |
+          echo "test"
+
+      - name: Docker logs
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+
+      - name: Microsoft Teams Notification
+        uses: freezer00/teams-webhook-action@v1.4.1
+        if: always()
+        with:
+          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+          needs: ${{ toJson(needs) }}
+          job: ${{ toJson(job) }}
+          title: K6 Cronjob
+          hide_facts: false
+          dry_run: false
