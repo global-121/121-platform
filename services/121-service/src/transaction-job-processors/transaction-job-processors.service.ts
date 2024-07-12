@@ -26,6 +26,17 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
 
+interface ProcessTransactionResultInput {
+  jobInput: IntersolveVisaTransactionJobDto;
+  calculatedTranserAmount: number;
+  financialServiceProviderId: number;
+  registration: RegistrationEntity;
+  oldRegistration: RegistrationEntity;
+  isRetry: boolean;
+  status: StatusEnum;
+  errorText?: string;
+}
+
 @Injectable()
 export class TransactionJobProcessorsService {
   public constructor(
@@ -74,17 +85,17 @@ export class TransactionJobProcessorsService {
         input[key] === ''
       ) {
         const errorText = `Property ${key} is undefined`;
-        await this.createTransaction({
-          amount: input.transactionAmount,
-          registration: registration,
+        await this.processTransactionResult({
+          jobInput: input,
+          calculatedTranserAmount: input.transactionAmount, // TODO: STORE THE CALCULATED AMOUNT HERE AS THIS IS USED ON RETRY AND SHOWN IN PORTAL
           financialServiceProviderId: financialServiceProvider.id,
-          programId: input.programId,
-          paymentNumber: input.paymentNumber,
-          userId: input.userId,
+          registration,
+          oldRegistration,
+          isRetry: input.isRetry,
           status: StatusEnum.error,
-          errorMessage: errorText,
+          errorText,
         });
-        throw new Error(errorText);
+        return;
       }
     }
 
@@ -134,27 +145,20 @@ export class TransactionJobProcessorsService {
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
-      const resultTransaction = await this.createTransaction({
-        amount: input.transactionAmount,
-        registration: registration,
+      await this.processTransactionResult({
+        jobInput: input,
+        calculatedTranserAmount: input.transactionAmount, // TODO: STORE THE CALCULATED AMOUNT HERE AS THIS IS USED ON RETRY AND SHOWN IN PORTAL
         financialServiceProviderId: financialServiceProvider.id,
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        status: StatusEnum.error,
-        errorMessage: `An error occured: ${error}`,
-      });
-      await this.latestTransactionRepository.insertOrUpdateFromTransaction(
-        resultTransaction,
-      );
-      await this.updatePaymentCountAndStatusInRegistration(
         registration,
-        input.programId,
-      );
-      throw new Error(error);
+        oldRegistration,
+        isRetry: input.isRetry,
+        status: StatusEnum.error,
+        errorText: error?.message, // TODO: THIS IS A GENEARAL stack trace catch and i think the error handling should be more specific and tested
+      });
+      return;
     }
 
-    if (intersolveVisaDoTransferOrIssueCardReturnDto.cardCreated) {
+    if (intersolveVisaDoTransferOrIssueCardReturnDto?.cardCreated) {
       await this.createMessageAndAddToQueue({
         type: ProgramNotificationEnum.visaDebitCardCreated,
         programId: input.programId,
@@ -176,23 +180,47 @@ export class TransactionJobProcessorsService {
       });
     }
 
-    const resultTransaction = await this.createTransaction({
-      amount: intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
-      registration: registration,
+    await this.processTransactionResult({
+      jobInput: input,
+      calculatedTranserAmount:
+        intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
       financialServiceProviderId: financialServiceProvider.id,
-      programId: input.programId,
-      paymentNumber: input.paymentNumber,
-      userId: input.userId,
+      registration,
+      oldRegistration,
+      isRetry: input.isRetry,
       status: StatusEnum.success,
     });
+  }
+
+  private async processTransactionResult({
+    jobInput,
+    calculatedTranserAmount,
+    financialServiceProviderId,
+    registration,
+    oldRegistration,
+    isRetry,
+    status,
+    errorText: errorMessage,
+  }: ProcessTransactionResultInput): Promise<void> {
+    const resultTransaction = await this.createTransaction({
+      amount: calculatedTranserAmount,
+      registration: registration,
+      financialServiceProviderId: financialServiceProviderId,
+      programId: jobInput.programId,
+      paymentNumber: jobInput.paymentNumber,
+      userId: jobInput.userId,
+      status: status,
+      errorMessage: errorMessage,
+    });
+
     await this.latestTransactionRepository.insertOrUpdateFromTransaction(
       resultTransaction,
     );
 
-    if (!input.isRetry) {
+    if (!isRetry) {
       await this.updatePaymentCountAndStatusInRegistration(
         registration,
-        input.programId,
+        jobInput.programId,
       );
       await this.eventsService.log(
         {
