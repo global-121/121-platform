@@ -15,22 +15,16 @@
   "distributionFrequency": "once",
   "distributionDuration": 1,
   "fixedTransferValue": 53,
-  "financialServiceProviders": [
-    {
-      "fsp": "VodaCash"
-    }
-  ],
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": false,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "lastName",
       "label": {
         "en": "B.2. Name",
         "fr": "B.2. Nom de famille"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -45,7 +39,7 @@
         "en": "B.3. Middle name",
         "fr": "B.3. Deuxième prénom"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -60,13 +54,39 @@
         "en": "B.4. First name",
         "fr": "B.4. Prénom"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Phone Number",
+        "fr": "Numéro de téléphone"
+      },
+      "placeholder": {
+        "en": "+243 000 000 000"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "healthArea",
+      "label": {
+        "en": "Health area",
+        "fr": "Aire de santé"
+      },
+      "type": "text",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
       "showInPeopleAffectedTable": false
     }
   ],
@@ -78,5 +98,10 @@
   "languages": ["en", "fr"],
   "enableMaxPayments": false,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfiguration": [
+    {
+      "financialServiceProvider": "VodaCash"
+    }
+  ]
 }

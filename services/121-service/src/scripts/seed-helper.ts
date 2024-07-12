@@ -9,10 +9,9 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/user.entity';
@@ -236,11 +235,8 @@ export class SeedHelper {
       FinancialServiceProviderEntity,
     );
 
-    const programCustomAttributeRepository = this.dataSource.getRepository(
-      ProgramCustomAttributeEntity,
-    );
-    const programQuestionRepository = this.dataSource.getRepository(
-      ProgramQuestionEntity,
+    const programRegistrationAttributeRepo = this.dataSource.getRepository(
+      ProgramRegistrationAttributeEntity,
     );
 
     const programExampleDump = JSON.stringify(programExample);
@@ -252,38 +248,28 @@ export class SeedHelper {
 
     const programReturn = await programRepository.save(program);
 
-    // Remove original program custom attributes and add it to a separate variable
-    const programCustomAttributes = program.programCustomAttributes;
-    program.programCustomAttributes = [];
-    if (programCustomAttributes) {
-      for (const attribute of programCustomAttributes) {
-        attribute.program = programReturn;
-        await programCustomAttributeRepository.save(attribute);
-      }
-    }
-
     // Remove original program questions and add it to a separate variable
-    const programQuestions = program.programQuestions;
-    program.programQuestions = [];
-    for (const question of programQuestions) {
-      if (question.answerType === AnswerTypes.dropdown) {
-        const scoringKeys = Object.keys(question.scoring);
+    const programRegistrationAttributes = program.programRegistrationAttributes;
+    program.programRegistrationAttibutes = [];
+    for (const attribute of programRegistrationAttributes) {
+      attribute['isRequired'] = attribute['isRequired'] || true;
+      if (attribute.answerType === AnswerTypes.dropdown) {
+        const scoringKeys = Object.keys(attribute.scoring);
         if (scoringKeys.length > 0) {
-          const optionKeys = question.options.map(({ option }) => option);
+          const optionKeys = attribute.options.map(({ option }) => option);
           const areOptionScoringEqual =
             JSON.stringify(scoringKeys.sort()) ==
             JSON.stringify(optionKeys.sort());
           if (!areOptionScoringEqual) {
             throw new HttpException(
-              'Option and scoring is not equal of question  ' + question.name,
+              'Option and scoring is not equal of question  ' + attribute.name,
               404,
             );
           }
         }
-        // assert(optionsArray.includes(scoringkey));
       }
-      question.program = program;
-      await programQuestionRepository.save(question);
+      attribute.program = program;
+      await programRegistrationAttributeRepo.save(attribute);
     }
 
     // Remove original fsp and add it to a separate variable
