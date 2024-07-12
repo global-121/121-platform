@@ -41,7 +41,7 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
   @Column('json', { nullable: true })
   public options: QuestionOption[] | null;
 
-  @Column('json')
+  @Column('json', { default: {} })
   public scoring: Record<string, unknown>;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.programQuestions)

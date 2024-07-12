@@ -18,21 +18,15 @@
   "fixedTransferValue": 7000,
   "tryWhatsAppFirst": false,
   "paymentAmountMultiplierFormula": null,
-  "financialServiceProviders": [
-    {
-      "fsp": "Commercial-bank-ethiopia"
-    }
-  ],
   "targetNrRegistrations": 250,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "fullName",
       "label": {
         "en": "Name",
         "et_AM": "ስም"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -49,7 +43,7 @@
         "en": "Phone number",
         "et_AM": "ስልክ ቁጥር"
       },
-      "answerType": "tel",
+      "type": "tel",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -67,7 +61,7 @@
         "en": "ID Card number",
         "et_AM": "የመታውቂያ ቁጥር"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -85,7 +79,7 @@
         "en": "Age",
         "et_AM": "እድሜ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -103,7 +97,7 @@
         "en": "Gender",
         "et_AM": "ጾታ"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -136,7 +130,7 @@
         "en": "How many female?",
         "et_AM": "ሴት አባላት"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -154,7 +148,7 @@
         "en": "How many male?",
         "et_AM": "ወንድ አባላት"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -172,7 +166,7 @@
         "en": "Total family members",
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -190,7 +184,7 @@
         "en": "Female under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -208,7 +202,7 @@
         "en": "Male under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -226,7 +220,7 @@
         "en": "Female over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -244,7 +238,7 @@
         "en": "Male over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -262,7 +256,7 @@
         "en": "Female with disability under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -280,7 +274,7 @@
         "en": "Male with disability under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -298,7 +292,7 @@
         "en": "Female with disability over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -316,7 +310,7 @@
         "en": "Male with disability over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -327,6 +321,20 @@
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "bankAccountNumber",
+      "label": {
+        "en": "Bank Account Number"
+      },
+      "placeholder": {
+        "en": "Please type your bank account number"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "pattern": ".+",
+      "options": null,
+      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {
@@ -336,5 +344,10 @@
   "languages": ["en", "et_AM"],
   "enableMaxPayments": true,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfiguration": [
+    {
+      "financialServiceProvider": "Commercial-bank-ethiopia"
+    }
+  ]
 }
