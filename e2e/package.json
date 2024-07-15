@@ -7,7 +7,7 @@
     "lint": "eslint \"**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
     "test": "playwright test",
-    "test:portalicious": "playwright test -c playwright.portalicious.config.ts"
+    "test:portalicious": "playwright test --config=playwright.portalicious.config.ts"
   },
   "keywords": [],
   "author": "",
