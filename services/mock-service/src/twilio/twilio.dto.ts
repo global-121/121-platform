@@ -1,6 +1,6 @@
 import { formatWhatsAppNumber } from '@mock-service/src/utils/phone-number.helpers';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsUrl } from 'class-validator';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -26,8 +26,10 @@ export class TwilioMessagesCreateDto {
   @IsOptional()
   public readonly From?: string;
 
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({
+    description: 'The URL to POST to when the message is processed.',
+  })
+  @IsUrl()
   public readonly StatusCallback: string;
 
   @ApiProperty()
@@ -35,7 +37,7 @@ export class TwilioMessagesCreateDto {
   public readonly To: string;
 
   @ApiProperty()
-  @IsString()
+  @IsUrl()
   @IsOptional()
   public readonly MediaUrl?: string;
 
@@ -114,9 +116,7 @@ export class TwilioIncomingCallbackDto {
   public WaId?: string;
 
   @ApiProperty({
-    example: formatWhatsAppNumber(
-      process.env.TWILIO_WHATSAPP_NUMBER || '31600000000',
-    ),
+    example: formatWhatsAppNumber('31600000000'),
   })
   @IsString()
   @IsOptional()

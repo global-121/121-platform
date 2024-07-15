@@ -1,4 +1,4 @@
-import { API_PATHS, EXTERNAL_API } from '@mock-service/src/config';
+import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import {
   SafaricomTransferPayload,
   SafaricomTransferResponseBodyDto,
@@ -138,17 +138,10 @@ export class SafaricomMockService {
       Result: Status.Result,
     };
     const httpService = new HttpService();
-    const path = API_PATHS.safaricomCallback;
-    const urlExternal = `${process.env.EXTERNAL_121_SERVICE_URL}api/${path}`;
-    try {
-      // Try to reach 121-service through external API url
-      await lastValueFrom(httpService.post(urlExternal, response));
-    } catch (error) {
-      // In case external API is not reachable try internal network
-      const urlInternal = `${EXTERNAL_API.rootApi}/${path}`;
-      await lastValueFrom(httpService.post(urlInternal, response)).catch(
-        (error) => console.log(error),
-      );
-    }
+    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
+
+    await lastValueFrom(httpService.post(url, response)).catch((error) =>
+      console.log(error),
+    );
   }
 }

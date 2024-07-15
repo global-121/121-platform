@@ -1,14 +1,12 @@
-import packageJson = require('../package.json');
-
 export const DEVELOPMENT = process.env.NODE_ENV === 'development';
 export const PORT = DEVELOPMENT ? process.env.PORT_MOCK_SERVICE : 8080;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
 
-export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
+export const APP_VERSION = process.env.GLOBAL_121_VERSION ?? '';
 
-let appTitle = packageJson.name;
+let appTitle = 'Mock-Service';
 if (process.env.ENV_NAME) {
   appTitle += ` [${process.env.ENV_NAME}]`;
 }
@@ -36,10 +34,9 @@ export const API_PATHS = {
   whatsAppIncoming: 'notifications/whatsapp/incoming',
   safaricomCallback: 'payments/safaricom/transaction',
 };
-const rootApi121Service = DEVELOPMENT
-  ? `http://121-service:${process.env.PORT_121_SERVICE}/`
-  : process.env.EXTERNAL_121_SERVICE_URL;
 
-export const EXTERNAL_API = {
-  rootApi: `${rootApi121Service}api`,
-};
+export const EXTERNAL_API_ROOT = `${
+  DEVELOPMENT
+    ? `http://121-service:${process.env.PORT_121_SERVICE}/`
+    : process.env.EXTERNAL_121_SERVICE_URL
+}api`;

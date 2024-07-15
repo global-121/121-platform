@@ -1,4 +1,8 @@
-import { API_PATHS, EXTERNAL_API } from '@mock-service/src/config';
+import {
+  API_PATHS,
+  DEVELOPMENT,
+  EXTERNAL_API_ROOT,
+} from '@mock-service/src/config';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
@@ -19,6 +23,9 @@ enum MockPhoneNumbers {
   FailFaultyTemplateError = '16005550003',
   FailNoWhatsAppNumber = '16005550004',
 }
+
+// See: services/121-service/src/notifications/enum/message-type.enum.ts
+const TemplatedMessages = ['generic-templated', 'payment-templated'];
 
 @Injectable()
 export class TwilioService {
@@ -50,7 +57,7 @@ export class TwilioService {
       dateUpdated: new Date(),
       price: null,
       error_message: null,
-      uri: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}.json`,
+      uri: `/2010-04-01/Accounts/${accountSid}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}.json`,
       account_sid: accountSid,
       numMedia: twilioMessagesCreateDto.MediaUrl ? '1' : '0',
       status: 'accepted',
@@ -62,7 +69,7 @@ export class TwilioService {
       price_unit: null,
       api_version: '2010-04-01',
       subresourceUris: {
-        media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
+        media: `/2010-04-01/Accounts/${accountSid}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
       },
     };
 
@@ -142,7 +149,7 @@ export class TwilioService {
 
     // 3. and if applicable, send incoming whatsapp reply
     let isYesMessage = false;
-    for (const messageType of ['payment-templated', 'generic-templated']) {
+    for (const messageType of TemplatedMessages) {
       if (twilioMessagesCreateDto.StatusCallback.includes(messageType)) {
         isYesMessage = true;
       }
@@ -194,22 +201,19 @@ export class TwilioService {
     request.ErrorCode = response.error_code;
     request.ErrorMessage = response.error_message;
 
-    const httpService = new HttpService();
-    const urlExternal = twilioMessagesCreateDto.StatusCallback;
+    let url = twilioMessagesCreateDto.StatusCallback;
 
-    try {
-      // Try to reach 121-service through external API url
-      await lastValueFrom(httpService.post(urlExternal, request));
-    } catch (error) {
-      // In case external API is not reachable try internal network
+    if (DEVELOPMENT) {
       const path = twilioMessagesCreateDto.To.includes('whatsapp')
         ? API_PATHS.whatsAppStatus
         : API_PATHS.smsStatus;
-      const urlInternal = `${EXTERNAL_API.rootApi}/${path}`;
-      await lastValueFrom(httpService.post(urlInternal, request)).catch(
-        (error) => console.log(error),
-      );
+      url = `${EXTERNAL_API_ROOT}/${path}`;
     }
+
+    const httpService = new HttpService();
+    await lastValueFrom(httpService.post(url, request)).catch((error) =>
+      console.error(error),
+    );
   }
 
   private async sendIncomingWhatsapp(
@@ -224,23 +228,19 @@ export class TwilioService {
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
       request.From = twilioMessagesCreateDto.To;
+      request.To = formatWhatsAppNumber(twilioMessagesCreateDto.From);
 
-      const url = twilioMessagesCreateDto.StatusCallback.replace(
-        'status',
-        'incoming',
-      );
-      request.To = formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER);
+      const url = DEVELOPMENT
+        ? `${EXTERNAL_API_ROOT}/${API_PATHS.whatsAppIncoming}`
+        : twilioMessagesCreateDto.StatusCallback.replace(
+            API_PATHS.whatsAppStatus,
+            API_PATHS.whatsAppIncoming,
+          );
+
       const httpService = new HttpService();
-      try {
-        // Try to reach 121-service through external API url
-        await lastValueFrom(httpService.post(url, request));
-      } catch (error) {
-        // In case external API is not reachable try internal network
-        const urlInternal = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`;
-        await lastValueFrom(httpService.post(urlInternal, request)).catch(
-          (error) => console.log(error),
-        );
-      }
+      await lastValueFrom(httpService.post(url, request)).catch((error) =>
+        console.error(error),
+      );
     }
   }
 

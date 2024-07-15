@@ -12,11 +12,11 @@
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
-    "test": "echo 'No tests available' && exit 0",
-    "build": "nest build -p tsconfig.json",
+    "test": "npm run lint && npm run typecheck && echo 'No tests available' && exit 0",
+    "build": "nest build --path=tsconfig.json",
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
     "prestart:dev": "npm install --no-fund --no-audit",
-    "start:dev": "nest start -r tsconfig-paths/register --builder swc --watch --path tsconfig.json",
+    "start:dev": "nest start --require=tsconfig-paths/register --builder=swc --watch --path=tsconfig.json",
     "typecheck": "tsc --noEmit",
     "typecheck:dev": "tsc --noEmit --watch"
   },

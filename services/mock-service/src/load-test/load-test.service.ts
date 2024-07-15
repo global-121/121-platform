@@ -1,11 +1,11 @@
-import { EXTERNAL_API } from '@mock-service/src/config';
+import { EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class LoadTestService {
-  private baseUrl = `${EXTERNAL_API.rootApi}`;
+  private baseUrl = EXTERNAL_API_ROOT;
 
   private httpService = new HttpService();
   public async loadTest(): Promise<void> {

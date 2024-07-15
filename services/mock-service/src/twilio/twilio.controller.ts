@@ -1,3 +1,4 @@
+import { TwilioMessagesCreateDto } from '@mock-service/src/twilio/twilio.dto';
 import { TwilioService } from '@mock-service/src/twilio/twilio.service';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -20,7 +21,7 @@ export class TwilioController {
     phone_number: string;
     national_format: string;
   }> {
-    console.info('GET api/v1/PhoneNumbers/:phoneNumber', phoneNumber);
+    console.info(`GET api/v1/PhoneNumbers/${phoneNumber}`);
 
     return await this.twilioService.fetchPhoneNumber(phoneNumber);
   }
@@ -30,13 +31,14 @@ export class TwilioController {
     name: 'accountSid',
     required: true,
     type: 'string',
+    description: 'Starts with "AC".',
   })
   @Post('2010-04-01/Accounts/:accountSid/Messages.json')
   public createMessage(
-    @Body() twilioMessagesCreateDto: any,
+    @Body() twilioMessagesCreateDto: TwilioMessagesCreateDto | any,
     @Param('accountSid') accountSid: string,
   ): object {
-    console.info('POST api/2010-04-01/Accounts/:accountSid/Messages.json', {
+    console.info(`POST api/2010-04-01/Accounts/${accountSid}/Messages.json`, {
       ...twilioMessagesCreateDto,
       Body: twilioMessagesCreateDto.Body?.substring(0, 42).concat('…'),
     });
