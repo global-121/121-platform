@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  input,
   model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
+import { AppRoutes } from '~/app.routes';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -30,17 +32,14 @@ import { ToastService } from '~/services/toast.service';
 })
 export class HeaderComponent {
   private toastService = inject(ToastService);
+  programTitle = input<string>();
 
   sidebarVisible = false;
   userMenuOptions = [
     {
       label: 'Settings',
       icon: 'pi pi-cog',
-      command: () => {
-        this.toastService.showToast({
-          detail: 'You clicked on Settings!',
-        });
-      },
+      routerLink: `/${AppRoutes.userSettings}`,
     },
     {
       label: 'Logout',
@@ -55,16 +54,20 @@ export class HeaderComponent {
 
   sidebarLinks = [
     {
-      label: 'Home',
-      routerLink: '/',
+      label: 'All projects',
+      routerLink: `/${AppRoutes.allProjects}`,
     },
     {
-      label: 'About',
-      routerLink: '/',
+      label: 'Users',
+      routerLink: `/${AppRoutes.users}`,
     },
     {
-      label: 'Contact',
-      routerLink: '/',
+      label: 'Roles and permissions',
+      routerLink: `/${AppRoutes.rolesAndPermissions}`,
+    },
+    {
+      label: 'Create program',
+      routerLink: `/${AppRoutes.createProgram}`,
     },
   ];
 

@@ -1,0 +1,12 @@
+<div class="flex min-h-screen flex-col">
+  <app-header [programTitle]="programTitle()" />
+  <div class="flex-1">
+    @if (programId()) {
+      <app-program-header [programId]="programId()!" />
+    }
+    <div class="container py-4">
+      <ng-content></ng-content>
+    </div>
+  </div>
+  <app-footer />
+</div>

@@ -1,14 +1,2 @@
-<div class="flex min-h-screen flex-col">
-  <app-header />
-  <div class="flex-1">
-    <div class="container">
-      <h1 class="pt-6 text-3xl font-bold text-navy underline">
-        Welcome to Portalicious, baby!
-      </h1>
-      <app-health-widget />
-    </div>
-    <router-outlet />
-  </div>
-  <app-footer />
-</div>
+<router-outlet />
 <p-toast [key]="toastKey"></p-toast>

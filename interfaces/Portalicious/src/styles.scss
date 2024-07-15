@@ -10,20 +10,18 @@
 @import 'tailwindcss/components.css' layer(tailwind-utilities);
 @import 'tailwindcss/utilities.css' layer(tailwind-utilities);
 
+html {
+  font-size: 14px;
+}
+
 body {
-  @apply bg-grey-100;
+  @apply bg-grey-100 font-body;
   overflow-y: scroll; /* Always show scrollbars to avoid page skipping about */
 }
 
 // For now we're just overriding some defaults here
 // instead of extending the whole theme, while we wait
 // for PrimeNG v18 to be released with the new theming system.
-
-@layer tailwind-base {
-  html {
-    @apply font-body;
-  }
-}
 
 @layer primeng {
   .p-button,
@@ -33,8 +31,7 @@ body {
   h4,
   h5,
   h6 {
-    @apply font-display;
-    @apply font-bold;
+    @apply font-display font-bold;
   }
 
   h1 {
@@ -53,10 +50,12 @@ body {
   }
 
   .p-card-title {
-    @apply font-display;
-    @apply font-bold;
-    @apply text-black;
+    @apply font-display font-bold text-black;
     font-size: 18px;
     line-height: 140%;
+  }
+
+  .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+    border-color: transparent;
   }
 }
