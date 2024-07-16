@@ -353,7 +353,7 @@ This is how we create and publish a new release of the 121-platform.
 This follows a similar process to regular release + deployment, with some small changes.
 
 - Checkout the `<version>` tag which contains the code that you want to hotfix.
-- Create a new local hotfix branch using that tag as the `HEAD` (e.g. `hotfix/<v24.6.x>`) and make the changes.
+- Create a new local hotfix-branch using that tag as the `HEAD` (e.g. `hotfix/<vX.X-X>`, with an increased final `MICRO`-number) and make the changes.
 - Push this branch to the upstream/origin repository on GitHub.
 - Create a new release + tag (see above) selecting the `hotfix/v*`-branch as target, and publish it.
 - Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
