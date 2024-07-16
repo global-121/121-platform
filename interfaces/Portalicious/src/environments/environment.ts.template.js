@@ -14,7 +14,7 @@ export const environment = {
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API || ''}',
 
-  // Third-party tokens:
+  // Monitoring/Telemetry:
   applicationinsights_connection_string: '${process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || ''}',
 
   // Azure AD
