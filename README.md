@@ -328,6 +328,8 @@ See the [Guide: Writing tests](./guide-Writing-Tests.md)
 
 See notable changes and the currently release version on the [Releases page](https://github.com/global-121/121-platform/releases).
 
+This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICRO`.
+
 ### Release Checklist
 
 This is how we create and publish a new release of the 121-platform.
