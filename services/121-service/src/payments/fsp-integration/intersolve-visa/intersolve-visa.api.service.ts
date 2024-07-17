@@ -158,7 +158,9 @@ export class IntersolveVisaApiService {
   }): Promise<IssueTokenReturnType> {
     // Create the request body to send
     const issueTokenRequestDto: IssueTokenRequestDto = {
-      reference: issueTokenParams.reference ? issueTokenParams.reference : uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
+      reference: issueTokenParams.reference
+        ? issueTokenParams.reference
+        : uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
       activate: issueTokenParams.activate,
       // TODO: Can we just leave out quantities altogether from the request like this? Or does it need to be an empty array like it shows in the Integration Manual?
     };
