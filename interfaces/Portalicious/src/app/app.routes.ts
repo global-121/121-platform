@@ -12,16 +12,16 @@ import { UsersComponent } from '~/pages/users/users.component';
 
 export enum AppRoutes {
   allProjects = 'all-projects',
-  users = 'users',
-  userSettings = 'user-settings',
-  rolesAndPermissions = 'roles-and-permissions',
   createProgram = 'create-program',
   program = 'program',
-  programOverview = 'overview',
-  programTeam = 'team',
-  programRegistrations = 'registrations',
-  programPayments = 'payments',
   programMonitoring = 'monitoring',
+  programOverview = 'overview',
+  programPayments = 'payments',
+  programRegistrations = 'registrations',
+  programTeam = 'team',
+  rolesAndPermissions = 'roles-and-permissions',
+  users = 'users',
+  userSettings = 'user-settings',
 }
 
 export const routes: Routes = [

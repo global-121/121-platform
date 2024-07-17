@@ -6,6 +6,7 @@ const angular = require('angular-eslint');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
 const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
+const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
 
 module.exports = tseslint.config(
   {
@@ -18,7 +19,10 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.ts'],
-    plugins: { 'no-relative-import-paths': eslintPluginNoRelativePaths },
+    plugins: {
+      'no-relative-import-paths': eslintPluginNoRelativePaths,
+      perfectionist: eslintPluginPerfectionist,
+    },
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.strictTypeChecked,
@@ -66,6 +70,10 @@ module.exports = tseslint.config(
       '@angular-eslint/sort-lifecycle-methods': ['error'],
       '@angular-eslint/use-component-selector': ['error'],
       '@angular-eslint/use-lifecycle-interface': ['error'],
+      'perfectionist/sort-array-includes': ['error'],
+      'perfectionist/sort-enums': ['error'],
+      'perfectionist/sort-intersection-types': ['error'],
+      'perfectionist/sort-union-types': ['error'],
     },
   },
   {
