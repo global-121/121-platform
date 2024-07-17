@@ -338,7 +338,7 @@ export class MessageService {
           placeHolderValue === null || placeHolderValue === undefined
             ? ''
             : typeof placeHolderValue === 'object'
-              ? placeHolderValue[language] ?? ''
+              ? (placeHolderValue[language] ?? '')
               : placeHolderValue,
         );
       }
