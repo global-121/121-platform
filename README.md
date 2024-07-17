@@ -214,7 +214,7 @@ All the tokens and access keys for third party APIs should be added on the .env 
 To help with some types if files/tasks we've listed them here:
 
 - [Workspace recommendations for VS Code](.vscode/extensions.json)
-  When you open the root-folder of this repository in VSCode and go to: "_Extensions_" and use the filter: "_Recommended_";
+  When you open the root-folder of this repository in VSCode and go to: "_Extensions_" and use the filter: "_Recommended_"(`@recommended`);
   A list should be shown and each extension can be installed individually.
 
   Generic highlights:
