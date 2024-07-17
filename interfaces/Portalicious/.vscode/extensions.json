@@ -1,4 +1,15 @@
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
-  "recommendations": ["angular.ng-template", "bradlc.vscode-tailwindcss"]
+  "recommendations": [
+    "angular.ng-template",
+    "bradlc.vscode-tailwindcss",
+    "dotiful.dotfiles-syntax-highlighting",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-azureappservice",
+    "ms-azuretools.vscode-azureresourcegroups",
+    "ms-azuretools.vscode-azurestaticwebapps",
+    "ms-vscode.azure-account",
+    "tombonnike.vscode-status-bar-format-toggle"
+  ]
 }

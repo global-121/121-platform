@@ -42,6 +42,7 @@
     }
   },
   "globalHeaders": {
+    "Permissions-Policy": "interest-cohort=()",
     "Referrer-Policy": "same-origin",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
   }

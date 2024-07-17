@@ -15,16 +15,16 @@ type IsOptional<T> = Extract<T, undefined> extends never ? false : true;
 export type Func = (...args: any[]) => any;
 type IsFunction<T> = T extends Func ? true : false;
 type IsValueType<T> = T extends
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | Func
-  | Set<any>
-  | Map<any, any>
-  | Date
   | any[]
+  | boolean
+  | Date
+  | Func
+  | Map<any, any>
+  | null
+  | number
+  | Set<any>
+  | string
+  | undefined
   ? true
   : false;
 
@@ -33,7 +33,7 @@ type ReplaceSet<T> = T extends Set<infer X> ? X[] : T;
 type ReplaceMap<T> =
   T extends Map<infer K, infer I>
     ? Record<
-        K extends string | number | symbol ? K : string,
+        K extends number | string | symbol ? K : string,
         IsValueType<I> extends true
           ? I
           : { [K in keyof ExcludeFuncsFromObj<I>]: Dto<I[K]> }
@@ -58,7 +58,7 @@ export type Dto<T> =
       ? Dtoified<Exclude<T, undefined>> | null
       : Dtoified<T>;
 
-export type Serializable<T> = T & { serialize(): Dto<T> };
+export type Serializable<T> = { serialize(): Dto<T> } & T;
 
 /**
  * CUSTOM DTO UTILITY TYPES

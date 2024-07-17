@@ -13,7 +13,7 @@ import { User } from '~/models/user.model';
 import { environment } from '~environment';
 
 interface PerformRequestParams {
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
   url: string;
   body?: unknown;
   responseAsBlob?: boolean;
@@ -89,7 +89,7 @@ export class HttpWrapperService {
     console.log(`HttpWrapperService ${method}: ${url}`, body ?? '');
 
     try {
-      const response = await lastValueFrom<T | HttpErrorResponse | Error>(
+      const response = await lastValueFrom<Error | HttpErrorResponse | T>(
         this.http
           .request(method, url, {
             headers: this.createHeaders(isUpload),
@@ -126,7 +126,7 @@ export class HttpWrapperService {
   }
 
   public async perform121ServiceRequest<T>(
-    options: Omit<PerformRequestParams, 'url'> & { endpoint: string },
+    options: { endpoint: string } & Omit<PerformRequestParams, 'url'>,
   ): Promise<T> {
     return this.performRequest<T>({
       ...options,
