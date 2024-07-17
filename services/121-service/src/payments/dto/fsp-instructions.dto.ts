@@ -1,10 +1,6 @@
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
-import { UkrPoshtaFspInstructions } from '@121-service/src/payments/fsp-integration/ukrposhta/dto/ukrposhta-fsp-instructions.dto';
 
-export type CsvInstructions = (
-  | UkrPoshtaFspInstructions
-  | ExcelFspInstructions
-)[];
+export type CsvInstructions = ExcelFspInstructions[];
 
 export class FspInstructions {
   public data?: CsvInstructions | string;

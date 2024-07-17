@@ -11,7 +11,6 @@ import fspIntersolveVoucher from '@121-service/src/seed-data/fsp/fsp-intersolve-
 import fspMixedAttributes from '@121-service/src/seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '@121-service/src/seed-data/fsp/fsp-no-attributes.json';
 import fspSafaricom from '@121-service/src/seed-data/fsp/fsp-safaricom.json';
-import fspUkrPoshta from '@121-service/src/seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '@121-service/src/seed-data/fsp/fsp-vodacash.json';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -336,7 +335,6 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMixedAttributes);
     await this.seedHelper.addFsp(fspNoAttributes);
-    await this.seedHelper.addFsp(fspUkrPoshta);
     await this.seedHelper.addFsp(fspSafaricom);
     await this.seedHelper.addFsp(fspCommercialBankEthiopia);
     await this.seedHelper.addFsp(fspExcel);

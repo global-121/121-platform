@@ -17,7 +17,6 @@ import { IntersolveJumboService } from '@121-service/src/payments/fsp-integratio
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { UkrPoshtaService } from '@121-service/src/payments/fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -82,7 +81,6 @@ export class PaymentsService {
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly intersolveJumboService: IntersolveJumboService,
-    private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
@@ -108,7 +106,6 @@ export class PaymentsService {
         this.intersolveJumboService,
       ],
       [FinancialServiceProviderName.vodacash]: [this.vodacashService],
-      [FinancialServiceProviderName.ukrPoshta]: [this.ukrPoshtaService],
       [FinancialServiceProviderName.safaricom]: [this.safaricomService],
       [FinancialServiceProviderName.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
@@ -724,18 +721,6 @@ export class PaymentsService {
         continue;
       }
 
-      if (registration.fsp.fsp === FinancialServiceProviderName.ukrPoshta) {
-        const instruction = await this.ukrPoshtaService.getFspInstructions(
-          registration,
-          transaction,
-        );
-        if (!fileType) {
-          fileType = ExportFileType.excel;
-        }
-        if (instruction) {
-          csvInstructions.push(instruction);
-        }
-      }
       if (registration.fsp.fsp === FinancialServiceProviderName.vodacash) {
         xmlInstructions = await this.vodacashService.getFspInstructions(
           registration,

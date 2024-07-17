@@ -56,9 +56,6 @@ graph LR
   IntersolveJumboModule-->TransactionsModule
   IntersolveJumboModule-->RegistrationDataModule
   PaymentsModule-->TransactionsModule
-  PaymentsModule-->UkrPoshtaModule
-  UkrPoshtaModule-->TransactionsModule
-  UkrPoshtaModule-->RegistrationDataModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
   VodacashModule-->RegistrationDataModule
