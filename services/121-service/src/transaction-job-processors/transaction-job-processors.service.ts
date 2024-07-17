@@ -9,7 +9,7 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
-import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card-return.dto';
+import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -101,7 +101,7 @@ export class TransactionJobProcessorsService {
         },
       );
 
-    let intersolveVisaDoTransferOrIssueCardReturnDto: IntersolveVisaDoTransferOrIssueCardReturnDto;
+    let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
     try {
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({

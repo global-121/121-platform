@@ -1,7 +1,7 @@
 import {
   ExportCardsDto,
   ExportWalletData,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/export-cards.dto';
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/export-cards.dto';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { Injectable } from '@nestjs/common';

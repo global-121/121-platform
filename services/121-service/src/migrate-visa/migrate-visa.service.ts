@@ -2,17 +2,15 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import {
-  BlockWalletReasonCodeEnum,
-  BlockWalletResponseDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/block-wallet-response.dto';
-import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/intersolve-api/issue-token-request.dto';
-import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
+import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request.dto';
+import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response.dto';
+import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
+import { BlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/block-token-return-type.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
@@ -184,7 +182,7 @@ export class MigrateVisaService {
       await this.postToggleBlockWallet(
         originalWallet.tokenCode,
         {
-          reasonCode: BlockWalletReasonCodeEnum.UNBLOCK_GENERAL,
+          reasonCode: BlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
         },
         false,
       );
@@ -206,7 +204,7 @@ export class MigrateVisaService {
         await this.postToggleBlockWallet(
           originalWallet.tokenCode,
           {
-            reasonCode: BlockWalletReasonCodeEnum.UNBLOCK_GENERAL,
+            reasonCode: BlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
           },
           true,
         );
@@ -371,10 +369,19 @@ export class MigrateVisaService {
   public async postToggleBlockWallet(
     tokenCode: string | null,
     payload: {
-      reasonCode: BlockWalletReasonCodeEnum;
+      reasonCode: BlockTokenReasonCodeEnum;
     },
     block: boolean,
-  ): Promise<BlockWalletResponseDto> {
+  ): Promise<{
+    data: {
+      success?: boolean;
+      errors?: ErrorsInResponse[];
+      code?: string;
+      correlationId?: string;
+    };
+    status: number;
+    statusText?: string;
+  }> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
@@ -387,7 +394,7 @@ export class MigrateVisaService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     const blockResult = await this.httpService.post<any>(url, payload, headers);
-    const result: BlockWalletResponseDto = {
+    const result = {
       status: blockResult.status,
       statusText: blockResult.statusText,
       data: blockResult.data,
@@ -398,7 +405,16 @@ export class MigrateVisaService {
   public async postLinkToken(
     childTokenCode: string | null,
     parentTokenCode: string | null,
-  ): Promise<BlockWalletResponseDto> {
+  ): Promise<{
+    data: {
+      success?: boolean;
+      errors?: ErrorsInResponse[];
+      code?: string;
+      correlationId?: string;
+    };
+    status: number;
+    statusText?: string;
+  }> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'wallet-payments'
