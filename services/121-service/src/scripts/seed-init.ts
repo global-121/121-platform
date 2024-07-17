@@ -1,7 +1,6 @@
 import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import fspAfricasTalking from '@121-service/src/seed-data/fsp/fsp-africas-talking.json';
 import fspBank from '@121-service/src/seed-data/fsp/fsp-bank.json';
 import fspBelcash from '@121-service/src/seed-data/fsp/fsp-belcash.json';
 import fspBob from '@121-service/src/seed-data/fsp/fsp-bob.json';
@@ -335,7 +334,6 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
     await this.seedHelper.addFsp(fspIntersolveVisa);
     await this.seedHelper.addFsp(fspIntersolveJumboPhysical);
-    await this.seedHelper.addFsp(fspAfricasTalking);
     await this.seedHelper.addFsp(fspVodaCash);
     await this.seedHelper.addFsp(fspBob);
     await this.seedHelper.addFsp(fspBelcash);

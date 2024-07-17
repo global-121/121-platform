@@ -10,7 +10,6 @@ import {
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
-import { AfricasTalkingService } from '@121-service/src/payments/fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from '@121-service/src/payments/fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from '@121-service/src/payments/fsp-integration/bob-finance/bob-finance.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
@@ -85,7 +84,6 @@ export class PaymentsService {
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly intersolveJumboService: IntersolveJumboService,
-    private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
@@ -112,9 +110,6 @@ export class PaymentsService {
       ],
       [FinancialServiceProviderName.intersolveJumboPhysical]: [
         this.intersolveJumboService,
-      ],
-      [FinancialServiceProviderName.africasTalking]: [
-        this.africasTalkingService,
       ],
       [FinancialServiceProviderName.belcash]: [this.belcashService],
       [FinancialServiceProviderName.vodacash]: [this.vodacashService],
