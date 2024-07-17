@@ -22,7 +22,7 @@ services:
     volumes:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
-    command: 'npm run start:dev'
+    command: 'npm run start:dev:windows'
   mock-service:
     build:
       target: development

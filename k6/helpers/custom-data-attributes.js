@@ -30,7 +30,6 @@ export const FinancialServiceProviderName = {
   intersolveVoucherPaper: 'Intersolve-voucher-paper',
   intersolveVisa: 'Intersolve-visa',
   intersolveJumboPhysical: 'Intersolve-jumbo-physical',
-  belcash: 'BelCash',
   vodacash: 'VodaCash',
   bobFinance: 'BoB-finance',
   ukrPoshta: 'UkrPoshta',

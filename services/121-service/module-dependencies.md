@@ -55,8 +55,6 @@ graph LR
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
   IntersolveJumboModule-->RegistrationDataModule
-  PaymentsModule-->BelcashModule
-  BelcashModule-->TransactionsModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->BobFinanceModule
   BobFinanceModule-->TransactionsModule
