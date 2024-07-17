@@ -1,7 +1,7 @@
-import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-action.enum';
-import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-card-status.enum';
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import csvParser from 'csv-parser';
 import fs from 'fs';
 import * as path from 'path';
@@ -25,7 +25,7 @@ interface VisaCard121StatusInformationAndActions {
 
 export class IntersolveVisaStatusMapper {
   private static mapping: VisaCard121StatusMapInterface[] = [];
-  private static isMappingLoaded: boolean = false;
+  private static isMappingLoaded = false;
 
   // TODO: This function has a bug since loading the CSV file is asynchronous, so the first time after compiling the status is Unknown, and afterwards it works. Change into a synchronous way with the help of Copilot, but not with csv-parse. Or try to load the mapping in another place? The IntersolveVisaService constructor? Test this, since the mapper is also used in the MetricsService.
   public static loadMapping(): void {
