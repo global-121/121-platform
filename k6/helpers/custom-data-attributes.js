@@ -31,7 +31,6 @@ export const FinancialServiceProviderName = {
   intersolveVisa: 'Intersolve-visa',
   intersolveJumboPhysical: 'Intersolve-jumbo-physical',
   vodacash: 'VodaCash',
-  bobFinance: 'BoB-finance',
   ukrPoshta: 'UkrPoshta',
   safaricom: 'Safaricom',
   commercialBankEthiopia: 'Commercial-bank-ethiopia',

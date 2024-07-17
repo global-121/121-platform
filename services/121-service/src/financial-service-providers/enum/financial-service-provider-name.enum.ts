@@ -4,7 +4,6 @@ export enum FinancialServiceProviderName {
   intersolveVisa = 'Intersolve-visa',
   intersolveJumboPhysical = 'Intersolve-jumbo-physical',
   vodacash = 'VodaCash',
-  bobFinance = 'BoB-finance',
   ukrPoshta = 'UkrPoshta',
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
@@ -43,9 +42,6 @@ export const FinancialServiceProviderConfigurationMapping: {
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
   [FinancialServiceProviderName.vodacash]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.bobFinance]: [
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
   [FinancialServiceProviderName.ukrPoshta]: [

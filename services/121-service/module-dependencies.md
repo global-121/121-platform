@@ -56,9 +56,6 @@ graph LR
   IntersolveJumboModule-->TransactionsModule
   IntersolveJumboModule-->RegistrationDataModule
   PaymentsModule-->TransactionsModule
-  PaymentsModule-->BobFinanceModule
-  BobFinanceModule-->TransactionsModule
-  BobFinanceModule-->RegistrationDataModule
   PaymentsModule-->UkrPoshtaModule
   UkrPoshtaModule-->TransactionsModule
   UkrPoshtaModule-->RegistrationDataModule

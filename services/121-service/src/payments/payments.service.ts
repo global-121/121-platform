@@ -10,7 +10,6 @@ import {
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
-import { BobFinanceService } from '@121-service/src/payments/fsp-integration/bob-finance/bob-finance.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -83,7 +82,6 @@ export class PaymentsService {
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly intersolveJumboService: IntersolveJumboService,
-    private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
@@ -110,7 +108,6 @@ export class PaymentsService {
         this.intersolveJumboService,
       ],
       [FinancialServiceProviderName.vodacash]: [this.vodacashService],
-      [FinancialServiceProviderName.bobFinance]: [this.bobFinanceService],
       [FinancialServiceProviderName.ukrPoshta]: [this.ukrPoshtaService],
       [FinancialServiceProviderName.safaricom]: [this.safaricomService],
       [FinancialServiceProviderName.commercialBankEthiopia]: [
@@ -727,16 +724,6 @@ export class PaymentsService {
         continue;
       }
 
-      if (registration.fsp.fsp === FinancialServiceProviderName.bobFinance) {
-        const instruction = await this.bobFinanceService.getFspInstructions(
-          registration,
-          transaction,
-        );
-        csvInstructions.push(instruction);
-        if (!fileType) {
-          fileType = ExportFileType.csv;
-        }
-      }
       if (registration.fsp.fsp === FinancialServiceProviderName.ukrPoshta) {
         const instruction = await this.ukrPoshtaService.getFspInstructions(
           registration,
