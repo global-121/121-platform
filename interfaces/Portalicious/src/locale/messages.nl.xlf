@@ -54,36 +54,9 @@
         <target>Find out more</target>
       </segment>
     </unit>
-    <unit id="3544332147623653396">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:32,33</note>
-      </notes>
-      <segment state="initial">
-        <source>121.global</source>
-        <target>121.global</target>
-      </segment>
-    </unit>
-    <unit id="8843705056113462710">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:40,41</note>
-      </notes>
-      <segment state="initial">
-        <source>510.global</source>
-        <target>510.global</target>
-      </segment>
-    </unit>
-    <unit id="3675626284353870791">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:48,49</note>
-      </notes>
-      <segment state="initial">
-        <source>data.ifrc.org</source>
-        <target>data.ifrc.org</target>
-      </segment>
-    </unit>
     <unit id="4242007306199259869">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:58,59</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:61,62</note>
       </notes>
       <segment state="initial">
         <source>Helpful links</source>
@@ -92,7 +65,7 @@
     </unit>
     <unit id="3008354540074404323">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:66,67</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:69,70</note>
       </notes>
       <segment state="initial">
         <source>Open Source Code</source>
@@ -101,7 +74,7 @@
     </unit>
     <unit id="2256818646333052039">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:82,83</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:85,86</note>
       </notes>
       <segment state="initial">
         <source>User Manual</source>
@@ -110,25 +83,16 @@
     </unit>
     <unit id="4371726377430146531">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:92,93</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:95,96</note>
       </notes>
       <segment state="initial">
         <source>Questions or feedback? Contact us</source>
         <target>Questions or feedback? Contact us</target>
       </segment>
     </unit>
-    <unit id="3296382644307045951">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:98,99</note>
-      </notes>
-      <segment state="initial">
-        <source>support@510.global</source>
-        <target>support@510.global</target>
-      </segment>
-    </unit>
     <unit id="6231535972680055827">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:15,16</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:16,17</note>
       </notes>
       <segment state="initial">
         <source>121 Portal</source>
@@ -137,25 +101,16 @@
     </unit>
     <unit id="9219884121371524201">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:39</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:40</note>
       </notes>
       <segment state="initial">
         <source>Logged in as:</source>
         <target>Logged in as:</target>
       </segment>
     </unit>
-    <unit id="4277172397754031856">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:43,44</note>
-      </notes>
-      <segment state="initial">
-        <source>admin@example.org</source>
-        <target>admin@example.org</target>
-      </segment>
-    </unit>
     <unit id="2233560223291461480">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:68</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:71</note>
       </notes>
       <segment state="initial">
         <source>Manual</source>
@@ -164,7 +119,7 @@
     </unit>
     <unit id="1023894478419315290">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:83,84</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:87,88</note>
       </notes>
       <segment state="initial">
         <source>Language: <ph id="0" equiv="INTERPOLATION" disp="{{ selectedLanguageLabel() }}"/></source>
@@ -324,27 +279,9 @@
         <target>users works!</target>
       </segment>
     </unit>
-    <unit id="5866254605255506989">
-      <notes>
-        <note category="location">src/app/utils/locale.ts:14</note>
-      </notes>
-      <segment state="initial">
-        <source>English</source>
-        <target>Engels</target>
-      </segment>
-    </unit>
-    <unit id="3071065188816255493">
-      <notes>
-        <note category="location">src/app/utils/locale.ts:16</note>
-      </notes>
-      <segment state="initial">
-        <source>Dutch</source>
-        <target>Nederlands</target>
-      </segment>
-    </unit>
     <unit id="7807685431509530550">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:74,75</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:77,78</note>
       </notes>
       <segment state="initial">
         <source>API Documentation</source>

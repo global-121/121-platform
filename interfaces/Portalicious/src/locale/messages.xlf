@@ -3,7 +3,7 @@
   <file id="ngi18n" original="ng.template">
     <unit id="1023894478419315290">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:83,84</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:87,88</note>
       </notes>
       <segment>
         <source>Language: <ph id="0" equiv="INTERPOLATION" disp="{{ selectedLanguageLabel() }}"/></source>
@@ -59,7 +59,7 @@
     </unit>
     <unit id="2233560223291461480">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:68</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:71</note>
       </notes>
       <segment>
         <source>Manual</source>
@@ -67,7 +67,7 @@
     </unit>
     <unit id="2256818646333052039">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:82,83</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:85,86</note>
       </notes>
       <segment>
         <source>User Manual</source>
@@ -83,26 +83,10 @@
     </unit>
     <unit id="3008354540074404323">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:66,67</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:69,70</note>
       </notes>
       <segment>
         <source>Open Source Code</source>
-      </segment>
-    </unit>
-    <unit id="3071065188816255493">
-      <notes>
-        <note category="location">src/app/utils/locale.ts:16</note>
-      </notes>
-      <segment>
-        <source>Dutch</source>
-      </segment>
-    </unit>
-    <unit id="3296382644307045951">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:98,99</note>
-      </notes>
-      <segment>
-        <source>support@510.global</source>
       </segment>
     </unit>
     <unit id="3338661424985495365">
@@ -121,28 +105,12 @@
         <source>Welcome to Portalicious, baby!</source>
       </segment>
     </unit>
-    <unit id="3544332147623653396">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:32,33</note>
-      </notes>
-      <segment>
-        <source>121.global</source>
-      </segment>
-    </unit>
     <unit id="3602312649258409543">
       <notes>
         <note category="location">src/app/components/health-widget/health-widget.component.html:11</note>
       </notes>
       <segment>
         <source>Connected to backend!</source>
-      </segment>
-    </unit>
-    <unit id="3675626284353870791">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:48,49</note>
-      </notes>
-      <segment>
-        <source>data.ifrc.org</source>
       </segment>
     </unit>
     <unit id="3724068243287682962">
@@ -155,23 +123,15 @@
     </unit>
     <unit id="4242007306199259869">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:58,59</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:61,62</note>
       </notes>
       <segment>
         <source>Helpful links</source>
       </segment>
     </unit>
-    <unit id="4277172397754031856">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:43,44</note>
-      </notes>
-      <segment>
-        <source>admin@example.org</source>
-      </segment>
-    </unit>
     <unit id="4371726377430146531">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:92,93</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:95,96</note>
       </notes>
       <segment>
         <source>Questions or feedback? Contact us</source>
@@ -201,14 +161,6 @@
         <source>program-team works!</source>
       </segment>
     </unit>
-    <unit id="5866254605255506989">
-      <notes>
-        <note category="location">src/app/utils/locale.ts:14</note>
-      </notes>
-      <segment>
-        <source>English</source>
-      </segment>
-    </unit>
     <unit id="5901643806193916083">
       <notes>
         <note category="location">src/app/components/page-layout/components/footer/footer.component.html:10,11</note>
@@ -219,7 +171,7 @@
     </unit>
     <unit id="6231535972680055827">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:15,16</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:16,17</note>
       </notes>
       <segment>
         <source>121 Portal</source>
@@ -281,14 +233,6 @@
         <source>roles-and-permissions works!</source>
       </segment>
     </unit>
-    <unit id="8843705056113462710">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:40,41</note>
-      </notes>
-      <segment>
-        <source>510.global</source>
-      </segment>
-    </unit>
     <unit id="9053334343942762407">
       <notes>
         <note category="location">src/app/pages/all-projects/all-projects.component.html:21,23</note>
@@ -299,7 +243,7 @@
     </unit>
     <unit id="9219884121371524201">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:39</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:40</note>
       </notes>
       <segment>
         <source>Logged in as:</source>
@@ -307,7 +251,7 @@
     </unit>
     <unit id="7807685431509530550">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:74,75</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:77,78</note>
       </notes>
       <segment>
         <source>API Documentation</source>

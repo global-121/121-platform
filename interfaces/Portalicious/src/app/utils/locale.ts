@@ -10,9 +10,9 @@ export enum Locale {
 export function getLocaleLabel(locale: Locale): string {
   switch (locale) {
     case Locale.en:
-      return $localize`English`;
+      return 'English';
     case Locale.nl:
-      return $localize`Dutch`;
+      return 'Nederlands';
   }
 }
 

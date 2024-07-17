@@ -7,9 +7,9 @@ test('Change Language', async ({ page }) => {
   const homePage = new HomePage(page);
   await page.waitForURL((url) => url.pathname.startsWith('/en/'));
 
-  await homePage.changeLanguage('Dutch');
+  await homePage.changeLanguage('Nederlands');
   await page.waitForURL((url) => url.pathname.startsWith('/nl/'));
 
-  await homePage.changeLanguage('Engels');
+  await homePage.changeLanguage('English');
   await page.waitForURL((url) => url.pathname.startsWith('/en/'));
 });

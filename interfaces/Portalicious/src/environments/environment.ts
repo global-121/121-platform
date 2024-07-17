@@ -8,7 +8,7 @@ export const environment = {
   // Configuration/Feature-switches:
   defaultLocale: 'en',
   envName: '', // To highlight the environment used
-  locales: 'en,nl', // Comma-separated string of enabled locales (i.e: 'en,es,nl_BE'). Each should be available in: `./src/locale`
+  locales: 'en,nl', // Comma-separated string of enabled locales. Each should be available in: `./src/locale`
 
   // APIs
   url_121_service_api: 'http://localhost:3000/api',

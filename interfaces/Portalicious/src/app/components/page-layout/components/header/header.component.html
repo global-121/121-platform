@@ -38,11 +38,10 @@
         <ng-template pTemplate="start">
           <p class="mb-2 border-b border-b-grey-300 px-3 py-2">
             <ng-container i18n>Logged in as:</ng-container>
-            <span
-              i18n
-              class="underline"
-              >admin&#64;example.org</span
-            >
+            <span class="underline">
+              <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
+              admin&#64;example.org
+            </span>
           </p>
         </ng-template>
       </p-menu>
