@@ -13,6 +13,7 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AppRoutes } from '~/app.routes';
+import { LogEvent, LogService } from '~/services/log.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -31,6 +32,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  private logService = inject(LogService);
   private toastService = inject(ToastService);
   programTitle = input<string>();
 
@@ -45,6 +47,8 @@ export class HeaderComponent {
       label: 'Logout',
       icon: 'pi pi-sign-out',
       command: () => {
+        this.logService.logEvent(LogEvent.userLogout);
+
         this.toastService.showToast({
           detail: 'You clicked on Log Out!',
         });

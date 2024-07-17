@@ -1,0 +1,16 @@
+changelog:
+  exclude:
+    labels:
+      - dependencies # dependabot
+      - chore # manually excluded
+      - ignore-for-release # manually excluded
+  categories:
+    - title: New Features 🎉
+      labels:
+        - enhancement
+    - title: Bug Fixes 🛠
+      labels:
+        - bugfix
+    - title: Other Changes
+      labels:
+        - '*'
