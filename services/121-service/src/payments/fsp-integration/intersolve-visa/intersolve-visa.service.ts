@@ -1,18 +1,18 @@
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { ContactInformationDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/external/contact-information.dto';
-import { CreatePhysicalCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/create-physical-card.dto';
-import { GetPhysicalCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-physical-card-return.dto';
-import { GetTokenResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-token-result.dto';
-import { GetTransactionInformationResultDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/get-transaction-information-result.dto';
-import { IssueTokenDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/internal/issue-token.dto';
-import { IntersolveVisaDoTransferOrIssueCardReturnDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card-return.dto';
-import { IntersolveVisaDoTransferOrIssueCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-do-transfer-or-issue-card.dto';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
+import { CreatePhysicalCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-physical-card-params.interface';
+import { DoTransferOrIssueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-params.interface';
+import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
+import { GetPhysicalCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-return-type.interface';
+import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
+import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
+import { ReissueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/reissue-card-params.interface';
+import { SendUpdatedContactInformationParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaDtoMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-dto.mapper';
@@ -63,9 +63,14 @@ export class IntersolveVisaService
 
   // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
   public async doTransferOrIssueCard(
-    input: IntersolveVisaDoTransferOrIssueCardDto,
-  ): Promise<IntersolveVisaDoTransferOrIssueCardReturnDto> {
-    const returnData = new IntersolveVisaDoTransferOrIssueCardReturnDto();
+    input: DoTransferOrIssueCardParams,
+  ): Promise<DoTransferOrIssueCardReturnType> {
+    // TODO: Is this the desired way of initializing the return data?
+    const returnData: DoTransferOrIssueCardReturnType = {
+      cardCreated: false,
+      transferDone: false,
+      amountTransferred: 0,
+    };
 
     let intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
@@ -79,14 +84,16 @@ export class IntersolveVisaService
         await this.intersolveVisaApiService.createCustomer({
           externalReference: input.createCustomerReference,
           name: input.name,
-          addressStreet: input.contactInformation.addressStreet,
-          addressHouseNumber: input.contactInformation.addressHouseNumber,
-          // TODO: Check if this is the correct way to handle optional fields
-          addressHouseNumberAddition:
-            input.contactInformation.addressHouseNumberAddition!,
-          addressPostalCode: input.contactInformation.addressPostalCode,
-          addressCity: input.contactInformation.addressCity,
-          phoneNumber: input.contactInformation.phoneNumber,
+          contactInformation: {
+            addressStreet: input.contactInformation.addressStreet,
+            addressHouseNumber: input.contactInformation.addressHouseNumber,
+            // TODO: Check if this is the correct way to handle optional fields
+            addressHouseNumberAddition:
+              input.contactInformation.addressHouseNumberAddition!,
+            addressPostalCode: input.contactInformation.addressPostalCode,
+            addressCity: input.contactInformation.addressCity,
+            phoneNumber: input.contactInformation.phoneNumber,
+          },
           estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
         });
 
@@ -150,13 +157,11 @@ export class IntersolveVisaService
     ) {
       // TODO: Check if this is the correct way to check if a child wallet does not exist
       // If not, create child wallet
-      const issueTokenDto: IssueTokenDto = {
+
+      const issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
         activate: false, // Child Wallets are always created deactivated
-      };
-
-      const issueTokenResult =
-        await this.intersolveVisaApiService.issueToken(issueTokenDto);
+      });
 
       // Store child wallet
       const newIntersolveVisaChildWallet =
@@ -212,18 +217,20 @@ export class IntersolveVisaService
         .intersolveVisaChildWallets[0].isDebitCardCreated
     ) {
       // If not, create debit card
-      const createPhysicalCardDto: CreatePhysicalCardDto = {
+      const createPhysicalCardDto: CreatePhysicalCardParams = {
         tokenCode:
           intersolveVisaCustomer.intersolveVisaParentWallet
             .intersolveVisaChildWallets[0].tokenCode,
         name: input.name,
-        addressStreet: input.contactInformation.addressStreet,
-        addressHouseNumber: input.contactInformation.addressHouseNumber,
-        addressHouseNumberAddition:
-          input.contactInformation.addressHouseNumberAddition,
-        addressPostalCode: input.contactInformation.addressPostalCode,
-        addressCity: input.contactInformation.addressCity,
-        phoneNumber: input.contactInformation.phoneNumber,
+        contactInformation: {
+          addressStreet: input.contactInformation.addressStreet,
+          addressHouseNumber: input.contactInformation.addressHouseNumber,
+          addressHouseNumberAddition:
+            input.contactInformation.addressHouseNumberAddition,
+          addressPostalCode: input.contactInformation.addressPostalCode,
+          addressCity: input.contactInformation.addressCity,
+          phoneNumber: input.contactInformation.phoneNumber,
+        },
         coverLetterCode: input.coverLetterCode,
       };
 
@@ -331,13 +338,13 @@ export class IntersolveVisaService
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {
     // Get balance on the parent wallet
-    const getTokenResult: GetTokenResultDto =
+    const getTokenResult: GetTokenReturnType =
       await this.intersolveVisaApiService.getToken(
         intersolveVisaParentWallet.tokenCode,
       );
 
     // Get parent wallet transaction info from Intersolve
-    const getTransactionInformationResultDto: GetTransactionInformationResultDto =
+    const getTransactionInformationResultDto: GetTransactionInformationReturnType =
       await this.intersolveVisaApiService.getTransactionInformation(
         intersolveVisaParentWallet.tokenCode,
       );
@@ -356,17 +363,19 @@ export class IntersolveVisaService
     return intersolveVisaParentWallet;
   }
 
-  public async retrieveAndUpdateChildWallet(
+  private async retrieveAndUpdateChildWallet(
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    // Get child token information
-    const getTokenResult: GetTokenResultDto =
+    // TODO: Implement this method.
+
+    // Get child wallet information
+    const getTokenResult: GetTokenReturnType =
       await this.intersolveVisaApiService.getToken(
         intersolveVisaChildWallet.tokenCode,
       );
 
     // Get card status
-    const GetPhysicalCardReturnDto: GetPhysicalCardReturnDto =
+    const GetPhysicalCardReturnDto: GetPhysicalCardReturnType =
       await this.intersolveVisaApiService.getPhysicalCard(
         intersolveVisaChildWallet.tokenCode,
       );
@@ -383,14 +392,7 @@ export class IntersolveVisaService
     return intersolveVisaChildWallet;
   }
 
-  public async reissueCard(input: {
-    registrationId: number;
-    reference: string;
-    name: string;
-    contactInformation: ContactInformationDto;
-    brandCode: string;
-    coverLetterCode: string;
-  }): Promise<void> {
+  public async reissueCard(input: ReissueCardParams): Promise<void> {
     // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
@@ -439,13 +441,10 @@ export class IntersolveVisaService
     }
 
     // Create new token at Intersolve
-    const issueTokenDto: IssueTokenDto = {
+    const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode: input.brandCode,
       activate: false, // Child Wallets are always created deactivated
-    };
-
-    const issueTokenResult =
-      await this.intersolveVisaApiService.issueToken(issueTokenDto);
+    });
 
     // Create child wallet entity
     const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
@@ -465,10 +464,10 @@ export class IntersolveVisaService
     );
 
     // Substitute the old token with the new token at Intersolve
-    await this.intersolveVisaApiService.substituteToken(
-      childWalletToReplace.tokenCode,
-      newChildWallet.tokenCode,
-    );
+    await this.intersolveVisaApiService.substituteToken({
+      oldTokenCode: childWalletToReplace.tokenCode,
+      newTokenCode: newChildWallet.tokenCode,
+    });
 
     // Update old child wallet: set status to SUBSTITUTED
     childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
@@ -486,13 +485,15 @@ export class IntersolveVisaService
     await this.intersolveVisaApiService.createPhysicalCard({
       tokenCode: newChildWallet.tokenCode,
       name: input.name,
-      addressStreet: input.contactInformation.addressStreet,
-      addressHouseNumber: input.contactInformation.addressHouseNumber,
-      addressHouseNumberAddition:
-        input.contactInformation.addressHouseNumberAddition,
-      addressPostalCode: input.contactInformation.addressPostalCode,
-      addressCity: input.contactInformation.addressCity,
-      phoneNumber: input.contactInformation.phoneNumber,
+      contactInformation: {
+        addressStreet: input.contactInformation.addressStreet,
+        addressHouseNumber: input.contactInformation.addressHouseNumber,
+        addressHouseNumberAddition:
+          input.contactInformation.addressHouseNumberAddition,
+        addressPostalCode: input.contactInformation.addressPostalCode,
+        addressCity: input.contactInformation.addressCity,
+        phoneNumber: input.contactInformation.phoneNumber,
+      },
       coverLetterCode: input.coverLetterCode,
     });
 
@@ -565,31 +566,28 @@ export class IntersolveVisaService
   }
 
   // TODO: It looks like the old implementation (this.syncIntersolveCustomerWith121) had some logic to only send data to Intersolve if it changed. Do we want to implement that again? That probably then should be in the RegistrationService and not here.
-  public async sendUpdatedContactInformation({
-    registrationId,
-    contactInformation,
-  }: {
-    registrationId: number;
-    contactInformation: ContactInformationDto;
-  }): Promise<void> {
+  public async sendUpdatedContactInformation(
+    input: SendUpdatedContactInformationParams,
+  ): Promise<void> {
     const customer =
       await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
-        registrationId,
+        input.registrationId,
       );
 
     // TODO: Is there a shorter / more expressive way of putting these variables into the method?
     await this.intersolveVisaApiService.updateCustomerAddress({
       holderId: customer.holderId,
-      addressStreet: contactInformation.addressStreet,
-      addressHouseNumber: contactInformation.addressHouseNumber,
-      addressHouseNumberAddition: contactInformation.addressHouseNumberAddition,
-      addressPostalCode: contactInformation.addressPostalCode,
-      addressCity: contactInformation.addressCity,
+      addressStreet: input.contactInformation.addressStreet,
+      addressHouseNumber: input.contactInformation.addressHouseNumber,
+      addressHouseNumberAddition:
+        input.contactInformation.addressHouseNumberAddition,
+      addressPostalCode: input.contactInformation.addressPostalCode,
+      addressCity: input.contactInformation.addressCity,
     });
 
     await this.intersolveVisaApiService.updateCustomerPhoneNumber({
       holderId: customer.holderId,
-      phoneNumber: contactInformation.phoneNumber,
+      phoneNumber: input.contactInformation.phoneNumber,
     });
   }
 }
