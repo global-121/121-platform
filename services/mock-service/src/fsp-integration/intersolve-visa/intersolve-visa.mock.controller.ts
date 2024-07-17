@@ -153,10 +153,10 @@ export class IntersolveVisaMockController {
 
   @ApiOperation({ summary: 'Substitute token' })
   @Post('wallet/v1/tokens/:oldTokenCode/substitute-token')
-  async substituteToken(
+  public substituteToken(
     @Body() _substituteTokenRequestDto: Record<string, unknown>,
     @Param('oldTokenCode') oldTokenCode: string,
-  ) {
+  ): IntersolveVisaMockResponseDto {
     return this.intersolveVisaMockService.substituteToken(oldTokenCode);
   }
 }
