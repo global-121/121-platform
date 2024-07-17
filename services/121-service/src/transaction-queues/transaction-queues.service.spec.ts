@@ -54,7 +54,7 @@ describe('TransactionQueuesService', () => {
       )
       .mockResolvedValue(mockIntersolveVisaTransactionJobDto);
 
-    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
+    jest.spyOn(intersolveVisaQueue as any, 'add').mockReturnValue({
       data: {
         id: 1,
         programId: 3,
@@ -62,18 +62,15 @@ describe('TransactionQueuesService', () => {
     });
 
     // Act
-    await intersolveVisaService.sendPayment(
-      sendPaymentData,
-      programId,
-      paymentNr,
+    await transactionQueuesService.addIntersolveVisaTransactionJobs(
+      mockIntersolveVisaTransactionJobDto,
     );
-    console.log('sendPaymentData', sendPaymentData);
 
     // Assert
-    expect(paymentQueue.add).toHaveBeenCalledTimes(1);
-    expect(paymentQueue.add).toHaveBeenCalledWith(
+    expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
+    expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
       ProcessNamePayment.sendPayment,
-      paymentDetailsResult,
+      mockIntersolveVisaTransactionJobDto,
     );
   });
 });
