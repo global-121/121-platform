@@ -130,8 +130,6 @@ To verify the successful installation and setup of services, access their Swagge
 
 ## Setup Interfaces
 
-Follow the "[Getting started / installation](interfaces/README.md#getting-started--installation)"-section in the [interfaces/README](interfaces/README.md)-file.
-
 Install dependencies for the portal, run:
 
     npm run install:portal
@@ -162,7 +160,7 @@ When you use [VS Code](https://code.visualstudio.com/), you can start multiple e
 
 To start an individual interface/service in VS Code:
 
-- Run: (where `<package>` is one of `portal`, `121-service`)
+- Run: (where `<package>` is one of `portal`, `portalicious`, `121-service`, `mock-service`)
 
       npm run code:<package>
 
@@ -207,7 +205,7 @@ All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authenticatio
 
 ### Adding third party API tokens
 
-All the tokens and access keys for third party APIs should be added on the .env file and subsequently imported using the environment variables within typescript files.
+All the tokens and access keys for third party APIs should be added on the `.env`-file and subsequently imported using the environment variables within typescript files.
 
 ### Recommended code-editor/IDE tools/extensions
 
