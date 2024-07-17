@@ -7,6 +7,7 @@
       text
       class="[&_button:not(:hover)]:text-white"
       (click)="sidebarVisible = true"
+      data-testid="sidebar-toggle"
     />
     <h1 class="ml-2 text-xl text-white">
       <a
@@ -48,7 +49,10 @@
     </div>
   </ng-template>
 </p-toolbar>
-<p-sidebar [(visible)]="sidebarVisible">
+<p-sidebar
+  [(visible)]="sidebarVisible"
+  data-testid="sidebar"
+>
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
       @for (sidebarLink of sidebarLinks; track $index) {
@@ -76,6 +80,7 @@
       [(ngModel)]="selectedLanguage"
       [showClear]="false"
       styleClass="w-full"
+      data-testid="language-dropdown"
     >
       <ng-template pTemplate="selectedItem">
         <div class="flex w-full items-center gap-2">
