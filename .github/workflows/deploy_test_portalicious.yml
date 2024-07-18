@@ -27,8 +27,6 @@ on:
       - '!*.yml'
   pull_request:
     types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
     paths:
       - '.github/workflows/deploy_test_portalicious.yml'
       - 'interfaces/Portalicious/**'
@@ -62,7 +60,7 @@ jobs:
             font-src 'self' https://fonts.gstatic.com;
         env:
           NG_ENV_NAME: 'test'
-          NG_LOCALES: 'ar,en,es,fr,nl'
+          NG_LOCALES: 'en,nl'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
           APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}

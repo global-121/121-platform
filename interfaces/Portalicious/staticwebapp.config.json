@@ -2,39 +2,25 @@
   "$schema": "https://json.schemastore.org/staticwebapp.config.json",
   "routes": [
     {
-      "route": "/*.js",
+      "route": "*.{js,json,css,jpg,png,ico,webmanifest,tff,woff,woff2}",
       "headers": {
         "Cache-Control": "immutable, no-transform, max-age=31536000"
       }
     },
     {
-      "route": "/*.css",
-      "headers": {
-        "Cache-Control": "immutable, no-transform, max-age=31536000"
-      }
+      "route": "/index.html",
+      "redirect": "/en/index.html"
     },
     {
-      "route": "/assets/*",
-      "headers": {
-        "Cache-Control": "must-revalidate, no-transform, max-age=31536000"
-      }
+      "route": "/en/*",
+      "rewrite": "/en/index.html"
     },
     {
-      "route": "/.well-known/change-password",
-      "redirect": "/user",
-      "statusCode": 302
+      "route": "/nl/*",
+      "rewrite": "/nl/index.html"
     }
   ],
   "trailingSlash": "auto",
-  "navigationFallback": {
-    "rewrite": "index.html",
-    "exclude": ["/assets/*"]
-  },
-  "responseOverrides": {
-    "404": {
-      "redirect": "/"
-    }
-  },
   "globalHeaders": {
     "Opener-Policy": "same-origin",
     "Permissions-Policy": "interest-cohort=()",
