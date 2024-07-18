@@ -231,14 +231,14 @@ export class IntersolveVisaMockService {
   }
 
   public createDebitCardMock(
-    tokenCode: string | null,
+    lastName: string | null,
   ): IntersolveVisaMockResponseDto {
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.OK,
       statusText: 'OK',
       data: {},
     };
-    if (tokenCode?.toLowerCase().includes('mock-fail-create-debit-card')) {
+    if (lastName?.toLowerCase().includes('mock-fail-create-debit-card')) {
       res.data.success = false;
       res.data.errors = [];
       res.data.errors.push({
