@@ -87,22 +87,22 @@ export class TransactionJobProcessorsService {
         throw new Error(errorText);
       }
     }
-    const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
-        {
-          programId: input.programId,
-          financialServiceProviderName:
-            FinancialServiceProviderName.intersolveVisa,
-          names: [
-            FinancialServiceProviderConfigurationEnum.brandCode,
-            FinancialServiceProviderConfigurationEnum.coverLetterCode,
-            FinancialServiceProviderConfigurationEnum.fundingTokenCode,
-          ],
-        },
-      );
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
     try {
+      const intersolveVisaConfig =
+        await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+          {
+            programId: input.programId,
+            financialServiceProviderName:
+              FinancialServiceProviderName.intersolveVisa,
+            names: [
+              FinancialServiceProviderConfigurationEnum.brandCode,
+              FinancialServiceProviderConfigurationEnum.coverLetterCode,
+              FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+            ],
+          },
+        );
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
@@ -134,7 +134,7 @@ export class TransactionJobProcessorsService {
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
-      await this.createTransaction({
+      const resultTransaction = await this.createTransaction({
         amount: input.transactionAmount,
         registration: registration,
         financialServiceProviderId: financialServiceProvider.id,
@@ -144,6 +144,9 @@ export class TransactionJobProcessorsService {
         status: StatusEnum.error,
         errorMessage: `An error occured: ${error}`,
       });
+      await this.latestTransactionRepository.insertOrUpdateFromTransaction(
+        resultTransaction,
+      );
       await this.updatePaymentCountAndStatusInRegistration(
         registration,
         input.programId,

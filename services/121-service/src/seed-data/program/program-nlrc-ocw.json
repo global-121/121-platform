@@ -51,6 +51,7 @@
     }
   ],
   "targetNrRegistrations": 100000,
+  "programCustomAttributes": [],
   "tryWhatsAppFirst": true,
   "programQuestions": [
     {

@@ -1,4 +1,4 @@
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import messageTemplatesOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
@@ -64,6 +64,7 @@ describe('Block visa debit card', () => {
       programIdVisa,
       tokencode,
       accessToken,
+      registrationVisa.referenceId,
     );
 
     const visaWalletResponseAfterBlock = await getVisaWalletsAndDetails(
@@ -82,7 +83,7 @@ describe('Block visa debit card', () => {
     expect(blockVisaResponse.status).toBe(201);
     expect(blockVisaResponse.body.status).toBe(204);
     expect(visaWalletResponseAfterBlock.body.wallets[0].status).toBe(
-      WalletCardStatus121.Paused,
+      VisaCard121Status.Paused,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(messageTemplatesOCW.blockVisaCard.message.en);
@@ -115,7 +116,12 @@ describe('Block visa debit card', () => {
     );
     const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
 
-    await blockVisaCard(programIdVisa, tokencode, accessToken);
+    await blockVisaCard(
+      programIdVisa,
+      tokencode,
+      accessToken,
+      registrationVisa.referenceId,
+    );
     const unblockVisaResponse = await unblockVisaCard(
       programIdVisa,
       tokencode,
@@ -137,7 +143,7 @@ describe('Block visa debit card', () => {
     expect(unblockVisaResponse.status).toBe(201);
     expect(unblockVisaResponse.body.status).toBe(204);
     expect(visaWalletResponse.body.wallets[0].status).not.toBe(
-      WalletCardStatus121.Blocked,
+      VisaCard121Status.Blocked,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(

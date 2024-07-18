@@ -116,6 +116,9 @@ export class IntersolveVisaService
       const issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
         activate: true, // Parent Wallets are always created activated
+        reference: process.env.MOCK_INTERSOLVE
+          ? intersolveVisaCustomer.holderId
+          : undefined,
       });
 
       // Store parent wallet

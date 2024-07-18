@@ -1,4 +1,4 @@
-import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import messageTemplatesOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
@@ -73,10 +73,10 @@ describe('Issue new Visa debit card', () => {
     expect(visaWalletResponse.body.wallets.length).toBe(2);
     // mock returns hard-coded 'active', while non-mock would return 'inactive', so either way not 'blocked'
     expect(visaWalletResponse.body.wallets[0].status).not.toBe(
-      WalletCardStatus121.Blocked,
+      VisaCard121Status.Blocked,
     );
     expect(visaWalletResponse.body.wallets[1].status).toBe(
-      WalletCardStatus121.Blocked,
+      VisaCard121Status.Blocked,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(
