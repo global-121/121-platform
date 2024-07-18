@@ -10,16 +10,7 @@
       data-testid="sidebar-toggle"
       styleClass="lg:mr-9"
     />
-    <h1 class="ml-2 text-xl text-white">
-      <a
-        i18n
-        routerLink="/"
-        >121 Portal</a
-      >
-      @if (programTitle()) {
-        <span class="font-normal"> | {{ programTitle() }}</span>
-      }
-    </h1>
+    <app-logo [programTitle]="programTitle()" />
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex items-center lg:px-20">
@@ -38,11 +29,8 @@
       >
         <ng-template pTemplate="start">
           <p class="mb-2 border-b border-b-grey-300 px-3 py-2">
-            <ng-container i18n>Logged in as:</ng-container>
-            <span class="underline">
-              <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
-              admin&#64;example.org
-            </span>
+            <ng-container i18n>Logged in as:</ng-container><br />
+            <span class="underline">{{ userName() }}</span>
           </p>
         </ng-template>
       </p-menu>

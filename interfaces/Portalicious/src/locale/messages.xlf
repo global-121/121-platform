@@ -3,7 +3,7 @@
   <file id="ngi18n" original="ng.template">
     <unit id="1023894478419315290">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:103,104</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:91,92</note>
       </notes>
       <segment>
         <source>Language: <ph id="0" equiv="INTERPOLATION" disp="{{ selectedLanguageLabel() }}"/></source>
@@ -51,7 +51,7 @@
     </unit>
     <unit id="2233560223291461480">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:86</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:74</note>
       </notes>
       <segment>
         <source>Manual</source>
@@ -163,7 +163,7 @@
     </unit>
     <unit id="6231535972680055827">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:17,18</note>
+        <note category="location">src/app/components/logo/logo.component.html:5,7</note>
       </notes>
       <segment>
         <source>121 Portal</source>
@@ -235,7 +235,7 @@
     </unit>
     <unit id="9219884121371524201">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:41</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:32</note>
       </notes>
       <segment>
         <source>Logged in as:</source>
@@ -251,7 +251,7 @@
     </unit>
     <unit id="4501314745488687296">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:83,84</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:71,72</note>
       </notes>
       <segment>
         <source>Opens in a new window</source>
@@ -259,11 +259,144 @@
     </unit>
     <unit id="generiClose">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:63</note>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:65</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:51</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:53</note>
       </notes>
       <segment>
         <source>Close</source>
+      </segment>
+    </unit>
+    <unit id="1431416938026210429">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:37</note>
+      </notes>
+      <segment>
+        <source>Password</source>
+      </segment>
+    </unit>
+    <unit id="1502775459537740372">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:12,13</note>
+      </notes>
+      <segment>
+        <source>Use your work email to log in.</source>
+      </segment>
+    </unit>
+    <unit id="1890300073702152532">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:19</note>
+      </notes>
+      <segment>
+        <source>E-mail</source>
+      </segment>
+    </unit>
+    <unit id="2082650153330286720">
+      <notes>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:19,39</note>
+      </notes>
+      <segment>
+        <source>
+          <pc id="0" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
+          <pc id="1" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
+          <pc id="3" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
+        </source>
+      </segment>
+    </unit>
+    <unit id="2336550011721758066">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:11,12</note>
+        <note category="location">src/app/pages/login/login.component.html:54</note>
+      </notes>
+      <segment>
+        <source>Log in</source>
+      </segment>
+    </unit>
+    <unit id="2363864708975195083">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:75,82</note>
+      </notes>
+      <segment>
+        <source>Read our <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a&gt;">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
+      </segment>
+    </unit>
+    <unit id="2464088112444335477">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:91,92</note>
+      </notes>
+      <segment>
+        <source>Image of a person logging in to the 121 Platform</source>
+      </segment>
+    </unit>
+    <unit id="2827984212740060090">
+      <notes>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:49,50</note>
+      </notes>
+      <segment>
+        <source>Read more</source>
+      </segment>
+    </unit>
+    <unit id="6305795241980054784">
+      <notes>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:14,16</note>
+      </notes>
+      <segment>
+        <source>Necessary cookies are required for the basic operation of the platform.</source>
+      </segment>
+    </unit>
+    <unit id="6509003407758128100">
+      <notes>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:8,9</note>
+      </notes>
+      <segment>
+        <source>Cookie policy</source>
+      </segment>
+    </unit>
+    <unit id="7216129782170445339">
+      <notes>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:40,41</note>
+      </notes>
+      <segment>
+        <source>Read less</source>
+      </segment>
+    </unit>
+    <unit id="2772023564304193657">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:49,50</note>
+      </notes>
+      <segment>
+        <source>Enter your password</source>
+      </segment>
+    </unit>
+    <unit id="3720331845170443769">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:65,73</note>
+      </notes>
+      <segment>
+        <source>Forgot your password? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a &gt;"> Request password</pc></source>
+      </segment>
+    </unit>
+    <unit id="9132374083993014120">
+      <notes>
+        <note category="location">src/app/services/auth.service.ts:100</note>
+      </notes>
+      <segment>
+        <source>Invalid email or password. Double-check your credentials and try again.</source>
+      </segment>
+    </unit>
+    <unit id="2899870068821233000">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:25,26</note>
+      </notes>
+      <segment>
+        <source>example: janedue@redcross.com</source>
+      </segment>
+    </unit>
+    <unit id="8938510541215036054">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:32,33</note>
+      </notes>
+      <segment>
+        <source>Enter a valid email address</source>
       </segment>
     </unit>
   </file>

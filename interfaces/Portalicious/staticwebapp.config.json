@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/staticwebapp.config.json",
   "routes": [
     {
-      "route": "*.{js,json,css,jpg,png,ico,webmanifest,tff,woff,woff2}",
+      "route": "*.{js,json,css,jpg,jpeg,png,ico,webmanifest,tff,woff,woff2}",
       "headers": {
         "Cache-Control": "immutable, no-transform, max-age=31536000"
       }

@@ -15,8 +15,8 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AppRoutes } from '~/app.routes';
-import { LogEvent, LogService } from '~/services/log.service';
-import { ToastService } from '~/services/toast.service';
+import { LogoComponent } from '~/components/logo/logo.component';
+import { AuthService } from '~/services/auth.service';
 import { Locale, changeLanguage, getLocaleLabel } from '~/utils/locale';
 import { environment } from '~environment';
 
@@ -30,15 +30,17 @@ import { environment } from '~environment';
     SidebarModule,
     DropdownModule,
     FormsModule,
+    LogoComponent,
   ],
-  providers: [ToastService],
+  providers: [],
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  private logService = inject(LogService);
-  private toastService = inject(ToastService);
+  private authService = inject(AuthService);
   programTitle = input<string>();
+
+  userName = computed(() => this.authService.user?.username);
 
   sidebarVisible = false;
   userMenuOptions = [
@@ -51,11 +53,7 @@ export class HeaderComponent {
       label: 'Logout',
       icon: 'pi pi-sign-out',
       command: () => {
-        this.logService.logEvent(LogEvent.userLogout);
-
-        this.toastService.showToast({
-          detail: 'You clicked on Log Out!',
-        });
+        void this.authService.logout();
       },
     },
   ];
