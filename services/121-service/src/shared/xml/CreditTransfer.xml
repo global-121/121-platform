@@ -1,0 +1,29 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:cber="http://temenos.com/CBEREMITANCE"
+  xmlns:fun="http://temenos.com/FUNDSTRANSFERCBEREMITANCE">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <cber:RMTFundtransfer>
+      <WebRequestCommon>
+        <company/>
+        <password>${password}</password>
+        <userName>${username}</userName>
+      </WebRequestCommon>
+      <OfsFunction>
+      </OfsFunction>
+      <FUNDSTRANSFERCBEREMITANCEType id="">
+        <fun:DEBITAMOUNT>${debitAmount}</fun:DEBITAMOUNT>
+        <fun:DEBITTHEIRREF>${debitTheIrRef}</fun:DEBITTHEIRREF>
+        <fun:CREDITTHEIRREF>${creditTheIrRef}</fun:CREDITTHEIRREF>
+        <fun:CREDITACCTNO>${creditAcctNo}</fun:CREDITACCTNO>
+        <fun:CREDITCURRENCY>${creditCurrency}</fun:CREDITCURRENCY>
+        <fun:CREDITAMOUNT></fun:CREDITAMOUNT>
+        <fun:CREDITVALUEDATE></fun:CREDITVALUEDATE>
+        <fun:RemitterName>${remitterName}</fun:RemitterName>
+        <fun:BeneficiaryName>${beneficiaryName}</fun:BeneficiaryName>
+        <fun:BENCUST></fun:BENCUST>
+        <fun:ORDCUST></fun:ORDCUST>
+      </FUNDSTRANSFERCBEREMITANCEType>
+    </cber:RMTFundtransfer>
+  </soapenv:Body>
+</soapenv:Envelope>

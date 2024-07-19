@@ -1,0 +1,19 @@
+<ion-row class="ion-align-items-center">
+  <app-confirm-prompt
+    (confirm)="getVerificationReport()"
+    [subHeader]="subHeader"
+    [message]="message"
+  >
+    <ion-icon
+      name="download"
+      slot="start"
+      aria-hidden="true"
+    ></ion-icon>
+    {{ btnText }}
+  </app-confirm-prompt>
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
+    class="ion-margin-start"
+  ></ion-spinner>
+</ion-row>

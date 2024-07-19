@@ -15,6 +15,8 @@ export class QueueSeedHelperService {
     private paymentIntersolveVisa: Queue,
     @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
     private paymentIntersolveVoucher: Queue,
+    @InjectQueue(QueueNamePayment.paymentCommercialBankEthiopia)
+    private paymentCommercialBankEthiopia: Queue,
     @InjectQueue(QueueNamePayment.paymentSafaricom)
     private paymentSafaricom: Queue,
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
@@ -35,6 +37,7 @@ export class QueueSeedHelperService {
     const bullQueues = [
       this.paymentIntersolveVisa,
       this.paymentIntersolveVoucher,
+      this.paymentCommercialBankEthiopia,
       this.paymentSafaricom,
       this.replyOnIncoming,
       this.smallBulk,

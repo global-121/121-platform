@@ -414,6 +414,28 @@ export async function waitForMessagesToComplete(
   }
 }
 
+export async function startCbeValidationProcess(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`,
+    )
+    .set('Cookie', [accessToken]);
+}
+
+export async function getCbeValidationReport(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`,
+    )
+    .set('Cookie', [accessToken]);
+}
+
 export async function postNote(
   referenceId: string,
   text: string,

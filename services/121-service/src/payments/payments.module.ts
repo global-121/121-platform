@@ -2,6 +2,7 @@ import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
@@ -50,6 +51,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     VodacashModule,
     SafaricomModule,
     ExcelModule,
+    CommercialBankEthiopiaModule,
     RegistrationsModule,
     ProgramModule,
     RegistrationUtilsModule,

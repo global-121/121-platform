@@ -53,4 +53,5 @@ jobs:
           MOCK_TWILIO: TRUE
           MOCK_INTERSOLVE: TRUE
           MOCK_VODACASH: TRUE
+          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
         run: 'npm run test:unit:all'

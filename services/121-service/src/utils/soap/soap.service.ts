@@ -2,6 +2,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
+import https from 'https';
 import * as convert from 'xml-js';
 
 @Injectable()
@@ -142,5 +143,88 @@ export class SoapService {
       }
     }
     return xml;
+  }
+
+  async postCBERequest(payload: any, soapAction: string): Promise<any> {
+    const soapRequestXml = convert.js2xml(payload, {
+      compact: false,
+      spaces: 4,
+    });
+
+    // Configure and send the SOAP request
+    const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+    const headers = {
+      'Content-Type': 'text/xml;charset=UTF-8',
+      soapAction: soapAction,
+    };
+
+    let agent;
+    try {
+      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH!;
+      const cert = fs.readFileSync(certPath);
+      agent = new https.Agent({
+        ca: cert,
+      });
+    } catch (error) {
+      throw error;
+    }
+
+    return soapRequest({
+      headers: headers,
+      url: soapUrl,
+      xml: soapRequestXml,
+      timeout: 150000,
+      extraOpts: {
+        httpsAgent: agent,
+      },
+    })
+      .then((rawResponse: any) => {
+        const response = rawResponse.response;
+        this.httpService.logMessageRequest(
+          { url: soapUrl, payload: soapRequestXml },
+          {
+            status: response.statusCode,
+            statusText: undefined,
+            data: response.body,
+          },
+        );
+
+        // Parse the SOAP response if needed
+        const parsedResponse = convert.xml2js(response.body, { compact: true });
+
+        if (
+          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:RMTFundtransferResponse'
+          ];
+        } else if (
+          parsedResponse['S:Envelope']['S:Body'][
+            'ns10:CBERemitanceTransactionStatusResponse'
+          ]
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:CBERemitanceTransactionStatusResponse'
+          ];
+        } else if (
+          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
+        ) {
+          return parsedResponse['S:Envelope']['S:Body'][
+            'ns10:AccountEnquiryResponse'
+          ];
+        }
+        return null;
+      })
+      .catch((err: any) => {
+        this.httpService.logErrorRequest(
+          { url: soapUrl, payload: soapRequestXml },
+          {
+            status: undefined,
+            statusText: undefined,
+            data: { error: err },
+          },
+        );
+        throw err;
+      });
   }
 }

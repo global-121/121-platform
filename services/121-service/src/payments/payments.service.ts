@@ -10,6 +10,7 @@ import {
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -61,6 +62,8 @@ export class PaymentsService {
     [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
       this.intersolveVoucherService,
     [FinancialServiceProviderName.safaricom]: this.safaricomService,
+    [FinancialServiceProviderName.commercialBankEthiopia]:
+      this.commercialBankEthiopiaService,
     // Add more FSP mappings if they work queue-based
   };
 
@@ -78,6 +81,7 @@ export class PaymentsService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
+    private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -98,6 +102,9 @@ export class PaymentsService {
       ],
       [FinancialServiceProviderName.vodacash]: [this.vodacashService],
       [FinancialServiceProviderName.safaricom]: [this.safaricomService],
+      [FinancialServiceProviderName.commercialBankEthiopia]: [
+        this.commercialBankEthiopiaService,
+      ],
       [FinancialServiceProviderName.excel]: [this.excelService],
     };
   }

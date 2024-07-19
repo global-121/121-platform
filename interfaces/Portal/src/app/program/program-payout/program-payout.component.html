@@ -87,6 +87,10 @@
       [minPayment]="minPayment"
       [maxPayment]="maxPayment"
     ></app-export-list>
+
+    <ng-container *ngIf="showCbeValidationButton">
+      <app-download-cbe-verification-report [programId]="programId" />
+    </ng-container>
   </ion-row>
 </div>
 

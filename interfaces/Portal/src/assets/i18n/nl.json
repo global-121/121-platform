@@ -291,6 +291,11 @@
       },
       "program-payout": {
         "calculating-transfer-amount": "Totaalbedrag berekenen",
+        "cbe": {
+          "btn": "CBE verificatierapport",
+          "message": "De gegevens in dit rapport zijn gebaseerd op gegevens die elke nacht worden geïmporteerd uit CBE. <br /> Als u vandaag gegevens hebt gewijzigd, wordt dit niet weergegeven in het rapport.",
+          "subHeader": "CBE verificatierapport downloaden"
+        },
         "choose-payment": "Kies betaling...",
         "closed": "Gesloten",
         "in-progress": "Betaling in uitvoering",
