@@ -19,23 +19,23 @@ export class ProgramHeaderComponent {
 
   navMenuItems = computed(() => [
     {
-      label: 'Overview',
+      label: $localize`Overview`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programOverview}`,
     },
     {
-      label: 'Team',
+      label: $localize`Team`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programTeam}`,
     },
     {
-      label: 'Registrations',
+      label: $localize`Registrations`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programRegistrations}`,
     },
     {
-      label: 'Payments',
+      label: $localize`Payments`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programPayments}`,
     },
     {
-      label: 'Monitoring',
+      label: $localize`Monitoring`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}`,
     },
   ]);
