@@ -6,7 +6,6 @@ import { LatestMessageEntity } from '@121-service/src/notifications/latest-messa
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
@@ -195,10 +194,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TryWhatsappEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
         columnName: 'registration',
       },
       {

@@ -5,6 +5,5 @@ export enum ProcessNamePayment {
 export enum QueueNamePayment {
   paymentIntersolveVisa = 'paymentIntersolveVisa',
   paymentIntersolveVoucher = 'paymentIntersolveVoucher',
-  paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
   paymentSafaricom = 'paymentSafaricom',
 }

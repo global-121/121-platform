@@ -234,27 +234,6 @@ Feature: Make a new payment
     Then a failed payment appears for the PA with the missing data
     And error is displayed
 
-  --"Commercial Bank of Ethiopia"
-
-  Scenario: Successfully make a payment to a Person Affected with Financial Service provider "Commercial Bank of Ethiopia"
-    Given the Person Affected has been imported as registered
-    Given all PAs have correctly filled ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Bank Account Number")
-    Given age is not under 18
-    Given PA requests valid transaction value
-    When payment is successfully requested
-    Then a successful payment appears in the payment column and the payment history popup
-    And payment details are displayed with accordion open
-
-  Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Commercial Bank of Ethiopia" with missing data
-
-    Given the Person Affected has been imported as registered
-    Given an obligatory field is missing ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Bank Account Number")
-    Given requested value is not valid
-    When payment is requested
-    Then a failed payment appears for the PA with the missing data
-    And error is displayed
-
-
       """
     ------------------------------------------------------------------------------------------------------------------------------------
 

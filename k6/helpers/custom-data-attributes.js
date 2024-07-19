@@ -31,6 +31,5 @@ export const FinancialServiceProviderName = {
   intersolveVisa: 'Intersolve-visa',
   vodacash: 'VodaCash',
   safaricom: 'Safaricom',
-  commercialBankEthiopia: 'Commercial-bank-ethiopia',
   excel: 'Excel',
 };

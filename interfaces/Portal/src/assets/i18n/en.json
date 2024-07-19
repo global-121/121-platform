@@ -258,11 +258,6 @@
       },
       "program-payout": {
         "calculating-transfer-amount": "Calculating total transfer amount",
-        "cbe": {
-          "btn": "CBE verification report",
-          "message": "The data in this report is based on data that is imported every night from CBE. <br /> If you changed data today this will not be reflected in the report.",
-          "subHeader": "Download CBE Verification Report"
-        },
         "choose-payment": "Choose payment...",
         "closed": "Closed",
         "in-progress": "Payment in progress",

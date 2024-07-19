@@ -32,7 +32,6 @@ import {
 } from '../models/transaction.model';
 import { Role, TableData, User, UserSearchResult } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
-import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
 import { PaginationFilter, PaginationSort } from './filter.service';
 
@@ -899,32 +898,6 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/users`,
     );
-  }
-
-  async getCbeVerificationReport(programId: number): Promise<{
-    data: {
-      registrationProgramId: number;
-      fullNameUsedForTheMatch: string;
-      bankAccountNumberUsedForCall: string;
-      cbeName: string;
-      namesMatch: boolean;
-      errorMessage: string;
-      cbeStatus: string;
-      lastUpdated: string;
-    }[];
-    fileName: string;
-  }> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`,
-      )
-      .then((response) => {
-        if (response.data && response.data.length > 0) {
-          arrayToXlsx(response.data, response.fileName);
-        }
-        return response;
-      });
   }
 
   private filtersToParams(

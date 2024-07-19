@@ -22,15 +22,6 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
-    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
-  }
-
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   public async cronCacheUnusedVouchers(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have

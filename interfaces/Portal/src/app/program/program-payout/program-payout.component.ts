@@ -1,4 +1,3 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -65,8 +64,6 @@ export class ProgramPayoutComponent implements OnInit {
   public maxPayment: number;
   public paymentInProgress = false;
 
-  public showCbeValidationButton: boolean;
-
   public maxNumberOfPayment = MAX_NUMBER_OF_PAYMENTS_TO_EXPORT;
 
   constructor(
@@ -112,8 +109,6 @@ export class ProgramPayoutComponent implements OnInit {
     this.getPaymentInProgress();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
-
-    this.showCbeValidationButton = await this.checkShowCbeValidation();
   }
 
   private async getPaymentInProgress(): Promise<void> {
@@ -178,17 +173,6 @@ export class ProgramPayoutComponent implements OnInit {
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
     ]);
-  }
-
-  async checkShowCbeValidation(): Promise<boolean> {
-    const hasCbeProvider = this.program?.financialServiceProviders?.some(
-      (fsp) => fsp.fsp === FinancialServiceProviderName.commercialBankEthiopia,
-    );
-    const hasPermission = await this.authService.hasPermission(
-      this.program.id,
-      Permission.PaymentFspInstructionREAD,
-    );
-    return hasCbeProvider && hasPermission;
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
