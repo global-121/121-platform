@@ -13,7 +13,6 @@ import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { IntersolveJumboService } from '@121-service/src/payments/fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
@@ -80,7 +79,6 @@ export class PaymentsService {
     private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
-    private readonly intersolveJumboService: IntersolveJumboService,
     private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
@@ -101,9 +99,6 @@ export class PaymentsService {
       ],
       [FinancialServiceProviderName.intersolveVisa]: [
         this.intersolveVisaService,
-      ],
-      [FinancialServiceProviderName.intersolveJumboPhysical]: [
-        this.intersolveJumboService,
       ],
       [FinancialServiceProviderName.vodacash]: [this.vodacashService],
       [FinancialServiceProviderName.safaricom]: [this.safaricomService],

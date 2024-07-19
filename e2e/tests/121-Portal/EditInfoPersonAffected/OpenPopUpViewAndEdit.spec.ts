@@ -3,7 +3,7 @@ import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import fspIntersolveJumbo from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
+import fspIntersolveVisa from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -13,7 +13,7 @@ import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
-const whatsappLabel = fspIntersolveJumbo.questions[5].label.en;
+const whatsappLabel = fspIntersolveVisa.questions[5].label.en;
 const save = englishTranslations.common.save;
 
 test.beforeEach(async ({ page }) => {

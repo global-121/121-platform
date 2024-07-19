@@ -52,9 +52,6 @@ graph LR
   PaymentsModule-->ActionsModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
-  PaymentsModule-->IntersolveJumboModule
-  IntersolveJumboModule-->TransactionsModule
-  IntersolveJumboModule-->RegistrationDataModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule

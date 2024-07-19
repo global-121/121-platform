@@ -89,7 +89,7 @@ test.beforeEach(async ({ page }) => {
     programIdVisa,
     accessToken,
     paymentReferenceIds,
-    'Intersolve-jumbo-physical',
+    'Intersolve-voucher-paper',
     '31600000000',
     'a',
     '2',

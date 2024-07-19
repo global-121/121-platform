@@ -29,7 +29,6 @@ export const FinancialServiceProviderName = {
   intersolveVoucherWhatsapp: 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper: 'Intersolve-voucher-paper',
   intersolveVisa: 'Intersolve-visa',
-  intersolveJumboPhysical: 'Intersolve-jumbo-physical',
   vodacash: 'VodaCash',
   safaricom: 'Safaricom',
   commercialBankEthiopia: 'Commercial-bank-ethiopia',
