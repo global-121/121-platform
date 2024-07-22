@@ -1008,20 +1008,17 @@ export class RegistrationsService {
       {},
     );
 
-    // // TODO: Test with debugger to see empty properties
-    // // Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const key in registrationData) {
-      if (key === 'addressHouseNumberAddition') continue; // Skip non-required property
-
-      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
+    for (const name of dataFieldNames) {
+      if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
       if (
-        registrationData[key] === null ||
-        registrationData[key] === undefined ||
-        // TODO: Is this .value check what we want?
-        registrationData[key].value === ''
+        mappedRegistrationData[name] === null ||
+        mappedRegistrationData[name] === undefined ||
+        mappedRegistrationData[name] === ''
       ) {
-        const errorText = `Property ${key} is undefined`;
-        throw new HttpException(errorText, HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          `Property ${name} is undefined`,
+          HttpStatus.BAD_REQUEST,
+        );
       }
     }
 

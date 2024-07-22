@@ -75,16 +75,12 @@ export class TransactionJobProcessorsService {
     }
 
     // Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const key in input) {
-      if (key === 'addressHouseNumberAddition') continue; // Skip non-required property
+    for (const [name, value] of Object.entries(input)) {
+      if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
 
       // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
-      if (
-        input[key] === null ||
-        input[key] === undefined ||
-        input[key] === ''
-      ) {
-        const errorText = `Property ${key} is undefined`;
+      if (value === null || value === undefined || value === '') {
+        const errorText = `Property ${name} is undefined`;
         await this.processTransactionResult({
           jobInput: input,
           calculatedTranserAmount: input.transactionAmount, // TODO: STORE THE CALCULATED AMOUNT HERE AS THIS IS USED ON RETRY AND SHOWN IN PORTAL
