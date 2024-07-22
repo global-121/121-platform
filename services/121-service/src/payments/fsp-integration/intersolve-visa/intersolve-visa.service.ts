@@ -337,6 +337,37 @@ export class IntersolveVisaService
     );
   }
 
+  public async getWalletWithCards(
+    registrationId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    const customer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        registrationId,
+      );
+
+    if (!customer) {
+      throw new HttpException(
+        {
+          errors: `No Customer Entity found for Registration: ${registrationId}`,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!customer.intersolveVisaParentWallet) {
+      throw new HttpException(
+        {
+          errors: `No ParentWallet Entity found for Registration: ${registrationId}`,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto(
+      customer.intersolveVisaParentWallet,
+    );
+  }
+
   private async retrieveAndUpdateParentWallet(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {

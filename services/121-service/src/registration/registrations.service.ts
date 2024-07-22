@@ -933,6 +933,17 @@ export class RegistrationsService {
       registration.id,
     );
   }
+  public async getIntersolveVisaWalletAndCards(
+    referenceId: string,
+    programId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    const registration = await this.getRegistrationFromReferenceId({
+      referenceId,
+      relations: [],
+      programId,
+    });
+    return await this.intersolveVisaService.getWalletWithCards(registration.id);
+  }
 
   public async reissueCardAndSendMessage(
     referenceId: string,
