@@ -22,8 +22,8 @@
   ],
   "trailingSlash": "auto",
   "globalHeaders": {
-    "Opener-Policy": "same-origin",
-    "Permissions-Policy": "interest-cohort=()",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Permissions-Policy": "document-domain=(), storage-access=(self), attribution-reporting=(), interest-cohort=(), browsing-topics=()",
     "Referrer-Policy": "same-origin",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
   }
