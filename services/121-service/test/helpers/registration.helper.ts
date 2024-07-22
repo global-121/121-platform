@@ -288,8 +288,8 @@ export function issueNewVisaCard(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .put(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
+    .post(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
     )
     .set('Cookie', [accessToken])
     .send();
