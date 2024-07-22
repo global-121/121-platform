@@ -23,6 +23,8 @@ body {
 // instead of extending the whole theme, while we wait
 // for PrimeNG v18 to be released with the new theming system.
 
+$toolbar-height: 48px;
+
 @layer primeng {
   .p-button,
   h1,
@@ -55,7 +57,31 @@ body {
     line-height: 140%;
   }
 
+  .p-tabmenu .p-tabmenu-nav,
   .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
     border-color: transparent;
+  }
+
+  .p-sidebar {
+    .p-sidebar-header {
+      @apply pl-3;
+      height: $toolbar-height - 2;
+
+      .p-sidebar-icon {
+        margin-left: 0;
+        height: 33px;
+        width: 33px;
+      }
+    }
+
+    .p-sidebar-content {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .p-toolbar {
+    @apply rounded-none border-x-0 border-t-0 border-b-purple bg-navy py-0;
+    height: $toolbar-height;
   }
 }

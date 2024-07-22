@@ -73,10 +73,6 @@ export class HeaderComponent {
       label: 'Roles and permissions',
       routerLink: `/${AppRoutes.rolesAndPermissions}`,
     },
-    {
-      label: 'Create program',
-      routerLink: `/${AppRoutes.createProgram}`,
-    },
   ];
 
   locale = inject<Locale>(LOCALE_ID);
