@@ -282,6 +282,19 @@ export function getVisaWalletsAndDetails(
     .send();
 }
 
+export function retrieveAndUpdateVisaWalletsAndDetails(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
+    )
+    .set('Cookie', [accessToken])
+    .send();
+}
+
 export function issueNewVisaCard(
   programId: number,
   referenceId: string,

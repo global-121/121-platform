@@ -19,6 +19,7 @@ import {
   getVisaWalletsAndDetails,
   importRegistrations,
   issueNewVisaCard,
+  retrieveAndUpdateVisaWalletsAndDetails,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -80,16 +81,17 @@ describe('Load Visa debit cards and details', () => {
         accessToken,
       );
 
-      const visaParentWalletResponse = await getVisaWalletsAndDetails(
-        programIdVisa,
-        registration.referenceId,
-        accessToken,
-      );
+      const visaParentWalletResponse =
+        await retrieveAndUpdateVisaWalletsAndDetails(
+          programIdVisa,
+          registration.referenceId,
+          accessToken,
+        );
 
       // Assert
       expect(visaParentWalletResponse.status).toBe(200);
       expect(visaParentWalletResponse.body.cards).toBeDefined();
-      expect(visaParentWalletResponse.body.cards.length).toBe(1);
+      expect(visaParentWalletResponse.body.cards.length).toBe(2);
       expect(visaParentWalletResponse.body.balance).toBeDefined();
       expect(visaParentWalletResponse.body.balance).toBe(amountVisa * 100);
       expect(visaParentWalletResponse.body.lastUsedDate).toBeDefined();

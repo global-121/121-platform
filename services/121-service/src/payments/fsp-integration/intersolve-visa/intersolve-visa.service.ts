@@ -4,6 +4,7 @@ import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { CreatePhysicalCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-physical-card-params.interface';
 import { DoTransferOrIssueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-params.interface';
@@ -244,6 +245,9 @@ export class IntersolveVisaService
       // If success, update child wallet: set isDebitCardCreated to true
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0].isDebitCardCreated =
         true;
+      // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always CardOk
+      intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0].cardStatus =
+        IntersolveVisaCardStatus.CardOk;
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
         await this.intersolveVisaChildWalletScopedRepository.save(
           intersolveVisaCustomer.intersolveVisaParentWallet
@@ -533,6 +537,8 @@ export class IntersolveVisaService
 
     // Update child wallet: set isDebitCardCreated to true
     newChildWallet.isDebitCardCreated = true;
+    // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always cardOk
+    newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
     newChildWallet =
       await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
   }
