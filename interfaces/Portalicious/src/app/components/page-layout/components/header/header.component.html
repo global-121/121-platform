@@ -1,4 +1,4 @@
-<p-toolbar styleClass="bg-navy border-none rounded-none">
+<p-toolbar>
   <ng-template pTemplate="start">
     <p-button
       icon="pi pi-bars"
@@ -8,6 +8,7 @@
       class="[&_button:not(:hover)]:text-white"
       (click)="sidebarVisible = true"
       data-testid="sidebar-toggle"
+      styleClass="lg:mr-9"
     />
     <h1 class="ml-2 text-xl text-white">
       <a
@@ -21,7 +22,7 @@
     </h1>
   </ng-template>
   <ng-template pTemplate="end">
-    <div class="flex items-center gap-2">
+    <div class="flex items-center lg:px-20">
       <p-button
         (click)="userMenu.toggle($event)"
         icon="pi pi-user"
@@ -52,41 +53,57 @@
   [(visible)]="sidebarVisible"
   data-testid="sidebar"
 >
+  <ng-template pTemplate="closeicon"
+    ><p-button
+      icon="pi pi-times"
+      plain
+      rounded
+      text
+      title="Close"
+      i18n-title="@@generiClose"
+      ariaLabel="Close"
+      i18n-ariaLabel="@@generiClose"
+  /></ng-template>
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
       @for (sidebarLink of sidebarLinks; track $index) {
         <a
           [routerLink]="sidebarLink.routerLink"
+          [routerLinkActive]="['font-bold', 'pointer-events-none']"
           (click)="sidebarVisible = false"
-          class="p-button p-button-text p-button-secondary w-full"
+          class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple"
         >
           {{ sidebarLink.label }}
         </a>
       }
       <a
         href="https://manual.121.global/"
-        class="p-button p-button-text p-button-secondary w-full"
+        class="inline-flex w-full items-center rounded-none border-b border-t border-grey-300 px-6 py-4 font-display hover:text-purple"
         target="_blank"
+        title="Opens in a new window"
+        i18n-title
       >
         <ng-container i18n>Manual</ng-container>
         <span
-          class="p-button-icon p-button-icon-right pi pi-external-link"
+          class="p-button-icon p-button-icon-right pi pi-external-link ml-2 text-sm"
         ></span>
       </a>
     </div>
-    <p-dropdown
-      [options]="languages"
-      [(ngModel)]="selectedLanguage"
-      [showClear]="false"
-      styleClass="w-full"
-      data-testid="language-dropdown"
-    >
-      <ng-template pTemplate="selectedItem">
-        <div class="flex w-full items-center gap-2">
-          <i class="pi pi-globe text-xl"></i>
-          <div i18n>Language: {{ selectedLanguageLabel() }}</div>
-        </div>
-      </ng-template>
-    </p-dropdown>
+    <div class="px-6">
+      <p-dropdown
+        [options]="languages"
+        [(ngModel)]="selectedLanguage"
+        [showClear]="false"
+        styleClass="w-full"
+        data-testid="language-dropdown"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div class="flex w-full items-center gap-2">
+            <i class="pi pi-globe text-xl"></i>
+            <div i18n>Language: {{ selectedLanguageLabel() }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
   </div>
 </p-sidebar>

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AllProjectsComponent } from '~/pages/all-projects/all-projects.component';
-import { CreateProgramComponent } from '~/pages/create-program/create-program.component';
 import { ProgramMonitoringComponent } from '~/pages/program/program-monitoring/program-monitoring.component';
 import { ProgramOverviewComponent } from '~/pages/program/program-overview/program-overview.component';
 import { ProgramPaymentsComponent } from '~/pages/program/program-payments/program-payments.component';
@@ -12,7 +11,6 @@ import { UsersComponent } from '~/pages/users/users.component';
 
 export enum AppRoutes {
   allProjects = 'all-projects',
-  createProgram = 'create-program',
   program = 'program',
   programMonitoring = 'monitoring',
   programOverview = 'overview',
@@ -32,7 +30,6 @@ export const routes: Routes = [
     path: AppRoutes.rolesAndPermissions,
     component: RolesAndPermissionsComponent,
   },
-  { path: AppRoutes.createProgram, component: CreateProgramComponent },
   {
     path: `${AppRoutes.program}/:programId`,
     children: [
