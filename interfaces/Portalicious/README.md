@@ -26,7 +26,18 @@ Run `npm run fix` to automatically fix code-style and syntax issues.
 
 ### Code scaffolding
 
-Run `ng generate component <component-name>` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run `ng generate component <component-name>` to generate a new component.  
+Other uses, see: <https://angular.dev/cli/generate>
+
+### Internationalization (i18n)
+
+To support multiple languages, we use the default Angular i18n features, see: <https://angular.dev/guide/i18n>
+
+See all supported/enabled languages at: [`angular.json:.../i18n/locales`](angular.json#L17).
+
+During development, only 1 language can be used. See all available languages at: [`angular.json:.../architect/serve/configurations`](angular.json#L109).
+
+To use a different language, run: `npm run start -- --configuration=<language-code>`.
 
 ## Build
 
@@ -39,6 +50,23 @@ Run `npm run start:debug-production` to run a local server with the production b
 Run `npm run test:all` to run code-style, syntax-test and unit-tests combined.
 
 Run `npm test` to execute the unit-tests via [Karma](https://karma-runner.github.io).
+
+## Contributing
+
+### PR Checklist
+
+After making your changes, make sure to:
+
+- Check code-syntax.
+  - Use `npm run lint` to check for any issues
+  - Use `npm run fix` to auto-fix (some) issues
+- Check translatability.
+  - Make sure all translatable text-elements have `i18n`/`i18n-*`-attribute(s)
+  - Extract all translatable text into `messages`-files:  
+    Run: `npm run extract-i18n`
+  - Add/remove/update translated text (when applicable)
+  - Verify translated version:  
+    Run: `npm run start -- --configuration=nl`
 
 ---
 
