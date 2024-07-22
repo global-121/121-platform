@@ -354,7 +354,7 @@
     <unit id="2336550011721758066">
       <notes>
         <note category="location">src/app/pages/login/login.component.html:11,12</note>
-        <note category="location">src/app/pages/login/login.component.html:54</note>
+        <note category="location">src/app/pages/login/login.component.html:56</note>
       </notes>
       <segment state="initial">
         <source>Log in</source>
@@ -381,7 +381,7 @@
     </unit>
     <unit id="1431416938026210429">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:37</note>
+        <note category="location">src/app/pages/login/login.component.html:38</note>
       </notes>
       <segment state="initial">
         <source>Password</source>
@@ -390,7 +390,7 @@
     </unit>
     <unit id="2363864708975195083">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:75,82</note>
+        <note category="location">src/app/pages/login/login.component.html:77,84</note>
       </notes>
       <segment state="initial">
         <source>Read our <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a&gt;">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
@@ -399,7 +399,7 @@
     </unit>
     <unit id="2464088112444335477">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:91,92</note>
+        <note category="location">src/app/pages/login/login.component.html:93,94</note>
       </notes>
       <segment state="initial">
         <source>Image of a person logging in to the 121 Platform</source>
@@ -408,7 +408,7 @@
     </unit>
     <unit id="2772023564304193657">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:49,50</note>
+        <note category="location">src/app/pages/login/login.component.html:51,52</note>
       </notes>
       <segment state="initial">
         <source>Enter your password</source>
@@ -417,7 +417,7 @@
     </unit>
     <unit id="3720331845170443769">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:65,73</note>
+        <note category="location">src/app/pages/login/login.component.html:67,75</note>
       </notes>
       <segment state="initial">
         <source>Forgot your password? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a &gt;"> Request password</pc></source>
@@ -444,7 +444,7 @@
     </unit>
     <unit id="8938510541215036054">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:32,33</note>
+        <note category="location">src/app/pages/login/login.component.html:33,34</note>
       </notes>
       <segment state="initial">
         <source>Enter a valid email address</source>

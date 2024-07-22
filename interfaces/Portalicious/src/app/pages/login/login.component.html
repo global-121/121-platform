@@ -24,6 +24,7 @@
               formControlName="email"
               placeholder="example: janedue@redcross.com"
               i18n-placeholder
+              autocomplete="email username"
               class="mt-2 block w-full"
             />
           </label>
@@ -39,6 +40,7 @@
               formControlName="password"
               [toggleMask]="true"
               [feedback]="false"
+              autocomplete="current-password"
               styleClass="w-full [&_input]:w-full mt-2"
             />
           </label>
