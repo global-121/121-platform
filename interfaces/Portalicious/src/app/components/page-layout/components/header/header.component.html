@@ -2,6 +2,10 @@
   <ng-template pTemplate="start">
     <p-button
       icon="pi pi-bars"
+      title="Menu"
+      i18n-title="@@generic-menu"
+      ariaLabel="Menu"
+      i18n-ariaLabel="@@generic-menu"
       plain
       rounded
       text
@@ -48,9 +52,9 @@
       rounded
       text
       title="Close"
-      i18n-title="@@generiClose"
+      i18n-title="@@generic-close"
       ariaLabel="Close"
-      i18n-ariaLabel="@@generiClose"
+      i18n-ariaLabel="@@generic-close"
   /></ng-template>
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
@@ -92,6 +96,9 @@
           </div>
         </ng-template>
       </p-dropdown>
+      <small class="block text-center text-grey-500">
+        <app-health-widget />
+      </small>
     </div>
   </div>
 </p-sidebar>

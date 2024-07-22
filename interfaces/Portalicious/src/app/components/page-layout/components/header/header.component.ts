@@ -15,6 +15,7 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AppRoutes } from '~/app.routes';
+import { HealthWidgetComponent } from '~/components/health-widget/health-widget.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { AuthService } from '~/services/auth.service';
 import { Locale, changeLanguage, getLocaleLabel } from '~/utils/locale';
@@ -31,6 +32,7 @@ import { environment } from '~environment';
     DropdownModule,
     FormsModule,
     LogoComponent,
+    HealthWidgetComponent,
   ],
   providers: [],
   templateUrl: './header.component.html',
