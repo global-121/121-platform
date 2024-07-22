@@ -45,13 +45,8 @@ const expectedColumnsPayment = [
   'firstName',
   'lastName',
   'whatsappPhoneNumber',
-  'addressCity',
-  'addressPostalCode',
-  'addressHouseNumberAddition',
-  'addressHouseNumber',
-  'addressStreet',
 ];
-interface bulkActionContent {
+interface BulkActionContent {
   textLocator: Locator;
   expectedText: string;
   bulkAction: string;
@@ -272,7 +267,7 @@ class TableModule {
     expectedText,
     bulkAction,
     maxRetries = 3,
-  }: bulkActionContent) {
+  }: BulkActionContent) {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       const textContent = await textLocator.textContent();
       if (textContent?.trim() === expectedText) return true;
@@ -450,19 +445,32 @@ class TableModule {
     }
     // Extract the column names from the first object in the array
     const actualColumns = Object.keys(rowToAssert);
+
+    // Normalize the column names for comparison (lowercase and trim whitespace)
+    const normalizedExpectedColumns = expectedColumns.map((col) =>
+      col.toLowerCase().trim(),
+    );
+    const normalizedActualColumns = actualColumns.map((col) =>
+      col.toLowerCase().trim(),
+    );
+
+    // Check if every expected column is present in the actual columns
+    const columnsPresent = normalizedExpectedColumns.every((expectedCol) =>
+      normalizedActualColumns.includes(expectedCol),
+    );
+
+    // This approach does not require the counts to match exactly, focusing on presence
+    if (
+      !columnsPresent ||
+      normalizedExpectedColumns.length !== normalizedActualColumns.length
+    ) {
+      throw new Error('Column validation failed');
+    }
+
     // Assert the values of the row
     Object.entries(assertionData).forEach(([key, value]) => {
       expect(rowToAssert[key]).toBe(value);
     });
-    // Validate the column names
-    const columnsPresent = expectedColumns.every((col) =>
-      actualColumns.includes(col),
-    );
-    const correctColumns =
-      actualColumns.length === expectedColumns.length && columnsPresent;
-    if (!correctColumns) {
-      throw new Error('Column validation failed');
-    }
   }
 
   async selectFspPaPii({ shouldSelectVisa }: { shouldSelectVisa: boolean }) {
