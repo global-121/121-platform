@@ -3,9 +3,9 @@
     <p-button
       icon="pi pi-bars"
       title="Menu"
-      i18n-title="@@generic-menu"
+      i18n-title="@@header-menu"
       ariaLabel="Menu"
-      i18n-ariaLabel="@@generic-menu"
+      i18n-ariaLabel="@@header-menu"
       plain
       rounded
       text
@@ -19,6 +19,10 @@
   <ng-template pTemplate="end">
     <div class="flex items-center lg:px-20">
       <p-button
+        title="User-Menu"
+        i18n-title="@@header-user-menu"
+        ariaLabel="User-Menu"
+        i18n-ariaLabel="@@header-user-menu"
         (click)="userMenu.toggle($event)"
         icon="pi pi-user"
         plain
