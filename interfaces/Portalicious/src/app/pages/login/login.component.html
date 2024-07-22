@@ -22,7 +22,7 @@
               id="email"
               type="email"
               formControlName="email"
-              placeholder="example: janedue@redcross.com"
+              placeholder="example: yourname@example.org"
               i18n-placeholder
               autocomplete="email username"
               class="mt-2 block w-full"
@@ -66,11 +66,11 @@
           <p i18n>
             Forgot your password?
             <a
-              href="mailto:support@510.global?subject=Request Password 121 Platform"
+              href="mailto:support@510.global?subject=Request Password reset for 121 Platform"
               class="text-blue-500 underline"
               target="_blank"
             >
-              Request password</a
+              Request password reset</a
             >
           </p>
           <p i18n>
@@ -90,8 +90,9 @@
         ngSrc="assets/login.jpeg"
         fill
         priority
-        alt="Image of a person logging in to the 121 Platform"
-        i18n-alt
+        alt=""
+        aria-hidden="true"
+        role="presentation"
         class="object-cover"
       />
     </div>
