@@ -443,5 +443,55 @@
         <target>bijv.: uwnaam@example.nl</target>
       </segment>
     </unit>
+    <unit id="6425467213960794982">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:65</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment state="initial">
+        <source>All projects</source>
+        <target>Alle projecten</target>
+      </segment>
+    </unit>
+    <unit id="4555457172864212828">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:69</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment state="initial">
+        <source>Users</source>
+        <target>Gebruikers</target>
+      </segment>
+    </unit>
+    <unit id="5942556817969302760">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:73</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment state="initial">
+        <source>Roles and permissions</source>
+        <target>Rollen en Rechten</target>
+      </segment>
+    </unit>
+    <unit id="4930506384627295710">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:50</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment state="initial">
+        <source>Settings</source>
+        <target>Instellingen</target>
+      </segment>
+    </unit>
+    <unit id="3797778920049399855">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:55</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment state="initial">
+        <source>Logout</source>
+        <target>Log uit</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

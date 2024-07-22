@@ -47,12 +47,12 @@ export class HeaderComponent {
   sidebarVisible = false;
   userMenuOptions = [
     {
-      label: 'Settings',
+      label: $localize`:Menu-item:Settings`,
       icon: 'pi pi-cog',
       routerLink: `/${AppRoutes.userSettings}`,
     },
     {
-      label: 'Logout',
+      label: $localize`:Menu-item:Logout`,
       icon: 'pi pi-sign-out',
       command: () => {
         void this.authService.logout();
@@ -62,15 +62,15 @@ export class HeaderComponent {
 
   sidebarLinks = [
     {
-      label: 'All projects',
+      label: $localize`:Menu-item:All projects`,
       routerLink: `/${AppRoutes.allProjects}`,
     },
     {
-      label: 'Users',
+      label: $localize`:Menu-item:Users`,
       routerLink: `/${AppRoutes.users}`,
     },
     {
-      label: 'Roles and permissions',
+      label: $localize`:Menu-item:Roles and permissions`,
       routerLink: `/${AppRoutes.rolesAndPermissions}`,
     },
   ];

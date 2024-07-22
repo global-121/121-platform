@@ -392,5 +392,50 @@
         <source>Menu</source>
       </segment>
     </unit>
+    <unit id="4555457172864212828">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:69</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Users</source>
+      </segment>
+    </unit>
+    <unit id="5942556817969302760">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:73</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Roles and permissions</source>
+      </segment>
+    </unit>
+    <unit id="6425467213960794982">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:65</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>All projects</source>
+      </segment>
+    </unit>
+    <unit id="3797778920049399855">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:55</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Logout</source>
+      </segment>
+    </unit>
+    <unit id="4930506384627295710">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:50</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Settings</source>
+      </segment>
+    </unit>
   </file>
 </xliff>
