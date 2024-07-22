@@ -1,30 +1,12 @@
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-GB" trgLang="nl">
   <file id="ngi18n" original="ng.template">
-    <unit id="7751693363784792855">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:4,5</note>
-      </notes>
-      <segment state="initial">
-        <source>Loading health widget...</source>
-        <target>Loading health widget...</target>
-      </segment>
-    </unit>
     <unit id="5641945527911431559">
       <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:7,9</note>
+        <note category="location">src/app/components/health-widget/health-widget.component.html:11,13</note>
       </notes>
       <segment state="initial">
-        <source>Error: <ph id="0" equiv="INTERPOLATION" disp="{{ versionInfo.error()?.message }}"/></source>
-        <target>Error: <ph id="0" equiv="INTERPOLATION" disp="{{ versionInfo.error()?.message }}"/></target>
-      </segment>
-    </unit>
-    <unit id="3602312649258409543">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:11</note>
-      </notes>
-      <segment state="initial">
-        <source>Connected to backend!</source>
-        <target>Connected to backend!</target>
+        <source>Error: <ph disp="{{ versionInfo.error()?.message }}" equiv="INTERPOLATION" id="0"/></source>
+        <target>Fout: <ph disp="{{ versionInfo.error()?.message }}" equiv="INTERPOLATION" id="0"/></target>
       </segment>
     </unit>
     <unit id="5901643806193916083">
@@ -51,7 +33,7 @@
       </notes>
       <segment state="initial">
         <source>Find out more</source>
-        <target>Find out more</target>
+        <target>Lees meer</target>
       </segment>
     </unit>
     <unit id="4242007306199259869">
@@ -60,7 +42,7 @@
       </notes>
       <segment state="initial">
         <source>Helpful links</source>
-        <target>Helpful links</target>
+        <target>Handige links</target>
       </segment>
     </unit>
     <unit id="3008354540074404323">
@@ -78,7 +60,7 @@
       </notes>
       <segment state="initial">
         <source>User Manual</source>
-        <target>User Manual</target>
+        <target>Handleiding</target>
       </segment>
     </unit>
     <unit id="4371726377430146531">
@@ -87,7 +69,7 @@
       </notes>
       <segment state="initial">
         <source>Questions or feedback? Contact us</source>
-        <target>Questions or feedback? Contact us</target>
+        <target>Vragen of feedback? Laat het ons weten</target>
       </segment>
     </unit>
     <unit id="6231535972680055827">
@@ -101,29 +83,29 @@
     </unit>
     <unit id="9219884121371524201">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:32</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:36</note>
       </notes>
       <segment state="initial">
         <source>Logged in as:</source>
-        <target>Logged in as:</target>
+        <target>Ingelogd als:</target>
       </segment>
     </unit>
     <unit id="2233560223291461480">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:74</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:78</note>
       </notes>
       <segment state="initial">
         <source>Manual</source>
-        <target>Manual</target>
+        <target>Handleiding</target>
       </segment>
     </unit>
     <unit id="1023894478419315290">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:91,92</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:95,96</note>
       </notes>
       <segment state="initial">
-        <source>Language: <ph id="0" equiv="INTERPOLATION" disp="{{ selectedLanguageLabel() }}"/></source>
-        <target>Taal: <ph id="0" equiv="INTERPOLATION" disp="{{ selectedLanguageLabel() }}"/></target>
+        <source>Language: <ph disp="{{ selectedLanguageLabel() }}" equiv="INTERPOLATION" id="0"/></source>
+        <target>Taal: <ph disp="{{ selectedLanguageLabel() }}" equiv="INTERPOLATION" id="0"/></target>
       </segment>
     </unit>
     <unit id="2614607010577950577">
@@ -150,7 +132,7 @@
       </notes>
       <segment state="initial">
         <source>Registrations</source>
-        <target>Aanmeldingen</target>
+        <target>Registraties</target>
       </segment>
     </unit>
     <unit id="1131264372756277854">
@@ -168,7 +150,7 @@
       </notes>
       <segment state="initial">
         <source>Monitoring</source>
-        <target>Toezicht houden</target>
+        <target>Rapportage</target>
       </segment>
     </unit>
     <unit id="3350975625681256410">
@@ -177,7 +159,7 @@
       </notes>
       <segment state="initial">
         <source>Welcome to Portalicious, baby!</source>
-        <target>Welkom bij het smakelijke Portaal, schat!</target>
+        <target>Welkom op het smakelijke Portaal, schat!</target>
       </segment>
     </unit>
     <unit id="6966507916758477998">
@@ -204,7 +186,7 @@
       </notes>
       <segment state="initial">
         <source>program-monitoring works!</source>
-        <target>program-monitoring works!</target>
+        <target>program-monitoring werkt!</target>
       </segment>
     </unit>
     <unit id="8486187705503981919">
@@ -213,7 +195,7 @@
       </notes>
       <segment state="initial">
         <source>program-overview works!</source>
-        <target>program-overview works!</target>
+        <target>program-overview werkt!</target>
       </segment>
     </unit>
     <unit id="1030042071919904969">
@@ -222,7 +204,7 @@
       </notes>
       <segment state="initial">
         <source>program-payments works!</source>
-        <target>program-payments works!</target>
+        <target>program-payments werkt!</target>
       </segment>
     </unit>
     <unit id="8572807781579317369">
@@ -231,7 +213,7 @@
       </notes>
       <segment state="initial">
         <source>program-registrations works!</source>
-        <target>program-registrations works!</target>
+        <target>program-registrations werkt!</target>
       </segment>
     </unit>
     <unit id="5662590318641401360">
@@ -240,7 +222,7 @@
       </notes>
       <segment state="initial">
         <source>program-team works!</source>
-        <target>program-team works!</target>
+        <target>program-team werkt!</target>
       </segment>
     </unit>
     <unit id="8837209833313387366">
@@ -249,7 +231,7 @@
       </notes>
       <segment state="initial">
         <source>roles-and-permissions works!</source>
-        <target>roles-and-permissions works!</target>
+        <target>roles-and-permissions werkt!</target>
       </segment>
     </unit>
     <unit id="7978336974922418932">
@@ -258,7 +240,7 @@
       </notes>
       <segment state="initial">
         <source>user-settings works!</source>
-        <target>user-settings works!</target>
+        <target>user-settings werkt!</target>
       </segment>
     </unit>
     <unit id="1519584467841622217">
@@ -267,7 +249,7 @@
       </notes>
       <segment state="initial">
         <source>users works!</source>
-        <target>users works!</target>
+        <target>users werkt!</target>
       </segment>
     </unit>
     <unit id="7807685431509530550">
@@ -276,13 +258,13 @@
       </notes>
       <segment state="initial">
         <source>API Documentation</source>
-        <target>API Documentation</target>
+        <target>API Documentatie</target>
       </segment>
     </unit>
-    <unit id="generiClose">
+    <unit id="generic-close">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:51</note>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:53</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:55</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:57</note>
       </notes>
       <segment state="initial">
         <source>Close</source>
@@ -291,7 +273,7 @@
     </unit>
     <unit id="4501314745488687296">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:71,72</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:75,76</note>
       </notes>
       <segment state="initial">
         <source>Opens in a new window</source>
@@ -304,7 +286,7 @@
       </notes>
       <segment state="initial">
         <source>Cookie policy</source>
-        <target>Cookie policy</target>
+        <target>Cookie beleid</target>
       </segment>
     </unit>
     <unit id="6305795241980054784">
@@ -322,14 +304,14 @@
       </notes>
       <segment state="initial">
         <source>
-          <pc id="0" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
-          <pc id="1" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
-          <pc id="3" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="0" type="other"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="1" type="other"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="3" type="other"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
         </source>
         <target>
-          <pc id="0" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
-          <pc id="1" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
-          <pc id="3" equivStart="START_PARAGRAPH" equivEnd="CLOSE_PARAGRAPH" type="other" dispStart="&lt;p&gt;" dispEnd="&lt;/p&gt;"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="0" type="other"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="1" type="other"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="3" type="other"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
         </target>
       </segment>
     </unit>
@@ -339,7 +321,7 @@
       </notes>
       <segment state="initial">
         <source>Read less</source>
-        <target>Read less</target>
+        <target>Inklappen</target>
       </segment>
     </unit>
     <unit id="2827984212740060090">
@@ -348,7 +330,7 @@
       </notes>
       <segment state="initial">
         <source>Read more</source>
-        <target>Read more</target>
+        <target>Openklappen</target>
       </segment>
     </unit>
     <unit id="2336550011721758066">
@@ -393,17 +375,8 @@
         <note category="location">src/app/pages/login/login.component.html:77,84</note>
       </notes>
       <segment state="initial">
-        <source>Read our <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a&gt;">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
-        <target>Read our <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a&gt;">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></target>
-      </segment>
-    </unit>
-    <unit id="2464088112444335477">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:93,94</note>
-      </notes>
-      <segment state="initial">
-        <source>Image of a person logging in to the 121 Platform</source>
-        <target>Image of a person logging in to the 121 Platform</target>
+        <source>Read our <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
+        <target>Lees ons <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy beleid <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></target>
       </segment>
     </unit>
     <unit id="2772023564304193657">
@@ -412,16 +385,16 @@
       </notes>
       <segment state="initial">
         <source>Enter your password</source>
-        <target>Enter your password</target>
+        <target>Vul een wachtwoord in</target>
       </segment>
     </unit>
-    <unit id="3720331845170443769">
+    <unit id="6137778083982498577">
       <notes>
         <note category="location">src/app/pages/login/login.component.html:67,75</note>
       </notes>
       <segment state="initial">
-        <source>Forgot your password? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a &gt;"> Request password</pc></source>
-        <target>Forgot your password? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" dispEnd="&lt;/a &gt;"> Request password</pc></target>
+        <source>Forgot your password? <pc dispEnd="&lt;/a &gt;" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password reset for 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link"> Request password reset</pc></source>
+        <target>Wachtwoord vergeten? <pc dispEnd="&lt;/a &gt;" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password reset for 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link"> Vraag een wachtwoord reset aan</pc></target>
       </segment>
     </unit>
     <unit id="9132374083993014120">
@@ -430,16 +403,7 @@
       </notes>
       <segment state="initial">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
-        <target>Invalid email or password. Double-check your credentials and try again.</target>
-      </segment>
-    </unit>
-    <unit id="2899870068821233000">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:25,26</note>
-      </notes>
-      <segment state="initial">
-        <source>example: janedue@redcross.com</source>
-        <target>example: janedue@redcross.com</target>
+        <target>Ongeldig emailadres of wachtwoord. Dubel-check de gegevens en probeer het opnieuw.</target>
       </segment>
     </unit>
     <unit id="8938510541215036054">
@@ -448,7 +412,35 @@
       </notes>
       <segment state="initial">
         <source>Enter a valid email address</source>
-        <target>Enter a valid email address</target>
+        <target>Vul een geldig emailadres in</target>
+      </segment>
+    </unit>
+    <unit id="888507803757257524">
+      <notes>
+        <note category="location">src/app/components/health-widget/health-widget.component.html:2</note>
+      </notes>
+      <segment state="initial">
+        <source>API Version:</source>
+        <target>API Versie:</target>
+      </segment>
+    </unit>
+    <unit id="generic-menu">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:6</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:8</note>
+      </notes>
+      <segment state="initial">
+        <source>Menu</source>
+        <target>Menu</target>
+      </segment>
+    </unit>
+    <unit id="5393972837576333232">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:25,26</note>
+      </notes>
+      <segment state="initial">
+        <source>example: yourname@example.org</source>
+        <target>bijv.: uwnaam@example.nl</target>
       </segment>
     </unit>
   </file>
