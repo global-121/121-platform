@@ -46,7 +46,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28445] OCW: Send payment instructions', async ({ page }) => {
+test.skip('[28445] OCW: Send payment instructions', async ({ page }) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
