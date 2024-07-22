@@ -34,7 +34,7 @@ Run `npm run build:prod` to build the project in production-mode. The output wil
 
 Run `npm run start:debug-production` to run a local server with the production build.
 
-## Running tests
+## Tests
 
 Run `npm run test:all` to run code-style, syntax-test and unit-tests combined.
 
