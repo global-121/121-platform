@@ -29,7 +29,7 @@ export const registrationOCW1 = {
   firstName: 'John',
   lastName: 'Smith',
   phoneNumber: '14155236666',
-  fspName: FinancialServiceProviderName.intersolveVisa,
+  fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155238886',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',

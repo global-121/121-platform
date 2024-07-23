@@ -11,8 +11,8 @@ import {
   createExpectedValueObject,
   expectedAttributes,
   programIdOCW,
-  registrationOCW1,
   registrationOCW2,
+  registrationOCW3,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Load PA table', () => {
@@ -31,7 +31,7 @@ describe('Load PA table', () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
 
-      await importRegistrations(programIdOCW, [registrationOCW1], accessToken);
+      await importRegistrations(programIdOCW, [registrationOCW2], accessToken);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
@@ -49,7 +49,7 @@ describe('Load PA table', () => {
 
       // Assert
       expect(data[0]).toMatchObject(
-        createExpectedValueObject(registrationOCW1, 1),
+        createExpectedValueObject(registrationOCW2, 1),
       );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);
@@ -148,7 +148,7 @@ describe('Load PA table', () => {
     it('should be able to specify page attributes', async () => {
       // Arrange
       const requestedDynamicAttributes = undefined;
-      await importRegistrations(programIdOCW, [registrationOCW2], accessToken);
+      await importRegistrations(programIdOCW, [registrationOCW3], accessToken);
 
       // Act
       const getRegistrationsResponse1 = await getRegistrations({
@@ -185,7 +185,7 @@ describe('Load PA table', () => {
 
       // Registration 1
       expect(data1[0]).toMatchObject(
-        createExpectedValueObject(registrationOCW1, 1),
+        createExpectedValueObject(registrationOCW2, 1),
       );
       for (const attribute of expectedAttributes) {
         expect(data1[0]).toHaveProperty(attribute);
@@ -197,7 +197,7 @@ describe('Load PA table', () => {
 
       // Registration 2
       expect(data2[0]).toMatchObject(
-        createExpectedValueObject(registrationOCW2, 2),
+        createExpectedValueObject(registrationOCW3, 2),
       );
       for (const attribute of expectedAttributes) {
         expect(data2[0]).toHaveProperty(attribute);
