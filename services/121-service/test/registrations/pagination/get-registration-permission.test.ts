@@ -54,8 +54,7 @@ describe('Load PA table', () => {
         referenceId: registrationOCW1.referenceId,
         paymentAmountMultiplier: 1,
         preferredLanguage: registrationOCW1.preferredLanguage,
-        financialServiceProvider:
-          FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        financialServiceProvider: FinancialServiceProviderName.intersolveVisa,
       };
       const notExpectedValueObject = {
         firstName: registrationOCW1.firstName,
