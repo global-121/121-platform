@@ -29,7 +29,7 @@ import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { v4 as uuid, v5 as uuidv5 } from 'uuid';
 
-const UUID_NAMESPACE = process.env.UUID_NAMESPACE || '';
+const UUID_NAMESPACE = process.env.UUID_NAMESPACE || uuid();
 
 /**
  * Generate a UUID v5 based on a seed.
