@@ -41,7 +41,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets/",
+                "output": "/assets/"
               },
               "src/favicon.ico"
             ],
@@ -118,7 +119,11 @@
             "buildTarget": "Portalicious:build",
             "format": "xlf2",
             "outputPath": "src/locale",
+            "sourceFile": "messages.xlf",
             "targetFiles": ["messages.nl.xlf"],
+            "newTranslationTargetsBlank": false,
+            "sort": "stableAppendNew",
+            "sortNestedTagAttributes": true,
             "trim": true,
             "includeContext": true
           }
@@ -136,7 +141,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets/",
+                "output": "/assets/"
               }
             ],
             "styles": ["src/styles.scss"],
