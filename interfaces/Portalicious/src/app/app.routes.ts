@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '~/auth.guard';
 import { AllProjectsComponent } from '~/pages/all-projects/all-projects.component';
+import { LoginComponent } from '~/pages/login/login.component';
 import { ProgramMonitoringComponent } from '~/pages/program/program-monitoring/program-monitoring.component';
 import { ProgramOverviewComponent } from '~/pages/program/program-overview/program-overview.component';
 import { ProgramPaymentsComponent } from '~/pages/program/program-payments/program-payments.component';
@@ -11,6 +13,7 @@ import { UsersComponent } from '~/pages/users/users.component';
 
 export enum AppRoutes {
   allProjects = 'all-projects',
+  login = 'login',
   program = 'program',
   programMonitoring = 'monitoring',
   programOverview = 'overview',
@@ -23,15 +26,33 @@ export enum AppRoutes {
 }
 
 export const routes: Routes = [
-  { path: AppRoutes.allProjects, component: AllProjectsComponent },
-  { path: AppRoutes.users, component: UsersComponent },
-  { path: AppRoutes.userSettings, component: UserSettingsComponent },
+  {
+    path: AppRoutes.login,
+    component: LoginComponent,
+  },
+  {
+    path: AppRoutes.allProjects,
+    component: AllProjectsComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: AppRoutes.users,
+    component: UsersComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: AppRoutes.userSettings,
+    component: UserSettingsComponent,
+    canActivate: [authGuard],
+  },
   {
     path: AppRoutes.rolesAndPermissions,
     component: RolesAndPermissionsComponent,
+    canActivate: [authGuard],
   },
   {
     path: `${AppRoutes.program}/:programId`,
+    canActivate: [authGuard],
     children: [
       { path: AppRoutes.programOverview, component: ProgramOverviewComponent },
       {
@@ -54,5 +75,9 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: `/${AppRoutes.allProjects}`, pathMatch: 'full' },
+  { path: '', redirectTo: AppRoutes.allProjects, pathMatch: 'full' },
+  {
+    path: '**',
+    redirectTo: AppRoutes.allProjects,
+  },
 ];

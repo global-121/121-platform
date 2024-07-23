@@ -15,8 +15,9 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AppRoutes } from '~/app.routes';
-import { LogEvent, LogService } from '~/services/log.service';
-import { ToastService } from '~/services/toast.service';
+import { HealthWidgetComponent } from '~/components/health-widget/health-widget.component';
+import { LogoComponent } from '~/components/logo/logo.component';
+import { AuthService } from '~/services/auth.service';
 import { Locale, changeLanguage, getLocaleLabel } from '~/utils/locale';
 import { environment } from '~environment';
 
@@ -30,47 +31,46 @@ import { environment } from '~environment';
     SidebarModule,
     DropdownModule,
     FormsModule,
+    LogoComponent,
+    HealthWidgetComponent,
   ],
-  providers: [ToastService],
+  providers: [],
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  private logService = inject(LogService);
-  private toastService = inject(ToastService);
+  private authService = inject(AuthService);
   programTitle = input<string>();
+
+  userName = computed(() => this.authService.user?.username);
 
   sidebarVisible = false;
   userMenuOptions = [
     {
-      label: 'Settings',
+      label: $localize`:Menu-item:Settings`,
       icon: 'pi pi-cog',
       routerLink: `/${AppRoutes.userSettings}`,
     },
     {
-      label: 'Logout',
+      label: $localize`:Menu-item:Logout`,
       icon: 'pi pi-sign-out',
       command: () => {
-        this.logService.logEvent(LogEvent.userLogout);
-
-        this.toastService.showToast({
-          detail: 'You clicked on Log Out!',
-        });
+        void this.authService.logout();
       },
     },
   ];
 
   sidebarLinks = [
     {
-      label: 'All projects',
+      label: $localize`:Menu-item:All projects`,
       routerLink: `/${AppRoutes.allProjects}`,
     },
     {
-      label: 'Users',
+      label: $localize`:Menu-item:Users`,
       routerLink: `/${AppRoutes.users}`,
     },
     {
-      label: 'Roles and permissions',
+      label: $localize`:Menu-item:Roles and permissions`,
       routerLink: `/${AppRoutes.rolesAndPermissions}`,
     },
   ];

@@ -4,6 +4,7 @@ import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { environment } from 'src/environments/environment';
 
 export enum LogEvent {
+  userLogin = 'user/login',
   userLogout = 'user/logout',
 }
 
