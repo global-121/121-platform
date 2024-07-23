@@ -114,20 +114,20 @@ export class IntersolveVisaMockController {
     return this.intersolveVisaMockService.toggleBlockWalletMock();
   }
 
-  @ApiOperation({ summary: 'Update customer phonnumber' })
+  @ApiOperation({ summary: 'Update customer phonenumber' })
   @Put('/customer/v1/customers/:holderId/contact-info/phone-numbers')
   public updateCustomerPhoneNumber(
     @Body() _payload: Record<string, unknown>,
-    @Param('tokenCode') _holderId: string,
+    @Param('holderId') _holderId: string,
   ): { status: number } {
     return this.intersolveVisaMockService.updateCustomerPhoneNumber();
   }
 
-  @ApiOperation({ summary: 'Update customer phonnumber' })
+  @ApiOperation({ summary: 'Update customer address' })
   @Put('/customer/v1/customers/:holderId/contact-info/addresses')
   public updateCustomerAddress(
     @Body() _payload: Record<string, unknown>,
-    @Param('tokenCode') _holderId: string,
+    @Param('holderId') _holderId: string,
   ): { status: number } {
     return this.intersolveVisaMockService.updateCustomerAddress();
   }
