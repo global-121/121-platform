@@ -59,16 +59,6 @@
       "tr": "Sevgili veli/bakıcı, kartınıza para yükledik: €[[1]] (önümüzdeki iki hafta için). Lütfen ilgili tutarı bir ay içinde kullanın. Bir takvim ayında en fazla 150€ harcayabilirsiniz. Kartı kullanmadan önce karttaki tutarı [www.rodekruis.nl/boodschappenkaart] üzerinden kontrol edin.\n\nSorularınız olursa, www.schoolmaaltijden.nl internet sitesini ziyaret edebilir, 097 010 204 851 numaralı telefona çağrı, mesaj ya da Whatsapp yoluyla ulaşabilir, veya info@schoolmaaltijden.nl adresine e-posta gönderebilirsiniz.\n\nSaygılarımızla, Rode Kruis/Programma Schoolmaaltijden"
     }
   },
-  "jumboCardSent": {
-    "isSendMessageTemplate": false,
-    "isWhatsappTemplate": false,
-    "message": {
-      "en": "Dear parent/carer, we have put new money on your card: €[[1]] for the coming two weeks. You can only spend a maximum of €150 per calender month. \nBefore using the grocery card, please check the balance via www.rodekruis.nl/boodschappenkaart.\n\nQuestions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards,\nNL Red Cross / School Meals Programme",
-      "nl": "Beste ouder/verzorger, we hebben geld op uw boodschappenkaart gezet: €[[1]] voor de komende twee weken. U kunt maximaal €150 per kalendermaand besteden.\nControleer het bedrag op uw kaart via www.rodekruis.nl/boodschappenkaart voor u de kaart gebruikt.\n\nHeeft u vragen? Kijk op www.schoolmaaltijden.nl, bel, SMS of Whatsapp  097 010 204 851, of mail info@schoolmaaltijden.nl.\n\nMvg, het Rode Kruis/Programma Schoolmaaltijden",
-      "ar": "عزيزي ولي الأمر/ مقدم الرعاية ، لقد وضعنا المال  على بطاقتك للأسبوعين المقبلين بقيمة €[[1]] برجاء استخدام هذا المبلغ خلال شهر. يمكنك فقط إنفاق ما يصل إلى 150 يورو في الشهر الواحد.   تحقق من المبلغ الموجود على بطاقتك قبل استخدام البطاقه عبر الرابط: [www.rodekruis.nl/boodschappenkaart]\n\nهل لديك أي أسئلة؟ تحقق من www.schoolmaaltijden.nl أو اتصل أو أرسل رسالة نصية قصيرة أو واتس اب على 097010204851 أو أرسل بريدا إلكترونيا الى info@schoolmaaltijden.nl\n\nمع تحيات الصليب الأحمر / برنامج الوجبات المدرسية",
-      "tr": "Sevgili veli/bakıcı, kartınıza para yükledik: €[[1]] (önümüzdeki iki hafta için). Lütfen ilgili tutarı bir ay içinde kullanın. Bir takvim ayında en fazla 150€ harcayabilirsiniz. Kartı kullanmadan önce karttaki tutarı [www.rodekruis.nl/boodschappenkaart] üzerinden kontrol edin.\n\nSorularınız olursa, www.schoolmaaltijden.nl internet sitesini ziyaret edebilir, 097 010 204 851 numaralı telefona çağrı, mesaj ya da Whatsapp yoluyla ulaşabilir, veya info@schoolmaaltijden.nl adresine e-posta gönderebilirsiniz.\n\nSaygılarımızla, Rode Kruis/Programma Schoolmaaltijden"
-    }
-  },
   "reissueVisaCard": {
     "isSendMessageTemplate": false,
     "isWhatsappTemplate": false,
