@@ -274,6 +274,7 @@
     <unit id="4501314745488687296">
       <notes>
         <note category="location">src/app/components/page-layout/components/header/header.component.html:79,80</note>
+        <note category="location">src/app/pages/login/login.component.html:82,83</note>
       </notes>
       <segment state="initial">
         <source>Opens in a new window</source>
@@ -370,13 +371,13 @@
         <target>Wachtwoord</target>
       </segment>
     </unit>
-    <unit id="2363864708975195083">
+    <unit id="8054991028832111978">
       <notes>
-        <note category="location">src/app/pages/login/login.component.html:77,84</note>
+        <note category="location">src/app/pages/login/login.component.html:77,90</note>
       </notes>
       <segment state="initial">
-        <source>Read our <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
-        <target>Lees ons <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy beleid <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></target>
+        <source>Read our <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://manual.121.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy Policy <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot; aria-hidden=&quot;true&quot; &gt;" dispEnd="&lt;/i &gt;"/></pc></source>
+        <target>Lees ons <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://manual.121.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacybeleid <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot; aria-hidden=&quot;true&quot; &gt;" dispEnd="&lt;/i &gt;"/></pc></target>
       </segment>
     </unit>
     <unit id="2772023564304193657">
