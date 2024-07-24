@@ -23,6 +23,7 @@
         </p>
 
         <div class="flex flex-col gap-2">
+          <!-- eslint-disable @angular-eslint/template/no-autofocus -->
           <label>
             <ng-container i18n>E-mail</ng-container>
             <input
@@ -33,6 +34,8 @@
               placeholder="example: yourname@example.org"
               i18n-placeholder
               autocomplete="email username"
+              pAutoFocus
+              autofocus
               class="mt-2 block w-full"
             />
           </label>

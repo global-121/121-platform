@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -32,6 +33,7 @@ import { AuthService } from '~/services/auth.service';
     ToolbarModule,
     NgOptimizedImage,
     InputTextModule,
+    AutoFocusModule,
     ReactiveFormsModule,
     PasswordModule,
     ButtonModule,
