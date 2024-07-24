@@ -12,6 +12,7 @@ import { OrganizationModule } from '@121-service/src/organization/organization.m
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
+import { StoreTransactionJobProcessorsModule } from '@121-service/src/store-transaction-job-processors/store-transaction-job-processors.module';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
@@ -63,6 +64,7 @@ import { DataSource } from 'typeorm';
     ProgramFinancialServiceProviderConfigurationsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
     TransactionQueuesModule,
     TransactionJobProcessorsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
+    StoreTransactionJobProcessorsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -10,3 +10,11 @@ export enum QueueNamePayment {
   paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
   paymentSafaricom = 'paymentSafaricom',
 }
+
+export enum ProcessNameStoreTransaction {
+  storeTransaction = 'storetransaction',
+}
+
+export enum QueueNameStoreTransaction {
+  storeTransactionIntersolveVisa = 'storeTransactionIntersolveVisa',
+}

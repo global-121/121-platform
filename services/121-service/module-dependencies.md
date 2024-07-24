@@ -152,5 +152,17 @@ graph LR
   TransactionJobProcessorsModule-->FinancialServiceProvidersModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
+  TransactionJobProcessorsModule-->StoreTransactionJobProcessorsModule
+  StoreTransactionJobProcessorsModule-->RedisModule
+  StoreTransactionJobProcessorsModule-->IntersolveVisaModule
+  StoreTransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  StoreTransactionJobProcessorsModule-->RegistrationsModule
+  StoreTransactionJobProcessorsModule-->ProgramModule
+  StoreTransactionJobProcessorsModule-->TransactionsModule
+  StoreTransactionJobProcessorsModule-->QueueMessageModule
+  StoreTransactionJobProcessorsModule-->FinancialServiceProvidersModule
+  StoreTransactionJobProcessorsModule-->EventsModule
+  StoreTransactionJobProcessorsModule-->MessageTemplateModule
+  StoreTransactionJobProcessorsModule-->DatabaseModule
   TransactionJobProcessorsModule-->DatabaseModule
 ```
