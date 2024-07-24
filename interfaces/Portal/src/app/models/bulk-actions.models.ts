@@ -18,6 +18,7 @@ export enum BulkActionId {
 export const BulkActionRegistrationStatusMap = {
   [BulkActionId.include]: RegistrationStatusEnum.included,
   [BulkActionId.pause]: RegistrationStatusEnum.paused,
+  [BulkActionId.markAsDeclined]: RegistrationStatusEnum.declined,
 };
 
 export class BulkAction {
