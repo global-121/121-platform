@@ -1,4 +1,5 @@
 import { isDevMode } from '@angular/core';
+import { environment } from '~environment';
 
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
@@ -14,6 +15,13 @@ export function getLocaleLabel(locale: Locale): string {
     case Locale.nl:
       return 'Nederlands';
   }
+}
+
+export function getAvailableLanguages() {
+  return environment.locales.split(',').map((locale) => ({
+    label: getLocaleLabel(locale as Locale),
+    value: locale as Locale,
+  }));
 }
 
 function isValidLocale(locale: string): locale is Locale {

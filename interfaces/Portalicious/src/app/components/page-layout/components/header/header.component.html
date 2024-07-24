@@ -86,20 +86,7 @@
       </a>
     </div>
     <div class="px-6">
-      <p-dropdown
-        [options]="languages"
-        [(ngModel)]="selectedLanguage"
-        [showClear]="false"
-        styleClass="w-full"
-        data-testid="language-dropdown"
-      >
-        <ng-template pTemplate="selectedItem">
-          <div class="flex w-full items-center gap-2">
-            <i class="pi pi-globe text-xl"></i>
-            <div i18n>Language: {{ selectedLanguageLabel() }}</div>
-          </div>
-        </ng-template>
-      </p-dropdown>
+      <app-language-switcher />
       <small class="block text-center text-grey-500">
         <app-health-widget />
       </small>
