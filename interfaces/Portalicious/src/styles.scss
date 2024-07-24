@@ -60,6 +60,11 @@ $toolbar-height: 48px;
     @apply font-semibold;
   }
 
+  p a {
+    @apply text-blue-500;
+    @apply underline;
+  }
+
   .p-card-title {
     @apply font-display font-bold text-black;
     font-size: 18px;
