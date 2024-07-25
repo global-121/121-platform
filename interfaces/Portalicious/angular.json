@@ -117,7 +117,7 @@
           "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
           "options": {
             "buildTarget": "Portalicious:build",
-            "format": "xlf2",
+            "format": "xlf",
             "outputPath": "src/locale",
             "sourceFile": "messages.xlf",
             "targetFiles": ["messages.nl.xlf"],
@@ -125,7 +125,7 @@
             "sort": "stableAppendNew",
             "sortNestedTagAttributes": true,
             "trim": true,
-            "includeContext": true
+            "includeContext": false
           }
         },
         "test": {

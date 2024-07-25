@@ -74,23 +74,24 @@
             [visible]="loginMutation.isError()"
             [error]="loginMutation.failureReason()?.message"
           />
-          <p i18n>
-            Forgot your password?
+          <p>
+            <span i18n>Forgot your password?</span>&nbsp;
+
             <a
+              i18n
               href="mailto:support@510.global?subject=Request Password reset for 121 Platform"
               target="_blank"
-            >
-              Request a password reset</a
+              >Request a password reset</a
             >
           </p>
-          <p i18n>
-            Read our
+          <p>
             <a
               href="https://manual.121.global/privacy-policy/"
               target="_blank"
               title="Opens in a new window"
               i18n-title
-              >Privacy Policy
+            >
+              <span i18n>Read our Privacy Policy</span>
               <i
                 class="pi pi-external-link ml-1 text-xs"
                 aria-hidden="true"

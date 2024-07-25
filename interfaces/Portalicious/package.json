@@ -48,6 +48,7 @@
     "@angular/localize": "^18.0.5",
     "@azure/static-web-apps-cli": "^2.0.1",
     "@microsoft/applicationinsights-debugplugin-js": "^3.3.0",
+    "@prettier/plugin-xml": "^3.4.1",
     "@tanstack/eslint-plugin-query": "^5.50.0",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.6",
