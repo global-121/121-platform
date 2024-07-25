@@ -116,4 +116,18 @@ export class AuthService {
     await this.apiService.logout();
     await this.router.navigate(['/', AppRoutes.login]);
   }
+
+  public async changePassword({
+    username,
+    password,
+    newPassword,
+  }: {
+    username: string;
+    password: string;
+    newPassword: string;
+  }) {
+    this.logService.logEvent(LogEvent.userChangePassword);
+
+    await this.apiService.changePassword({ username, password, newPassword });
+  }
 }

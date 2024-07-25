@@ -4,6 +4,7 @@ import { User } from '~/models/user.model';
 import { HttpWrapperService } from '~/services/http-wrapper.service';
 
 export enum ApiEndpoints {
+  usersChangePassword = 'users/password',
   usersLogin = 'users/login',
   usersLogout = 'users/logout',
   versionInfo = 'health/version',
@@ -37,6 +38,26 @@ export class ApiService {
     return this.httpWrapperService.perform121ServiceRequest<VersionInfo>({
       method: 'GET',
       endpoint: ApiEndpoints.versionInfo,
+    });
+  }
+
+  changePassword({
+    username,
+    password,
+    newPassword,
+  }: {
+    username: string;
+    password: string;
+    newPassword: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: 'users/password',
+      body: {
+        username,
+        password,
+        newPassword,
+      },
     });
   }
 }
