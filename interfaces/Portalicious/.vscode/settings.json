@@ -1,5 +1,6 @@
 {
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "tailwindCSS.rootFontSize": 14
+  "tailwindCSS.rootFontSize": 14,
+  "tailwindCSS.showPixelEquivalents": false,
 }
