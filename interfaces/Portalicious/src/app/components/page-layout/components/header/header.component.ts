@@ -8,6 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { FocusTrapModule } from 'primeng/focustrap';
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -25,6 +26,7 @@ import { AuthService } from '~/services/auth.service';
     ToolbarModule,
     MenuModule,
     SidebarModule,
+    FocusTrapModule,
     DropdownModule,
     FormsModule,
     LogoComponent,
@@ -41,7 +43,6 @@ export class HeaderComponent {
 
   userName = computed(() => this.authService.user?.username);
 
-  sidebarVisible = false;
   userMenuOptions = [
     {
       label: $localize`:Menu-item:Settings`,
@@ -56,6 +57,8 @@ export class HeaderComponent {
       },
     },
   ];
+
+  sidebarVisible = false;
 
   sidebarLinks = [
     {

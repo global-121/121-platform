@@ -9,36 +9,42 @@
       plain
       rounded
       text
-      class="[&_button:not(:hover)]:text-white"
+      class="lg:mr-9 [&_button:not(:hover)]:text-white"
       (click)="sidebarVisible = true"
       data-testid="sidebar-toggle"
-      styleClass="lg:mr-9"
     />
     <app-logo [programTitle]="programTitle()" />
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex items-center lg:px-20">
       <p-button
-        title="User-Menu"
-        i18n-title="@@header-user-menu"
-        ariaLabel="User-Menu"
-        i18n-ariaLabel="@@header-user-menu"
+        label="Account"
+        i18n-label="Top-right user-menu@@header-user-menu"
         (click)="userMenu.toggle($event)"
-        icon="pi pi-user"
+        icon="pi pi-chevron-down"
+        iconPos="right"
         plain
         rounded
         text
+        [size]="'small'"
         class="[&_button:not(:hover)]:text-white"
-      />
+      >
+        <ng-template pTemplate>
+          <span class="inline-flex gap-2">
+            <span class="pi pi-user"></span>
+            <span i18n="Top-right user-menu@@header-user-menu">Account</span>
+          </span>
+        </ng-template>
+      </p-button>
       <p-menu
         [model]="userMenuOptions"
         #userMenu
-        popup
+        [popup]="true"
       >
         <ng-template pTemplate="start">
           <p class="mb-2 border-b border-b-grey-300 px-3 py-2">
             <ng-container i18n>Logged in as:</ng-container><br />
-            <span class="underline">{{ userName() }}</span>
+            <strong>{{ userName() }}</strong>
           </p>
         </ng-template>
       </p-menu>
@@ -46,35 +52,43 @@
   </ng-template>
 </p-toolbar>
 <p-sidebar
-  [(visible)]="sidebarVisible"
   data-testid="sidebar"
+  #sideBar
+  [(visible)]="sidebarVisible"
+  [closeOnEscape]="true"
+  [showCloseIcon]="false"
+  (onShow)="sideBar.el.nativeElement.focus()"
+  pFocusTrap
+  [pFocusTrapDisabled]="!sidebarVisible"
+  [tabindex]="-1"
 >
-  <ng-template pTemplate="closeicon"
-    ><p-button
+  <ng-template pTemplate="header">
+    <p-button
+      label="Close"
+      i18n-label="@@generic-close"
       icon="pi pi-times"
+      iconPos="left"
       plain
-      rounded
       text
-      title="Close"
-      i18n-title="@@generic-close"
-      ariaLabel="Close"
-      i18n-ariaLabel="@@generic-close"
-  /></ng-template>
+      (click)="sidebarVisible = false"
+    />
+  </ng-template>
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
       @for (sidebarLink of sidebarLinks; track $index) {
         <a
           [routerLink]="sidebarLink.routerLink"
           [routerLinkActive]="['font-bold', 'pointer-events-none']"
+          [ariaCurrentWhenActive]="'page'"
           (click)="sidebarVisible = false"
-          class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple"
+          class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
         >
           {{ sidebarLink.label }}
         </a>
       }
       <a
         href="https://manual.121.global/"
-        class="inline-flex w-full items-center rounded-none border-b border-t border-grey-300 px-6 py-4 font-display hover:text-purple"
+        class="inline-flex w-full items-center rounded-none border-b border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
         target="_blank"
         title="Opens in a new window"
         i18n-title
