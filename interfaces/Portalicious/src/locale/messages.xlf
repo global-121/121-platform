@@ -161,7 +161,8 @@
         <source>Menu</source>
       </trans-unit>
       <trans-unit id="header-user-menu" datatype="html">
-        <source>User-Menu</source>
+        <source>Account</source>
+        <note priority="1" from="description">Top-right user-menu</note>
       </trans-unit>
       <trans-unit id="1782658553741372004" datatype="html">
         <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>

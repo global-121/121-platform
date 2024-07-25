@@ -54,8 +54,9 @@
         <target state="final">Menu</target>
       </trans-unit>
       <trans-unit id="header-user-menu" datatype="html">
-        <source>User-Menu</source>
-        <target state="translated">Gebruikers Menu</target>
+        <source>Account</source>
+        <target state="translated">Account</target>
+        <note priority="1" from="description">Top-right user-menu</note>
       </trans-unit>
       <trans-unit id="9219884121371524201" datatype="html">
         <source>Logged in as:</source>
