@@ -2,22 +2,40 @@
 
 ```mermaid
 graph LR
+  DiscoveryModule-->DatabaseModule
   CronjobModule-->ExchangeRateModule
+  ExchangeRateModule-->DatabaseModule
+  CronjobModule-->DatabaseModule
   MessageTemplateModule-->ProgramAttributesModule
+  ProgramAttributesModule-->DatabaseModule
+  MessageTemplateModule-->DatabaseModule
+  QueueSeedHelperModule-->DatabaseModule
   ProgramModule-->ActionsModule
+  ActionsModule-->DatabaseModule
   ProgramModule-->FinancialServiceProvidersModule
+  FinancialServiceProvidersModule-->DatabaseModule
   ProgramModule-->LookupModule
+  LookupModule-->DatabaseModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
+  KoboConnectModule-->DatabaseModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
   ProgramFinancialServiceProviderConfigurationsModule-->FinancialServiceProvidersModule
+  ProgramFinancialServiceProviderConfigurationsModule-->DatabaseModule
+  ProgramModule-->DatabaseModule
+  OrganizationModule-->DatabaseModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
+  ImageCodeModule-->DatabaseModule
   WhatsappModule-->MessageTemplateModule
+  WhatsappModule-->DatabaseModule
   MessageModule-->SmsModule
+  SmsModule-->DatabaseModule
   MessageModule-->QueueMessageModule
   QueueMessageModule-->ProgramAttributesModule
   QueueMessageModule-->RegistrationDataModule
+  RegistrationDataModule-->DatabaseModule
+  QueueMessageModule-->DatabaseModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->TransactionsModule
@@ -26,14 +44,20 @@ graph LR
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
+  RegistrationUtilsModule-->DatabaseModule
   TransactionsModule-->EventsModule
+  EventsModule-->DatabaseModule
+  TransactionsModule-->DatabaseModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
   IntersolveVoucherModule-->RedisModule
+  RedisModule-->DatabaseModule
+  IntersolveVoucherModule-->DatabaseModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
+  MessageModule-->DatabaseModule
   MetricsModule-->RegistrationsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ActionsModule
@@ -42,11 +66,14 @@ graph LR
   RegistrationsModule-->QueueMessageModule
   RegistrationsModule-->IntersolveVisaModule
   IntersolveVisaModule-->ProgramFinancialServiceProviderConfigurationsModule
+  IntersolveVisaModule-->DatabaseModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->QueueRegistrationUpdateModule
+  QueueRegistrationUpdateModule-->DatabaseModule
   RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  RegistrationsModule-->DatabaseModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->ActionsModule
@@ -55,49 +82,66 @@ graph LR
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
   IntersolveJumboModule-->RegistrationDataModule
+  IntersolveJumboModule-->DatabaseModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
+  AfricasTalkingModule-->DatabaseModule
   PaymentsModule-->BelcashModule
   BelcashModule-->TransactionsModule
+  BelcashModule-->DatabaseModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->BobFinanceModule
   BobFinanceModule-->TransactionsModule
   BobFinanceModule-->RegistrationDataModule
+  BobFinanceModule-->DatabaseModule
   PaymentsModule-->UkrPoshtaModule
   UkrPoshtaModule-->TransactionsModule
   UkrPoshtaModule-->RegistrationDataModule
+  UkrPoshtaModule-->DatabaseModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
   VodacashModule-->RegistrationDataModule
   VodacashModule-->RegistrationsModule
+  VodacashModule-->DatabaseModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
+  SafaricomModule-->DatabaseModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
+  ExcelModule-->DatabaseModule
   PaymentsModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
   CommercialBankEthiopiaModule-->RedisModule
+  CommercialBankEthiopiaModule-->DatabaseModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationDataModule
   PaymentsModule-->TransactionQueuesModule
   TransactionQueuesModule-->RedisModule
+  TransactionQueuesModule-->DatabaseModule
   PaymentsModule-->FinancialServiceProvidersModule
+  PaymentsModule-->DatabaseModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
   MetricsModule-->RegistrationDataModule
+  MetricsModule-->DatabaseModule
+  MigrateVisaModule-->DatabaseModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
   MessageIncomingModule-->QueueMessageModule
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
+  MessageIncomingModule-->DatabaseModule
   NoteModule-->RegistrationsModule
+  NoteModule-->DatabaseModule
   AuthModule-->PassportModule
+  PassportModule-->DatabaseModule
+  AuthModule-->DatabaseModule
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule
   TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
@@ -108,4 +152,5 @@ graph LR
   TransactionJobProcessorsModule-->FinancialServiceProvidersModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
+  TransactionJobProcessorsModule-->DatabaseModule
 ```
