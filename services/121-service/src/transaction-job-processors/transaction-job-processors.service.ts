@@ -1,10 +1,8 @@
-import { UnitOfWork } from '@121-service/src/database/unit-of-work.service';
 import { EventsService } from '@121-service/src/events/events.service';
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -13,20 +11,18 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import {
+  StoreTransactionJob,
+  StoreTransactionJobProcessorsService,
+} from '@121-service/src/store-transaction-job-processors/store-transaction-job-processors.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TransactionJobProcessorsService {
@@ -36,12 +32,9 @@ export class TransactionJobProcessorsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueMessageService: QueueMessageService,
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly financialServiceProviderRepository: FinancialServiceProviderRepository,
-    private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
-    private readonly unitOfWork: UnitOfWork,
+    private readonly storeTransactionJobProcessorsService: StoreTransactionJobProcessorsService,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
@@ -76,7 +69,8 @@ export class TransactionJobProcessorsService {
         input[key] === ''
       ) {
         const errorText = `Property ${key} is undefined`;
-        const transaction = await this.getTransactionEntity({
+        await this.addStoreTransactonJobToQueue({
+          isTransactionSuccess: false,
           amount: input.transactionAmount,
           registration: registration,
           financialServiceProviderId: financialServiceProvider.id,
@@ -85,8 +79,8 @@ export class TransactionJobProcessorsService {
           userId: input.userId,
           status: StatusEnum.error,
           errorMessage: errorText,
+          storeOnlyTransaction: true,
         });
-        await this.saveTransaction(transaction);
 
         throw new Error(errorText);
       }
@@ -138,11 +132,16 @@ export class TransactionJobProcessorsService {
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
-      await this.handleTransactionFailure({
-        input,
-        registration,
-        financialServiceProvider,
-        error,
+      await this.addStoreTransactonJobToQueue({
+        isTransactionSuccess: false,
+        amount: input.transactionAmount,
+        registration: registration,
+        financialServiceProviderId: financialServiceProvider.id,
+        programId: input.programId,
+        paymentNumber: input.paymentNumber,
+        userId: input.userId,
+        status: StatusEnum.error,
+        errorMessage: `An error occured: ${error}`,
       });
 
       throw new Error(error);
@@ -165,11 +164,16 @@ export class TransactionJobProcessorsService {
       });
     }
 
-    await this.handleTransactionSuccess({
-      input,
-      registration,
-      financialServiceProvider,
-      intersolveVisaDoTransferOrIssueCardReturnDto,
+    await this.addStoreTransactonJobToQueue({
+      isTransactionSuccess: true,
+      amount: intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+      registration: registration,
+      financialServiceProviderId: financialServiceProvider.id,
+      programId: input.programId,
+      paymentNumber: input.paymentNumber,
+      userId: input.userId,
+      status: StatusEnum.success,
+      isRetry: input.isRetry,
     });
 
     if (!input.isRetry) {
@@ -187,176 +191,6 @@ export class TransactionJobProcessorsService {
         },
       );
     }
-  }
-
-  private async handleTransactionSuccess({
-    input,
-    registration,
-    financialServiceProvider,
-    intersolveVisaDoTransferOrIssueCardReturnDto,
-  }: {
-    input: IntersolveVisaTransactionJobDto;
-    registration: RegistrationEntity;
-    financialServiceProvider: FinancialServiceProviderEntity;
-    intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
-  }): Promise<void> {
-    // Start a new unit of work to handle the transaction
-    await this.unitOfWork.execute(async () => {
-      // Get the database transaction manager from the unit of work
-      const manager = this.unitOfWork.getManager();
-
-      // Create a TransactionEntity with the provided details
-      const transaction = await this.getTransactionEntity({
-        amount: intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
-        registration: registration,
-        financialServiceProviderId: financialServiceProvider.id,
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        status: StatusEnum.success,
-      });
-
-      // Save the transaction entity first to get its id
-      const savedTransaction = await manager.save(
-        TransactionEntity,
-        transaction,
-      );
-
-      // Create LatestTransactionEntity to store the latest transaction details
-      const latestTransaction = new LatestTransactionEntity();
-      latestTransaction.registrationId = savedTransaction.registrationId;
-      latestTransaction.payment = savedTransaction.payment;
-      latestTransaction.transactionId = savedTransaction.id;
-
-      // Save the latest transaction entity
-      await manager.save(LatestTransactionEntity, latestTransaction);
-
-      // If the transaction is not a retry, update the payment count and status in the registration entity
-      if (!input.isRetry) {
-        const updatedRegistration =
-          await this.getRegistrationEntityWithUpdatedPaymentCountAndStatus(
-            registration,
-            input.programId,
-          );
-
-        // Save the updated registration entity
-        await manager.save(RegistrationEntity, updatedRegistration);
-      }
-    });
-  }
-
-  private async handleTransactionFailure({
-    input,
-    registration,
-    financialServiceProvider,
-    error,
-  }: {
-    input: IntersolveVisaTransactionJobDto;
-    registration: RegistrationEntity;
-    financialServiceProvider: FinancialServiceProviderEntity;
-    error: Error;
-  }): Promise<void> {
-    // Start a new unit of work to handle the transaction failure
-    await this.unitOfWork.execute(async () => {
-      // Get the database transaction manager from the unit of work
-      const manager = this.unitOfWork.getManager();
-
-      // Create TransactionEntity with the provided details, marking the status as error
-      const transaction = await this.getTransactionEntity({
-        amount: input.transactionAmount,
-        registration: registration,
-        financialServiceProviderId: financialServiceProvider.id,
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        status: StatusEnum.error,
-        errorMessage: `An error occured: ${error}`,
-      });
-
-      // Save the transaction entity first to get its id
-      const savedTransaction = await manager.save(
-        TransactionEntity,
-        transaction,
-      );
-
-      // Create LatestTransactionEntity to store the latest transaction details
-      const latestTransaction = new LatestTransactionEntity();
-      latestTransaction.registrationId = savedTransaction.registrationId;
-      latestTransaction.payment = savedTransaction.payment;
-      latestTransaction.transactionId = savedTransaction.id;
-
-      // Save the latest transaction entity
-      await manager.save(LatestTransactionEntity, latestTransaction);
-
-      // Update the registration entity's payment count and status
-      const updatedRegistration =
-        await this.getRegistrationEntityWithUpdatedPaymentCountAndStatus(
-          registration,
-          input.programId,
-        );
-
-      // Update the registration entity
-      await manager.save(RegistrationEntity, updatedRegistration);
-    });
-  }
-
-  private async getTransactionEntity({
-    amount,
-    registration,
-    financialServiceProviderId,
-    programId,
-    paymentNumber,
-    userId,
-    status,
-    errorMessage,
-  }: {
-    amount: number;
-    registration: RegistrationEntity;
-    financialServiceProviderId: number;
-    programId: number;
-    paymentNumber: number;
-    userId: number;
-    status: StatusEnum;
-    errorMessage?: string;
-  }): Promise<TransactionEntity> {
-    const transaction = new TransactionEntity();
-    transaction.amount = amount;
-    transaction.registration = registration;
-    transaction.financialServiceProviderId = financialServiceProviderId;
-    transaction.programId = programId;
-    transaction.payment = paymentNumber;
-    transaction.userId = userId;
-    transaction.status = status;
-    transaction.transactionStep = 1;
-    transaction.errorMessage = errorMessage ?? null;
-    transaction.created = new Date();
-
-    return transaction;
-  }
-
-  private async saveTransaction(transaction: TransactionEntity): Promise<void> {
-    await this.transactionScopedRepository.save(transaction);
-  }
-
-  private async getRegistrationEntityWithUpdatedPaymentCountAndStatus(
-    registration: RegistrationEntity,
-    programId: number,
-  ): Promise<RegistrationEntity> {
-    const program = await this.programRepository.findByIdOrFail(programId);
-    // TODO: Implement retry attempts for the paymentCount and status update.
-    // See old code for counting the transactions
-    // See if failed transactions also lead to status 'Completed' and is retryable
-    registration.paymentCount = (registration.paymentCount || 0) + 1;
-
-    if (
-      program.enableMaxPayments &&
-      registration.maxPayments &&
-      registration.paymentCount >= registration.maxPayments
-    ) {
-      registration.registrationStatus = RegistrationStatusEnum.completed;
-    }
-
-    return registration;
   }
 
   private async createMessageAndAddToQueue({
@@ -425,5 +259,13 @@ export class TransactionJobProcessorsService {
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
       bulksize: bulksize,
     });
+  }
+
+  private async addStoreTransactonJobToQueue(
+    storeTransactionData: StoreTransactionJob,
+  ): Promise<void> {
+    await this.storeTransactionJobProcessorsService.addStoreTransactionJobToQueue(
+      storeTransactionData,
+    );
   }
 }
