@@ -9,11 +9,11 @@ import {
 import { Injectable, inject } from '@angular/core';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { User } from '~/models/user.model';
+import { getUserFromLocalStorage } from '~/services/auth.service';
 import { environment } from '~environment';
 
 interface PerformRequestParams {
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
   url: string;
   body?: unknown;
   responseAsBlob?: boolean;
@@ -56,14 +56,11 @@ export class HttpWrapperService {
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (error.status === HttpStatusCode.Unauthorized) {
-      // XXX: eventually this should be replaced with the USER_KEY exported by the AuthService
-      const rawUser = localStorage.getItem('USER_KEY');
+      const user = getUserFromLocalStorage();
 
-      if (!rawUser) {
+      if (!user) {
         return of(error);
       }
-
-      const user = JSON.parse(rawUser) as User;
 
       if (user.expires) {
         const expires = Date.parse(user.expires);
@@ -89,7 +86,7 @@ export class HttpWrapperService {
     console.log(`HttpWrapperService ${method}: ${url}`, body ?? '');
 
     try {
-      const response = await lastValueFrom<T | HttpErrorResponse | Error>(
+      const response = await lastValueFrom<Error | HttpErrorResponse | T>(
         this.http
           .request(method, url, {
             headers: this.createHeaders(isUpload),
@@ -126,7 +123,7 @@ export class HttpWrapperService {
   }
 
   public async perform121ServiceRequest<T>(
-    options: Omit<PerformRequestParams, 'url'> & { endpoint: string },
+    options: { endpoint: string } & Omit<PerformRequestParams, 'url'>,
   ): Promise<T> {
     return this.performRequest<T>({
       ...options,

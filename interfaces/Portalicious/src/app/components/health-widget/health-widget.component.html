@@ -1,15 +1,18 @@
 <div class="mt-8">
+  <ng-container i18n>API Version:</ng-container>
+
+  &nbsp;
+
   @switch (versionInfo.status()) {
     @case ('pending') {
-      <span>Loading health widget...</span>
+      <span>...</span>
     }
     @case ('error') {
-      <span>Error: {{ versionInfo.error()?.message }}</span>
+      <span i18n>Error: {{ versionInfo.error()?.message }}</span>
     }
     <!-- also status === 'success', but "else" logic works, too -->
     @default {
-      Connected to backend!
-      <pre class="mt-2 rounded bg-white p-4">{{ versionInfo.data() }}</pre>
+      <code>{{ versionInfo.data()?.message }}</code>
     }
   }
 </div>

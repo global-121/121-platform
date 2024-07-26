@@ -3,8 +3,8 @@ import { DebugPlugin } from '@microsoft/applicationinsights-debugplugin-js';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { environment } from 'src/environments/environment';
 
-// All properties sorted alphabetically.
 export enum LogEvent {
+  userLogin = 'user/login',
   userLogout = 'user/logout',
 }
 
@@ -36,12 +36,12 @@ export class LogService {
         [DebugPlugin.identifier]: {
           // See: https://github.com/microsoft/ApplicationInsights-JS/tree/main/extensions/applicationinsights-debugplugin-js#basic-usage
           trackers: [
-            'trackEvent',
-            'trackPageView',
-            'trackException',
-            'trackTrace',
-            'trackMetric',
             'trackDependencyData',
+            'trackEvent',
+            'trackException',
+            'trackMetric',
+            'trackPageView',
+            'trackTrace',
           ],
         },
       };
@@ -84,7 +84,7 @@ export class LogService {
 
   public logEvent(
     name: LogEvent,
-    properties?: Record<string, string | number | boolean>,
+    properties?: Record<string, boolean | number | string>,
   ): void {
     if (this.appInsightsInitialized) {
       this.appInsights.trackEvent({ name }, properties);
@@ -103,7 +103,7 @@ export class LogService {
 
   public logTrace(
     message: string,
-    properties?: Record<string, string | number | boolean>,
+    properties?: Record<string, boolean | number | string>,
   ): void {
     if (this.appInsightsInitialized) {
       this.appInsights.trackTrace({ message }, properties);

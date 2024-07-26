@@ -12,21 +12,37 @@
       },
       "root": "",
       "sourceRoot": "src",
+      "i18n": {
+        "sourceLocale": "en-GB",
+        "locales": {
+          "en": {
+            "translation": "src/locale/messages.xlf",
+            "baseHref": "/en/"
+          },
+          "nl": {
+            "translation": "src/locale/messages.nl.xlf",
+            "baseHref": "/nl/"
+          }
+        }
+      },
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "localize": true,
+            "i18nMissingTranslation": "error",
             "outputPath": "www",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": ["zone.js", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets/",
+                "output": "/assets/"
               },
               "src/favicon.ico"
             ],
@@ -75,6 +91,9 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "nl": {
+              "localize": ["nl"]
             }
           },
           "defaultConfiguration": "development"
@@ -87,23 +106,43 @@
             },
             "development": {
               "buildTarget": "Portalicious:build:development"
+            },
+            "nl": {
+              "buildTarget": "Portalicious:build:development,nl"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
+          "options": {
+            "buildTarget": "Portalicious:build",
+            "format": "xlf2",
+            "outputPath": "src/locale",
+            "sourceFile": "messages.xlf",
+            "targetFiles": ["messages.nl.xlf"],
+            "newTranslationTargetsBlank": false,
+            "sort": "stableAppendNew",
+            "sortNestedTagAttributes": true,
+            "trim": true,
+            "includeContext": true
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing",
+              "@angular/localize/init"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets/",
+                "output": "/assets/"
               }
             ],
             "styles": ["src/styles.scss"],
@@ -130,6 +169,7 @@
     }
   },
   "cli": {
-    "schematicCollections": ["@angular-eslint/schematics"]
+    "schematicCollections": ["@angular-eslint/schematics"],
+    "analytics": false
   }
 }

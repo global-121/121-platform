@@ -1,0 +1,42 @@
+import { PrimeDropdown } from '@121-e2e/portalicious/primeng-components/PrimeDropdown';
+import { Locator, Page } from 'playwright';
+
+class BasePage {
+  readonly page: Page;
+  readonly languageDropdown: PrimeDropdown;
+  readonly programHeader: Locator;
+  readonly sidebar: Locator;
+  readonly sidebarToggle: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+
+    this.languageDropdown = new PrimeDropdown({
+      page,
+      testId: 'language-dropdown',
+    });
+    this.programHeader = this.page.getByTestId('program-header');
+    this.sidebar = this.page.getByTestId('sidebar');
+    this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
+  }
+
+  async openSidebar() {
+    await this.sidebarToggle.click();
+  }
+
+  async navigateToPage(pageName: string) {
+    await this.openSidebar();
+    await this.sidebar.getByRole('link', { name: pageName }).click();
+  }
+
+  async navigateToProgramPage(pageName: string) {
+    await this.programHeader.getByRole('menuitem', { name: pageName }).click();
+  }
+
+  async changeLanguage(language: string) {
+    await this.openSidebar();
+    await this.languageDropdown.selectOption({ label: language });
+  }
+}
+
+export default BasePage;

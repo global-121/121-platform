@@ -1,0 +1,8 @@
+<div
+  [class]="
+    'inline-flex items-center gap-3 py-2 text-red-500 ' + visibilityClass()
+  "
+>
+  <i class="pi pi-exclamation-triangle text-xl"></i>
+  <span class="font-display text-sm font-medium">{{ error() }}</span>
+</div>
