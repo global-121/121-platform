@@ -51,6 +51,15 @@ $toolbar-height: 48px;
     line-height: 140%;
   }
 
+  label {
+    @apply font-semibold;
+  }
+
+  strong,
+  b {
+    @apply font-semibold;
+  }
+
   .p-card-title {
     @apply font-display font-bold text-black;
     font-size: 18px;
@@ -83,5 +92,9 @@ $toolbar-height: 48px;
   .p-toolbar {
     @apply rounded-none border-x-0 border-t-0 border-b-purple bg-navy py-0;
     height: $toolbar-height;
+  }
+
+  .p-button-link {
+    @apply p-0;
   }
 }

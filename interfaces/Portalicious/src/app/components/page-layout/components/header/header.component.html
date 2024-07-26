@@ -2,6 +2,10 @@
   <ng-template pTemplate="start">
     <p-button
       icon="pi pi-bars"
+      title="Menu"
+      i18n-title="@@header-menu"
+      ariaLabel="Menu"
+      i18n-ariaLabel="@@header-menu"
       plain
       rounded
       text
@@ -10,20 +14,15 @@
       data-testid="sidebar-toggle"
       styleClass="lg:mr-9"
     />
-    <h1 class="ml-2 text-xl text-white">
-      <a
-        i18n
-        routerLink="/"
-        >121 Portal</a
-      >
-      @if (programTitle()) {
-        <span class="font-normal"> | {{ programTitle() }}</span>
-      }
-    </h1>
+    <app-logo [programTitle]="programTitle()" />
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex items-center lg:px-20">
       <p-button
+        title="User-Menu"
+        i18n-title="@@header-user-menu"
+        ariaLabel="User-Menu"
+        i18n-ariaLabel="@@header-user-menu"
         (click)="userMenu.toggle($event)"
         icon="pi pi-user"
         plain
@@ -38,11 +37,8 @@
       >
         <ng-template pTemplate="start">
           <p class="mb-2 border-b border-b-grey-300 px-3 py-2">
-            <ng-container i18n>Logged in as:</ng-container>
-            <span class="underline">
-              <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
-              admin&#64;example.org
-            </span>
+            <ng-container i18n>Logged in as:</ng-container><br />
+            <span class="underline">{{ userName() }}</span>
           </p>
         </ng-template>
       </p-menu>
@@ -60,9 +56,9 @@
       rounded
       text
       title="Close"
-      i18n-title="@@generiClose"
+      i18n-title="@@generic-close"
       ariaLabel="Close"
-      i18n-ariaLabel="@@generiClose"
+      i18n-ariaLabel="@@generic-close"
   /></ng-template>
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
@@ -104,6 +100,9 @@
           </div>
         </ng-template>
       </p-dropdown>
+      <small class="block text-center text-grey-500">
+        <app-health-widget />
+      </small>
     </div>
   </div>
 </p-sidebar>
