@@ -52,20 +52,7 @@ graph LR
   PaymentsModule-->ActionsModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
-  PaymentsModule-->IntersolveJumboModule
-  IntersolveJumboModule-->TransactionsModule
-  IntersolveJumboModule-->RegistrationDataModule
-  PaymentsModule-->AfricasTalkingModule
-  AfricasTalkingModule-->TransactionsModule
-  PaymentsModule-->BelcashModule
-  BelcashModule-->TransactionsModule
   PaymentsModule-->TransactionsModule
-  PaymentsModule-->BobFinanceModule
-  BobFinanceModule-->TransactionsModule
-  BobFinanceModule-->RegistrationDataModule
-  PaymentsModule-->UkrPoshtaModule
-  UkrPoshtaModule-->TransactionsModule
-  UkrPoshtaModule-->RegistrationDataModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
   VodacashModule-->RegistrationDataModule

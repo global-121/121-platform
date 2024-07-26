@@ -3,8 +3,8 @@ import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import fspIntersolveJumbo from '@121-service/src/seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
+import fspIntersolveVoucher from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -16,7 +16,7 @@ import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/e
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const save = englishTranslations.common.save;
 const ok = englishTranslations.common.ok;
-const jumboFspName = fspIntersolveJumbo.displayName.en;
+const voucherFspName = fspIntersolveVoucher.displayName.en;
 const visaFspName = visaFspIntersolve.displayName.en;
 
 test.beforeEach(async ({ page }) => {
@@ -50,10 +50,11 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
     rowNumber = await table.selectFspPaPii({ shouldSelectVisa: false });
   });
 
-  await test.step('Update Finacial service provider from Jumbo card to Visa debit card', async () => {
+  // Need to be fixed
+  await test.step('Update Finacial service provider from Voucher whatsapp to Visa debit card', async () => {
     await piiPopUp.updatefinancialServiceProvider({
       fspNewName: visaFspName,
-      fspOldName: jumboFspName,
+      fspOldName: voucherFspName,
       saveButtonName: save,
       okButtonName: ok,
     });

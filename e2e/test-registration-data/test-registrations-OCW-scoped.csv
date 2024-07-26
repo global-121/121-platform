@@ -12,7 +12,7 @@ referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,last
 ,en,1,,Test,mock-fail-create-debit-card,14155238896,Intersolve-visa,14155238896,Straat,1,A,1234AB,Den Haag,zeeland.goes
 ,en,1,,Test,mock-fail-load-balance,14155238897,Intersolve-visa,14155238897,Straat,1,A,1234AB,Den Haag,utrecht.zeist
 ,en,1,,Test,mock-spent,14155238898,Intersolve-visa,14155238898,Straat,1,A,1234AB,,utrecht.zeist
-,en,1,,Test,succeed,14155238899,Intersolve-voucher-whatsapp,14155238899,,,,,,utrecht.zeist
-,en,1,,Test,succeed,14155238900,Intersolve-jumbo-physical,14155238900,Straat,1,A,1234AB,Den Haag,utrecht.zeist
-,en,1,,Test,mock-fail-create-order,14155238901,Intersolve-jumbo-physical,14155238901,Straat,1,A,1234AB,Den Haag,utrecht.zeist
-,en,1,,Test,mock-address-city-fail,14155238902,Intersolve-jumbo-physical,14155238902,Straat,1,A,1234AB,,utrecht.utrecht
+,en,1,,Test,succeed,14155238899,Intersolve-visa,14155238899,,,,,,utrecht.zeist
+,en,1,,Test,succeed,14155238900,Intersolve-visa,14155238900,Straat,1,A,1234AB,Den Haag,utrecht.zeist
+,en,1,,Test,mock-fail-create-order,14155238901,Intersolve-visa,14155238901,Straat,1,A,1234AB,Den Haag,utrecht.zeist
+,en,1,,Test,mock-address-city-fail,14155238902,Intersolve-visa,14155238902,Straat,1,A,1234AB,,utrecht.utrecht

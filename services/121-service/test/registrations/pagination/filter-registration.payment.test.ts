@@ -20,7 +20,7 @@ import {
   expectedAttributes,
   programIdOCW,
   programIdPV,
-  registrationOCW1,
+  registrationOCW2,
   registrationOCW3,
   registrationOCW4,
   registrationOCW5,
@@ -39,7 +39,7 @@ describe('Load PA table', () => {
     const payment3 = 3;
     const amount = 10;
     const registrations = [
-      registrationOCW1,
+      registrationOCW2,
       registrationOCW3,
       registrationOCW5,
       registrationOCW4,
@@ -167,7 +167,7 @@ describe('Load PA table', () => {
 
       // Assert
       const expectedValueObjectSucces1 = createExpectedValueObject(
-        registrationOCW1,
+        registrationOCW2,
         1,
       );
       const expectedValueObjectSucces4 = createExpectedValueObject(
@@ -192,8 +192,8 @@ describe('Load PA table', () => {
       // Act
       const filter = {
         [`filter.${PaymentFilterEnum.successPayment}`]: `$eq:${payment1}`,
-        ['filter.lastName']: registrationOCW1.lastName,
-        ['filter.phoneNumber']: registrationOCW1.phoneNumber,
+        ['filter.lastName']: registrationOCW2.lastName,
+        ['filter.phoneNumber']: registrationOCW2.phoneNumber,
       };
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
@@ -206,8 +206,8 @@ describe('Load PA table', () => {
 
       // Assert
       const expectedValueObjectSuccesSelect = {
-        referenceId: registrationOCW1.referenceId,
-        lastName: registrationOCW1.lastName,
+        referenceId: registrationOCW2.referenceId,
+        lastName: registrationOCW2.lastName,
       };
       const expectedAttributesSelect = ['referenceId', 'lastName'];
       expect(data[0]).toMatchObject(expectedValueObjectSuccesSelect);

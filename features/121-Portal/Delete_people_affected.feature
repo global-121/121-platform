@@ -23,4 +23,3 @@ Feature: Delete people affected (extension of View_and_Manage_people_affected.fe
     And some related entities will be deleted: "note", "registration_data", "people_affected_app_data", "latest_message", "twilio_message", "whatsapp_pending_message", "try_whatsapp"
     And some related entities will be anonymized: "intersolve_voucher" (field "whatsappPhoneNumber"), "safaricom_request"
     And some related entities will be untouched as they contain no PII: e.g. "transactions", "registration-status-changes", "imagecode-export-vouchers", "imagecode"
-    And some related entities should be anonymized, but are not yet right now: "at_notification", "belcash_request"

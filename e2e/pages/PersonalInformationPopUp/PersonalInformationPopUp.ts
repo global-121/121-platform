@@ -15,6 +15,8 @@ const fspCahngeWarning =
 const visaQuestionStreet = visaIntersolveTranslations.questions[0].label.en;
 const visaQuestionHouseNumberAddition =
   visaIntersolveTranslations.questions[2].label.en;
+const visaQuestionPostalCode = visaIntersolveTranslations.questions[3].label.en;
+const visaQuestionCity = visaIntersolveTranslations.questions[4].label.en;
 
 class PersonalInformationPopup {
   readonly page: Page;
@@ -80,7 +82,7 @@ class PersonalInformationPopup {
     whatsappLabel: string;
     saveButtonName: string;
   }) {
-    const fspAttribute = await this.personAffectedInputForm.filter({
+    const fspAttribute = this.personAffectedInputForm.filter({
       hasText: whatsappLabel,
     });
     const saveButton = this.personAffectedPopUpSaveButton.filter({
@@ -117,7 +119,6 @@ class PersonalInformationPopup {
   }) {
     const saveButton = this.page.getByRole('button', { name: saveButtonName });
     const okButton = this.page.getByRole('button', { name: okButtonName });
-    // const alertMessage = this.page.locator('div.alert-message');
     const alertMessage = this.page.getByRole('alertdialog');
     const fieldInput = fieldSelector.getByRole('textbox');
     await fieldInput.fill(newValue);
@@ -290,6 +291,12 @@ class PersonalInformationPopup {
     const numberAdditionInput = await this.selectFspInputForm({
       filterValue: visaQuestionHouseNumberAddition,
     });
+    const postalCodeInput = await this.selectFspInputForm({
+      filterValue: visaQuestionPostalCode,
+    });
+    const cityInput = await this.selectFspInputForm({
+      filterValue: visaQuestionCity,
+    });
 
     await this.validateFspNamePresentInEditPopUp(fspOldName);
     await this.financialServiceProviderDropdown.click();
@@ -298,7 +305,12 @@ class PersonalInformationPopup {
     await this.validateFspWarningInEditPopUp(warning);
 
     await streetAdressInput.fill(newValue);
-    await numberAdditionInput.click();
+    await this.personAffectedHouseNumber.getByLabel('').click();
+    await this.personAffectedHouseNumber.getByLabel('').fill('2');
+    await numberAdditionInput.fill('D');
+    await postalCodeInput.fill('1234AB');
+    await cityInput.fill('Amsterdam');
+    await postalCodeInput.click();
     await fieldSelector.getByText(saveButtonName).click();
 
     await okButton.waitFor({ state: 'visible' });

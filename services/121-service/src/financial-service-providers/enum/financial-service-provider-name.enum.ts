@@ -2,12 +2,7 @@ export enum FinancialServiceProviderName {
   intersolveVoucherWhatsapp = 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
-  intersolveJumboPhysical = 'Intersolve-jumbo-physical',
-  africasTalking = 'Africas-talking',
-  belcash = 'BelCash',
   vodacash = 'VodaCash',
-  bobFinance = 'BoB-finance',
-  ukrPoshta = 'UkrPoshta',
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
@@ -41,22 +36,7 @@ export const FinancialServiceProviderConfigurationMapping: {
     FinancialServiceProviderConfigurationEnum.coverLetterCode,
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.intersolveJumboPhysical]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.africasTalking]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.belcash]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
   [FinancialServiceProviderName.vodacash]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.bobFinance]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.ukrPoshta]: [
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
   [FinancialServiceProviderName.safaricom]: [
