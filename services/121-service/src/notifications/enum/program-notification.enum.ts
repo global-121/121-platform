@@ -6,7 +6,6 @@ export enum ProgramNotificationEnum {
   whatsappVoucher = 'whatsappVoucher',
   visaDebitCardCreated = 'visaDebitCardCreated',
   visaLoad = 'visaLoad',
-  jumboCardSent = 'jumboCardSent',
   reissueVisaCard = 'reissueVisaCard',
   blockVisaCard = 'blockVisaCard',
   unblockVisaCard = 'unblockVisaCard',

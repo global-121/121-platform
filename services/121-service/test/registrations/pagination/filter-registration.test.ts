@@ -40,7 +40,7 @@ describe('Load PA table', () => {
 
       await awaitChangePaStatus(
         programIdOCW,
-        [registrationOCW1.referenceId],
+        [registrationOCW2.referenceId],
         RegistrationStatusEnum.included,
         accessToken,
       );
@@ -58,7 +58,7 @@ describe('Load PA table', () => {
 
       // Assert
       expect(data[0]).toMatchObject(
-        createExpectedValueObject(registrationOCW1, 1),
+        createExpectedValueObject(registrationOCW2, 2),
       );
       for (const attribute of expectedAttributes) {
         expect(data[0]).toHaveProperty(attribute);

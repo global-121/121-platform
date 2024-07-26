@@ -13,12 +13,9 @@ import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
 import { SeedProgramDrc } from '@121-service/src/scripts/seed-program-drc';
-import { SeedProgramEth } from '@121-service/src/scripts/seed-program-eth';
-import { SeedProgramLbn } from '@121-service/src/scripts/seed-program-lbn';
 import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
 import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
-import { SeedProgramUkr } from '@121-service/src/scripts/seed-program-ukr';
 import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -40,12 +37,9 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
     SeedHelper,
     SeedProgramValidation,
     SeedNLProgramPV,
-    SeedProgramEth,
-    SeedProgramLbn,
     SeedDemoProgram,
     SeedEthJointResponse,
     SeedMultipleKRCS,
-    SeedProgramUkr,
     SeedMultipleNLRC,
     SeedMultipleNLRCMockData,
     SeedProgramDrc,

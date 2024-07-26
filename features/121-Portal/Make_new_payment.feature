@@ -214,27 +214,6 @@ Feature: Make a new payment
   # 4. Create debit card endpoint fails (assumption that Intersolve provides way to test this)
   # 5. Load balance endpoint fails (assumption that Intersolve provides way to test this)
 
-  -- "Intersolve-jumbo-physical"
-
-  Scenario: Send payment instructions to Persons Affected with Financial Service Provider "Intersolve-jumbo-physical"
-    Given all Persons Affected have been imported and included
-    Given all PAs have correctly filled "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
-    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then a successful payment appears in the payment column and the payment history popup
-    And the amount of the payment is the multiplied amount (if a "paymentAmountMultiplier" > 1)
-    And the Person Affected receives a notification that the Jumbo cards are sent via post (via generic send message feature "./Send_message_to_people_affected.feature")
-    And if a "whatsappPhoneNumber" is known it is sent via WhatsApp and otherwise via SMS
-
-  Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with missing data
-    Given all Person Affected has been imported as registered
-    Given an obligatory field is missing ("addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity") for at least 1 PA
-    When payment instructions are sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then a failed payment appears for the PA with the missing data
-    And the status popup will contain an error message about the first field that is missing (except for "addressHouseNumber" where a more general error message is shown)
-    And the amount of the payment will be set to the unmultiplied amount, even with a "paymentAmountMultiplier" > 1, so that on retry it is not multiplied again (and again)
-    And after correcting the data, the payment can be retried
-    And for all other PAs a successful payment appears and notifications are sent (see scenario above)
-
   --"Safaricom Kenya"
 
   Scenario: Successfully make a payment to a Person Affected with Financial Service provider "Safaricom"
