@@ -13,7 +13,7 @@ export const AllowedFilterOperatorsNumber = [
   FilterOperator.NULL,
 ];
 
-const dataSearchableColumn = 'data.(value)';
+const dataSearchableColumn = 'data.value';
 const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
     searchableColumns: [dataSearchableColumn],
@@ -35,7 +35,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       'paymentCount',
       'paymentCountRemaining',
       'lastMessageStatus',
-      'data.(value)',
+      'data.value',
     ],
     filterableColumns: {
       referenceId: AllowedFilterOperatorsString,
