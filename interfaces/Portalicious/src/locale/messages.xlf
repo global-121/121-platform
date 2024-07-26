@@ -1,44 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-GB">
   <file id="ngi18n" original="ng.template">
-    <unit id="1023894478419315290">
+    <unit id="5641945527911431559">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:103,104</note>
+        <note category="location">src/app/components/health-widget/health-widget.component.html:11,13</note>
       </notes>
       <segment>
-        <source>Language: <ph id="0" equiv="INTERPOLATION" disp="{{ selectedLanguageLabel() }}"/></source>
+        <source>Error: <ph disp="{{ versionInfo.error()?.message }}" equiv="INTERPOLATION" id="0"/></source>
       </segment>
     </unit>
-    <unit id="1030042071919904969">
+    <unit id="6231535972680055827">
       <notes>
-        <note category="location">src/app/pages/program/program-payments/program-payments.component.html:2,3</note>
+        <note category="location">src/app/components/logo/logo.component.html:5,7</note>
       </notes>
       <segment>
-        <source>program-payments works!</source>
+        <source>121 Portal</source>
       </segment>
     </unit>
-    <unit id="1131264372756277854">
+    <unit id="5901643806193916083">
       <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:34</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:8,9</note>
       </notes>
       <segment>
-        <source>Payments</source>
-      </segment>
-    </unit>
-    <unit id="1519584467841622217">
-      <notes>
-        <note category="location">src/app/pages/users/users.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>users works!</source>
-      </segment>
-    </unit>
-    <unit id="17234570072885140">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:30</note>
-      </notes>
-      <segment>
-        <source>Registrations</source>
+        <source>About 121 Portal</source>
       </segment>
     </unit>
     <unit id="2098810202835058127">
@@ -49,12 +33,36 @@
         <source>The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer and faster which enables humanitarian organizations to maximize their impact and provide adequate response during a disaster or conflict.</source>
       </segment>
     </unit>
-    <unit id="2233560223291461480">
+    <unit id="4829177270839953752">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:86</note>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:22,23</note>
       </notes>
       <segment>
-        <source>Manual</source>
+        <source>Find out more</source>
+      </segment>
+    </unit>
+    <unit id="4242007306199259869">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:59,60</note>
+      </notes>
+      <segment>
+        <source>Helpful links</source>
+      </segment>
+    </unit>
+    <unit id="3008354540074404323">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:67,68</note>
+      </notes>
+      <segment>
+        <source>Open Source Code</source>
+      </segment>
+    </unit>
+    <unit id="7807685431509530550">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:75,76</note>
+      </notes>
+      <segment>
+        <source>API Documentation</source>
       </segment>
     </unit>
     <unit id="2256818646333052039">
@@ -65,6 +73,55 @@
         <source>User Manual</source>
       </segment>
     </unit>
+    <unit id="4371726377430146531">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:93,94</note>
+      </notes>
+      <segment>
+        <source>Questions or feedback? Contact us</source>
+      </segment>
+    </unit>
+    <unit id="9219884121371524201">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:40</note>
+      </notes>
+      <segment>
+        <source>Logged in as:</source>
+      </segment>
+    </unit>
+    <unit id="generic-close">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:59</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:61</note>
+      </notes>
+      <segment>
+        <source>Close</source>
+      </segment>
+    </unit>
+    <unit id="4501314745488687296">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:79,80</note>
+      </notes>
+      <segment>
+        <source>Opens in a new window</source>
+      </segment>
+    </unit>
+    <unit id="2233560223291461480">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:82</note>
+      </notes>
+      <segment>
+        <source>Manual</source>
+      </segment>
+    </unit>
+    <unit id="1023894478419315290">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:99,100</note>
+      </notes>
+      <segment>
+        <source>Language: <ph disp="{{ selectedLanguageLabel() }}" equiv="INTERPOLATION" id="0"/></source>
+      </segment>
+    </unit>
     <unit id="2614607010577950577">
       <notes>
         <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:22</note>
@@ -73,12 +130,28 @@
         <source>Overview</source>
       </segment>
     </unit>
-    <unit id="3008354540074404323">
+    <unit id="3724068243287682962">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:67,68</note>
+        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:26</note>
       </notes>
       <segment>
-        <source>Open Source Code</source>
+        <source>Team</source>
+      </segment>
+    </unit>
+    <unit id="17234570072885140">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:30</note>
+      </notes>
+      <segment>
+        <source>Registrations</source>
+      </segment>
+    </unit>
+    <unit id="1131264372756277854">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:34</note>
+      </notes>
+      <segment>
+        <source>Payments</source>
       </segment>
     </unit>
     <unit id="3338661424985495365">
@@ -97,132 +170,12 @@
         <source>Welcome to Portalicious, baby!</source>
       </segment>
     </unit>
-    <unit id="3602312649258409543">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:11</note>
-      </notes>
-      <segment>
-        <source>Connected to backend!</source>
-      </segment>
-    </unit>
-    <unit id="3724068243287682962">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:26</note>
-      </notes>
-      <segment>
-        <source>Team</source>
-      </segment>
-    </unit>
-    <unit id="4242007306199259869">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:59,60</note>
-      </notes>
-      <segment>
-        <source>Helpful links</source>
-      </segment>
-    </unit>
-    <unit id="4371726377430146531">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:93,94</note>
-      </notes>
-      <segment>
-        <source>Questions or feedback? Contact us</source>
-      </segment>
-    </unit>
-    <unit id="4829177270839953752">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:22,23</note>
-      </notes>
-      <segment>
-        <source>Find out more</source>
-      </segment>
-    </unit>
-    <unit id="5641945527911431559">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:7,9</note>
-      </notes>
-      <segment>
-        <source>Error: <ph id="0" equiv="INTERPOLATION" disp="{{ versionInfo.error()?.message }}"/></source>
-      </segment>
-    </unit>
-    <unit id="5662590318641401360">
-      <notes>
-        <note category="location">src/app/pages/program/program-team/program-team.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>program-team works!</source>
-      </segment>
-    </unit>
-    <unit id="5901643806193916083">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:8,9</note>
-      </notes>
-      <segment>
-        <source>About 121 Portal</source>
-      </segment>
-    </unit>
-    <unit id="6231535972680055827">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:17,18</note>
-      </notes>
-      <segment>
-        <source>121 Portal</source>
-      </segment>
-    </unit>
     <unit id="6966507916758477998">
       <notes>
         <note category="location">src/app/pages/all-projects/all-projects.component.html:13,15</note>
       </notes>
       <segment>
         <source>Go to NLRC program</source>
-      </segment>
-    </unit>
-    <unit id="7751693363784792855">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:4,5</note>
-      </notes>
-      <segment>
-        <source>Loading health widget...</source>
-      </segment>
-    </unit>
-    <unit id="7768763632521855939">
-      <notes>
-        <note category="location">src/app/pages/program/program-monitoring/program-monitoring.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>program-monitoring works!</source>
-      </segment>
-    </unit>
-    <unit id="7978336974922418932">
-      <notes>
-        <note category="location">src/app/pages/user-settings/user-settings.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>user-settings works!</source>
-      </segment>
-    </unit>
-    <unit id="8486187705503981919">
-      <notes>
-        <note category="location">src/app/pages/program/program-overview/program-overview.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>program-overview works!</source>
-      </segment>
-    </unit>
-    <unit id="8572807781579317369">
-      <notes>
-        <note category="location">src/app/pages/program/program-registrations/program-registrations.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>program-registrations works!</source>
-      </segment>
-    </unit>
-    <unit id="8837209833313387366">
-      <notes>
-        <note category="location">src/app/pages/roles-and-permissions/roles-and-permissions.component.html:2,3</note>
-      </notes>
-      <segment>
-        <source>roles-and-permissions works!</source>
       </segment>
     </unit>
     <unit id="9053334343942762407">
@@ -233,37 +186,264 @@
         <source>Go to OCW program</source>
       </segment>
     </unit>
-    <unit id="9219884121371524201">
+    <unit id="6509003407758128100">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:41</note>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:8,9</note>
       </notes>
       <segment>
-        <source>Logged in as:</source>
+        <source>Cookie policy</source>
       </segment>
     </unit>
-    <unit id="7807685431509530550">
+    <unit id="6305795241980054784">
       <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:75,76</note>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:14,16</note>
       </notes>
       <segment>
-        <source>API Documentation</source>
+        <source>Necessary cookies are required for the basic operation of the platform.</source>
       </segment>
     </unit>
-    <unit id="4501314745488687296">
+    <unit id="2082650153330286720">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:83,84</note>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:19,39</note>
       </notes>
       <segment>
-        <source>Opens in a new window</source>
+        <source>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="0" type="other"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="1" type="other"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
+          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="3" type="other"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
+        </source>
       </segment>
     </unit>
-    <unit id="generiClose">
+    <unit id="7216129782170445339">
       <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:63</note>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:65</note>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:40,41</note>
       </notes>
       <segment>
-        <source>Close</source>
+        <source>Read less</source>
+      </segment>
+    </unit>
+    <unit id="2827984212740060090">
+      <notes>
+        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:49,50</note>
+      </notes>
+      <segment>
+        <source>Read more</source>
+      </segment>
+    </unit>
+    <unit id="2336550011721758066">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:11,12</note>
+        <note category="location">src/app/pages/login/login.component.html:56</note>
+      </notes>
+      <segment>
+        <source>Log in</source>
+      </segment>
+    </unit>
+    <unit id="1502775459537740372">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:12,13</note>
+      </notes>
+      <segment>
+        <source>Use your work email to log in.</source>
+      </segment>
+    </unit>
+    <unit id="1890300073702152532">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:19</note>
+      </notes>
+      <segment>
+        <source>E-mail</source>
+      </segment>
+    </unit>
+    <unit id="5393972837576333232">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:25,26</note>
+      </notes>
+      <segment>
+        <source>example: yourname@example.org</source>
+      </segment>
+    </unit>
+    <unit id="8938510541215036054">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:33,34</note>
+      </notes>
+      <segment>
+        <source>Enter a valid email address</source>
+      </segment>
+    </unit>
+    <unit id="1431416938026210429">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:38</note>
+      </notes>
+      <segment>
+        <source>Password</source>
+      </segment>
+    </unit>
+    <unit id="2772023564304193657">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:51,52</note>
+      </notes>
+      <segment>
+        <source>Enter your password</source>
+      </segment>
+    </unit>
+    <unit id="6137778083982498577">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:67,75</note>
+      </notes>
+      <segment>
+        <source>Forgot your password? <pc dispEnd="&lt;/a &gt;" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password reset for 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link"> Request password reset</pc></source>
+      </segment>
+    </unit>
+    <unit id="2363864708975195083">
+      <notes>
+        <note category="location">src/app/pages/login/login.component.html:77,84</note>
+      </notes>
+      <segment>
+        <source>Read our <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
+      </segment>
+    </unit>
+    <unit id="7768763632521855939">
+      <notes>
+        <note category="location">src/app/pages/program/program-monitoring/program-monitoring.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>program-monitoring works!</source>
+      </segment>
+    </unit>
+    <unit id="8486187705503981919">
+      <notes>
+        <note category="location">src/app/pages/program/program-overview/program-overview.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>program-overview works!</source>
+      </segment>
+    </unit>
+    <unit id="1030042071919904969">
+      <notes>
+        <note category="location">src/app/pages/program/program-payments/program-payments.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>program-payments works!</source>
+      </segment>
+    </unit>
+    <unit id="8572807781579317369">
+      <notes>
+        <note category="location">src/app/pages/program/program-registrations/program-registrations.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>program-registrations works!</source>
+      </segment>
+    </unit>
+    <unit id="5662590318641401360">
+      <notes>
+        <note category="location">src/app/pages/program/program-team/program-team.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>program-team works!</source>
+      </segment>
+    </unit>
+    <unit id="8837209833313387366">
+      <notes>
+        <note category="location">src/app/pages/roles-and-permissions/roles-and-permissions.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>roles-and-permissions works!</source>
+      </segment>
+    </unit>
+    <unit id="7978336974922418932">
+      <notes>
+        <note category="location">src/app/pages/user-settings/user-settings.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>user-settings works!</source>
+      </segment>
+    </unit>
+    <unit id="1519584467841622217">
+      <notes>
+        <note category="location">src/app/pages/users/users.component.html:2,3</note>
+      </notes>
+      <segment>
+        <source>users works!</source>
+      </segment>
+    </unit>
+    <unit id="9132374083993014120">
+      <notes>
+        <note category="location">src/app/services/auth.service.ts:100</note>
+      </notes>
+      <segment>
+        <source>Invalid email or password. Double-check your credentials and try again.</source>
+      </segment>
+    </unit>
+    <unit id="888507803757257524">
+      <notes>
+        <note category="location">src/app/components/health-widget/health-widget.component.html:2</note>
+      </notes>
+      <segment>
+        <source>API Version:</source>
+      </segment>
+    </unit>
+    <unit id="header-menu">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:6</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:8</note>
+      </notes>
+      <segment>
+        <source>Menu</source>
+      </segment>
+    </unit>
+    <unit id="4555457172864212828">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:69</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Users</source>
+      </segment>
+    </unit>
+    <unit id="5942556817969302760">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:73</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Roles and permissions</source>
+      </segment>
+    </unit>
+    <unit id="6425467213960794982">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:65</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>All projects</source>
+      </segment>
+    </unit>
+    <unit id="3797778920049399855">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:55</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Logout</source>
+      </segment>
+    </unit>
+    <unit id="4930506384627295710">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.ts:50</note>
+        <note category="description">Menu-item</note>
+      </notes>
+      <segment>
+        <source>Settings</source>
+      </segment>
+    </unit>
+    <unit id="header-user-menu">
+      <notes>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:22,23</note>
+        <note category="location">src/app/components/page-layout/components/header/header.component.html:24,25</note>
+      </notes>
+      <segment>
+        <source>User-Menu</source>
       </segment>
     </unit>
   </file>

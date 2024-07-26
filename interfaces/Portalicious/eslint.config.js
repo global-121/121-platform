@@ -88,7 +88,13 @@ module.exports = tseslint.config(
         'error',
         {
           checkId: false,
-          ignoreAttributes: ['icon', 'styleClass', 'data-testid'],
+          ignoreAttributes: [
+            'data-testid',
+            'icon',
+            'iconPos',
+            'ngSrc',
+            'styleClass',
+          ],
         },
       ],
       'prettier/prettier': [

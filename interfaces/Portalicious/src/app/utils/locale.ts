@@ -1,6 +1,6 @@
 import { isDevMode } from '@angular/core';
 
-export const localStorageLocaleKey = 'preferredLanguage';
+const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 export enum Locale {
   en = 'en',
@@ -55,12 +55,12 @@ export function getLocaleForInitialization({
   }
 
   const localStorageLanguage =
-    localStorage.getItem(localStorageLocaleKey) ?? defaultLocale;
+    localStorage.getItem(LOCAL_STORAGE_LOCALE_KEY) ?? defaultLocale;
 
   if (!isValidLocale(localStorageLanguage)) {
     // This in theory should never happen
     // But to be on the safe side, we revert to locale in URL
-    localStorage.setItem(localStorageLocaleKey, urlLocale);
+    localStorage.setItem(LOCAL_STORAGE_LOCALE_KEY, urlLocale);
     return { locale: urlLocale };
   }
 
@@ -76,7 +76,7 @@ export function getLocaleForInitialization({
 
 export function changeLanguage(desiredLocale: Locale): void {
   // persist locale in locale storage
-  localStorage.setItem(localStorageLocaleKey, desiredLocale);
+  localStorage.setItem(LOCAL_STORAGE_LOCALE_KEY, desiredLocale);
 
   // redirect to desired locale
   const pathnameArray = window.location.pathname.split('/');

@@ -9,7 +9,7 @@ import {
 import { Injectable, inject } from '@angular/core';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { User } from '~/models/user.model';
+import { getUserFromLocalStorage } from '~/services/auth.service';
 import { environment } from '~environment';
 
 interface PerformRequestParams {
@@ -56,14 +56,11 @@ export class HttpWrapperService {
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (error.status === HttpStatusCode.Unauthorized) {
-      // XXX: eventually this should be replaced with the USER_KEY exported by the AuthService
-      const rawUser = localStorage.getItem('USER_KEY');
+      const user = getUserFromLocalStorage();
 
-      if (!rawUser) {
+      if (!user) {
         return of(error);
       }
-
-      const user = JSON.parse(rawUser) as User;
 
       if (user.expires) {
         const expires = Date.parse(user.expires);

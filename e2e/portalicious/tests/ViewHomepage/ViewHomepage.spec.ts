@@ -1,15 +1,18 @@
+import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { expect, test } from '@playwright/test';
 
-test.beforeEach(async () => {
-  await resetDB(SeedScript.nlrcMultiple);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
+test.beforeEach(async ({ page }) => {
+  await resetDB(SeedScript.test);
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  // Login
+  const loginPage = new LoginPage(page);
+  await page.goto('/');
+  await loginPage.login(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  );
 });
 
 // This test is here to just load the homepage

@@ -57,10 +57,10 @@ export class WhatsappService {
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
       from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER!),
       statusCallback:
-        // Explicitly define content-type for Mock-Service only
-        EXTERNAL_API.whatsAppStatus + !!process.env.MOCK_TWILIO
+        EXTERNAL_API.whatsAppStatus +
+        (!!process.env.MOCK_TWILIO
           ? `?messageContentType=${messageContentType}`
-          : '',
+          : ''),
       to: formatWhatsAppNumber(recipientPhoneNr),
     };
     if (mediaUrl) {
