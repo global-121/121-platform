@@ -8,3 +8,15 @@ trailingComma: all
 plugins:
   - prettier-plugin-organize-imports
   - prettier-plugin-tailwindcss
+  - '@prettier/plugin-xml'
+overrides:
+  - files: '*.xlf'
+    options:
+      parser: xml
+      printWidth: 10000
+      singleAttributePerLine: false
+      htmlWhitespaceSensitivity: strict
+      xmlQuoteAttributes: double
+      xmlSelfClosingSpace: false
+      xmlSortAttributesByKey: false
+      xmlWhitespaceSensitivity: strict

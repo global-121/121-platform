@@ -1,507 +1,241 @@
-<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-GB" trgLang="nl">
-  <file id="ngi18n" original="ng.template">
-    <unit id="5641945527911431559">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:11,13</note>
-      </notes>
-      <segment state="initial">
-        <source>Error: <ph disp="{{ versionInfo.error()?.message }}" equiv="INTERPOLATION" id="0"/></source>
-        <target>Fout: <ph disp="{{ versionInfo.error()?.message }}" equiv="INTERPOLATION" id="0"/></target>
-      </segment>
-    </unit>
-    <unit id="5901643806193916083">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:8,9</note>
-      </notes>
-      <segment state="initial">
-        <source>About 121 Portal</source>
-        <target>Over de 121 Portal</target>
-      </segment>
-    </unit>
-    <unit id="2098810202835058127">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:11,13</note>
-      </notes>
-      <segment state="initial">
-        <source>The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer and faster which enables humanitarian organizations to maximize their impact and provide adequate response during a disaster or conflict.</source>
-        <target>The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer and faster which enables humanitarian organizations to maximize their impact and provide adequate response during a disaster or conflict.</target>
-      </segment>
-    </unit>
-    <unit id="4829177270839953752">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:22,23</note>
-      </notes>
-      <segment state="initial">
-        <source>Find out more</source>
-        <target>Lees meer</target>
-      </segment>
-    </unit>
-    <unit id="4242007306199259869">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:59,60</note>
-      </notes>
-      <segment state="initial">
-        <source>Helpful links</source>
-        <target>Handige links</target>
-      </segment>
-    </unit>
-    <unit id="3008354540074404323">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:67,68</note>
-      </notes>
-      <segment state="initial">
-        <source>Open Source Code</source>
-        <target>Open Source Code</target>
-      </segment>
-    </unit>
-    <unit id="2256818646333052039">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:83,84</note>
-      </notes>
-      <segment state="initial">
-        <source>User Manual</source>
-        <target>Handleiding</target>
-      </segment>
-    </unit>
-    <unit id="4371726377430146531">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:93,94</note>
-      </notes>
-      <segment state="initial">
-        <source>Questions or feedback? Contact us</source>
-        <target>Vragen of feedback? Laat het ons weten</target>
-      </segment>
-    </unit>
-    <unit id="6231535972680055827">
-      <notes>
-        <note category="location">src/app/components/logo/logo.component.html:5,7</note>
-      </notes>
-      <segment state="initial">
-        <source>121 Portal</source>
-        <target>121 Portal</target>
-      </segment>
-    </unit>
-    <unit id="9219884121371524201">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:40</note>
-      </notes>
-      <segment state="initial">
-        <source>Logged in as:</source>
-        <target>Ingelogd als:</target>
-      </segment>
-    </unit>
-    <unit id="2233560223291461480">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:82</note>
-      </notes>
-      <segment state="initial">
-        <source>Manual</source>
-        <target>Handleiding</target>
-      </segment>
-    </unit>
-    <unit id="1023894478419315290">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:99,100</note>
-      </notes>
-      <segment state="initial">
-        <source>Language: <ph disp="{{ selectedLanguageLabel() }}" equiv="INTERPOLATION" id="0"/></source>
-        <target>Taal: <ph disp="{{ selectedLanguageLabel() }}" equiv="INTERPOLATION" id="0"/></target>
-      </segment>
-    </unit>
-    <unit id="2614607010577950577">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:22</note>
-      </notes>
-      <segment state="initial">
-        <source>Overview</source>
-        <target>Overzicht</target>
-      </segment>
-    </unit>
-    <unit id="3724068243287682962">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:26</note>
-      </notes>
-      <segment state="initial">
-        <source>Team</source>
-        <target>Team</target>
-      </segment>
-    </unit>
-    <unit id="17234570072885140">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:30</note>
-      </notes>
-      <segment state="initial">
-        <source>Registrations</source>
-        <target>Registraties</target>
-      </segment>
-    </unit>
-    <unit id="1131264372756277854">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:34</note>
-      </notes>
-      <segment state="initial">
-        <source>Payments</source>
-        <target>Betalingen</target>
-      </segment>
-    </unit>
-    <unit id="3338661424985495365">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/program-header/program-header.component.ts:38</note>
-      </notes>
-      <segment state="initial">
-        <source>Monitoring</source>
-        <target>Rapportage</target>
-      </segment>
-    </unit>
-    <unit id="3350975625681256410">
-      <notes>
-        <note category="location">src/app/pages/all-projects/all-projects.component.html:6,7</note>
-      </notes>
-      <segment state="initial">
-        <source>Welcome to Portalicious, baby!</source>
-        <target>Welkom op het smakelijke Portaal, schat!</target>
-      </segment>
-    </unit>
-    <unit id="6966507916758477998">
-      <notes>
-        <note category="location">src/app/pages/all-projects/all-projects.component.html:13,15</note>
-      </notes>
-      <segment state="initial">
-        <source>Go to NLRC program</source>
-        <target>Ga naar NLRC</target>
-      </segment>
-    </unit>
-    <unit id="9053334343942762407">
-      <notes>
-        <note category="location">src/app/pages/all-projects/all-projects.component.html:21,23</note>
-      </notes>
-      <segment state="initial">
-        <source>Go to OCW program</source>
-        <target>Ga naar OCW</target>
-      </segment>
-    </unit>
-    <unit id="7768763632521855939">
-      <notes>
-        <note category="location">src/app/pages/program/program-monitoring/program-monitoring.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>program-monitoring works!</source>
-        <target>program-monitoring werkt!</target>
-      </segment>
-    </unit>
-    <unit id="8486187705503981919">
-      <notes>
-        <note category="location">src/app/pages/program/program-overview/program-overview.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>program-overview works!</source>
-        <target>program-overview werkt!</target>
-      </segment>
-    </unit>
-    <unit id="1030042071919904969">
-      <notes>
-        <note category="location">src/app/pages/program/program-payments/program-payments.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>program-payments works!</source>
-        <target>program-payments werkt!</target>
-      </segment>
-    </unit>
-    <unit id="8572807781579317369">
-      <notes>
-        <note category="location">src/app/pages/program/program-registrations/program-registrations.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>program-registrations works!</source>
-        <target>program-registrations werkt!</target>
-      </segment>
-    </unit>
-    <unit id="5662590318641401360">
-      <notes>
-        <note category="location">src/app/pages/program/program-team/program-team.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>program-team works!</source>
-        <target>program-team werkt!</target>
-      </segment>
-    </unit>
-    <unit id="8837209833313387366">
-      <notes>
-        <note category="location">src/app/pages/roles-and-permissions/roles-and-permissions.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>roles-and-permissions works!</source>
-        <target>roles-and-permissions werkt!</target>
-      </segment>
-    </unit>
-    <unit id="7978336974922418932">
-      <notes>
-        <note category="location">src/app/pages/user-settings/user-settings.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>user-settings works!</source>
-        <target>user-settings werkt!</target>
-      </segment>
-    </unit>
-    <unit id="1519584467841622217">
-      <notes>
-        <note category="location">src/app/pages/users/users.component.html:2,3</note>
-      </notes>
-      <segment state="initial">
-        <source>users works!</source>
-        <target>users werkt!</target>
-      </segment>
-    </unit>
-    <unit id="7807685431509530550">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/footer/footer.component.html:75,76</note>
-      </notes>
-      <segment state="initial">
-        <source>API Documentation</source>
-        <target>API Documentatie</target>
-      </segment>
-    </unit>
-    <unit id="generic-close">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:59</note>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:61</note>
-      </notes>
-      <segment state="initial">
-        <source>Close</source>
-        <target>Sluiten</target>
-      </segment>
-    </unit>
-    <unit id="4501314745488687296">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:79,80</note>
-      </notes>
-      <segment state="initial">
-        <source>Opens in a new window</source>
-        <target>Opent in een nieuw venster</target>
-      </segment>
-    </unit>
-    <unit id="6509003407758128100">
-      <notes>
-        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:8,9</note>
-      </notes>
-      <segment state="initial">
-        <source>Cookie policy</source>
-        <target>Cookie beleid</target>
-      </segment>
-    </unit>
-    <unit id="6305795241980054784">
-      <notes>
-        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:14,16</note>
-      </notes>
-      <segment state="initial">
-        <source>Necessary cookies are required for the basic operation of the platform.</source>
-        <target>Necessary cookies are required for the basic operation of the platform.</target>
-      </segment>
-    </unit>
-    <unit id="2082650153330286720">
-      <notes>
-        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:19,39</note>
-      </notes>
-      <segment state="initial">
-        <source>
-          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="0" type="other"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
-          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="1" type="other"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
-          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="3" type="other"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
-        </source>
-        <target>
-          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="0" type="other"> They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings. </pc>
-          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="1" type="other"><pc id="2" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Managing Cookies: </pc>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality. </pc>
-          <pc dispEnd="&lt;/p&gt;" dispStart="&lt;p&gt;" equivEnd="CLOSE_PARAGRAPH" equivStart="START_PARAGRAPH" id="3" type="other"><pc id="4" equivStart="START_BOLD_TEXT" equivEnd="CLOSE_BOLD_TEXT" type="fmt" dispStart="&lt;b&gt;" dispEnd="&lt;/b&gt;">Contact Us: </pc>If you have any questions about our use of necessary cookies, please feel free to contact us at  <pc id="5" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a href=&quot;mailto:support@510.global&quot; class=&quot;text-blue-500 underline&quot; &gt;" dispEnd="&lt;/a &gt;">support@510.global</pc></pc>
-        </target>
-      </segment>
-    </unit>
-    <unit id="7216129782170445339">
-      <notes>
-        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:40,41</note>
-      </notes>
-      <segment state="initial">
-        <source>Read less</source>
-        <target>Inklappen</target>
-      </segment>
-    </unit>
-    <unit id="2827984212740060090">
-      <notes>
-        <note category="location">src/app/pages/login/components/cookie-banner/cookie-banner.component.html:49,50</note>
-      </notes>
-      <segment state="initial">
-        <source>Read more</source>
-        <target>Openklappen</target>
-      </segment>
-    </unit>
-    <unit id="2336550011721758066">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:11,12</note>
-        <note category="location">src/app/pages/login/login.component.html:56</note>
-      </notes>
-      <segment state="initial">
-        <source>Log in</source>
-        <target>Inloggen</target>
-      </segment>
-    </unit>
-    <unit id="1502775459537740372">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:12,13</note>
-      </notes>
-      <segment state="initial">
-        <source>Use your work email to log in.</source>
-        <target>Gebruik uw zakelijke e-mailadres om in te loggen.</target>
-      </segment>
-    </unit>
-    <unit id="1890300073702152532">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:19</note>
-      </notes>
-      <segment state="initial">
-        <source>E-mail</source>
-        <target>E-mail</target>
-      </segment>
-    </unit>
-    <unit id="1431416938026210429">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:38</note>
-      </notes>
-      <segment state="initial">
-        <source>Password</source>
-        <target>Wachtwoord</target>
-      </segment>
-    </unit>
-    <unit id="2363864708975195083">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:77,84</note>
-      </notes>
-      <segment state="initial">
-        <source>Read our <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy statement <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></source>
-        <target>Lees ons <pc dispEnd="&lt;/a&gt;" dispStart="&lt;a href=&quot;https://510.global/privacy-policy/&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link">Privacy beleid <pc id="1" equivStart="START_ITALIC_TEXT" equivEnd="CLOSE_ITALIC_TEXT" type="fmt" dispStart="&lt;i class=&quot;pi pi-external-link ml-1 text-xs&quot;&gt;" dispEnd="&lt;/i &gt;"/></pc></target>
-      </segment>
-    </unit>
-    <unit id="2772023564304193657">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:51,52</note>
-      </notes>
-      <segment state="initial">
-        <source>Enter your password</source>
-        <target>Vul een wachtwoord in</target>
-      </segment>
-    </unit>
-    <unit id="6137778083982498577">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:67,75</note>
-      </notes>
-      <segment state="initial">
-        <source>Forgot your password? <pc dispEnd="&lt;/a &gt;" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password reset for 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link"> Request password reset</pc></source>
-        <target>Wachtwoord vergeten? <pc dispEnd="&lt;/a &gt;" dispStart="&lt;a href=&quot;mailto:support@510.global?subject=Request Password reset for 121 Platform&quot; class=&quot;text-blue-500 underline&quot; target=&quot;_blank&quot; &gt;" equivEnd="CLOSE_LINK" equivStart="START_LINK" id="0" type="link"> Vraag een wachtwoord reset aan</pc></target>
-      </segment>
-    </unit>
-    <unit id="9132374083993014120">
-      <notes>
-        <note category="location">src/app/services/auth.service.ts:100</note>
-      </notes>
-      <segment state="initial">
-        <source>Invalid email or password. Double-check your credentials and try again.</source>
-        <target>Ongeldig emailadres of wachtwoord. Dubel-check de gegevens en probeer het opnieuw.</target>
-      </segment>
-    </unit>
-    <unit id="8938510541215036054">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:33,34</note>
-      </notes>
-      <segment state="initial">
-        <source>Enter a valid email address</source>
-        <target>Vul een geldig emailadres in</target>
-      </segment>
-    </unit>
-    <unit id="888507803757257524">
-      <notes>
-        <note category="location">src/app/components/health-widget/health-widget.component.html:2</note>
-      </notes>
-      <segment state="initial">
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-GB" target-language="nl" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="888507803757257524" datatype="html">
         <source>API Version:</source>
-        <target>API Versie:</target>
-      </segment>
-    </unit>
-    <unit id="header-menu">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:6</note>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:8</note>
-      </notes>
-      <segment state="initial">
+        <target state="final">API Versie:</target>
+      </trans-unit>
+      <trans-unit id="5641945527911431559" datatype="html">
+        <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
+        <target state="final">Fout: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="1023894478419315290" datatype="html">
+        <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+        <target state="final">Taal: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="6231535972680055827" datatype="html">
+        <source>121 Portal</source>
+        <target state="final">121 Portal</target>
+      </trans-unit>
+      <trans-unit id="5901643806193916083" datatype="html">
+        <source>About 121 Portal</source>
+        <target state="translated">Over 121 Portal</target>
+      </trans-unit>
+      <trans-unit id="2098810202835058127" datatype="html">
+        <source>The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer and faster which enables humanitarian organizations to maximize their impact and provide adequate response during a disaster or conflict.</source>
+        <target state="needs-review-translation">Het 121 Platform maakt CVA (Cash &amp;amp; Voucher Assistance) makkelijker, veiliger en sneller wat humanitaire organisaties in staat stelt hun impact to maximaliseren en adequate hulp te verlenen tijdens een ramp of conflict.</target>
+      </trans-unit>
+      <trans-unit id="4829177270839953752" datatype="html">
+        <source>Find out more</source>
+        <target state="translated">Meer weten</target>
+      </trans-unit>
+      <trans-unit id="4242007306199259869" datatype="html">
+        <source>Helpful links</source>
+        <target state="translated">Handige links</target>
+      </trans-unit>
+      <trans-unit id="3008354540074404323" datatype="html">
+        <source>Open Source Code</source>
+        <target state="final">Open Source Code</target>
+      </trans-unit>
+      <trans-unit id="7807685431509530550" datatype="html">
+        <source>API Documentation</source>
+        <target state="final">API Documentatie</target>
+      </trans-unit>
+      <trans-unit id="2256818646333052039" datatype="html">
+        <source>User Manual</source>
+        <target state="translated">Handleiding</target>
+      </trans-unit>
+      <trans-unit id="4371726377430146531" datatype="html">
+        <source>Questions or feedback? Contact us</source>
+        <target state="translated">Vragen of feedback? Neem contact op</target>
+      </trans-unit>
+      <trans-unit id="header-menu" datatype="html">
         <source>Menu</source>
-        <target>Menu</target>
-      </segment>
-    </unit>
-    <unit id="5393972837576333232">
-      <notes>
-        <note category="location">src/app/pages/login/login.component.html:25,26</note>
-      </notes>
-      <segment state="initial">
-        <source>example: yourname@example.org</source>
-        <target>bijv.: uwnaam@example.nl</target>
-      </segment>
-    </unit>
-    <unit id="6425467213960794982">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.ts:65</note>
-        <note category="description">Menu-item</note>
-      </notes>
-      <segment state="initial">
-        <source>All projects</source>
-        <target>Alle projecten</target>
-      </segment>
-    </unit>
-    <unit id="4555457172864212828">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.ts:69</note>
-        <note category="description">Menu-item</note>
-      </notes>
-      <segment state="initial">
-        <source>Users</source>
-        <target>Gebruikers</target>
-      </segment>
-    </unit>
-    <unit id="5942556817969302760">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.ts:73</note>
-        <note category="description">Menu-item</note>
-      </notes>
-      <segment state="initial">
-        <source>Roles and permissions</source>
-        <target>Rollen en Rechten</target>
-      </segment>
-    </unit>
-    <unit id="4930506384627295710">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.ts:50</note>
-        <note category="description">Menu-item</note>
-      </notes>
-      <segment state="initial">
+        <target state="final">Menu</target>
+      </trans-unit>
+      <trans-unit id="header-user-menu" datatype="html">
+        <source>Account</source>
+        <target state="translated">Account</target>
+        <note priority="1" from="description">Top-right user-menu</note>
+      </trans-unit>
+      <trans-unit id="9219884121371524201" datatype="html">
+        <source>Logged in as:</source>
+        <target state="final">Ingelogd als:</target>
+      </trans-unit>
+      <trans-unit id="generic-close" datatype="html">
+        <source>Close</source>
+        <target state="translated">Sluiten</target>
+      </trans-unit>
+      <trans-unit id="4501314745488687296" datatype="html">
+        <source>Opens in a new window</source>
+        <target state="translated">Opent in een nieuw venster</target>
+      </trans-unit>
+      <trans-unit id="2233560223291461480" datatype="html">
+        <source>Manual</source>
+        <target state="translated">Handleiding</target>
+      </trans-unit>
+      <trans-unit id="4930506384627295710" datatype="html">
         <source>Settings</source>
-        <target>Instellingen</target>
-      </segment>
-    </unit>
-    <unit id="3797778920049399855">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.ts:55</note>
-        <note category="description">Menu-item</note>
-      </notes>
-      <segment state="initial">
+        <target state="translated">Instellingen</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="3797778920049399855" datatype="html">
         <source>Logout</source>
-        <target>Log uit</target>
-      </segment>
-    </unit>
-    <unit id="header-user-menu">
-      <notes>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:22,23</note>
-        <note category="location">src/app/components/page-layout/components/header/header.component.html:24,25</note>
-      </notes>
-      <segment state="initial">
-        <source>User-Menu</source>
-        <target>Gebruikersmenu</target>
-      </segment>
-    </unit>
+        <target state="translated">Uitloggen</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="6425467213960794982" datatype="html">
+        <source>All projects</source>
+        <target state="translated">Alle projecten</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="4555457172864212828" datatype="html">
+        <source>Users</source>
+        <target state="translated">Gebruikers</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="5942556817969302760" datatype="html">
+        <source>Roles and permissions</source>
+        <target state="translated">Rollen en Rechten</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="2614607010577950577" datatype="html">
+        <source>Overview</source>
+        <target state="translated">Overzicht</target>
+      </trans-unit>
+      <trans-unit id="3724068243287682962" datatype="html">
+        <source>Team</source>
+        <target state="final">Team</target>
+      </trans-unit>
+      <trans-unit id="17234570072885140" datatype="html">
+        <source>Registrations</source>
+        <target state="final">Registraties</target>
+      </trans-unit>
+      <trans-unit id="1131264372756277854" datatype="html">
+        <source>Payments</source>
+        <target state="translated">Betalingen</target>
+      </trans-unit>
+      <trans-unit id="3338661424985495365" datatype="html">
+        <source>Monitoring</source>
+        <target state="translated">Rapportage</target>
+      </trans-unit>
+      <trans-unit id="3350975625681256410" datatype="html">
+        <source>Welcome to Portalicious, baby!</source>
+        <target state="translated">Welkom op Het Smakelijke Portaal, schat!</target>
+      </trans-unit>
+      <trans-unit id="6966507916758477998" datatype="html">
+        <source>Go to NLRC program</source>
+        <target state="translated">Ga naar project: NLRC</target>
+      </trans-unit>
+      <trans-unit id="9053334343942762407" datatype="html">
+        <source>Go to OCW program</source>
+        <target state="translated">Ga naar project: OCW</target>
+      </trans-unit>
+      <trans-unit id="6509003407758128100" datatype="html">
+        <source>Cookie policy</source>
+        <target state="translated">Cookie beleid</target>
+      </trans-unit>
+      <trans-unit id="6305795241980054784" datatype="html">
+        <source>Necessary cookies are required for the basic operation of the platform.</source>
+        <target state="translated">Noodzakeljke cookies zijn nodig voor het functioneren van het platform.</target>
+      </trans-unit>
+      <trans-unit id="2336550011721758066" datatype="html">
+        <source>Log in</source>
+        <target state="translated">Inloggen</target>
+      </trans-unit>
+      <trans-unit id="1061597182953948916" datatype="html">
+        <source>Use your work email to log in.</source>
+        <target state="translated">Gebruik uw werk emailadres om in te loggen.</target>
+      </trans-unit>
+      <trans-unit id="1890300073702152532" datatype="html">
+        <source>E-mail</source>
+        <target state="final">E-mail</target>
+      </trans-unit>
+      <trans-unit id="5393972837576333232" datatype="html">
+        <source>example: yourname@example.org</source>
+        <target state="translated">bijv.: uwnaam@example.nl</target>
+      </trans-unit>
+      <trans-unit id="8938510541215036054" datatype="html">
+        <source>Enter a valid email address</source>
+        <target state="translated">Vul een geldig e-mailadres in</target>
+      </trans-unit>
+      <trans-unit id="1431416938026210429" datatype="html">
+        <source>Password</source>
+        <target state="translated">Wachtwoord</target>
+      </trans-unit>
+      <trans-unit id="2772023564304193657" datatype="html">
+        <source>Enter your password</source>
+        <target state="translated">Vul een wachtwoord in</target>
+      </trans-unit>
+      <trans-unit id="7768763632521855939" datatype="html">
+        <source>program-monitoring works!</source>
+        <target state="new">program-monitoring werkt!</target>
+      </trans-unit>
+      <trans-unit id="8486187705503981919" datatype="html">
+        <source>program-overview works!</source>
+        <target state="new">program-overview werkt!</target>
+      </trans-unit>
+      <trans-unit id="1030042071919904969" datatype="html">
+        <source>program-payments works!</source>
+        <target state="new">program-payments werkt!</target>
+      </trans-unit>
+      <trans-unit id="8572807781579317369" datatype="html">
+        <source>program-registrations works!</source>
+        <target state="new">program-registrations werkt!</target>
+      </trans-unit>
+      <trans-unit id="5662590318641401360" datatype="html">
+        <source>program-team works!</source>
+        <target state="new">program-team werkt!</target>
+      </trans-unit>
+      <trans-unit id="8837209833313387366" datatype="html">
+        <source>roles-and-permissions works!</source>
+        <target state="new">roles-and-permissions werkt!</target>
+      </trans-unit>
+      <trans-unit id="7978336974922418932" datatype="html">
+        <source>user-settings works!</source>
+        <target state="new">user-settings werkt!</target>
+      </trans-unit>
+      <trans-unit id="1519584467841622217" datatype="html">
+        <source>users works!</source>
+        <target state="new">users werkt!</target>
+      </trans-unit>
+      <trans-unit id="9132374083993014120" datatype="html">
+        <source>Invalid email or password. Double-check your credentials and try again.</source>
+        <target state="translated">Ongeldig e-mailadres of wachtwoord. Dubbel-check uw gegevens en probeer opnieuw.</target>
+      </trans-unit>
+      <trans-unit id="2012659005494284050" datatype="html">
+        <source>Forgot your password?</source>
+        <target state="translated">Wachtwoord vergeten?</target>
+      </trans-unit>
+      <trans-unit id="6186007479370342072" datatype="html">
+        <source>Request a password reset</source>
+        <target state="translated">Vraag een wachtwoord-reset aan</target>
+      </trans-unit>
+      <trans-unit id="7218347871480825149" datatype="html">
+        <source>Read our Privacy Policy</source>
+        <target state="translated">Lees ons Privacybeleid</target>
+      </trans-unit>
+      <trans-unit id="1782658553741372004" datatype="html">
+        <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>
+        <target state="translated">Expliciete toestemming is hiervoor niet nodig. Door gebruik te maken van de website gaat u akkoort met het gebruik ervan.</target>
+        <note priority="1" from="description">They=&apos;Necessary cookies&apos;</note>
+      </trans-unit>
+      <trans-unit id="5402301426403064456" datatype="html">
+        <source>Managing Cookies:</source>
+        <target state="translated">Cookies beheren:</target>
+      </trans-unit>
+      <trans-unit id="3743895927280936154" datatype="html">
+        <source>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality.</source>
+        <target state="translated">De meeste web browsers hebben instellingen om cookies te beheren. Als u cookies wilt blokkeren, check dan de handleiding of help-functie van uw browser. Het blokkeren van noodzakelijke cookies heeft invloed op het functioneren van de website.</target>
+      </trans-unit>
+      <trans-unit id="165273856698591793" datatype="html">
+        <source>Contact Us:</source>
+        <target state="translated">Neem contact op:</target>
+      </trans-unit>
+      <trans-unit id="635399988713647542" datatype="html">
+        <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>
+        <target state="translated">Als je vragen hebt over ons gebruik van noodzakelijke cookies, neem gerust contact met ons op via:</target>
+      </trans-unit>
+    </body>
   </file>
 </xliff>

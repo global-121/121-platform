@@ -1,57 +1,38 @@
-<div
-  class="fixed bottom-[16px] left-[16px] right-[16px] rounded-lg bg-grey-100 p-[16px] [&_p]:mb-2"
->
+<div class="[&_p]:mb-2">
   <h3
     i18n
     class="mb-2"
   >
     Cookie policy
   </h3>
-  <p
-    i18n
-    class="font-semibold"
-  >
-    Necessary cookies are required for the basic operation of the platform.
+  <p>
+    <strong i18n>
+      Necessary cookies are required for the basic operation of the platform.
+    </strong>
   </p>
-  @if (isReadingMore()) {
-    <div i18n>
-      <p>
-        They do not require explicit consent, and by using our website, you
-        agree to their use. However, you may still manage or block these cookies
-        via your browser settings.
-      </p>
-      <p>
-        <b>Managing Cookies: </b>Most web browsers allow you to control cookies
-        through their settings. If you wish to disable cookies, please refer to
-        your browser's help section. Note that disabling necessary cookies may
-        affect the website's functionality.
-      </p>
-      <p>
-        <b>Contact Us: </b>If you have any questions about our use of necessary
-        cookies, please feel free to contact us at&nbsp;
-        <a
-          href="mailto:support@510.global"
-          class="text-blue-500 underline"
-          >support&#64;510.global</a
-        >
-      </p>
-    </div>
-    <p-button
-      label="Read less"
-      icon="pi pi-angle-down"
-      iconPos="right"
-      i18n-label
-      [link]="true"
-      (click)="isReadingMore.set(false)"
-    />
-  } @else {
-    <p-button
-      label="Read more"
-      icon="pi pi-angle-up"
-      iconPos="right"
-      i18n-label
-      [link]="true"
-      (click)="isReadingMore.set(true)"
-    />
-  }
+  <div>
+    <p i18n="They='Necessary cookies'">
+      They do not require explicit consent, and by using our website, you agree
+      to their use. However, you may still manage or block these cookies via
+      your browser settings.
+    </p>
+    <p>
+      <strong i18n>Managing Cookies:</strong>
+      <ng-container i18n>
+        Most web browsers allow you to control cookies through their settings.
+        If you wish to disable cookies, please refer to your browser's help
+        section. Note that disabling necessary cookies may affect the website's
+        functionality.
+      </ng-container>
+    </p>
+    <p>
+      <strong i18n>Contact Us:</strong>
+      <ng-container i18n>
+        If you have any questions about our use of necessary cookies, please
+        feel free to contact us at:
+      </ng-container>
+      <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
+      <a href="mailto:support@510.global">support&#64;510.global</a>
+    </p>
+  </div>
 </div>

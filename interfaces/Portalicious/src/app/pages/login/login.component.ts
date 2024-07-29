@@ -14,11 +14,13 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToolbarModule } from 'primeng/toolbar';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { LanguageSwitcherComponent } from '~/components/language-switcher/language-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/cookie-banner.component';
 import { AuthService } from '~/services/auth.service';
@@ -31,11 +33,13 @@ import { AuthService } from '~/services/auth.service';
     ToolbarModule,
     NgOptimizedImage,
     InputTextModule,
+    AutoFocusModule,
     ReactiveFormsModule,
     PasswordModule,
     ButtonModule,
     CookieBannerComponent,
     FormErrorComponent,
+    LanguageSwitcherComponent,
   ],
   templateUrl: './login.component.html',
   styles: ``,

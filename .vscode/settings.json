@@ -1,4 +1,3 @@
 {
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "tailwindCSS.rootFontSize": 14
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }
