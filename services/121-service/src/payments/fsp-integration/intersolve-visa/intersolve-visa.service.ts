@@ -257,41 +257,17 @@ export class IntersolveVisaService
       returnData.cardCreated = true;
     }
 
-    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them.
-    if (
-      intersolveVisaCustomer.intersolveVisaParentWallet
-        .intersolveVisaChildWallets
-    ) {
-      intersolveVisaCustomer.intersolveVisaParentWallet =
-        await this.retrieveAndUpdateParentWallet(
-          intersolveVisaCustomer.intersolveVisaParentWallet,
-        );
-      intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
-        await this.retrieveAndUpdateChildWallet(
-          intersolveVisaCustomer.intersolveVisaParentWallet
-            .intersolveVisaChildWallets[0],
-        );
-    }
-
-    // Calculate the amount that should be transfered
-    const transferAmount = this.calculateLimitedTransferAmount({
-      transactionAmount: input.transferAmount,
-      spentThisMonth:
-        intersolveVisaCustomer.intersolveVisaParentWallet.spentThisMonth,
-      balance: intersolveVisaCustomer.intersolveVisaParentWallet.balance,
-    });
-
     // Transfer money from the client's funding token to the parent token
-    if (transferAmount > 0) {
+    if (input.transferAmount > 0) {
       await this.intersolveVisaApiService.transfer({
         fromTokenCode: input.fundingTokenCode,
         toTokenCode:
           intersolveVisaCustomer.intersolveVisaParentWallet.tokenCode,
-        amount: transferAmount,
+        amount: input.transferAmount,
         reference: input.transferReference,
       });
       returnData.transferDone = true;
-      returnData.amountTransferred = transferAmount;
+      returnData.amountTransferred = input.transferAmount;
     }
 
     return returnData;
@@ -549,6 +525,39 @@ export class IntersolveVisaService
       .andWhere('customer.registrationId = :registrationId', { registrationId })
       .getCount();
     return count > 0;
+  }
+
+  public async calculateTransferAmountWithWalletUpdate(
+    registrationId: number,
+    inputTransferAmount: number,
+  ): Promise<number> {
+    const intersolveVisaCustomer =
+      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
+        registrationId,
+      );
+    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them.
+    if (
+      intersolveVisaCustomer?.intersolveVisaParentWallet
+        .intersolveVisaChildWallets
+    ) {
+      intersolveVisaCustomer.intersolveVisaParentWallet =
+        await this.retrieveAndUpdateParentWallet(
+          intersolveVisaCustomer.intersolveVisaParentWallet,
+        );
+      intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
+        await this.retrieveAndUpdateChildWallet(
+          intersolveVisaCustomer.intersolveVisaParentWallet
+            .intersolveVisaChildWallets[0],
+        );
+    }
+
+    // Calculate the amount that should be transfered. If the registration does not have customer yet the spendThisMonth and balance will be 0.
+    return this.calculateLimitedTransferAmount({
+      transactionAmount: inputTransferAmount,
+      spentThisMonth:
+        intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
+      balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
+    });
   }
 
   // Calculated the amount that can be transferred based on the limits of maxumum amount on a wallet and maximum amount that can be spent per month.

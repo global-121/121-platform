@@ -74,6 +74,12 @@ export class TransactionJobProcessorsService {
       throw new Error('Financial Service Provider not found');
     }
 
+    const transferAmount =
+      await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
+        registration.id,
+        input.transactionAmount,
+      );
+
     // Check if all required properties are present. If not, create a failed transaction and throw an error.
     for (const [name, value] of Object.entries(input)) {
       if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
@@ -83,7 +89,7 @@ export class TransactionJobProcessorsService {
         const errorText = `Property ${name} is undefined`;
         await this.processTransactionResult({
           jobInput: input,
-          calculatedTranserAmount: input.transactionAmount, // TODO: STORE THE CALCULATED AMOUNT HERE AS THIS IS USED ON RETRY AND SHOWN IN PORTAL
+          calculatedTranserAmount: transferAmount,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
@@ -124,7 +130,7 @@ export class TransactionJobProcessorsService {
             addressCity: input.addressCity!,
             phoneNumber: input.phoneNumber!,
           },
-          transferAmount: input.transactionAmount,
+          transferAmount: transferAmount,
           brandCode: intersolveVisaConfig.find(
             (c) =>
               c.name === FinancialServiceProviderConfigurationEnum.brandCode,
@@ -143,7 +149,7 @@ export class TransactionJobProcessorsService {
     } catch (error) {
       await this.processTransactionResult({
         jobInput: input,
-        calculatedTranserAmount: input.transactionAmount, // TODO: STORE THE CALCULATED AMOUNT HERE AS THIS IS USED ON RETRY AND SHOWN IN PORTAL
+        calculatedTranserAmount: transferAmount,
         financialServiceProviderId: financialServiceProvider.id,
         registration,
         oldRegistration,
@@ -218,19 +224,24 @@ export class TransactionJobProcessorsService {
         registration,
         jobInput.programId,
       );
-      await this.eventsService.log(
-        {
-          id: oldRegistration.id,
-          status: oldRegistration.registrationStatus ?? undefined,
-        },
-        {
-          id: registration.id,
-          status: registration.registrationStatus ?? undefined,
-        },
-        {
-          registrationAttributes: ['status'],
-        },
-      );
+      // Added this check to avoid a bit of processing time if the status is the same
+      if (
+        oldRegistration.registrationStatus !== registration.registrationStatus
+      ) {
+        await this.eventsService.log(
+          {
+            id: oldRegistration.id,
+            status: oldRegistration.registrationStatus ?? undefined,
+          },
+          {
+            id: registration.id,
+            status: registration.registrationStatus ?? undefined,
+          },
+          {
+            registrationAttributes: ['status'],
+          },
+        );
+      }
     }
   }
 
