@@ -126,8 +126,6 @@ export class AuthService {
     password: string;
     newPassword: string;
   }) {
-    this.logService.logEvent(LogEvent.userChangePassword);
-
     await this.apiService.changePassword({ username, password, newPassword });
   }
 }
