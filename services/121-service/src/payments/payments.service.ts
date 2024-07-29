@@ -305,14 +305,22 @@ export class PaymentsService {
     if (!requiredConfigurations) {
       return;
     }
-    // This function already throws if an attribute is missing so no need to manually check
-    await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
-      {
-        programId: programId,
-        financialServiceProviderName: fsp as FinancialServiceProviderName,
-        names: requiredConfigurations,
-      },
-    );
+    const config =
+      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
+        programId,
+        fsp as FinancialServiceProviderName,
+      );
+    for (const requiredConfiguration of requiredConfigurations) {
+      const foundConfig = config.find((c) => c.name === requiredConfiguration);
+      if (!foundConfig) {
+        throw new HttpException(
+          {
+            errors: `Missing required configuration ${requiredConfiguration} for FSP ${fsp}`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
   }
 
   private async getRegistrationsForPaymentChunked(
