@@ -127,7 +127,12 @@ export class AuthService {
     const username = this.user?.username;
 
     if (username) {
-      await this.apiService.changePassword({ username, password, newPassword });
+      try {
+        await this.apiService.changePassword({ username, password, newPassword });
+      } catch (error) {
+        console.error(error)
+        throw new Error($localize`Failed to change the password. Please refresh the page and try again.`)
+      }
     }
   }
 }

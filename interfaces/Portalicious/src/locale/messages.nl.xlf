@@ -272,6 +272,18 @@
         <source>The confirm password must be equal to the new password.</source>
         <target state="new">The confirm password must be equal to the new password.</target>
       </trans-unit>
+      <trans-unit id="7708270344948043036" datatype="html">
+        <source>
+          <x equiv-text="{{changePasswordError()}}" id="INTERPOLATION"/>
+        </source>
+        <target state="new">
+          <x equiv-text="{{changePasswordError()}}" id="INTERPOLATION"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="7750851942089216450" datatype="html">
+        <source>Failed to change the password. Please refresh the page and try again.</source>
+        <target state="new">Failed to change the password. Please refresh the page and try again.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

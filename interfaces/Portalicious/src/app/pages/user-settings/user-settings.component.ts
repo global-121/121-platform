@@ -48,6 +48,8 @@ import { ToastService } from '~/services/toast.service';
 export class UserSettingsComponent {
   private authService = inject(AuthService);
 
+  public changePasswordError = signal<string | null>(null);
+
   currentPasswordValidator: ValidatorFn = (
     control: AbstractControl,
   ): null | ValidationErrors => {
@@ -193,6 +195,9 @@ export class UserSettingsComponent {
     onSuccess: () => {
       this.changePasswordForm.reset();
     },
+    onError: (error) => {
+      this.changePasswordError.set(error.message);
+    }
   }));
 
   onChangePassword() {

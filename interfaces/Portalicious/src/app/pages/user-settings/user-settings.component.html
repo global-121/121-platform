@@ -109,17 +109,32 @@
             i18n-aria-label="@@generic-loading"
           />
         } @else {
-          <p-messages [severity]="'success'">
-            <ng-template pTemplate>
-              <i class="pi pi-check-circle"></i>
-              <div
-                i18n
-                class="ml-2"
-              >
-                Your password was successfully changed.
-              </div>
-            </ng-template>
-          </p-messages>
+          @if (changePasswordError()) {
+            <p-messages [severity]="'error'">
+              <ng-template pTemplate>
+                <i class="pi pi-check-circle"></i>
+                <div
+                  i18n
+                  class="ml-2"
+                >
+                  {{changePasswordError()}}
+                </div>
+              </ng-template>
+            </p-messages>
+          } @else {
+            <p-messages [severity]="'success'">
+              <ng-template pTemplate>
+                <i class="pi pi-exclamation-triangle"></i>
+                <div
+                  i18n
+                  class="ml-2"
+                >
+                  Your password was successfully changed.
+                </div>
+              </ng-template>
+            </p-messages>
+
+          }
         }
       </form>
     </div>
