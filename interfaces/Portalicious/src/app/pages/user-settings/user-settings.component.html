@@ -1,22 +1,12 @@
 <app-page-layout>
   <div class="flex flex-1">
-    <div
-      class="flex w-full shrink-0 flex-col gap-6 bg-white px-[16px] py-8 md:w-1/3"
-    >
+    <div class="flex w-full max-w-lg shrink-0 flex-col gap-6 bg-white p-4">
       <form
         [formGroup]="changePasswordForm"
         (ngSubmit)="onChangePassword()"
       >
-        <div class="flex flex-col gap-2">
-          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-          <label>
-            <ng-container i18n>Current Password</ng-container>
-            <p-password
-              formControlName="currentPassword"
-              [toggleMask]="true"
-              [feedback]="false"
-              autocomplete="current-password"
-              styleClass="w-full [&_input]:w-full mt-2"
+        @if (!changePasswordFormSubmitted()) {
+          <div class="flex flex-col gap-2">
             <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
             <label>
               <ng-container i18n>Current Password</ng-container>
@@ -91,38 +81,46 @@
                 />
               }
             }
+            <p-button
+              label="Change password"
+              i18n-label
+              type="submit"
+              rounded
+              class="mt-8"
+              [disabled]="!changePasswordForm.valid"
+              i18n-disabled
             />
-          </label>
-          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-          <label>
-            <ng-container i18n>New Password</ng-container>
-            <p-password
-              formControlName="newPassword"
-              [toggleMask]="true"
-              [feedback]="false"
-              autocomplete="current-password"
-              styleClass="w-full [&_input]:w-full mt-2"
-            />
-          </label>
-          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-          <label>
-            <ng-container i18n>Confirm Password</ng-container>
-            <p-password
-              formControlName="confirmPassword"
-              [toggleMask]="true"
-              [feedback]="false"
-              autocomplete="current-password"
-              styleClass="w-full [&_input]:w-full mt-2"
-            />
-          </label>
-          <p-button
-            label="Change password"
-            i18n-label
-            type="submit"
-            rounded
-            class="mt-8"
+            @if (changePasswordFormSubmitted() && changePasswordForm.errors) {
+              @for (
+                error of getErrors(changePasswordForm.errors);
+                track error
+              ) {
+                <app-form-error
+                  [visible]="true"
+                  [error]="error"
+                  i18n-error
+                />
+              }
+            }
+          </div>
+        } @else if (changePasswordMutation.isPending()) {
+          <p-progressSpinner
+            aria-label="Loading"
+            i18n-aria-label="@@generic-loading"
           />
-        </div>
+        } @else {
+          <p-messages [severity]="'success'">
+            <ng-template pTemplate>
+              <i class="pi pi-check-circle"></i>
+              <div
+                i18n
+                class="ml-2"
+              >
+                Your password was successfully changed.
+              </div>
+            </ng-template>
+          </p-messages>
+        }
       </form>
     </div>
   </div>
