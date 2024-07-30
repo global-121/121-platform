@@ -118,14 +118,16 @@ export class AuthService {
   }
 
   public async changePassword({
-    username,
     password,
     newPassword,
   }: {
-    username: string;
     password: string;
     newPassword: string;
   }) {
-    await this.apiService.changePassword({ username, password, newPassword });
+    const username = this.user?.username;
+
+    if (username) {
+      await this.apiService.changePassword({ username, password, newPassword });
+    }
   }
 }
