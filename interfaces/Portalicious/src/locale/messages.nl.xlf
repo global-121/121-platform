@@ -191,10 +191,6 @@
         <source>roles-and-permissions works!</source>
         <target state="new">roles-and-permissions werkt!</target>
       </trans-unit>
-      <trans-unit id="7978336974922418932" datatype="html">
-        <source>user-settings works!</source>
-        <target state="new">user-settings werkt!</target>
-      </trans-unit>
       <trans-unit id="1519584467841622217" datatype="html">
         <source>users works!</source>
         <target state="new">users werkt!</target>
@@ -235,6 +231,46 @@
       <trans-unit id="635399988713647542" datatype="html">
         <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>
         <target state="translated">Als je vragen hebt over ons gebruik van noodzakelijke cookies, neem gerust contact met ons op via:</target>
+      </trans-unit>
+      <trans-unit id="1846542227840529109" datatype="html">
+        <source>Current Password</source>
+        <target state="new">Current Password</target>
+      </trans-unit>
+      <trans-unit id="1221596867309460035" datatype="html">
+        <source>New Password</source>
+        <target state="new">New Password</target>
+      </trans-unit>
+      <trans-unit id="3241357959735682038" datatype="html">
+        <source>Confirm Password</source>
+        <target state="new">Confirm Password</target>
+      </trans-unit>
+      <trans-unit id="6309828574111583895" datatype="html">
+        <source>Change password</source>
+        <target state="new">Change password</target>
+      </trans-unit>
+      <trans-unit id="generic-loading" datatype="html">
+        <source>Loading</source>
+        <target state="new">Loading</target>
+      </trans-unit>
+      <trans-unit id="5583265461491101912" datatype="html">
+        <source>Your password was successfully changed.</source>
+        <target state="new">Your password was successfully changed.</target>
+      </trans-unit>
+      <trans-unit id="1417693714872528491" datatype="html">
+        <source>This field is required.</source>
+        <target state="new">This field is required.</target>
+      </trans-unit>
+      <trans-unit id="8060388914130154528" datatype="html">
+        <source>The new password must be different from the current password.</source>
+        <target state="new">The new password must be different from the current password.</target>
+      </trans-unit>
+      <trans-unit id="6988584798455615907" datatype="html">
+        <source>The new password must be at least 8 characters long.</source>
+        <target state="new">The new password must be at least 8 characters long.</target>
+      </trans-unit>
+      <trans-unit id="3005732335203491098" datatype="html">
+        <source>The confirm password must be equal to the new password.</source>
+        <target state="new">The confirm password must be equal to the new password.</target>
       </trans-unit>
     </body>
   </file>
