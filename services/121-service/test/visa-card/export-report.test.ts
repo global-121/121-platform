@@ -75,12 +75,12 @@ describe('Export Visa debit card report', () => {
 
     const exportResult = await exportList(
       programId,
-      'card-balances',
+      'intersolve-visa-card-details',
       accessToken,
     );
 
     // Assert
-    expect(exportResult.body.fileName).toBe('card-balances');
+    expect(exportResult.body.fileName).toBe('intersolve-visa-card-details');
     // we remove issuedDate and cardNumber, because aways changes
     const {
       issuedDate: _issuedDate,

@@ -6,6 +6,9 @@ import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
+import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
+import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
+import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
@@ -50,7 +53,7 @@ const userPermissionMapByExportType = {
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.vouchersWithBalance]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.duplicates]: [PermissionEnum.RegistrationPaymentExport],
-  [ExportType.intersolveVisaBalances]: [PermissionEnum.FspDebitCardEXPORT],
+  [ExportType.intersolveVisaCardDetails]: [PermissionEnum.FspDebitCardEXPORT],
 };
 
 @Injectable()
@@ -154,7 +157,7 @@ export class MetricsService {
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
       }
-      case ExportType.intersolveVisaBalances: {
+      case ExportType.intersolveVisaCardDetails: {
         return this.createIntersolveVisaBalancesExport(programId);
       }
       default:
@@ -1120,63 +1123,54 @@ export class MetricsService {
 
   private async createIntersolveVisaBalancesExport(programId: number): Promise<{
     fileName: ExportType;
-    data: any[];
+    data: ExportVisaCardDetails[];
   }> {
-    const walletData =
-      await this.registrationScopedRepository.getIntersolveVisaBalancesData(
+    const rawDebitCardDetails =
+      await this.registrationScopedRepository.getDebitCardsDetailsForExport(
         programId,
       );
 
-    const mappedWallets = this.mapIntersolveVisaBalancesDataToDto(
-      walletData,
-      programId,
-    );
+    const mappedDebitCardDetails =
+      this.mapIntersolveVisaBalancesDataToDto(rawDebitCardDetails);
 
     return {
-      fileName: ExportType.intersolveVisaBalances,
-      data: mappedWallets,
+      fileName: ExportType.intersolveVisaCardDetails,
+      data: mappedDebitCardDetails,
     };
   }
 
   private mapIntersolveVisaBalancesDataToDto(
-    wallets: ExportWalletData[],
-    programId: number,
-  ): ExportCardsDto[] {
+    exportVisaCardRawDetails: ExportVisaCardDetailsRawData[],
+  ): ExportVisaCardDetails[] {
     let previousRegistrationProgramId: number | null = null;
-    const exportWalletData: ExportCardsDto[] = [];
-    for (const wallet of wallets) {
+    const exportCardDetailsArray: ExportVisaCardDetails[] = [];
+    for (const cardRawData of exportVisaCardRawDetails) {
       const isCurrentWallet =
-        previousRegistrationProgramId === wallet.paId ? false : true;
+        previousRegistrationProgramId === cardRawData.paId ? false : true;
 
       const statusInfo =
-        this.intersolveVisaStatusMappingService.determine121StatusInfo(
-          wallet.tokenBlocked ?? false,
-          wallet.walletStatus,
-          wallet.cardStatus,
-          isCurrentWallet,
-          {
-            programId,
-            tokenCode: wallet.cardNumber,
-            referenceId: wallet.referenceId,
-          },
-        );
+        IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({
+          isTokenBlocked: cardRawData.isTokenBlocked,
+          walletStatus: cardRawData.walletStatus,
+          cardStatus: cardRawData.cardStatus,
+        });
 
-      exportWalletData.push({
-        paId: wallet.paId,
-        referenceId: wallet.referenceId,
-        registrationStatus: wallet.registrationStatus,
-        cardNumber: wallet.cardNumber,
-        cardStatus121: statusInfo.walletStatus121,
-        issuedDate: wallet.issuedDate,
-        lastUsedDate: wallet.lastUsedDate,
-        balance: wallet.balance / 100,
+      exportCardDetailsArray.push({
+        paId: cardRawData.paId,
+        referenceId: cardRawData.referenceId,
+        registrationStatus: cardRawData.registrationStatus,
+        cardNumber: cardRawData.cardNumber,
+        cardStatus121: statusInfo.status,
+        issuedDate: cardRawData.issuedDate,
+        lastUsedDate: cardRawData.lastUsedDate,
+        balance: cardRawData.balance / 100,
         explanation: statusInfo.explanation,
-        spentThisMonth: wallet.spentThisMonth / 100,
+        spentThisMonth: cardRawData.spentThisMonth / 100,
         isCurrentWallet: isCurrentWallet,
       });
-      previousRegistrationProgramId = wallet.paId;
+      previousRegistrationProgramId = cardRawData.paId;
     }
-    return exportWalletData;
+    return exportCardDetailsArray;
   }
 
   public async getRegistrationStatusStats(

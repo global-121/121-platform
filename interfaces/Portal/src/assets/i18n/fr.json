@@ -167,10 +167,6 @@
           "btn-text": "Exporter les personnes touchées",
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes concernées."
         },
-        "card-balances": {
-          "btn-text": "Exporter l’utilisation de la carte de débit",
-          "confirm-message": "Cela téléchargera un fichier Excel indiquant le solde de chaque carte.<br /><br />Remarque importante : Les soldes des cartes disponibles au téléchargement ne sont pas en temps réel. Le rapport inclut la date et l’heure de la dernière mise à jour externe de chaque carte."
-        },
         "duplicates": {
           "basedOn": "La vérification des doublons est basée sur : {{duplicateAttributes}}",
           "btn-text": "Exporter les personnes concernées en double",
@@ -184,6 +180,10 @@
         "included": {
           "btn-text": "Exportation incluse Personnes affectées",
           "confirm-message": "Cela téléchargera un fichier Excel avec toutes les personnes concernées incluses."
+        },
+        "intersolve-visa-card-details": {
+          "btn-text": "Exporter l’utilisation de la carte de débit",
+          "confirm-message": "Cela téléchargera un fichier Excel indiquant le solde de chaque carte.<br /><br />Remarque importante : Les soldes des cartes disponibles au téléchargement ne sont pas en temps réel. Le rapport inclut la date et l’heure de la dernière mise à jour externe de chaque carte."
         },
         "no-data": "Il n’y a actuellement aucune donnée à télécharger",
         "pa-data-changes": {
@@ -677,6 +677,7 @@
         "pause-success": "La carte de débit a été mise en pause avec succès",
         "unpause-success": "La carte de débit a été réactivée avec succès"
       },
+      "card-number": "Numéro de carte",
       "confirm-prompt": {
         "new-card": "bloquer définitivement cette carte et émettre une nouvelle carte ?",
         "pause": "mettre cette carte en pause ?",
@@ -684,8 +685,6 @@
         "suffix": "<br><br>Cela enverra automatiquement un message à la personne concernée.",
         "unpause": "Réactiver cette carte ?"
       },
-      "wallet-number": "Numéro de portefeuille",
-      "card-number": "Numéro de carte",
       "current-balance": "Solde actuel",
       "date-issued": "Délivré",
       "date-last-used": "Dernière utilisation",
@@ -697,7 +696,8 @@
       "spent-this-month": "Dépenses effectuées ce mois-ci (maximum {{maxAmount}} {{currency}})",
       "status": "Statut",
       "title": "Cartes de débit",
-      "unpause-card": "Annuler la mise en pause de la carte"
+      "unpause-card": "Annuler la mise en pause de la carte",
+      "wallet-number": "Numéro de portefeuille"
     },
     "show-all": "Tout afficher"
   },

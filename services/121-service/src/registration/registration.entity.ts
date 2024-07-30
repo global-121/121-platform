@@ -156,6 +156,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: false, default: '' })
   public scope: string;
 
+  @OneToOne(
+    () => IntersolveVisaCustomerEntity,
+    (intersolveVisaCustomer) => intersolveVisaCustomer.registration,
+  )
+  public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     // The order of these calls is important, because of foreign key constraints
