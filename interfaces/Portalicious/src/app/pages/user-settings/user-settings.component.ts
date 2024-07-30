@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -13,7 +14,6 @@ import {
   ValidationErrors,
   ValidatorFn,
   Validators,
-
 } from '@angular/forms';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
@@ -48,7 +48,7 @@ import { ToastService } from '~/services/toast.service';
 export class UserSettingsComponent {
   private authService = inject(AuthService);
 
-  public changePasswordError = signal<string | null>(null);
+  public changePasswordError = signal<null | string>(null);
 
   currentPasswordValidator: ValidatorFn = (
     control: AbstractControl,
@@ -59,10 +59,8 @@ export class UserSettingsComponent {
 
     const errors: {
       required: null | string;
-
     } = {
       required: null,
-
     };
 
     if (!currentPassword) {
@@ -101,10 +99,10 @@ export class UserSettingsComponent {
     };
 
     if (!newPassword || !currentPassword) {
-      return null
+      return null;
     }
 
-    const requiredCondition = String(newPassword.value).trim() === ''
+    const requiredCondition = String(newPassword.value).trim() === '';
 
     const newEqualsCurrentErrorCondition =
       newPassword.dirty &&
@@ -114,7 +112,7 @@ export class UserSettingsComponent {
     const minlengthErrorCondition =
       newPassword.dirty && String(newPassword.value).length < 8;
 
-      errors.required = requiredCondition ? requiredMessage : null;
+    errors.required = requiredCondition ? requiredMessage : null;
 
     errors.newEqualsCurrent = newEqualsCurrentErrorCondition
       ? newEqualsCurrentMessage
@@ -155,7 +153,7 @@ export class UserSettingsComponent {
       newPassword.dirty &&
       confirmPassword.value !== newPassword.value;
 
-      errors.required = requiredCondition ? requiredMessage : null;
+    errors.required = requiredCondition ? requiredMessage : null;
 
     errors.confirmDifferentFromNew = confirmDifferentFromNewErrorCondition
       ? confirmDifferentFromNewMessage
@@ -172,14 +170,15 @@ export class UserSettingsComponent {
     {
       currentPassword: new FormControl('', Validators.required),
       newPassword: new FormControl('', Validators.required),
-      confirmPassword: new FormControl('',Validators.required),
+      confirmPassword: new FormControl('', Validators.required),
     },
     {
       validators: [
         this.currentPasswordValidator,
         this.newPasswordValidator,
         this.confirmPasswordValidator,
-      ]}
+      ],
+    },
   );
 
   changePasswordFormSubmitted = signal(false);
@@ -197,7 +196,7 @@ export class UserSettingsComponent {
     },
     onError: (error) => {
       this.changePasswordError.set(error.message);
-    }
+    },
   }));
 
   onChangePassword() {
