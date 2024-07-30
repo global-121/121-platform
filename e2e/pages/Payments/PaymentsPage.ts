@@ -247,7 +247,6 @@ class PaymentsPage {
           // Select the option by value
           await this.paymentDropdown.selectOption({ value: optionLabel });
           found = true;
-          console.log(`Selected option containing text: ${optionText}`);
           break;
         }
       }
