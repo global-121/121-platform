@@ -42,6 +42,31 @@
                 />
               }
             }
+            <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+            <label>
+              <ng-container i18n>New Password</ng-container>
+              <p-password
+                formControlName="newPassword"
+                [toggleMask]="true"
+                [feedback]="false"
+                autocomplete="new-password"
+                styleClass="w-full [&_input]:w-full mt-2"
+              />
+            </label>
+            @if (changePasswordForm.controls.newPassword.errors) {
+              @for (
+                error of getErrors(
+                  changePasswordForm.controls.newPassword.errors
+                );
+                track error
+              ) {
+                <app-form-error
+                  [visible]="true"
+                  [error]="error"
+                  i18n-error
+                />
+              }
+            }
             />
           </label>
           <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->

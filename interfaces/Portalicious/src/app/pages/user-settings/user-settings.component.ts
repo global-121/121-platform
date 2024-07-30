@@ -54,6 +54,52 @@ export class UserSettingsComponent {
 
     return Object.values(errors).some((e) => e) ? errors : null;
   };
+  newPasswordValidator: ValidatorFn = (
+    control: AbstractControl,
+  ): null | ValidationErrors => {
+    const newPassword = control.get('newPassword');
+    const currentPassword = control.get('currentPassword');
+
+    const requiredMessage = $localize`This field is required.`;
+    const newEqualsCurrentMessage = $localize`The new password must be different from the current password.`;
+    const minlengthMessage = $localize`The new password must be at least 8 characters long.`;
+
+    const errors: {
+      required: null | string;
+      newEqualsCurrent: null | string;
+      minlength: null | string;
+    } = {
+      required: null,
+      newEqualsCurrent: null,
+      minlength: null,
+    };
+
+    if (!newPassword || !currentPassword) {
+      return null
+    }
+
+    const requiredCondition = String(newPassword.value).trim() === ''
+
+    const newEqualsCurrentErrorCondition =
+      newPassword.dirty &&
+      currentPassword.dirty &&
+      newPassword.value === currentPassword.value;
+
+    const minlengthErrorCondition =
+      newPassword.dirty && String(newPassword.value).length < 8;
+
+      errors.required = requiredCondition ? requiredMessage : null;
+
+    errors.newEqualsCurrent = newEqualsCurrentErrorCondition
+      ? newEqualsCurrentMessage
+      : null;
+
+    errors.minlength = minlengthErrorCondition ? minlengthMessage : null;
+
+    newPassword.setErrors(Object.values(errors).some((e) => e) ? errors : null);
+
+    return Object.values(errors).some((e) => e) ? errors : null;
+  };
   changePasswordForm = new FormGroup(
     {
       // eslint-disable-next-line @typescript-eslint/unbound-method
