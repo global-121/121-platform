@@ -1,7 +1,6 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -11,6 +10,7 @@ import {
   awaitChangePaStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
+  issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -21,22 +21,6 @@ describe('Export Visa debit card report', () => {
   const programId = 3;
   const payment = 1;
   const amount = 25;
-
-  const registrationVisa = {
-    referenceId: 'registration-visa-export-1',
-    preferredLanguage: LanguageEnum.en,
-    paymentAmountMultiplier: 1,
-    firstName: 'Jane',
-    lastName: 'Doe',
-    phoneNumber: '14155238887',
-    fspName: FinancialServiceProviderName.intersolveVisa,
-    whatsappPhoneNumber: '14155238887',
-    addressStreet: 'Teststraat',
-    addressHouseNumber: '1',
-    addressHouseNumberAddition: '',
-    addressPostalCode: '1234AB',
-    addressCity: 'Stad',
-  };
 
   let accessToken: string;
 
@@ -67,6 +51,13 @@ describe('Export Visa debit card report', () => {
     // Act
     await waitFor(2_000);
 
+    // To ensure that the export also works if there are multiple cards for one person
+    await issueNewVisaCard(
+      programId,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+
     await getVisaWalletsAndDetails(
       programId,
       registrationVisa.referenceId,
@@ -81,12 +72,10 @@ describe('Export Visa debit card report', () => {
 
     // Assert
     expect(exportResult.body.fileName).toBe('intersolve-visa-card-details');
-    // we remove issuedDate and cardNumber, because aways changes
-    const {
-      issuedDate: _issuedDate,
-      cardNumber: _cardNumber,
-      ...result
-    } = exportResult.body.data[0];
-    expect(result).toMatchSnapshot();
+    // we remove issuedDate and cardNumber, because always changes
+    const results = exportResult.body.data.map(
+      ({ issuedDate: _issuedDate, cardNumber: _cardNumber, ...rest }) => rest,
+    );
+    expect(results).toMatchSnapshot();
   });
 });
