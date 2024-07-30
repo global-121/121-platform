@@ -88,7 +88,7 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
     });
 
     await registrationPage.openActivityOverviewTab(paymentFilterByTab);
-    await registrationPage.validateSentMessagesTab({
+    await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
       messageContext: messageContext,
       messageType: messageType,

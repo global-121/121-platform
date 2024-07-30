@@ -97,7 +97,7 @@ test('[28448] OCW: Send payment instructions', async ({ page }) => {
   await test.step('Check message', async () => {
     await page.reload();
     await paymentsPage.openMessage({});
-    await registrationPage.validateSentMessagesTab({
+    await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
       messageContext: messageContext,
       messageType: messageType,

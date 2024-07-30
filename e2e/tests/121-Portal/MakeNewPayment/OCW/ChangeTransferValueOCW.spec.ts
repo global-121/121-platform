@@ -96,7 +96,7 @@ test('[28447] OCW: Send payment instructions with changed transfer value', async
     });
 
     await registrationPage.openActivityOverviewTab(paymentFilterByTab);
-    await registrationPage.validateSentMessagesTab({
+    await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
       messageContext: messageContext,
       messageType: messageType,

@@ -292,5 +292,44 @@ class PaymentsPage {
     );
     expect(isPaymentPresent).toBe(true);
   }
+
+  async validateSentMessagesTab({
+    messageNotification,
+    messageContext,
+    messageType,
+    locatorNumber = 0,
+  }: {
+    messageNotification: string;
+    messageContext: string;
+    messageType: string;
+    locatorNumber?: number;
+  }) {
+    const paymentNotificationLocator = this.page
+      .locator(`:text("${messageContext} (${messageType})")`)
+      .nth(locatorNumber);
+    const messageNotificationLocator = this.page.locator(
+      `:text("${messageNotification}")`,
+    );
+    // await this.page.waitForLoadState('networkidle');
+    await messageNotificationLocator.waitFor({ state: 'visible' });
+
+    expect(await messageNotificationLocator.textContent()).toContain(
+      `${messageNotification}`,
+    );
+    try {
+      await paymentNotificationLocator.waitFor({ state: 'visible' });
+      expect(await paymentNotificationLocator.textContent()).toContain(
+        `${messageContext} (${messageType})`,
+      );
+    } catch (error) {
+      await this.page.reload();
+      await this.openMessage({});
+      await this.validateSentMessagesTab({
+        messageNotification: messageNotification,
+        messageContext: messageContext,
+        messageType: messageType,
+      });
+    }
+  }
 }
 export default PaymentsPage;
