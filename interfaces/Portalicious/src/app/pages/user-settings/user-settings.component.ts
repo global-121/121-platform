@@ -1,15 +1,30 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   ValidatorFn,
   Validators,
+
 } from '@angular/forms';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
+import { MessagesModule } from 'primeng/messages';
 import { PasswordModule } from 'primeng/password';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
+import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { AuthService } from '~/services/auth.service';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -19,12 +34,20 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
     PasswordModule,
     ButtonModule,
     ReactiveFormsModule,
+    FormErrorComponent,
+    ToastModule,
+    ProgressSpinnerModule,
+    MessagesModule,
+    JsonPipe,
   ],
+  providers: [ToastService],
   templateUrl: './user-settings.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserSettingsComponent {
+  private authService = inject(AuthService);
+
   currentPasswordValidator: ValidatorFn = (
     control: AbstractControl,
   ): null | ValidationErrors => {
@@ -54,6 +77,7 @@ export class UserSettingsComponent {
 
     return Object.values(errors).some((e) => e) ? errors : null;
   };
+
   newPasswordValidator: ValidatorFn = (
     control: AbstractControl,
   ): null | ValidationErrors => {
@@ -100,6 +124,7 @@ export class UserSettingsComponent {
 
     return Object.values(errors).some((e) => e) ? errors : null;
   };
+
   confirmPasswordValidator: ValidatorFn = (
     control: AbstractControl,
   ): null | ValidationErrors => {
@@ -140,6 +165,7 @@ export class UserSettingsComponent {
 
     return Object.values(errors).some((e) => e) ? errors : null;
   };
+
   changePasswordForm = new FormGroup(
     {
       currentPassword: new FormControl('', Validators.required),
@@ -185,19 +211,13 @@ export class UserSettingsComponent {
       return;
     }
 
-    const { currentPassword, newPassword, confirmPassword } =
-      this.changePasswordForm.value;
-    console.log(
-      '🚀 ~ UserSettingsComponent ~ onChangePassword ~ currentPassword:',
-      currentPassword,
-    );
-    console.log(
-      '🚀 ~ UserSettingsComponent ~ onChangePassword ~ newPassword:',
+    this.changePasswordMutation.mutate({
+      password: currentPassword,
       newPassword,
-    );
-    console.log(
-      '🚀 ~ UserSettingsComponent ~ onChangePassword ~ confirmPassword:',
-      confirmPassword,
-    );
+    });
+  }
+
+  getErrors(errors: Record<string, string>): string[] {
+    return Object.values(errors).filter((error) => error);
   }
 }
