@@ -166,7 +166,7 @@ export class TransactionJobProcessorsService {
       return;
     }
 
-    if (intersolveVisaDoTransferOrIssueCardReturnDto?.cardCreated) {
+    if (intersolveVisaDoTransferOrIssueCardReturnDto.cardCreated) {
       await this.createMessageAndAddToQueue({
         type: ProgramNotificationEnum.visaDebitCardCreated,
         programId: input.programId,
