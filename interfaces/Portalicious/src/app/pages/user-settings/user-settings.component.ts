@@ -142,56 +142,45 @@ export class UserSettingsComponent {
   };
   changePasswordForm = new FormGroup(
     {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      currentPassword: new FormControl('', [Validators.required]),
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      newPassword: new FormControl('', [Validators.required]),
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      confirmPassword: new FormControl('', [Validators.required]),
+      currentPassword: new FormControl('', Validators.required),
+      newPassword: new FormControl('', Validators.required),
+      confirmPassword: new FormControl('',Validators.required),
     },
     {
-      validators: this.matchValidator('password', 'confirmPassword'),
-    },
+      validators: [
+        this.currentPasswordValidator,
+        this.newPasswordValidator,
+        this.confirmPasswordValidator,
+      ]}
   );
 
-  matchValidator(
-    controlName: string,
-    matchingControlName: string,
-  ): ValidatorFn {
-    return (abstractControl: AbstractControl) => {
-      const control = abstractControl.get(controlName);
-      const matchingControl = abstractControl.get(matchingControlName);
-
-      if (
-        matchingControl?.errors &&
-        !matchingControl.errors.confirmedValidator
-      ) {
-        return null;
-      }
-
-      if (control?.value !== matchingControl?.value) {
-        const error = { confirmedValidator: 'Passwords do not match.' };
-        matchingControl?.setErrors(error);
-        return error;
-      } else {
-        matchingControl?.setErrors(null);
-        return null;
-      }
-    };
-  }
-
   changePasswordFormSubmitted = signal(false);
+
+  changePasswordMutation = injectMutation(() => ({
+    mutationFn: ({
+      password,
+      newPassword,
+    }: {
+      password: string;
+      newPassword: string;
+    }) => this.authService.changePassword({ password, newPassword }),
+    onSuccess: () => {
+      this.changePasswordForm.reset();
+    },
+  }));
 
   onChangePassword() {
     this.changePasswordFormSubmitted.set(true);
 
-    if (this.changePasswordForm.invalid) {
-      console.log('🚀 ~ UserSettingsComponent ~ onChangePassword ~ ostiasa:');
+    const { currentPassword, newPassword, confirmPassword } =
+      this.changePasswordForm.value;
 
-      console.log(
-        '🚀 ~ UserSettingsComponent ~ onChangePassword ~ this.changePasswordForm:',
-        this.changePasswordForm,
-      );
+    if (
+      !this.changePasswordForm.valid ||
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword
+    ) {
       this.changePasswordFormSubmitted.set(false);
       return;
     }
