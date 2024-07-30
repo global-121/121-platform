@@ -100,6 +100,46 @@ export class UserSettingsComponent {
 
     return Object.values(errors).some((e) => e) ? errors : null;
   };
+  confirmPasswordValidator: ValidatorFn = (
+    control: AbstractControl,
+  ): null | ValidationErrors => {
+    const confirmPassword = control.get('confirmPassword');
+    const newPassword = control.get('newPassword');
+
+    const requiredMessage = $localize`This field is required.`;
+    const confirmDifferentFromNewMessage = $localize`The confirm password must be equal to the new password.`;
+
+    const errors: {
+      required: null | string;
+      confirmDifferentFromNew: null | string;
+    } = {
+      required: null,
+      confirmDifferentFromNew: null,
+    };
+
+    if (!confirmPassword || !newPassword) {
+      return errors;
+    }
+
+    const requiredCondition = String(confirmPassword.value).trim() === '';
+
+    const confirmDifferentFromNewErrorCondition =
+      confirmPassword.dirty &&
+      newPassword.dirty &&
+      confirmPassword.value !== newPassword.value;
+
+      errors.required = requiredCondition ? requiredMessage : null;
+
+    errors.confirmDifferentFromNew = confirmDifferentFromNewErrorCondition
+      ? confirmDifferentFromNewMessage
+      : null;
+
+    confirmPassword.setErrors(
+      Object.values(errors).some((e) => e) ? errors : null,
+    );
+
+    return Object.values(errors).some((e) => e) ? errors : null;
+  };
   changePasswordForm = new FormGroup(
     {
       // eslint-disable-next-line @typescript-eslint/unbound-method
