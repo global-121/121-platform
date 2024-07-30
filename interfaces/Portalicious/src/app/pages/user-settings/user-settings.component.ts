@@ -25,6 +25,35 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserSettingsComponent {
+  currentPasswordValidator: ValidatorFn = (
+    control: AbstractControl,
+  ): null | ValidationErrors => {
+    const currentPassword = control.get('currentPassword');
+
+    const requiredMessage = $localize`This field is required.`;
+
+    const errors: {
+      required: null | string;
+
+    } = {
+      required: null,
+
+    };
+
+    if (!currentPassword) {
+      return errors;
+    }
+
+    const requiredCondition = String(currentPassword.value).trim() === '';
+
+    errors.required = requiredCondition ? requiredMessage : null;
+
+    currentPassword.setErrors(
+      Object.values(errors).some((e) => e) ? errors : null,
+    );
+
+    return Object.values(errors).some((e) => e) ? errors : null;
+  };
   changePasswordForm = new FormGroup(
     {
       // eslint-disable-next-line @typescript-eslint/unbound-method
