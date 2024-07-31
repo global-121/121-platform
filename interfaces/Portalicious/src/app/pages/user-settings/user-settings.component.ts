@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,11 +18,9 @@ import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { PasswordModule } from 'primeng/password';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ToastModule } from 'primeng/toast';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AuthService } from '~/services/auth.service';
-import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -34,12 +31,9 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     ReactiveFormsModule,
     FormErrorComponent,
-    ToastModule,
     ProgressSpinnerModule,
     MessagesModule,
-    JsonPipe,
   ],
-  providers: [ToastService],
   templateUrl: './user-settings.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
