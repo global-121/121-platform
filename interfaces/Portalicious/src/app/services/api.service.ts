@@ -52,7 +52,7 @@ export class ApiService {
   }) {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
-      endpoint: 'users/password',
+      endpoint: ApiEndpoints.usersChangePassword,
       body: {
         username,
         password,
