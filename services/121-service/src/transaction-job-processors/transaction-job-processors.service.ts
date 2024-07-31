@@ -10,6 +10,7 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -76,11 +77,28 @@ export class TransactionJobProcessorsService {
       throw new Error('Financial Service Provider not found');
     }
 
-    const transferAmount =
-      await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
-        registration.id,
-        input.transactionAmount,
-      );
+    let transferAmount: number;
+    try {
+      transferAmount =
+        await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
+          registration.id,
+          input.transactionAmount,
+        );
+    } catch (error) {
+      await this.createTransactionAndUpdateRegistration({
+        programId: input.programId,
+        paymentNumber: input.paymentNumber,
+        userId: input.userId,
+        calculatedTranserAmount: 0,
+        financialServiceProviderId: financialServiceProvider.id,
+        registration,
+        oldRegistration,
+        isRetry: input.isRetry,
+        status: StatusEnum.error,
+        errorText: `Error calculating transfer amount: ${error?.message}`,
+      });
+      return;
+    }
 
     // Check if all required properties are present. If not, create a failed transaction and throw an error.
     for (const [name, value] of Object.entries(input)) {
@@ -151,19 +169,23 @@ export class TransactionJobProcessorsService {
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
-      await this.createTransactionAndUpdateRegistration({
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        calculatedTranserAmount: transferAmount,
-        financialServiceProviderId: financialServiceProvider.id,
-        registration,
-        oldRegistration,
-        isRetry: input.isRetry,
-        status: StatusEnum.error,
-        errorText: error?.message, // TODO: THIS IS A GENEARAL stack trace catch and i think the error handling should be more specific and tested
-      });
-      return;
+      if (error instanceof IntersolveVisaApiError) {
+        await this.createTransactionAndUpdateRegistration({
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
+          calculatedTranserAmount: transferAmount,
+          financialServiceProviderId: financialServiceProvider.id,
+          registration,
+          oldRegistration,
+          isRetry: input.isRetry,
+          status: StatusEnum.error,
+          errorText: error?.message,
+        });
+        return;
+      } else {
+        throw error;
+      }
     }
 
     if (intersolveVisaDoTransferOrIssueCardReturnDto.cardCreated) {
