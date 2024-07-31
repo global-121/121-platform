@@ -180,7 +180,7 @@
       <trans-unit id="1221596867309460035" datatype="html">
         <source>New Password</source>
       </trans-unit>
-      <trans-unit id="1417693714872528491" datatype="html">
+      <trans-unit id="generic-required-field" datatype="html">
         <source>This field is required.</source>
       </trans-unit>
       <trans-unit id="1846542227840529109" datatype="html">
@@ -206,11 +206,6 @@
       </trans-unit>
       <trans-unit id="generic-loading" datatype="html">
         <source>Loading</source>
-      </trans-unit>
-      <trans-unit id="7708270344948043036" datatype="html">
-        <source>
-          <x equiv-text="{{changePasswordError()}}" id="INTERPOLATION"/>
-        </source>
       </trans-unit>
       <trans-unit id="7750851942089216450" datatype="html">
         <source>Failed to change the password. Please refresh the page and try again.</source>

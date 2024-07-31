@@ -256,7 +256,7 @@
         <source>Your password was successfully changed.</source>
         <target state="new">Your password was successfully changed.</target>
       </trans-unit>
-      <trans-unit id="1417693714872528491" datatype="html">
+      <trans-unit id="generic-required-field" datatype="html">
         <source>This field is required.</source>
         <target state="new">This field is required.</target>
       </trans-unit>
@@ -271,14 +271,6 @@
       <trans-unit id="3005732335203491098" datatype="html">
         <source>The confirm password must be equal to the new password.</source>
         <target state="new">The confirm password must be equal to the new password.</target>
-      </trans-unit>
-      <trans-unit id="7708270344948043036" datatype="html">
-        <source>
-          <x equiv-text="{{changePasswordError()}}" id="INTERPOLATION"/>
-        </source>
-        <target state="new">
-          <x equiv-text="{{changePasswordError()}}" id="INTERPOLATION"/>
-        </target>
       </trans-unit>
       <trans-unit id="7750851942089216450" datatype="html">
         <source>Failed to change the password. Please refresh the page and try again.</source>
