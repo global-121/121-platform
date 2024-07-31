@@ -105,22 +105,17 @@
           @if (changePasswordError()) {
             <p-messages [severity]="'error'">
               <ng-template pTemplate>
-                <i class="pi pi-check-circle"></i>
-                <div class="ml-2">
+                <i class="pi pi-exclamation-triangle me-4"></i>
+                <strong>
                   {{ changePasswordError() }}
-                </div>
+                </strong>
               </ng-template>
             </p-messages>
           } @else {
             <p-messages [severity]="'success'">
               <ng-template pTemplate>
-                <i class="pi pi-exclamation-triangle"></i>
-                <div
-                  i18n
-                  class="ml-2"
-                >
-                  Your password was successfully changed.
-                </div>
+                <i class="pi pi-check-circle me-4"></i>
+                <strong i18n> Your password was successfully changed. </strong>
               </ng-template>
             </p-messages>
           }
