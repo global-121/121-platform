@@ -13,26 +13,26 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
-    "@playwright/test": "^1.43.1",
+    "@eslint/js": "^9.8.0",
+    "@playwright/test": "^1.45.3",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.12.4",
+    "@types/node": "^22.0.0",
     "@types/supertest": "^6.0.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "globals": "^15.0.0",
+    "eslint-plugin-promise": "^7.0.0",
+    "globals": "^15.8.0",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
-    "supertest": "^6.3.3",
-    "typescript-eslint": "^7.7.0"
+    "supertest": "^7.0.0",
+    "typescript-eslint": "^7.18.0"
   },
   "dependencies": {
-    "@alex_neo/playwright-azure-reporter": "^1.9.0",
+    "@alex_neo/playwright-azure-reporter": "^1.9.1",
     "dotenv": "16.4.5",
-    "playwright": "^1.43.1",
+    "playwright": "^1.45.3",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   }
 }
