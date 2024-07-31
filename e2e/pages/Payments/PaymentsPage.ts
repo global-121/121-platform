@@ -301,9 +301,9 @@ class PaymentsPage {
     messageContext: string;
     messageType: string;
   }) {
-    const paymentNotificationLocator = this.page.locator(
-      `:text("${messageContext} (${messageType})")`,
-    );
+    const paymentNotificationLocator = this.page
+      .locator(`:text("${messageContext} (${messageType})")`)
+      .nth(0);
     const messageNotificationLocator = this.page.locator(
       `:text("${messageNotification}")`,
     );
