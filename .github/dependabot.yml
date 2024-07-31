@@ -124,3 +124,27 @@ updates:
       dependencies:
         patterns:
           - '*'
+
+  - package-ecosystem: npm
+    directory: '/e2e'
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      dependencies:
+        patterns:
+          - '*'
+
+  - package-ecosystem: npm
+    directory: '/k6'
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      dependencies:
+        patterns:
+          - '*'

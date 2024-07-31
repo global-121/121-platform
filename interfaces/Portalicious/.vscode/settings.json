@@ -1,12 +1,15 @@
 {
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "prettier.configPath": ".prettierrc.yml",
-  "tailwindCSS.rootFontSize": 14,
-  "tailwindCSS.showPixelEquivalents": false,
-  "XLF: Xml Format": "prettify-xml",
-  "XLF: State": true,
   "[xml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "prettier.configPath": ".prettierrc.yml",
+  "tailwindCSS.rootFontSize": 14,
+  "tailwindCSS.showPixelEquivalents": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "XLF: State": true,
+  "XLF: Xml Format": "prettify-xml"
 }
