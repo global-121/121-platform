@@ -133,12 +133,12 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Link token' })
-  @Post('/wallet/v1/tokens/:childTokenCode/link-token')
+  @Post('/wallet/v1/tokens/:parentTokenCode/link-token')
   public linkToken(
-    @Body() payload: Record<string, string>,
-    @Param('childTokenCode') _childTokenCode: string,
+    @Body() _payload: Record<string, string>,
+    @Param('parentTokenCode') parentTokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.linkToken(payload.tokenCode);
+    return this.intersolveVisaMockService.linkToken(parentTokenCode);
   }
 
   @ApiOperation({ summary: 'Transfer' })

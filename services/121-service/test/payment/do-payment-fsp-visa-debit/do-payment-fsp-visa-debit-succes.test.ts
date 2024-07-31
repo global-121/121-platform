@@ -1,4 +1,3 @@
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   amountVisa,
@@ -15,9 +14,8 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
-  importRegistrations,
   issueNewVisaCard,
+  seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -47,30 +45,10 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
   it('should succesfully pay-out Visa Debit', async () => {
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
-
     // Act
-    const doPaymentResponse = await doPayment(
+    const doPaymentResponse = await seedPaidRegistrations(
+      [registrationVisa],
       programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
     );
 
     // Assert
@@ -82,9 +60,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(transactionsResponse.text).toContain(StatusEnum.success);
     expect(transactionsResponse.body[0].user).toMatchObject(adminOwnerDto);
   });
@@ -92,33 +68,9 @@ describe('Do succesful payment with FSP Visa Debit', () => {
   it('should successfully load balance Visa Debit', async () => {
     // Arrange
     registrationVisa.fullName = 'succeed';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
     const paymentReferenceIds = [registrationVisa.referenceId];
-
     // Act
-    // do 1st payment
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
-      paymentNrVisa,
-    );
+    await seedPaidRegistrations([registrationVisa], programIdVisa);
 
     // do 2nd payment
     const doSecondPaymentResponse = await doPayment(
@@ -177,32 +129,8 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     const referenceIds = registrations.map((r) => r.referenceId);
 
-    await importRegistrations(programIdVisa, registrations, accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      referenceIds,
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-
     // Act
-    // do 1st payment
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      referenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      referenceIds,
-      accessToken,
-      6_000,
-      Object.values(StatusEnum),
-      paymentNrVisa,
-    );
+    await seedPaidRegistrations(registrations, programIdVisa);
 
     // Reissue card so both cards have a spend of 6000
     await issueNewVisaCard(

@@ -1,4 +1,5 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -350,11 +351,11 @@ export function getMessageHistory(
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
-): Promise<void> {
+): Promise<request.Response> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
 
-  await doPayment(programId, 1, 25, [], accessToken, {
+  const paymentResult = await doPayment(programId, 1, 25, [], accessToken, {
     'filter.status': '$in:included',
   });
 
@@ -365,7 +366,9 @@ export async function seedPaidRegistrations(
     registrationReferenceIds,
     accessToken,
     30_000,
+    Object.values(StatusEnum),
   );
+  return paymentResult;
 }
 
 export async function seedRegistrations(

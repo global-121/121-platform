@@ -1,6 +1,5 @@
 import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   amountVisa,
@@ -18,8 +17,8 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
-  importRegistrations,
+  seedIncludedRegistrations,
+  seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -36,6 +35,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
   let accessToken: string;
 
+  // An amount that is above the kyc limit
+  const amount160 = 160;
+
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
@@ -45,30 +47,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CREATE CUSTOMER ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-customer';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
+    const doPaymentResponse = await seedPaidRegistrations(
+      [registrationVisa],
       programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
-
-    // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
     );
 
     // Assert
@@ -80,9 +61,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.createCustomerError,
     );
@@ -91,30 +70,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CREATE WALLET ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-wallet';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
+    const doPaymentResponse = await seedPaidRegistrations(
+      [registrationVisa],
       programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
-
-    // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
     );
 
     // Assert
@@ -126,9 +84,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.issueTokenError,
     );
@@ -137,30 +93,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (LINK CUSTOMER ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-link-customer-wallet';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
+    const doPaymentResponse = await seedPaidRegistrations(
+      [registrationVisa],
       programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
-
-    // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
     );
 
     // Assert
@@ -172,9 +107,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.resgisterHolderError,
     );
@@ -183,30 +116,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CREATE DEBIT CARD ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-debit-card';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
+    const doPaymentResponse = await seedPaidRegistrations(
+      [registrationVisa],
       programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
-
-    // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
     );
 
     // Assert
@@ -218,48 +130,47 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.createPhysicalCardError,
+    );
+  });
+
+  it('should fail pay-out Visa Debit (LINK CHILD AND PARENT WALLET)', async () => {
+    // Arrange
+    registrationVisa.fullName = 'mock-fail-link-token';
+    const doPaymentResponse = await seedPaidRegistrations(
+      [registrationVisa],
+      programIdVisa,
+    );
+
+    // Assert
+    const transactionsResponse = await getTransactions(
+      programIdVisa,
+      paymentNrVisa,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
+    expect(transactionsResponse.text).toContain(
+      IntersolveVisa121ErrorText.linkTokenError,
     );
   });
 
   it('should fail pay-out Visa Debit (CALCULATE TOPUP AMOUNT ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-get-wallet';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
 
-    // Act
-    // do (successful) payment 1
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
-      accessToken,
-    );
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      paymentReferenceIds,
-      accessToken,
-      3001,
-      Object.values(StatusEnum),
-    );
+    const paymentReferenceIds = [registrationVisa.referenceId];
+    await seedPaidRegistrations([registrationVisa], programIdVisa);
 
     // do payment 2
     const doPaymentResponse = await doPayment(
       programIdVisa,
       paymentNrVisa + 1,
-      amountVisa,
+      amount160,
       paymentReferenceIds,
       accessToken,
     );
@@ -287,15 +198,18 @@ describe('Do failing payment with FSP Visa Debit', () => {
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.getTokenError,
     );
+    expect(transactionsResponse.text).toContain(
+      IntersolveVisa121ErrorText.calculatingTransferAmount,
+    );
+    // Since the error now occured in the calculation of the top-up amount, the amount should be 160 (which is higher than the kyc limit)
+    expect(transactionsResponse.body[0].amount).toBe(amount160);
   });
 
   it('should fail pay-out by visa debit if coverletterCode is not configured for the program', async () => {
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
+    await seedIncludedRegistrations(
+      [registrationVisa],
       programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
       accessToken,
     );
     const paymentReferenceIds = [registrationVisa.referenceId];
@@ -322,5 +236,29 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+  });
+
+  it('should fail pay-out Visa Debit (phonenumber not set)', async () => {
+    // Arrange
+    const programIdPv = 2;
+    const untypedRegistrationVisa = registrationVisa as any;
+    untypedRegistrationVisa.phoneNumber = undefined;
+
+    const doPaymentResponse = await seedPaidRegistrations(
+      [untypedRegistrationVisa],
+      programIdPv,
+    );
+
+    // Assert
+    const transactionsResponse = await getTransactions(
+      programIdPv,
+      paymentNrVisa,
+      untypedRegistrationVisa.referenceId,
+      accessToken,
+    );
+
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
+    expect(transactionsResponse.text).toContain('phoneNumber');
   });
 });

@@ -60,16 +60,7 @@ export class IntersolveVisaMockService {
       res.statusText = 'OK';
     }
     // in all below cases,pass different holderId to use in follow-up API-call (which does not take lastName as input)
-    if (
-      lastName.includes('mock-fail-create-wallet') ||
-      lastName.includes('mock-fail-link-customer-wallet') ||
-      lastName.includes('mock-fail-create-debit-card') ||
-      lastName.includes('mock-fail-load-balance') ||
-      lastName.includes('mock-fail-get-wallet') ||
-      lastName.includes('mock-fail-get-card') ||
-      lastName.includes('mock-spent') ||
-      lastName.includes('mock-current-balance')
-    ) {
+    if (lastName.includes('mock-')) {
       res.data.data.id = lastName;
     }
     return res;
@@ -193,15 +184,7 @@ export class IntersolveVisaMockService {
     }
     // in all below cases,pass different tokenCode to use in follow-up API-call (which does not take holderId as input)
     // uuid is needed to not run into unqiue constraint on token code
-    if (
-      holderId?.toLowerCase().includes('mock-fail-link-customer-wallet') ||
-      holderId?.toLowerCase().includes('mock-fail-create-debit-card') ||
-      holderId?.toLowerCase().includes('mock-fail-load-balance') ||
-      holderId?.toLowerCase().includes('mock-fail-get-wallet') ||
-      holderId?.toLowerCase().includes('mock-fail-get-card') ||
-      holderId?.toLowerCase().includes('mock-spent') ||
-      holderId?.toLowerCase().includes('mock-current-balance')
-    ) {
+    if (holderId?.toLowerCase().includes('mock-')) {
       response.data.data.token.code = `${uuid()}${holderId}`;
     }
 
