@@ -296,22 +296,18 @@ class PaymentsPage {
     messageNotification,
     messageContext,
     messageType,
-    locatorNumber = 0,
   }: {
     messageNotification: string;
     messageContext: string;
     messageType: string;
-    locatorNumber?: number;
   }) {
-    const paymentNotificationLocator = this.page
-      .locator(`:text("${messageContext} (${messageType})")`)
-      .nth(locatorNumber);
+    const paymentNotificationLocator = this.page.locator(
+      `:text("${messageContext} (${messageType})")`,
+    );
     const messageNotificationLocator = this.page.locator(
       `:text("${messageNotification}")`,
     );
-    // await this.page.waitForLoadState('networkidle');
     await messageNotificationLocator.waitFor({ state: 'visible' });
-
     expect(await messageNotificationLocator.textContent()).toContain(
       `${messageNotification}`,
     );
