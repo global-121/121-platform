@@ -20,6 +20,7 @@
             </label>
             <app-form-error
               [visible]="
+                changePasswordForm.controls.currentPassword.dirty &&
                 changePasswordForm.controls.currentPassword.errors?.required
               "
               error="This field is required."
@@ -36,29 +37,30 @@
                 styleClass="w-full [&_input]:w-full mt-2"
               />
             </label>
-            @if (changePasswordForm.controls.newPassword.errors?.required) {
-              <app-form-error
-                [visible]="true"
-                error="This field is required."
-                i18n-error="@@generic-required-field"
-              />
-            }
-            @if (changePasswordForm.controls.newPassword.errors?.minlength) {
-              <app-form-error
-                [visible]="true"
-                error="The new password must be at least 8 characters long."
-                i18n-error
-              />
-            }
-            @if (
-              changePasswordForm.controls.newPassword.errors?.newEqualsCurrent
-            ) {
-              <app-form-error
-                [visible]="true"
-                error="The new password must be different from the current password."
-                i18n-error
-              />
-            }
+
+            <app-form-error
+              [visible]="
+                changePasswordForm.controls.newPassword.dirty &&
+                changePasswordForm.controls.newPassword.errors?.required
+              "
+              error="This field is required."
+              i18n-error="@@generic-required-field"
+            />
+
+            <app-form-error
+              [visible]="
+                changePasswordForm.controls.newPassword.errors?.minlength
+              "
+              error="The new password must be at least 8 characters long."
+              i18n-error
+            />
+            <app-form-error
+              [visible]="
+                changePasswordForm.controls.newPassword.errors?.newEqualsCurrent
+              "
+              error="The new password must be different from the current password."
+              i18n-error
+            />
             <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
             <label>
               <ng-container i18n>Confirm Password</ng-container>
@@ -69,23 +71,23 @@
                 styleClass="w-full [&_input]:w-full mt-2"
               />
             </label>
-            @if (changePasswordForm.controls.confirmPassword.errors?.required) {
-              <app-form-error
-                [visible]="true"
-                error="This field is required."
-                i18n-error="@@generic-required-field"
-              />
-            }
-            @if (
-              changePasswordForm.controls.confirmPassword.errors
-                ?.confirmDifferentFromNew
-            ) {
-              <app-form-error
-                [visible]="true"
-                error="The confirm password must be equal to the new password."
-                i18n-error
-              />
-            }
+
+            <app-form-error
+              [visible]="
+                changePasswordForm.controls.confirmPassword.dirty &&
+                changePasswordForm.controls.confirmPassword.errors?.required
+              "
+              error="This field is required."
+              i18n-error="@@generic-required-field"
+            />
+            <app-form-error
+              [visible]="
+                changePasswordForm.controls.confirmPassword.errors
+                  ?.confirmDifferentFromNew
+              "
+              error="The confirm password must be equal to the new password."
+              i18n-error
+            />
             <p-button
               label="Change password"
               i18n-label
@@ -93,7 +95,6 @@
               rounded
               class="mt-8"
               [disabled]="!changePasswordForm.valid"
-              i18n-disabled
             />
           </div>
         } @else if (changePasswordMutation.isPending()) {
