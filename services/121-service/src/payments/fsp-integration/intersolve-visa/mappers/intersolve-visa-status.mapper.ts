@@ -26,19 +26,23 @@ export class IntersolveVisaStatusMapper {
   private static mapping: VisaCard121StatusMapInterface[] = [];
   private static isMappingLoaded = false;
 
-  // TODO: This function has a bug since loading the CSV file is asynchronous, so the first time after compiling the status is Unknown, and afterwards it works. Change into a synchronous way with the help of Copilot, but not with csv-parse. Or try to load the mapping in another place? The IntersolveVisaService constructor? Test this, since the mapper is also used in the MetricsService.
   public static loadMapping(): void {
     if (this.isMappingLoaded) {
       return;
     }
-
-    const csvFilePath = path.join(__dirname, 'visa-card-121-status-map.csv');
+    const fileName = 'visa-card-121-status-map.csv';
+    const csvFilePath = path.join(__dirname, fileName);
     const fileContent = fs.readFileSync(csvFilePath, { encoding: 'utf-8' });
     const rows = fileContent.split('\n').filter((row) => row.trim()); // Filters out empty lines
 
     if (rows.length > 0) {
-      const headers = rows
-        .shift()
+      const headerRow = rows.shift();
+
+      // Header row should always be present, this was needed to avoid a type error
+      if (!headerRow) {
+        throw new Error(`Header row not found in CSV file ${fileName}`);
+      }
+      const headers = headerRow
         .split(';')
         .map((header) => header.trim().replace(/^"|"$/g, '')); // Remove quotes from headers
 
