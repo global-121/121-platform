@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -50,79 +49,41 @@ export class UserSettingsComponent {
 
   public changePasswordError = signal<null | string>(null);
 
-  currentPasswordValidator: ValidatorFn = (
-    control: AbstractControl,
-  ): null | ValidationErrors => {
-    const currentPassword = control.get('currentPassword');
-
-    const requiredMessage = $localize`This field is required.`;
-
-    const errors: {
-      required: null | string;
-    } = {
-      required: null,
-    };
-
-    if (!currentPassword) {
-      return errors;
-    }
-
-    const requiredCondition = String(currentPassword.value).trim() === '';
-
-    errors.required = requiredCondition ? requiredMessage : null;
-
-    currentPassword.setErrors(
-      Object.values(errors).some((e) => e) ? errors : null,
-    );
-
-    return Object.values(errors).some((e) => e) ? errors : null;
-  };
-
   newPasswordValidator: ValidatorFn = (
     control: AbstractControl,
   ): null | ValidationErrors => {
     const newPassword = control.get('newPassword');
     const currentPassword = control.get('currentPassword');
 
-    const requiredMessage = $localize`This field is required.`;
-    const newEqualsCurrentMessage = $localize`The new password must be different from the current password.`;
-    const minlengthMessage = $localize`The new password must be at least 8 characters long.`;
-
-    const errors: {
-      required: null | string;
-      newEqualsCurrent: null | string;
-      minlength: null | string;
-    } = {
-      required: null,
-      newEqualsCurrent: null,
-      minlength: null,
-    };
-
-    if (!newPassword || !currentPassword) {
-      return null;
+    if (newPassword?.errors?.newEqualsCurrent) {
+      delete newPassword.errors.newEqualsCurrent;
     }
 
-    const requiredCondition = String(newPassword.value).trim() === '';
+    if (
+      !newPassword?.hasError('required') &&
+      !newPassword?.hasError('minlength')
+    ) {
+      newPassword?.setErrors(null);
+    }
+
+    let customErrors: { newEqualsCurrent?: true } | null = null;
 
     const newEqualsCurrentErrorCondition =
-      newPassword.dirty &&
-      currentPassword.dirty &&
-      newPassword.value === currentPassword.value;
+      newPassword?.dirty &&
+      currentPassword?.dirty &&
+      String(newPassword.value) === String(currentPassword.value);
 
-    const minlengthErrorCondition =
-      newPassword.dirty && String(newPassword.value).length < 8;
+    if (newEqualsCurrentErrorCondition) {
+      customErrors = { newEqualsCurrent: true };
+    }
 
-    errors.required = requiredCondition ? requiredMessage : null;
+    const combinedErrors =
+      newPassword?.errors || customErrors
+        ? { ...newPassword?.errors, ...customErrors }
+        : null;
 
-    errors.newEqualsCurrent = newEqualsCurrentErrorCondition
-      ? newEqualsCurrentMessage
-      : null;
-
-    errors.minlength = minlengthErrorCondition ? minlengthMessage : null;
-
-    newPassword.setErrors(Object.values(errors).some((e) => e) ? errors : null);
-
-    return Object.values(errors).some((e) => e) ? errors : null;
+    newPassword?.setErrors(combinedErrors);
+    return combinedErrors;
   };
 
   confirmPasswordValidator: ValidatorFn = (
@@ -131,53 +92,56 @@ export class UserSettingsComponent {
     const confirmPassword = control.get('confirmPassword');
     const newPassword = control.get('newPassword');
 
-    const requiredMessage = $localize`This field is required.`;
-    const confirmDifferentFromNewMessage = $localize`The confirm password must be equal to the new password.`;
-
-    const errors: {
-      required: null | string;
-      confirmDifferentFromNew: null | string;
-    } = {
-      required: null,
-      confirmDifferentFromNew: null,
-    };
-
-    if (!confirmPassword || !newPassword) {
-      return errors;
+    if (confirmPassword?.errors?.confirmDifferentFromNew) {
+      delete confirmPassword.errors.confirmDifferentFromNew;
     }
 
-    const requiredCondition = String(confirmPassword.value).trim() === '';
+    if (!confirmPassword?.hasError('required')) {
+      newPassword?.setErrors(null);
+    }
+
+    let customErrors: {
+      confirmDifferentFromNew?: true;
+    } | null = null;
 
     const confirmDifferentFromNewErrorCondition =
-      confirmPassword.dirty &&
-      newPassword.dirty &&
+      confirmPassword?.dirty &&
+      newPassword?.dirty &&
       confirmPassword.value !== newPassword.value;
 
-    errors.required = requiredCondition ? requiredMessage : null;
+    if (confirmDifferentFromNewErrorCondition) {
+      customErrors = { confirmDifferentFromNew: true };
+    }
 
-    errors.confirmDifferentFromNew = confirmDifferentFromNewErrorCondition
-      ? confirmDifferentFromNewMessage
-      : null;
+    const combinedErrors =
+      confirmPassword?.errors || customErrors
+        ? { ...confirmPassword?.errors, ...customErrors }
+        : null;
 
-    confirmPassword.setErrors(
-      Object.values(errors).some((e) => e) ? errors : null,
-    );
-
-    return Object.values(errors).some((e) => e) ? errors : null;
+    confirmPassword?.setErrors(combinedErrors);
+    return combinedErrors;
   };
+
+  /* eslint-disable-next-line @typescript-eslint/unbound-method */
+  private currentPasswordFormControl = new FormControl('', Validators.required);
+
+  private newPasswordFormControl = new FormControl('', [
+    /* eslint-disable-next-line @typescript-eslint/unbound-method */
+    Validators.required,
+
+    Validators.minLength(8),
+  ]);
+  /* eslint-disable-next-line @typescript-eslint/unbound-method */
+  private confirmPasswordFormControl = new FormControl('', Validators.required);
 
   changePasswordForm = new FormGroup(
     {
-      currentPassword: new FormControl('', Validators.required),
-      newPassword: new FormControl('', Validators.required),
-      confirmPassword: new FormControl('', Validators.required),
+      currentPassword: this.currentPasswordFormControl,
+      newPassword: this.newPasswordFormControl,
+      confirmPassword: this.confirmPasswordFormControl,
     },
     {
-      validators: [
-        this.currentPasswordValidator,
-        this.newPasswordValidator,
-        this.confirmPasswordValidator,
-      ],
+      validators: [this.newPasswordValidator, this.confirmPasswordValidator],
     },
   );
 
@@ -219,9 +183,5 @@ export class UserSettingsComponent {
       password: currentPassword,
       newPassword,
     });
-  }
-
-  getErrors(errors: Record<string, string>): string[] {
-    return Object.values(errors).filter((error) => error);
   }
 }
