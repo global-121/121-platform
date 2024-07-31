@@ -163,7 +163,7 @@ export class PhysicalCardPopupComponent implements OnInit {
           const errorMessage = this.translate.instant(
             'registration-details.physical-cards-overview.action-result.new-card-error',
             {
-              error: error.error.errors,
+              error: this.errorHandlerService.formatErrors(error),
             },
           );
           actionResult(

@@ -232,6 +232,7 @@ export class IntersolveVisaMockService {
 
   public createDebitCardMock(
     lastName: string | null,
+    mobileNumber: string | null,
   ): IntersolveVisaMockResponseDto {
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.OK,
@@ -248,6 +249,19 @@ export class IntersolveVisaMockService {
       });
       res.status = HttpStatus.NOT_FOUND;
       res.statusText = 'NOT_FOUND';
+    }
+    // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\
+    const mobileNumberRegex = new RegExp('^([+]){1}([1-9]){1}([0-9]){5,14}$');
+    if (!mobileNumberRegex.test(mobileNumber)) {
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'INVALID_MOBILE_NUMBER',
+        field: 'mobileNumber',
+        description: 'Mobile number does not match the required format',
+      });
+      res.status = HttpStatus.BAD_REQUEST;
+      res.statusText = 'BAD_REQUEST';
     }
     return res;
   }

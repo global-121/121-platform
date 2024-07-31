@@ -6,4 +6,5 @@ export enum VisaCard121Status {
   SuspectedFraud = 'Suspected Fraud',
   Unknown = 'Unknown',
   Substituted = 'Substituted',
+  CardDataMissing = 'Debit Card Data Missing',
 }

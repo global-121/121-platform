@@ -11,4 +11,6 @@ export enum IntersolveVisa121ErrorText {
   substituteTokenError = 'SUBSTITUTE TOKEN ERROR',
   blockTokenError = 'BLOCK TOKEN ERROR',
   updatePhoneNumberError = 'UPDATE PHONE NUMBER ERROR',
+  calculatingTransferAmount = 'Error calculating transfer amount',
+  reissueCard = 'Error reissuing card',
 }

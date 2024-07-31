@@ -44,3 +44,4 @@
 "SUBSTITUTED";"FALSE";"CARD_STOLEN";"Substituted";"Card has been substituted due to re-issue";
 "SUBSTITUTED";"FALSE";"CARD_CLOSED";"Substituted";"Card has been substituted due to re-issue";
 "SUBSTITUTED";"FALSE";"CARD_EXPIRED";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"FALSE";"";"Substituted";"Card has been substituted due to re-issue";
