@@ -97,7 +97,7 @@ export class UserSettingsComponent {
     }
 
     if (!confirmPassword?.hasError('required')) {
-      newPassword?.setErrors(null);
+      confirmPassword?.setErrors(null);
     }
 
     let customErrors: {
@@ -160,6 +160,7 @@ export class UserSettingsComponent {
     },
     onError: (error) => {
       this.changePasswordError.set(error.message);
+      this.changePasswordForm.reset();
     },
   }));
 
