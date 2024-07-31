@@ -1,3 +1,136 @@
 <app-page-layout>
-  <p i18n>user-settings works!</p>
+  <div class="mb-6 flex items-end pt-6">
+    <h1
+      i18n="@@page-title-user-settings"
+      class="min-w-48 text-3xl"
+    >
+      Change password
+    </h1>
+  </div>
+  <div
+    class="mt-4 flex w-full shrink-0 flex-col justify-center gap-6 bg-white p-4"
+  >
+    <form
+      class="max-w-xl"
+      [formGroup]="changePasswordForm"
+      (ngSubmit)="onChangePassword()"
+    >
+      @if (!changePasswordFormSubmitted()) {
+        <div class="flex flex-col gap-2">
+          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+          <label>
+            <ng-container i18n>Current Password</ng-container>
+            <p-password
+              formControlName="currentPassword"
+              [toggleMask]="true"
+              [feedback]="false"
+              autocomplete="current-password"
+              styleClass="w-full [&_input]:w-full mt-2"
+            />
+          </label>
+          <app-form-error
+            [visible]="
+              changePasswordForm.controls.currentPassword.dirty &&
+              changePasswordForm.controls.currentPassword.errors?.required
+            "
+            error="This field is required."
+            i18n-error="@@generic-required-field"
+          />
+          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+          <label>
+            <ng-container i18n>New Password</ng-container>
+            <p-password
+              formControlName="newPassword"
+              [toggleMask]="true"
+              [feedback]="false"
+              autocomplete="new-password"
+              styleClass="w-full [&_input]:w-full mt-2"
+            />
+          </label>
+
+          <app-form-error
+            [visible]="
+              changePasswordForm.controls.newPassword.dirty &&
+              changePasswordForm.controls.newPassword.errors?.required
+            "
+            error="This field is required."
+            i18n-error="@@generic-required-field"
+          />
+
+          <app-form-error
+            [visible]="
+              changePasswordForm.controls.newPassword.errors?.minlength
+            "
+            error="The new password must be at least 8 characters long."
+            i18n-error
+          />
+          <app-form-error
+            [visible]="
+              changePasswordForm.controls.newPassword.errors?.newEqualsCurrent
+            "
+            error="The new password must be different from the current password."
+            i18n-error
+          />
+          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+          <label>
+            <ng-container i18n>Confirm Password</ng-container>
+            <p-password
+              formControlName="confirmPassword"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full [&_input]:w-full mt-2"
+            />
+          </label>
+
+          <app-form-error
+            [visible]="
+              changePasswordForm.controls.confirmPassword.dirty &&
+              changePasswordForm.controls.confirmPassword.errors?.required
+            "
+            error="This field is required."
+            i18n-error="@@generic-required-field"
+          />
+          <app-form-error
+            [visible]="
+              changePasswordForm.controls.confirmPassword.errors
+                ?.confirmDifferentFromNew
+            "
+            error="The confirm password must be equal to the new password."
+            i18n-error
+          />
+          <p-button
+            label="Change password"
+            i18n-label
+            type="submit"
+            rounded
+            class="mt-8"
+            [disabled]="!changePasswordForm.valid"
+          />
+        </div>
+      } @else if (changePasswordMutation.isPending()) {
+        <p-progressSpinner
+          aria-label="Loading"
+          i18n-aria-label="@@generic-loading"
+        />
+      } @else {
+        @if (changePasswordError()) {
+          <p-messages [severity]="'error'">
+            <ng-template pTemplate>
+              <i class="pi pi-exclamation-triangle me-4"></i>
+              <strong>
+                {{ changePasswordError() }}
+              </strong>
+            </ng-template>
+          </p-messages>
+        } @else {
+          <p-messages [severity]="'success'">
+            <ng-template pTemplate>
+              <i class="pi pi-check-circle me-4"></i>
+              <strong i18n> Your password was successfully changed. </strong>
+            </ng-template>
+          </p-messages>
+        }
+      }
+    </form>
+  </div>
 </app-page-layout>

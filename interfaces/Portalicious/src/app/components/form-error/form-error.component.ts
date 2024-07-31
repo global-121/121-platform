@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-form-error',
@@ -16,8 +11,4 @@ import {
 export class FormErrorComponent {
   visible = input.required<boolean>();
   error = input<Error | null | string>();
-
-  visibilityClass = computed(() => {
-    return this.visible() && this.error() !== null ? 'block' : 'hidden';
-  });
 }

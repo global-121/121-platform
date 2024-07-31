@@ -42,6 +42,7 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.userSettings,
+    title: $localize`:Browser-tab-title@@page-title-user-settings:Change password`,
     component: UserSettingsComponent,
     canActivate: [authGuard],
   },

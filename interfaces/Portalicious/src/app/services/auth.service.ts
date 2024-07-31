@@ -116,4 +116,29 @@ export class AuthService {
     await this.apiService.logout();
     await this.router.navigate(['/', AppRoutes.login]);
   }
+
+  public async changePassword({
+    password,
+    newPassword,
+  }: {
+    password: string;
+    newPassword: string;
+  }) {
+    const username = this.user?.username;
+
+    if (username) {
+      try {
+        await this.apiService.changePassword({
+          username,
+          password,
+          newPassword,
+        });
+      } catch (error) {
+        console.error(error);
+        throw new Error(
+          $localize`Failed to change the password. Please refresh the page and try again.`,
+        );
+      }
+    }
+  }
 }
