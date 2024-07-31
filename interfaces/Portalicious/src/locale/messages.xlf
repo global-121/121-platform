@@ -79,10 +79,6 @@
       <trans-unit id="4829177270839953752" datatype="html">
         <source>Find out more</source>
       </trans-unit>
-      <trans-unit id="4930506384627295710" datatype="html">
-        <source>Settings</source>
-        <note priority="1" from="description">Menu-item</note>
-      </trans-unit>
       <trans-unit id="5393972837576333232" datatype="html">
         <source>example: yourname@example.org</source>
       </trans-unit>
@@ -194,6 +190,7 @@
       </trans-unit>
       <trans-unit id="6309828574111583895" datatype="html">
         <source>Change password</source>
+        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
       <trans-unit id="3005732335203491098" datatype="html">
         <source>The confirm password must be equal to the new password.</source>
@@ -209,6 +206,10 @@
       </trans-unit>
       <trans-unit id="7750851942089216450" datatype="html">
         <source>Failed to change the password. Please refresh the page and try again.</source>
+      </trans-unit>
+      <trans-unit id="page-title-user-settings" datatype="html">
+        <source>Change password</source>
+        <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
     </body>
   </file>

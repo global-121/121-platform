@@ -74,11 +74,6 @@
         <source>Manual</source>
         <target state="translated">Handleiding</target>
       </trans-unit>
-      <trans-unit id="4930506384627295710" datatype="html">
-        <source>Settings</source>
-        <target state="translated">Instellingen</target>
-        <note priority="1" from="description">Menu-item</note>
-      </trans-unit>
       <trans-unit id="3797778920049399855" datatype="html">
         <source>Logout</source>
         <target state="translated">Uitloggen</target>
@@ -247,6 +242,7 @@
       <trans-unit id="6309828574111583895" datatype="html">
         <source>Change password</source>
         <target state="new">Change password</target>
+        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
       <trans-unit id="generic-loading" datatype="html">
         <source>Loading</source>
@@ -275,6 +271,11 @@
       <trans-unit id="7750851942089216450" datatype="html">
         <source>Failed to change the password. Please refresh the page and try again.</source>
         <target state="new">Failed to change the password. Please refresh the page and try again.</target>
+      </trans-unit>
+      <trans-unit id="page-title-user-settings" datatype="html">
+        <source>Change password</source>
+        <target state="new">Change password</target>
+        <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
     </body>
   </file>

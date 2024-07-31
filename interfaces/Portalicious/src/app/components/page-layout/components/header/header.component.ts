@@ -45,7 +45,7 @@ export class HeaderComponent {
 
   userMenuOptions = [
     {
-      label: $localize`:Menu-item:Settings`,
+      label: $localize`:Menu-item:Change password`,
       icon: 'pi pi-cog',
       routerLink: `/${AppRoutes.userSettings}`,
     },
