@@ -146,14 +146,21 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
   }
 
   private getLabel(attribute: PaTableAttribute): string {
-    return (
-      // Get label of attributes configured in the program
-      this.translatableString.get(attribute.label) ??
-      // Get label of default attributes
-      this.translate.instant(
-        `page.program.program-people-affected.column.${attribute.name}`,
-      )
-    );
+    let label: string;
+
+    if (attribute.label) {
+      label = this.translatableString.get(attribute.label);
+    }
+
+    if (!label) {
+      const translationKey = `page.program.program-people-affected.column.${attribute.name}`;
+      const translation = this.translate.instant(translationKey);
+
+      // Only use translation if it is actually available, otherwise fall back to the "name" only
+      label = translation !== translationKey ? translation : attribute.name;
+    }
+
+    return label;
   }
 
   public async closeModal() {
