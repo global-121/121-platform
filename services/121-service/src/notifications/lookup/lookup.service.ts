@@ -37,6 +37,7 @@ export class LookupService {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
     }
+    return;
   }
 
   public async getLocalNumber(
@@ -56,6 +57,7 @@ export class LookupService {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
     }
+    return;
   }
 
   private processLebanonException(lookupResponse): string {

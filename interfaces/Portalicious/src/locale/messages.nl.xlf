@@ -217,70 +217,82 @@
       </trans-unit>
       <trans-unit id="1846542227840529109" datatype="html">
         <source>Current Password</source>
-        <target state="new">Current Password</target>
+        <target state="translated">Huidig wachtwoord</target>
       </trans-unit>
       <trans-unit id="1221596867309460035" datatype="html">
         <source>New Password</source>
-        <target state="new">New Password</target>
+        <target state="translated">Nieuw wachtwoord</target>
       </trans-unit>
       <trans-unit id="3241357959735682038" datatype="html">
         <source>Confirm Password</source>
-        <target state="new">Confirm Password</target>
+        <target state="translated">Bevestig wachtwoord</target>
       </trans-unit>
       <trans-unit id="6309828574111583895" datatype="html">
         <source>Change password</source>
-        <target state="new">Change password</target>
+        <target state="translated">Verander wachtwoord</target>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
       <trans-unit id="8029438652061888154" datatype="html">
         <source>Your password was successfully changed.</source>
-        <target state="new">Your password was successfully changed.</target>
+        <target state="translated">Uw wachtwoord is veranderd.</target>
       </trans-unit>
       <trans-unit id="generic-required-field" datatype="html">
         <source>This field is required.</source>
-        <target state="new">This field is required.</target>
+        <target state="translated">Dit veld is verplicht.</target>
       </trans-unit>
       <trans-unit id="8060388914130154528" datatype="html">
         <source>The new password must be different from the current password.</source>
-        <target state="new">The new password must be different from the current password.</target>
+        <target state="translated">Het nieuwe wachtwoord moet anders zijn dan het huidige wachtwoord</target>
       </trans-unit>
       <trans-unit id="6988584798455615907" datatype="html">
         <source>The new password must be at least 8 characters long.</source>
-        <target state="new">The new password must be at least 8 characters long.</target>
+        <target state="translated">Het nieuwe wachtwoord moet minstens 8 tekens lang zijn.</target>
       </trans-unit>
       <trans-unit id="3005732335203491098" datatype="html">
         <source>The confirm password must be equal to the new password.</source>
-        <target state="new">The confirm password must be equal to the new password.</target>
+        <target state="translated">De wachtwoorden moeten hetzelfde zijn.</target>
       </trans-unit>
       <trans-unit id="7750851942089216450" datatype="html">
         <source>Failed to change the password. Please refresh the page and try again.</source>
-        <target state="new">Failed to change the password. Please refresh the page and try again.</target>
+        <target state="translated">Het wachtwoord is niet veranderd. Herlaad de pagina en probeer het opnieuw.</target>
       </trans-unit>
       <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
-        <target state="new">Change password</target>
+        <target state="translated">Verander wachtwoord</target>
         <note priority="1" from="description">Browser-tab-title</note>
+      </trans-unit>
+      <trans-unit id="2342712167124906317" datatype="html">
+        <source>Targeted people</source>
+        <target state="new">Targeted people</target>
+      </trans-unit>
+      <trans-unit id="8675927317645341841" datatype="html">
+        <source>Included people</source>
+        <target state="new">Included people</target>
+      </trans-unit>
+      <trans-unit id="6885844978916799621" datatype="html">
+        <source>Budget</source>
+        <target state="new">Budget</target>
+      </trans-unit>
+      <trans-unit id="668066055906448779" datatype="html">
+        <source>Cash disbursed</source>
+        <target state="new">Cash disbursed</target>
       </trans-unit>
       <trans-unit id="2980109580182727209" datatype="html">
         <source>All projects</source>
-        <target state="new">All projects</target>
+        <target state="translated">Alle projecten</target>
       </trans-unit>
       <trans-unit id="7113499429942611780" datatype="html">
         <source>Create new project</source>
-        <target state="new">Create new project</target>
+        <target state="translated">Nieuw project maken</target>
         <note priority="1" from="description">Button-label</note>
       </trans-unit>
       <trans-unit id="3010710400268626539" datatype="html">
         <source>No Projects found</source>
-        <target state="new">No Projects found</target>
+        <target state="translated">Geen projecten gevonden</target>
       </trans-unit>
       <trans-unit id="8550882715313062083" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
-        <target state="new">You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</target>
-      </trans-unit>
-      <trans-unit id="9090295668948732387" datatype="html">
-        <source>Project <x equiv-text="{{ id }}" id="INTERPOLATION"/></source>
-        <target state="new">Project <x equiv-text="{{ id }}" id="INTERPOLATION"/></target>
+        <target state="translated">U bent nog niet aan een project toegevoegd, neem contact op met een beheerder om de 121 Portal te gebruiken.</target>
       </trans-unit>
     </body>
   </file>

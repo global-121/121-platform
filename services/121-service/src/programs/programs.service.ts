@@ -524,6 +524,7 @@ export class ProgramService {
         throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
       }
     }
+    return;
   }
 
   private programCustomAttributeDtoToEntity(
@@ -555,6 +556,7 @@ export class ProgramService {
         throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
       }
     }
+    return;
   }
 
   private programQuestionDtoToEntity(

@@ -44,11 +44,10 @@
     >
       @for (id of assignedProjects; track $index) {
         <li>
-          <a
-            i18n
-            [routerLink]="projectLink(id)"
-            >Project {{ id }}</a
-          >
+          <app-project-summary-card
+            [id]="id"
+            class="h-full"
+          />
         </li>
       }
     </ul>
