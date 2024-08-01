@@ -1,5 +1,10 @@
 /// <reference types="@angular/localize" />
 
+import '@angular/common/locales/global/ar';
+import '@angular/common/locales/global/en';
+import '@angular/common/locales/global/es';
+import '@angular/common/locales/global/fr';
+import '@angular/common/locales/global/nl';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
