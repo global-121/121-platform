@@ -681,28 +681,9 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      await waitForPaymentTransactionsToComplete(
-        programIdVisa,
-        paymentReferenceIds,
-        accessToken,
-        3001,
-        Object.values(StatusEnum),
-      );
-
-      // Assert
-      const transactionsResponse = await getTransactions(
-        programIdVisa,
-        paymentNrVisa,
-        registrationVisa.referenceId,
-        accessToken,
-      );
-
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(
-        paymentReferenceIds.length,
-      );
-      expect(transactionsResponse.text).toContain(
-        `Configuration with name coverLetterCode not found for program ${programIdVisa} and FSP Intersolve-visa`,
+      expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(doPaymentResponse.body.errors).toContain(
+        `Missing required configuration coverLetterCode for FSP Intersolve-visa`,
       );
     });
   });
