@@ -323,4 +323,49 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
   });
+
+  it('should show a failed transaction if an idempotency key is duplicate', async () => {
+    // This amount is configured in our mock service to fail with the same error as a duplicate idempotency key would create at intersolve
+    const magicFailOperationReferenceAmount = 15.15;
+
+    // Arrange
+    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await awaitChangePaStatus(
+      programIdVisa,
+      [registrationVisa.referenceId],
+      RegistrationStatusEnum.included,
+      accessToken,
+    );
+    const paymentReferenceIds = [registrationVisa.referenceId];
+
+    // Act
+    const doPaymentResponse = await doPayment(
+      programIdVisa,
+      paymentNrVisa,
+      magicFailOperationReferenceAmount,
+      paymentReferenceIds,
+      accessToken,
+    );
+    await waitForPaymentTransactionsToComplete(
+      programIdVisa,
+      paymentReferenceIds,
+      accessToken,
+      3001,
+      Object.values(StatusEnum),
+      paymentNrVisa,
+    );
+
+    const transactionsResponse = await getTransactions(
+      programIdVisa,
+      paymentNrVisa,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+
+    // Assert
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(transactionsResponse.text).toContain(
+      'Operation reference is already used.',
+    );
+  });
 });

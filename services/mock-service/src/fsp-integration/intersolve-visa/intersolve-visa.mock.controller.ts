@@ -148,7 +148,10 @@ export class IntersolveVisaMockController {
     @Param('fromToken') _fromToken: string,
   ): IntersolveVisaMockResponseDto {
     const toToken = payload.creditor.tokenCode;
-    return this.intersolveVisaMockService.transfer(toToken);
+    return this.intersolveVisaMockService.transfer(
+      toToken,
+      payload.quantity.value,
+    );
   }
 
   @ApiOperation({ summary: 'Substitute token' })
