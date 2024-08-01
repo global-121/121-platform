@@ -9,19 +9,23 @@ export enum Locale {
 }
 
 export function getLocaleLabel(locale: Locale): string {
-  switch (locale) {
-    case Locale.en:
-      return 'English';
-    case Locale.nl:
-      return 'Nederlands';
-  }
+  const localeLabels = {
+    [Locale.en]: 'English',
+    [Locale.nl]: 'Nederlands',
+  };
+
+  return localeLabels[locale];
 }
 
 export function getAvailableLanguages() {
-  return environment.locales.split(',').map((locale) => ({
-    label: getLocaleLabel(locale as Locale),
-    value: locale as Locale,
-  }));
+  return environment.locales
+    .split(',')
+    .map((locale) => locale.trim())
+    .filter(isValidLocale)
+    .map((locale) => ({
+      label: getLocaleLabel(locale),
+      value: locale,
+    }));
 }
 
 function isValidLocale(locale: string): locale is Locale {
