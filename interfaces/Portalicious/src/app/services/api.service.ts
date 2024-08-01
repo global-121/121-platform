@@ -1,9 +1,13 @@
+import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 import { Injectable, inject } from '@angular/core';
 import { VersionInfo } from '~/models/health.model';
+import { Program, ProgramMetrics } from '~/models/program.model';
 import { User } from '~/models/user.model';
 import { HttpWrapperService } from '~/services/http-wrapper.service';
 
 export enum ApiEndpoints {
+  programs = 'programs',
+  programsMetrics = 'metrics/program-stats-summary',
   usersChangePassword = 'users/password',
   usersLogin = 'users/login',
   usersLogout = 'users/logout',
@@ -58,6 +62,20 @@ export class ApiService {
         password,
         newPassword,
       },
+    });
+  }
+
+  async getProjectById(id: number) {
+    return this.httpWrapperService.perform121ServiceRequest<Program>({
+      method: 'GET',
+      endpoint: `${ApiEndpoints.programs}/${id.toString()}`,
+    });
+  }
+
+  async getProjectSummaryMetrics(id: number) {
+    return this.httpWrapperService.perform121ServiceRequest<ProgramMetrics>({
+      method: 'GET',
+      endpoint: `${ApiEndpoints.programs}/${id.toString()}/${ApiEndpoints.programsMetrics}`,
     });
   }
 }

@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { ProjectSummaryCardComponent } from '~/pages/projects-overview/project-summary-card/project-summary-card.component';
 import { AuthService } from '~/services/auth.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { AuthService } from '~/services/auth.service';
     CommonModule,
     PageLayoutComponent,
     RouterLink,
+    ProjectSummaryCardComponent,
   ],
   templateUrl: './projects-overview.component.html',
   styles: ``,

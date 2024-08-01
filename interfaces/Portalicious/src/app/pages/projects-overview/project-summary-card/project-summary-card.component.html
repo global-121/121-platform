@@ -1,0 +1,110 @@
+<ng-template
+  #metric
+  let-value="value"
+  let-label="label"
+>
+  <dd class="px-2 py-1 font-bold">
+    @switch (metrics.status()) {
+      @case ('pending') {
+        <p-skeleton
+          class="my-1 cursor-progress text-lg"
+          height="1.125rem"
+          [width]="randomWidth"
+        />
+      }
+      @case ('success') {
+        {{ value }}
+      }
+    }
+  </dd>
+  <dt class="px-2 py-1 text-sm">
+    {{ label }}
+  </dt>
+</ng-template>
+
+<p-card
+  styleClass="group relative h-full border border-transparent *:h-full focus-within:border-primary hover:border-primary [&_.p-card-title]:flex-grow [&_.p-card-content]:flex-end"
+>
+  <ng-template pTemplate="title">
+    <a
+      [routerLink]="['/', AppRoutes.project, id()]"
+      class="after:absolute after:inset-0 after:block group-focus-within:text-primary group-hover:text-primary"
+    >
+      @switch (project.status()) {
+        @case ('pending') {
+          <p-skeleton
+            class="my-1 cursor-progress text-xl"
+            height="1.25rem"
+            [width]="randomWidth"
+          />
+        }
+        @case ('success') {
+          <span
+            class="line-clamp-2 text-ellipsis"
+            [title]="project.data()?.titlePortal | translatableString"
+          >
+            {{ project.data()?.titlePortal | translatableString }}
+          </span>
+        }
+      }
+    </a>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <dl class="flex flex-wrap divide-y border-b border-grey-300">
+      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
+        <ng-container
+          *ngTemplateOutlet="
+            metric;
+            context: {
+              value: (metrics.data()?.targetedPeople | number: '1.0-0') || '-',
+              label: labels.targetedPeople,
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="basis-1/2 border-s border-grey-300 px-1 py-2">
+        <ng-container
+          *ngTemplateOutlet="
+            metric;
+            context: {
+              value: metrics.data()?.includedPeople,
+              label: labels.includedPeople,
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
+        <ng-container
+          *ngTemplateOutlet="
+            metric;
+            context: {
+              value:
+                (metrics.data()?.totalBudget
+                  | currency
+                    : project.data()?.currency ?? 'EUR'
+                    : 'symbol-narrow'
+                    : '1.0-0') || '-',
+              label: labels.totalBudget,
+            }
+          "
+        ></ng-container>
+      </div>
+      <div class="basis-1/2 border-s border-t border-grey-300 px-1 py-2">
+        <ng-container
+          *ngTemplateOutlet="
+            metric;
+            context: {
+              value:
+                (metrics.data()?.spentMoney
+                  | currency
+                    : project.data()?.currency ?? 'EUR'
+                    : 'symbol-narrow'
+                    : '1.0-0') || '-',
+              label: labels.spentMoney,
+            }
+          "
+        ></ng-container>
+      </div>
+    </dl>
+  </ng-template>
+</p-card>
