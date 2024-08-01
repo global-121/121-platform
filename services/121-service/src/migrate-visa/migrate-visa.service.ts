@@ -58,7 +58,6 @@ export class MigrateVisaService {
   }
 
   private async migrationTemplateData(q: QueryRunner): Promise<void> {
-    // Rename in table message_template where type = 'blockVisaCard' to type =  'pauseVisaCard'
     await q.query(
       `UPDATE "121-service"."message_template" SET type = 'pauseVisaCard' WHERE type = 'blockVisaCard'`,
     );
