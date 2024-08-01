@@ -114,18 +114,6 @@
         <source>Monitoring</source>
         <target state="translated">Rapportage</target>
       </trans-unit>
-      <trans-unit id="3350975625681256410" datatype="html">
-        <source>Welcome to Portalicious, baby!</source>
-        <target state="translated">Welkom op Het Smakelijke Portaal, schat!</target>
-      </trans-unit>
-      <trans-unit id="6966507916758477998" datatype="html">
-        <source>Go to NLRC program</source>
-        <target state="translated">Ga naar project: NLRC</target>
-      </trans-unit>
-      <trans-unit id="9053334343942762407" datatype="html">
-        <source>Go to OCW program</source>
-        <target state="translated">Ga naar project: OCW</target>
-      </trans-unit>
       <trans-unit id="6509003407758128100" datatype="html">
         <source>Cookie policy</source>
         <target state="translated">Cookie beleid</target>
@@ -272,6 +260,27 @@
         <source>Change password</source>
         <target state="new">Change password</target>
         <note priority="1" from="description">Browser-tab-title</note>
+      </trans-unit>
+      <trans-unit id="2980109580182727209" datatype="html">
+        <source>All projects</source>
+        <target state="new">All projects</target>
+      </trans-unit>
+      <trans-unit id="7113499429942611780" datatype="html">
+        <source>Create new project</source>
+        <target state="new">Create new project</target>
+        <note priority="1" from="description">Button-label</note>
+      </trans-unit>
+      <trans-unit id="3010710400268626539" datatype="html">
+        <source>No Projects found</source>
+        <target state="new">No Projects found</target>
+      </trans-unit>
+      <trans-unit id="8550882715313062083" datatype="html">
+        <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
+        <target state="new">You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</target>
+      </trans-unit>
+      <trans-unit id="9090295668948732387" datatype="html">
+        <source>Project <x equiv-text="{{ id }}" id="INTERPOLATION"/></source>
+        <target state="new">Project <x equiv-text="{{ id }}" id="INTERPOLATION"/></target>
       </trans-unit>
     </body>
   </file>
