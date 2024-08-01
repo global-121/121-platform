@@ -11,12 +11,9 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { DataSource } from 'typeorm';
-
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(
-    private dataSource: DataSource,
     private readonly seedMockHelper: SeedMockHelper,
     private axiosCallsService: AxiosCallsService,
     private seedMultipleNLRC: SeedMultipleNLRC,
