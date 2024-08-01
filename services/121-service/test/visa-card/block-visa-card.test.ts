@@ -58,7 +58,7 @@ describe('Block visa debit card', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
+    const tokencode = visaWalletResponseBeforeBlock.body.cards[0].tokenCode;
 
     const blockVisaResponse = await blockVisaCard(
       programIdVisa,
@@ -80,13 +80,13 @@ describe('Block visa debit card', () => {
       accessToken,
     );
     // Assert
-    expect(blockVisaResponse.status).toBe(201);
-    expect(blockVisaResponse.body.status).toBe(204);
-    expect(visaWalletResponseAfterBlock.body.wallets[0].status).toBe(
+
+    expect(blockVisaResponse.status).toBe(200);
+    expect(visaWalletResponseAfterBlock.body.cards[0].status).toBe(
       VisaCard121Status.Paused,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(messageTemplatesOCW.blockVisaCard.message.en);
+    expect(lastMessage.body).toBe(messageTemplatesOCW.pauseVisaCard.message.en);
   });
 
   it('should succesfully unblock a Visa Debit card', async () => {
@@ -114,7 +114,7 @@ describe('Block visa debit card', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
+    const tokencode = visaWalletResponseBeforeBlock.body.cards[0].tokenCode;
 
     await blockVisaCard(
       programIdVisa,
@@ -126,6 +126,7 @@ describe('Block visa debit card', () => {
       programIdVisa,
       tokencode,
       accessToken,
+      registrationVisa.referenceId,
     );
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -133,21 +134,20 @@ describe('Block visa debit card', () => {
       accessToken,
     );
 
-    await waitFor(2_000); // the last message otherwise was not in the db yet
+    await waitFor(4_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
     // Assert
-    expect(unblockVisaResponse.status).toBe(201);
-    expect(unblockVisaResponse.body.status).toBe(204);
-    expect(visaWalletResponse.body.wallets[0].status).not.toBe(
+    expect(unblockVisaResponse.status).toBe(200);
+    expect(visaWalletResponse.body.cards[0].status).not.toBe(
       VisaCard121Status.Blocked,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(
-      messageTemplatesOCW.unblockVisaCard.message.en,
+      messageTemplatesOCW.unpauseVisaCard.message.en,
     );
   });
 });

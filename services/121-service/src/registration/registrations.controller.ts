@@ -798,6 +798,34 @@ export class RegistrationsController {
     );
   }
 
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] Gets wallet and cards data for a Registration and returns it',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'Wallet and cards data retrieved from database. - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+    type: IntersolveVisaWalletDto,
+  })
+  @Get(
+    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet',
+  )
+  public async getIntersolveVisaWalletAndCards(
+    @Param('referenceId') referenceId: string,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<IntersolveVisaWalletDto> {
+    return await this.registrationsService.getIntersolveVisaWalletAndCards(
+      referenceId,
+      programId,
+    );
+  }
+
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Send Visa Customer Information of a registration to Intersolve',

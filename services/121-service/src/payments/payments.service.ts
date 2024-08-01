@@ -1,7 +1,10 @@
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderName,
+  RequiredFinancialServiceProviderConfigurations,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
 import {
   CsvInstructions,
@@ -22,6 +25,7 @@ import { VodacashService } from '@121-service/src/payments/fsp-integration/vodac
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
   BulkActionResultPaymentDto,
@@ -95,6 +99,7 @@ export class PaymentsService {
     private readonly dataSource: DataSource,
     private readonly transactionQueuesService: TransactionQueuesService,
     private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
+    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
@@ -242,6 +247,14 @@ export class PaymentsService {
       }
     }
 
+    // TODO: Find out a way to do this without including the fsp config module
+    for (const fsp of fspsInPayment) {
+      await this.validateRequiredFinancialServiceProviderConfigurations(
+        fsp,
+        programId,
+      );
+    }
+
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
     // TODO: REFACTOR: The definition of this DTO should live in its own file.
     const bulkActionResultPaymentDto = {
@@ -278,6 +291,28 @@ export class PaymentsService {
     }
 
     return bulkActionResultPaymentDto;
+  }
+
+  async validateRequiredFinancialServiceProviderConfigurations(
+    fsp: string,
+    programId: number,
+  ) {
+    const requiredConfigurations =
+      RequiredFinancialServiceProviderConfigurations[
+        fsp as FinancialServiceProviderName
+      ];
+    // Early return for FSP that don't have required configurarions
+    if (!requiredConfigurations) {
+      return;
+    }
+    // This function already throws if an attribute is missing so no need to manually check
+    await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+      {
+        programId: programId,
+        financialServiceProviderName: fsp as FinancialServiceProviderName,
+        names: requiredConfigurations,
+      },
+    );
   }
 
   private async getRegistrationsForPaymentChunked(

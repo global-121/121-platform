@@ -2,7 +2,6 @@ import { VisaCardAction } from '@121-service/src/payments/fsp-integration/inters
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
-import csvParser from 'csv-parser';
 import fs from 'fs';
 import * as path from 'path';
 
@@ -29,31 +28,43 @@ export class IntersolveVisaStatusMapper {
 
   // TODO: This function has a bug since loading the CSV file is asynchronous, so the first time after compiling the status is Unknown, and afterwards it works. Change into a synchronous way with the help of Copilot, but not with csv-parse. Or try to load the mapping in another place? The IntersolveVisaService constructor? Test this, since the mapper is also used in the MetricsService.
   public static loadMapping(): void {
-    if (!IntersolveVisaStatusMapper.isMappingLoaded) {
-      const csvFilePath = path.join(__dirname, 'visa-card-121-status-map.csv');
-      fs.createReadStream(csvFilePath)
-        .pipe(csvParser({ separator: ';' }))
-        .on('data', (row) => {
-          const mappingRow: VisaCard121StatusMapInterface = {
-            TokenBlocked: row.TokenBlocked
-              ? row.TokenBlocked === 'TRUE'
-              : false,
-            TokenStatus: row.TokenStatus ? row.TokenStatus.trim() : '',
-            CardStatus: row.CardStatus ? row.CardStatus.trim() : '',
-            VisaCard121Status: row['VisaCard121Status']
-              ? row['VisaCard121Status'].trim()
-              : VisaCard121Status.Unknown,
-            VisaCard121StatusExplanation: row['VisaCard121StatusExplanation']
-              ? row['VisaCard121StatusExplanation'].trim()
-              : '',
-            Actions121: row['Actions121'] ? row['Actions121'].trim() : '',
-          };
-          IntersolveVisaStatusMapper.mapping.push(mappingRow);
-        })
-        .on('end', () => {
-          IntersolveVisaStatusMapper.isMappingLoaded = true; // Set the flag to true after initialization
-        });
+    if (this.isMappingLoaded) {
+      return;
     }
+
+    const csvFilePath = path.join(__dirname, 'visa-card-121-status-map.csv');
+    const fileContent = fs.readFileSync(csvFilePath, { encoding: 'utf-8' });
+    const rows = fileContent.split('\n').filter((row) => row.trim()); // Filters out empty lines
+
+    if (rows.length > 0) {
+      const headers = rows
+        .shift()
+        .split(';')
+        .map((header) => header.trim().replace(/^"|"$/g, '')); // Remove quotes from headers
+
+      rows.forEach((row) => {
+        const columns = row.split(';').map((column) => column.trim());
+        const rowObject = headers.reduce((obj, nextKey, index) => {
+          obj[nextKey] = columns[index].replace(/^"|"$/g, ''); // Remove quotes from values
+          return obj;
+        }, {});
+
+        const mappingRow: VisaCard121StatusMapInterface = {
+          TokenBlocked: rowObject['TokenBlocked'] === 'TRUE',
+          TokenStatus: rowObject['TokenStatus'],
+          CardStatus: rowObject['CardStatus'],
+          VisaCard121Status: rowObject['VisaCard121Status']
+            ? rowObject['VisaCard121Status']
+            : 'Unknown', // No need to trim, already done
+          VisaCard121StatusExplanation:
+            rowObject['VisaCard121StatusExplanation'],
+          Actions121: rowObject['Actions121'],
+        };
+        this.mapping.push(mappingRow);
+      });
+    }
+
+    this.isMappingLoaded = true;
   }
 
   public static determineVisaCard121StatusInformation({
