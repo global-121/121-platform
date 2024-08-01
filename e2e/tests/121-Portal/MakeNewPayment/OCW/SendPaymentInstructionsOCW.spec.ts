@@ -46,7 +46,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
+test('[28448] OCW: Send payment instructions', async ({ page }) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
@@ -92,12 +92,12 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
-    await paymentsPage.closePopup(cancel);
   });
 
   await test.step('Check message', async () => {
+    await page.reload();
     await paymentsPage.openMessage({});
-    await registrationPage.validateSentMessagesTab({
+    await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
       messageContext: messageContext,
       messageType: messageType,

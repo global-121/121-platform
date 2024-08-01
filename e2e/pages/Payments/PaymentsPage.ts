@@ -247,7 +247,6 @@ class PaymentsPage {
           // Select the option by value
           await this.paymentDropdown.selectOption({ value: optionLabel });
           found = true;
-          console.log(`Selected option containing text: ${optionText}`);
           break;
         }
       }
@@ -291,6 +290,41 @@ class PaymentsPage {
       content.includes(label),
     );
     expect(isPaymentPresent).toBe(true);
+  }
+
+  async validateSentMessagesTab({
+    messageNotification,
+    messageContext,
+    messageType,
+  }: {
+    messageNotification: string;
+    messageContext: string;
+    messageType: string;
+  }) {
+    const paymentNotificationLocator = this.page
+      .locator(`:text("${messageContext} (${messageType})")`)
+      .nth(0);
+    const messageNotificationLocator = this.page.locator(
+      `:text("${messageNotification}")`,
+    );
+    await messageNotificationLocator.waitFor({ state: 'visible' });
+    expect(await messageNotificationLocator.textContent()).toContain(
+      `${messageNotification}`,
+    );
+    try {
+      await paymentNotificationLocator.waitFor({ state: 'visible' });
+      expect(await paymentNotificationLocator.textContent()).toContain(
+        `${messageContext} (${messageType})`,
+      );
+    } catch (error) {
+      await this.page.reload();
+      await this.openMessage({});
+      await this.validateSentMessagesTab({
+        messageNotification: messageNotification,
+        messageContext: messageContext,
+        messageType: messageType,
+      });
+    }
   }
 }
 export default PaymentsPage;

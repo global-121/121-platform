@@ -87,7 +87,7 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
     });
 
     await registrationPage.openActivityOverviewTab(paymentFilterByTab);
-    await registrationPage.validateSentMessagesTab({
+    await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByNotification,
       messageContext: messageContext,
       messageType: messageType,

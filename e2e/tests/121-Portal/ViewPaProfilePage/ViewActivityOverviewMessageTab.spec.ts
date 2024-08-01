@@ -1,5 +1,6 @@
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
 import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
 import TableModule from '@121-e2e/pages/Table/TableModule';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -36,6 +37,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
+  const paymentsPage = new PaymentsPage(page);
   const table = new TableModule(page);
   const registration = new RegistrationDetails(page);
   const homePage = new HomePage(page);
@@ -48,7 +50,7 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
   await test.step('Validate the "Messages" tab on the PA Activity Overview table to Contain WhatsApp notifications and correct message content', async () => {
     await registration.validateHeaderToContainText(pageTitle);
     await registration.openActivityOverviewTab('Messages');
-    await registration.validateSentMessagesTab({
+    await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
       messageContext: messageContext,
       messageType: messageType,

@@ -260,34 +260,6 @@ class RegistrationDetails {
     }
   }
 
-  async validateSentMessagesTab({
-    messageNotification,
-    messageContext,
-    messageType,
-    locatorNumber = 0,
-  }: {
-    messageNotification: string;
-    messageContext: string;
-    messageType: string;
-    locatorNumber?: number;
-  }) {
-    const paymentNotificationLocator = this.page
-      .locator(`:text("${messageContext} (${messageType})")`)
-      .nth(locatorNumber);
-    const messageNotificationLocator = this.page.locator(
-      `:text("${messageNotification}")`,
-    );
-    await this.page.waitForLoadState('networkidle');
-    await paymentNotificationLocator.waitFor({ state: 'visible' });
-    await messageNotificationLocator.waitFor({ state: 'visible' });
-    expect(await messageNotificationLocator.textContent()).toContain(
-      `${messageNotification}`,
-    );
-    expect(await paymentNotificationLocator.textContent()).toContain(
-      `${messageContext} (${messageType})`,
-    );
-  }
-
   async validatePaymentsTab({
     paymentLabel,
     paymentNumber,
