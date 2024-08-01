@@ -55,3 +55,29 @@ export const FinancialServiceProviderConfigurationMapping: {
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
 };
+
+export const RequiredFinancialServiceProviderConfigurations: {
+  [key in FinancialServiceProviderName]?: any;
+} = {
+  [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviderName.intersolveVoucherPaper]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviderName.intersolveVisa]: [
+    FinancialServiceProviderConfigurationEnum.brandCode,
+    FinancialServiceProviderConfigurationEnum.coverLetterCode,
+    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+  ],
+  [FinancialServiceProviderName.commercialBankEthiopia]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviderName.excel]: [
+    FinancialServiceProviderConfigurationEnum.columnsToExport,
+    FinancialServiceProviderConfigurationEnum.columnToMatch,
+  ],
+};

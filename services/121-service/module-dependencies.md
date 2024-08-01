@@ -73,6 +73,7 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   TransactionQueuesModule-->RedisModule
   PaymentsModule-->FinancialServiceProvidersModule
+  PaymentsModule-->ProgramFinancialServiceProviderConfigurationsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule

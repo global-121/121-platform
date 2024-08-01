@@ -649,7 +649,7 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse4.text).toContain(StatusEnum.success);
     });
 
-    it('should faild pay-out by visa debit if coverletterCode is not configured for the program', async () => {
+    it('should fail pay-out by visa debit if coverletterCode is not configured for the program', async () => {
       // Arrange
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
@@ -702,7 +702,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds.length,
       );
       expect(transactionsResponse.text).toContain(
-        `Error: Configuration with name coverLetterCode not found for program ${programIdVisa} and FSP Intersolve-visa`,
+        `Configuration with name coverLetterCode not found for program ${programIdVisa} and FSP Intersolve-visa`,
       );
     });
   });

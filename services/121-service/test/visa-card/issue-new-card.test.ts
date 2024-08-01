@@ -70,13 +70,13 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Assert
-    expect(visaWalletResponse.body.wallets.length).toBe(2);
+    expect(visaWalletResponse.body.cards.length).toBe(2);
     // mock returns hard-coded 'active', while non-mock would return 'inactive', so either way not 'blocked'
-    expect(visaWalletResponse.body.wallets[0].status).not.toBe(
+    expect(visaWalletResponse.body.cards[0].status).not.toBe(
       VisaCard121Status.Blocked,
     );
-    expect(visaWalletResponse.body.wallets[1].status).toBe(
-      VisaCard121Status.Blocked,
+    expect(visaWalletResponse.body.cards[1].status).toBe(
+      VisaCard121Status.Substituted,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(

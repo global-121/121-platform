@@ -13,6 +13,7 @@ import { PaymentsController } from '@121-service/src/payments/payments.controlle
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
+import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -61,6 +62,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RegistrationDataModule,
     TransactionQueuesModule,
     FinancialServiceProvidersModule,
+    ProgramFinancialServiceProviderConfigurationsModule,
   ],
   providers: [
     PaymentsService,

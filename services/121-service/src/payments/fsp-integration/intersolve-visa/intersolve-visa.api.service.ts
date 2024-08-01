@@ -27,7 +27,18 @@ import { ContactInformation } from '@121-service/src/payments/fsp-integration/in
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid, v5 as uuidv5 } from 'uuid';
+
+const UUID_NAMESPACE = process.env.UUID_NAMESPACE || uuid();
+
+/**
+ * Generate a UUID v5 based on a seed.
+ * @param seed The seed to generate the UUID.
+ * @returns The generated UUID.
+ */
+function generateUUIDFromSeed(seed: string): string {
+  return uuidv5(seed, UUID_NAMESPACE);
+}
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
@@ -589,7 +600,7 @@ export class IntersolveVisaApiService {
     amount: number;
     reference: string;
   }): Promise<void> {
-    // Create the request body to send
+    const uuid = generateUUIDFromSeed(reference);
 
     const transferRequestDto: TransferRequestDto = {
       quantity: {
@@ -600,7 +611,7 @@ export class IntersolveVisaApiService {
         tokenCode: toTokenCode,
       },
       reference: reference.slice(0, 128), // String of max 128 characters, does not need to be unique for every transfer. TODO: Asked Intersolve what the use case is of this field.
-      operationReference: uuid(), // Required to pass in a UUID, which needs be unique for all transfers, or all transfers on a Token. TODO: Asked Intersolve what the use case is of this field.
+      operationReference: uuid, // Required to pass in a UUID, which needs be unique for all transfers, or all transfers on a Token. TODO: Asked Intersolve what the use case is of this field.
     };
 
     // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html

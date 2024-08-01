@@ -274,15 +274,23 @@ export function getVisaWalletsAndDetails(
   referenceId: string,
   accessToken: string,
 ): Promise<request.Response> {
-  const queryParams = {
-    referenceId: referenceId,
-  };
-
   return getServer()
     .get(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
     )
-    .query(queryParams)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+export function retrieveAndUpdateVisaWalletsAndDetails(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
+    )
     .set('Cookie', [accessToken])
     .send();
 }
@@ -293,8 +301,8 @@ export function issueNewVisaCard(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .put(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/customers/${referenceId}/wallets`,
+    .post(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
     )
     .set('Cookie', [accessToken])
     .send();
@@ -306,26 +314,23 @@ export function blockVisaCard(
   accessToken: string,
   referenceId: string,
 ): Promise<request.Response> {
-  const queryParams = {
-    pause: true,
-  };
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/block`,
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=true`,
     )
     .set('Cookie', [accessToken])
-    .send({})
-    .query({ queryParams });
+    .send({});
 }
 
 export function unblockVisaCard(
   programId: number,
   tokenCode: string,
   accessToken: string,
+  referenceId: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(
-      `/programs/${programId}/financial-service-providers/intersolve-visa/wallets/${tokenCode}/unblock`,
+    .patch(
+      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=false`,
     )
     .set('Cookie', [accessToken])
     .send({});
