@@ -62,7 +62,7 @@ export class MigrateVisaService {
       `UPDATE "121-service"."message_template" SET type = 'pauseVisaCard' WHERE type = 'blockVisaCard'`,
     );
     await q.query(
-      `UPDATE "121-service"."message_template" SET type = 'unblockVisaCard' WHERE type = 'unpauseVisaCard'`,
+      `UPDATE "121-service"."message_template" SET type = 'unpauseVisaCard' WHERE type = 'unblockVisaCard'`,
     );
   }
 
