@@ -1,0 +1,51 @@
+<app-page-layout>
+  <div class="mb-6 flex items-end justify-between pt-6">
+    <h1
+      i18n
+      class="min-w-48 text-3xl"
+    >
+      All projects
+    </h1>
+
+    <div class="text-end">
+      <p-button
+        *ngIf="canCreateProjects"
+        label="Create new project"
+        i18n-label="Button-label"
+        outlined
+        icon="pi pi-plus"
+        class="text-xs sm:text-base"
+      />
+    </div>
+  </div>
+
+  @if (!assignedProjects.length) {
+    <div class="rounded-lg bg-white pb-8 pt-6 text-center drop-shadow-md">
+      <i class="pi pi-bullseye mb-6 block text-6xl"></i>
+
+      <h2
+        i18n
+        class="mb-4 text-base"
+      >
+        No Projects found
+      </h2>
+
+      <p i18n>
+        You are not assigned to any project(s) yet, contact the admin/supervisor
+        to start using the 121 portal.
+      </p>
+    </div>
+  }
+
+  @if (assignedProjects.length >= 1) {
+    <ul
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      role="list"
+    >
+      @for (id of assignedProjects; track $index) {
+        <li>
+        </li>
+      }
+    </ul>
+  }
+</app-page-layout>
