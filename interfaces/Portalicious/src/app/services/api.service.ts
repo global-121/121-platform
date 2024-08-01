@@ -1,4 +1,3 @@
-import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 import { Injectable, inject } from '@angular/core';
 import { VersionInfo } from '~/models/health.model';
 import { Program, ProgramMetrics } from '~/models/program.model';
