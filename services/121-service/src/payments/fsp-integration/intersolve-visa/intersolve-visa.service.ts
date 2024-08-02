@@ -589,7 +589,10 @@ export class IntersolveVisaService
         where: { tokenCode: Equal(tokenCode) },
       });
     if (wallet.isTokenBlocked === pause) {
-      throw new Error(`Token is already ${pause ? 'blocked' : 'unblocked'}`);
+      throw new HttpException(
+        `Token is already ${pause ? 'blocked' : 'unblocked'}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     await this.intersolveVisaApiService.setTokenBlocked(tokenCode, pause);
     wallet.isTokenBlocked = pause;

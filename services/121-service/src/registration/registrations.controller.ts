@@ -18,7 +18,6 @@ import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom
 import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
@@ -27,6 +26,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
+import { UserService } from '@121-service/src/user/user.service';
 import {
   Body,
   Controller,
@@ -67,7 +67,7 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
+    private readonly userService: UserService,
   ) {}
 
   @ApiTags('programs/registrations')
@@ -734,7 +734,7 @@ export class RegistrationsController {
   }
 
   @ApiTags('financial-service-providers/intersolve-visa')
-  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
+  @AuthenticatedUser()
   @ApiOperation({
     summary: '[SCOPED] [EXTERNALLY USED] Pause Intersolve Visa Card',
   })
@@ -755,13 +755,30 @@ export class RegistrationsController {
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
     @Query('pause', ParseBoolPipe) pause: boolean,
+    @Req() req,
   ) {
+    const userId = req.user.id;
+    const permisson = pause
+      ? PermissionEnum.FspDebitCardBLOCK
+      : PermissionEnum.FspDebitCardUNBLOCK;
+
+    const hasPermission = await this.userService.canActivate(
+      [permisson],
+      programId,
+      userId,
+    );
+
+    if (!hasPermission) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
     if (pause === undefined) {
       throw new HttpException(
         'No pause value (true/false) provided in query parameter',
         HttpStatus.BAD_REQUEST,
       );
     }
+
     return await this.registrationsService.pauseCardAndSendMessage(
       referenceId,
       programId,
