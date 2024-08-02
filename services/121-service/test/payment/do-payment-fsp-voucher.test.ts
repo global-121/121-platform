@@ -124,7 +124,10 @@ describe('Do payment to 1 PA', () => {
         messages.map((message) => {
           // we need to remove the "created" field from the messages
           // because it is dynamic and it would make the snapshot fail
+          // we need to remove the "from" field from the messages
+          // because it is dynamic and it makes the snapshot fail when run in random order
           delete message.created;
+          delete message.from;
 
           if (message.mediaUrl?.includes('imageCode')) {
             const [mediaUrlPath, mediaUrlSecret] =

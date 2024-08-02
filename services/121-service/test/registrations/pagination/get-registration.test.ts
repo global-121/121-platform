@@ -27,7 +27,7 @@ describe('Load PA table', () => {
     const attributeFspDisplayName = 'fspDisplayName';
     const attributeFinancelServiceProvider = 'financialServiceProvider';
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
 
