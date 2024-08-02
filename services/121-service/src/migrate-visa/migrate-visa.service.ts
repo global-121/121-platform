@@ -36,6 +36,7 @@ export class MigrateVisaService {
 
   public async migrateData(): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
+    await this.migrationTemplateData(queryRunner);
     // await this.DELETE_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(queryRunner);
     const programIds =
       await this.selectProgramIdsForInstanceWithVisa(queryRunner);
@@ -53,6 +54,15 @@ export class MigrateVisaService {
     );
     await q.query(
       `TRUNCATE TABLE "121-service"."intersolve_visa_child_wallet" CASCADE`,
+    );
+  }
+
+  private async migrationTemplateData(q: QueryRunner): Promise<void> {
+    await q.query(
+      `UPDATE "121-service"."message_template" SET type = 'pauseVisaCard' WHERE type = 'blockVisaCard'`,
+    );
+    await q.query(
+      `UPDATE "121-service"."message_template" SET type = 'unpauseVisaCard' WHERE type = 'unblockVisaCard'`,
     );
   }
 
@@ -172,7 +182,7 @@ export class MigrateVisaService {
       childWallet.isTokenBlocked = originalWallet.tokenBlocked ? true : false; // Deals with the factor that the old isTokenBlocked was nullable
       childWallet.isDebitCardCreated = originalWallet.debitCardCreated;
       childWallet.walletStatus = originalWallet.walletStatus
-        ? originalWallet.walletStatus
+        ? (originalWallet.walletStatus as unknown as IntersolveVisaTokenStatus)
         : IntersolveVisaTokenStatus.Active; // Deals with the factor that the old walletStatus was nullable
       childWallet.cardStatus = originalWallet.cardStatus;
       childWallet.lastUsedDate = originalWallet.lastUsedDate;
