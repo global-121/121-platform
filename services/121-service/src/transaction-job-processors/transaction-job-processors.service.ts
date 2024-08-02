@@ -10,6 +10,7 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -27,7 +28,9 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 import { Inject, Injectable } from '@nestjs/common';
 
 interface ProcessTransactionResultInput {
-  jobInput: IntersolveVisaTransactionJobDto;
+  programId: number;
+  paymentNumber: number;
+  userId: number;
   calculatedTranserAmount: number;
   financialServiceProviderId: number;
   registration: RegistrationEntity;
@@ -74,11 +77,28 @@ export class TransactionJobProcessorsService {
       throw new Error('Financial Service Provider not found');
     }
 
-    const transferAmount =
-      await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
-        registration.id,
-        input.transactionAmount,
-      );
+    let transferAmount: number;
+    try {
+      transferAmount =
+        await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
+          registration.id,
+          input.transactionAmount,
+        );
+    } catch (error) {
+      await this.createTransactionAndUpdateRegistration({
+        programId: input.programId,
+        paymentNumber: input.paymentNumber,
+        userId: input.userId,
+        calculatedTranserAmount: 0,
+        financialServiceProviderId: financialServiceProvider.id,
+        registration,
+        oldRegistration,
+        isRetry: input.isRetry,
+        status: StatusEnum.error,
+        errorText: `Error calculating transfer amount: ${error?.message}`,
+      });
+      return;
+    }
 
     // Check if all required properties are present. If not, create a failed transaction and throw an error.
     for (const [name, value] of Object.entries(input)) {
@@ -87,8 +107,10 @@ export class TransactionJobProcessorsService {
       // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
       if (value === null || value === undefined || value === '') {
         const errorText = `Property ${name} is undefined`;
-        await this.processTransactionResult({
-          jobInput: input,
+        await this.createTransactionAndUpdateRegistration({
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
           calculatedTranserAmount: transferAmount,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
@@ -147,20 +169,26 @@ export class TransactionJobProcessorsService {
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
-      await this.processTransactionResult({
-        jobInput: input,
-        calculatedTranserAmount: transferAmount,
-        financialServiceProviderId: financialServiceProvider.id,
-        registration,
-        oldRegistration,
-        isRetry: input.isRetry,
-        status: StatusEnum.error,
-        errorText: error?.message, // TODO: THIS IS A GENEARAL stack trace catch and i think the error handling should be more specific and tested
-      });
-      return;
+      if (error instanceof IntersolveVisaApiError) {
+        await this.createTransactionAndUpdateRegistration({
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
+          calculatedTranserAmount: transferAmount,
+          financialServiceProviderId: financialServiceProvider.id,
+          registration,
+          oldRegistration,
+          isRetry: input.isRetry,
+          status: StatusEnum.error,
+          errorText: error?.message,
+        });
+        return;
+      } else {
+        throw error;
+      }
     }
 
-    if (intersolveVisaDoTransferOrIssueCardReturnDto?.cardCreated) {
+    if (intersolveVisaDoTransferOrIssueCardReturnDto.cardCreated) {
       await this.createMessageAndAddToQueue({
         type: ProgramNotificationEnum.visaDebitCardCreated,
         programId: input.programId,
@@ -182,8 +210,10 @@ export class TransactionJobProcessorsService {
       });
     }
 
-    await this.processTransactionResult({
-      jobInput: input,
+    await this.createTransactionAndUpdateRegistration({
+      programId: input.programId,
+      paymentNumber: input.paymentNumber,
+      userId: input.userId,
       calculatedTranserAmount:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
       financialServiceProviderId: financialServiceProvider.id,
@@ -194,8 +224,10 @@ export class TransactionJobProcessorsService {
     });
   }
 
-  private async processTransactionResult({
-    jobInput,
+  private async createTransactionAndUpdateRegistration({
+    programId,
+    paymentNumber,
+    userId,
     calculatedTranserAmount,
     financialServiceProviderId,
     registration,
@@ -208,9 +240,9 @@ export class TransactionJobProcessorsService {
       amount: calculatedTranserAmount,
       registration: registration,
       financialServiceProviderId: financialServiceProviderId,
-      programId: jobInput.programId,
-      paymentNumber: jobInput.paymentNumber,
-      userId: jobInput.userId,
+      programId: programId,
+      paymentNumber: paymentNumber,
+      userId: userId,
       status: status,
       errorMessage: errorMessage,
     });
@@ -222,7 +254,7 @@ export class TransactionJobProcessorsService {
     if (!isRetry) {
       await this.updatePaymentCountAndStatusInRegistration(
         registration,
-        jobInput.programId,
+        programId,
       );
       // Added this check to avoid a bit of processing time if the status is the same
       if (
@@ -304,22 +336,32 @@ export class TransactionJobProcessorsService {
     programId: number,
   ): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
-    // TODO: Implement retry attempts for the paymentCount and status update.
-    // See old code for counting the transactions
-    // See if failed transactions also lead to status 'Completed' and is retryable
-    registration.paymentCount = registration.paymentCount
-      ? registration.paymentCount + 1
-      : 1;
 
+    const paymentCount = (registration.paymentCount || 0) + 1;
+
+    let updateData: {
+      paymentCount: number;
+      registrationStatus?: RegistrationStatusEnum;
+    };
     if (
       program.enableMaxPayments &&
       registration.maxPayments &&
-      registration.paymentCount >= registration.maxPayments
+      paymentCount >= registration.maxPayments
     ) {
-      registration.registrationStatus = RegistrationStatusEnum.completed;
+      updateData = {
+        paymentCount: (registration.paymentCount || 0) + 1,
+        registrationStatus: RegistrationStatusEnum.completed,
+      };
+    } else {
+      updateData = {
+        paymentCount: paymentCount,
+      };
     }
 
-    await this.registrationScopedRepository.save(registration);
+    await this.registrationScopedRepository.updateUnscoped(
+      registration.id,
+      updateData,
+    );
   }
 
   private async createMessageAndAddToQueue({

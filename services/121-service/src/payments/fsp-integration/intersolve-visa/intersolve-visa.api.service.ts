@@ -24,6 +24,7 @@ import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/in
 import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
 import { IssueTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/issue-token-return-type.interface';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
@@ -149,7 +150,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.createCustomerError}: ${errorMessage}`,
       );
     }
@@ -199,7 +200,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.issueTokenError}: ${errorMessage}`,
       );
     }
@@ -237,7 +238,7 @@ export class IntersolveVisaApiService {
       this.createErrorMessageIfRequestFailed(getTokenResponseDto);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.getTokenError}: ${errorMessage}`,
       );
     }
@@ -295,7 +296,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.getPhysicalCardError}: ${errorMessage}`,
       );
     }
@@ -379,7 +380,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.getTransactionError}: ${errorMessage}`,
       );
     }
@@ -467,7 +468,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.resgisterHolderError}: ${errorMessage}`,
       );
     }
@@ -512,7 +513,7 @@ export class IntersolveVisaApiService {
       this.createErrorMessageIfRequestFailed(linkTokenResponse);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.linkTokenError}: ${errorMessage}`,
       );
     }
@@ -580,7 +581,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.createPhysicalCardError}: ${errorMessage}`,
       );
     }
@@ -636,7 +637,7 @@ export class IntersolveVisaApiService {
       this.createErrorMessageIfRequestFailed(transferResponse);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.transferError}: ${errorMessage}`,
       );
     }
@@ -682,7 +683,7 @@ export class IntersolveVisaApiService {
     );
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.substituteTokenError}: ${errorMessage}`,
       );
     }
@@ -724,7 +725,7 @@ export class IntersolveVisaApiService {
     const errorMessage = this.createErrorMessageIfRequestFailed(blockResult);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.blockTokenError}: ${errorMessage}`,
       );
     }
@@ -767,7 +768,7 @@ export class IntersolveVisaApiService {
     const errorMessage = this.createErrorMessageIfRequestFailed(response);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.updatePhoneNumberError}: ${errorMessage}`,
       );
     }
@@ -817,7 +818,7 @@ export class IntersolveVisaApiService {
     const errorMessage = this.createErrorMessageIfRequestFailed(response);
     // If the response contains errors
     if (errorMessage) {
-      throw new Error(
+      throw new IntersolveVisaApiError(
         `${IntersolveVisa121ErrorText.updatePhoneNumberError}: ${errorMessage}`,
       );
     }
