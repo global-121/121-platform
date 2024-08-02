@@ -593,7 +593,7 @@ export class IntersolveVisaApiService {
   public async transfer({
     fromTokenCode,
     toTokenCode,
-    amount,
+    amount: amountInMajorUnit,
     reference,
   }: {
     fromTokenCode: string;
@@ -602,10 +602,11 @@ export class IntersolveVisaApiService {
     reference: string;
   }): Promise<void> {
     const uuid = generateUUIDFromSeed(reference);
+    const amountInCent = amountInMajorUnit * 100;
 
     const transferRequestDto: TransferRequestDto = {
       quantity: {
-        value: amount,
+        value: amountInCent,
         assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE || 'EUR', // TODO: What do we want to do as pattern when an env variable is not defined as it should? Throw error? IMO defaulting to EUR is not what we want.
       },
       creditor: {

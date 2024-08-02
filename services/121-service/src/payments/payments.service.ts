@@ -714,7 +714,7 @@ export class PaymentsService {
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
             // TODO: I am a bit worried that this find will not perform for 100k PAs.
-            transactionAmount: referenceIdsTransactionAmounts.find(
+            transactionAmountInMajorUnit: referenceIdsTransactionAmounts.find(
               (r) => r.referenceId === registrationView.referenceId,
             )!.transactionAmount,
             isRetry,

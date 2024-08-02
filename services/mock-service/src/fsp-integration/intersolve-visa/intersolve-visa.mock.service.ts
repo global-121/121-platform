@@ -425,7 +425,32 @@ export class IntersolveVisaMockService {
           id: 1,
           quantity: {
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
-            value: 3,
+            value: -300, // Reservations are negative and in cents
+          },
+          createdAt: new Date(
+            new Date().setDate(new Date().getDate()),
+          ).toISOString(),
+          creditor: {
+            tokenCode: 'random token code',
+          },
+          debtor: {
+            tokenCode: tokenCode,
+          },
+          reference: 'string',
+          type: 'RESERVATION',
+          description: 'string',
+          location: {
+            merchantCode: 'string',
+            merchantLocationCode: 'string',
+          },
+          originalTransactionId: 1,
+          paymentId: 1,
+        },
+        {
+          id: 1,
+          quantity: {
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            value: 300,
           },
           createdAt: new Date(
             new Date().setDate(new Date().getDate()),
