@@ -23,6 +23,10 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
+// This is a magic number that will cause the transfer to fail due to a duplicate operation reference (idempotency key)
+// It's used in the API tests to verify that the API handles this case correctly
+const MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT = 15.15;
+
 @Injectable()
 export class IntersolveVisaMockService {
   public createCustomerMock(
@@ -617,7 +621,29 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public transfer(fromToken: string): IntersolveVisaMockResponseDto {
+  public transfer(
+    fromToken: string,
+    amount: number,
+  ): IntersolveVisaMockResponseDto {
+    if (amount === MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Not Found',
+        data: {
+          code: 'INVALID_PARAMETERS',
+          field: 'operationReference',
+          correlationId: uuid(),
+          success: false,
+          errors: [
+            {
+              code: 'FIELD_IS_NOT_UNIQUE',
+              field: 'operationReference',
+              description: 'Operation reference is already used.',
+            },
+          ],
+        },
+      };
+    }
     if (fromToken.includes('mock-fail-transfer')) {
       // We assume this is the correct response for a failed transfer
       // However I do not know a scenario where this would fail, maybe when our token code does not exist or is out of funding

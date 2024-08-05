@@ -30,7 +30,8 @@ import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { v4 as uuid, v5 as uuidv5 } from 'uuid';
 
-const UUID_NAMESPACE = process.env.UUID_NAMESPACE || uuid();
+const INTERSOLVE_VISA_UUID_NAMESPACE =
+  process.env.INTERSOLVE_VISA_UUID_NAMESPACE || uuid();
 
 /**
  * Generate a UUID v5 based on a seed.
@@ -38,7 +39,7 @@ const UUID_NAMESPACE = process.env.UUID_NAMESPACE || uuid();
  * @returns The generated UUID.
  */
 function generateUUIDFromSeed(seed: string): string {
-  return uuidv5(seed, UUID_NAMESPACE);
+  return uuidv5(seed, INTERSOLVE_VISA_UUID_NAMESPACE);
 }
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
