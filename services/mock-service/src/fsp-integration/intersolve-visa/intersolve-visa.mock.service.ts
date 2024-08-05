@@ -588,7 +588,7 @@ export class IntersolveVisaMockService {
   ): IntersolveVisaMockResponseDto {
     if (amount === MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT) {
       return {
-        status: HttpStatus.NOT_FOUND,
+        status: HttpStatus.BAD_REQUEST,
         statusText: 'Not Found',
         data: {
           code: 'INVALID_PARAMETERS',
