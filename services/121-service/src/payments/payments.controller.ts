@@ -165,7 +165,9 @@ export class PaymentsController {
     @Req() req,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
-    // TODO: REFACTOR: This permission check is unnecessary for this endpoint. Remove it.
+    // Check if the authenticated user has the necessary permissions to execute the specified query
+    // For example a user without read.personal permission is not allowed to perform payment where a filter is used on whatsappNumber
+    // within the context of the given program. If the user doesn't have the required permissions throw an error.
     const userId = req.user.id;
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,

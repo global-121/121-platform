@@ -10,7 +10,6 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
-  ProgramFinancialServiceProviderConfigurationsModule-->FinancialServiceProvidersModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule

@@ -1,6 +1,6 @@
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-wallet.dto';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
@@ -68,7 +68,7 @@ export class IntersolveVisaService
     }
   }
 
-  // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
+  // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
   /**
    * This function handles the process of transferring money to a person using intersolve visa.
    * - It first checks if the customer exists, if not it creates a new customer.
@@ -107,9 +107,8 @@ export class IntersolveVisaService
           contactInformation: {
             addressStreet: input.contactInformation.addressStreet,
             addressHouseNumber: input.contactInformation.addressHouseNumber,
-            // TODO: Check if this is the correct way to handle optional fields
             addressHouseNumberAddition:
-              input.contactInformation.addressHouseNumberAddition!,
+              input.contactInformation.addressHouseNumberAddition,
             addressPostalCode: input.contactInformation.addressPostalCode,
             addressCity: input.contactInformation.addressCity,
             phoneNumber: input.contactInformation.phoneNumber,
@@ -130,8 +129,6 @@ export class IntersolveVisaService
     // Check if a parent wallet exists
     if (!intersolveVisaCustomer.intersolveVisaParentWallet) {
       // If not, create parent wallet
-
-      // TODO: Add object into functions that have a DTO as parameter, instead of first creating the object and then passing it into the function. => everywhere
 
       const issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
@@ -178,9 +175,6 @@ export class IntersolveVisaService
       !intersolveVisaCustomer.intersolveVisaParentWallet
         ?.intersolveVisaChildWallets?.length
     ) {
-      // TODO: Check if this is the correct way to check if a child wallet does not exist
-      // If not, create child wallet
-
       const issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
         activate: false, // Child Wallets are always created deactivated
@@ -238,6 +232,7 @@ export class IntersolveVisaService
     }
 
     // Check if debit card is created
+
     if (
       !intersolveVisaCustomer.intersolveVisaParentWallet
         .intersolveVisaChildWallets[0].isDebitCardCreated
@@ -267,7 +262,7 @@ export class IntersolveVisaService
       // If success, update child wallet: set isDebitCardCreated to true
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0].isDebitCardCreated =
         true;
-      // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always CardOk
+      // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always CardOk ####
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0].cardStatus =
         IntersolveVisaCardStatus.CardOk;
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
@@ -419,8 +414,6 @@ export class IntersolveVisaService
   private async retrieveAndUpdateChildWallet(
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    // TODO: Implement this method.
-
     // Get child wallet information
     const getTokenResult: GetTokenReturnType =
       await this.intersolveVisaApiService.getToken(
@@ -459,7 +452,7 @@ export class IntersolveVisaService
    * @returns {Promise<void>}
    */
   public async reissueCard(input: ReissueCardParams): Promise<void> {
-    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
+    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         input.registrationId,
@@ -515,7 +508,8 @@ export class IntersolveVisaService
     childWalletToReplace: IntersolveVisaChildWalletEntity,
   ): Promise<void> {
     // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
-    // TODO: Add a call to the new this.syncIntersolveCustomerWith121() function here. Creating this function is part of the re-implementation of sending data to Intersolve after Registration changes.
+    // TODO: Add a call to the new this.syncIntersolveCustomerWith121() function here. Creating this function is part of the re-implementation of sending data to Intersolve after Registration changes. ####
+
     if (childWalletToReplace.isTokenBlocked) {
       await this.intersolveVisaApiService.setTokenBlocked(
         childWalletToReplace.tokenCode,
@@ -722,7 +716,6 @@ export class IntersolveVisaService
         input.registrationId,
       );
 
-    // TODO: Is there a shorter / more expressive way of putting these variables into the method?
     await this.intersolveVisaApiService.updateCustomerAddress({
       holderId: customer.holderId,
       addressStreet: input.contactInformation.addressStreet,

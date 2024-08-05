@@ -11,7 +11,6 @@ import {
   Relation,
 } from 'typeorm';
 
-// TODO: Currently this is a duplicate entity, when the 'old' one is removed, this one should be fixed in the migration
 @Entity('intersolve_visa_customer')
 export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @Index()
@@ -21,7 +20,7 @@ export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @OneToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
-  @Column({ type: 'int', nullable: true }) // TODO: Why is this nullable? An intersolve visa customer should always have a registration linked to it
+  @Column({ type: 'int', nullable: true }) // TODO: Why is this nullable? An intersolve visa customer should always have a registration linked to it ######
   public registrationId: number | null;
 
   @OneToOne(

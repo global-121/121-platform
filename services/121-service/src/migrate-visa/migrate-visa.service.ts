@@ -9,8 +9,8 @@ import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-i
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
+import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
-import { BlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/block-token-return-type.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
@@ -163,7 +163,7 @@ export class MigrateVisaService {
       : 0; // Deals with the factor that the old balance was nullable
     newParentWallet.lastExternalUpdate = newestOriginalWallet.lastExternalUpdate
       ? newestOriginalWallet.lastExternalUpdate
-      : new Date(); // TODO: Look at this again this is a work around because lastExternalUpdate is not nullable in the database
+      : new Date();
     newParentWallet.spentThisMonth = newestOriginalWallet.spentThisMonth;
     newParentWallet.isLinkedToVisaCustomer = true;
     return await queryRunner.manager.save(newParentWallet);
@@ -192,7 +192,7 @@ export class MigrateVisaService {
       await this.postToggleBlockWallet(
         originalWallet.tokenCode,
         {
-          reasonCode: BlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
+          reasonCode: IntersolveBlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
         },
         false,
       );
@@ -214,7 +214,7 @@ export class MigrateVisaService {
         await this.postToggleBlockWallet(
           originalWallet.tokenCode,
           {
-            reasonCode: BlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
+            reasonCode: IntersolveBlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
           },
           true,
         );
@@ -379,7 +379,7 @@ export class MigrateVisaService {
   public async postToggleBlockWallet(
     tokenCode: string | null,
     payload: {
-      reasonCode: BlockTokenReasonCodeEnum;
+      reasonCode: IntersolveBlockTokenReasonCodeEnum;
     },
     block: boolean,
   ): Promise<{

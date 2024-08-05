@@ -213,7 +213,9 @@ export class PaymentsService {
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
-    // TODO: What is happening here? In which situation(s) does !amount evaluate to TRUE and what happens then?
+    // If amount is not defined do not calculate the totalMultiplierSum
+    // This happens when you call the endpoint with dryRun=true
+    // happens in pa table to define which registrations are selectable
     if (!amount) {
       return {
         ...bulkActionResultDto,
@@ -247,7 +249,6 @@ export class PaymentsService {
       }
     }
 
-    // TODO: Find out a way to do this without including the fsp config module
     for (const fsp of fspsInPayment) {
       await this.validateRequiredFinancialServiceProviderConfigurations(
         fsp,
@@ -256,7 +257,7 @@ export class PaymentsService {
     }
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
-    // TODO: REFACTOR: The definition of this DTO should live in its own file.
+    // TODO: REFACTOR: The definition of this DTO should live in its own file. ####
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
@@ -376,8 +377,7 @@ export class PaymentsService {
 
     let paymentTransactionResult = 0;
     for (const chunk of paymentChunks) {
-      // TODO: REFACTOR: Registration and related data was already retrieved in postPayment, why first strip it down to referenceids and then retrieve it again?
-      // Get the PA data for the payment
+      // Get the registration data for the payment (like phone number, bankaccountNumber etc)
       const paPaymentDataList = await this.getPaymentList(
         chunk,
         amount,
@@ -463,7 +463,6 @@ export class PaymentsService {
     });
     if (!program) {
       const errors = 'Program not found.';
-      // TODO: REFACTOR: Throw HTTPException from controller, as the Service "does not know" it is being called via HTTP.
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
@@ -483,13 +482,17 @@ export class PaymentsService {
     // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    await this.makePaymentRequest({ paLists, programId, payment, isRetry });
+    await this.initiatePaymentPerFinancialServiceProvider({
+      paLists,
+      programId,
+      payment,
+      isRetry,
+    });
 
     return paPaymentDataList.length;
   }
 
-  // TODO: REFACTOR: This method can be private
-  public async checkPaymentInProgressAndThrow(
+  private async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
     if (await this.isPaymentInProgress(programId)) {
@@ -509,7 +512,7 @@ export class PaymentsService {
   }
 
   private async isPaymentInProgress(programId: number): Promise<boolean> {
-    // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether.
+    // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether. #### // check if this can go since all fsp use the queue > check excel fsp?
     // check progress based on actions-table first
     const actionsInProgress =
       await this.checkPaymentActionInProgress(programId);
@@ -593,8 +596,7 @@ export class PaymentsService {
     }, {});
   }
 
-  // TODO: REFACTOR: This method does not make payment requests, but results in jobs added to queues. Rename to reflect this.
-  private async makePaymentRequest({
+  private async initiatePaymentPerFinancialServiceProvider({
     paLists,
     programId,
     payment,
@@ -616,7 +618,7 @@ export class PaymentsService {
             See this.createIntersolveVisaTransferJobs() of how this is handled.
           */
 
-          // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
+          // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function. ####
           // TODO: Pass in the transactionAmount for each PA. It should be in paLists or something.
           return await this.createAndAddIntersolveVisaTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
@@ -696,7 +698,6 @@ export class PaymentsService {
         dataFieldNames,
       );
 
-    // TODO: FIX: registrationViews does not contain any name field of the Registration. Where/how to get it?
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationsChunked(
         programId,
@@ -704,7 +705,6 @@ export class PaymentsService {
         4000,
       );
 
-    // TODO: Why not call addIntersolveVisaTransactionJobs one by one instead of creating an array of jobs first? Would that not prevent a big array being created and hence be more efficient in memory use?
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
@@ -713,7 +713,7 @@ export class PaymentsService {
             userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
-            // TODO: I am a bit worried that this find will not perform for 100k PAs.
+            // TODO: I am a bit worried that this find will not perform for 100k PAs. ### checkout using a map or ordering by referenceId
             transactionAmountInMajorUnit: referenceIdsTransactionAmounts.find(
               (r) => r.referenceId === registrationView.referenceId,
             )!.transactionAmount,
