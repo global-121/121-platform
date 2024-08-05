@@ -75,7 +75,10 @@ export class IntersolveVisaMockController {
     @Body() payload: Record<string, any>,
     @Param('tokenCode') _tokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.createDebitCardMock(payload.lastName);
+    return this.intersolveVisaMockService.createDebitCardMock(
+      payload.lastName,
+      payload.mobileNumber,
+    );
   }
 
   @ApiOperation({ summary: 'Load balance' }) // This will be depricated after the new visa flow is implemented, it has been added for the current flow to make that one work and mergable

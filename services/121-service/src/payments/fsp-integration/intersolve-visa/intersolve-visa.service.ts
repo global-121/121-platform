@@ -4,6 +4,7 @@ import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { CreatePhysicalCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-physical-card-params.interface';
@@ -14,6 +15,7 @@ import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/in
 import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
 import { ReissueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/reissue-card-params.interface';
 import { SendUpdatedContactInformationParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaDtoMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-dto.mapper';
@@ -165,6 +167,9 @@ export class IntersolveVisaService
       const issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
         activate: false, // Child Wallets are always created deactivated
+        reference: process.env.MOCK_INTERSOLVE
+          ? intersolveVisaCustomer.holderId
+          : undefined,
       });
 
       // Store child wallet
@@ -389,14 +394,16 @@ export class IntersolveVisaService
       );
 
     // Get card status
-    const GetPhysicalCardReturnDto: GetPhysicalCardReturnType =
-      await this.intersolveVisaApiService.getPhysicalCard(
-        intersolveVisaChildWallet.tokenCode,
-      );
+    if (intersolveVisaChildWallet.isDebitCardCreated) {
+      const GetPhysicalCardReturnDto: GetPhysicalCardReturnType =
+        await this.intersolveVisaApiService.getPhysicalCard(
+          intersolveVisaChildWallet.tokenCode,
+        );
+      intersolveVisaChildWallet.cardStatus = GetPhysicalCardReturnDto.status;
+    }
 
     intersolveVisaChildWallet.walletStatus = getTokenResult.status;
     intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
-    intersolveVisaChildWallet.cardStatus = GetPhysicalCardReturnDto.status;
     intersolveVisaChildWallet.lastExternalUpdate = new Date();
 
     intersolveVisaChildWallet =
@@ -435,18 +442,35 @@ export class IntersolveVisaService
     intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets.sort(
       (a, b) => (a.created < b.created ? 1 : -1),
     );
-    let childWalletToReplace =
+    const childWalletToReplace =
       intersolveVisaCustomer.intersolveVisaParentWallet
         .intersolveVisaChildWallets[0];
 
-    if (!childWalletToReplace.isDebitCardCreated) {
-      throw new Error(
-        'This Intersolve Visa Child Wallet to be replaced does not have a card created for it. Cannot reissue card.',
+    try {
+      await this.executeReissueCardSteps(
+        input,
+        intersolveVisaCustomer,
+        childWalletToReplace,
       );
+    } catch (error) {
+      if (error instanceof IntersolveVisaApiError) {
+        throw new HttpException(
+          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
+          HttpStatus.NOT_FOUND,
+        );
+      } else {
+        throw error;
+      }
     }
+  }
+
+  public async executeReissueCardSteps(
+    input: ReissueCardParams,
+    intersolveVisaCustomer: IntersolveVisaCustomerEntity,
+    childWalletToReplace: IntersolveVisaChildWalletEntity,
+  ): Promise<void> {
     // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
     // TODO: Add a call to the new this.syncIntersolveCustomerWith121() function here. Creating this function is part of the re-implementation of sending data to Intersolve after Registration changes.
-
     if (childWalletToReplace.isTokenBlocked) {
       await this.intersolveVisaApiService.setTokenBlocked(
         childWalletToReplace.tokenCode,
@@ -458,9 +482,19 @@ export class IntersolveVisaService
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode: input.brandCode,
       activate: false, // Child Wallets are always created deactivated
+      reference: process.env.MOCK_INTERSOLVE
+        ? intersolveVisaCustomer.holderId
+        : undefined,
+    });
+
+    // Substitute the old token with the new token at Intersolve
+    await this.intersolveVisaApiService.substituteToken({
+      oldTokenCode: childWalletToReplace.tokenCode,
+      newTokenCode: issueTokenResult.code,
     });
 
     // Create child wallet entity
+    // Do this after the token has been succesfully substituted, so to make this API call more idempotent
     const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
     newIntersolveVisaChildWallet.intersolveVisaParentWallet =
       intersolveVisaCustomer.intersolveVisaParentWallet;
@@ -469,7 +503,8 @@ export class IntersolveVisaService
     newIntersolveVisaChildWallet.walletStatus =
       issueTokenResult.status as IntersolveVisaTokenStatus;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
-    let newChildWallet =
+    newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
+    const newChildWallet =
       await this.intersolveVisaChildWalletScopedRepository.save(
         newIntersolveVisaChildWallet,
       );
@@ -477,23 +512,12 @@ export class IntersolveVisaService
       newChildWallet,
     );
 
-    // Substitute the old token with the new token at Intersolve
-    await this.intersolveVisaApiService.substituteToken({
-      oldTokenCode: childWalletToReplace.tokenCode,
-      newTokenCode: newChildWallet.tokenCode,
-    });
-
     // Update old child wallet: set status to SUBSTITUTED
     childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
     childWalletToReplace =
       await this.intersolveVisaChildWalletScopedRepository.save(
         childWalletToReplace,
       );
-
-    // Update new child wallet: set linkedToParentWallet to true
-    newChildWallet.isLinkedToParentWallet = true;
-    newChildWallet =
-      await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
 
     // Create new card
     await this.intersolveVisaApiService.createPhysicalCard({
@@ -515,8 +539,7 @@ export class IntersolveVisaService
     newChildWallet.isDebitCardCreated = true;
     // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always cardOk
     newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
-    newChildWallet =
-      await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
+    await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
