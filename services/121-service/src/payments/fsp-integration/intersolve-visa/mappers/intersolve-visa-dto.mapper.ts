@@ -6,6 +6,15 @@ import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 
 export class IntersolveVisaDtoMapper {
+  /**
+   * This function maps a parent wallet entity to a wallet DTO.
+   * - It first sorts the child wallets associated with the parent wallet by their creation time, with the newest wallet first.
+   * - It then maps each child wallet to a card DTO. The wallet status, card status, and token blocked status are used to determine the card's status, explanation, and actions.
+   * - Finally, it creates a new wallet DTO with the sorted cards and the parent wallet's information.
+   *
+   * @param {IntersolveVisaParentWalletEntity} intersolveVisaParentWalletEntity - The parent wallet entity to map.
+   * @returns {IntersolveVisaWalletDto} The mapped wallet DTO.
+   */
   public static mapParentWalletEntityToWalletDto(
     intersolveVisaParentWalletEntity: IntersolveVisaParentWalletEntity,
   ): IntersolveVisaWalletDto {

@@ -38,6 +38,10 @@ export class IntersolveVisaService
   ) {}
 
   // TODO: Remove this function when refactored out of all FSP integrations.
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
   public async sendPayment(
     _paPaymentArray: PaPaymentDataDto[],
     _programId: number,
@@ -65,6 +69,19 @@ export class IntersolveVisaService
   }
 
   // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
+  /**
+   * This function handles the process of transferring money to a person using intersolve visa.
+   * - It first checks if the customer exists, if not it creates a new customer.
+   * - Then it checks if a parent wallet exists, if not it creates a new parent wallet.
+   * - Then it checks if the parent wallet is linked to the customer, if not it links the parent wallet to the customer.
+   * - Then it checks if at least one child wallet exists, if not it creates a new child wallet.
+   * - Then it checks if the child wallet is linked to the parent wallet, if not it links the child wallet to the parent wallet.
+   * - Then it checks if a debit card is created, if not it creates a new debit card.
+   * - Finally, it transfers money from the client's funding token to the parent token.
+   *
+   * @param {DoTransferOrIssueCardParams} input - The parameters for the transfer or card issuance.
+   * @returns {Promise<DoTransferOrIssueCardReturnType>} The result of the operation, including whether a card was created, whether a transfer was done, and the amount transferred in major units.
+   */
   public async doTransferOrIssueCard(
     input: DoTransferOrIssueCardParams,
   ): Promise<DoTransferOrIssueCardReturnType> {
@@ -278,6 +295,16 @@ export class IntersolveVisaService
     return returnData;
   }
 
+  /**
+   * This function retrieves and updates the wallet information for a given registration ID.
+   * - The function first retrieves and updates the parent wallet from Intersolve. This includes first get token information and then get transaction information from intersolve.
+   * - It also retrieves and updates all non-substituted child wallets associated with the parent wallet.
+   * - Finally, it returns the updated wallet information as a DTO.
+   *
+   * @param {number} registrationId - The registration ID for which to retrieve and update the wallet.
+   * @throws {HttpException} Throws an HttpException if no customer or parent wallet is found for the given registration ID.
+   * @returns {Promise<IntersolveVisaWalletDto>} The updated wallet information as a DTO.
+   */
   public async retrieveAndUpdateWallet(
     registrationId: number,
   ): Promise<IntersolveVisaWalletDto> {
@@ -322,6 +349,13 @@ export class IntersolveVisaService
     );
   }
 
+  /**
+   * This function retrieves the wallet and associated childwallets/cards for a given registration ID. It does not update the wallet information using Intersolve.
+   *
+   * @param {number} registrationId - The registration ID for which to retrieve the wallet and cards.
+   * @throws {HttpException} Throws an HttpException if no customer or parent wallet is found for the given registration ID.
+   * @returns {Promise<IntersolveVisaWalletDto>} The wallet and associated cards information as a DTO.
+   */
   public async getWalletWithCards(
     registrationId: number,
   ): Promise<IntersolveVisaWalletDto> {
@@ -413,6 +447,17 @@ export class IntersolveVisaService
     return intersolveVisaChildWallet;
   }
 
+  /**
+   * This function reissues a card for a given registration ID.
+   * - The function first creates a new (child) token at Intersolve
+   * - Creates a new child wallet entity,
+   * - Substitutes the old token with the new one.
+   * - Finally, it creates a new card and updates the child wallet status.
+   *
+   * @param {ReissueCardParams} input - The parameters for the card reissuance.
+   * @throws {Error} Throws an Error if no customer, parent wallet, or child wallet is found for the given registration ID, or if the child wallet to be replaced does not have a card created for it.
+   * @returns {Promise<void>}
+   */
   public async reissueCard(input: ReissueCardParams): Promise<void> {
     // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098
     const intersolveVisaCustomer =
@@ -550,6 +595,16 @@ export class IntersolveVisaService
     return count > 0;
   }
 
+  /**
+   * This function calculates the transfer amount after updating the wallet information for a given registration ID.
+   * - It finds a customer for registrationId. If the customer has any child wallets, it retrieves and updates the latest information of the wallets and card from Intersolve.
+   * - It then calculates the amount that should be transferred. If the registration does not have a customer yet, the spentThisMonth and balance will be 0.
+   *
+   * @param {number} registrationId - The registration ID for which to calculate the transfer amount.
+   * @param {number} inputTransferAmount - The initial amount to be transferred.
+   * @throws {Error} Throws an Error if no customer is found for the given registration ID.
+   * @returns {Promise<number>} The calculated transfer amount. This is the inputTransferAmount amount capped by 150 - spendThisMonth - currentBalance.
+   */
   public async calculateTransferAmountWithWalletUpdate(
     registrationId: number,
     inputTransferAmountInMajorUnit: number,
@@ -603,6 +658,13 @@ export class IntersolveVisaService
     }
   }
 
+  /**
+   * This function pauses or unpauses a card associated with a given token code by blocking or unblocking the token at the Intersolve API.
+   * @param {string} tokenCode - The token code of the card to pause or unpause.
+   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
+   * @throws {Error} Throws an Error if no wallet is found for the given token code, or if the wallet's token is already in the desired state.
+   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
+   */
   public async pauseCardOrThrow(
     tokenCode: string,
     pause: boolean,
@@ -622,6 +684,9 @@ export class IntersolveVisaService
     return await this.intersolveVisaChildWalletScopedRepository.save(wallet);
   }
 
+  /**
+   * Retrieves and updates all wallets and cards for all customers. Used by cronjob.
+   */
   public async retrieveAndUpdateAllWalletsAndCards(): Promise<void> {
     const customers =
       await this.intersolveVisaCustomerScopedRepository.findWithWallets();
@@ -641,6 +706,14 @@ export class IntersolveVisaService
   }
 
   // TODO: It looks like the old implementation (this.syncIntersolveCustomerWith121) had some logic to only send data to Intersolve if it changed. Do we want to implement that again? That probably then should be in the RegistrationService and not here.
+  /**
+   * This function sends updated contact information for a customer to Intersolve. It uses 2 api call:
+   * - update the address
+   * - update phone number
+   * @param {SendUpdatedContactInformationParams} input - The updated contact information for the customer.
+   * @throws {Error} Throws an Error if no customer is found for the given registration ID.
+   * @returns {Promise<void>}
+   */
   public async sendUpdatedContactInformation(
     input: SendUpdatedContactInformationParams,
   ): Promise<void> {
