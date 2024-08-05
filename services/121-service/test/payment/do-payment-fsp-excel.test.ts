@@ -51,7 +51,7 @@ describe('Do payment with Excel FSP', () => {
   const registrationsProgramWithValidation = [registrationPV5];
   const refrenceIdsWithValidation = [registrationPV5.referenceId];
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
 
