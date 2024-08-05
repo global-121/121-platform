@@ -7,7 +7,6 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
-import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -32,15 +31,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     IntersolveVisaService,
     IntersolveVisaApiService,
     CustomHttpService,
-    IntersolveVisaExportService,
     AzureLogService,
     RegistrationScopedRepository,
-
     IntersolveVisaCustomerScopedRepository,
     IntersolveVisaParentWalletScopedRepository,
     IntersolveVisaChildWalletScopedRepository,
   ],
   controllers: [IntersolveVisaController],
-  exports: [IntersolveVisaService, IntersolveVisaExportService],
+  exports: [IntersolveVisaService],
 })
 export class IntersolveVisaModule {}

@@ -181,10 +181,6 @@
           "btn-text": "Export People Affected",
           "confirm-message": "This will download an Excel file with all People Affected."
         },
-        "card-balances": {
-          "btn-text": "Export debit card usage",
-          "confirm-message": "This will download an Excel file showing the balance of every card.<br /><br />Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card's last external update."
-        },
         "duplicates": {
           "basedOn": "Checking duplicates is based on: {{duplicateAttributes}}",
           "btn-text": "Export duplicate People Affected",
@@ -198,6 +194,10 @@
         "included": {
           "btn-text": "Export included People Affected",
           "confirm-message": "This will download an Excel file with all included People Affected."
+        },
+        "intersolve-visa-card-details": {
+          "btn-text": "Export debit card usage",
+          "confirm-message": "This will download an Excel file showing the balance of every card.<br /><br />Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card's last external update."
         },
         "no-data": "There is currently no data to download",
         "pa-data-changes": {
@@ -661,6 +661,7 @@
         "pause-success": "Successfully paused debit card",
         "unpause-success": "Successfully unpaused debit card"
       },
+      "card-number": "Card number",
       "confirm-prompt": {
         "new-card": "permanently block this card and issue a new card?",
         "pause": "pause this card?",
@@ -668,8 +669,6 @@
         "suffix": "<br><br>This will automatically send a message to the person affected.",
         "unpause": "unpause this card?"
       },
-      "wallet-number": "Wallet number",
-      "card-number": "Card number",
       "current-balance": "Current balance",
       "date-issued": "Issued",
       "date-last-used": "Last used",
@@ -681,7 +680,8 @@
       "spent-this-month": "Spent this month (max. {{maxAmount}})",
       "status": "Status",
       "title": "Debit cards",
-      "unpause-card": "Unpause card"
+      "unpause-card": "Unpause card",
+      "wallet-number": "Wallet number"
     },
     "show-all": "Show All"
   },

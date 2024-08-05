@@ -3,7 +3,7 @@ import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-inte
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { Column, Entity, Index, ManyToOne, Relation } from 'typeorm';
 
-export enum IntersolveVisaWalletStatus {
+enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE',
   Redeemed = 'REDEEMED',
@@ -12,7 +12,7 @@ export enum IntersolveVisaWalletStatus {
   Disabled = 'DISABLED',
 }
 
-export enum IntersolveVisaCardStatus {
+enum IntersolveVisaCardStatus {
   CardOk = 'CARD_OK',
   CardBlocked = 'CARD_BLOCKED',
   SuspectedFraud = 'SUSPECTED_FRAUD',
