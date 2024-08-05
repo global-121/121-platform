@@ -6,6 +6,7 @@ import fs from 'fs';
 import * as path from 'path';
 
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
+const CardDataMissingExplanation = `Unable to retrieve card data, refresh the page or try to reissue the card if you expect the card was never created. If the issue persists, please contact the 121 Platform Team`;
 
 interface VisaCard121StatusMapInterface {
   TokenBlocked: boolean;
@@ -81,18 +82,18 @@ export class IntersolveVisaStatusMapper {
     cardStatus: IntersolveVisaCardStatus | null;
   }): VisaCard121StatusInformationAndActions {
     IntersolveVisaStatusMapper.loadMapping();
-
+    const cardStatusString = cardStatus ? cardStatus : ''; // CSV file has empty strings for null values
     const matchingRow = IntersolveVisaStatusMapper.mapping.find(
       (row) =>
         row.TokenBlocked === isTokenBlocked &&
         row.TokenStatus === walletStatus &&
-        row.CardStatus === cardStatus,
+        row.CardStatus === cardStatusString,
     );
     if (matchingRow) {
       let actionsArray: VisaCardAction[] = [];
       if (matchingRow.Actions121) {
         actionsArray = matchingRow.Actions121.split(',').map(
-          (item) => item.trim() as VisaCardAction, // TODO: Is there a better way to do this then using 'as'?
+          (item) => item.trim() as VisaCardAction,
         );
       }
       return {
@@ -100,12 +101,20 @@ export class IntersolveVisaStatusMapper {
         explanation: matchingRow['VisaCard121StatusExplanation'],
         actions: actionsArray,
       };
-    } else {
+    }
+
+    if (!cardStatus) {
       return {
-        status: VisaCard121Status.Unknown,
-        explanation: StatusUnknownExplain,
-        actions: [],
+        status: VisaCard121Status.CardDataMissing,
+        explanation: CardDataMissingExplanation,
+        actions: [VisaCardAction.reissue],
       };
     }
+
+    return {
+      status: VisaCard121Status.Unknown,
+      explanation: StatusUnknownExplain,
+      actions: [],
+    };
   }
 }
