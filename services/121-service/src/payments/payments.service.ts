@@ -22,6 +22,10 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis/redis-client';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -51,8 +55,9 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import Redis from 'ioredis';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Equal, Repository } from 'typeorm';
 
@@ -62,19 +67,6 @@ export class PaymentsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-
-  private fspWithQueueServiceMapping = {
-    // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
-    [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-    [FinancialServiceProviderName.intersolveVoucherPaper]:
-      this.intersolveVoucherService,
-    [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
-      this.intersolveVoucherService,
-    [FinancialServiceProviderName.safaricom]: this.safaricomService,
-    [FinancialServiceProviderName.commercialBankEthiopia]:
-      this.commercialBankEthiopiaService,
-    // Add more FSP mappings if they work queue-based
-  };
 
   private financialServiceProviderNameToServiceMap: Record<
     FinancialServiceProviderName,
@@ -100,6 +92,8 @@ export class PaymentsService {
     private readonly transactionQueuesService: TransactionQueuesService,
     private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
@@ -492,6 +486,14 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
+  public async getProgramPaymentsStatus(
+    programId: number,
+  ): Promise<ProgramPaymentsStatusDto> {
+    return {
+      inProgress: await this.isPaymentInProgress(programId),
+    };
+  }
+
   private async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
@@ -503,34 +505,19 @@ export class PaymentsService {
     }
   }
 
-  public async getProgramPaymentsStatus(
-    programId: number,
-  ): Promise<ProgramPaymentsStatusDto> {
-    return {
-      inProgress: await this.isPaymentInProgress(programId),
-    };
-  }
-
   private async isPaymentInProgress(programId: number): Promise<boolean> {
-    // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether. #### // check if this can go since all fsp use the queue > check excel fsp?
+    // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether.
+    // Ruben: I would be careful with this refactor. The action table is update much earlies than the queue. So for a big payment it can take while for the queue to start. So if we remove the actions table we need something else..
     // check progress based on actions-table first
+    // Check if there are any actions in progress
     const actionsInProgress =
       await this.checkPaymentActionInProgress(programId);
     if (actionsInProgress) {
       return true;
     }
 
-    // if not in progress, then also check progress from queue
-    // get all FSPs in program
-    const program = await this.getProgramWithFspOrThrow(programId);
-
-    for (const fspEntity of program.financialServiceProviders) {
-      if (await this.checkFspQueueProgress(fspEntity.fsp, programId)) {
-        return true;
-      }
-    }
-
-    return false;
+    // If no actions in progress, check if there are any payments in progress in the queue
+    return await this.isPaymentInProgressForProgramQueue(programId);
   }
 
   private async checkPaymentActionInProgress(
@@ -541,6 +528,7 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
     // TODO: REFACTOR: Use the Redis way of determining if a payment is in progress, see function this.checkFspQueueProgress
+    // Ruben: I would be careful with this refactor. The action table is update much earlier in the payment api call than the queue. So for a big payment it can take while for the queue to start and a browser/person could potentially start the same payment twice
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
@@ -561,27 +549,13 @@ export class PaymentsService {
     return finishTimestamp < startTimestamp;
   }
 
-  private async checkFspQueueProgress(
-    fsp: string,
+  private async isPaymentInProgressForProgramQueue(
     programId: number,
   ): Promise<boolean> {
-    const service = this.fspWithQueueServiceMapping[fsp];
-    // If no specific service for the FSP, assume no queue progress to check
-    if (!service) {
-      return false;
-    }
-
-    const programsWithFsp = await this.programRepository.find({
-      where: {
-        financialServiceProviders: {
-          fsp: Equal(fsp),
-        },
-      },
-    });
-    const nrPending = await service.getQueueProgress(
-      programsWithFsp.length > 0 ? programId : null,
-    );
-    return nrPending > 0;
+    // If there is more that one program with the same FSP we can use the delayed count of a program which is faster else we need to do use the redis set
+    const nrPending = await this.redisClient.scard(getRedisSetName(programId));
+    const paymentIsInProgress = nrPending > 0;
+    return paymentIsInProgress;
   }
 
   private splitPaListByFsp(

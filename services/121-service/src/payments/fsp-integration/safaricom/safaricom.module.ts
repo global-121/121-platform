@@ -4,7 +4,7 @@ import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integratio
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { RedisModule } from '@121-service/src/payments/redis.module';
+import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';

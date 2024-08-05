@@ -5,7 +5,7 @@ import {
 import {
   REDIS_CLIENT,
   getRedisSetName,
-} from '@121-service/src/payments/redis-client';
+} from '@121-service/src/payments/redis/redis-client';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 import { Process, Processor } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';

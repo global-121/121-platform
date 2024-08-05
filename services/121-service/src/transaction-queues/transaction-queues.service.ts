@@ -5,7 +5,7 @@ import {
 import {
   REDIS_CLIENT,
   getRedisSetName,
-} from '@121-service/src/payments/redis-client';
+} from '@121-service/src/payments/redis/redis-client';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';

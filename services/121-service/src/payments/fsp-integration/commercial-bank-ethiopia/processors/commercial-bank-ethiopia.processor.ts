@@ -6,7 +6,7 @@ import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-int
 import {
   REDIS_CLIENT,
   getRedisSetName,
-} from '@121-service/src/payments/redis-client';
+} from '@121-service/src/payments/redis/redis-client';
 import { Process, Processor } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
 import { Job } from 'bull';

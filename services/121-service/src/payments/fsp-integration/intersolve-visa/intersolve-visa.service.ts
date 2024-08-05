@@ -50,24 +50,6 @@ export class IntersolveVisaService
     throw new Error('Method should not be called anymore.');
   }
 
-  // TODO: This function needs to be removed to the PaymentsService.
-  public async getQueueProgress(programId?: number): Promise<number> {
-    if (programId) {
-      // Get the count of job IDs in the Redis set for the program
-      //const count = await this.redisClient.scard(getRedisSetName(programId));
-      return 0;
-    } else {
-      // If no programId is provided, use Bull's method to get the total delayed count
-      // This requires an instance of the Bull queue
-
-      // TODO: Find out how to get the total delayed count without an instance of the queue
-      // const delayedCount =
-      //   await this.paymentIntersolveVisaQueue.getDelayedCount();
-      const delayedCount = 0;
-      return delayedCount;
-    }
-  }
-
   // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
   /**
    * This function handles the process of transferring money to a person using intersolve visa.

@@ -14,7 +14,7 @@ import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/s
 import {
   REDIS_CLIENT,
   getRedisSetName,
-} from '@121-service/src/payments/redis-client';
+} from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -65,19 +65,6 @@ export class SafaricomService
         jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
-  }
-
-  public async getQueueProgress(programId?: number): Promise<number> {
-    if (programId) {
-      // Get the count of job IDs in the Redis set for the program
-      const count = await this.redisClient.scard(getRedisSetName(programId));
-      return count;
-    } else {
-      // If no programId is provided, use Bull's method to get the total delayed count
-      // This requires an instance of the Bull queue
-      const delayedCount = await this.paymentSafaricomQueue.getDelayedCount();
-      return delayedCount;
     }
   }
 
