@@ -193,6 +193,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         '"intersolveVisaChildWallets"."walletStatus" as "walletStatus"',
         '"intersolveVisaChildWallets"."isTokenBlocked" as "isTokenBlocked"',
       ])
+      .andWhere(`"intersolveVisaChildWallets".id IS NOT NULL`)
       .andWhere('registration."programId" = :programId', { programId })
       .orderBy({
         'registration."registrationProgramId"': 'ASC', // Do not change this order by as it is used to determine if something is the lasest wallet
