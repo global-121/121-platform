@@ -21,7 +21,7 @@ export class IntersolveVisaTransactionJobDto {
 
   @IsNotEmpty()
   @IsNumber()
-  public readonly transactionAmount: number;
+  public readonly transactionAmountInMajorUnit: number; // This is in the major unit of the currency, for example whole euros
 
   @IsNotEmpty()
   @IsBoolean()

@@ -7,7 +7,7 @@ export interface DoTransferOrIssueCardParams {
   readonly transferReference: string;
   readonly name: string;
   readonly contactInformation: ContactInformation;
-  readonly transferAmount: number;
+  readonly transferAmountInMajorUnit: number;
   readonly brandCode: string;
   readonly coverLetterCode: string;
   readonly fundingTokenCode: string;

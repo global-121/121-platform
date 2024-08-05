@@ -31,7 +31,7 @@ interface ProcessTransactionResultInput {
   programId: number;
   paymentNumber: number;
   userId: number;
-  calculatedTranserAmount: number;
+  calculatedTranserAmountInMajorUnit: number;
   financialServiceProviderId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
@@ -77,19 +77,19 @@ export class TransactionJobProcessorsService {
       throw new Error('Financial Service Provider not found');
     }
 
-    let transferAmount: number;
+    let transferAmountInMajorUnit: number;
     try {
-      transferAmount =
+      transferAmountInMajorUnit =
         await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
           registration.id,
-          input.transactionAmount,
+          input.transactionAmountInMajorUnit,
         );
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
         programId: input.programId,
         paymentNumber: input.paymentNumber,
         userId: input.userId,
-        calculatedTranserAmount: 0,
+        calculatedTranserAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
         financialServiceProviderId: financialServiceProvider.id,
         registration,
         oldRegistration,
@@ -111,7 +111,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTranserAmount: transferAmount,
+          calculatedTranserAmountInMajorUnit: transferAmountInMajorUnit,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
@@ -152,7 +152,7 @@ export class TransactionJobProcessorsService {
             addressCity: input.addressCity!,
             phoneNumber: input.phoneNumber!,
           },
-          transferAmount: transferAmount,
+          transferAmountInMajorUnit: transferAmountInMajorUnit,
           brandCode: intersolveVisaConfig.find(
             (c) =>
               c.name === FinancialServiceProviderConfigurationEnum.brandCode,
@@ -174,7 +174,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTranserAmount: transferAmount,
+          calculatedTranserAmountInMajorUnit: transferAmountInMajorUnit,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
@@ -194,18 +194,19 @@ export class TransactionJobProcessorsService {
         programId: input.programId,
         registration: registration,
         amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
         bulkSize: input.bulkSize,
       });
     } else if (
-      intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred > 0
+      intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit >
+      0
     ) {
       await this.createMessageAndAddToQueue({
         type: ProgramNotificationEnum.visaLoad,
         programId: input.programId,
         registration: registration,
         amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
         bulkSize: input.bulkSize,
       });
     }
@@ -214,8 +215,8 @@ export class TransactionJobProcessorsService {
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTranserAmount:
-        intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferred,
+      calculatedTranserAmountInMajorUnit:
+        intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
@@ -228,7 +229,7 @@ export class TransactionJobProcessorsService {
     programId,
     paymentNumber,
     userId,
-    calculatedTranserAmount,
+    calculatedTranserAmountInMajorUnit,
     financialServiceProviderId,
     registration,
     oldRegistration,
@@ -237,7 +238,7 @@ export class TransactionJobProcessorsService {
     errorText: errorMessage,
   }: ProcessTransactionResultInput): Promise<void> {
     const resultTransaction = await this.createTransaction({
-      amount: calculatedTranserAmount,
+      amount: calculatedTranserAmountInMajorUnit,
       registration: registration,
       financialServiceProviderId: financialServiceProviderId,
       programId: programId,
@@ -298,7 +299,7 @@ export class TransactionJobProcessorsService {
   }
 
   private async createTransaction({
-    amount,
+    amount, // transaction entity are always in major unit
     registration,
     financialServiceProviderId,
     programId,
