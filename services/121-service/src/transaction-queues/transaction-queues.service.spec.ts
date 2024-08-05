@@ -14,7 +14,7 @@ const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
     userId: 1,
     paymentNumber: 3,
     referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
-    transactionAmount: 25,
+    transactionAmountInMajorUnit: 25,
     isRetry: false,
     bulkSize: 10,
     name: 'mock-fail-create-debit-card',
