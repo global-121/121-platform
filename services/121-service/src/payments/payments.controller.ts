@@ -165,6 +165,7 @@ export class PaymentsController {
     @Req() req,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
+    // TODO: REFACTOR: This permission check is unnecessary for this endpoint. Remove it.
     const userId = req.user.id;
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,

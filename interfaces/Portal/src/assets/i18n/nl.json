@@ -172,10 +172,6 @@
           "btn-text": "Exporteer hulpvragers",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers"
         },
-        "card-balances": {
-          "btn-text": "Exporteer Visakaart gebruik",
-          "confirm-message": "Hiermee download je een Excel-bestand met het saldo van elke kaart.<br /><br />Belangrijke opmerking: De kaartsaldi die kunnen worden gedownload zijn niet in real-time. Het rapport bevat de datum en tijd van de laatste externe update van elke kaart."
-        },
         "duplicates": {
           "basedOn": "Het controleren van duplicaten wordt gebaseerd op: {{duplicateAttributes}}",
           "btn-text": "Exporteer dubbele personen",
@@ -189,6 +185,10 @@
         "included": {
           "btn-text": "Exporteer actieve hulpvragers",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle actieve hulpvragers."
+        },
+        "intersolve-visa-card-details": {
+          "btn-text": "Exporteer Visakaart gebruik",
+          "confirm-message": "Hiermee download je een Excel-bestand met het saldo van elke kaart.<br /><br />Belangrijke opmerking: De kaartsaldi die kunnen worden gedownload zijn niet in real-time. Het rapport bevat de datum en tijd van de laatste externe update van elke kaart."
         },
         "no-data": "Er zijn momenteel geen gegevens te downloaden",
         "pa-data-changes": {
@@ -696,6 +696,7 @@
         "pause-success": "VISA kaart succesvol gepauzeerd",
         "unpause-success": "VISA kaart succesvol geactiveerd"
       },
+      "card-number": "Kaart nummer",
       "confirm-prompt": {
         "new-card": "deze kaart definitief blokkeren en een nieuwe kaart uitgeven?",
         "pause": "deze kaart pauzeren?",
@@ -711,10 +712,11 @@
       "not-used-yet": "Nog niet gebruikt",
       "pause-card": "Kaart pauzeren",
       "popup-title": "Visa kaart",
-      "spent-this-month": "Uitgegeven deze maand (maximum {{maxAmount}})",
+      "spent-this-month": "Uitgegeven deze maand (max. {{maxAmount}})",
       "status": "Status",
       "title": "Visa kaarten",
-      "unpause-card": "Kaart activeren"
+      "unpause-card": "Kaart activeren",
+      "wallet-number": "Wallet nummer"
     },
     "show-all": "Alles weergeven"
   },

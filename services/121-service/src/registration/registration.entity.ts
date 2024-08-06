@@ -7,7 +7,7 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entit
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -155,6 +155,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Index()
   @Column({ nullable: false, default: '' })
   public scope: string;
+
+  @OneToOne(
+    () => IntersolveVisaCustomerEntity,
+    (intersolveVisaCustomer) => intersolveVisaCustomer.registration,
+  )
+  public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

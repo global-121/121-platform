@@ -20,11 +20,11 @@ export class NoteService {
     programId: number,
   ): Promise<void> {
     const registration =
-      await this.registrationsService.getRegistrationFromReferenceId(
+      await this.registrationsService.getRegistrationFromReferenceId({
         referenceId,
-        undefined,
+        relations: undefined,
         programId,
-      );
+      });
 
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known.`;

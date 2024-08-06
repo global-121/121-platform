@@ -22,8 +22,7 @@ describe('Load PA table', () => {
     const attribute2 = 'addressCity';
     const attribute3 = 'referenceId';
     const attributeName = 'name';
-    const attributeFirstName = 'firstName';
-    const attributeLastName = 'lastName';
+    const attributeFullName = 'fullName';
     const attributeFspDisplayName = 'fspDisplayName';
     const attributeFinancelServiceProvider = 'financialServiceProvider';
 
@@ -77,7 +76,7 @@ describe('Load PA table', () => {
 
     it('should only return full name and firstname', async () => {
       // Arrange
-      const requestedDynamicAttributes = [attributeName, attributeFirstName];
+      const requestedDynamicAttributes = [attributeName, attributeFullName];
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
@@ -89,8 +88,7 @@ describe('Load PA table', () => {
 
       // Assert
       expect(data[0]).toHaveProperty(attributeName);
-      expect(data[0]).toHaveProperty(attributeFirstName);
-      expect(data[0]).not.toHaveProperty(attributeLastName);
+      expect(data[0]).toHaveProperty(attributeFullName);
     });
 
     it('should only return full name', async () => {
@@ -107,8 +105,7 @@ describe('Load PA table', () => {
 
       // Assert
       expect(data[0]).toHaveProperty(attributeName);
-      expect(data[0]).not.toHaveProperty(attributeFirstName);
-      expect(data[0]).not.toHaveProperty(attributeLastName);
+      expect(data[0]).not.toHaveProperty(attributeFullName);
     });
 
     it('should only return fspDisplayName', async () => {

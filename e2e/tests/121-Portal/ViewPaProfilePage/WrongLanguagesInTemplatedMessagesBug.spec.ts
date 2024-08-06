@@ -33,7 +33,7 @@ const selectFieldDropdownName =
   englishTranslations.page.program['program-people-affected']['action-inputs'][
     'placeholder-typeahead-placeholder'
   ];
-const firstNameOption = NLRCProgram.programCustomAttributes[0].label.en;
+const firstNameOption = NLRCProgram.programQuestions[0].label.en;
 const addPersonalizedFieldName =
   englishTranslations.page.program['program-people-affected']['action-inputs'][
     'add-placeholder'

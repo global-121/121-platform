@@ -28,6 +28,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
@@ -51,7 +52,7 @@ export class MessageIncomingService {
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackLanguage = LanguageEnum.en;
   private readonly genericDefaultReplies = {
     en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
