@@ -185,7 +185,7 @@
       <trans-unit id="3241357959735682038" datatype="html">
         <source>Confirm Password</source>
       </trans-unit>
-      <trans-unit id="5583265461491101912" datatype="html">
+      <trans-unit id="8029438652061888154" datatype="html">
         <source>Your password was successfully changed.</source>
       </trans-unit>
       <trans-unit id="6309828574111583895" datatype="html">
@@ -201,13 +201,10 @@
       <trans-unit id="8060388914130154528" datatype="html">
         <source>The new password must be different from the current password.</source>
       </trans-unit>
-      <trans-unit id="generic-loading" datatype="html">
-        <source>Loading</source>
-      </trans-unit>
       <trans-unit id="7750851942089216450" datatype="html">
         <source>Failed to change the password. Please refresh the page and try again.</source>
       </trans-unit>
-      <trans-unit id="page-title-user-settings" datatype="html">
+      <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
         <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>

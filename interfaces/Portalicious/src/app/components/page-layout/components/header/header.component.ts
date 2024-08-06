@@ -47,7 +47,7 @@ export class HeaderComponent {
     {
       label: $localize`:Menu-item:Change password`,
       icon: 'pi pi-cog',
-      routerLink: `/${AppRoutes.userSettings}`,
+      routerLink: `/${AppRoutes.changePassword}`,
     },
     {
       label: $localize`:Menu-item:Logout`,

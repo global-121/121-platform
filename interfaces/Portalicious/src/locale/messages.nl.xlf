@@ -244,11 +244,7 @@
         <target state="new">Change password</target>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="generic-loading" datatype="html">
-        <source>Loading</source>
-        <target state="new">Loading</target>
-      </trans-unit>
-      <trans-unit id="5583265461491101912" datatype="html">
+      <trans-unit id="8029438652061888154" datatype="html">
         <source>Your password was successfully changed.</source>
         <target state="new">Your password was successfully changed.</target>
       </trans-unit>
@@ -272,7 +268,7 @@
         <source>Failed to change the password. Please refresh the page and try again.</source>
         <target state="new">Failed to change the password. Please refresh the page and try again.</target>
       </trans-unit>
-      <trans-unit id="page-title-user-settings" datatype="html">
+      <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
         <target state="new">Change password</target>
         <note priority="1" from="description">Browser-tab-title</note>
