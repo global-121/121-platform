@@ -679,6 +679,14 @@ export class PaymentsService {
         4000,
       );
 
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
@@ -687,10 +695,10 @@ export class PaymentsService {
             userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
-            // TODO: I am a bit worried that this find will not perform for 100k PAs. ### checkout using a map or ordering by referenceId
-            transactionAmountInMajorUnit: referenceIdsTransactionAmounts.find(
-              (r) => r.referenceId === registrationView.referenceId,
-            )!.transactionAmount,
+            // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
+            transactionAmountInMajorUnit: transactionAmountsMap.get(
+              registrationView.referenceId,
+            )!,
             isRetry,
             bulkSize: referenceIds.length,
             name: registrationView['fullName'],
