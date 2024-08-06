@@ -47,13 +47,6 @@ describe('TransactionQueuesService', () => {
   });
 
   it('should add transaction job to queue', async () => {
-    jest
-      .spyOn(
-        transactionQueuesService as any,
-        'addIntersolveVisaTransactionJobs',
-      )
-      .mockResolvedValue(mockIntersolveVisaTransactionJobDto);
-
     jest.spyOn(intersolveVisaQueue as any, 'add').mockReturnValue({
       data: {
         id: 1,
@@ -70,7 +63,7 @@ describe('TransactionQueuesService', () => {
     expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
     expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
       ProcessNamePayment.sendPayment,
-      mockIntersolveVisaTransactionJobDto,
+      mockIntersolveVisaTransactionJobDto[0],
     );
   });
 });
