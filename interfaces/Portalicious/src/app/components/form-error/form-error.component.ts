@@ -9,6 +9,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormErrorComponent {
-  visible = input.required<boolean>();
+  visible = input<boolean>(true);
   error = input<Error | null | string>();
 }

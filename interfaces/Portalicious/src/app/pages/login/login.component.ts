@@ -65,6 +65,9 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required]),
   });
 
+  // This should only be used to show the error messages when the form is submitted.
+  // That is because we do not want to use "disabled" buttons in our forms, for accessibility reasons,
+  // and we want to show the error messages when the form is submitted with errors.
   loginFormSubmitted = signal(false);
 
   loginMutation = injectMutation(() => ({

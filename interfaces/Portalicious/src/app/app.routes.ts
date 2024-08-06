@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '~/auth.guard';
 import { AllProjectsComponent } from '~/pages/all-projects/all-projects.component';
+import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';
 import { ProgramMonitoringComponent } from '~/pages/program/program-monitoring/program-monitoring.component';
 import { ProgramOverviewComponent } from '~/pages/program/program-overview/program-overview.component';
@@ -8,11 +9,11 @@ import { ProgramPaymentsComponent } from '~/pages/program/program-payments/progr
 import { ProgramRegistrationsComponent } from '~/pages/program/program-registrations/program-registrations.component';
 import { ProgramTeamComponent } from '~/pages/program/program-team/program-team.component';
 import { RolesAndPermissionsComponent } from '~/pages/roles-and-permissions/roles-and-permissions.component';
-import { UserSettingsComponent } from '~/pages/user-settings/user-settings.component';
 import { UsersComponent } from '~/pages/users/users.component';
 
 export enum AppRoutes {
   allProjects = 'all-projects',
+  changePassword = 'change-password',
   login = 'login',
   program = 'program',
   programMonitoring = 'monitoring',
@@ -22,7 +23,6 @@ export enum AppRoutes {
   programTeam = 'team',
   rolesAndPermissions = 'roles-and-permissions',
   users = 'users',
-  userSettings = 'user-settings',
 }
 
 export const routes: Routes = [
@@ -41,9 +41,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: AppRoutes.userSettings,
-    title: $localize`:Browser-tab-title@@page-title-user-settings:Change password`,
-    component: UserSettingsComponent,
+    path: AppRoutes.changePassword,
+    title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
+    component: ChangePasswordComponent,
     canActivate: [authGuard],
   },
   {
