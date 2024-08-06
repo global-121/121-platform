@@ -251,6 +251,10 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     metadata: EntityMetadata,
   ): string | undefined {
     // Gets the relations of the entity for which this repository is created
+    if (!metadata?.relations) {
+      return;
+    }
+
     const relations = metadata.relations.map(
       (relation) => relation.propertyName,
     );
