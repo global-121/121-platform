@@ -1,5 +1,4 @@
 export class DoTransferOrIssueCardReturnType {
-  cardCreated = false;
-  transferDone = false;
-  amountTransferredInMajorUnit = 0;
+  isNewCardCreated: boolean;
+  amountTransferredInMajorUnit: number;
 }

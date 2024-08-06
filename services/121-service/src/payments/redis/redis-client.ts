@@ -1,4 +1,3 @@
-// TODO: REFACTOR: Move this file into a shared folder ####
 import Redis from 'ioredis';
 
 export const REDIS_CLIENT = 'REDIS_CLIENT';
