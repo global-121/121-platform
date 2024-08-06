@@ -40,8 +40,12 @@ export class AuthService {
   private readonly logService = inject(LogService);
   private readonly router = inject(Router);
 
-  get isLoggedIn(): boolean {
+  public get isLoggedIn(): boolean {
     return this.user !== null;
+  }
+
+  public get isAdmin(): boolean {
+    return this.user?.isAdmin ?? false;
   }
 
   private setUserInStorage(user: User): void {
@@ -115,6 +119,10 @@ export class AuthService {
 
     await this.apiService.logout();
     await this.router.navigate(['/', AppRoutes.login]);
+  }
+
+  public getAssignedProgramIds(): number[] {
+    return this.user ? Object.keys(this.user.permissions).map(Number) : [];
   }
 
   public async changePassword({

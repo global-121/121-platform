@@ -53,9 +53,6 @@
       <trans-unit id="3338661424985495365" datatype="html">
         <source>Monitoring</source>
       </trans-unit>
-      <trans-unit id="3350975625681256410" datatype="html">
-        <source>Welcome to Portalicious, baby!</source>
-      </trans-unit>
       <trans-unit id="3724068243287682962" datatype="html">
         <source>Team</source>
       </trans-unit>
@@ -111,9 +108,6 @@
       <trans-unit id="6509003407758128100" datatype="html">
         <source>Cookie policy</source>
       </trans-unit>
-      <trans-unit id="6966507916758477998" datatype="html">
-        <source>Go to NLRC program</source>
-      </trans-unit>
       <trans-unit id="7218347871480825149" datatype="html">
         <source>Read our Privacy Policy</source>
       </trans-unit>
@@ -137,9 +131,6 @@
       </trans-unit>
       <trans-unit id="8938510541215036054" datatype="html">
         <source>Enter a valid email address</source>
-      </trans-unit>
-      <trans-unit id="9053334343942762407" datatype="html">
-        <source>Go to OCW program</source>
       </trans-unit>
       <trans-unit id="9132374083993014120" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
@@ -210,6 +201,31 @@
       <trans-unit id="page-title-user-settings" datatype="html">
         <source>Change password</source>
         <note priority="1" from="description">Browser-tab-title</note>
+      </trans-unit>
+      <trans-unit id="2342712167124906317" datatype="html">
+        <source>Targeted people</source>
+      </trans-unit>
+      <trans-unit id="2980109580182727209" datatype="html">
+        <source>All projects</source>
+      </trans-unit>
+      <trans-unit id="3010710400268626539" datatype="html">
+        <source>No Projects found</source>
+      </trans-unit>
+      <trans-unit id="668066055906448779" datatype="html">
+        <source>Cash disbursed</source>
+      </trans-unit>
+      <trans-unit id="6885844978916799621" datatype="html">
+        <source>Budget</source>
+      </trans-unit>
+      <trans-unit id="7113499429942611780" datatype="html">
+        <source>Create new project</source>
+        <note priority="1" from="description">Button-label</note>
+      </trans-unit>
+      <trans-unit id="8550882715313062083" datatype="html">
+        <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
+      </trans-unit>
+      <trans-unit id="8675927317645341841" datatype="html">
+        <source>Included people</source>
       </trans-unit>
     </body>
   </file>

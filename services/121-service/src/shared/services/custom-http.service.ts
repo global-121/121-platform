@@ -234,7 +234,7 @@ export class CustomHttpService {
 
   private stringify(obj: object): string {
     let cache: object[] | null = [];
-    const str = JSON.stringify(obj, (key, value) => {
+    const str = JSON.stringify(obj, (_key, value) => {
       if (typeof value === 'object' && value !== null) {
         if (cache?.indexOf(value) !== -1) {
           // Circular reference found, discard key

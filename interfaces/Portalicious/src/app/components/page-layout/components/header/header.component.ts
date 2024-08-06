@@ -63,7 +63,7 @@ export class HeaderComponent {
   sidebarLinks = [
     {
       label: $localize`:Menu-item:All projects`,
-      routerLink: `/${AppRoutes.allProjects}`,
+      routerLink: `/${AppRoutes.projects}`,
     },
     {
       label: $localize`:Menu-item:Users`,
