@@ -236,7 +236,7 @@ export class RegistrationsService {
     return result;
   }
 
-  public async getRegistrationFromReferenceId({
+  public async getRegistrationOrThrow({
     referenceId,
     relations = [],
     programId,
@@ -250,15 +250,15 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceId({
-        referenceId,
-        relations,
-      });
+      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
+        {
+          referenceId,
+          relations,
+          programId,
+        },
+      );
     if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    } else if (programId && registration.programId !== Number(programId)) {
-      const errors = `ReferenceId ${referenceId} is not known for program ${programId}.`;
+      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
@@ -268,7 +268,7 @@ export class RegistrationsService {
     referenceId: string,
     fspId: number,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId({
+    const registration = await this.getRegistrationOrThrow({
       referenceId,
     });
     const fsp = await this.fspRepository.findOneOrFail({
@@ -299,7 +299,7 @@ export class RegistrationsService {
     customDataKey: string,
     customDataValueRaw: string | string[],
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId({
+    const registration = await this.getRegistrationOrThrow({
       referenceId,
     });
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
@@ -485,7 +485,7 @@ export class RegistrationsService {
     let nrAttributesUpdated = 0;
     const { data: partialRegistration } = updateRegistrationDto;
 
-    let registrationToUpdate = await this.getRegistrationFromReferenceId({
+    let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
       relations: ['program', 'fsp'],
       programId,
@@ -576,7 +576,7 @@ export class RegistrationsService {
         registration.referenceId,
       );
     if (calculatedRegistration) {
-      return this.getRegistrationFromReferenceId({
+      return this.getRegistrationOrThrow({
         referenceId: calculatedRegistration.referenceId,
       });
     }
@@ -585,7 +585,7 @@ export class RegistrationsService {
       await this.sendContactInformationToIntersolve(registration);
     }
 
-    return this.getRegistrationFromReferenceId({
+    return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
       relations: ['program'],
     });
@@ -780,7 +780,7 @@ export class RegistrationsService {
     });
 
     // Get registration by referenceId
-    const registration = await this.getRegistrationFromReferenceId({
+    const registration = await this.getRegistrationOrThrow({
       referenceId,
       relations: ['fsp', 'fsp.questions'],
     });
@@ -924,7 +924,7 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationFromReferenceId({
+    const registration = await this.getRegistrationOrThrow({
       referenceId,
       relations: [],
       programId,
@@ -938,7 +938,7 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationFromReferenceId({
+    const registration = await this.getRegistrationOrThrow({
       referenceId,
       relations: [],
       programId,
@@ -962,17 +962,10 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ) {
-    const registration =
-      await this.registrationScopedRepository.getByReferenceIdAndProgramId({
-        referenceId,
-        programId,
-      });
-    if (!registration) {
-      throw new HttpException(
-        `Registration not found for referenceId: ${referenceId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
     const intersolveVisaConfig =
       await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
         {
@@ -1034,6 +1027,7 @@ export class RegistrationsService {
         );
       }
     }
+    await this.sendContactInformationToIntersolve(registration);
 
     await this.intersolveVisaService.reissueCard({
       registrationId: registration.id,
@@ -1084,17 +1078,10 @@ export class RegistrationsService {
     tokenCode: string,
     pause: boolean,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration =
-      await this.registrationScopedRepository.getByReferenceIdAndProgramId({
-        referenceId,
-        programId,
-      });
-    if (!registration) {
-      throw new HttpException(
-        `Registration not found for referenceId: ${referenceId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -1118,17 +1105,10 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration =
-      await this.registrationScopedRepository.getByReferenceIdAndProgramId({
-        referenceId,
-        programId,
-      });
-    if (!registration) {
-      throw new HttpException(
-        `Registration not found for referenceId: ${referenceId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
     await this.sendContactInformationToIntersolve(registration);
   }
 }
