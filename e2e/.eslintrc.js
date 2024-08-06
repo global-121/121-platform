@@ -39,6 +39,7 @@ module.exports = {
           {
             varsIgnorePattern: '^_',
             argsIgnorePattern: '^_',
+            caughtErrors: 'none',
           },
         ],
         'promise/no-nesting': 'error',
