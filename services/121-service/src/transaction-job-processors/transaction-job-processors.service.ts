@@ -192,29 +192,22 @@ export class TransactionJobProcessorsService {
         throw error;
       }
     }
+    // If the transactions was succesful
 
+    let messageType;
     if (intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated) {
-      await this.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaDebitCardCreated,
-        programId: input.programId,
-        registration: registration,
-        amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        bulkSize: input.bulkSize,
-      });
-    } else if (
-      intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit >
-      0
-    ) {
-      await this.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaLoad,
-        programId: input.programId,
-        registration: registration,
-        amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        bulkSize: input.bulkSize,
-      });
+      messageType = ProgramNotificationEnum.visaDebitCardCreated;
+    } else {
+      messageType = ProgramNotificationEnum.visaLoad;
     }
+    await this.createMessageAndAddToQueue({
+      type: messageType,
+      programId: input.programId,
+      registration: registration,
+      amountTransferred:
+        intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
+      bulkSize: input.bulkSize,
+    });
 
     await this.createTransactionAndUpdateRegistration({
       programId: input.programId,
