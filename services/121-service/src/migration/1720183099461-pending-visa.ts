@@ -20,6 +20,9 @@ export class PendingVisa1720183099461 implements MigrationInterface {
       `ALTER TABLE "121-service"."intersolve_visa_parent_wallet" ALTER COLUMN "lastExternalUpdate" DROP NOT NULL`,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" ALTER COLUMN "registrationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
       `CREATE INDEX "IDX_59ddd28d67a179d138682da697" ON "121-service"."intersolve_visa_child_wallet" ("intersolveVisaParentWalletId") `,
     );
     await queryRunner.query(

@@ -11,7 +11,6 @@ import {
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/dto/internal/referenceid-transaction-amount.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
@@ -22,6 +21,7 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
+import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import {
   REDIS_CLIENT,
   getRedisSetName,

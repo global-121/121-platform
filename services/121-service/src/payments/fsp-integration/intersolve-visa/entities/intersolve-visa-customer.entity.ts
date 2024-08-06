@@ -20,8 +20,8 @@ export class IntersolveVisaCustomerEntity extends CascadeDeleteEntity {
   @OneToOne(() => RegistrationEntity)
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
-  @Column({ type: 'int', nullable: true }) // TODO: Why is this nullable? An intersolve visa customer should always have a registration linked to it ######
-  public registrationId: number | null;
+  @Column({ type: 'int' })
+  public registrationId: number;
 
   @OneToOne(
     (_type) => IntersolveVisaParentWalletEntity,
