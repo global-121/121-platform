@@ -105,12 +105,13 @@ export default class ProgramsModel {
   }
 
   updateRegistrationStatusAndLog(programId, status) {
-    const responeStatusChange = this.updateRegistrationStatus(
+    const responseStatusChange = this.updateRegistrationStatus(
       programId,
       status,
     );
-    const responseBody = JSON.parse(responeStatusChange.body);
+    const responseBody = JSON.parse(responseStatusChange.body);
     this.logResponseDetails(responseBody);
+
     let registrationCount;
     try {
       do {
@@ -118,17 +119,31 @@ export default class ProgramsModel {
           programId,
           status,
         );
+        console.log(
+          `Checking counts: applicableCount = ${responseBody.applicableCount}, registrationCount = ${registrationCount}`,
+        );
         sleep(3);
-      } while (responseBody.applicableCount === registrationCount);
+      } while (
+        parseInt(responseBody.applicableCount) !== parseInt(registrationCount)
+      );
     } catch (error) {
       console.log(error);
     }
-    return responseBody;
+    sleep(3);
+    return responseStatusChange;
   }
 
   updateGetRegistrationCountForStatus(programId, status) {
     const statusOverview = this.getStatusOverview(programId);
     const statusOverviewBody = JSON.parse(statusOverview.body);
-    return statusOverviewBody[status];
+
+    let statusCount = 0;
+    for (const item of statusOverviewBody) {
+      if (item.status === status) {
+        statusCount = item.statusCount;
+        break;
+      }
+    }
+    return statusCount;
   }
 }
