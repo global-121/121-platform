@@ -138,6 +138,16 @@ describe('Do payment to 1 PA', () => {
 
     it('should successfully pay-out', async () => {
       // Arrange
+      const program = {
+        allowEmptyPhoneNumber: false,
+      };
+
+      // Act
+      // Call the update function
+      await patchProgram(2, program as UpdateProgramDto, accessToken);
+
+      // Arrange
+      registrationSafaricom.phoneNumber = '254708374149';
       await importRegistrations(
         programId,
         [registrationSafaricom],

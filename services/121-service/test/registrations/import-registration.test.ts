@@ -143,6 +143,7 @@ describe('Import a registration', () => {
 
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"

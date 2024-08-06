@@ -30,12 +30,8 @@ describe('Programs / Users / Roles', () => {
 
   let accessToken: string;
 
-  beforeAll(async () => {
-    await resetDB(SeedScript.test);
-    // Apparently reseeding takes more then default timeout:
-  }, 20_000);
-
   beforeEach(async () => {
+    await resetDB(SeedScript.test);
     accessToken = await getAccessToken();
   });
 
@@ -94,10 +90,10 @@ describe('Programs / Users / Roles', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.roles.length).toBe(3);
-    expect(response.body.roles[2].role).toBe(testUserRoles[1].role);
-    expect(response.body.roles[2].id).toBe(testUserRoles[1].id);
-    expect(response.body.roles[2].label).toBe(testUserRoles[1].label);
+    expect(response.body.roles.length).toBe(2);
+    expect(response.body.roles[1].role).toBe(testUserRoles[1].role);
+    expect(response.body.roles[1].id).toBe(testUserRoles[1].id);
+    expect(response.body.roles[1].label).toBe(testUserRoles[1].label);
   });
 
   it('should return user roles after delete roles from specific program assignment', async () => {

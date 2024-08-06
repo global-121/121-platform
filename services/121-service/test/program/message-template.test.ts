@@ -35,12 +35,17 @@ describe('Message template', () => {
     // Arrange
     messageTemplate['type'] = type;
     messageTemplate['language'] = language;
+    messageTemplate['message'] = 'testing message';
 
     // Act
     const postMessageTemplateResult = await postMessageTemplate(
       programId,
       messageTemplate as CreateMessageTemplateDto,
       accessToken,
+    );
+    console.log(
+      'postMessageTemplateResult: ',
+      postMessageTemplateResult.statusCode,
     );
 
     // Assert

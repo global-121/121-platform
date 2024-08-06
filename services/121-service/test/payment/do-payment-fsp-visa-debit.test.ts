@@ -49,6 +49,7 @@ describe('Do payment to 1 PA', () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
       await waitFor(2_000);
+      registrationVisa.lastName = 'Doe';
     });
 
     it('should succesfully pay-out Visa Debit', async () => {
@@ -697,10 +698,10 @@ describe('Do payment to 1 PA', () => {
     });
   });
 
-  // TODO: We skipped testing successful retry after:
-  // 1. create wallet error
-  // 2. link customer error
-  // 3. create debit card error
-  // 4. load balance error
-  // because our current mock implementation does not support it yet
+  //   // TODO: We skipped testing successful retry after:
+  //   // 1. create wallet error
+  //   // 2. link customer error
+  //   // 3. create debit card error
+  //   // 4. load balance error
+  //   // because our current mock implementation does not support it yet
 });
