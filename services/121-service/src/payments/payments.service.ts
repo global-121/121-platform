@@ -11,7 +11,7 @@ import {
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { ReferenceIdAndTransactionAmountDto } from '@121-service/src/payments/dto/internal/referenceid-transaction-amount.dto';
+import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/dto/internal/referenceid-transaction-amount.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
@@ -251,7 +251,6 @@ export class PaymentsService {
     }
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
-    // TODO: REFACTOR: The definition of this DTO should live in its own file. ####
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
@@ -592,8 +591,6 @@ export class PaymentsService {
             See this.createIntersolveVisaTransferJobs() of how this is handled.
           */
 
-          // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function. ####
-          // TODO: Pass in the transactionAmount for each PA. It should be in paLists or something.
           return await this.createAndAddIntersolveVisaTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
               (paPaymentData) => {
@@ -644,7 +641,7 @@ export class PaymentsService {
     paymentNumber,
     isRetry,
   }: {
-    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountDto[];
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
     paymentNumber: number;

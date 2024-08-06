@@ -1,6 +1,5 @@
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
-import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
@@ -21,6 +20,7 @@ import { RegistrationDataModule } from '@121-service/src/registration/modules/re
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { QueueNamePayment } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';

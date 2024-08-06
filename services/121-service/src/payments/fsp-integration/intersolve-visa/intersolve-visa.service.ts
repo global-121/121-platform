@@ -244,7 +244,6 @@ export class IntersolveVisaService
       // If success, update child wallet: set isDebitCardCreated to true
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0].isDebitCardCreated =
         true;
-      // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always CardOk ####
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0].cardStatus =
         IntersolveVisaCardStatus.CardOk;
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
@@ -490,8 +489,6 @@ export class IntersolveVisaService
     childWalletToReplace: IntersolveVisaChildWalletEntity,
   ): Promise<void> {
     // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
-    // TODO: Add a call to the new this.syncIntersolveCustomerWith121() function here. Creating this function is part of the re-implementation of sending data to Intersolve after Registration changes. ####
-
     if (childWalletToReplace.isTokenBlocked) {
       await this.intersolveVisaApiService.setTokenBlocked(
         childWalletToReplace.tokenCode,
