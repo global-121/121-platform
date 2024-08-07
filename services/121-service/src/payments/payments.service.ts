@@ -677,23 +677,22 @@ export class PaymentsService {
   public async getImportInstructionsTemplate(
     programId: number,
   ): Promise<string[]> {
-    const programWithReconciliationFsps =
-      await this.programRepository.findOneOrFail({
-        where: {
-          id: Equal(programId),
-          financialServiceProviders: { hasReconciliation: Equal(true) },
+    const programWithReconciliationFsps = await this.programRepository.findOne({
+      where: {
+        id: Equal(programId),
+        financialServiceProviders: {
+          fsp: Equal(FinancialServiceProviderName.excel),
         },
-        relations: ['financialServiceProviders'],
-        select: ['id'],
-      });
+      },
+      relations: ['financialServiceProviders'],
+      select: ['id'],
+    });
 
-    let matchColumn;
-    for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.excel) {
-        matchColumn = await this.excelService.getImportMatchColumn(programId);
-      }
+    if (!programWithReconciliationFsps) {
+      throw new HttpException('Program or FSP not found', HttpStatus.NOT_FOUND);
     }
 
+    const matchColumn = await this.excelService.getImportMatchColumn(programId);
     return [matchColumn, 'status'];
   }
 
