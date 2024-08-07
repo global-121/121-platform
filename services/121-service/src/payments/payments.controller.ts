@@ -248,6 +248,27 @@ export class PaymentsController {
     );
   }
 
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.PaymentFspInstructionREAD],
+  })
+  @ApiOperation({
+    summary: 'Get a CSV template for importing reconciliation instructions',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Get payments instructions for past payment to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Get('programs/:programId/payments/fsp-reconciliation/import-template')
+  public async getImportRegistrationsTemplate(
+    @Param() params,
+  ): Promise<string[]> {
+    return await this.paymentsService.getImportInstructionsTemplate(
+      Number(params.programId),
+    );
+  }
+
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
   @ApiOperation({
     summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',

@@ -674,6 +674,29 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
+  public async getImportInstructionsTemplate(
+    programId: number,
+  ): Promise<string[]> {
+    const programWithReconciliationFsps =
+      await this.programRepository.findOneOrFail({
+        where: {
+          id: Equal(programId),
+          financialServiceProviders: { hasReconciliation: Equal(true) },
+        },
+        relations: ['financialServiceProviders'],
+        select: ['id'],
+      });
+
+    let matchColumn;
+    for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
+      if (fsp.fsp === FinancialServiceProviderName.excel) {
+        matchColumn = await this.excelService.getImportMatchColumn(programId);
+      }
+    }
+
+    return [matchColumn, 'status'];
+  }
+
   public async getFspInstructions(
     programId: number,
     payment: number,
