@@ -258,7 +258,7 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Get payments instructions for past payment to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Get payments template instructions to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/payments/fsp-reconciliation/import-template')
   public async getImportRegistrationsTemplate(
