@@ -11,6 +11,7 @@ import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-
 import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
 import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
@@ -37,7 +38,10 @@ export class MigrateVisaService {
   public async migrateData(): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
     await this.migrationTemplateData(queryRunner);
-    // await this.DELETE_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(queryRunner);
+    await this.inserProgramConfiguration();
+    // await this.COMMENT_OUT_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(
+    //   queryRunner,
+    // );
     const programIds =
       await this.selectProgramIdsForInstanceWithVisa(queryRunner);
     for (const programId of programIds) {
@@ -45,7 +49,45 @@ export class MigrateVisaService {
     }
   }
 
-  private async DELETE_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(
+  private async inserProgramConfiguration(): Promise<void> {
+    // this should not be set on production so it should not run on production
+    if (process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE) {
+      // Insert program configuration
+      const fspVisaId = await this.dataSource.query(
+        `SELECT id FROM "121-service"."financial_service_provider" WHERE "fsp" = 'Intersolve-visa'`,
+      );
+      const config2 = new ProgramFinancialServiceProviderConfigurationEntity();
+      config2.fspId = fspVisaId[0].id;
+      config2.programId = 2;
+      config2.name = FinancialServiceProviderConfigurationEnum.fundingTokenCode;
+      config2.value = process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE;
+      const config3 = new ProgramFinancialServiceProviderConfigurationEntity();
+      config3.fspId = fspVisaId[0].id;
+      config3.programId = 3;
+      config3.name = FinancialServiceProviderConfigurationEnum.fundingTokenCode;
+      config3.value = process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE;
+
+      // save
+      try {
+        await this.dataSource.manager.save(config2);
+      } catch (e) {
+        console.log(
+          '🚀 ~ MigrateVisaService ~ inserProgramConfiguration program 2 ~ e',
+          e,
+        );
+      }
+      try {
+        await this.dataSource.manager.save(config3);
+      } catch (e) {
+        console.log(
+          '🚀 ~ MigrateVisaService ~ inserProgramConfiguration program 3 ~ e',
+          e,
+        );
+      }
+    }
+  }
+
+  private async COMMENT_OUT_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(
     q: QueryRunner,
   ): Promise<void> {
     // truncate
