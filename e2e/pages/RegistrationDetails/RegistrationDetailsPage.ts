@@ -79,12 +79,12 @@ class RegistrationDetails {
     this.tileInformationStatus = this.page.getByTestId(
       'registration-activity-detail-status',
     );
-    (this.tileDetailsDropdownIcon = this.page.getByTestId(
+    this.tileDetailsDropdownIcon = this.page.getByTestId(
       'registration-notification-dropdown-icon',
-    )),
-      (this.preferredLanguageDropdown = this.page.getByTestId(
-        'preferred-language-dropdown',
-      ));
+    );
+    this.preferredLanguageDropdown = this.page.getByTestId(
+      'preferred-language-dropdown',
+    );
     this.updateReasonTextArea = this.page.getByTestId(
       'user-data-update-textarea',
     );
