@@ -214,7 +214,7 @@ export class MigrateVisaService {
         await this.postToggleBlockWallet(
           originalWallet.tokenCode,
           {
-            reasonCode: IntersolveBlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
+            reasonCode: IntersolveBlockTokenReasonCodeEnum.BLOCK_GENERAL,
           },
           true,
         );
