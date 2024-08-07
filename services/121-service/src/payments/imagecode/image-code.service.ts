@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { EXTERNAL_API } from '@121-service/src/config';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
@@ -53,6 +52,7 @@ export class ImageCodeService {
   }
 
   private async generateBarCodeImage(code: string): Promise<Buffer> {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const bwipjs = require('bwip-js');
     return await bwipjs.toBuffer({
       bcid: 'code128',

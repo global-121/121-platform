@@ -90,9 +90,7 @@ describe('CommercialBankEthiopiaService', () => {
 
     jest
       .spyOn(commercialBankEthiopiaService as any, 'getPaRegistrationData')
-      .mockImplementation(() => {
-        sendPaymentData[0], createQueryBuilder;
-      });
+      .mockImplementation(() => [sendPaymentData[0], createQueryBuilder]);
 
     jest
       .spyOn(commercialBankEthiopiaService as any, 'createPayloadPerPa')
