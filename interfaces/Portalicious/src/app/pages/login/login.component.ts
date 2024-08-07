@@ -4,22 +4,15 @@ import {
   Component,
   computed,
   inject,
-  signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocusModule } from 'primeng/autofocus';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 import { ToolbarModule } from 'primeng/toolbar';
-import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import {
+  DynamicFormComponent,
+  DynamicFormField,
+} from '~/components/dynamic-form/dynamic-form.component';
 import { LanguageSwitcherComponent } from '~/components/language-switcher/language-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/cookie-banner.component';
@@ -32,14 +25,9 @@ import { AuthService } from '~/services/auth.service';
     LogoComponent,
     ToolbarModule,
     NgOptimizedImage,
-    InputTextModule,
-    AutoFocusModule,
-    ReactiveFormsModule,
-    PasswordModule,
-    ButtonModule,
     CookieBannerComponent,
-    FormErrorComponent,
     LanguageSwitcherComponent,
+    DynamicFormComponent,
   ],
   templateUrl: './login.component.html',
   styles: ``,
@@ -65,10 +53,36 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required]),
   });
 
-  // This should only be used to show the error messages when the form is submitted.
-  // That is because we do not want to use "disabled" buttons in our forms, for accessibility reasons,
-  // and we want to show the error messages when the form is submitted with errors.
-  loginFormSubmitted = signal(false);
+  loginFields: DynamicFormField[] = [
+    {
+      controlName: 'email',
+      label: $localize`E-mail`,
+      type: 'email',
+      placeholder: $localize`example: yourname@example.org`,
+      autocomplete: 'email username',
+      autoFocus: true,
+      validationMessage: (form: FormGroup) => {
+        if (form.controls.email.invalid) {
+          return $localize`Enter a valid email address`;
+        }
+
+        return null;
+      },
+    },
+    {
+      controlName: 'password',
+      label: $localize`Password`,
+      type: 'password',
+      autocomplete: 'current-password',
+      validationMessage: (form: FormGroup) => {
+        if (form.controls.password.invalid) {
+          return $localize`Enter your password`;
+        }
+
+        return null;
+      },
+    },
+  ];
 
   loginMutation = injectMutation(() => ({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
@@ -82,9 +96,14 @@ export class LoginComponent {
     },
   }));
 
-  onLogin() {
-    this.loginFormSubmitted.set(true);
+  loginFormError = computed(() => {
+    if (!this.loginMutation.isError()) {
+      return;
+    }
+    return this.loginMutation.failureReason()?.message;
+  });
 
+  onLogin() {
     const { email, password } = this.loginForm.value;
 
     if (!this.loginForm.valid || !email || !password) {

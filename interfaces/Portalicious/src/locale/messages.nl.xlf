@@ -273,6 +273,10 @@
         <target state="new">Change password</target>
         <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
+      <trans-unit id="935187492052582731" datatype="html">
+        <source>Submit</source>
+        <target state="new">Submit</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

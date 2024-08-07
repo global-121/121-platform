@@ -1,24 +1,22 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
-  signal,
 } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
-import { PasswordModule } from 'primeng/password';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import {
+  DynamicFormComponent,
+  DynamicFormField,
+} from '~/components/dynamic-form/dynamic-form.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
@@ -50,15 +48,7 @@ const confirmPasswordValidator: ValidatorFn = (
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [
-    PageLayoutComponent,
-    PasswordModule,
-    ButtonModule,
-    ReactiveFormsModule,
-    FormErrorComponent,
-    ProgressSpinnerModule,
-    MessagesModule,
-  ],
+  imports: [PageLayoutComponent, DynamicFormComponent],
   providers: [ToastService],
   templateUrl: './change-password.component.html',
   styles: ``,
@@ -70,25 +60,72 @@ export class ChangePasswordComponent {
 
   changePasswordForm = new FormGroup(
     {
-      /* eslint-disable-next-line @typescript-eslint/unbound-method */
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       currentPassword: new FormControl('', Validators.required),
       newPassword: new FormControl('', [
-        /* eslint-disable-next-line @typescript-eslint/unbound-method */
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         Validators.required,
         Validators.minLength(8),
       ]),
-      /* eslint-disable-next-line @typescript-eslint/unbound-method */
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       confirmPassword: new FormControl('', Validators.required),
     },
-    {
-      validators: [newPasswordValidator, confirmPasswordValidator],
-    },
+    { validators: [newPasswordValidator, confirmPasswordValidator] },
   );
 
-  // This should only be used to show the error messages when the form is submitted.
-  // That is because we do not want to use "disabled" buttons in our forms, for accessibility reasons,
-  // and we want to show the error messages when the form is submitted with errors.
-  changePasswordFormSubmitted = signal(false);
+  changePasswordFields: DynamicFormField[] = [
+    {
+      controlName: 'currentPassword',
+      label: $localize`Current Password`,
+      type: 'password',
+      autocomplete: 'current-password',
+      autoFocus: true,
+      validationMessage: (form: FormGroup) => {
+        if (form.controls.currentPassword.errors?.required) {
+          return $localize`:@@generic-required-field:This field is required.`;
+        }
+
+        return null;
+      },
+    },
+    {
+      controlName: 'newPassword',
+      label: $localize`New Password`,
+      type: 'password',
+      autocomplete: 'new-password',
+      validationMessage: (form: FormGroup) => {
+        if (form.controls.newPassword.errors?.required) {
+          return $localize`:@@generic-required-field:This field is required.`;
+        }
+
+        if (form.controls.newPassword.errors?.minlength) {
+          return $localize`The new password must be at least 8 characters long.`;
+        }
+
+        if (form.hasError('newPasswordIsNotDifferent')) {
+          return $localize`The new password must be different from the current password.`;
+        }
+
+        return null;
+      },
+    },
+    {
+      controlName: 'confirmPassword',
+      label: $localize`Confirm Password`,
+      type: 'password',
+      validationMessage: (form: FormGroup) => {
+        if (form.controls.confirmPassword.errors?.required) {
+          return $localize`:@@generic-required-field:This field is required.`;
+        }
+
+        if (form.hasError('confirmPasswordDoesNotMatch')) {
+          return $localize`The confirm password must be equal to the new password.`;
+        }
+
+        return null;
+      },
+    },
+  ];
 
   changePasswordMutation = injectMutation(() => ({
     mutationFn: ({
@@ -100,16 +137,20 @@ export class ChangePasswordComponent {
     }) => this.authService.changePassword({ password, newPassword }),
     onSuccess: () => {
       this.changePasswordForm.reset();
-      this.changePasswordFormSubmitted.set(false);
       this.toastService.showToast({
         detail: $localize`Your password was successfully changed.`,
       });
     },
   }));
 
-  onChangePassword() {
-    this.changePasswordFormSubmitted.set(true);
+  changePasswordFormError = computed(() => {
+    if (!this.changePasswordMutation.isError()) {
+      return;
+    }
+    return this.changePasswordMutation.failureReason()?.message;
+  });
 
+  onChangePassword() {
     const { currentPassword, newPassword, confirmPassword } =
       this.changePasswordForm.value;
 

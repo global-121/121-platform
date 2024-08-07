@@ -1,0 +1,52 @@
+<form
+  class="block w-full"
+  [formGroup]="formGroup()"
+  (ngSubmit)="onFormSubmit()"
+>
+  <div class="flex flex-col gap-2">
+    @for (field of fields(); track field.controlName) {
+      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+      <label>
+        <ng-container>{{ field.label }}</ng-container>
+        @switch (field.type) {
+          @case ('password') {
+            <p-password
+              [formControlName]="field.controlName"
+              [autocomplete]="field.autocomplete"
+              [toggleMask]="true"
+              [feedback]="false"
+              pAutoFocus
+              [autofocus]="field.autoFocus"
+              styleClass="mt-2 w-full [&_input]:w-full"
+            />
+          }
+          @default {
+            <!-- eslint-disable @angular-eslint/template/no-autofocus -->
+            <input
+              pInputText
+              [type]="field.type"
+              [formControlName]="field.controlName"
+              [autocomplete]="field.autocomplete"
+              [placeholder]="field.placeholder"
+              pAutoFocus
+              [autofocus]="field.autoFocus"
+              class="mt-2 block w-full"
+            />
+          }
+        }
+      </label>
+      <app-form-error
+        [visible]="formGroup().controls[field.controlName].touched"
+        [error]="field.validationMessage?.(formGroup())"
+      />
+    }
+    <p-button
+      [label]="submitButtonText()"
+      type="submit"
+      rounded
+      class="mt-8"
+      [loading]="isSubmitting()"
+    />
+    <app-form-error [error]="formError()" />
+  </div>
+</form>

@@ -208,6 +208,9 @@
         <source>Change password</source>
         <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
+      <trans-unit id="935187492052582731" datatype="html">
+        <source>Submit</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
