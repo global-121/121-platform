@@ -36,7 +36,7 @@ jobs:
             form-action https://helpachild.121.global;
         env:
           NG_ENV_NAME: 'Help a Child'
-          NG_LOCALES: 'en'
+          NG_LOCALES: ${{ vars.NG_LOCALES }}
           NG_URL_121_SERVICE_API: 'https://helpachild.121.global/api'
           NG_AI_IKEY: 'a6826f45-6d5e-4484-a8ff-874e33252d56'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'

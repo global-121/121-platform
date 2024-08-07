@@ -59,7 +59,7 @@ jobs:
             frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'test'
-          NG_LOCALES: 'ar,en,es,fr,nl'
+          NG_LOCALES: ${{ vars.NG_LOCALES }}
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
           # Logging disabled by default (uncomment these lines to enable on a per-issue basis)
           # NG_AI_IKEY: '6cdbf5e6-461c-4f03-bb3b-84f6ecc746b6'

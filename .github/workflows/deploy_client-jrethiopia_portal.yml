@@ -36,7 +36,7 @@ jobs:
             form-action https://jrethiopia.121.global;
         env:
           NG_ENV_NAME: ''
-          NG_LOCALES: 'en'
+          NG_LOCALES: ${{ vars.NG_LOCALES }}
           NG_URL_121_SERVICE_API: 'https://jrethiopia.121.global/api'
           NG_AI_IKEY: '3b5033ee-be17-4e42-bc11-1efadaa66c27'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'

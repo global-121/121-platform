@@ -37,7 +37,7 @@ jobs:
             frame-src 'self' https://app.powerbi.com;
         env:
           NG_ENV_NAME: 'South Africa'
-          NG_LOCALES: 'en'
+          NG_LOCALES: ${{ vars.NG_LOCALES }}
           NG_URL_121_SERVICE_API: 'https://southafrica.121.global/api'
           NG_AI_IKEY: '88aa2b5e-041d-4a33-b7c0-d55e85a28c6d'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
