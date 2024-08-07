@@ -13,3 +13,4 @@ node_modules
 # Playwright screenshots
 screenshots
 .DS_Store
+
