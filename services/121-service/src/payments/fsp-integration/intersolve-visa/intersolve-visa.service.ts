@@ -87,6 +87,7 @@ export class IntersolveVisaService
 
     const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne(
       intersolveVisaParentWallet,
+      input.brandCode,
     );
 
     // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
@@ -313,6 +314,7 @@ export class IntersolveVisaService
 
   private async getChildWalletsOrCreateOne(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
+    brandCode: string,
   ): Promise<IntersolveVisaChildWalletEntity[]> {
     // Check if at least one child wallet exists
     if (intersolveVisaParentWallet.intersolveVisaChildWallets.length) {
@@ -321,7 +323,7 @@ export class IntersolveVisaService
 
     // If not, create new child wallet
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
-      brandCode: intersolveVisaParentWallet.intersolveVisaCustomer.holderId,
+      brandCode: brandCode,
       activate: false, // Child Wallets are always created deactivated
       reference: process.env.MOCK_INTERSOLVE
         ? intersolveVisaParentWallet.intersolveVisaCustomer.holderId
