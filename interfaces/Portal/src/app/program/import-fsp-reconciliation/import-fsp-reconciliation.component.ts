@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { ImportType } from 'src/app/models/import-type.enum';
 import { AuthService } from '../../../app/auth/auth.service';
 import { ProgramsServiceApiService } from '../../../app/services/programs-service-api.service';
 import Permission from '../../auth/permission.enum';
@@ -179,7 +180,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
         },
       ),
       programId: this.programId,
-      downloadTemplate: null,
+      downloadFspInstructionsImportTemplate: ImportType.reconciliation,
       titleTranslationKey: 'page.program.import-fsp-reconciliation.btn-text',
     };
   }

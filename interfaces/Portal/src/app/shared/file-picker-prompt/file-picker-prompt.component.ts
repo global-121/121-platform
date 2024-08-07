@@ -10,6 +10,7 @@ export interface FilePickerProps {
   programId?: number;
   downloadTemplate?: ImportType;
   titleTranslationKey?: string;
+  downloadFspInstructionsImportTemplate?: ImportType;
 }
 
 @Component({
@@ -46,6 +47,16 @@ export class FilePickerPromptComponent implements OnInit {
 
   public async downloadTemplate(programId: number, type: ImportType) {
     return await this.programsService.downloadImportTemplate(programId, type);
+  }
+
+  public async downloadFspInstructionsImportTemplate(
+    programId: number,
+    type: ImportType,
+  ) {
+    return await this.programsService.downloadFspInstructionsImportTemplate(
+      programId,
+      type,
+    );
   }
 
   private getAcceptForType(types: string): string {
