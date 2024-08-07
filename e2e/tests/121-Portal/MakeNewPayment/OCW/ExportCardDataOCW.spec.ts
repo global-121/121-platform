@@ -15,7 +15,7 @@ const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 
 const registrationStatus = 'included';
-const paId = 2;
+const paId = 1;
 const balance = 0;
 const spentThisMonth = 0;
 const isCurrentWallet = true;
