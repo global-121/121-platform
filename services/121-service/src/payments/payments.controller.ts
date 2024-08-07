@@ -261,7 +261,7 @@ export class PaymentsController {
       'Get payments template instructions to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/payments/fsp-reconciliation/import-template')
-  public async getImportRegistrationsTemplate(
+  public async getImportFspReconciliationTemplate(
     @Param() params,
   ): Promise<string[]> {
     return await this.paymentsService.getImportInstructionsTemplate(

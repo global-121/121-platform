@@ -442,3 +442,14 @@ export async function getImportRegistrationsTemplate(
     .set('Cookie', [accessToken])
     .send();
 }
+
+export async function getImportFspReconciliationTemplate(
+  programId: number,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  return getServer()
+    .get(`/programs/${programId}/payments/fsp-reconciliation/import-template`)
+    .set('Cookie', [accessToken])
+    .send();
+}
