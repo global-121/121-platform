@@ -38,7 +38,7 @@ jobs:
             frame-ancestors 'self' https://flex.twilio.com;
         env:
           NG_ENV_NAME: 'Demo'
-          NG_LOCALES: 'ar,en,es,fr,nl'
+          NG_LOCALES: ${{ vars.NG_LOCALES }}
           NG_URL_121_SERVICE_API: 'https://demo.121.global/api'
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}

@@ -37,7 +37,7 @@ jobs:
             frame-src 'self' https://app.powerbi.com;
         env:
           NG_ENV_NAME: 'Zambia'
-          NG_LOCALES: 'en'
+          NG_LOCALES: ${{ vars.NG_LOCALES }}
           NG_URL_121_SERVICE_API: 'https://zambia.121.global/api'
           NG_AI_IKEY: 'ea0000cf-e964-4a5a-8a29-2c29ac6228ad'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
