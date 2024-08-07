@@ -69,6 +69,32 @@
       </ion-button>
     </div>
 
+    <div
+      *ngIf="
+        filePickerProps.downloadFspInstructionsImportTemplate &&
+        filePickerProps.explanation
+      "
+      class="ion-margin-vertical"
+    >
+      <ion-button
+        (click)="
+          downloadFspInstructionsImportTemplate(
+            filePickerProps.programId,
+            filePickerProps.downloadFspInstructionsImportTemplate
+          )
+        "
+        color="primary"
+        fill="outline"
+      >
+        <ion-icon
+          name="download"
+          slot="start"
+          aria-hidden="true"
+        ></ion-icon>
+        {{ 'file-picker.download-template-button' | translate }}
+      </ion-button>
+    </div>
+
     <ion-input
       #fileInput
       type="file"
