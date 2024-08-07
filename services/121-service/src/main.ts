@@ -24,6 +24,7 @@ import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import fs from 'fs';
 import { SpelunkerModule } from 'nestjs-spelunker';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 import appInsights = require('applicationinsights');
 
 /**
