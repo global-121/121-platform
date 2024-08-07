@@ -54,7 +54,7 @@ test('[28450] OCW: Retry payment for all failed payments of PAs', async ({
   const homePage = new HomePage(page);
   const paymentsPage = new PaymentsPage(page);
 
-  const numberOfPas = 20;
+  const numberOfPas = 16;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
 
   await test.step('Navigate to PA table', async () => {
