@@ -468,7 +468,12 @@ export class IntersolveVisaService
     }
 
     intersolveVisaChildWallet.walletStatus = getTokenResult.status;
-    intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
+
+    // Our mock service always return that a token is not blocked
+    // However when we are using the mock service, we should not update the token status else it is always false when you refresh the registration page
+    if (!process.env.MOCK_INTERSOLVE) {
+      intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
+    }
     intersolveVisaChildWallet.lastExternalUpdate = new Date();
 
     intersolveVisaChildWallet =
