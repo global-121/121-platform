@@ -44,26 +44,24 @@
     }
   ],
   "targetNrRegistrations": 100000,
+  "programCustomAttributes": [],
   "tryWhatsAppFirst": true,
-  "programCustomAttributes": [
+  "programQuestions": [
     {
-      "name": "firstName",
+      "name": "fullName",
       "label": {
-        "en": "First name"
+        "en": "Full Name"
       },
-      "type": "text",
+      "answerType": "text",
+      "questionType": "standard",
+      "pattern": null,
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "editableInPortal": true,
       "showInPeopleAffectedTable": false
     },
-    {
-      "name": "lastName",
-      "label": {
-        "en": "Last name"
-      },
-      "type": "text",
-      "showInPeopleAffectedTable": false
-    }
-  ],
-  "programQuestions": [
     {
       "name": "phoneNumber",
       "label": {
@@ -86,7 +84,7 @@
   "aboutProgram": {
     "en": "This is the OCW program."
   },
-  "fullnameNamingConvention": ["firstName", "lastName"],
+  "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "nl", "ar", "tr"],
   "enableMaxPayments": false,
   "enableScope": false,
