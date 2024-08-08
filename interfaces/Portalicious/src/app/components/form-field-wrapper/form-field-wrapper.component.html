@@ -1,0 +1,6 @@
+<!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+<label class="[&_.p-password]:block [&_input]:mt-2 [&_input]:w-full">
+  {{ label() }}
+  <ng-content></ng-content>
+</label>
+<app-form-error [error]="errorMessage()" />
