@@ -4,6 +4,7 @@ changelog:
       - dependencies # dependabot
       - chore # manually excluded
       - ignore-for-release # manually excluded
+      - portalicious # manually excluded
   categories:
     - title: New Features 🎉
       labels:
