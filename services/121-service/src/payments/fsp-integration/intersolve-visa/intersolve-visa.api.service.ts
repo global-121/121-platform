@@ -730,12 +730,8 @@ export class IntersolveVisaApiService {
     // Create the request
 
     const requestBody = {
-      phoneNumbers: [
-        {
-          type: 'MOBILE',
-          value: formatPhoneNumber(phoneNumber),
-        },
-      ],
+      type: 'MOBILE',
+      value: formatPhoneNumber(phoneNumber),
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
