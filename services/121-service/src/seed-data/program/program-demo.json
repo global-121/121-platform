@@ -23,38 +23,9 @@
   "distributionFrequency": "week",
   "distributionDuration": 10,
   "fixedTransferValue": 35,
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Excel",
-      "configuration": [
-        {
-          "name": "columnsToExport",
-          "value": ["name", "birthdate", "documentid", "phoneNumber"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": true,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "name",
       "label": {
@@ -64,7 +35,7 @@
         "fr": "Nom",
         "nl": "Naam"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -82,7 +53,7 @@
         "fr": "Deuxième prénom",
         "nl": "Tweede naam"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -100,7 +71,7 @@
         "fr": "Prénom",
         "nl": "Voornaam"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -118,7 +89,7 @@
         "fr": "Genre",
         "nl": "Geslacht"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -167,7 +138,7 @@
         "fr": "Date de naissance",
         "nl": "Geboortedatum"
       },
-      "answerType": "date",
+      "type": "date",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -185,7 +156,7 @@
         "fr": "Numéro d'identification",
         "nl": "Document ID"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -204,7 +175,7 @@
         "fr": "Chef de ménage",
         "nl": "Hoofd huishouden"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -243,7 +214,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -261,7 +232,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -281,7 +252,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -299,7 +270,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -319,7 +290,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -383,7 +354,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -469,7 +440,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -489,7 +460,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -509,7 +480,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -529,7 +500,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -549,7 +520,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -569,7 +540,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -589,7 +560,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -609,7 +580,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -638,6 +609,21 @@
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {
@@ -649,5 +635,33 @@
   },
   "fullnameNamingConvention": ["name", "middlename", "firstname"],
   "languages": ["ar", "en", "es", "fr", "nl"],
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfiguration": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "attributes": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "attributes": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "birthdate", "documentid", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ]
 }
