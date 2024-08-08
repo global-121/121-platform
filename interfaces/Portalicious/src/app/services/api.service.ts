@@ -86,4 +86,24 @@ export class ApiService {
       endpoint: `${ApiEndpoints.projects}/${id.toString()}/${ApiEndpoints.payments}`,
     });
   }
+
+  async createProjectFromKobo({
+    token,
+    assetId,
+  }: {
+    token: string;
+    assetId: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Project | undefined
+    >({
+      method: 'POST',
+      endpoint: ApiEndpoints.projects,
+      params: {
+        importFromKobo: true,
+        koboToken: token,
+        koboAssetId: assetId,
+      },
+    });
+  }
 }

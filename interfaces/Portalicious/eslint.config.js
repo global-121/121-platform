@@ -94,6 +94,7 @@ module.exports = tseslint.config(
             'iconPos',
             'ngSrc',
             'styleClass',
+            'position',
           ],
         },
       ],

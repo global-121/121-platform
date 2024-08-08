@@ -7,19 +7,12 @@
       All projects
     </h1>
 
-    <div class="text-end">
-      <p-button
-        *ngIf="canCreateProjects"
-        label="Create new project"
-        i18n-label="Button-label"
-        outlined
-        icon="pi pi-plus"
-        class="text-xs sm:text-base"
-      />
-    </div>
+    @if (canCreateProjects) {
+      <app-create-project-button />
+    }
   </div>
 
-  @if (!assignedProjects.length) {
+  @if (assignedProjects.length === 0) {
     <div class="rounded-lg bg-white pb-8 pt-6 text-center drop-shadow-md">
       <i class="pi pi-bullseye mb-6 block text-6xl"></i>
 
@@ -35,9 +28,7 @@
         to start using the 121 portal.
       </p>
     </div>
-  }
-
-  @if (assignedProjects.length >= 1) {
+  } @else {
     <ul
       class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
       role="list"
