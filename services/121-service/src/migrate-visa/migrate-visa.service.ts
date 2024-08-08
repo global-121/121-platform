@@ -229,6 +229,7 @@ export class MigrateVisaService {
       childWallet.cardStatus = originalWallet.cardStatus;
       childWallet.lastUsedDate = originalWallet.lastUsedDate;
       childWallet.lastExternalUpdate = originalWallet.lastExternalUpdate;
+      childWallet.created = originalWallet.created;
       const savedChildWallet = await queryRunner.manager.save(childWallet);
 
       await this.postToggleBlockWallet(
