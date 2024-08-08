@@ -27,7 +27,9 @@ export class SmsService {
     messageContentType?: MessageContentType,
     messageProcessType?: MessageProcessType,
   ): Promise<void> {
-    const to = recipientPhoneNr ? formatPhoneNumber(recipientPhoneNr) : null;
+    const to = recipientPhoneNr
+      ? formatPhoneNumber(recipientPhoneNr)
+      : 'not available'; // When allowEmptyPhoneNumber is true in a program, the to number can be empty and an error will be stored
 
     let messageToStore;
     try {
