@@ -147,7 +147,7 @@ describe('Update attribute of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    response.body;
+
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
       programIdOcw,
@@ -224,7 +224,7 @@ describe('Update attribute of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
-    response.body;
+
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
       programIdOcw,
@@ -260,7 +260,7 @@ describe('Update attribute of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
-    response.body;
+
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
       programIdOcw,

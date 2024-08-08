@@ -1040,10 +1040,9 @@ export class IntersolveVisaService
 
     const result = await this.toggleBlockWallet(tokenCode, block);
 
-    let notificationKey: string;
-    block
-      ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
-      : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
+    const notificationKey: string = block
+      ? ProgramNotificationEnum.blockVisaCard
+      : ProgramNotificationEnum.unblockVisaCard;
 
     await this.queueMessageService.addMessageToQueue({
       registration: wallet.intersolveVisaCustomer.registration,
