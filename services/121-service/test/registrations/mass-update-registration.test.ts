@@ -80,6 +80,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       programIdOcw,
       './test-registration-data/test-registrations-patch-OCW.csv',
       accessToken,
+      'Bulk update for test registrations due to data validation improvements',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
@@ -124,6 +125,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       programIdOcw,
       './test-registration-data/test-registrations-patch-OCW-without-phoneNumber-column.csv',
       accessToken,
+      'Bulk update for test registrations due to data validation improvements',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
