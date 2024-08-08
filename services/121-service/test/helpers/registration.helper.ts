@@ -36,11 +36,13 @@ export function bulkUpdateRegistrationsCSV(
   programId: number,
   filePath: string,
   accessToken: string,
+  reason: string,
 ): Promise<request.Response> {
   return getServer()
     .patch(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
-    .attach('file', filePath);
+    .attach('file', filePath)
+    .field('reason', reason);
 }
 
 export function deleteRegistrations(
