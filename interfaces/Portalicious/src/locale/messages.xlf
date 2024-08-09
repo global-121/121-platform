@@ -224,6 +224,9 @@
       <trans-unit id="8675927317645341841" datatype="html">
         <source>Included people</source>
       </trans-unit>
+      <trans-unit id="3856642440952305228" datatype="html">
+        <source>Last payment: <x equiv-text="{{ getLastPayment(payments.data())?.paymentDate | date: &apos;dd-MM-yyyy&apos; }}" id="INTERPOLATION"/></source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
