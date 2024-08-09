@@ -107,4 +107,26 @@
       </div>
     </dl>
   </ng-template>
+  <ng-template pTemplate="footer">
+    @switch (payments.status()) {
+      @case ('pending') {
+        <p-skeleton
+          class="my-1 cursor-progress text-lg"
+          height="1.125rem"
+          [width]="randomWidth"
+        />
+      }
+      @case ('success') {
+        <div
+          i18n
+          class="text-end"
+        >
+          Last payment:
+          {{
+            getLastPayment(payments.data())?.paymentDate | date: 'dd-MM-yyyy'
+          }}
+        </div>
+      }
+    }
+  </ng-template>
 </p-card>
