@@ -8,6 +8,12 @@
   "prettier.configPath": ".prettierrc.yml",
   "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.showPixelEquivalents": false,
+  "tailwindCSS.classAttributes": [
+    "class",
+    "styleClass",
+    "ngClass",
+    "class:list"
+  ],
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "node_modules/typescript/lib",
   "XLF: State": true,
