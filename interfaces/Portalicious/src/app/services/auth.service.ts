@@ -134,19 +134,23 @@ export class AuthService {
   }) {
     const username = this.user?.username;
 
-    if (username) {
-      try {
-        await this.apiService.changePassword({
-          username,
-          password,
-          newPassword,
-        });
-      } catch (error) {
-        console.error(error);
-        throw new Error(
-          $localize`Failed to change the password. Please refresh the page and try again.`,
-        );
-      }
+    if (!username) {
+      throw new Error(
+        $localize`:@@generic-error:An unexpected error has occurred. Please try again later.`,
+      );
+    }
+
+    try {
+      return await this.apiService.changePassword({
+        username,
+        password,
+        newPassword,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new Error(
+        $localize`Failed to change the password. Please refresh the page and try again.`,
+      );
     }
   }
 }

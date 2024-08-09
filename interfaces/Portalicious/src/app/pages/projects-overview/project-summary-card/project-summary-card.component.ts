@@ -40,17 +40,17 @@ export class ProjectSummaryCardComponent {
   public randomWidth = `${getRandomInt(42, 98).toString()}%`;
 
   public project = injectQuery(() => ({
-    queryKey: [ApiEndpoints.programs, this.id()],
+    queryKey: [ApiEndpoints.projects, this.id()],
     queryFn: () => this.apiService.getProjectById(this.id()),
   }));
 
   public metrics = injectQuery(() => ({
-    queryKey: [ApiEndpoints.programs, this.id(), ApiEndpoints.programsMetrics],
+    queryKey: [ApiEndpoints.projects, this.id(), ApiEndpoints.projectsMetrics],
     queryFn: () => this.apiService.getProjectSummaryMetrics(this.id()),
   }));
 
   public payments = injectQuery(() => ({
-    queryKey: [ApiEndpoints.programs, this.id(), ApiEndpoints.payments],
+    queryKey: [ApiEndpoints.projects, this.id(), ApiEndpoints.payments],
     queryFn: () => this.apiService.getPayments(this.id()),
   }));
 
