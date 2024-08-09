@@ -4,7 +4,7 @@ import { Locator, Page } from 'playwright';
 class BasePage {
   readonly page: Page;
   readonly languageDropdown: PrimeDropdown;
-  readonly programHeader: Locator;
+  readonly projectHeader: Locator;
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
 
@@ -15,7 +15,7 @@ class BasePage {
       page,
       testId: 'language-dropdown',
     });
-    this.programHeader = this.page.getByTestId('program-header');
+    this.projectHeader = this.page.getByTestId('project-header');
     this.sidebar = this.page.getByTestId('sidebar');
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
   }
@@ -30,7 +30,7 @@ class BasePage {
   }
 
   async navigateToProgramPage(pageName: string) {
-    await this.programHeader.getByRole('menuitem', { name: pageName }).click();
+    await this.projectHeader.getByRole('menuitem', { name: pageName }).click();
   }
 
   async changeLanguage(language: string) {

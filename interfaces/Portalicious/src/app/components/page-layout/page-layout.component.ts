@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
-import { ProgramHeaderComponent } from '~/components/page-layout/components/program-header/program-header.component';
+import { ProgramHeaderComponent } from '~/components/page-layout/components/project-header/project-header.component';
 
 @Component({
   selector: 'app-page-layout',

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '~/auth.guard';
-import { AllProjectsComponent } from '~/pages/all-projects/all-projects.component';
 import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';
 import { ProgramMonitoringComponent } from '~/pages/program/program-monitoring/program-monitoring.component';
@@ -8,19 +7,20 @@ import { ProgramOverviewComponent } from '~/pages/program/program-overview/progr
 import { ProgramPaymentsComponent } from '~/pages/program/program-payments/program-payments.component';
 import { ProgramRegistrationsComponent } from '~/pages/program/program-registrations/program-registrations.component';
 import { ProgramTeamComponent } from '~/pages/program/program-team/program-team.component';
+import { ProjectsOverviewComponent } from '~/pages/projects-overview/projects-overview.component';
 import { RolesAndPermissionsComponent } from '~/pages/roles-and-permissions/roles-and-permissions.component';
 import { UsersComponent } from '~/pages/users/users.component';
 
 export enum AppRoutes {
-  allProjects = 'all-projects',
   changePassword = 'change-password',
   login = 'login',
-  program = 'program',
-  programMonitoring = 'monitoring',
-  programOverview = 'overview',
-  programPayments = 'payments',
-  programRegistrations = 'registrations',
-  programTeam = 'team',
+  project = 'project',
+  projectMonitoring = 'monitoring',
+  projectOverview = 'overview',
+  projectPayments = 'payments',
+  projectRegistrations = 'registrations',
+  projects = 'projects',
+  projectTeam = 'team',
   rolesAndPermissions = 'roles-and-permissions',
   users = 'users',
 }
@@ -31,8 +31,8 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: AppRoutes.allProjects,
-    component: AllProjectsComponent,
+    path: AppRoutes.projects,
+    component: ProjectsOverviewComponent,
     canActivate: [authGuard],
   },
   {
@@ -52,33 +52,38 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: `${AppRoutes.program}/:programId`,
+    path: `${AppRoutes.project}/:programId`,
     canActivate: [authGuard],
     children: [
-      { path: AppRoutes.programOverview, component: ProgramOverviewComponent },
+      { path: AppRoutes.projectOverview, component: ProgramOverviewComponent },
       {
-        path: AppRoutes.programTeam,
+        path: AppRoutes.projectTeam,
         component: ProgramTeamComponent,
       },
       {
-        path: AppRoutes.programRegistrations,
+        path: AppRoutes.projectRegistrations,
         component: ProgramRegistrationsComponent,
       },
-      { path: AppRoutes.programPayments, component: ProgramPaymentsComponent },
+      { path: AppRoutes.projectPayments, component: ProgramPaymentsComponent },
       {
-        path: AppRoutes.programMonitoring,
+        path: AppRoutes.projectMonitoring,
         component: ProgramMonitoringComponent,
       },
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: AppRoutes.programRegistrations,
+        redirectTo: AppRoutes.projectRegistrations,
       },
     ],
   },
-  { path: '', redirectTo: AppRoutes.allProjects, pathMatch: 'full' },
+  {
+    path: AppRoutes.project,
+    redirectTo: AppRoutes.projects,
+    pathMatch: 'full',
+  },
+  { path: '', redirectTo: AppRoutes.projects, pathMatch: 'full' },
   {
     path: '**',
-    redirectTo: AppRoutes.allProjects,
+    redirectTo: AppRoutes.projects,
   },
 ];
