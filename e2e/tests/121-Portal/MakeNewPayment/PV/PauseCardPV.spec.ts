@@ -3,6 +3,7 @@ import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
 import PhysicalCardOverview from '@121-e2e/pages/PhysicalCardOverview/PhysicalCardOverview';
 import TableModule from '@121-e2e/pages/Table/TableModule';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';

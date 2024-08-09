@@ -55,7 +55,7 @@ test('[28461] Re-issue Visa debit cards', async ({ page }) => {
     // FOR NOW STATUS SHOULD BE BLOCKED BUT AFTER NEW CHANGES ARE APPLIED THIS SHOULD BE CHANGED INTO "SUBSTITUTED"
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Blocked,
+      VisaCard121Status.Substituted,
     );
   });
 });
