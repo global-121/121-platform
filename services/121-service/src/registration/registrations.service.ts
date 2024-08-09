@@ -373,11 +373,13 @@ export class RegistrationsService {
     csvFile: any,
     programId: number,
     userId: number,
+    reason: string,
   ): Promise<void> {
     return await this.registrationsImportService.patchBulk(
       csvFile,
       programId,
       userId,
+      reason,
     );
   }
 

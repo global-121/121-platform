@@ -73,6 +73,7 @@ export class RegistrationsImportService {
     csvFile: any,
     programId: number,
     userId: number,
+    reason: string,
   ): Promise<void> {
     const bulkUpdateRecords = await this.fileImportService.validateCsv(
       csvFile,
@@ -104,6 +105,7 @@ export class RegistrationsImportService {
           referenceId: registration['referenceId'],
           data: updateData,
           programId,
+          reason,
         } as RegistrationUpdateJobDto;
       },
     );

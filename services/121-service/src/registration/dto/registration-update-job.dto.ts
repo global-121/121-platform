@@ -3,4 +3,5 @@ export class RegistrationsUpdateJobDto {
   programId: number;
   data: Record<string, string>;
   request?: { userId?: number; scope?: string };
+  reason: string;
 }
