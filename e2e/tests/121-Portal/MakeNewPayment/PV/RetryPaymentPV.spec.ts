@@ -91,6 +91,7 @@ test('[28468] PV: Retry payment for all failed payments of PAs', async ({
       programIdPV,
       './test-registration-data/test-registrations-patch-PV.csv',
       accessToken,
+      'Bulk update for test registrations due to data validation improvements',
     );
     await paymentsPage.retryPayment({
       buttonName: ok,
