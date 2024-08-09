@@ -1,16 +1,14 @@
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import {
+  programIdVisa,
+  registrationVisa,
+} from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { exportList } from '@121-service/test/helpers/program.helper';
 import {
-  doPayment,
-  exportList,
-} from '@121-service/test/helpers/program.helper';
-import {
-  awaitChangePaStatus,
-  getVisaWalletsAndDetails,
-  importRegistrations,
   issueNewVisaCard,
+  retrieveAndUpdateVisaWalletsAndDetails,
+  seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -19,8 +17,6 @@ import {
 
 describe('Export Visa debit card report', () => {
   const programId = 3;
-  const payment = 1;
-  const amount = 25;
 
   let accessToken: string;
 
@@ -32,24 +28,7 @@ describe('Export Visa debit card report', () => {
 
   it('should succesfully generate a report of all Visa Debit cards', async () => {
     // Arrange
-    await importRegistrations(programId, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programId,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
-    const paymentReferenceIds = [registrationVisa.referenceId];
-    await doPayment(
-      programId,
-      payment,
-      amount,
-      paymentReferenceIds,
-      accessToken,
-    );
-
-    // Act
-    await waitFor(2_000);
+    await seedPaidRegistrations([registrationVisa], programIdVisa);
 
     // To ensure that the export also works if there are multiple cards for one person
     await issueNewVisaCard(
@@ -58,7 +37,8 @@ describe('Export Visa debit card report', () => {
       accessToken,
     );
 
-    await getVisaWalletsAndDetails(
+    // This to ensure our mock is triggered
+    await retrieveAndUpdateVisaWalletsAndDetails(
       programId,
       registrationVisa.referenceId,
       accessToken,

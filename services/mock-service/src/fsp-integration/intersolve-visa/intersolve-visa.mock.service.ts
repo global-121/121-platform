@@ -486,31 +486,33 @@ export class IntersolveVisaMockService {
       } catch (error) {
         spentAmount = 200;
       }
-      response.data.data!.push({
-        id: 1,
-        quantity: {
-          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
-          value: -spentAmount,
+      response.data.data = [
+        {
+          id: 1,
+          quantity: {
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            value: -spentAmount,
+          },
+          createdAt: new Date(
+            new Date().setDate(new Date().getDate()),
+          ).toISOString(),
+          creditor: {
+            tokenCode: 'random token code',
+          },
+          debtor: {
+            tokenCode: tokenCode,
+          },
+          reference: 'string',
+          type: 'RESERVATION',
+          description: 'string',
+          location: {
+            merchantCode: 'string',
+            merchantLocationCode: 'string',
+          },
+          originalTransactionId: 1,
+          paymentId: 1,
         },
-        createdAt: new Date(
-          new Date().setDate(new Date().getDate()),
-        ).toISOString(),
-        creditor: {
-          tokenCode: 'random token code',
-        },
-        debtor: {
-          tokenCode: tokenCode,
-        },
-        reference: 'string',
-        type: 'RESERVATION',
-        description: 'string',
-        location: {
-          merchantCode: 'string',
-          merchantLocationCode: 'string',
-        },
-        originalTransactionId: 1,
-        paymentId: 1,
-      });
+      ];
 
       response.data.data!.push({
         id: 1,
@@ -625,7 +627,7 @@ export class IntersolveVisaMockService {
     fromToken: string,
     amount: number,
   ): IntersolveVisaMockResponseDto {
-    if (amount === MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT) {
+    if (amount === MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT * 100) {
       return {
         status: HttpStatus.BAD_REQUEST,
         statusText: 'Not Found',

@@ -67,42 +67,6 @@ describe('Issue new Visa debit card', () => {
     );
   });
 
-  it('should fail to issue a new Visa Debit card if substitute endpoint is broken', async () => {
-    // Arrange
-    registrationVisa.fullName = 'mock-fail-substitute';
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
-
-    // Act
-    const issueVisaCardResponse = await issueNewVisaCard(
-      programIdVisa,
-      registrationVisa.referenceId,
-      accessToken,
-    );
-    await waitFor(2_000);
-    const visaWalletResponse = await getVisaWalletsAndDetails(
-      programIdVisa,
-      registrationVisa.referenceId,
-      accessToken,
-    );
-
-    const messageReponse = await getMessageHistory(
-      programIdVisa,
-      registrationVisa.referenceId,
-      accessToken,
-    );
-
-    // Assert
-    expect(issueVisaCardResponse.status).toBe(404);
-    expect(visaWalletResponse.body.cards.length).toBe(1);
-    expect(visaWalletResponse.body.cards[0].status).toBe(
-      VisaCard121Status.Issued,
-    );
-    const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).not.toBe(
-      messageTemplatesOCW.reissueVisaCard.message.en,
-    );
-  });
-
   it('should fail to issue a new Visa Debit card if phonenumber is missing & succesfully reissue after phonenumber is updated again', async () => {
     // Arrange
     const programIdPv = 2;

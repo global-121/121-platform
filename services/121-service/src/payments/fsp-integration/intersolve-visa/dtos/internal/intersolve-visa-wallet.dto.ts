@@ -1,4 +1,4 @@
-import { IntersolveVisaCard } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-card';
+import { IntersolveVisaCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-card.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class IntersolveVisaWalletDto {
@@ -12,8 +12,8 @@ export class IntersolveVisaWalletDto {
   public maxToSpendPerMonth: number;
   @ApiProperty({ type: Date, nullable: true })
   public lastUsedDate: Date | null;
-  @ApiProperty()
-  public lastExternalUpdate: string; // TODO: This could also be null, right? If no external update has been done yet.
-  @ApiProperty({ type: [IntersolveVisaCard] })
-  public cards: IntersolveVisaCard[];
+  @ApiProperty({ type: Date, nullable: true })
+  public lastExternalUpdate: string | null;
+  @ApiProperty({ type: [IntersolveVisaCardDto] })
+  public cards: IntersolveVisaCardDto[];
 }

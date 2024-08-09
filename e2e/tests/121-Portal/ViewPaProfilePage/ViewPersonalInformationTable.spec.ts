@@ -55,7 +55,7 @@ test('[27492] View Personal information table', async ({ page }) => {
     await page.reload();
     // Reload should be removed after fixing the issue with the data not being available https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27568
     await registration.validatePersonalInformationTable(
-      'Luis Garcia',
+      'Luiz Garcia',
       status,
       await Helpers.getTodaysDate(),
       language,

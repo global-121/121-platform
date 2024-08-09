@@ -1,7 +1,7 @@
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-wallet.dto';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import {
   PaginateConfigRegistrationViewOnlyFilters,
   PaginateConfigRegistrationViewWithPayments,
@@ -704,8 +704,7 @@ export class RegistrationsController {
     );
   }
 
-  // Re-issue card: creates a new IntersolveVisa Child Wallet and Card for a Registration, and makes the old ones unusable. This endpoint needs data from Registration, which is why it is not in the IntersolveVisaController.
-  // TODO: REFACTOR: Can we think of a better place for this endpoint? Or conceptually a better way to deal with re-issuing cards?
+  // Re-issue card: this is placed in registrationscontroller because it also sends messages and searches by referenceId
   @ApiTags('financial-service-providers/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
@@ -721,12 +720,11 @@ export class RegistrationsController {
   @Post(
     'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet/cards',
   )
-  // TODO: When a data structure has been created in the view cards task use that (or a subset).
   @HttpCode(HttpStatus.NO_CONTENT)
   public async reissueCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-  ): Promise<any> {
+  ): Promise<void> {
     await this.registrationsService.reissueCardAndSendMessage(
       referenceId,
       programId,

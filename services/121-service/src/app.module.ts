@@ -8,7 +8,6 @@ import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
 import { OrganizationModule } from '@121-service/src/organization/organization.module';
-import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
@@ -58,9 +57,8 @@ import { DataSource } from 'typeorm';
       },
     }),
     AuthModule,
-    ProgramFinancialServiceProviderConfigurationsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
     TransactionQueuesModule,
-    TransactionJobProcessorsModule, // TODO: REFACTOR: move this import to the PaymentsModule and other Modules that depend on it (improves loose coupling and start-up time)
+    TransactionJobProcessorsModule,
   ],
   controllers: [AppController],
   providers: [

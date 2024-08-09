@@ -1,4 +1,3 @@
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
@@ -40,7 +39,6 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   public registrationStatus: Person['status'];
 
   public wallet: Wallet;
-  public WalletCardStatus121 = VisaCard121Status;
   public latestCard: Card;
 
   public DateFormat = DateFormat;

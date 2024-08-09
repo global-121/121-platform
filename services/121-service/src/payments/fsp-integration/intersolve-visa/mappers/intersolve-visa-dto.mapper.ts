@@ -1,5 +1,5 @@
-import { IntersolveVisaCard } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-card';
-import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-visa-wallet.dto';
+import { IntersolveVisaCardDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-card.dto';
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
@@ -43,14 +43,14 @@ export class IntersolveVisaDtoMapper {
 
   private static mapChildWalletEntityToCard(
     childWallet: IntersolveVisaChildWalletEntity,
-  ): IntersolveVisaCard {
+  ): IntersolveVisaCardDto {
     const statusInfo =
       IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({
         isTokenBlocked: childWallet.isTokenBlocked,
         walletStatus: childWallet.walletStatus,
         cardStatus: childWallet.cardStatus,
       });
-    const cardDto: IntersolveVisaCard = {
+    const cardDto: IntersolveVisaCardDto = {
       tokenCode: childWallet.tokenCode,
       status: statusInfo.status,
       explanation: statusInfo.explanation,

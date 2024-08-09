@@ -10,7 +10,6 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
-  ProgramFinancialServiceProviderConfigurationsModule-->FinancialServiceProvidersModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
@@ -74,6 +73,7 @@ graph LR
   TransactionQueuesModule-->RedisModule
   PaymentsModule-->FinancialServiceProvidersModule
   PaymentsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  PaymentsModule-->RedisModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule

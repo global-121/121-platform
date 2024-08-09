@@ -8,8 +8,8 @@ export const assertArraysAreEqual = (
   keyToIgnore: string[],
 ): void => {
   // Sort both actualArray and expectedArray
-  const sortedActualArray = sortByFspName(actualArray);
-  const sortedExpectedArray = sortByFspName(expectedArray);
+  const sortedActualArray = sortByFspNameOrName(actualArray);
+  const sortedExpectedArray = sortByFspNameOrName(expectedArray);
 
   expect(sortedActualArray.length).toBe(sortedExpectedArray.length);
 
@@ -24,14 +24,14 @@ export const assertArraysAreEqual = (
   }
 };
 
-export function sortByFspName(array: any[]): any[] {
+export function sortByFspNameOrName(array: any[]): any[] {
   return array.slice().sort((a, b) => {
     if (typeof a === 'string' && typeof b === 'string') {
       return a.localeCompare(b);
     }
 
-    const nameA = a.fsp;
-    const nameB = b.fsp;
+    const nameA = a.fsp || a.name;
+    const nameB = b.fsp || b.name;
 
     if (nameA < nameB) {
       return -1;

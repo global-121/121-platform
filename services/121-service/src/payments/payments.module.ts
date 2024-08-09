@@ -11,6 +11,7 @@ import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safar
 import { VodacashModule } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
@@ -63,6 +64,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TransactionQueuesModule,
     FinancialServiceProvidersModule,
     ProgramFinancialServiceProviderConfigurationsModule,
+    RedisModule,
   ],
   providers: [
     PaymentsService,

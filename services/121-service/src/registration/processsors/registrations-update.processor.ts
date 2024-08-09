@@ -1,10 +1,10 @@
-import {
-  ProcessNameRegistration,
-  QueueNameRegistration,
-} from '@121-service/src/notifications/enum/queue.names.enum';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+import {
+  ProcessNameRegistration,
+  QueueNameRegistration,
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { Process, Processor } from '@nestjs/bull';
 import { Scope } from '@nestjs/common';
 import { Job } from 'bull';

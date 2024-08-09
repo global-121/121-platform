@@ -5,8 +5,7 @@ import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/int
 import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 
-// TODO: This class is only included in IntersolveVisaWalletDto, so see if it can be defined in-line there, while still keeping the Mapper function simple. Note: this class does not get the Dto suffix, since it is not a Dto on its own.
-export class IntersolveVisaCard {
+export class IntersolveVisaCardDto {
   @ApiProperty({ example: '123456' })
   public tokenCode: string;
 
@@ -29,7 +28,6 @@ export class IntersolveVisaCard {
   public debugInformation: WrapperType<IntersolveVisaCardDebugInformation>;
 }
 
-// TODO: REFACTOR: Put this in-line in the class above.
 class IntersolveVisaCardDebugInformation {
   @ApiProperty({ example: IntersolveVisaCardStatus.CardOk })
   public intersolveVisaCardStatus: WrapperType<IntersolveVisaCardStatus | null>;

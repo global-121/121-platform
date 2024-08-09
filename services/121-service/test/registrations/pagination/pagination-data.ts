@@ -97,6 +97,7 @@ export const registrationsOCW = [
   registrationOCW2,
   registrationOCW3,
   registrationOCW4,
+  registrationOCW5,
 ];
 
 export const registrationPV5 = {

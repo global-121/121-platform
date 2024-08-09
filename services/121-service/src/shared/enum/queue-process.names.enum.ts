@@ -1,3 +1,4 @@
+// Queues for sening messages
 export enum ProcessNameMessage {
   send = 'send',
   sms = 'sms',
@@ -17,10 +18,23 @@ export enum QueueNameCreateMessage {
   lowPriority = 'lowPriority',
 }
 
+// Queues for updating registrations
 export enum QueueNameRegistration {
   registration = 'registration',
 }
 
 export enum ProcessNameRegistration {
   update = 'updateRegistration',
+}
+
+// Queues for processing payments
+export enum ProcessNamePayment {
+  sendPayment = 'sendPayment',
+}
+
+export enum QueueNamePayment {
+  paymentIntersolveVisa = 'paymentIntersolveVisa',
+  paymentIntersolveVoucher = 'paymentIntersolveVoucher',
+  paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
+  paymentSafaricom = 'paymentSafaricom',
 }

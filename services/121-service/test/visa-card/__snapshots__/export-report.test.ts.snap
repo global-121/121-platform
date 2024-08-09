@@ -4,14 +4,14 @@ exports[`Export Visa debit card report should succesfully generate a report of a
 [
   {
     "balance": 25,
-    "cardStatus121": "Issued",
+    "cardStatus121": "Active",
     "explanation": "",
     "isCurrentWallet": true,
     "lastUsedDate": null,
     "paId": 1,
     "referenceId": "registration-visa-1",
     "registrationStatus": "included",
-    "spentThisMonth": 0,
+    "spentThisMonth": 3,
   },
   {
     "balance": 25,
@@ -22,7 +22,7 @@ exports[`Export Visa debit card report should succesfully generate a report of a
     "paId": 1,
     "referenceId": "registration-visa-1",
     "registrationStatus": "included",
-    "spentThisMonth": 0,
+    "spentThisMonth": 3,
   },
 ]
 `;

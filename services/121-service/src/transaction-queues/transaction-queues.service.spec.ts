@@ -1,7 +1,7 @@
 import {
   ProcessNamePayment,
   QueueNamePayment,
-} from '@121-service/src/payments/enum/queue.names.enum';
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
@@ -47,13 +47,6 @@ describe('TransactionQueuesService', () => {
   });
 
   it('should add transaction job to queue', async () => {
-    jest
-      .spyOn(
-        transactionQueuesService as any,
-        'addIntersolveVisaTransactionJobs',
-      )
-      .mockResolvedValue(mockIntersolveVisaTransactionJobDto);
-
     jest.spyOn(intersolveVisaQueue as any, 'add').mockReturnValue({
       data: {
         id: 1,
@@ -70,7 +63,7 @@ describe('TransactionQueuesService', () => {
     expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
     expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
       ProcessNamePayment.sendPayment,
-      mockIntersolveVisaTransactionJobDto,
+      mockIntersolveVisaTransactionJobDto[0],
     );
   });
 });

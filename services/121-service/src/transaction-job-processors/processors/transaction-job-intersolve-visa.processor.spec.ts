@@ -51,7 +51,7 @@ describe('Payment processor(s)', () => {
 
     // Assert
     expect(
-      paymentProcessor.handleIntersolveVisaTransactionJob,
+      transactionJobProcessorsService.processIntersolveVisaTransactionJob,
     ).toHaveBeenCalledTimes(1);
   });
 });

@@ -145,7 +145,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
-  private async getWithRelationsByReferenceIdAndProgramId({
+  public async getWithRelationsByReferenceIdAndProgramId({
     referenceId,
     programId,
     relations = [],
