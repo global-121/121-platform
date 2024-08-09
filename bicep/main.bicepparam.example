@@ -1,0 +1,86 @@
+using 'main.bicep'
+
+// User defined
+param clientName = ''
+
+// Constants
+param logAnalyticsWorkspaceName = ''
+param tags = {
+  group: ''
+  client: clientName
+  ownerEmail: ''
+}
+param appServicePlanName  = '121'
+param runtimeStack = 'NODE|14-lts'
+param corsAllowedOrigins = [
+  'https://${clientName}.121.global'
+  'https://*.${clientName}.121.global'
+  'https://121-${clientName}.azurewebsites.net'
+]
+param dnsZoneName = '121.global'
+param cName = '121-${clientName}.azurewebsites.net'
+
+// Names
+param appServiceName = '121-${clientName}'
+param staticWebAppName = '121-portal-${clientName}'
+
+// AppService Env Variables
+// Change
+@secure()
+param POSTGRES_PASSWORD = ''
+param POSTGRES_USER = ''
+@secure()
+param RESET_SECRET = ''
+@secure()
+param SECRETS_121_SERVICE_SECRET = ''
+@secure()
+param USERCONFIG_121_SERVICE_PASSWORD_ADMIN = ''
+//Optional
+param ENV_ICON = ''
+// Keep as default
+param APPLICATION_INSIGHT_ENDPOINT = 'https://westeurope-5.in.applicationinsights.azure.com/'
+param ApplicationInsightsAgent_EXTENSION_VERSION = '~3'
+
+param ENV_NAME = clientName
+param EXTERNAL_121_SERVICE_URL = 'https://${clientName}.121.global'
+@secure()
+param INTERSOLVE_PASSWORD = ''
+param INTERSOLVE_USERNAME = ''
+param KOBO_CONNECT_API_URL = ''
+param MOCK_COMMERCIAL_BANK_ETHIOPIA = 'TRUE'
+param MOCK_INTERSOLVE = 'TRUE'
+param MOCK_SAFARICOM = 'TRUE'
+param MOCK_SERVICE_URL = ''
+param MOCK_TWILIO = 'TRUE'
+param MOCK_VODACASH = 'TRUE'
+param NODE_ENV = 'production'
+param PORT_121_SERVICE = '8080'
+param POSTGRES_DBNAME = clientName
+param POSTGRES_HOST = ''
+param REDIRECT_PORTAL_URL_HOST = 'https://portal.${clientName}.121.global'
+param REDIS_HOST = ''
+@secure()
+param REDIS_PASSWORD = ''
+param REDIS_PORT = '6380'
+param REDIS_PREFIX = '${clientName}_'
+param SAFARICOM_API_URL = 'https://sandbox.safaricom.co.ke'
+param SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT = 'mpesa/b2c/v3/paymentrequest'
+@secure()
+param SAFARICOM_CONSUMER_KEY = ''
+@secure()
+param SAFARICOM_CONSUMER_SECRET = ''
+param SAFARICOM_IDTYPE = '01'
+param SAFARICOM_INITIATORNAME = ''
+param SAFARICOM_PARTY_A = ''
+@secure()
+param SAFARICOM_SECURITY_CREDENTIAL = ''
+@secure()
+param TWILIO_AUTHTOKEN = ''
+param TWILIO_MESSAGING_SID = 'MG'
+param TWILIO_SID = ''
+param TWILIO_WHATSAPP_NUMBER = ''
+param USERCONFIG_121_SERVICE_EMAIL_ADMIN = ''
+param WEBSITE_HTTPLOGGING_RETENTION_DAYS = '30'
+param WEBSITE_RUN_FROM_PACKAGE = '1'
+param WEBSITES_CONTAINER_START_TIME_LIMIT = '1800'
+param XDT_MicrosoftApplicationInsights_Mode = 'default'

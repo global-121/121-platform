@@ -13,3 +13,6 @@ node_modules
 # Playwright screenshots
 screenshots
 .DS_Store
+
+# Bicep conf
+bicep/main.bicepparam
