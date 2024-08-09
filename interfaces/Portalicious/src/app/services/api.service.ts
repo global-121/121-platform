@@ -1,10 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { VersionInfo } from '~/models/health.model';
+import { Payment } from '~/models/payment.model';
 import { Program, ProgramMetrics } from '~/models/program.model';
 import { User } from '~/models/user.model';
 import { HttpWrapperService } from '~/services/http-wrapper.service';
 
 export enum ApiEndpoints {
+  payments = 'payments',
   programs = 'programs',
   programsMetrics = 'metrics/program-stats-summary',
   usersChangePassword = 'users/password',
@@ -75,6 +77,13 @@ export class ApiService {
     return this.httpWrapperService.perform121ServiceRequest<ProgramMetrics>({
       method: 'GET',
       endpoint: `${ApiEndpoints.programs}/${id.toString()}/${ApiEndpoints.programsMetrics}`,
+    });
+  }
+
+  async getPayments(id: number) {
+    return this.httpWrapperService.perform121ServiceRequest<Payment[]>({
+      method: 'GET',
+      endpoint: `${ApiEndpoints.programs}/${id.toString()}/${ApiEndpoints.payments}`,
     });
   }
 }

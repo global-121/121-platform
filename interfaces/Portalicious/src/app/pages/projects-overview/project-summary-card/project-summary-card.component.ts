@@ -11,6 +11,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AppRoutes } from '~/app.routes';
+import { Payment } from '~/models/payment.model';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ApiEndpoints, ApiService } from '~/services/api.service';
 
@@ -48,6 +49,11 @@ export class ProjectSummaryCardComponent {
     queryFn: () => this.apiService.getProjectSummaryMetrics(this.id()),
   }));
 
+  public payments = injectQuery(() => ({
+    queryKey: [ApiEndpoints.programs, this.id(), ApiEndpoints.payments],
+    queryFn: () => this.apiService.getPayments(this.id()),
+  }));
+
   public labels = {
     targetedPeople: $localize`Targeted people`,
     includedPeople: $localize`Included people`,
@@ -56,4 +62,10 @@ export class ProjectSummaryCardComponent {
   };
 
   projectLink = (programId: number) => ['/', AppRoutes.project, programId];
+  public getLastPayment(paymentData: Payment[] | undefined) {
+    if (!paymentData) {
+      return;
+    }
+    return paymentData.sort((a, b) => (a.payment < b.payment ? 1 : -1))[0];
+  }
 }
