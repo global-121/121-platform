@@ -37,7 +37,6 @@ export class ProjectSummaryCardComponent {
   private apiService = inject(ApiService);
 
   public id = input.required<number>();
-  public index = input<number>();
 
   public randomWidth = `${getRandomInt(42, 98).toString()}%`;
 
