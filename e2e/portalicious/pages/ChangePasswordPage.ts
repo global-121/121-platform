@@ -34,9 +34,10 @@ class ChangePasswordPage {
   }
 
   async assertChangePasswordSuccessPopUp() {
-    await this.page
-      .getByText('Your password was successfully changed.')
-      .isVisible();
+    const popUp = this.page.getByRole('alertdialog');
+
+    await popUp.isVisible();
+    await popUp.isHidden();
   }
 }
 

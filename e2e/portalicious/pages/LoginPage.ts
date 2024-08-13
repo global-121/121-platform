@@ -30,6 +30,23 @@ class LoginPage {
       url.pathname.startsWith('/en/projects'),
     );
   }
+
+  async loginTest(username?: string, password?: string) {
+    if (!username || !password) {
+      throw new Error('Username and password are required');
+    }
+
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
+  }
+
+  async wrongPasswordError() {
+    const error = this.page.getByText(
+      'Invalid email or password. Double-check your credentials and try again.',
+    );
+    await error.isVisible();
+  }
 }
 
 export default LoginPage;

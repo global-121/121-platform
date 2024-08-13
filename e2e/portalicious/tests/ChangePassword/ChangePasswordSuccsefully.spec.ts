@@ -20,6 +20,7 @@ test.beforeEach(async ({ page }) => {
 test('[29309] Change password successfully', async ({ page }) => {
   const homePage = new HomePage(page);
   const changePasswordPage = new ChangePasswordPage(page);
+  const loginPage = new LoginPage(page);
 
   await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.selectAccountOption('Change password');
@@ -33,5 +34,21 @@ test('[29309] Change password successfully', async ({ page }) => {
     });
     await changePasswordPage.submitChangePassword();
     await changePasswordPage.assertChangePasswordSuccessPopUp();
+  });
+
+  await test.step('Login with new credentials', async () => {
+    await homePage.selectAccountOption('Logout');
+    await loginPage.login(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      'newPassword',
+    );
+  });
+
+  await test.step('Login with old credentials', async () => {
+    await homePage.selectAccountOption('Logout');
+    await loginPage.loginTest(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
   });
 });
