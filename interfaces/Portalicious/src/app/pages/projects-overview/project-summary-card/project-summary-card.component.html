@@ -79,15 +79,17 @@
         />
       }
       @case ('success') {
-        <div
-          i18n
-          class="text-end"
-        >
-          Last payment:
-          {{
-            getLastPayment(payments.data())?.paymentDate | date: 'dd-MM-yyyy'
-          }}
-        </div>
+        @if (payments.data()?.length === 0) {
+          <div
+            i18n
+            class="text-end"
+          >
+            Last payment:
+            {{
+              getLastPayment(payments.data())?.paymentDate | date: 'dd-MM-yyyy'
+            }}
+          </div>
+        }
       }
     }
   </ng-template>
