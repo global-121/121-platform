@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 
 @Component({
-  selector: 'app-program-team',
+  selector: 'app-project-team',
   standalone: true,
   imports: [PageLayoutComponent],
-  templateUrl: './program-team.component.html',
+  templateUrl: './project-team.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgramTeamComponent {
+export class ProjectTeamComponent {
   // this is injected by the router
-  programId = input.required<string>();
+  projectId = input.required<string>();
 }

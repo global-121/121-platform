@@ -121,7 +121,7 @@ export class AuthService {
     await this.router.navigate(['/', AppRoutes.login]);
   }
 
-  public getAssignedProgramIds(): number[] {
+  public getAssignedProjectIds(): number[] {
     return this.user ? Object.keys(this.user.permissions).map(Number) : [];
   }
 

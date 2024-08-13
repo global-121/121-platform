@@ -65,7 +65,7 @@ export class ProjectSummaryCardComponent {
     spentMoney: $localize`Cash disbursed`,
   };
 
-  projectLink = (programId: number) => ['/', AppRoutes.project, programId];
+  projectLink = (projectId: number) => ['/', AppRoutes.project, projectId];
   public getLastPayment(paymentData: Payment[] | undefined) {
     if (!paymentData) {
       return;

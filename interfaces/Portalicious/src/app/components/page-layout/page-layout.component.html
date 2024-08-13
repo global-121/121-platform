@@ -1,8 +1,8 @@
 <div class="flex min-h-screen flex-col">
-  <app-header [programTitle]="programTitle()" />
+  <app-header [projectTitle]="projectTitle()" />
   <div class="flex-1">
-    @if (programId()) {
-      <app-project-header [programId]="programId()!" />
+    @if (projectId()) {
+      <app-project-header [projectId]="projectId()!" />
     }
     <div class="px-6 py-4 lg:px-24">
       <ng-content></ng-content>

@@ -39,7 +39,7 @@ import { AuthService } from '~/services/auth.service';
 })
 export class HeaderComponent {
   private authService = inject(AuthService);
-  programTitle = input<string>();
+  projectTitle = input<string>();
 
   userName = computed(() => this.authService.user?.username);
 
