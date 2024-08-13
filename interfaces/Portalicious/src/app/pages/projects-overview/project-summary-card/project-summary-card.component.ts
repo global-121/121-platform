@@ -49,11 +49,13 @@ export class ProjectSummaryCardComponent {
   public metrics = injectQuery(() => ({
     queryKey: [ApiEndpoints.projects, this.id(), ApiEndpoints.projectsMetrics],
     queryFn: () => this.apiService.getProjectSummaryMetrics(this.id()),
+    enabled: !!this.project.data()?.id,
   }));
 
   public payments = injectQuery(() => ({
     queryKey: [ApiEndpoints.projects, this.id(), ApiEndpoints.payments],
     queryFn: () => this.apiService.getPayments(this.id()),
+    enabled: !!this.project.data()?.id,
   }));
 
   public labels = {
