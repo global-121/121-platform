@@ -12,6 +12,7 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AppRoutes } from '~/app.routes';
 import { Payment } from '~/models/payment.model';
+import { ProjectMetricContainerComponent } from '~/pages/projects-overview/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ApiEndpoints, ApiService } from '~/services/api.service';
 
@@ -26,6 +27,7 @@ import { ApiEndpoints, ApiService } from '~/services/api.service';
     RouterLink,
     CommonModule,
     CurrencyPipe,
+    ProjectMetricContainerComponent,
   ],
   templateUrl: './project-summary-card.component.html',
   styles: ``,
