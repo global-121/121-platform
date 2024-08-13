@@ -5,6 +5,8 @@
     >121 Portal</a
   >
   @if (projectTitle()) {
-    <span class="font-normal"> | {{ projectTitle() }}</span>
+    <span class="font-normal">
+      | {{ projectTitle() | translatableString }}</span
+    >
   }
 </h1>

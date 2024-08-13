@@ -66,7 +66,7 @@ export class ApiService {
     });
   }
 
-  async getProjectById(id: number) {
+  async getProjectById(id: number | string) {
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'GET',
       endpoint: `${ApiEndpoints.projects}/${id.toString()}`,

@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/test_e2e_portal.yml'
       - 'e2e/**'
+      - '!e2e/portalicious/**'
       - 'services/.env.example'
       - 'services/**'
       - '!services/**.test.ts'
