@@ -110,10 +110,6 @@
         <source>Payments</source>
         <target state="translated">Betalingen</target>
       </trans-unit>
-      <trans-unit id="3338661424985495365" datatype="html">
-        <source>Monitoring</source>
-        <target state="translated">Rapportage</target>
-      </trans-unit>
       <trans-unit id="6509003407758128100" datatype="html">
         <source>Cookie policy</source>
         <target state="translated">Cookie beleid</target>
@@ -150,25 +146,17 @@
         <source>Enter your password</source>
         <target state="translated">Vul een wachtwoord in</target>
       </trans-unit>
-      <trans-unit id="7768763632521855939" datatype="html">
-        <source>program-monitoring works!</source>
-        <target state="new">program-monitoring werkt!</target>
+      <trans-unit id="1429324684050248432" datatype="html">
+        <source>project-overview works!</source>
+        <target state="new">project-overview werkt!</target>
       </trans-unit>
-      <trans-unit id="8486187705503981919" datatype="html">
-        <source>program-overview works!</source>
-        <target state="new">program-overview werkt!</target>
+      <trans-unit id="7596687906875795034" datatype="html">
+        <source>project-payments works!</source>
+        <target state="new">project-payments werkt!</target>
       </trans-unit>
-      <trans-unit id="1030042071919904969" datatype="html">
-        <source>program-payments works!</source>
-        <target state="new">program-payments werkt!</target>
-      </trans-unit>
-      <trans-unit id="8572807781579317369" datatype="html">
-        <source>program-registrations works!</source>
-        <target state="new">program-registrations werkt!</target>
-      </trans-unit>
-      <trans-unit id="5662590318641401360" datatype="html">
-        <source>program-team works!</source>
-        <target state="new">program-team werkt!</target>
+      <trans-unit id="6118183885046046400" datatype="html">
+        <source>project-registrations works!</source>
+        <target state="new">project-registrations werkt!</target>
       </trans-unit>
       <trans-unit id="8837209833313387366" datatype="html">
         <source>roles-and-permissions works!</source>
@@ -297,6 +285,10 @@
       <trans-unit id="3856642440952305228" datatype="html">
         <source>Last payment: <x equiv-text="{{ getLastPayment(payments.data())?.paymentDate | date: &apos;dd-MM-yyyy&apos; }}" id="INTERPOLATION"/></source>
         <target state="new">Last payment: <x equiv-text="{{ getLastPayment(payments.data())?.paymentDate | date: &apos;dd-MM-yyyy&apos; }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="6129171651911996363" datatype="html">
+        <source>project-team works!</source>
+        <target state="new">project-team wekrt!</target>
       </trans-unit>
     </body>
   </file>

@@ -10,5 +10,5 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogoComponent {
-  programTitle = input<string>();
+  projectTitle = input<string>();
 }

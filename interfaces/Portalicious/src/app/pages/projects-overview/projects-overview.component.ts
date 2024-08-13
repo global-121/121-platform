@@ -25,5 +25,5 @@ export class ProjectsOverviewComponent {
 
   public canCreateProjects = this.authService.isAdmin;
 
-  public assignedProjects = this.authService.getAssignedProgramIds();
+  public assignedProjects = this.authService.getAssignedProjectIds();
 }
