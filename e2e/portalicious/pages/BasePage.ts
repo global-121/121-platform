@@ -7,6 +7,8 @@ class BasePage {
   readonly projectHeader: Locator;
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
+  readonly accountDropdown: Locator;
+  readonly changePassword: PrimeDropdown;
 
   constructor(page: Page) {
     this.page = page;
@@ -18,6 +20,11 @@ class BasePage {
     this.projectHeader = this.page.getByTestId('project-header');
     this.sidebar = this.page.getByTestId('sidebar');
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
+    this.accountDropdown = this.page.getByTestId('header-account-dropdown');
+    this.changePassword = new PrimeDropdown({
+      page,
+      testId: 'header-change-password',
+    });
   }
 
   async openSidebar() {
@@ -36,6 +43,15 @@ class BasePage {
   async changeLanguage(language: string) {
     await this.openSidebar();
     await this.languageDropdown.selectOption({ label: language });
+  }
+
+  async openAccountDropdown() {
+    await this.accountDropdown.click();
+  }
+
+  async selectAccountOption(option: string) {
+    await this.openAccountDropdown();
+    await this.changePassword.selectOption({ label: option });
   }
 }
 
