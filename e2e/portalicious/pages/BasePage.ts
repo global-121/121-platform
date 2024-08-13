@@ -51,7 +51,7 @@ class BasePage {
 
   async selectAccountOption(option: string) {
     await this.openAccountDropdown();
-    await this.changePassword.selectOption({ label: option });
+    await this.changePassword.selectMenuItem({ label: option });
   }
 }
 

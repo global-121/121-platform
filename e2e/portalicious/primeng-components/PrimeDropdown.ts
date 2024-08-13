@@ -15,4 +15,8 @@ export class PrimeDropdown {
     await this.dropdownOpener.click();
     await this.dropdownWrapper.getByRole('option', { name: label }).click();
   }
+
+  async selectMenuItem({ label }: { label: string }) {
+    await this.page.getByRole('menuitem', { name: label }).click();
+  }
 }

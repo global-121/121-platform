@@ -1,3 +1,4 @@
+import ChangePasswordPage from '@121-e2e/portalicious/pages/ChangePasswordPage';
 import HomePage from '@121-e2e/portalicious/pages/HomePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -18,8 +19,19 @@ test.beforeEach(async ({ page }) => {
 
 test('[29309] Change password successfully', async ({ page }) => {
   const homePage = new HomePage(page);
+  const changePasswordPage = new ChangePasswordPage(page);
 
   await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
     await homePage.selectAccountOption('Change password');
+  });
+
+  await test.step('Should change password successfully', async () => {
+    await changePasswordPage.fillInChangePassword({
+      currentPassword: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      newPassword: 'newPassword',
+      confirmPassword: 'newPassword',
+    });
+    await changePasswordPage.submitChangePassword();
+    await changePasswordPage.assertChangePasswordSuccessPopUp();
   });
 });
