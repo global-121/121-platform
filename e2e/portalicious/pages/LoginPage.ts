@@ -27,7 +27,7 @@ class LoginPage {
     }
 
     await this.page.waitForURL((url) =>
-      url.pathname.startsWith('/en/projects'),
+      url.pathname.startsWith('/en/all-projects'),
     );
   }
 
