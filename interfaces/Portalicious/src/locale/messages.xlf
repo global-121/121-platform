@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -57,10 +57,10 @@
         <source>Logout</source>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="4242007306199259869" datatype="html">
+      <trans-unit id="5226048249896619460" datatype="html">
         <source>Helpful links</source>
       </trans-unit>
-      <trans-unit id="4371726377430146531" datatype="html">
+      <trans-unit id="5029674377291881403" datatype="html">
         <source>Questions or feedback? Contact us</source>
       </trans-unit>
       <trans-unit id="4501314745488687296" datatype="html">
@@ -70,7 +70,7 @@
         <source>Users</source>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="4829177270839953752" datatype="html">
+      <trans-unit id="5457997273400516490" datatype="html">
         <source>Find out more</source>
       </trans-unit>
       <trans-unit id="5393972837576333232" datatype="html">
@@ -78,9 +78,6 @@
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
-      </trans-unit>
-      <trans-unit id="5901643806193916083" datatype="html">
-        <source>About 121 Portal</source>
       </trans-unit>
       <trans-unit id="5942556817969302760" datatype="html">
         <source>Roles and permissions</source>
@@ -207,7 +204,6 @@
       </trans-unit>
       <trans-unit id="7113499429942611780" datatype="html">
         <source>Create new project</source>
-        <note priority="1" from="description">Button-label</note>
       </trans-unit>
       <trans-unit id="8550882715313062083" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
@@ -220,6 +216,45 @@
       </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>
+      </trans-unit>
+      <trans-unit id="1887371025019909976" datatype="html">
+        <source>Kobo Asset ID</source>
+      </trans-unit>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+      </trans-unit>
+      <trans-unit id="2489114267038713519" datatype="html">
+        <source>Create Project</source>
+      </trans-unit>
+      <trans-unit id="7750664097458673871" datatype="html">
+        <source>Kobo Token</source>
+      </trans-unit>
+      <trans-unit id="935187492052582731" datatype="html">
+        <source>Submit</source>
+      </trans-unit>
+      <trans-unit id="2046529380163546074" datatype="html">
+        <source>Project successfully created.</source>
+      </trans-unit>
+      <trans-unit id="3086090297914662332" datatype="html">
+        <source>No Project-ID returned.</source>
+      </trans-unit>
+      <trans-unit id="generic-error" datatype="html">
+        <source>An unexpected error has occurred. Please try again later.</source>
+      </trans-unit>
+      <trans-unit id="error-not-authorized" datatype="html">
+        <source>Not authorized</source>
+      </trans-unit>
+      <trans-unit id="error-rate-limit" datatype="html">
+        <source>Rate limit exceeded. Please try again later.</source>
+      </trans-unit>
+      <trans-unit id="error-token-expired" datatype="html">
+        <source>Token expired</source>
+      </trans-unit>
+      <trans-unit id="generic-error-with-message" datatype="html">
+        <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="1295128596959490682" datatype="html">
+        <source>About 121 Portal</source>
       </trans-unit>
     </body>
   </file>
