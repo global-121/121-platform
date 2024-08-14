@@ -6,7 +6,7 @@
       [routerLink]="projectLink(id())"
       class="group-focus-within:text-primary group-hover:text-primary after:absolute after:inset-0 after:block"
     >
-      @if (project.isLoading()) {
+      @if (project.isPending()) {
         <p-skeleton
           class="my-1 cursor-progress text-xl"
           height="1.25rem"
@@ -26,7 +26,7 @@
     <dl class="flex flex-wrap divide-y border-b border-grey-300">
       <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
         <app-project-metric-container
-          [loading]="metrics.isLoading()"
+          [pending]="metrics.isPending()"
           [value]="metrics.data()?.targetedPeople"
           label="Targeted people"
           i18n-label
@@ -34,7 +34,7 @@
       </div>
       <div class="basis-1/2 border-s border-grey-300 px-1 py-2">
         <app-project-metric-container
-          [loading]="metrics.isLoading()"
+          [pending]="metrics.isPending()"
           [value]="metrics.data()?.includedPeople"
           label="Included people"
           i18n-label
@@ -42,7 +42,7 @@
       </div>
       <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
         <app-project-metric-container
-          [loading]="metrics.isLoading()"
+          [pending]="metrics.isPending()"
           [value]="
             (metrics.data()?.totalBudget
               | currency
@@ -56,7 +56,7 @@
       </div>
       <div class="basis-1/2 border-s border-t border-grey-300 px-1 py-2">
         <app-project-metric-container
-          [loading]="metrics.isLoading()"
+          [pending]="metrics.isPending()"
           [value]="
             (metrics.data()?.spentMoney
               | currency
@@ -71,7 +71,7 @@
     </dl>
   </ng-template>
   <ng-template pTemplate="footer">
-    @if (payments.isLoading()) {
+    @if (payments.isPending()) {
       <p-skeleton
         class="my-1 cursor-progress text-lg"
         height="1.125rem"
