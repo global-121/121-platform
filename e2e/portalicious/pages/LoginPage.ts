@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 class LoginPage {
@@ -5,12 +6,14 @@ class LoginPage {
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
+  readonly wrongPasswordError: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.usernameInput = this.page.getByLabel('E-mail');
     this.passwordInput = this.page.getByLabel('Password');
     this.loginButton = this.page.getByRole('button', { name: 'Log in' });
+    this.wrongPasswordError = this.page.getByTestId('change-password-error');
   }
 
   async login(username?: string, password?: string, skipUrlCheck = false) {
@@ -27,7 +30,7 @@ class LoginPage {
     }
 
     await this.page.waitForURL((url) =>
-      url.pathname.startsWith('/en/all-projects'),
+      url.pathname.startsWith('/en/projects'),
     );
   }
 
@@ -41,11 +44,12 @@ class LoginPage {
     await this.loginButton.click();
   }
 
-  async wrongPasswordError() {
-    const error = this.page.getByText(
-      'Invalid email or password. Double-check your credentials and try again.',
-    );
-    await error.isVisible();
+  async validateWrongPasswordError({ errorText }: { errorText: string }) {
+    await this.page.waitForLoadState('networkidle');
+    await this.wrongPasswordError.waitFor();
+
+    const errorString = await this.wrongPasswordError.textContent();
+    expect(errorString).toContain(errorText);
   }
 }
 

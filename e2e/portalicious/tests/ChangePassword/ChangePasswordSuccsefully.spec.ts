@@ -50,5 +50,9 @@ test('[29309] Change password successfully', async ({ page }) => {
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
     );
+    await loginPage.validateWrongPasswordError({
+      errorText:
+        'Invalid email or password. Double-check your credentials and try again.',
+    });
   });
 });
