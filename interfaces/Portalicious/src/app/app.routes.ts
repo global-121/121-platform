@@ -2,11 +2,10 @@ import { Routes } from '@angular/router';
 import { authGuard } from '~/auth.guard';
 import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';
-import { ProgramMonitoringComponent } from '~/pages/program/program-monitoring/program-monitoring.component';
-import { ProgramOverviewComponent } from '~/pages/program/program-overview/program-overview.component';
-import { ProgramPaymentsComponent } from '~/pages/program/program-payments/program-payments.component';
-import { ProgramRegistrationsComponent } from '~/pages/program/program-registrations/program-registrations.component';
-import { ProgramTeamComponent } from '~/pages/program/program-team/program-team.component';
+import { ProjectOverviewComponent } from '~/pages/project/project-overview/project-overview.component';
+import { ProjectPaymentsComponent } from '~/pages/project/project-payments/project-payments.component';
+import { ProjectRegistrationsComponent } from '~/pages/project/project-registrations/project-registrations.component';
+import { ProjectTeamComponent } from '~/pages/project/project-team/project-team.component';
 import { ProjectsOverviewComponent } from '~/pages/projects-overview/projects-overview.component';
 import { RolesAndPermissionsComponent } from '~/pages/roles-and-permissions/roles-and-permissions.component';
 import { UsersComponent } from '~/pages/users/users.component';
@@ -15,7 +14,6 @@ export enum AppRoutes {
   changePassword = 'change-password',
   login = 'login',
   project = 'project',
-  projectMonitoring = 'monitoring',
   projectOverview = 'overview',
   projectPayments = 'payments',
   projectRegistrations = 'registrations',
@@ -52,23 +50,19 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: `${AppRoutes.project}/:programId`,
+    path: `${AppRoutes.project}/:projectId`,
     canActivate: [authGuard],
     children: [
-      { path: AppRoutes.projectOverview, component: ProgramOverviewComponent },
+      { path: AppRoutes.projectOverview, component: ProjectOverviewComponent },
       {
         path: AppRoutes.projectTeam,
-        component: ProgramTeamComponent,
+        component: ProjectTeamComponent,
       },
       {
         path: AppRoutes.projectRegistrations,
-        component: ProgramRegistrationsComponent,
+        component: ProjectRegistrationsComponent,
       },
-      { path: AppRoutes.projectPayments, component: ProgramPaymentsComponent },
-      {
-        path: AppRoutes.projectMonitoring,
-        component: ProgramMonitoringComponent,
-      },
+      { path: AppRoutes.projectPayments, component: ProjectPaymentsComponent },
       {
         path: '',
         pathMatch: 'full',

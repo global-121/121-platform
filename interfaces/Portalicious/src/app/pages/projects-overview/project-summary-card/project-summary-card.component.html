@@ -1,0 +1,87 @@
+<p-card
+  styleClass="focus-within:border-primary hover:border-primary [&_.p-card-content]:flex-end group relative h-full border border-transparent *:h-full [&_.p-card-title]:flex-grow"
+>
+  <ng-template pTemplate="title">
+    <a
+      [routerLink]="projectLink(id())"
+      class="group-focus-within:text-primary group-hover:text-primary after:absolute after:inset-0 after:block"
+    >
+      @if (project.isPending()) {
+        <p-skeleton
+          class="my-1 cursor-progress text-xl"
+          height="1.25rem"
+          [width]="randomWidth"
+        />
+      } @else {
+        <span
+          class="line-clamp-2 text-ellipsis"
+          [title]="project.data()?.titlePortal | translatableString"
+        >
+          {{ project.data()?.titlePortal | translatableString }}
+        </span>
+      }
+    </a>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <dl class="flex flex-wrap divide-y border-b border-grey-300">
+      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="metrics.data()?.targetedPeople"
+          label="Targeted people"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+      <div class="basis-1/2 border-s border-grey-300 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="metrics.data()?.includedPeople"
+          label="Included people"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="
+            (metrics.data()?.totalBudget
+              | currency
+                : project.data()?.currency ?? 'EUR'
+                : 'symbol-narrow'
+                : '1.0-0') || '-'
+          "
+          label="Budget"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+      <div class="basis-1/2 border-s border-t border-grey-300 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="
+            (metrics.data()?.spentMoney
+              | currency
+                : project.data()?.currency ?? 'EUR'
+                : 'symbol-narrow'
+                : '1.0-0') || '-'
+          "
+          label="Cash disbursed"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+    </dl>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    @if (payments.isPending()) {
+      <p-skeleton
+        class="my-1 cursor-progress text-lg"
+        height="1.125rem"
+        [width]="randomWidth"
+      />
+    } @else if (getLastPayment()) {
+      <div class="text-end">
+        <ng-container i18n>Last payment: </ng-container>
+        {{ getLastPayment()!.paymentDate | date: 'dd-MM-yyyy' }}
+      </div>
+    }
+  </ng-template>
+</p-card>

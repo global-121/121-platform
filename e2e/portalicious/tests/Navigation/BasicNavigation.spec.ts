@@ -33,7 +33,7 @@ test('Navigation from program header', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await page.goto('/en/projects');
-  await page.getByRole('link', { name: 'Project 1' }).click();
+  await page.getByRole('link', { name: 'Cash program Westeros' }).click();
   await page.waitForURL((url) =>
     url.pathname.startsWith('/en/project/1/registrations'),
   );

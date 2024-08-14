@@ -1,0 +1,14 @@
+<dd class="px-2 py-1 font-bold">
+  @if (pending()) {
+    <p-skeleton
+      class="my-1 cursor-progress text-lg"
+      height="1.125rem"
+      [width]="randomWidth()"
+    />
+  } @else {
+    {{ value() }}
+  }
+</dd>
+<dt class="px-2 py-1 text-sm">
+  {{ label() }}
+</dt>
