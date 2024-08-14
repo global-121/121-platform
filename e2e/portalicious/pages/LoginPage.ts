@@ -1,19 +1,19 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
+import BasePage from './BasePage';
 
-class LoginPage {
+class LoginPage extends BasePage {
   page: Page;
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
-  readonly wrongPasswordError: Locator;
 
   constructor(page: Page) {
+    super(page);
     this.page = page;
     this.usernameInput = this.page.getByLabel('E-mail');
     this.passwordInput = this.page.getByLabel('Password');
     this.loginButton = this.page.getByRole('button', { name: 'Log in' });
-    this.wrongPasswordError = this.page.getByTestId('change-password-error');
   }
 
   async login(username?: string, password?: string, skipUrlCheck = false) {
@@ -45,11 +45,12 @@ class LoginPage {
   }
 
   async validateWrongPasswordError({ errorText }: { errorText: string }) {
-    await this.page.waitForLoadState('networkidle');
-    await this.wrongPasswordError.waitFor();
+    await expect(this.page.getByText(errorText)).toBeVisible();
+    // await this.page.waitForLoadState('networkidle');
+    // await this.wrongPasswordError.waitFor();
 
-    const errorString = await this.wrongPasswordError.textContent();
-    expect(errorString).toContain(errorText);
+    // const errorString = await this.wrongPasswordError.textContent();
+    // expect(errorString).toContain(errorText);
   }
 }
 

@@ -1,4 +1,5 @@
 import { PrimeDropdown } from '@121-e2e/portalicious/primeng-components/PrimeDropdown';
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 class BasePage {
@@ -9,6 +10,7 @@ class BasePage {
   readonly sidebarToggle: Locator;
   readonly accountDropdown: Locator;
   readonly changePassword: PrimeDropdown;
+  readonly formError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -25,6 +27,7 @@ class BasePage {
       page,
       testId: 'header-change-password',
     });
+    this.formError = this.page.getByTestId('form-error');
   }
 
   async openSidebar() {
@@ -52,6 +55,18 @@ class BasePage {
   async selectAccountOption(option: string) {
     await this.openAccountDropdown();
     await this.changePassword.selectMenuItem({ label: option });
+  }
+
+  async validateGenericChangePasswordError({
+    errorText,
+  }: {
+    errorText: string;
+  }) {
+    await this.page.waitForLoadState('networkidle');
+    await this.formError.waitFor();
+
+    const errorString = await this.formError.textContent();
+    expect(errorString).toContain(errorText);
   }
 }
 

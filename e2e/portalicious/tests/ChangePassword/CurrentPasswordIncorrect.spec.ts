@@ -34,7 +34,7 @@ test('[29310] Change password unsuccessfully (Non-matching passwords)', async ({
       confirmPassword: 'newPassword',
     });
     await changePasswordPage.submitChangePassword();
-    await changePasswordPage.validateChangePasswordError({
+    await changePasswordPage.validateGenericChangePasswordError({
       errorText:
         'Failed to change the password. Please refresh the page and try again.',
     });
