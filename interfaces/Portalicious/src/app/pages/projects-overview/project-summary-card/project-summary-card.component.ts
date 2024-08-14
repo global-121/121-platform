@@ -3,6 +3,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
 } from '@angular/core';
@@ -11,7 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AppRoutes } from '~/app.routes';
-import { Payment } from '~/models/payment.model';
 import { ProjectMetricContainerComponent } from '~/pages/projects-overview/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ApiEndpoints, ApiService } from '~/services/api.service';
@@ -56,10 +56,12 @@ export class ProjectSummaryCardComponent {
     enabled: !!this.project.data()?.id,
   }));
   projectLink = (projectId: number) => ['/', AppRoutes.project, projectId];
-  public getLastPayment(paymentData: Payment[] | undefined) {
-    if (!paymentData) {
+
+  public getLastPayment = computed(() => {
+    const data = this.payments.data();
+    if (!data) {
       return;
     }
-    return paymentData.sort((a, b) => (a.payment < b.payment ? 1 : -1))[0];
-  }
+    return data.sort((a, b) => (a.payment < b.payment ? 1 : -1))[0];
+  });
 }

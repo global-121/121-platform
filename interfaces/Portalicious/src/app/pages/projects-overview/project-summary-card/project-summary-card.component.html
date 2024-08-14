@@ -78,15 +78,13 @@
         [width]="randomWidth"
       />
     } @else {
-      @if (getLastPayment(payments.data())) {
+      @if (getLastPayment() !== undefined) {
         <div
           i18n
           class="text-end"
         >
           Last payment:
-          {{
-            getLastPayment(payments.data())?.paymentDate | date: 'dd-MM-yyyy'
-          }}
+          {{ getLastPayment().paymentDate | date: 'dd-MM-yyyy' }}
         </div>
       }
     }
