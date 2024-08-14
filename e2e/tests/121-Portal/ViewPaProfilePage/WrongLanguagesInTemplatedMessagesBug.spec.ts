@@ -33,7 +33,7 @@ const selectFieldDropdownName =
   englishTranslations.page.program['program-people-affected']['action-inputs'][
     'placeholder-typeahead-placeholder'
   ];
-const firstNameOption = NLRCProgram.programCustomAttributes[0].label.en;
+const fullName = 'Full Name';
 const addPersonalizedFieldName =
   englishTranslations.page.program['program-people-affected']['action-inputs'][
     'add-placeholder'
@@ -81,7 +81,7 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await table.applyBulkAction(BulkActionId.sendMessage);
     await table.selectFieldsforCustomMessage({
       selectFieldDropdownName: selectFieldDropdownName,
-      firstNameOption: firstNameOption,
+      fullName: fullName,
       addPersonalizedFieldName: addPersonalizedFieldName,
       okButtonName: ok,
     });
