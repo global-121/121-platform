@@ -11,9 +11,9 @@ class ChangePasswordPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.currentPassword = this.page.getByTestId('current-password');
-    this.newPassword = this.page.getByTestId('new-password');
-    this.confirmPassword = this.page.getByTestId('confirm-password');
+    this.currentPassword = this.page.getByLabel('Current Password');
+    this.newPassword = this.page.getByLabel('New Password');
+    this.confirmPassword = this.page.getByLabel('Confirm Password');
     this.changePasswordButton = this.page.getByRole('button', {
       name: 'Change password',
     });
