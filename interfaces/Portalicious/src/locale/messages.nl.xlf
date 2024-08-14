@@ -282,13 +282,13 @@
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
         <target state="translated">U bent nog niet aan een project toegevoegd, neem contact op met een beheerder om de 121 Portal te gebruiken.</target>
       </trans-unit>
-      <trans-unit id="3856642440952305228" datatype="html">
-        <source>Last payment: <x equiv-text="{{ getLastPayment(payments.data())?.paymentDate | date: &apos;dd-MM-yyyy&apos; }}" id="INTERPOLATION"/></source>
-        <target state="new">Last payment: <x equiv-text="{{ getLastPayment(payments.data())?.paymentDate | date: &apos;dd-MM-yyyy&apos; }}" id="INTERPOLATION"/></target>
-      </trans-unit>
       <trans-unit id="6129171651911996363" datatype="html">
         <source>project-team works!</source>
         <target state="new">project-team wekrt!</target>
+      </trans-unit>
+      <trans-unit id="8934662076309331939" datatype="html">
+        <source>Last payment:</source>
+        <target state="new">Last payment:</target>
       </trans-unit>
     </body>
   </file>

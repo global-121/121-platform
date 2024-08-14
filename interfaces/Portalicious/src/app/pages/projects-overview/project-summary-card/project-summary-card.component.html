@@ -78,11 +78,8 @@
         [width]="randomWidth"
       />
     } @else if (getLastPayment()) {
-      <div
-        i18n
-        class="text-end"
-      >
-        Last payment:
+      <div class="text-end">
+        <ng-container i18n>Last payment: </ng-container>
         {{ getLastPayment()!.paymentDate | date: 'dd-MM-yyyy' }}
       </div>
     }
