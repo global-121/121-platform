@@ -53,7 +53,7 @@ class BasePage {
     await this.changePassword.selectMenuItem({ label: option });
   }
 
-  async validateGenericChangePasswordError({
+  async validateFormError({
     errorText,
   }: {
     errorText: string;
