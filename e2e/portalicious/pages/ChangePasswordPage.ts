@@ -8,6 +8,7 @@ class ChangePasswordPage {
   readonly confirmPassword: Locator;
   readonly changePasswordButton: Locator;
   readonly currentPasswordError: Locator;
+  readonly confirmPasswordError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +18,9 @@ class ChangePasswordPage {
     this.changePasswordButton = this.page.getByTestId('change-password-button');
     this.currentPasswordError = this.page.getByTestId(
       'change-password-current-password-error',
+    );
+    this.confirmPasswordError = this.page.getByTestId(
+      'change-password-confirm-password-does-not-match-error',
     );
   }
 
@@ -45,12 +49,36 @@ class ChangePasswordPage {
     await popUp.isHidden();
   }
 
-  async validateChangePasswordError({ errorText }: { errorText: string }) {
+  async validateGenericChangePasswordError({
+    errorText,
+    locator,
+  }: {
+    errorText: string;
+    locator: Locator;
+  }) {
     await this.page.waitForLoadState('networkidle');
-    await this.currentPasswordError.waitFor();
+    await locator.waitFor();
 
-    const errorString = await this.currentPasswordError.textContent();
+    const errorString = await locator.textContent();
     expect(errorString).toContain(errorText);
+  }
+
+  async validateChangePasswordError({ errorText }: { errorText: string }) {
+    await this.validateGenericChangePasswordError({
+      errorText,
+      locator: this.currentPasswordError,
+    });
+  }
+
+  async validateChangePasswordConfirmPasswordError({
+    errorText,
+  }: {
+    errorText: string;
+  }) {
+    await this.validateGenericChangePasswordError({
+      errorText,
+      locator: this.confirmPasswordError,
+    });
   }
 }
 
