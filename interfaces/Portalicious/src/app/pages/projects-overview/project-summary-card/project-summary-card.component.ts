@@ -1,5 +1,5 @@
 import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
-import { CommonModule, CurrencyPipe, NgTemplateOutlet } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,7 +23,6 @@ import { ApiEndpoints, ApiService } from '~/services/api.service';
     CardModule,
     SkeletonModule,
     TranslatableStringPipe,
-    NgTemplateOutlet,
     RouterLink,
     CommonModule,
     CurrencyPipe,
@@ -56,14 +55,6 @@ export class ProjectSummaryCardComponent {
     queryFn: () => this.apiService.getPayments(this.id()),
     enabled: !!this.project.data()?.id,
   }));
-
-  public labels = {
-    targetedPeople: $localize`Targeted people`,
-    includedPeople: $localize`Included people`,
-    totalBudget: $localize`Budget`,
-    spentMoney: $localize`Cash disbursed`,
-  };
-
   projectLink = (projectId: number) => ['/', AppRoutes.project, projectId];
   public getLastPayment(paymentData: Payment[] | undefined) {
     if (!paymentData) {

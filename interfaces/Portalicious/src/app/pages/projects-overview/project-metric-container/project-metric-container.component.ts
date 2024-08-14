@@ -11,7 +11,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMetricContainerComponent {
-  public status = input.required<string>();
+  public loading = input.required<boolean>();
   public value = input<null | number | string>();
   public label = input<string>();
 
