@@ -22,7 +22,7 @@ class BasePage {
     this.projectHeader = this.page.getByTestId('project-header');
     this.sidebar = this.page.getByTestId('sidebar');
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
-    this.accountDropdown = this.page.getByTestId('header-account-dropdown');
+    this.accountDropdown = this.page.getByRole('button', {name: 'Account'});
     this.formError = this.page.getByTestId('form-error');
   }
 
