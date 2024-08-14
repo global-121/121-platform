@@ -226,6 +226,7 @@ export class IntersolveVisaService
       paymentDetails.paymentNr = paymentNr;
       paymentDetails.bulkSize = paymentList[0].bulkSize;
       paymentDetails.programId = programId;
+      paymentDetails.userId = paymentList[0].userId;
       const job = await this.paymentIntersolveVisaQueue.add(
         ProcessNamePayment.sendPayment,
         paymentDetails,
@@ -1017,6 +1018,7 @@ export class IntersolveVisaService
     tokenCode: string,
     block: boolean,
     programId: number,
+    userId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
     const qb = this.intersolveVisaWalletScopedRepo
       .createQueryBuilder('wallet')
@@ -1050,6 +1052,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      userId: userId,
     });
     return result;
   }
@@ -1163,6 +1166,7 @@ export class IntersolveVisaService
   public async reissueWalletAndCard(
     referenceId: string,
     programId: number,
+    userId: number,
   ): Promise<any> {
     const { registration: _registration, visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
@@ -1390,12 +1394,13 @@ export class IntersolveVisaService
 
     // if success, make sure to store old and new wallet in 121 database
     await this.getVisaWalletsAndDetails(referenceId, programId);
-    await this.sendMessageReissueCard(referenceId, programId);
+    await this.sendMessageReissueCard(referenceId, programId, userId);
   }
 
   private async sendMessageReissueCard(
     referenceId: string,
     programId: number,
+    userId: number,
   ): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: {
@@ -1409,6 +1414,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      userId: userId,
     });
   }
 

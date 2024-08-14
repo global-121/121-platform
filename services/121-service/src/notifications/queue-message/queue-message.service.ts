@@ -67,6 +67,7 @@ export class QueueMessageService {
     mediaUrl,
     customData,
     bulksize,
+    userId,
   }: {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
     message?: string;
@@ -76,6 +77,7 @@ export class QueueMessageService {
     mediaUrl?: string | null;
     customData?: MessageJobCustomDataDto;
     bulksize?: number;
+    userId: number;
   }): Promise<void> {
     let whatsappPhoneNumber = registration['whatsappPhoneNumber'];
     if (registration instanceof RegistrationEntity) {
@@ -111,6 +113,7 @@ export class QueueMessageService {
         messageContentType,
         mediaUrl: mediaUrl ?? undefined,
         customData,
+        userId,
       };
       const queue = this.queueNameToQueueMap[queueName];
       await queue.add(ProcessNameMessage.send, messageJob);

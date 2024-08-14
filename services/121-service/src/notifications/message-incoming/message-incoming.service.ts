@@ -257,6 +257,7 @@ export class MessageIncomingService {
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
+      userId: message.userId,
     });
   }
 
@@ -286,6 +287,7 @@ export class MessageIncomingService {
           message: w.body,
           messageContentType: MessageContentType.invited,
           messageProcessType: MessageProcessType.sms,
+          userId: whatsappPendingMessages[0].userId,
         });
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -418,7 +420,6 @@ export class MessageIncomingService {
 
     const registrationsWithOpenVouchers =
       await this.getRegistrationsWithOpenVouchers(registrationsWithPhoneNumber);
-
     // If no registrations with outstanding vouchers or messages: send auto-reply
     if (
       registrationsWithOpenVouchers.length === 0 &&
@@ -436,6 +437,13 @@ export class MessageIncomingService {
           program = programs[0];
         }
       }
+
+      // This is not working and we have to find workaround to get userId, because registrationsWithOpenVouchers and registrationsWithPendingMessage is empty.
+      const firstMatchingVoucher =
+        registrationsWithOpenVouchers[0].images.filter(
+          (image) => image.voucher.userId !== null,
+        );
+
       if (program) {
         const language =
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
@@ -453,6 +461,7 @@ export class MessageIncomingService {
           message: whatsappDefaultReply.message,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
+          userId: firstMatchingVoucher[0].voucher.userId,
         });
         return;
       } else {
@@ -462,6 +471,7 @@ export class MessageIncomingService {
           recipientPhoneNr: fromNumber,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
+          userId: firstMatchingVoucher[0].voucher.userId,
         });
         return;
       }
@@ -518,6 +528,7 @@ export class MessageIncomingService {
             amount: intersolveVoucher.amount ?? undefined,
             intersolveVoucherId: intersolveVoucher.id,
           },
+          userId: intersolveVoucher.userId,
         });
         firstVoucherSent = true;
 
@@ -533,6 +544,7 @@ export class MessageIncomingService {
           messageContentType: MessageContentType.paymentInstructions,
           messageProcessType: MessageProcessType.whatsappVoucherInstructions,
           mediaUrl: `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
+          userId: intersolveVouchersPerPa[0].userId,
         });
       }
     }
@@ -557,6 +569,7 @@ export class MessageIncomingService {
             messageProcessType: MessageProcessType.whatsappPendingMessage,
             mediaUrl: message.mediaUrl,
             customData: { pendingMessageId: message.id },
+            userId: message.userId,
           });
           await waitFor(2_000);
         }

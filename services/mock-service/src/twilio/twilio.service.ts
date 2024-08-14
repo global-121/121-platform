@@ -71,6 +71,7 @@ export class TwilioService {
       subresourceUris: {
         media: `/2010-04-01/Accounts/${accountSid}/Messages/${twilioMessagesCreateDto.MessagingServiceSid}/Media.json`,
       },
+      userId: 1,
     };
 
     // 1. First loop through different error rseponses and return early

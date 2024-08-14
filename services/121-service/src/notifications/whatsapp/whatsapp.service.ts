@@ -43,6 +43,7 @@ export class WhatsappService {
     messageContentType,
     messageProcessType,
     existingSidToUpdate,
+    userId,
   }: {
     message?: string;
     recipientPhoneNr?: string;
@@ -51,6 +52,7 @@ export class WhatsappService {
     messageContentType?: MessageContentType;
     messageProcessType?: MessageProcessType;
     existingSidToUpdate?: string;
+    userId: number;
   }): Promise<string> {
     const payload = {
       body: message,
@@ -90,6 +92,7 @@ export class WhatsappService {
       };
       throw error;
     } finally {
+      messageToStore.userId = userId;
       await this.storeSendWhatsapp(
         messageToStore,
         registrationId,
@@ -136,6 +139,7 @@ export class WhatsappService {
       twilioMessage.contentType =
         messageContentType ?? MessageContentType.custom;
       twilioMessage.processType = messageProcessType ?? null;
+      twilioMessage.userId = message.userId;
       if (message.errorCode) {
         twilioMessage.errorCode = message.errorCode;
       }

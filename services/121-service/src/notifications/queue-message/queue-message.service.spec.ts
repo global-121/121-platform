@@ -26,6 +26,7 @@ const defaultMessageJob = {
   message: 'test message',
   messageTemplateKey: 'messageTemplateKey',
   messageContentType: MessageContentType.custom,
+  userId: 1,
 } as MessageJobDto;
 
 describe('QueueMessageService', () => {
@@ -68,6 +69,7 @@ describe('QueueMessageService', () => {
       messageTemplateKey: defaultMessageJob.messageTemplateKey,
       messageContentType: MessageContentType.custom,
       messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      userId: defaultMessageJob.userId,
     });
 
     // Assert
@@ -106,6 +108,7 @@ describe('QueueMessageService', () => {
       messageTemplateKey: defaultMessageJob.messageTemplateKey,
       messageContentType: MessageContentType.custom,
       messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      userId: defaultMessageJob.userId,
     });
 
     // Assert

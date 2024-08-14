@@ -85,4 +85,6 @@ export class TwilioMessageEntity extends Base121Entity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
+  @Column()
+  public userId: number;
 }

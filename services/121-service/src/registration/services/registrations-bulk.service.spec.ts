@@ -14,6 +14,7 @@ describe('RegistrationBulkService', () => {
     path: 'test',
   };
   const programId = 2;
+  const userId = 1;
 
   let registrationsBulkService: RegistrationsBulkService;
   let queueMessageService: QueueMessageService;
@@ -118,6 +119,7 @@ describe('RegistrationBulkService', () => {
           'randomMessage',
           'randomNotDefinedStatus',
           false,
+          userId,
         ),
       ).rejects.toHaveProperty('status', 404);
     });
@@ -132,6 +134,7 @@ describe('RegistrationBulkService', () => {
         'randomMessage',
         RegistrationStatusEnum.registered,
         true,
+        userId,
       );
       // Assert
       expect(postMessageResult).toBeDefined();
@@ -151,6 +154,7 @@ describe('RegistrationBulkService', () => {
         'randomMessage',
         RegistrationStatusEnum.registered,
         false,
+        userId,
       );
 
       // Assert
