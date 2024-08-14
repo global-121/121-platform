@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 class ChangePasswordPage {
@@ -6,6 +7,7 @@ class ChangePasswordPage {
   readonly newPassword: Locator;
   readonly confirmPassword: Locator;
   readonly changePasswordButton: Locator;
+  readonly currentPasswordError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -13,6 +15,9 @@ class ChangePasswordPage {
     this.newPassword = this.page.getByTestId('new-password');
     this.confirmPassword = this.page.getByTestId('confirm-password');
     this.changePasswordButton = this.page.getByTestId('change-password-button');
+    this.currentPasswordError = this.page.getByTestId(
+      'change-password-current-password-error',
+    );
   }
 
   async fillInChangePassword({
@@ -38,6 +43,14 @@ class ChangePasswordPage {
 
     await popUp.isVisible();
     await popUp.isHidden();
+  }
+
+  async validateChangePasswordError({ errorText }: { errorText: string }) {
+    await this.page.waitForLoadState('networkidle');
+    await this.currentPasswordError.waitFor();
+
+    const errorString = await this.currentPasswordError.textContent();
+    expect(errorString).toContain(errorText);
   }
 }
 

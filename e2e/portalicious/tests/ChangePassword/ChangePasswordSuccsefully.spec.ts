@@ -22,7 +22,7 @@ test('[29309] Change password successfully', async ({ page }) => {
   const changePasswordPage = new ChangePasswordPage(page);
   const loginPage = new LoginPage(page);
 
-  await test.step('Should display correct amount of running projects and navigate to PA table', async () => {
+  await test.step('Should navigate to user account dropdown and select change password option', async () => {
     await homePage.selectAccountOption('Change password');
   });
 
