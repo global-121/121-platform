@@ -1,3 +1,4 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from '~/app.routes';
@@ -152,5 +153,51 @@ export class AuthService {
         $localize`Failed to change the password. Please refresh the page and try again.`,
       );
     }
+  }
+
+  public async refreshCurrentUser() {
+    const userDto = await this.apiService.getCurrentUser();
+
+    if (!userDto?.user) {
+      await this.logout();
+      return;
+    }
+
+    this.setUserInStorage(userDto.user);
+  }
+
+  private isAssignedToProgram(
+    programId: number,
+    user?: LocalStorageUser | null,
+  ): boolean {
+    user = user ?? this.user;
+    return (
+      !!user?.permissions &&
+      Object.keys(user.permissions).includes(String(programId))
+    );
+  }
+
+  public hasPermission(
+    programId: number,
+    requiredPermission: PermissionEnum,
+    user?: LocalStorageUser | null,
+  ): boolean {
+    user = user ?? this.user;
+    // During development: Use this to simulate a user not having a certain permission
+    // user.permissions[programId] = user.permissions[programId].filter(
+    //   (p) => p !== Permission.FspDebitCardBLOCK,
+    // );
+
+    // TODO: Move this to a better place in the flow, so it doesn't have to be checked this often
+    // Check with Azure (again) when user has no permissions (yet)
+    if (!this.isAssignedToProgram(programId, user)) {
+      void this.refreshCurrentUser(); // Don't await, as it will block all permission-checks
+    }
+
+    return (
+      !!user?.permissions &&
+      this.isAssignedToProgram(programId, user) &&
+      user.permissions[programId].includes(requiredPermission)
+    );
   }
 }

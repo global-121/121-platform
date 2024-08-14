@@ -3,5 +3,16 @@
   i18n-pageTitle="@@page-title-project-team"
   [projectId]="projectId()"
 >
-  <p i18n>project-team works!</p>
+  <div header-actions>
+    @if (canManageAidworkers()) {
+      <app-add-user-button />
+    }
+  </div>
+  <app-query-table
+    [columns]="columns()"
+    [query]="projectUsers"
+    [contextMenuItems]="contextMenuItems()"
+    (onUpdateContextMenuItem)="selectedUser.set($event)"
+    [globalFilterFields]="['username', 'roleString', 'scope']"
+  />
 </app-page-layout>

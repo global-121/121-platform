@@ -266,10 +266,6 @@
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
         <target state="translated">U bent nog niet aan een project toegevoegd, neem contact op met een beheerder om de 121 Portal te gebruiken.</target>
       </trans-unit>
-      <trans-unit id="6129171651911996363" datatype="html">
-        <source>project-team works!</source>
-        <target state="new">project-team wekrt!</target>
-      </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>
         <target state="new">Last payment:</target>
@@ -329,6 +325,70 @@
       <trans-unit id="7476141645378496788" datatype="html">
         <source>No payments yet</source>
         <target state="new">No payments yet</target>
+      </trans-unit>
+      <trans-unit id="form-clear-filters" datatype="html">
+        <source>Clear all filters</source>
+        <target state="new">Clear all filters</target>
+      </trans-unit>
+      <trans-unit id="5312727456282218392" datatype="html">
+        <source>User name</source>
+        <target state="new">User name</target>
+      </trans-unit>
+      <trans-unit id="795890916060309463" datatype="html">
+        <source>Roles</source>
+        <target state="new">Roles</target>
+      </trans-unit>
+      <trans-unit id="5590086849807274701" datatype="html">
+        <source>Scope</source>
+        <target state="new">Scope</target>
+      </trans-unit>
+      <trans-unit id="5995811927641285296" datatype="html">
+        <source>Last log in</source>
+        <target state="new">Last log in</target>
+      </trans-unit>
+      <trans-unit id="2099886964241384522" datatype="html">
+        <source>Copy email</source>
+        <target state="new">Copy email</target>
+      </trans-unit>
+      <trans-unit id="8255959026836387530" datatype="html">
+        <source>Email copied to clipboard</source>
+        <target state="new">Email copied to clipboard</target>
+      </trans-unit>
+      <trans-unit id="generic-edit" datatype="html">
+        <source>Edit</source>
+        <target state="new">Edit</target>
+      </trans-unit>
+      <trans-unit id="128402705185541160" datatype="html">
+        <source>Remove user</source>
+        <target state="new">Remove user</target>
+      </trans-unit>
+      <trans-unit id="form-quick-search" datatype="html">
+        <source>Quick Search</source>
+        <target state="new">Quick Search</target>
+      </trans-unit>
+      <trans-unit id="541221802269521915" datatype="html">
+        <source>Add user to team</source>
+        <target state="new">Add user to team</target>
+      </trans-unit>
+      <trans-unit id="3102279463494888153" datatype="html">
+        <source>Showing {first} to {last} of {totalRecords} records</source>
+        <target state="new">Showing {first} to {last} of {totalRecords} records</target>
+      </trans-unit>
+      <trans-unit id="generic-toast-error-header" datatype="html">
+        <source>Error</source>
+        <target state="new">Error</target>
+      </trans-unit>
+      <trans-unit id="generic-toast-success-header" datatype="html">
+        <source>Success</source>
+        <target state="new">Success</target>
+      </trans-unit>
+      <trans-unit id="2236371857137398396" datatype="html">
+        <source>No results found</source>
+        <target state="new">No results found</target>
+      </trans-unit>
+      <trans-unit id="9011868136618282915" datatype="html">
+        <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
+        <target state="new">There are no records that match the selected filters, clear some or all filters to continue.</target>
       </trans-unit>
     </body>
   </file>

@@ -26,6 +26,7 @@ describe('TranslatableStringPipe', () => {
   });
 
   it('create an instance', () => {
+    pipe = TestBed.inject(TranslatableStringPipe);
     expect(pipe).toBeTruthy();
   });
 

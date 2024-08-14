@@ -199,9 +199,6 @@
       <trans-unit id="8675927317645341841" datatype="html">
         <source>Included people</source>
       </trans-unit>
-      <trans-unit id="6129171651911996363" datatype="html">
-        <source>project-team works!</source>
-      </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>
       </trans-unit>
@@ -249,6 +246,54 @@
       </trans-unit>
       <trans-unit id="add-project-label" datatype="html">
         <source>Add project</source>
+      </trans-unit>
+      <trans-unit id="128402705185541160" datatype="html">
+        <source>Remove user</source>
+      </trans-unit>
+      <trans-unit id="2099886964241384522" datatype="html">
+        <source>Copy email</source>
+      </trans-unit>
+      <trans-unit id="form-clear-filters" datatype="html">
+        <source>Clear all filters</source>
+      </trans-unit>
+      <trans-unit id="5312727456282218392" datatype="html">
+        <source>User name</source>
+      </trans-unit>
+      <trans-unit id="5590086849807274701" datatype="html">
+        <source>Scope</source>
+      </trans-unit>
+      <trans-unit id="5995811927641285296" datatype="html">
+        <source>Last log in</source>
+      </trans-unit>
+      <trans-unit id="generic-edit" datatype="html">
+        <source>Edit</source>
+      </trans-unit>
+      <trans-unit id="795890916060309463" datatype="html">
+        <source>Roles</source>
+      </trans-unit>
+      <trans-unit id="8255959026836387530" datatype="html">
+        <source>Email copied to clipboard</source>
+      </trans-unit>
+      <trans-unit id="form-quick-search" datatype="html">
+        <source>Quick Search</source>
+      </trans-unit>
+      <trans-unit id="541221802269521915" datatype="html">
+        <source>Add user to team</source>
+      </trans-unit>
+      <trans-unit id="3102279463494888153" datatype="html">
+        <source>Showing {first} to {last} of {totalRecords} records</source>
+      </trans-unit>
+      <trans-unit id="generic-toast-error-header" datatype="html">
+        <source>Error</source>
+      </trans-unit>
+      <trans-unit id="generic-toast-success-header" datatype="html">
+        <source>Success</source>
+      </trans-unit>
+      <trans-unit id="2236371857137398396" datatype="html">
+        <source>No results found</source>
+      </trans-unit>
+      <trans-unit id="9011868136618282915" datatype="html">
+        <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
       </trans-unit>
     </body>
   </file>

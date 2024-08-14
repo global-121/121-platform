@@ -18,10 +18,17 @@ export class ToastService {
       summary: message.summary
         ? message.summary
         : message.severity === 'error'
-          ? 'Error'
-          : 'Success',
-      detail: message.detail ?? 'Something happened!',
+          ? $localize`:@@generic-toast-error-header:Error`
+          : $localize`:@@generic-toast-success-header:Success`,
+      detail: message.detail,
       key: ToastService.TOAST_KEY,
+    });
+  }
+
+  showGenericError() {
+    this.showToast({
+      severity: 'error',
+      detail: $localize`:@@generic-error:An unexpected error has occurred. Please try again later.`,
     });
   }
 }

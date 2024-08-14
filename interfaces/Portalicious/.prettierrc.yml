@@ -11,6 +11,7 @@ plugins:
   - '@prettier/plugin-xml'
 tailwindAttributes:
   - styleClass
+  - icon
 overrides:
   - files: '*.xlf'
     options:
