@@ -23,10 +23,6 @@ class BasePage {
     this.sidebar = this.page.getByTestId('sidebar');
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
     this.accountDropdown = this.page.getByTestId('header-account-dropdown');
-    this.changePassword = new PrimeDropdown({
-      page,
-      testId: 'header-change-password',
-    });
     this.formError = this.page.getByTestId('form-error');
   }
 
