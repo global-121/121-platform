@@ -5,7 +5,11 @@
 >
   <div header-actions>
     @if (canManageAidworkers()) {
-      <app-add-user-button />
+      <app-add-user-button
+        [projectId]="projectId()"
+        [projectUsers]="projectUsers.data()"
+        [enableScope]="enableScope()"
+      />
     }
   </div>
   <app-query-table

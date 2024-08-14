@@ -4,8 +4,10 @@ import {
   Project,
   ProjectMetrics,
   ProjectUser,
+  ProjectUserAssignment,
   ProjectUserWithRolesLabel,
 } from '~/domains/project/project.model';
+import { Role } from '~/domains/role/role.model';
 
 const BASE_ENDPOINT = 'programs';
 
@@ -46,6 +48,7 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
+  // TODO: Move to end of this file (outside of "project user"-related methods)
   createProjectFromKobo({
     token,
     assetId,
@@ -64,6 +67,30 @@ export class ProjectApiService extends DomainApiService {
         koboAssetId: assetId,
       },
     });
+  }
+
+  assignProjectUser(
+    projectId: Signal<number>,
+    {
+      userId,
+      roles,
+      scope,
+    }: {
+      userId: number;
+      roles: Role['role'][];
+      scope: string;
+    },
+  ) {
+    return this.httpWrapperService.perform121ServiceRequest<ProjectUserAssignment>(
+      {
+        method: 'PUT',
+        endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/users/${userId.toString()}`,
+        body: {
+          roles,
+          scope,
+        },
+      },
+    );
   }
 
   removeProjectUser(projectId: Signal<number>, userId: number) {

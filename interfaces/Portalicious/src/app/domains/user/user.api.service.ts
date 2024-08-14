@@ -45,4 +45,10 @@ export class UserApiService extends DomainApiService {
       },
     });
   }
+
+  getAllUsers() {
+    return this.generateQueryOptions<User[]>({
+      path: [BASE_ENDPOINT],
+    });
+  }
 }

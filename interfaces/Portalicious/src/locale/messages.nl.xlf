@@ -358,10 +358,6 @@
         <source>Search keyword</source>
         <target state="new">Search keyword</target>
       </trans-unit>
-      <trans-unit id="541221802269521915" datatype="html">
-        <source>Add user to team</source>
-        <target state="new">Add user to team</target>
-      </trans-unit>
       <trans-unit id="remove-user-title" datatype="html">
         <source>Remove user from team</source>
         <target state="new">Remove user from team</target>
@@ -406,6 +402,42 @@
       <trans-unit id="generic-proceed" datatype="html">
         <source>Proceed</source>
         <target state="new">Proceed</target>
+      </trans-unit>
+      <trans-unit id="add-team-member" datatype="html">
+        <source>Add team member</source>
+        <target state="new">Add team member</target>
+      </trans-unit>
+      <trans-unit id="2372906683883945604" datatype="html">
+        <source>Choose user</source>
+        <target state="new">Choose user</target>
+      </trans-unit>
+      <trans-unit id="3596028580515360519" datatype="html">
+        <source>Type or select</source>
+        <target state="new">Type or select</target>
+      </trans-unit>
+      <trans-unit id="5017538200388607229" datatype="html">
+        <source>Assign roles</source>
+        <target state="new">Assign roles</target>
+      </trans-unit>
+      <trans-unit id="5395278318341499807" datatype="html">
+        <source>Assign scope</source>
+        <target state="new">Assign scope</target>
+      </trans-unit>
+      <trans-unit id="8200577595704036068" datatype="html">
+        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+        <target state="new">* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></target>
+      </trans-unit>
+      <trans-unit id="2110601028652261922" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.zuid<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
+        <target state="new">* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.zuid<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</target>
+      </trans-unit>
+      <trans-unit id="5438647545299330818" datatype="html">
+        <source>Enter a valid scope. No spaces are allowed.</source>
+        <target state="new">Enter a valid scope. No spaces are allowed.</target>
+      </trans-unit>
+      <trans-unit id="834363245149274787" datatype="html">
+        <source>User added</source>
+        <target state="new">User added</target>
       </trans-unit>
     </body>
   </file>

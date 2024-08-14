@@ -271,9 +271,6 @@
       <trans-unit id="form-quick-search" datatype="html">
         <source>Search keyword</source>
       </trans-unit>
-      <trans-unit id="541221802269521915" datatype="html">
-        <source>Add user to team</source>
-      </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>
       </trans-unit>
@@ -307,6 +304,33 @@
       </trans-unit>
       <trans-unit id="confirmation-dialog-header" datatype="html">
         <source>Are you sure?</source>
+      </trans-unit>
+      <trans-unit id="2110601028652261922" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.zuid<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
+      </trans-unit>
+      <trans-unit id="2372906683883945604" datatype="html">
+        <source>Choose user</source>
+      </trans-unit>
+      <trans-unit id="3596028580515360519" datatype="html">
+        <source>Type or select</source>
+      </trans-unit>
+      <trans-unit id="5017538200388607229" datatype="html">
+        <source>Assign roles</source>
+      </trans-unit>
+      <trans-unit id="5395278318341499807" datatype="html">
+        <source>Assign scope</source>
+      </trans-unit>
+      <trans-unit id="5438647545299330818" datatype="html">
+        <source>Enter a valid scope. No spaces are allowed.</source>
+      </trans-unit>
+      <trans-unit id="8200577595704036068" datatype="html">
+        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
+      <trans-unit id="834363245149274787" datatype="html">
+        <source>User added</source>
+      </trans-unit>
+      <trans-unit id="add-team-member" datatype="html">
+        <source>Add team member</source>
       </trans-unit>
     </body>
   </file>

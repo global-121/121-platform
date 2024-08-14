@@ -11,6 +11,11 @@ export type ProjectMetrics = Dto<ProgramStats>;
 export type ProjectUser = ArrayElement<
   Dto121Service<UserController['getUsersInProgram']>
 >;
+
+export type ProjectUserAssignment = Dto121Service<
+  UserController['assignAidworkerToProgram']
+>;
+
 export type ProjectUserWithRolesLabel = {
   allRolesLabel: string;
   lastLogin?: Date;

@@ -10,6 +10,7 @@ export default {
     fontFamily: {
       display: ['Montserrat', 'sans-serif'],
       body: ['"Open Sans"', 'sans-serif'],
+      mono: ['monospace'],
     },
     colors: {
       transparent: 'transparent',

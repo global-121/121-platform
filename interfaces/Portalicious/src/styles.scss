@@ -94,15 +94,15 @@ $toolbar-height: 48px;
       height: $toolbar-height - 2;
 
       .p-sidebar-icon {
-        margin-left: 0;
+        margin-inline-start: 0;
         height: 33px;
         width: 33px;
       }
     }
 
     .p-sidebar-content {
-      padding-left: 0;
-      padding-right: 0;
+      padding-inline-start: 0;
+      padding-inline-end: 0;
     }
   }
 
