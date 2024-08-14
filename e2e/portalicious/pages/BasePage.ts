@@ -50,7 +50,7 @@ class BasePage {
 
   async selectAccountOption(option: string) {
     await this.openAccountDropdown();
-    await this.changePassword.selectMenuItem({ label: option });
+    await this.page.getByRole('menuitem', { name: option }).click();
   }
 
   async validateFormError({
