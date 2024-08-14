@@ -2,7 +2,7 @@ import HomePage from '@121-e2e/portalicious/pages/HomePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.test);
@@ -32,11 +32,14 @@ test('Navigation from sidebar', async ({ page }) => {
 test('Navigation from program header', async ({ page }) => {
   const homePage = new HomePage(page);
 
+  const projectTitle = 'Cash program Westeros';
+
   await page.goto('/en/projects');
-  await page.getByRole('link', { name: 'Cash program Westeros' }).click();
+  await page.getByRole('link', { name: projectTitle }).click();
   await page.waitForURL((url) =>
     url.pathname.startsWith('/en/project/1/registrations'),
   );
+  await expect(page.getByText(`121 Portal | ${projectTitle}`)).toBeVisible();
 
   await homePage.navigateToProgramPage('Overview');
   await page.waitForURL((url) =>
