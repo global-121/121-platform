@@ -42,7 +42,6 @@ export class PhysicalCardPopupComponent implements OnInit {
   public showButtons: boolean;
 
   public DateFormat = DateFormat;
-  public WalletCardStatus121 = VisaCard121Status;
 
   public isCardPaused: boolean;
   public canIssueNewCard: boolean;

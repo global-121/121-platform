@@ -1,6 +1,5 @@
 import { API_PATHS } from '@121-service/src/config';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
-import { QueueNameMessageCallBack } from '@121-service/src/notifications/enum/queue.names.enum';
 import { MessageIncomingController } from '@121-service/src/notifications/message-incoming/message-incoming.controller';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
@@ -17,6 +16,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { QueueNameMessageCallBack } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserModule } from '@121-service/src/user/user.module';
 import { BullModule } from '@nestjs/bull';

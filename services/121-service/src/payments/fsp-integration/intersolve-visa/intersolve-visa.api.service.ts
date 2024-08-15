@@ -13,19 +13,18 @@ import {
   GetTransactionsResponseDto,
   IntersolveGetTransactionsResponseDataDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-get-wallet-transactions.dto';
+import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
-import {
-  BlockTokenReasonCodeEnum,
-  BlockTokenReturnType,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/block-token-return-type.interface';
 import { CreateCustomerReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-customer-return-type.interface';
 import { GetPhysicalCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-return-type.interface';
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
+import { IntersolveVisaBaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/intersolve-visa-api-default-reponse.interface';
 import { IssueTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/issue-token-return-type.interface';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { v4 as uuid, v5 as uuidv5 } from 'uuid';
@@ -121,7 +120,7 @@ export class IntersolveVisaApiService {
         phoneNumbers: [
           {
             type: 'MOBILE',
-            value: input.contactInformation.phoneNumber, // TODO: Why in createPhysicalCard() do we call formatPhoneNumber() on this value, but not here? Bug or intentional?
+            value: formatPhoneNumber(input.contactInformation.phoneNumber),
           },
         ],
       },
@@ -159,7 +158,7 @@ export class IntersolveVisaApiService {
     // If the response does not contain errors
     // Put relevant stuff from createCustomerResponseDto into a CreateCustomerResultDto and return
     const createCustomerResultDto: CreateCustomerReturnType = {
-      holderId: createCustomerResponseDto.data.data.id, // TODO: Also check if there is actually something in this id and if not, throw an exception?
+      holderId: createCustomerResponseDto.data.data.id,
     };
     return createCustomerResultDto;
   }
@@ -175,14 +174,13 @@ export class IntersolveVisaApiService {
         ? issueTokenParams.reference
         : uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
       activate: issueTokenParams.activate,
-      // TODO: Can we just leave out quantities altogether from the request like this? Or does it need to be an empty array like it shows in the Integration Manual?
     };
     // Send the request: https://service-integration.intersolve.nl/pointofsale/swagger/index.html
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
       : 'pointofsale';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${issueTokenParams.brandCode}/issue-token`; // TODO: Removed this: ?includeBalances=true, which I think is ok.
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${issueTokenParams.brandCode}/issue-token`;
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -244,9 +242,6 @@ export class IntersolveVisaApiService {
       );
     }
 
-    // If the response does not contain errors
-    // Put relevant stuff from getTokenResponseDto into a GetTokenResultDto and return
-    // TODO: Test if this actually gets the properties from the response DTO as expected. I copy-pasted this from the old code and refactored a bit.
     let blocked;
     let status;
     let balance;
@@ -278,8 +273,6 @@ export class IntersolveVisaApiService {
   public async getPhysicalCard(
     tokenCode: string,
   ): Promise<GetPhysicalCardReturnType> {
-    // TODO: Why was there no error checking in the old version of this code? Not in this function and neither in the only function that calls it. I added it, but mabe it was not there for good reason...?
-
     // Send the request
     const authToken = await this.getAuthenticationToken();
     const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/physical-card-data`;
@@ -440,7 +433,7 @@ export class IntersolveVisaApiService {
     tokenCode: string;
   }): Promise<void> {
     // Create the request body to send
-    // TODO: I am not sure this is how to create it, old code was pretty hard for me to understand. See (to be removed) this.linkCustomerToWallet()
+
     const registerHolderRequest = {
       holderId: holderId,
     };
@@ -487,7 +480,6 @@ export class IntersolveVisaApiService {
     childTokenCode: string;
   }): Promise<void> {
     // Create the request body to send
-    // TODO: I am not sure this is how to create it, old code was pretty hard for me to understand. See (to be removed) this.linkCustomerToWallet()
     const linkTokenRequest = {
       tokenCode: childTokenCode,
     };
@@ -503,11 +495,12 @@ export class IntersolveVisaApiService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     // On success this returns a 204 No Content
-    const linkTokenResponse = await this.httpService.post<any>(
-      url,
-      linkTokenRequest,
-      headers,
-    );
+    const linkTokenResponse =
+      await this.httpService.post<IntersolveVisaBaseResponseDto>(
+        url,
+        linkTokenRequest,
+        headers,
+      );
 
     // Handle the response
     const errorMessage =
@@ -540,8 +533,7 @@ export class IntersolveVisaApiService {
       brand: 'VISA_CARD',
       firstName: '',
       lastName: name,
-      // TODO: We need to add a "+" for Intersolve's API to work. Do we have a generic helper function for this?
-      mobileNumber: '+' + contactInformation.phoneNumber, // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
+      mobileNumber: formatPhoneNumber(contactInformation.phoneNumber), // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
       cardAddress: {
         address1:
           `${contactInformation.addressStreet} ${contactInformation.addressHouseNumber} ${contactInformation.addressHouseNumberAddition}`.trim(),
@@ -568,12 +560,12 @@ export class IntersolveVisaApiService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     // On success this returns a 200 with a body containing correlationId
-    // TODO: Replace <any> with something else, a DTO.
-    const createPhysicalCardResponse = await this.httpService.post<any>(
-      url,
-      request,
-      headers,
-    );
+    const createPhysicalCardResponse =
+      await this.httpService.post<IntersolveVisaBaseResponseDto>(
+        url,
+        request,
+        headers,
+      );
 
     // Handle the response
 
@@ -608,13 +600,13 @@ export class IntersolveVisaApiService {
     const transferRequestDto: TransferRequestDto = {
       quantity: {
         value: amountInCent,
-        assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE || 'EUR', // TODO: What do we want to do as pattern when an env variable is not defined as it should? Throw error? IMO defaulting to EUR is not what we want.
+        assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
       },
       creditor: {
         tokenCode: toTokenCode,
       },
-      reference: reference.slice(0, 128), // String of max 128 characters, does not need to be unique for every transfer. TODO: Asked Intersolve what the use case is of this field.
-      operationReference: uuid, // Required to pass in a UUID, which needs be unique for all transfers, or all transfers on a Token. TODO: Asked Intersolve what the use case is of this field.
+      reference: reference.slice(0, 128), // String of max 128 characters, does not need to be unique for every transfer.
+      operationReference: uuid, // Required to pass in a UUID, which needs be unique for all transfers. Is used as idempotency key.
     };
 
     // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
@@ -672,11 +664,12 @@ export class IntersolveVisaApiService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
     // On success this returns a 204 No Content
-    const substituteTokenResponse = await this.httpService.post(
-      url,
-      substituteTokenRequestDto,
-      headers,
-    );
+    const substituteTokenResponse =
+      await this.httpService.post<IntersolveVisaBaseResponseDto>(
+        url,
+        substituteTokenRequestDto,
+        headers,
+      );
 
     // Handle the response
 
@@ -697,7 +690,7 @@ export class IntersolveVisaApiService {
   public async setTokenBlocked(
     tokenCode: string,
     blocked: boolean,
-  ): Promise<BlockTokenReturnType> {
+  ): Promise<void> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'pointofsale-payments'
@@ -711,18 +704,10 @@ export class IntersolveVisaApiService {
     ];
     const payload = {
       reasonCode: blocked
-        ? BlockTokenReasonCodeEnum.BLOCK_GENERAL
-        : BlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
+        ? IntersolveBlockTokenReasonCodeEnum.BLOCK_GENERAL
+        : IntersolveBlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
     };
     const blockResult = await this.httpService.post<any>(url, payload, headers);
-
-    // Handle the response
-    // TODO: There is no value in returning these data fields: the caller does not do anything with them. Simply return (void).
-    const result: BlockTokenReturnType = {
-      status: blockResult.status,
-      statusText: blockResult.statusText,
-      data: blockResult.data,
-    };
 
     const errorMessage = this.createErrorMessageIfRequestFailed(blockResult);
     // If the response contains errors
@@ -732,10 +717,9 @@ export class IntersolveVisaApiService {
       );
     }
 
-    return result;
+    return;
   }
 
-  // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   public async updateCustomerPhoneNumber({
     holderId,
     phoneNumber,
@@ -744,14 +728,10 @@ export class IntersolveVisaApiService {
     phoneNumber: string;
   }): Promise<any> {
     // Create the request
-    // TODO: Is there value in defining a DTO for the request format? (and any other request formats in this class for that matter?) See: CreateCustomerResponseExtensionDto
+
     const requestBody = {
-      phoneNumbers: [
-        {
-          type: 'MOBILE',
-          value: phoneNumber, // TODO: Do we need to format this phone number in some way?
-        },
-      ],
+      type: 'MOBILE',
+      value: formatPhoneNumber(phoneNumber),
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
@@ -776,7 +756,6 @@ export class IntersolveVisaApiService {
     }
   }
 
-  // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   public async updateCustomerAddress({
     holderId,
     addressStreet,
@@ -793,7 +772,6 @@ export class IntersolveVisaApiService {
     addressCity: string;
   }): Promise<void> {
     // Create the request
-    // TODO: Is there value in defining a DTO for the request format? (and any other request formats in this class for that matter?) See: createCustomerAddressPayload
     const requestBody = {
       type: 'HOME',
       addressLine1: `${
@@ -829,7 +807,6 @@ export class IntersolveVisaApiService {
   }
 
   // Helper function to convert errors in an Intersolve API Response into a message string.
-  // TODO: This function should throw an expection if the response contains errors, like the other (re-implemented) functions do.
   private convertResponseErrorsToMessage(
     errorsInResponseDto: ErrorsInResponse[] | undefined,
   ): string {
@@ -852,9 +829,9 @@ export class IntersolveVisaApiService {
     return status >= 200 && status < 300;
   }
 
-  // TODO: REFACTOR: Can we accept anything other than any as input paramter? A "base response DTO" with status and optional errors? Still it could be undefined, since http.post returns undefined if the URL could not be found I think.
-  // Funtion returns undefined if no error message could be created, which is when the request succeeded.
-  private createErrorMessageIfRequestFailed(response: any): string | undefined {
+  private createErrorMessageIfRequestFailed(
+    response: IntersolveVisaBaseResponseDto,
+  ): string | undefined {
     if (!response) {
       return 'Intersolve URL could not be reached.';
     }

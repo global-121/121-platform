@@ -1,6 +1,5 @@
 import { DEFAULT_QUEUE_CREATE_MESSAGE } from '@121-service/src/notifications/enum/message-queue-mapping.const';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProcessNameMessage } from '@121-service/src/notifications/enum/queue.names.enum';
 import {
   MessageJobDto,
   MessageProcessType,
@@ -12,6 +11,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';

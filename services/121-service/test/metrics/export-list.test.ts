@@ -82,7 +82,7 @@ describe('Metric export list', () => {
     // Assert
     const data = getRegistrationsResponse.body.data;
     expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
-    expect(data.length).toBe(4);
+    expect(data.length).toBe(5);
 
     const expectedReferenceIds = registrationsOCW.map((r) => r.referenceId);
 

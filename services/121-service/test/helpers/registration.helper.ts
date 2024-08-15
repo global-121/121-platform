@@ -347,6 +347,24 @@ export function getMessageHistory(
     .send();
 }
 
+export async function getMessageHistoryUntilX(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+  x: number,
+): Promise<request.Response> {
+  const response = await getMessageHistory(programId, referenceId, accessToken);
+
+  if (Array.isArray(response.body) && response.body.length >= x) {
+    return response;
+  }
+
+  // Wait for a second before making the next request to avoid overloading the server
+  await waitFor(400);
+
+  return getMessageHistoryUntilX(programId, referenceId, accessToken, x);
+}
+
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,

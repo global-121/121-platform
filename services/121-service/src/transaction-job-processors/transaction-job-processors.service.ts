@@ -85,19 +85,24 @@ export class TransactionJobProcessorsService {
           input.transactionAmountInMajorUnit,
         );
     } catch (error) {
-      await this.createTransactionAndUpdateRegistration({
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        calculatedTranserAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-        financialServiceProviderId: financialServiceProvider.id,
-        registration,
-        oldRegistration,
-        isRetry: input.isRetry,
-        status: StatusEnum.error,
-        errorText: `Error calculating transfer amount: ${error?.message}`,
-      });
-      return;
+      if (error instanceof IntersolveVisaApiError) {
+        await this.createTransactionAndUpdateRegistration({
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
+          calculatedTranserAmountInMajorUnit:
+            input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
+          financialServiceProviderId: financialServiceProvider.id,
+          registration,
+          oldRegistration,
+          isRetry: input.isRetry,
+          status: StatusEnum.error,
+          errorText: `Error calculating transfer amount: ${error?.message}`,
+        });
+        return;
+      } else {
+        throw error;
+      }
     }
 
     // Check if all required properties are present. If not, create a failed transaction and throw an error.
@@ -187,29 +192,22 @@ export class TransactionJobProcessorsService {
         throw error;
       }
     }
+    // If the transactions was succesful
 
-    if (intersolveVisaDoTransferOrIssueCardReturnDto.cardCreated) {
-      await this.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaDebitCardCreated,
-        programId: input.programId,
-        registration: registration,
-        amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        bulkSize: input.bulkSize,
-      });
-    } else if (
-      intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit >
-      0
-    ) {
-      await this.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaLoad,
-        programId: input.programId,
-        registration: registration,
-        amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        bulkSize: input.bulkSize,
-      });
+    let messageType;
+    if (intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated) {
+      messageType = ProgramNotificationEnum.visaDebitCardCreated;
+    } else {
+      messageType = ProgramNotificationEnum.visaLoad;
     }
+    await this.createMessageAndAddToQueue({
+      type: messageType,
+      programId: input.programId,
+      registration: registration,
+      amountTransferred:
+        intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
+      bulkSize: input.bulkSize,
+    });
 
     await this.createTransactionAndUpdateRegistration({
       programId: input.programId,

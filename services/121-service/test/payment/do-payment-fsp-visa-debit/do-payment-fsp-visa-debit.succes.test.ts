@@ -16,6 +16,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
+  getMessageHistoryUntilX,
   importRegistrations,
   issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
@@ -236,11 +237,26 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       registrationVisa.referenceId,
       accessToken,
     );
+
+    // Waits until the 4th message is received
+    const messagesHistoryPa1 = await getMessageHistoryUntilX(
+      programIdVisa,
+      registrationVisa.referenceId,
+      accessToken,
+      4,
+    );
+
     const transactionsResponse2 = await getTransactions(
       programIdVisa,
       testPaymentNumber,
       registrationOCW2.referenceId,
       accessToken,
+    );
+    const messagesHistoryPa2 = await getMessageHistoryUntilX(
+      programIdVisa,
+      registrationOCW2.referenceId,
+      accessToken,
+      4,
     );
     const transactionsResponse3 = await getTransactions(
       programIdVisa,
@@ -255,15 +271,25 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
     );
 
+    const expectedCalculatedAmountPa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
     expect(transactionsResponse1.body[0].amount).toBe(
-      150 - 13000 / 100 - 1000 / 100, // = 10
+      expectedCalculatedAmountPa1,
     );
     expect(transactionsResponse1.text).toContain(StatusEnum.success);
+    // Validate for one message where amount is higher than 0 that it is send in a message
+    expect(messagesHistoryPa1.text).toContain(
+      `€${expectedCalculatedAmountPa1}`,
+    );
 
+    const expectedCalculatedAmountPa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
     expect(transactionsResponse2.body[0].amount).toBe(
-      150 - 14000 / 100 - 1000 / 100, // = 0 : A transaction of 0 is created
+      expectedCalculatedAmountPa2, // = 0 : A transaction of 0 is created
     );
     expect(transactionsResponse2.text).toContain(StatusEnum.success);
+    // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
+    expect(messagesHistoryPa2.text).toContain(
+      `€${expectedCalculatedAmountPa2}`,
+    );
 
     // should be able to payout the full amount
     expect(transactionsResponse3.body[0].amount).toBe(

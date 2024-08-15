@@ -1,4 +1,4 @@
-import { Base121Entity } from '@121-service/src/base.entity';
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import {
@@ -11,9 +11,8 @@ import {
   Relation,
 } from 'typeorm';
 
-// TODO: Should this Entity extend from CascadeDeleteEntity instead? When should an Entity extend from it?
 @Entity('intersolve_visa_parent_wallet')
-export class IntersolveVisaParentWalletEntity extends Base121Entity {
+export class IntersolveVisaParentWalletEntity extends CascadeDeleteEntity {
   @OneToOne(() => IntersolveVisaCustomerEntity)
   @JoinColumn({ name: 'intersolveVisaCustomerId' })
   public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;

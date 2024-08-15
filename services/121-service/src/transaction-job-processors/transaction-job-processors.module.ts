@@ -3,7 +3,7 @@ import { FinancialServiceProvidersModule } from '@121-service/src/financial-serv
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
-import { RedisModule } from '@121-service/src/payments/redis.module';
+import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';

@@ -11,7 +11,6 @@ import {
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { ReferenceIdAndTransactionAmountDto } from '@121-service/src/payments/dto/internal/referenceid-transaction-amount.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
@@ -22,6 +21,11 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
+import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis/redis-client';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -51,8 +55,9 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import Redis from 'ioredis';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Equal, Repository } from 'typeorm';
 
@@ -62,19 +67,6 @@ export class PaymentsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-
-  private fspWithQueueServiceMapping = {
-    // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
-    [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-    [FinancialServiceProviderName.intersolveVoucherPaper]:
-      this.intersolveVoucherService,
-    [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
-      this.intersolveVoucherService,
-    [FinancialServiceProviderName.safaricom]: this.safaricomService,
-    [FinancialServiceProviderName.commercialBankEthiopia]:
-      this.commercialBankEthiopiaService,
-    // Add more FSP mappings if they work queue-based
-  };
 
   private financialServiceProviderNameToServiceMap: Record<
     FinancialServiceProviderName,
@@ -100,6 +92,8 @@ export class PaymentsService {
     private readonly transactionQueuesService: TransactionQueuesService,
     private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
@@ -213,7 +207,9 @@ export class PaymentsService {
         this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
-    // TODO: What is happening here? In which situation(s) does !amount evaluate to TRUE and what happens then?
+    // If amount is not defined do not calculate the totalMultiplierSum
+    // This happens when you call the endpoint with dryRun=true
+    // happens in pa table to define which registrations are selectable
     if (!amount) {
       return {
         ...bulkActionResultDto,
@@ -247,7 +243,6 @@ export class PaymentsService {
       }
     }
 
-    // TODO: Find out a way to do this without including the fsp config module
     for (const fsp of fspsInPayment) {
       await this.validateRequiredFinancialServiceProviderConfigurations(
         fsp,
@@ -256,7 +251,6 @@ export class PaymentsService {
     }
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
-    // TODO: REFACTOR: The definition of this DTO should live in its own file.
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
@@ -376,8 +370,7 @@ export class PaymentsService {
 
     let paymentTransactionResult = 0;
     for (const chunk of paymentChunks) {
-      // TODO: REFACTOR: Registration and related data was already retrieved in postPayment, why first strip it down to referenceids and then retrieve it again?
-      // Get the PA data for the payment
+      // Get the registration data for the payment (like phone number, bankaccountNumber etc)
       const paPaymentDataList = await this.getPaymentList(
         chunk,
         amount,
@@ -463,7 +456,6 @@ export class PaymentsService {
     });
     if (!program) {
       const errors = 'Program not found.';
-      // TODO: REFACTOR: Throw HTTPException from controller, as the Service "does not know" it is being called via HTTP.
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
@@ -483,21 +475,14 @@ export class PaymentsService {
     // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    await this.makePaymentRequest({ paLists, programId, payment, isRetry });
+    await this.initiatePaymentPerFinancialServiceProvider({
+      paLists,
+      programId,
+      payment,
+      isRetry,
+    });
 
     return paPaymentDataList.length;
-  }
-
-  // TODO: REFACTOR: This method can be private
-  public async checkPaymentInProgressAndThrow(
-    programId: number,
-  ): Promise<void> {
-    if (await this.isPaymentInProgress(programId)) {
-      throw new HttpException(
-        { errors: 'Payment is already in progress' },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
   }
 
   public async getProgramPaymentsStatus(
@@ -508,26 +493,30 @@ export class PaymentsService {
     };
   }
 
+  private async checkPaymentInProgressAndThrow(
+    programId: number,
+  ): Promise<void> {
+    if (await this.isPaymentInProgress(programId)) {
+      throw new HttpException(
+        { errors: 'Payment is already in progress' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   private async isPaymentInProgress(programId: number): Promise<boolean> {
     // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether.
+    // Ruben: I would be careful with this refactor. The action table is update much earlies than the queue. So for a big payment it can take while for the queue to start. So if we remove the actions table we need something else..
     // check progress based on actions-table first
+    // Check if there are any actions in progress
     const actionsInProgress =
       await this.checkPaymentActionInProgress(programId);
     if (actionsInProgress) {
       return true;
     }
 
-    // if not in progress, then also check progress from queue
-    // get all FSPs in program
-    const program = await this.getProgramWithFspOrThrow(programId);
-
-    for (const fspEntity of program.financialServiceProviders) {
-      if (await this.checkFspQueueProgress(fspEntity.fsp, programId)) {
-        return true;
-      }
-    }
-
-    return false;
+    // If no actions in progress, check if there are any payments in progress in the queue
+    return await this.isPaymentInProgressForProgramQueue(programId);
   }
 
   private async checkPaymentActionInProgress(
@@ -538,6 +527,7 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
     // TODO: REFACTOR: Use the Redis way of determining if a payment is in progress, see function this.checkFspQueueProgress
+    // Ruben: I would be careful with this refactor. The action table is update much earlier in the payment api call than the queue. So for a big payment it can take while for the queue to start and a browser/person could potentially start the same payment twice
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
@@ -558,27 +548,13 @@ export class PaymentsService {
     return finishTimestamp < startTimestamp;
   }
 
-  private async checkFspQueueProgress(
-    fsp: string,
+  private async isPaymentInProgressForProgramQueue(
     programId: number,
   ): Promise<boolean> {
-    const service = this.fspWithQueueServiceMapping[fsp];
-    // If no specific service for the FSP, assume no queue progress to check
-    if (!service) {
-      return false;
-    }
-
-    const programsWithFsp = await this.programRepository.find({
-      where: {
-        financialServiceProviders: {
-          fsp: Equal(fsp),
-        },
-      },
-    });
-    const nrPending = await service.getQueueProgress(
-      programsWithFsp.length > 0 ? programId : null,
-    );
-    return nrPending > 0;
+    // If there is more that one program with the same FSP we can use the delayed count of a program which is faster else we need to do use the redis set
+    const nrPending = await this.redisClient.scard(getRedisSetName(programId));
+    const paymentIsInProgress = nrPending > 0;
+    return paymentIsInProgress;
   }
 
   private splitPaListByFsp(
@@ -593,8 +569,7 @@ export class PaymentsService {
     }, {});
   }
 
-  // TODO: REFACTOR: This method does not make payment requests, but results in jobs added to queues. Rename to reflect this.
-  private async makePaymentRequest({
+  private async initiatePaymentPerFinancialServiceProvider({
     paLists,
     programId,
     payment,
@@ -616,8 +591,6 @@ export class PaymentsService {
             See this.createIntersolveVisaTransferJobs() of how this is handled.
           */
 
-          // TODO: Double check if paPaymentList[0].transactionAmount indeed contains the payment amount and is not already multiplied by the paymentAmountMultiplier. If not, add paymentAmount as parameter to this makePaymentRequest function.
-          // TODO: Pass in the transactionAmount for each PA. It should be in paLists or something.
           return await this.createAndAddIntersolveVisaTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
               (paPaymentData) => {
@@ -668,7 +641,7 @@ export class PaymentsService {
     paymentNumber,
     isRetry,
   }: {
-    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountDto[];
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
     paymentNumber: number;
@@ -696,7 +669,6 @@ export class PaymentsService {
         dataFieldNames,
       );
 
-    // TODO: FIX: registrationViews does not contain any name field of the Registration. Where/how to get it?
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationsChunked(
         programId,
@@ -704,7 +676,14 @@ export class PaymentsService {
         4000,
       );
 
-    // TODO: Why not call addIntersolveVisaTransactionJobs one by one instead of creating an array of jobs first? Would that not prevent a big array being created and hence be more efficient in memory use?
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
@@ -713,10 +692,10 @@ export class PaymentsService {
             userId: userId,
             paymentNumber: paymentNumber,
             referenceId: registrationView.referenceId,
-            // TODO: I am a bit worried that this find will not perform for 100k PAs.
-            transactionAmountInMajorUnit: referenceIdsTransactionAmounts.find(
-              (r) => r.referenceId === registrationView.referenceId,
-            )!.transactionAmount,
+            // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
+            transactionAmountInMajorUnit: transactionAmountsMap.get(
+              registrationView.referenceId,
+            )!,
             isRetry,
             bulkSize: referenceIds.length,
             name: registrationView['fullName'],
