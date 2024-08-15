@@ -772,4 +772,8 @@ export class IntersolveVisaService
       phoneNumber: input.contactInformation.phoneNumber,
     });
   }
+
+  public async getWallet(tokenCode: string) {
+    return await this.intersolveVisaApiService.getToken(tokenCode);
+  }
 }

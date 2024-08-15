@@ -5,6 +5,7 @@ import { FinancialServiceProvidersModule } from '@121-service/src/financial-serv
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { KoboConnectModule } from '@121-service/src/kobo-connect/kobo-connect.module';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
+import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
@@ -39,6 +40,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ProgramAttributesModule,
     KoboConnectModule,
     ProgramFinancialServiceProviderConfigurationsModule,
+    IntersolveVisaModule,
   ],
   providers: [ProgramService, ProgramRepository],
   controllers: [ProgramController],

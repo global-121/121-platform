@@ -7,7 +7,6 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
-import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -20,7 +19,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     HttpModule,
     UserModule,
-    ProgramFinancialServiceProviderConfigurationsModule,
     TypeOrmModule.forFeature([
       IntersolveVisaCustomerEntity,
       IntersolveVisaParentWalletEntity,
