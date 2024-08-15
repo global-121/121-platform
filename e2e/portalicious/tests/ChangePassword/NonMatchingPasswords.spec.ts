@@ -34,7 +34,7 @@ test('[29311] Change password unsuccessfully (Current password incorrect)', asyn
       confirmPassword: 'newPasswordWrong',
     });
     await changePasswordPage.submitChangePassword();
-    await changePasswordPage.validateGenericChangePasswordError({
+    await changePasswordPage.validateFormError({
       errorText: 'The confirm password must be equal to the new password.',
     });
   });

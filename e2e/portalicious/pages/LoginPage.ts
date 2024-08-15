@@ -34,23 +34,8 @@ class LoginPage extends BasePage {
     );
   }
 
-  async loginTest(username?: string, password?: string) {
-    if (!username || !password) {
-      throw new Error('Username and password are required');
-    }
-
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click();
-  }
-
   async validateWrongPasswordError({ errorText }: { errorText: string }) {
     await expect(this.page.getByText(errorText)).toBeVisible();
-    // await this.page.waitForLoadState('networkidle');
-    // await this.wrongPasswordError.waitFor();
-
-    // const errorString = await this.wrongPasswordError.textContent();
-    // expect(errorString).toContain(errorText);
   }
 }
 

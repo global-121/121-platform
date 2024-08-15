@@ -9,7 +9,7 @@ class BasePage {
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
   readonly accountDropdown: Locator;
-  readonly changePassword: PrimeDropdown;
+  // readonly changePassword: PrimeDropdown;
   readonly formError: Locator;
 
   constructor(page: Page) {
@@ -22,7 +22,7 @@ class BasePage {
     this.projectHeader = this.page.getByTestId('project-header');
     this.sidebar = this.page.getByTestId('sidebar');
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
-    this.accountDropdown = this.page.getByRole('button', {name: 'Account'});
+    this.accountDropdown = this.page.getByRole('button', { name: 'Account' });
     this.formError = this.page.getByTestId('form-error');
   }
 
@@ -53,15 +53,12 @@ class BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async validateFormError({
-    errorText,
-  }: {
-    errorText: string;
-  }) {
+  async validateFormError({ errorText }: { errorText: string }) {
     await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
 
     const errorString = await this.formError.textContent();
+    expect(await this.formError.isVisible()).toBe(true);
     expect(errorString).toContain(errorText);
   }
 }

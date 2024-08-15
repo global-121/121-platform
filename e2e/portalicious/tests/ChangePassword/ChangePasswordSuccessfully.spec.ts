@@ -46,11 +46,12 @@ test('[29309] Change password successfully', async ({ page }) => {
 
   await test.step('Login with old credentials', async () => {
     await homePage.selectAccountOption('Logout');
-    await loginPage.loginTest(
+    await loginPage.login(
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      true,
     );
-    await loginPage.validateGenericChangePasswordError({
+    await loginPage.validateFormError({
       errorText:
         'Invalid email or password. Double-check your credentials and try again.',
     });
