@@ -79,34 +79,31 @@
         <target state="translated">Uitloggen</target>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="6425467213960794982" datatype="html">
+      <trans-unit id="page-title-all-projects" datatype="html">
         <source>All projects</source>
         <target state="translated">Alle projecten</target>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="4555457172864212828" datatype="html">
+      <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
         <target state="translated">Gebruikers</target>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="5942556817969302760" datatype="html">
+      <trans-unit id="page-title-roles-and-permissions" datatype="html">
         <source>Roles and permissions</source>
         <target state="translated">Rollen en Rechten</target>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="2614607010577950577" datatype="html">
+      <trans-unit id="page-title-project-overview" datatype="html">
         <source>Overview</source>
         <target state="translated">Overzicht</target>
       </trans-unit>
-      <trans-unit id="3724068243287682962" datatype="html">
+      <trans-unit id="page-title-project-team" datatype="html">
         <source>Team</source>
         <target state="final">Team</target>
       </trans-unit>
-      <trans-unit id="17234570072885140" datatype="html">
+      <trans-unit id="page-title-project-registrations" datatype="html">
         <source>Registrations</source>
         <target state="final">Registraties</target>
       </trans-unit>
-      <trans-unit id="1131264372756277854" datatype="html">
+      <trans-unit id="page-title-project-payments" datatype="html">
         <source>Payments</source>
         <target state="translated">Betalingen</target>
       </trans-unit>
@@ -264,10 +261,6 @@
       <trans-unit id="668066055906448779" datatype="html">
         <source>Cash disbursed</source>
         <target state="new">Cash disbursed</target>
-      </trans-unit>
-      <trans-unit id="2980109580182727209" datatype="html">
-        <source>All projects</source>
-        <target state="translated">Alle projecten</target>
       </trans-unit>
       <trans-unit id="7113499429942611780" datatype="html">
         <source>Create new project</source>

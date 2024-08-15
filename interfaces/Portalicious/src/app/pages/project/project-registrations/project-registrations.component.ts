@@ -11,5 +11,5 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
 })
 export class ProjectRegistrationsComponent {
   // this is injected by the router
-  projectId = input.required<string>();
+  projectId = input.required<number>();
 }
