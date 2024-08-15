@@ -6,8 +6,16 @@ import {
   inject,
   input,
   signal,
+  ViewChild,
 } from '@angular/core';
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+  injectQueryClient,
+} from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -26,7 +34,13 @@ type UserInProject = ArrayElement<
 @Component({
   selector: 'app-project-team',
   standalone: true,
-  imports: [PageLayoutComponent, QueryTableComponent, AddUserButtonComponent],
+  imports: [
+    PageLayoutComponent,
+    QueryTableComponent,
+    AddUserButtonComponent,
+    ConfirmDialogModule,
+    ConfirmationDialogComponent,
+  ],
   providers: [ToastService],
   templateUrl: './project-team.component.html',
   styles: ``,
@@ -36,6 +50,10 @@ export class ProjectTeamComponent {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private queryClient = injectQueryClient();
+
+  @ViewChild('confirmationDialog')
+  private confirmationDialog: ConfirmationDialogComponent;
 
   selectedUser = signal<undefined | UserInProject>(undefined);
 
@@ -50,6 +68,22 @@ export class ProjectTeamComponent {
   projectUsers = injectQuery(() => ({
     queryKey: [ApiEndpoints.projects, this.projectId(), ApiEndpoints.users],
     queryFn: () => this.apiService.getUsersInProject(this.projectId()),
+  }));
+
+  removeUserMutation = injectMutation(() => ({
+    mutationFn: ({ userId }: { userId: number }) =>
+      this.apiService.removeUserFromProject(this.projectId(), userId),
+    onSuccess: () => {
+      this.toastService.showToast({
+        detail: $localize`User removed`,
+      });
+      void this.queryClient.invalidateQueries({
+        queryKey: [ApiEndpoints.projects, this.projectId(), ApiEndpoints.users],
+      });
+    },
+    onError: () => {
+      this.toastService.showGenericError();
+    },
   }));
 
   columns = computed<QueryTableColumn<UserInProject>[]>(() => [
@@ -82,7 +116,7 @@ export class ProjectTeamComponent {
 
   enableScope = computed(() => this.project.data()?.enableScope);
 
-  contextMenuItems = computed(() => {
+  contextMenuItems = computed<MenuItem[] | undefined>(() => {
     if (!this.canManageAidworkers()) {
       return undefined;
     }
@@ -113,12 +147,18 @@ export class ProjectTeamComponent {
         },
       },
       {
-        label: $localize`Remove user`,
+        label: $localize`:@@remove-user-button:Remove user`,
         icon: 'pi pi-times text-red-500',
         command: () => {
-          this.toastService.showToast({
-            detail: `Delete functionality has not been implemented yet so don't be impatient`,
-            severity: 'error',
+          const user = this.selectedUser();
+          if (!user) {
+            this.toastService.showGenericError();
+            return;
+          }
+          this.confirmationDialog.confirm({
+            accept: () => {
+              this.removeUserMutation.mutate({ userId: user.id });
+            },
           });
         },
       },
