@@ -38,10 +38,7 @@ class ChangePasswordPage extends BasePage {
   }
 
   async assertChangePasswordSuccessPopUp() {
-    const popUp = this.page.getByRole('alertdialog');
-
-    await popUp.isVisible();
-    await popUp.isHidden();
+    await this.validateToastMessage('Your password was successfully changed.');
   }
 }
 

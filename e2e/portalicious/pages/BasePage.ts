@@ -11,6 +11,7 @@ class BasePage {
   readonly accountDropdown: Locator;
   // readonly changePassword: PrimeDropdown;
   readonly formError: Locator;
+  readonly toast: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -24,6 +25,7 @@ class BasePage {
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
     this.accountDropdown = this.page.getByRole('button', { name: 'Account' });
     this.formError = this.page.getByTestId('form-error');
+    this.toast = this.page.getByRole('alert');
   }
 
   async openSidebar() {
@@ -51,6 +53,12 @@ class BasePage {
   async selectAccountOption(option: string) {
     await this.openAccountDropdown();
     await this.page.getByRole('menuitem', { name: option }).click();
+  }
+
+  async validateToastMessage(message: string) {
+    await expect(this.toast).toBeVisible();
+    expect(await this.toast.textContent()).toContain(message);
+    await expect(this.toast).toBeHidden();
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
