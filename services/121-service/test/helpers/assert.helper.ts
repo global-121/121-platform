@@ -23,7 +23,7 @@ export function processMessagePlaceholders(
 
 export function assertRegistrationImport(response: any, expected: any): void {
   expect(response.phoneNumber).toBe(expected.phoneNumber);
-  expect(response.lastName).toBe(expected.lastName);
+  expect(response.fullName).toBe(expected.fullName);
   expect(response.addressStreet).toBe(expected.addressStreet);
   expect(response.addressHouseNumber).toBe(expected.addressHouseNumber);
   expect(response.addressHouseNumberAddition).toBe(
