@@ -9,7 +9,6 @@ class BasePage {
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
   readonly accountDropdown: Locator;
-  // readonly changePassword: PrimeDropdown;
   readonly formError: Locator;
   readonly toast: Locator;
 
