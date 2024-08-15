@@ -11,6 +11,7 @@
       text
       class="lg:mr-9 [&_button:not(:hover)]:text-white"
       (click)="sidebarVisible = true"
+      data-testid="sidebar-toggle"
     />
     <app-logo [projectId]="projectId()" />
   </ng-template>
@@ -51,6 +52,7 @@
   </ng-template>
 </p-toolbar>
 <p-sidebar
+  data-testid="sidebar"
   #sideBar
   [(visible)]="sidebarVisible"
   [closeOnEscape]="true"
