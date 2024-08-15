@@ -91,9 +91,9 @@
         <source>Roles and permissions</source>
         <target state="translated">Rollen en Rechten</target>
       </trans-unit>
-      <trans-unit id="page-title-project-overview" datatype="html">
-        <source>Overview</source>
-        <target state="translated">Overzicht</target>
+      <trans-unit id="page-title-project-monitoring" datatype="html">
+        <source>Monitoring</source>
+        <target state="new">Monitoring</target>
       </trans-unit>
       <trans-unit id="page-title-project-team" datatype="html">
         <source>Team</source>
@@ -142,10 +142,6 @@
       <trans-unit id="2772023564304193657" datatype="html">
         <source>Enter your password</source>
         <target state="translated">Vul een wachtwoord in</target>
-      </trans-unit>
-      <trans-unit id="1429324684050248432" datatype="html">
-        <source>project-overview works!</source>
-        <target state="new">project-overview werkt!</target>
       </trans-unit>
       <trans-unit id="7596687906875795034" datatype="html">
         <source>project-payments works!</source>
@@ -262,10 +258,6 @@
         <source>Cash disbursed</source>
         <target state="new">Cash disbursed</target>
       </trans-unit>
-      <trans-unit id="7113499429942611780" datatype="html">
-        <source>Create new project</source>
-        <target state="translated">Nieuw project maken</target>
-      </trans-unit>
       <trans-unit id="3010710400268626539" datatype="html">
         <source>No Projects found</source>
         <target state="translated">Geen projecten gevonden</target>
@@ -289,10 +281,6 @@
       <trans-unit id="2159130950882492111" datatype="html">
         <source>Cancel</source>
         <target state="new">Cancel</target>
-      </trans-unit>
-      <trans-unit id="2489114267038713519" datatype="html">
-        <source>Create Project</source>
-        <target state="new">Create Project</target>
       </trans-unit>
       <trans-unit id="7750664097458673871" datatype="html">
         <source>Kobo Token</source>
@@ -329,6 +317,18 @@
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
         <target state="new">Something went wrong: <x equiv-text="errorMessage" id="PH"/></target>
+      </trans-unit>
+      <trans-unit id="1196626764275836870" datatype="html">
+        <source>project-monitoring works!</source>
+        <target state="new">project-monitoring works!</target>
+      </trans-unit>
+      <trans-unit id="add-project-label" datatype="html">
+        <source>Add project</source>
+        <target state="new">Add project</target>
+      </trans-unit>
+      <trans-unit id="7476141645378496788" datatype="html">
+        <source>No payments yet</source>
+        <target state="new">No payments yet</target>
       </trans-unit>
     </body>
   </file>

@@ -1,10 +1,10 @@
 <p-card
-  styleClass="focus-within:border-primary hover:border-primary [&_.p-card-content]:flex-end group relative h-full border border-transparent *:h-full [&_.p-card-title]:flex-grow"
+  styleClass="[&_.p-card-content]:flex-end group relative h-full border border-transparent *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
 >
   <ng-template pTemplate="title">
     <a
       [routerLink]="projectLink(id())"
-      class="group-focus-within:text-primary group-hover:text-primary after:absolute after:inset-0 after:block"
+      class="after:absolute after:inset-0 after:block group-focus-within:text-purple group-hover:text-purple"
     >
       @if (project.isPending()) {
         <p-skeleton
@@ -23,8 +23,8 @@
     </a>
   </ng-template>
   <ng-template pTemplate="content">
-    <dl class="flex flex-wrap divide-y border-b border-grey-300">
-      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
+    <dl class="flex flex-wrap divide-y border-b border-grey-100">
+      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="metrics.data()?.targetedPeople"
@@ -32,7 +32,7 @@
           i18n-label
         ></app-project-metric-container>
       </div>
-      <div class="basis-1/2 border-s border-grey-300 px-1 py-2">
+      <div class="basis-1/2 border-s border-grey-100 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="metrics.data()?.includedPeople"
@@ -40,7 +40,7 @@
           i18n-label
         ></app-project-metric-container>
       </div>
-      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
+      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="
@@ -54,7 +54,7 @@
           i18n-label
         ></app-project-metric-container>
       </div>
-      <div class="basis-1/2 border-s border-t border-grey-300 px-1 py-2">
+      <div class="basis-1/2 border-s border-t border-grey-100 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="
@@ -77,10 +77,14 @@
         height="1.125rem"
         [width]="randomWidth"
       />
-    } @else if (getLastPayment()) {
-      <div class="text-end">
-        <ng-container i18n>Last payment: </ng-container>
-        {{ getLastPayment()!.paymentDate | date: 'dd-MM-yyyy' }}
+    } @else {
+      <div class="text-end font-display text-sm text-grey-700">
+        @if (getLastPayment()) {
+          <ng-container i18n>Last payment: </ng-container>
+          {{ getLastPayment()!.paymentDate | date: 'dd-MM-yyyy' }}
+        } @else {
+          <ng-container i18n>No payments yet</ng-container>
+        }
       </div>
     }
   </ng-template>

@@ -1,7 +1,8 @@
 <p-button
-  label="Create new project"
-  i18n-label
+  label="Add project"
+  i18n-label="@@add-project-label"
   outlined
+  rounded
   icon="pi pi-plus"
   class="text-xs sm:text-base"
   (click)="formVisible.set(true)"
@@ -11,7 +12,7 @@
   [formGroup]="formGroup"
   [mutation]="createProjectMutation"
 >
-  <h2 i18n>Create Project</h2>
+  <h2 i18n="@@add-project-label">Add project</h2>
   <app-form-field-wrapper
     label="Kobo Asset ID"
     i18n-label

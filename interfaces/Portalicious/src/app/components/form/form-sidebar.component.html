@@ -1,34 +1,37 @@
 <p-sidebar
   [(visible)]="visible"
   position="right"
+  styleClass="min-w-[30rem]"
 >
-  <form
-    class="flex min-h-full w-full flex-col px-4"
-    [formGroup]="formGroup()"
-    (ngSubmit)="onFormSubmit()"
-  >
-    <div class="flex grow flex-col gap-2">
-      <ng-content></ng-content>
-    </div>
-    <app-form-error
-      [error]="mutation().isError() && mutation().failureReason()?.message"
-    />
-    <div class="flex justify-end gap-2">
-      <p-button
-        label="Cancel"
-        i18n-label
-        type="button"
-        rounded
-        outlined
-        [disabled]="mutation().isPending()"
-        (click)="visible.set(false)"
+  <ng-template pTemplate="headless">
+    <form
+      class="flex min-h-full w-full flex-col p-4"
+      [formGroup]="formGroup()"
+      (ngSubmit)="onFormSubmit()"
+    >
+      <div class="flex grow flex-col gap-2">
+        <ng-content></ng-content>
+      </div>
+      <app-form-error
+        [error]="mutation().isError() && mutation().failureReason()?.message"
       />
-      <p-button
-        [label]="submitButtonText()"
-        type="submit"
-        rounded
-        [loading]="mutation().isPending()"
-      />
-    </div>
-  </form>
+      <div class="flex justify-end gap-2">
+        <p-button
+          label="Cancel"
+          i18n-label
+          type="button"
+          rounded
+          outlined
+          [disabled]="mutation().isPending()"
+          (click)="visible.set(false)"
+        />
+        <p-button
+          [label]="submitButtonText()"
+          type="submit"
+          rounded
+          [loading]="mutation().isPending()"
+        />
+      </div>
+    </form>
+  </ng-template>
 </p-sidebar>

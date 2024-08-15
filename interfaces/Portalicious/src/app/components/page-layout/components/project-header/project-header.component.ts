@@ -20,11 +20,6 @@ export class ProjectHeaderComponent {
 
   navMenuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-project-overview:Overview`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectOverview}`,
-      icon: 'pi pi-chart-bar',
-    },
-    {
       label: $localize`:@@page-title-project-registrations:Registrations`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}`,
       icon: 'pi pi-file-edit',
@@ -33,6 +28,11 @@ export class ProjectHeaderComponent {
       label: $localize`:@@page-title-project-payments:Payments`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectPayments}`,
       icon: 'pi pi-money-bill',
+    },
+    {
+      label: $localize`:@@page-title-project-monitoring:Monitoring`,
+      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}`,
+      icon: 'pi pi-chart-bar',
     },
     {
       label: $localize`:@@page-title-project-team:Team`,
