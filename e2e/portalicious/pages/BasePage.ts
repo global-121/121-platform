@@ -70,6 +70,22 @@ class BasePage {
     expect(await this.formError.isVisible()).toBe(true);
     expect(errorString).toContain(errorText);
   }
+
+  async validateMultipleFormErrors({ errorText }: { errorText: string }) {
+    await this.page.waitForLoadState('networkidle');
+    const formErrors = await this.formError.all();
+
+    for (const formError of formErrors) {
+      await formError.waitFor();
+      const errorString = await formError.textContent();
+      expect(await formError.isVisible()).toBe(true);
+      expect(errorString).toContain(errorText);
+    }
+  }
+
+  async openCreateNewProject() {
+    await this.page.getByRole('button', { name: 'Create new project' }).click();
+  }
 }
 
 export default BasePage;
