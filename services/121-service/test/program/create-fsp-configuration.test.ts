@@ -2,14 +2,11 @@
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import {
-  assertArraysAreEqual,
-  assertObjectsAreEqual,
-} from '@121-service/test/helpers/assert.helper';
-import {
   getProgram,
   postProgram,
 } from '@121-service/test/helpers/program.helper';
 import {
+  cleanProgramForAssertions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -49,27 +46,15 @@ describe('Create program questions', () => {
     const getProgramResponse = await getProgram(programId, accessToken);
     expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
 
-    const keyToIgnore = ['configuration', 'startDate', 'endDate'];
-    for (const key in program) {
-      if (!keyToIgnore.includes(key)) {
-        if (Array.isArray(getProgramResponse.body[key])) {
-          // If both properties are arrays, compare length and values
-          assertArraysAreEqual(
-            getProgramResponse.body[key],
-            program[key],
-            keyToIgnore,
-          );
-        } else if (typeof getProgramResponse.body[key] === 'object') {
-          // If both properties are objects, recursively validate
-          assertObjectsAreEqual(
-            getProgramResponse.body[key],
-            program[key],
-            keyToIgnore,
-          );
-        } else {
-          expect(getProgramResponse.body[key]).toBe(program[key]);
-        }
-      }
-    }
+    const cleanedProgram = cleanProgramForAssertions(program);
+    const cleanedProgramResponse = cleanProgramForAssertions(
+      getProgramResponse.body,
+    );
+
+    expect(cleanedProgramResponse).toMatchSnapshot(
+      `Create program response for program: ${program.titlePortal.en}`,
+    );
+
+    expect(cleanedProgramResponse).toMatchObject(cleanedProgram);
   });
 });

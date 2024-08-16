@@ -114,3 +114,96 @@ export async function removePermissionsFromRole(
     permissions: adjustedPermissions as PermissionEnum[],
   });
 }
+
+function removeNestedProperties<T extends object>(
+  obj: T,
+  keysToIgnore: string[],
+): T {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => removeNestedProperties(item, keysToIgnore)) as T;
+  }
+
+  if (!obj || typeof obj !== 'object') {
+    return obj;
+  }
+
+  return Object.keys(obj).reduce((acc, key) => {
+    if (keysToIgnore.includes(key)) {
+      return acc;
+    }
+    return {
+      ...acc,
+      [key]: removeNestedProperties(obj[key], keysToIgnore),
+    };
+  }, {}) as T;
+}
+
+function sortByAttribute(attribute: string) {
+  return function (a: Record<string, string>, b: Record<string, string>) {
+    return a[attribute].localeCompare(b[attribute]);
+  };
+}
+
+/**
+ * This function was created because the order of the attributes in the
+ * program object is not consistent.
+ *
+ * The assumption is that the order changes are not relevant for the test,
+ * and are caused by some database-related reason that we do not control nor care about.
+ *
+ * Beyond sorting the attributes, this function also removes certain
+ * attributes that always change and that are also irrelevant for the test.
+ */
+export function cleanProgramForAssertions(originalProgram: any): any {
+  const program = removeNestedProperties(originalProgram, [
+    'configuration',
+    'startDate',
+    'endDate',
+    'updated',
+    'created',
+  ]);
+
+  const attributesToSort = [
+    { attribute: 'editableAttributes', key: 'name' },
+    { attribute: 'paTableAttributes', key: 'name' },
+    { attribute: 'financialServiceProviders', key: 'fsp' },
+    { attribute: 'programQuestions', key: 'name' },
+    { attribute: 'filterableAttributes', key: 'group' },
+  ];
+
+  attributesToSort.forEach(({ attribute, key }) => {
+    if (program[attribute]) {
+      program[attribute] = program[attribute].sort(sortByAttribute(key));
+    }
+  });
+
+  if (program.filterableAttributes) {
+    program.filterableAttributes = program.filterableAttributes.map(
+      (filterableAttribute: any) => {
+        return {
+          ...filterableAttribute,
+          filters: filterableAttribute.filters.sort(sortByAttribute('name')),
+        };
+      },
+    );
+  }
+
+  if (program.financialServiceProviders) {
+    program.financialServiceProviders = program.financialServiceProviders.map(
+      (financialServiceProvider: any) => {
+        if (!financialServiceProvider.questions) {
+          return financialServiceProvider;
+        }
+
+        return {
+          ...financialServiceProvider,
+          questions: financialServiceProvider.questions.sort(
+            sortByAttribute('name'),
+          ),
+        };
+      },
+    );
+  }
+
+  return program;
+}
