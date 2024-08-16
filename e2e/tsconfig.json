@@ -19,6 +19,9 @@
       "@121-e2e/*": ["./*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": [
+    "**/*.ts",
+    "portalicious/tests/CreateNewProject/SaveEmptyForm.spec.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
