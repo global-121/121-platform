@@ -676,7 +676,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 8,
+      "id": 10,
       "label": {
         "en": "Age",
         "et_AM": "እድሜ",
@@ -699,7 +699,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 5,
+      "id": 7,
       "label": {
         "en": "Name",
         "et_AM": "ስም",
@@ -722,7 +722,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 9,
+      "id": 11,
       "label": {
         "en": "Gender",
         "et_AM": "ጾታ",
@@ -760,7 +760,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 10,
+      "id": 12,
       "label": {
         "en": "How many female?",
         "et_AM": "ሴት አባላት",
@@ -783,7 +783,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 19,
+      "id": 21,
       "label": {
         "en": "Female with disability over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ",
@@ -806,7 +806,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 17,
+      "id": 19,
       "label": {
         "en": "Female with disability under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ",
@@ -829,7 +829,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 15,
+      "id": 17,
       "label": {
         "en": "Female over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ",
@@ -852,7 +852,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 13,
+      "id": 15,
       "label": {
         "en": "Female under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች",
@@ -875,7 +875,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 11,
+      "id": 13,
       "label": {
         "en": "How many male?",
         "et_AM": "ወንድ አባላት",
@@ -898,7 +898,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 20,
+      "id": 22,
       "label": {
         "en": "Male with disability over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ",
@@ -921,7 +921,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 18,
+      "id": 20,
       "label": {
         "en": "Male with disability under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ",
@@ -944,7 +944,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 16,
+      "id": 18,
       "label": {
         "en": "Male over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ",
@@ -967,7 +967,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 14,
+      "id": 16,
       "label": {
         "en": "Male under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች",
@@ -990,7 +990,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 7,
+      "id": 9,
       "label": {
         "en": "ID Card number",
         "et_AM": "የመታውቂያ ቁጥር",
@@ -1013,7 +1013,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 6,
+      "id": 8,
       "label": {
         "en": "Phone number",
         "et_AM": "ስልክ ቁጥር",
@@ -1036,7 +1036,7 @@ exports[`Create program should post a program: Create program response for progr
         "all-people-affected",
         "included",
       ],
-      "id": 12,
+      "id": 14,
       "label": {
         "en": "Total family members",
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት",
@@ -1080,16 +1080,9 @@ exports[`Create program should post a program: Create program response for progr
   "editableAttributes": [
     {
       "label": {
-        "en": "First name",
+        "en": "Full Name",
       },
-      "name": "firstName",
-      "type": "text",
-    },
-    {
-      "label": {
-        "en": "Last name",
-      },
-      "name": "lastName",
+      "name": "fullName",
       "type": "text",
     },
   ],
@@ -1181,7 +1174,7 @@ exports[`Create program should post a program: Create program response for progr
             "$null",
           ],
           "isInteger": false,
-          "name": "firstName",
+          "name": "fullName",
         },
         {
           "allowedOperators": [
@@ -1190,16 +1183,6 @@ exports[`Create program should post a program: Create program response for progr
           ],
           "isInteger": true,
           "name": "inclusionScore",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$in",
-            "$ilike",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "lastName",
         },
         {
           "allowedOperators": [
@@ -1478,8 +1461,7 @@ exports[`Create program should post a program: Create program response for progr
   ],
   "fixedTransferValue": 25,
   "fullnameNamingConvention": [
-    "firstName",
-    "lastName",
+    "fullName",
   ],
   "id": 4,
   "languages": [
@@ -1534,18 +1516,10 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "label": {
-        "en": "First name",
+        "en": "Full Name",
       },
-      "name": "firstName",
-      "questionType": "programCustomAttribute",
-      "type": "text",
-    },
-    {
-      "label": {
-        "en": "Last name",
-      },
-      "name": "lastName",
-      "questionType": "programCustomAttribute",
+      "name": "fullName",
+      "questionType": "programQuestion",
       "type": "text",
     },
     {
@@ -1574,37 +1548,36 @@ exports[`Create program should post a program: Create program response for progr
     },
   ],
   "paymentAmountMultiplierFormula": null,
-  "programCustomAttributes": [
+  "programCustomAttributes": [],
+  "programQuestions": [
     {
+      "answerType": "text",
       "duplicateCheck": false,
-      "id": 4,
-      "label": {
-        "en": "First name",
-      },
-      "name": "firstName",
-      "programId": 4,
-      "showInPeopleAffectedTable": false,
-      "type": "text",
-    },
-    {
-      "duplicateCheck": false,
+      "editableInPortal": true,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
       "id": 5,
       "label": {
-        "en": "Last name",
+        "en": "Full Name",
       },
-      "name": "lastName",
+      "name": "fullName",
+      "options": null,
+      "pattern": null,
+      "persistence": true,
+      "placeholder": null,
       "programId": 4,
+      "questionType": "standard",
+      "scoring": {},
       "showInPeopleAffectedTable": false,
-      "type": "text",
     },
-  ],
-  "programQuestions": [
     {
       "answerType": "tel",
       "duplicateCheck": true,
       "editableInPortal": false,
       "export": [],
-      "id": 4,
+      "id": 6,
       "label": {
         "en": "Phone Number",
       },

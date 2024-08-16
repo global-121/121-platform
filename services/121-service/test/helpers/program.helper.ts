@@ -50,7 +50,6 @@ export async function getProgram(
 ): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}`)
-    .query({ formatCreateProgramDto: true })
     .set('Cookie', [accessToken]);
 }
 
