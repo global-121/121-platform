@@ -425,6 +425,8 @@ export class MessageIncomingService {
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
     ) {
+      // Hardcoded for PA-triggered auto-response, as this method isn't user-initiated and lacks userId.
+      const userId = 1;
       let program: ProgramEntity | undefined;
       // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
 
@@ -437,12 +439,6 @@ export class MessageIncomingService {
           program = programs[0];
         }
       }
-
-      // This is not working and we have to find workaround to get userId, because registrationsWithOpenVouchers and registrationsWithPendingMessage is empty.
-      const firstMatchingVoucher =
-        registrationsWithOpenVouchers[0].images.filter(
-          (image) => image.voucher.userId !== null,
-        );
 
       if (program) {
         const language =
@@ -461,7 +457,7 @@ export class MessageIncomingService {
           message: whatsappDefaultReply.message,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
-          userId: firstMatchingVoucher[0].voucher.userId,
+          userId: userId,
         });
         return;
       } else {
@@ -471,7 +467,7 @@ export class MessageIncomingService {
           recipientPhoneNr: fromNumber,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
-          userId: firstMatchingVoucher[0].voucher.userId,
+          userId: userId,
         });
         return;
       }
