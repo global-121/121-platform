@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { IonInput, ModalController } from '@ionic/angular';
+import { AlertController, IonInput, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ImportType } from 'src/app/models/import-type.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
+import { actionResult } from '../../shared/action-result';
 
 export interface FilePickerProps {
   type: string;
@@ -37,6 +39,8 @@ export class FilePickerPromptComponent implements OnInit {
     public translate: TranslateService,
     private modalController: ModalController,
     private programsService: ProgramsServiceApiService,
+    private alertController: AlertController,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -53,10 +57,22 @@ export class FilePickerPromptComponent implements OnInit {
     programId: number,
     type: ImportType,
   ) {
-    return await this.programsService.downloadFspInstructionsImportTemplate(
-      programId,
-      type,
-    );
+    try {
+      return await this.programsService.downloadFspInstructionsImportTemplate(
+        programId,
+        type,
+      );
+    } catch (error) {
+      console.log('error: ', error);
+      actionResult(
+        this.alertController,
+        this.translate,
+        this.translate.instant('common.error-with-message', {
+          error: this.errorHandlerService.formatErrors(error),
+        }),
+        false,
+      );
+    }
   }
 
   private getAcceptForType(types: string): string {
