@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddUserIdToIntersolveVoucherEntity1723641094858
+export class AddUserIdToIntersolveVoucherEntity1724079612695
   implements MigrationInterface
 {
-  name = 'AddUserIdToIntersolveVoucherEntity1723641094858';
+  name = 'AddUserIdToIntersolveVoucherEntity1724079612695';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(

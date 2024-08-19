@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddUserIdToTwilioMessageEntity1723506268466
+export class AddUserIdToTwilioMessageEntity1724079447374
   implements MigrationInterface
 {
-  name = 'AddUserIdToTwilioMessageEntity1723506268466';
+  name = 'AddUserIdToTwilioMessageEntity1724079447374';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
