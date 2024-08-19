@@ -27,7 +27,6 @@ export class MessageStatusCallbackProcessor {
   @Process(ProcessNameMessage.sms)
   async handleStatusCallbackSms(job: Job): Promise<void> {
     const callbackData = job.data;
-    console.log(callbackData, 'callbackData1');
     await this.messageIncomingService
       .processSmsStatusCallback(callbackData)
       .catch((err) => {
