@@ -21,7 +21,7 @@ import { ApiEndpoints, ApiService } from '~/services/api.service';
 export class LogoComponent {
   private apiService = inject(ApiService);
 
-  projectId = input<string>();
+  projectId = input<number>();
   projectTitle = computed(() => this.project.data()?.titlePortal);
 
   public project = injectQuery(() => ({

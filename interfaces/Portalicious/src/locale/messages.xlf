@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -11,7 +11,7 @@
       <trans-unit id="1061597182953948916" datatype="html">
         <source>Use your work email to log in.</source>
       </trans-unit>
-      <trans-unit id="1131264372756277854" datatype="html">
+      <trans-unit id="page-title-project-payments" datatype="html">
         <source>Payments</source>
       </trans-unit>
       <trans-unit id="1431416938026210429" datatype="html">
@@ -20,7 +20,7 @@
       <trans-unit id="1519584467841622217" datatype="html">
         <source>users works!</source>
       </trans-unit>
-      <trans-unit id="17234570072885140" datatype="html">
+      <trans-unit id="page-title-project-registrations" datatype="html">
         <source>Registrations</source>
       </trans-unit>
       <trans-unit id="1890300073702152532" datatype="html">
@@ -41,7 +41,7 @@
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
       </trans-unit>
-      <trans-unit id="2614607010577950577" datatype="html">
+      <trans-unit id="page-title-project-overview" datatype="html">
         <source>Overview</source>
       </trans-unit>
       <trans-unit id="2772023564304193657" datatype="html">
@@ -50,7 +50,7 @@
       <trans-unit id="3008354540074404323" datatype="html">
         <source>Open Source Code</source>
       </trans-unit>
-      <trans-unit id="3724068243287682962" datatype="html">
+      <trans-unit id="page-title-project-team" datatype="html">
         <source>Team</source>
       </trans-unit>
       <trans-unit id="3797778920049399855" datatype="html">
@@ -66,9 +66,8 @@
       <trans-unit id="4501314745488687296" datatype="html">
         <source>Opens in a new window</source>
       </trans-unit>
-      <trans-unit id="4555457172864212828" datatype="html">
+      <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
       <trans-unit id="5457997273400516490" datatype="html">
         <source>Find out more</source>
@@ -79,9 +78,8 @@
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="5942556817969302760" datatype="html">
+      <trans-unit id="page-title-roles-and-permissions" datatype="html">
         <source>Roles and permissions</source>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
       <trans-unit id="6186007479370342072" datatype="html">
         <source>Request a password reset</source>
@@ -92,9 +90,8 @@
       <trans-unit id="6305795241980054784" datatype="html">
         <source>Necessary cookies are required for the basic operation of the platform.</source>
       </trans-unit>
-      <trans-unit id="6425467213960794982" datatype="html">
+      <trans-unit id="page-title-all-projects" datatype="html">
         <source>All projects</source>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
       <trans-unit id="6509003407758128100" datatype="html">
         <source>Cookie policy</source>
@@ -189,9 +186,6 @@
       </trans-unit>
       <trans-unit id="2342712167124906317" datatype="html">
         <source>Targeted people</source>
-      </trans-unit>
-      <trans-unit id="2980109580182727209" datatype="html">
-        <source>All projects</source>
       </trans-unit>
       <trans-unit id="3010710400268626539" datatype="html">
         <source>No Projects found</source>

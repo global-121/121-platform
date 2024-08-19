@@ -39,7 +39,7 @@ import { AuthService } from '~/services/auth.service';
 })
 export class HeaderComponent {
   private authService = inject(AuthService);
-  projectId = input<string>();
+  projectId = input<number>();
 
   userName = computed(() => this.authService.user?.username);
 
@@ -62,15 +62,15 @@ export class HeaderComponent {
 
   sidebarLinks = [
     {
-      label: $localize`:Menu-item:All projects`,
+      label: $localize`:@@page-title-all-projects:All projects`,
       routerLink: `/${AppRoutes.projects}`,
     },
     {
-      label: $localize`:Menu-item:Users`,
+      label: $localize`:@@page-title-users:Users`,
       routerLink: `/${AppRoutes.users}`,
     },
     {
-      label: $localize`:Menu-item:Roles and permissions`,
+      label: $localize`:@@page-title-roles-and-permissions:Roles and permissions`,
       routerLink: `/${AppRoutes.rolesAndPermissions}`,
     },
   ];

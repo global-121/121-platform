@@ -1,12 +1,8 @@
-<app-page-layout>
-  <div class="mb-6 flex items-end justify-between pt-6">
-    <h1
-      i18n
-      class="min-w-48 text-3xl"
-    >
-      All projects
-    </h1>
-
+<app-page-layout
+  title="All projects"
+  i18n-title="@@page-title-all-projects"
+>
+  <div header-actions>
     @if (canCreateProjects) {
       <app-create-project-button />
     }
