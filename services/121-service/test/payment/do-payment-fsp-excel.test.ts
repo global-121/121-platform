@@ -19,6 +19,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
+  getImportFspReconciliationTemplate,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -32,6 +33,7 @@ import {
   registrationWesteros1,
   registrationWesteros2,
 } from '@121-service/test/registrations/pagination/pagination-data';
+import { HttpStatus } from '@nestjs/common';
 
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;
@@ -302,6 +304,13 @@ describe('Do payment with Excel FSP', () => {
         expect(importRecord).toBeDefined();
         expect(transaction.status).toBe(importRecord.status);
       }
+    });
+
+    it('should give me a CSV template when I request it', async () => {
+      const response =
+        await getImportFspReconciliationTemplate(programIdWesteros);
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.body.sort()).toMatchSnapshot();
     });
   });
 });

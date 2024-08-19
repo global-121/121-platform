@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Do payment with Excel FSP Import FSP reconciliation data should give me a CSV template when I request it 1`] = `
+[
+  "phoneNumber",
+  "status",
+]
+`;
