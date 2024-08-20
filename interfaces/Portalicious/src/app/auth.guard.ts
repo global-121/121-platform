@@ -41,6 +41,7 @@ export const projectPermissionsGuard: (
     const router = inject(Router);
     return router.navigate(['/', AppRoutes.project, projectId], {
       queryParams: {
+        // TODO: implement logic to show message to user when permission is denied.
         permissionDenied: true,
       },
     });

@@ -11,7 +11,7 @@ export enum ApiEndpoints {
   projectsMetrics = 'metrics/program-stats-summary',
   users = 'users',
   usersChangePassword = 'users/password',
-  usersCurrent = 'users/current/',
+  usersCurrent = 'users/current',
   usersLogin = 'users/login',
   usersLogout = 'users/logout',
   versionInfo = 'health/version',
