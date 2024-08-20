@@ -1,12 +1,16 @@
-<h1 class="my-0 ml-2 text-xl text-white">
+<div
+  class="ml-2 font-display text-[20px] text-white"
+  data-testid="logo"
+>
   <a
     i18n
     [routerLink]="['/']"
+    class="font-bold"
     >121 Portal</a
   >
   @if (projectTitle()) {
-    <span class="font-normal">
-      | {{ projectTitle() | translatableString }}</span
-    >
+    <span class="ml-2 h-[22px] border-l-2 border-l-white pl-2">{{
+      projectTitle() | translatableString
+    }}</span>
   }
-</h1>
+</div>

@@ -39,7 +39,7 @@ test('Navigation from program header', async ({ page }) => {
   await page.waitForURL((url) =>
     url.pathname.startsWith('/en/project/1/registrations'),
   );
-  await expect(page.getByText(`121 Portal | ${projectTitle}`)).toBeVisible();
+  await expect(await homePage.logo).toHaveText(`121 Portal${projectTitle}`);
 
   await homePage.navigateToProgramPage('Monitoring');
   await page.waitForURL((url) =>
