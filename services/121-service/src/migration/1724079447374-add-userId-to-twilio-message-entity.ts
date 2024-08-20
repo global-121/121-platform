@@ -12,13 +12,11 @@ export class AddUserIdToTwilioMessageEntity1724079447374
 
     await queryRunner.query(`
       UPDATE "121-service"."twilio_message" tm
-      SET "userId" = (
-        SELECT t."userId"
-        FROM "121-service"."transaction" t
-        WHERE t."id" = tm."transactionId"
-        LIMIT 1
-      )
-      WHERE tm."transactionId" IS NOT NULL
+      SET "userId" = t."userId"
+      FROM "121-service"."transaction" t
+      WHERE tm."transactionId" = t."id"
+      AND tm."transactionId" IS NOT NULL
+      AND t."userId" IS NOT NULL;
     `);
 
     await queryRunner.query(

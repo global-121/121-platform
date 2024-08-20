@@ -12,10 +12,19 @@ export class AddUserIdToIntersolveVoucherEntity1724079612695
 
     await queryRunner.query(`
       UPDATE "121-service"."intersolve_voucher" iv
-      SET "userId" = t."userId"
-      FROM "121-service"."transaction" t
-      WHERE iv."payment" = t."payment"
-      `);
+      SET "userId" = subquery."userId"
+      FROM (
+          SELECT t."payment", t."userId"
+          FROM "121-service"."transaction" t
+          JOIN (
+              SELECT "payment", MAX("created") AS latest
+              FROM "121-service"."transaction"
+              GROUP BY "payment"
+          ) AS latest_t
+          ON t."payment" = latest_t."payment" AND t."created" = latest_t.latest
+      ) AS subquery
+      WHERE iv."payment" = subquery."payment";
+    `);
 
     await queryRunner.query(
       `UPDATE "121-service"."intersolve_voucher"
