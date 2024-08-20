@@ -24,8 +24,8 @@ test('[29635] Create project successfully', async ({ page }) => {
   await test.step('Should navigate to main page and select "Create new project" button and fill in the form', async () => {
     await homePage.openCreateNewProject();
     await createProject.fillInForm({
-      assetId: process.env.KOBO_ASSET_ID_TEST,
-      token: process.env.KOBO_TOKEN_TEST,
+      assetId: process.env.E2E_TEST_KOBO_ASSET_ID,
+      token: process.env.E2E_TEST_KOBO_TOKEN,
     });
     await createProject.submitForm();
     await createProject.assertCreateProjectSuccessPopUp();

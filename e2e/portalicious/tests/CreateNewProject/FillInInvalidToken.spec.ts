@@ -24,7 +24,7 @@ test('[29636] Fill in with invalid Token', async ({ page }) => {
   await test.step('Should navigate to main page and select "Create new project" button and fill in the form with wrong token', async () => {
     await homePage.openCreateNewProject();
     await createProject.fillInForm({
-      assetId: process.env.KOBO_ASSET_ID_TEST,
+      assetId: process.env.E2E_TEST_KOBO_ASSET_ID,
       token: 'wrongToken',
     });
     await createProject.submitForm();
