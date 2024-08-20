@@ -35,7 +35,7 @@ export class MigrateVisaService {
   name = 'VisaMigrateChildParentWallet1717505534921';
   public tokenSet: TokenSet;
 
-  public async migrateData(): Promise<void> {
+  public async migrateData(limit: number): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
     await this.migrationTemplateData(queryRunner);
     await this.inserProgramConfiguration();
@@ -45,7 +45,7 @@ export class MigrateVisaService {
     const programIds =
       await this.selectProgramIdsForInstanceWithVisa(queryRunner);
     for (const programId of programIds) {
-      await this.migrateProgramData(queryRunner, programId);
+      await this.migrateProgramData(queryRunner, programId, limit);
     }
   }
 
@@ -72,7 +72,7 @@ export class MigrateVisaService {
         await this.dataSource.manager.save(config2);
       } catch (e) {
         console.log(
-          '🚀 ~ MigrateVisaService ~ inserProgramConfiguration program 2 ~ e',
+          'MigrateVisaService ~ inserProgramConfiguration program 2 ~ e',
           e,
         );
       }
@@ -80,7 +80,7 @@ export class MigrateVisaService {
         await this.dataSource.manager.save(config3);
       } catch (e) {
         console.log(
-          '🚀 ~ MigrateVisaService ~ inserProgramConfiguration program 3 ~ e',
+          'MigrateVisaService ~ inserProgramConfiguration program 3 ~ e',
           e,
         );
       }
@@ -97,6 +97,9 @@ export class MigrateVisaService {
     await q.query(
       `TRUNCATE TABLE "121-service"."intersolve_visa_child_wallet" CASCADE`,
     );
+    await q.query(
+      `TRUNCATE TABLE "121-service"."intersolve_migration_progress"`,
+    );
   }
 
   private async migrationTemplateData(q: QueryRunner): Promise<void> {
@@ -108,23 +111,77 @@ export class MigrateVisaService {
     );
   }
 
+  private async createMigrationProgressTableAndIndex(queryRunner: QueryRunner) {
+    await queryRunner.query(
+      `CREATE TABLE IF NOT EXISTS "121-service"."intersolve_migration_progress" ("id" SERIAL NOT NULL, "referenceId" character varying NOT NULL, "completedOrCaught" boolean NOT NULL DEFAULT false, "error" json, "created" TIMESTAMP NOT NULL DEFAULT now())`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX IF NOT EXISTS "IDX_intersolve_migration_progress" ON "121-service"."intersolve_migration_progress" ("referenceId")`,
+    );
+    console.log('Migration progress table and index created(IF NOT EXISTS)');
+  }
+
   private async migrateProgramData(
     queryRunner: QueryRunner,
     programId: number,
+    limit: number,
   ): Promise<void> {
+    await this.createMigrationProgressTableAndIndex(queryRunner);
+
     console.time(`Migrating program ${programId}`);
     const brandCode = await this.getBrandcodeForProgram(queryRunner, programId);
     const visaCustomers = await this.selectVisaCustomers(
       programId,
       queryRunner,
+      limit,
     );
-    for (const visaCustomer of visaCustomers) {
-      await this.migrateCustomerAndWalletData(
-        visaCustomer,
-        brandCode,
-        queryRunner,
-      );
+    console.log(
+      `Migrating ${visaCustomers.length} customers for program ${programId}`,
+    );
+    for (let i = 0; i < visaCustomers.length; i++) {
+      const visaCustomer = visaCustomers[i];
+      if ((i + 1) % 10 === 0) {
+        console.log(`Migrating ${i + 1} of ${visaCustomers.length}`);
+      }
+
+      let error: any;
+
+      try {
+        await queryRunner.query(
+          `INSERT INTO "121-service".intersolve_migration_progress
+            ("referenceId", "completedOrCaught", "error", "created")
+          VALUES('${visaCustomer.referenceId}', false, NULL, now())`,
+        );
+
+        await this.migrateCustomerAndWalletData(
+          visaCustomer,
+          brandCode,
+          queryRunner,
+        );
+      } catch (e) {
+        // console.log('error:', e);
+        error = {
+          message: e.message,
+          stack: e.stack,
+        };
+      } finally {
+        const errorString = error
+          ? JSON.stringify(error).replace(/'/g, "''")
+          : null;
+        const query = `UPDATE "121-service"."intersolve_migration_progress" SET "completedOrCaught" = true, "error" = ${errorString ? `'${errorString}'` : 'NULL'} WHERE "referenceId" = '${visaCustomer.referenceId}'`;
+        await queryRunner.query(query);
+      }
     }
+
+    /**
+     * When the migration is done, we want to query the migrations table for:
+     * - 'completedOrCaught' being false -> This means it stopped somewhere in the process, should be the edge case
+     * - 'completedOrCaught' being true and 'error' being defined -> This means an error occured during the process
+     *
+     * Those are the cases that should be investiged.
+     *
+     * */
+
     console.timeEnd(`Migrating program ${programId}`);
   }
 
@@ -172,11 +229,14 @@ export class MigrateVisaService {
     );
     if (!createWalletReponse?.data?.success) {
       console.log(
-        '🚀 ~ MigrateVisaService ~ createWalletReponse.data.errors:',
+        'MigrateVisaService ~ createWalletReponse.data.errors:',
         createWalletReponse?.data?.errors,
       );
+      const errors = createWalletReponse?.data?.errors;
+      const formattedErrors = this.formatErrors(errors);
+
       throw new Error(
-        `Failed to create wallet for customer ${visaCustomer.id}, referenceId ${visaCustomer.referenceId}`,
+        `Failed to create wallet for customer with referenceId ${visaCustomer.referenceId}. Errors: ${formattedErrors}`,
       );
     }
     const tokenCode = createWalletReponse.data?.data?.token?.code;
@@ -189,11 +249,14 @@ export class MigrateVisaService {
 
     if (!this.isSuccessResponseStatus(linkToCustomerReponse.status)) {
       console.log(
-        '🚀 ~ MigrateVisaService ~ linkToCustomerReponse.data.errors:',
+        'MigrateVisaService ~ linkToCustomerReponse.data.errors:',
         linkToCustomerReponse?.data?.errors,
       );
+      const errors = linkToCustomerReponse?.data?.errors;
+      const formattedErrors = this.formatErrors(errors);
+
       throw new Error(
-        `Failed to link wallet to customer ${visaCustomer.id}, referenceId ${visaCustomer.referenceId}`,
+        `Failed to link wallet to customer with referenceId ${visaCustomer.referenceId}. Errors: ${formattedErrors}`,
       );
     }
 
@@ -244,8 +307,11 @@ export class MigrateVisaService {
         parentWallet.tokenCode,
       );
       if (!this.isSuccessResponseStatus(postLinkTokenResult.status)) {
+        const errors = postLinkTokenResult?.data?.errors;
+        const formattedErrors = this.formatErrors(errors);
+
         throw new Error(
-          `Failed to link child wallet ${childWallet.id} to parent wallet ${parentWallet.id}`,
+          `Failed to link child wallet ${childWallet.id} to parent wallet ${parentWallet.id}. Errors: ${formattedErrors}`,
         );
       } else {
         savedChildWallet.isLinkedToParentWallet = true;
@@ -313,6 +379,7 @@ export class MigrateVisaService {
   private async selectVisaCustomers(
     programId: number,
     queryRunner: QueryRunner,
+    limit: number,
   ): Promise<VisaCustomerWithReferenceId[]> {
     return queryRunner.query(
       `select
@@ -321,7 +388,10 @@ export class MigrateVisaService {
       from
         "121-service"."intersolve_visa_customer" i
       left join "121-service".registration r on
-        r.id = i."registrationId" WHERE "programId" = ${programId}`,
+        r.id = i."registrationId" 
+      LEFT JOIN "121-service"."intersolve_migration_progress" imp ON r."referenceId" = imp."referenceId"
+      WHERE "programId" = ${programId} AND imp."referenceId" IS NULL
+      LIMIT ${limit ?? 'ALL'}`,
     );
   }
 
@@ -332,6 +402,21 @@ export class MigrateVisaService {
     return queryRunner.query(
       `SELECT * FROM "121-service"."intersolve_visa_wallet" WHERE "intersolveVisaCustomerId" = ${visaCustomer.id} order by "created" desc`,
     );
+  }
+
+  private formatErrors(errors: unknown): string {
+    return errors
+      ? Object.values(errors)
+          .map((value) => {
+            const code = value.code ? `${value.code}` : '';
+            const field = value.field ? `(${value.field}) ` : '';
+            const description = value.description
+              ? `: ${value.description}`
+              : '';
+            return [code, field, description].filter(Boolean).join(' ');
+          })
+          .join(', ')
+      : 'Unknown error';
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +486,16 @@ export class MigrateVisaService {
       holderId: string | null;
     },
     tokenCode: string | null,
-  ): Promise<any> {
+  ): Promise<{
+    data: {
+      success?: boolean;
+      errors?: ErrorsInResponse[];
+      code?: string;
+      correlationId?: string;
+    };
+    status: number;
+    statusText?: string;
+  }> {
     const authToken = await this.getAuthenticationToken();
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'wallet-payments'
