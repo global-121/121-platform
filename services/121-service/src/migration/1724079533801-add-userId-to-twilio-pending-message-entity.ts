@@ -11,11 +11,15 @@ export class AddUserIdToTwilioPendingMessageEntity1724079533801
     );
 
     await queryRunner.query(
-      `ALTER TABLE "121-service"."whatsapp_pending_message" ALTER COLUMN "userId" SET NOT NULL`,
+      `UPDATE "121-service"."whatsapp_pending_message"
+       SET "userId" = (
+         SELECT id FROM "121-service"."user" WHERE "username" LIKE 'admin@%' LIMIT 1
+       )
+       WHERE "userId" IS NULL`,
     );
 
     await queryRunner.query(
-      `UPDATE "121-service"."whatsapp_pending_message" SET "userId" = 1 WHERE "userId" IS NULL`,
+      `ALTER TABLE "121-service"."whatsapp_pending_message" ALTER COLUMN "userId" SET NOT NULL`,
     );
 
     await queryRunner.query(

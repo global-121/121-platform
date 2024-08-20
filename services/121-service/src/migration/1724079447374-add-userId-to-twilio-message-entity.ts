@@ -10,10 +10,6 @@ export class AddUserIdToTwilioMessageEntity1724079447374
       `ALTER TABLE "121-service"."twilio_message" ADD "userId" integer`,
     );
 
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" ALTER COLUMN "userId" SET NOT NULL`,
-    );
-
     await queryRunner.query(`
       UPDATE "121-service"."twilio_message" tm
       SET "userId" = (
@@ -26,7 +22,15 @@ export class AddUserIdToTwilioMessageEntity1724079447374
     `);
 
     await queryRunner.query(
-      `UPDATE "121-service"."twilio_message" SET "userId" = 1 WHERE "userId" IS NULL`,
+      `UPDATE "121-service"."twilio_message"
+       SET "userId" = (
+         SELECT id FROM "121-service"."user" WHERE "username" LIKE 'admin@%' LIMIT 1
+       )
+       WHERE "userId" IS NULL`,
+    );
+
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" ALTER COLUMN "userId" SET NOT NULL`,
     );
 
     await queryRunner.query(

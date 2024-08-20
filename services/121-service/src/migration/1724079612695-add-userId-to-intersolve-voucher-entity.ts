@@ -10,19 +10,23 @@ export class AddUserIdToIntersolveVoucherEntity1724079612695
       `ALTER TABLE "121-service"."intersolve_voucher" ADD "userId" integer`,
     );
 
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher" ALTER COLUMN "userId" SET NOT NULL`,
-    );
-
     await queryRunner.query(`
       UPDATE "121-service"."intersolve_voucher" iv
       SET "userId" = t."userId"
       FROM "121-service"."transaction" t
       WHERE iv."payment" = t."payment"
-    `);
+      `);
 
     await queryRunner.query(
-      `UPDATE "121-service"."intersolve_voucher" SET "userId" = 1 WHERE "userId" IS NULL`,
+      `UPDATE "121-service"."intersolve_voucher"
+       SET "userId" = (
+         SELECT id FROM "121-service"."user" WHERE "username" LIKE 'admin@%' LIMIT 1
+       )
+       WHERE "userId" IS NULL`,
+    );
+
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher" ALTER COLUMN "userId" SET NOT NULL`,
     );
 
     await queryRunner.query(
