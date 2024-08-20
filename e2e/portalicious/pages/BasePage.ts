@@ -42,6 +42,10 @@ class BasePage {
     await this.projectHeader.getByRole('menuitem', { name: pageName }).click();
   }
 
+  async selectProgram(programName: string) {
+    await this.page.getByRole('link', { name: programName }).click();
+  }
+
   async changeLanguage(language: string) {
     await this.openSidebar();
     await this.languageDropdown.selectOption({ label: language });
@@ -85,6 +89,10 @@ class BasePage {
 
   async openCreateNewProject() {
     await this.page.getByRole('button', { name: 'Add project' }).click();
+  }
+
+  async openTeamPage() {
+    await this.page.getByRole('menuitem', { name: 'Team' }).click();
   }
 }
 
