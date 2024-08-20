@@ -1,6 +1,5 @@
 services:
   121db:
-    container_name: 121db
     image: 'postgres:14'
     init: true
     env_file: .env
@@ -24,15 +23,13 @@ services:
       timeout: 3s
       retries: 3
 
-  121-redis:
-    container_name: 121queue
+  121queue:
     # Version 4.0.x & 6.0.x are supported by Azure Cache for Redis
     image: 'redis:6.0-alpine'
     ports:
       - '6379:6379'
 
   mock-service:
-    container_name: mock-service
     build:
       context: mock-service
       target: production
@@ -53,7 +50,6 @@ services:
       timeout: 300s
 
   121-service:
-    container_name: 121-service
     build:
       context: 121-service
       target: production
@@ -66,7 +62,7 @@ services:
     stdin_open: true
     tty: true
     depends_on:
-      121-redis:
+      121queue:
         condition: service_started
         required: true
       121db:

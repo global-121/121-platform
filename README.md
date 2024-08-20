@@ -126,6 +126,18 @@ To verify the successful installation and setup of services, access their Swagge
 - 121-Service: <http://localhost:3000/docs/>
 - Mock-Service: <http://localhost:3001/docs/>
 
+### Working with branches
+
+When working on a new feature or bug-fix, it is recommended to always create a separate branch from the `main`-branch.
+
+You can switch between branches by:
+
+- Stop existing environment: `npm run stop:services`
+- Switch to another branch: `git checkout <branch-name>`
+- Start services again: `npm run start:services`
+
+This will create a separate, local environment, specific to each (new) branch.
+
 ---
 
 ## Setup Interfaces
