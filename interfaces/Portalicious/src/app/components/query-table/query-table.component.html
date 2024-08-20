@@ -6,6 +6,7 @@
     [showLoader]="false"
     [filterDelay]="0"
     [filterLocale]="locale"
+    (onFilter)="onFilter($event)"
     [rowHover]="contextMenuItems()"
     [contextMenu]="extraOptionsMenu"
     (contextMenuSelectionChange)="onUpdateContextMenuItem.emit($event)"
@@ -17,6 +18,8 @@
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
     i18n-currentPageReportTemplate
+    stateStorage="local"
+    [stateKey]="localStorageKey()"
   >
     <ng-template pTemplate="caption">
       <div class="flex">
@@ -26,9 +29,9 @@
             <input
               pInputText
               type="text"
-              [(ngModel)]="quickSearchValue"
-              (input)="table.filterGlobal(quickSearchValue(), 'contains')"
-              placeholder="Quick Search"
+              [(ngModel)]="globalFilterValue"
+              (input)="table.filterGlobal(globalFilterValue(), 'contains')"
+              placeholder="Search keyword"
               i18n-placeholder="@@form-quick-search"
             />
           </p-iconField>
@@ -39,6 +42,7 @@
           [outlined]="true"
           icon="pi pi-filter-slash"
           (onClick)="clearAllFilters()"
+          [disabled]="!isFiltered()"
           class="ms-auto"
         />
       </div>
@@ -57,7 +61,7 @@
                 [type]="column.type ?? 'text'"
                 [field]="column.field"
                 display="menu"
-                class="ms-auto"
+                class="ms-2"
               />
             </div>
           </th>

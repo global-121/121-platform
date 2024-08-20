@@ -11,6 +11,7 @@
   <app-query-table
     [columns]="columns()"
     [query]="projectUsers"
+    localStorageKey="project-team-table"
     [contextMenuItems]="contextMenuItems()"
     (onUpdateContextMenuItem)="selectedUser.set($event)"
     [globalFilterFields]="['username', 'roleString', 'scope']"

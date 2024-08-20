@@ -363,8 +363,8 @@
         <target state="new">Remove user</target>
       </trans-unit>
       <trans-unit id="form-quick-search" datatype="html">
-        <source>Quick Search</source>
-        <target state="new">Quick Search</target>
+        <source>Search keyword</source>
+        <target state="new">Search keyword</target>
       </trans-unit>
       <trans-unit id="541221802269521915" datatype="html">
         <source>Add user to team</source>

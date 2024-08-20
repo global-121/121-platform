@@ -9,10 +9,11 @@ import {
   input,
   model,
   output,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreateQueryResult } from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
+import { FilterMetadata, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ContextMenuModule } from 'primeng/contextmenu';
@@ -21,7 +22,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Table, TableModule } from 'primeng/table';
+import { Table, TableFilterEvent, TableModule } from 'primeng/table';
 import { TableCellDateComponent } from '~/components/query-table/table-cell-date/table-cell-date.component';
 import { TableCellTextComponent } from '~/components/query-table/table-cell-text/table-cell-text.component';
 import { Locale } from '~/utils/locale';
@@ -63,6 +64,7 @@ export class QueryTableComponent<TData> {
 
   query = input.required<CreateQueryResult<TData[]>>();
   columns = input.required<QueryTableColumn<TData>[]>();
+  localStorageKey = input.required<string>();
   contextMenuItems = input<MenuItem[]>();
   globalFilterFields = input<(keyof TData & string)[]>();
   readonly onUpdateContextMenuItem = output<TData>();
@@ -70,7 +72,8 @@ export class QueryTableComponent<TData> {
   @ViewChild('table') table: Table;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
 
-  quickSearchValue = model<string>();
+  globalFilterValue = model<string>();
+  isFiltered = signal(false);
 
   visibleColumns = computed(() =>
     this.columns().filter((column) => !column.hidden),
@@ -81,7 +84,38 @@ export class QueryTableComponent<TData> {
   );
 
   clearAllFilters() {
-    this.quickSearchValue.set('');
     this.table.clear();
+    this.globalFilterValue.set('');
+    localStorage.removeItem(this.localStorageKey());
+    this.isFiltered.set(false);
+  }
+
+  onFilter(event: TableFilterEvent) {
+    if (!event.filters) {
+      return;
+    }
+
+    const globalFilter = event.filters.global;
+    if (globalFilter?.value && globalFilter.value !== '') {
+      // without this, the global filter value is not not restored properly from local storage
+      this.globalFilterValue.set(globalFilter.value as string);
+    }
+
+    this.isFiltered.set(
+      // check if any filter is set by checking if any filter has a value
+      Object.values(event.filters).some((filterMetadata) => {
+        if (!filterMetadata) {
+          return false;
+        }
+        const filterMetadataArray: FilterMetadata[] = Array.isArray(
+          filterMetadata,
+        )
+          ? filterMetadata
+          : [filterMetadata];
+        return filterMetadataArray.some(
+          (filter) => filter.value !== undefined && filter.value !== null,
+        );
+      }),
+    );
   }
 }
