@@ -23,6 +23,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: test
 
     steps:
       - name: Check out repository code
