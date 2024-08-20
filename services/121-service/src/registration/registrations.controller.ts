@@ -22,7 +22,10 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import {
+  FILE_UPLOAD_API_FORMAT,
+  FILE_UPLOAD_WITH_REASON_API_FORMAT,
+} from '@121-service/src/shared/file-upload-api-format';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 import {
@@ -185,10 +188,11 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Patch('programs/:programId/registrations')
   @ApiConsumes('multipart/form-data')
-  @ApiBody(FILE_UPLOAD_API_FORMAT)
+  @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async patchRegistrations(
     @UploadedFile() csvFile: any,
+    @Body('reason') reason: string,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req,
   ): Promise<void> {
@@ -197,6 +201,7 @@ export class RegistrationsController {
       csvFile,
       programId,
       userId,
+      reason,
     );
   }
 
