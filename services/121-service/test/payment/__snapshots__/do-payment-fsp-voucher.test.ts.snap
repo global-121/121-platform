@@ -10,6 +10,10 @@ exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesf
     "status": "read",
     "to": "whatsapp:+14155238886",
     "type": "whatsapp",
+    "user": {
+      "id": 1,
+      "username": "admin@example.org",
+    },
   },
   {
     "body": "This is a message from the Red Cross.
@@ -34,6 +38,10 @@ Do you have questions? Send us a message on WhatsApp: https://wa.me/319701028696
     "status": "read",
     "to": "whatsapp:+14155238886",
     "type": "whatsapp",
+    "user": {
+      "id": 1,
+      "username": "admin@example.org",
+    },
   },
   {
     "body": "This is a message from the Red Cross.
@@ -50,6 +58,10 @@ Please reply “yes” to this message in order to receive:
     "status": "read",
     "to": "whatsapp:+14155238886",
     "type": "whatsapp",
+    "user": {
+      "id": 1,
+      "username": "admin@example.org",
+    },
   },
 ]
 `;
