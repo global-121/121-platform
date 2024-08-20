@@ -5,15 +5,15 @@
 >
   <div class="flex flex-col gap-2">
     <ng-content></ng-content>
+    <app-form-error
+      [error]="mutation().isError() && mutation().failureReason()?.message"
+    />
     <p-button
       [label]="submitButtonText()"
       type="submit"
       rounded
       class="mt-8"
       [loading]="mutation().isPending()"
-    />
-    <app-form-error
-      [error]="mutation().isError() && mutation().failureReason()?.message"
     />
   </div>
 </form>
