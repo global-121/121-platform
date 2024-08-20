@@ -120,4 +120,8 @@ $toolbar-height: 48px;
   .p-button-link {
     @apply p-0;
   }
+
+  .p-toast-message-content {
+    border: none;
+  }
 }
