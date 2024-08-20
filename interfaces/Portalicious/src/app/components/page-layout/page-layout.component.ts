@@ -12,6 +12,6 @@ import { ProjectHeaderComponent } from '~/components/page-layout/components/proj
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutComponent {
-  title = input.required<string>();
+  pageTitle = input.required<string>();
   projectId = input<number>();
 }
