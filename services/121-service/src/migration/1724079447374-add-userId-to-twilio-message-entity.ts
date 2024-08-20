@@ -10,6 +10,10 @@ export class AddUserIdToTwilioMessageEntity1724079447374
       `ALTER TABLE "121-service"."twilio_message" ADD "userId" integer`,
     );
 
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" ALTER COLUMN "userId" SET NOT NULL`,
+    );
+
     await queryRunner.query(`
       UPDATE "121-service"."twilio_message" tm
       SET "userId" = (
@@ -36,7 +40,10 @@ export class AddUserIdToTwilioMessageEntity1724079447374
     );
 
     await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" DROP COLUMN "userId"`,
+      `ALTER TABLE "121-service"."twilio_message" ALTER COLUMN "userId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_9c1038f92cd1b99b1babcc4fecf" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
   }
 }

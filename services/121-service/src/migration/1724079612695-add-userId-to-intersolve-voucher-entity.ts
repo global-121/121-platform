@@ -10,6 +10,10 @@ export class AddUserIdToIntersolveVoucherEntity1724079612695
       `ALTER TABLE "121-service"."intersolve_voucher" ADD "userId" integer`,
     );
 
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher" ALTER COLUMN "userId" SET NOT NULL`,
+    );
+
     await queryRunner.query(`
       UPDATE "121-service"."intersolve_voucher" iv
       SET "userId" = t."userId"
@@ -32,7 +36,11 @@ export class AddUserIdToIntersolveVoucherEntity1724079612695
     );
 
     await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher" DROP COLUMN "userId"`,
+      `ALTER TABLE "121-service"."intersolve_voucher" ALTER COLUMN "userId" DROP NOT NULL`,
+    );
+
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher" ADD CONSTRAINT "FK_7eff6d2d8b784b4ff880d925adc" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
   }
 }
