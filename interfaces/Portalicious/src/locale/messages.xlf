@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -280,9 +280,6 @@
       <trans-unit id="541221802269521915" datatype="html">
         <source>Add user to team</source>
       </trans-unit>
-      <trans-unit id="3102279463494888153" datatype="html">
-        <source>Showing {first} to {last} of {totalRecords} records</source>
-      </trans-unit>
       <trans-unit id="generic-toast-error-header" datatype="html">
         <source>Error</source>
       </trans-unit>
@@ -294,6 +291,9 @@
       </trans-unit>
       <trans-unit id="9011868136618282915" datatype="html">
         <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
+      </trans-unit>
+      <trans-unit id="3871260480214506166" datatype="html">
+        <source>Showing [first] to [last] of [totalRecords] records</source>
       </trans-unit>
     </body>
   </file>

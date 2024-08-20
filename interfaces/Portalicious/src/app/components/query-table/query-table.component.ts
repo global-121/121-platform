@@ -72,6 +72,12 @@ export class QueryTableComponent<TData> {
   @ViewChild('table') table: Table;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
 
+  currentPageReportTemplate =
+    $localize`Showing [first] to [last] of [totalRecords] records`
+      // this is a workaround because the i18n compiler does not support curly braces in the template
+      .replaceAll('[', '{')
+      .replaceAll(']', '}');
+
   globalFilterValue = model<string>();
   isFiltered = signal(false);
 

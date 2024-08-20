@@ -16,8 +16,7 @@
     [rows]="10"
     [rowsPerPageOptions]="[10, 20, 40, 80, 100]"
     [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
-    i18n-currentPageReportTemplate
+    [currentPageReportTemplate]="currentPageReportTemplate"
     stateStorage="local"
     [stateKey]="localStorageKey()"
   >

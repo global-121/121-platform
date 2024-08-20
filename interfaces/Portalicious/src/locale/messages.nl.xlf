@@ -370,10 +370,6 @@
         <source>Add user to team</source>
         <target state="new">Add user to team</target>
       </trans-unit>
-      <trans-unit id="3102279463494888153" datatype="html">
-        <source>Showing {first} to {last} of {totalRecords} records</source>
-        <target state="new">Showing {first} to {last} of {totalRecords} records</target>
-      </trans-unit>
       <trans-unit id="generic-toast-error-header" datatype="html">
         <source>Error</source>
         <target state="new">Error</target>
@@ -389,6 +385,10 @@
       <trans-unit id="9011868136618282915" datatype="html">
         <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
         <target state="new">There are no records that match the selected filters, clear some or all filters to continue.</target>
+      </trans-unit>
+      <trans-unit id="3871260480214506166" datatype="html">
+        <source>Showing [first] to [last] of [totalRecords] records</source>
+        <target state="new">Showing [first] to [last] of [totalRecords] records</target>
       </trans-unit>
     </body>
   </file>
