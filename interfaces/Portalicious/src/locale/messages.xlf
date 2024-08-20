@@ -41,8 +41,8 @@
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
       </trans-unit>
-      <trans-unit id="page-title-project-overview" datatype="html">
-        <source>Overview</source>
+      <trans-unit id="page-title-project-monitoring" datatype="html">
+        <source>Monitoring</source>
       </trans-unit>
       <trans-unit id="2772023564304193657" datatype="html">
         <source>Enter your password</source>
@@ -101,9 +101,6 @@
       </trans-unit>
       <trans-unit id="7807685431509530550" datatype="html">
         <source>API Documentation</source>
-      </trans-unit>
-      <trans-unit id="1429324684050248432" datatype="html">
-        <source>project-overview works!</source>
       </trans-unit>
       <trans-unit id="6118183885046046400" datatype="html">
         <source>project-registrations works!</source>
@@ -196,9 +193,6 @@
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
       </trans-unit>
-      <trans-unit id="7113499429942611780" datatype="html">
-        <source>Create new project</source>
-      </trans-unit>
       <trans-unit id="8550882715313062083" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
       </trans-unit>
@@ -216,9 +210,6 @@
       </trans-unit>
       <trans-unit id="2159130950882492111" datatype="html">
         <source>Cancel</source>
-      </trans-unit>
-      <trans-unit id="2489114267038713519" datatype="html">
-        <source>Create Project</source>
       </trans-unit>
       <trans-unit id="7750664097458673871" datatype="html">
         <source>Kobo Token</source>
@@ -249,6 +240,15 @@
       </trans-unit>
       <trans-unit id="1295128596959490682" datatype="html">
         <source>About 121 Portal</source>
+      </trans-unit>
+      <trans-unit id="1196626764275836870" datatype="html">
+        <source>project-monitoring works!</source>
+      </trans-unit>
+      <trans-unit id="7476141645378496788" datatype="html">
+        <source>No payments yet</source>
+      </trans-unit>
+      <trans-unit id="add-project-label" datatype="html">
+        <source>Add project</source>
       </trans-unit>
     </body>
   </file>

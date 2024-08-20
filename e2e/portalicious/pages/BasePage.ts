@@ -4,6 +4,7 @@ import { Locator, Page } from 'playwright';
 
 class BasePage {
   readonly page: Page;
+  readonly logo: Locator;
   readonly languageDropdown: PrimeDropdown;
   readonly projectHeader: Locator;
   readonly sidebar: Locator;
@@ -15,6 +16,7 @@ class BasePage {
   constructor(page: Page) {
     this.page = page;
 
+    this.logo = this.page.getByTestId('logo');
     this.languageDropdown = new PrimeDropdown({
       page,
       testId: 'language-dropdown',

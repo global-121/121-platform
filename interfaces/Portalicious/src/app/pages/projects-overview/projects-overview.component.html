@@ -10,7 +10,11 @@
 
   @if (assignedProjects.length === 0) {
     <div class="rounded-lg bg-white pb-8 pt-6 text-center drop-shadow-md">
-      <i class="pi pi-bullseye mb-6 block text-6xl"></i>
+      <img
+        src="assets/projects-empty.svg"
+        alt=""
+        class="mb-6 inline-block h-16"
+      />
 
       <h2
         i18n
@@ -26,7 +30,7 @@
     </div>
   } @else {
     <ul
-      class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
       role="list"
     >
       @for (id of assignedProjects; track $index) {

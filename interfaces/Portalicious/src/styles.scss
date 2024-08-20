@@ -23,6 +23,11 @@ body {
 // instead of extending the whole theme, while we wait
 // for PrimeNG v18 to be released with the new theming system.
 
+:root {
+  // primeng uses this variable on all of its components by default
+  --font-family: theme(fontFamily.body);
+}
+
 $toolbar-height: 48px;
 
 @layer primeng {
@@ -68,10 +73,14 @@ $toolbar-height: 48px;
     @apply underline;
   }
 
-  .p-card-title {
-    @apply font-display font-bold text-black;
-    font-size: 18px;
-    line-height: 140%;
+  .p-card {
+    @apply text-black;
+
+    .p-card-title {
+      @apply font-display font-bold text-black;
+      font-size: 18px;
+      line-height: 140%;
+    }
   }
 
   .p-tabmenu .p-tabmenu-nav,
@@ -100,9 +109,19 @@ $toolbar-height: 48px;
   .p-toolbar {
     @apply rounded-none border-x-0 border-t-0 border-b-purple bg-navy py-0;
     height: $toolbar-height;
+    flex-wrap: nowrap !important;
+
+    .p-toolbar-group-left {
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
   .p-button-link {
     @apply p-0;
+  }
+
+  .p-toast-message-content {
+    border: none;
   }
 }
