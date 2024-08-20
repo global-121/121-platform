@@ -84,7 +84,7 @@ class BasePage {
   }
 
   async openCreateNewProject() {
-    await this.page.getByRole('button', { name: 'Create new project' }).click();
+    await this.page.getByRole('button', { name: 'Add project' }).click();
   }
 }
 
