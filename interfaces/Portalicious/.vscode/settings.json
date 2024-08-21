@@ -11,6 +11,7 @@
   "tailwindCSS.classAttributes": [
     "class",
     "styleClass",
+    "icon",
     "ngClass",
     "class:list"
   ],

@@ -1,12 +1,15 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { AppRoutes } from '~/app.routes';
+import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-project-header',
@@ -16,6 +19,7 @@ import { AppRoutes } from '~/app.routes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectHeaderComponent {
+  private authService = inject(AuthService);
   projectId = input.required<number>();
 
   navMenuItems = computed<MenuItem[]>(() => [
@@ -39,6 +43,10 @@ export class ProjectHeaderComponent {
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectTeam}`,
       styleClass: 'ms-auto',
       icon: 'pi pi-users',
+      visible: this.authService.hasPermission(
+        this.projectId(),
+        PermissionEnum.AidWorkerProgramREAD,
+      ),
     },
   ]);
 }

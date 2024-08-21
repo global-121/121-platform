@@ -124,4 +124,19 @@ $toolbar-height: 48px;
   .p-toast-message-content {
     border: none;
   }
+
+  // apply these styles only when the table is inside a card
+  .p-card .p-datatable {
+    .p-datatable-header {
+      @apply px-0 pb-4 pt-0;
+    }
+
+    .p-paginator {
+      @apply border-b-0 pb-0 pt-4;
+
+      .p-paginator-current {
+        @apply me-auto ms-0 ps-0 font-display text-sm;
+      }
+    }
+  }
 }

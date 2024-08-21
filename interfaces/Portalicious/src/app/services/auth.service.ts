@@ -1,3 +1,4 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from '~/app.routes';
@@ -152,5 +153,34 @@ export class AuthService {
         $localize`Failed to change the password. Please refresh the page and try again.`,
       );
     }
+  }
+
+  private isAssignedToProgram(
+    programId: number,
+    user?: LocalStorageUser | null,
+  ): boolean {
+    user = user ?? this.user;
+    return (
+      !!user?.permissions &&
+      Object.keys(user.permissions).includes(String(programId))
+    );
+  }
+
+  public hasPermission(
+    programId: number,
+    requiredPermission: PermissionEnum,
+    user?: LocalStorageUser | null,
+  ): boolean {
+    user = user ?? this.user;
+    // During development: Use this to simulate a user not having a certain permission
+    // user.permissions[programId] = user.permissions[programId].filter(
+    //   (p) => p !== Permission.FspDebitCardBLOCK,
+    // );
+
+    return (
+      !!user?.permissions &&
+      this.isAssignedToProgram(programId, user) &&
+      user.permissions[programId].includes(requiredPermission)
+    );
   }
 }

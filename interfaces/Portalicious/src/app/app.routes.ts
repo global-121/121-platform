@@ -1,5 +1,6 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { Routes } from '@angular/router';
-import { authGuard } from '~/auth.guard';
+import { authGuard, projectPermissionsGuard } from '~/auth.guard';
 import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';
 import { ProjectMonitoringComponent } from '~/pages/project/project-monitoring/project-monitoring.component';
@@ -60,6 +61,9 @@ export const routes: Routes = [
       {
         path: AppRoutes.projectTeam,
         component: ProjectTeamComponent,
+        canActivate: [
+          projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+        ],
       },
       {
         path: AppRoutes.projectRegistrations,

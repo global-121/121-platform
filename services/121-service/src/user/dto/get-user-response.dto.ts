@@ -13,6 +13,16 @@ export class GetUserReponseDto {
   @ApiProperty({ example: true })
   active: boolean;
 
+  @ApiProperty({ nullable: true })
+  lastLogin: Date | null;
+
   @ApiProperty()
-  lastLogin: Date;
+  scope: string;
+
+  @ApiProperty()
+  roles: {
+    id: number;
+    role: string;
+    label: string;
+  }[];
 }
