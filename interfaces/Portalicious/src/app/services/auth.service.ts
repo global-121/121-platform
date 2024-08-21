@@ -141,18 +141,11 @@ export class AuthService {
       );
     }
 
-    try {
-      return await this.apiService.changePassword({
-        username,
-        password,
-        newPassword,
-      });
-    } catch (error) {
-      console.error(error);
-      throw new Error(
-        $localize`Failed to change the password. Please refresh the page and try again.`,
-      );
-    }
+    return await this.apiService.changePassword({
+      username,
+      password,
+      newPassword,
+    });
   }
 
   private isAssignedToProgram(

@@ -174,9 +174,6 @@
       <trans-unit id="8060388914130154528" datatype="html">
         <source>The new password must be different from the current password.</source>
       </trans-unit>
-      <trans-unit id="7750851942089216450" datatype="html">
-        <source>Failed to change the password. Please refresh the page and try again.</source>
-      </trans-unit>
       <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
         <note priority="1" from="description">Browser-tab-title</note>
@@ -222,9 +219,6 @@
       </trans-unit>
       <trans-unit id="generic-error" datatype="html">
         <source>An unexpected error has occurred. Please try again later.</source>
-      </trans-unit>
-      <trans-unit id="error-not-authorized" datatype="html">
-        <source>Not authorized</source>
       </trans-unit>
       <trans-unit id="error-rate-limit" datatype="html">
         <source>Rate limit exceeded. Please try again later.</source>

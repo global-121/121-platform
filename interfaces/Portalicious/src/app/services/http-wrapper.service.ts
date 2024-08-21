@@ -81,11 +81,9 @@ export class HttpWrapperService {
           return of(new Error($localize`:@@error-token-expired:Token expired`));
         }
       }
-
-      return of(new Error($localize`:@@error-not-authorized:Not authorized`));
     }
 
-    let errorMessage = get(error, 'message', undefined);
+    let errorMessage = get(error.error, 'message') as string | undefined;
 
     const errors: unknown = get(error, 'error.errors');
     if (errors) {

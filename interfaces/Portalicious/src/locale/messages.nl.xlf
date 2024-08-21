@@ -233,10 +233,6 @@
         <source>The confirm password must be equal to the new password.</source>
         <target state="translated">De wachtwoorden moeten hetzelfde zijn.</target>
       </trans-unit>
-      <trans-unit id="7750851942089216450" datatype="html">
-        <source>Failed to change the password. Please refresh the page and try again.</source>
-        <target state="translated">Het wachtwoord is niet veranderd. Herlaad de pagina en probeer het opnieuw.</target>
-      </trans-unit>
       <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
         <target state="translated">Verander wachtwoord</target>
@@ -305,10 +301,6 @@
       <trans-unit id="error-token-expired" datatype="html">
         <source>Token expired</source>
         <target state="new">Token expired</target>
-      </trans-unit>
-      <trans-unit id="error-not-authorized" datatype="html">
-        <source>Not authorized</source>
-        <target state="new">Not authorized</target>
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
