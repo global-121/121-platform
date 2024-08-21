@@ -56,7 +56,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     const dataUpdateSucces = {
       phoneNumber: updatePhoneNumber,
-      firstName: 'Jane',
+      fullName: 'Jane Doe',
       maxPayments: 2,
       paymentAmountMultiplier: 3,
     };
@@ -80,20 +80,20 @@ describe('Update attribute of PA', () => {
     );
     const registration = result.body.data[0];
     expect(registration.phoneNumber).toBe(updatePhoneNumber);
-    expect(registration.firstName).toBe(dataUpdateSucces.firstName);
+    expect(registration.fullName).toBe(dataUpdateSucces.fullName);
     expect(registration.maxPayments).toBe(dataUpdateSucces.maxPayments);
     expect(registration.paymentAmountMultiplier).toBe(
       dataUpdateSucces.paymentAmountMultiplier,
     );
     // Is old data still the same?
-    expect(registration.lastName).toBe(registrationVisa.lastName);
+    expect(registration.fullName).toBe(registrationVisa.fullName);
   });
 
   it('should fail on wrong phonenumber', async () => {
     // Arrange
     const updatePhoneNumber = '150';
     const dataUpdatePhoneFail = {
-      firstName: 'Jane',
+      fullName: 'Jane',
       phoneNumber: updatePhoneNumber,
     };
 
@@ -118,9 +118,9 @@ describe('Update attribute of PA', () => {
 
     // Is old data still the same?
     expect(registration.phoneNumber).toBe(registrationVisa.phoneNumber);
-    expect(registration.firstName).toBe(registrationVisa.firstName);
+    expect(registration.fullName).toBe(registrationVisa.fullName);
     // Is old data still the same?
-    expect(registration.lastName).toBe(registrationVisa.lastName);
+    expect(registration.fullName).toBe(registrationVisa.fullName);
   });
 
   it('should fail on duplicate referenceId', async () => {
@@ -131,7 +131,7 @@ describe('Update attribute of PA', () => {
     };
     await importRegistrations(programIdOcw, [registrationVisa2], accessToken);
     const dataUpdateReferenceIdFail = {
-      firstName: 'Jane',
+      fullName: 'Jane',
       referenceId: registrationVisa2.referenceId,
     };
     const reason = 'automated test';
@@ -156,13 +156,13 @@ describe('Update attribute of PA', () => {
     const registration = result.body.data[0];
 
     expect(registration.phoneNumber).toBe(registrationVisa.phoneNumber);
-    expect(registration.firstName).toBe(registrationVisa.firstName);
+    expect(registration.fullName).toBe(registrationVisa.fullName);
     expect(registration.paymentAmountMultiplier).toBe(
       registrationVisa.paymentAmountMultiplier,
     );
 
     // Is old data still the same?
-    expect(registration.firstName).toBe(registrationVisa.firstName);
+    expect(registration.fullName).toBe(registrationVisa.fullName);
   });
 
   it('should fail on short referenceId', async () => {
@@ -173,7 +173,7 @@ describe('Update attribute of PA', () => {
     };
     await importRegistrations(programIdOcw, [registrationVisa2], accessToken);
     const dataUpdateReferenceIdFail = {
-      firstName: 'Jane',
+      fullName: 'Jane',
       referenceId: registrationVisa2.referenceId,
     };
     const reason = 'automated test';
@@ -197,7 +197,7 @@ describe('Update attribute of PA', () => {
     const registration = result.body.data[0];
 
     // Is old data still the same?
-    expect(registration.firstName).toBe(registrationVisa.firstName);
+    expect(registration.fullName).toBe(registrationVisa.fullName);
   });
 
   it('should fail on updating financial data without the right permission', async () => {

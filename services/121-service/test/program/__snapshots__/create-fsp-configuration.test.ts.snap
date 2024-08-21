@@ -17,16 +17,9 @@ exports[`Create program questions should create a program with FSP configuration
   "editableAttributes": [
     {
       "label": {
-        "en": "First name",
+        "en": "Full Name",
       },
-      "name": "firstName",
-      "type": "text",
-    },
-    {
-      "label": {
-        "en": "Last name",
-      },
-      "name": "lastName",
+      "name": "fullName",
       "type": "text",
     },
   ],
@@ -118,7 +111,7 @@ exports[`Create program questions should create a program with FSP configuration
             "$null",
           ],
           "isInteger": false,
-          "name": "firstName",
+          "name": "fullName",
         },
         {
           "allowedOperators": [
@@ -127,16 +120,6 @@ exports[`Create program questions should create a program with FSP configuration
           ],
           "isInteger": true,
           "name": "inclusionScore",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$in",
-            "$ilike",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "lastName",
         },
         {
           "allowedOperators": [
@@ -417,8 +400,7 @@ exports[`Create program questions should create a program with FSP configuration
   ],
   "fixedTransferValue": 25,
   "fullnameNamingConvention": [
-    "firstName",
-    "lastName",
+    "fullName",
   ],
   "id": 4,
   "languages": [
@@ -473,18 +455,10 @@ exports[`Create program questions should create a program with FSP configuration
     },
     {
       "label": {
-        "en": "First name",
+        "en": "Full Name",
       },
-      "name": "firstName",
-      "questionType": "programCustomAttribute",
-      "type": "text",
-    },
-    {
-      "label": {
-        "en": "Last name",
-      },
-      "name": "lastName",
-      "questionType": "programCustomAttribute",
+      "name": "fullName",
+      "questionType": "programQuestion",
       "type": "text",
     },
     {
@@ -513,37 +487,36 @@ exports[`Create program questions should create a program with FSP configuration
     },
   ],
   "paymentAmountMultiplierFormula": null,
-  "programCustomAttributes": [
+  "programCustomAttributes": [],
+  "programQuestions": [
     {
+      "answerType": "text",
       "duplicateCheck": false,
-      "id": 4,
-      "label": {
-        "en": "First name",
-      },
-      "name": "firstName",
-      "programId": 4,
-      "showInPeopleAffectedTable": false,
-      "type": "text",
-    },
-    {
-      "duplicateCheck": false,
+      "editableInPortal": true,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
       "id": 5,
       "label": {
-        "en": "Last name",
+        "en": "Full Name",
       },
-      "name": "lastName",
+      "name": "fullName",
+      "options": null,
+      "pattern": null,
+      "persistence": true,
+      "placeholder": null,
       "programId": 4,
+      "questionType": "standard",
+      "scoring": {},
       "showInPeopleAffectedTable": false,
-      "type": "text",
     },
-  ],
-  "programQuestions": [
     {
       "answerType": "tel",
       "duplicateCheck": true,
       "editableInPortal": false,
       "export": [],
-      "id": 4,
+      "id": 6,
       "label": {
         "en": "Phone Number",
       },

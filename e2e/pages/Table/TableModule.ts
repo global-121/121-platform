@@ -282,12 +282,12 @@ class TableModule {
 
   async selectFieldsforCustomMessage({
     selectFieldDropdownName,
-    firstNameOption,
+    fullName,
     addPersonalizedFieldName,
     okButtonName,
   }: {
     selectFieldDropdownName: string;
-    firstNameOption: string;
+    fullName: string;
     addPersonalizedFieldName: string;
     okButtonName: string;
   }) {
@@ -298,7 +298,7 @@ class TableModule {
       .getByTitle(selectFieldDropdownName)
       .getByLabel(selectFieldDropdownName)
       .click();
-    await this.page.getByRole('radio', { name: firstNameOption }).click();
+    await this.page.getByRole('radio', { name: fullName }).click();
     await this.page
       .getByRole('button', { name: addPersonalizedFieldName })
       .click();

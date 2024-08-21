@@ -188,10 +188,10 @@ describe('Do payment with filter', () => {
     );
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(1);
-    expect(doPaymentResponse.body.totalFilterCount).toBe(1);
+    expect(doPaymentResponse.body.applicableCount).toBe(2);
+    expect(doPaymentResponse.body.totalFilterCount).toBe(3);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(1);
+    expect(transactionsResponse.body.length).toBe(2);
   });
 
   it('should only pay included people with a combi of filter and search', async () => {
