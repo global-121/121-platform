@@ -58,7 +58,7 @@ export class ProjectTeamComponent {
       header: $localize`User name`,
     },
     {
-      field: 'roleString',
+      field: 'allRolesLabel',
       header: $localize`Roles`,
     },
     {

@@ -389,6 +389,7 @@
       <trans-unit id="3871260480214506166" datatype="html">
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <target state="new">Showing [first] to [last] of [totalRecords] records</target>
+        <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
       </trans-unit>
     </body>
   </file>

@@ -73,7 +73,7 @@ export class QueryTableComponent<TData> {
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
 
   currentPageReportTemplate =
-    $localize`Showing [first] to [last] of [totalRecords] records`
+    $localize`:The contents of the square brackets should not be touched/changed:Showing [first] to [last] of [totalRecords] records`
       // this is a workaround because the i18n compiler does not support curly braces in the template
       .replaceAll('[', '{')
       .replaceAll(']', '}');

@@ -155,17 +155,6 @@ export class AuthService {
     }
   }
 
-  public async refreshCurrentUser() {
-    const userDto = await this.apiService.getCurrentUser();
-
-    if (!userDto?.user) {
-      await this.logout();
-      return;
-    }
-
-    this.setUserInStorage(userDto.user);
-  }
-
   private isAssignedToProgram(
     programId: number,
     user?: LocalStorageUser | null,
@@ -187,12 +176,6 @@ export class AuthService {
     // user.permissions[programId] = user.permissions[programId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
-
-    // TODO: Move this to a better place in the flow, so it doesn't have to be checked this often
-    // Check with Azure (again) when user has no permissions (yet)
-    if (!this.isAssignedToProgram(programId, user)) {
-      void this.refreshCurrentUser(); // Don't await, as it will block all permission-checks
-    }
 
     return (
       !!user?.permissions &&
