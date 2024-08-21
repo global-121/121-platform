@@ -17,7 +17,7 @@
         <source>121 Portal</source>
         <target state="final">121 Portal</target>
       </trans-unit>
-      <trans-unit id="1295128596959490682" datatype="html">
+      <trans-unit id="5901643806193916083" datatype="html">
         <source>About 121 Portal</source>
         <target state="translated">Over 121 Portal</target>
       </trans-unit>
@@ -25,11 +25,11 @@
         <source>The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer and faster which enables humanitarian organizations to maximize their impact and provide adequate response during a disaster or conflict.</source>
         <target state="needs-review-translation">Het 121 Platform maakt CVA (Cash &amp;amp; Voucher Assistance) makkelijker, veiliger en sneller wat humanitaire organisaties in staat stelt hun impact to maximaliseren en adequate hulp te verlenen tijdens een ramp of conflict.</target>
       </trans-unit>
-      <trans-unit id="5457997273400516490" datatype="html">
+      <trans-unit id="4829177270839953752" datatype="html">
         <source>Find out more</source>
         <target state="translated">Meer weten</target>
       </trans-unit>
-      <trans-unit id="5226048249896619460" datatype="html">
+      <trans-unit id="4242007306199259869" datatype="html">
         <source>Helpful links</source>
         <target state="translated">Handige links</target>
       </trans-unit>
@@ -45,7 +45,7 @@
         <source>User Manual</source>
         <target state="translated">Handleiding</target>
       </trans-unit>
-      <trans-unit id="5029674377291881403" datatype="html">
+      <trans-unit id="4371726377430146531" datatype="html">
         <source>Questions or feedback? Contact us</source>
         <target state="translated">Vragen of feedback? Neem contact op</target>
       </trans-unit>

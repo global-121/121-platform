@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -57,10 +57,10 @@
         <source>Logout</source>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="5226048249896619460" datatype="html">
+      <trans-unit id="4242007306199259869" datatype="html">
         <source>Helpful links</source>
       </trans-unit>
-      <trans-unit id="5029674377291881403" datatype="html">
+      <trans-unit id="4371726377430146531" datatype="html">
         <source>Questions or feedback? Contact us</source>
       </trans-unit>
       <trans-unit id="4501314745488687296" datatype="html">
@@ -69,7 +69,7 @@
       <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
       </trans-unit>
-      <trans-unit id="5457997273400516490" datatype="html">
+      <trans-unit id="4829177270839953752" datatype="html">
         <source>Find out more</source>
       </trans-unit>
       <trans-unit id="5393972837576333232" datatype="html">
@@ -229,7 +229,7 @@
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
       </trans-unit>
-      <trans-unit id="1295128596959490682" datatype="html">
+      <trans-unit id="5901643806193916083" datatype="html">
         <source>About 121 Portal</source>
       </trans-unit>
       <trans-unit id="1196626764275836870" datatype="html">

@@ -1,4 +1,3 @@
-import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -12,6 +11,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AppRoutes } from '~/app.routes';
+import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectMetricContainerComponent } from '~/pages/projects-overview/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ApiEndpoints, ApiService } from '~/services/api.service';
@@ -27,6 +27,7 @@ import { ApiEndpoints, ApiService } from '~/services/api.service';
     CommonModule,
     CurrencyPipe,
     ProjectMetricContainerComponent,
+    SkeletonInlineComponent,
   ],
   templateUrl: './project-summary-card.component.html',
   styles: ``,
@@ -36,8 +37,6 @@ export class ProjectSummaryCardComponent {
   private apiService = inject(ApiService);
 
   public id = input.required<number>();
-
-  public randomWidth = `${getRandomInt(42, 98).toString()}%`;
 
   public project = injectQuery(() => ({
     queryKey: [ApiEndpoints.projects, this.id()],
