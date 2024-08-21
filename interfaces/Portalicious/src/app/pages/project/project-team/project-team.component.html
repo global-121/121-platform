@@ -17,3 +17,16 @@
     [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
   />
 </app-page-layout>
+<app-confirmation-dialog
+  #confirmationDialog
+  header="Remove user from team"
+  i18n-header="@@remove-user-title"
+  acceptLabel="Remove user"
+  i18n-acceptLabel="@@remove-user-button"
+>
+  <p i18n>
+    You're about to remove
+    <b>{{ selectedUser()?.username }}</b> ({{ selectedUser()?.allRolesLabel }})
+    from your team.<br />They will not have access to the project anymore.
+  </p>
+</app-confirmation-dialog>

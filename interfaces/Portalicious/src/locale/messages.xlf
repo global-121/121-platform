@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -241,7 +241,7 @@
       <trans-unit id="add-project-label" datatype="html">
         <source>Add project</source>
       </trans-unit>
-      <trans-unit id="128402705185541160" datatype="html">
+      <trans-unit id="remove-user-button" datatype="html">
         <source>Remove user</source>
       </trans-unit>
       <trans-unit id="2099886964241384522" datatype="html">
@@ -274,6 +274,15 @@
       <trans-unit id="541221802269521915" datatype="html">
         <source>Add user to team</source>
       </trans-unit>
+      <trans-unit id="8117831125016931547" datatype="html">
+        <source>User removed</source>
+      </trans-unit>
+      <trans-unit id="8875170340911342447" datatype="html">
+        <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
+      </trans-unit>
+      <trans-unit id="generic-cancel" datatype="html">
+        <source>Cancel</source>
+      </trans-unit>
       <trans-unit id="generic-toast-error-header" datatype="html">
         <source>Error</source>
       </trans-unit>
@@ -289,6 +298,15 @@
       <trans-unit id="3871260480214506166" datatype="html">
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
+      </trans-unit>
+      <trans-unit id="remove-user-title" datatype="html">
+        <source>Remove user from team</source>
+      </trans-unit>
+      <trans-unit id="generic-proceed" datatype="html">
+        <source>Proceed</source>
+      </trans-unit>
+      <trans-unit id="confirmation-dialog-header" datatype="html">
+        <source>Are you sure?</source>
       </trans-unit>
     </body>
   </file>

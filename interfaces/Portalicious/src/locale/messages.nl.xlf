@@ -350,7 +350,7 @@
         <source>Edit</source>
         <target state="new">Edit</target>
       </trans-unit>
-      <trans-unit id="128402705185541160" datatype="html">
+      <trans-unit id="remove-user-button" datatype="html">
         <source>Remove user</source>
         <target state="new">Remove user</target>
       </trans-unit>
@@ -361,6 +361,22 @@
       <trans-unit id="541221802269521915" datatype="html">
         <source>Add user to team</source>
         <target state="new">Add user to team</target>
+      </trans-unit>
+      <trans-unit id="remove-user-title" datatype="html">
+        <source>Remove user from team</source>
+        <target state="new">Remove user from team</target>
+      </trans-unit>
+      <trans-unit id="generic-cancel" datatype="html">
+        <source>Cancel</source>
+        <target state="new">Cancel</target>
+      </trans-unit>
+      <trans-unit id="8875170340911342447" datatype="html">
+        <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
+        <target state="new">You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</target>
+      </trans-unit>
+      <trans-unit id="8117831125016931547" datatype="html">
+        <source>User removed</source>
+        <target state="new">User removed</target>
       </trans-unit>
       <trans-unit id="generic-toast-error-header" datatype="html">
         <source>Error</source>
@@ -382,6 +398,14 @@
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <target state="new">Showing [first] to [last] of [totalRecords] records</target>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
+      </trans-unit>
+      <trans-unit id="confirmation-dialog-header" datatype="html">
+        <source>Are you sure?</source>
+        <target state="new">Are you sure?</target>
+      </trans-unit>
+      <trans-unit id="generic-proceed" datatype="html">
+        <source>Proceed</source>
+        <target state="new">Proceed</target>
       </trans-unit>
     </body>
   </file>
