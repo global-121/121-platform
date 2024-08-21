@@ -7,12 +7,12 @@
     <ng-content></ng-content>
     <app-form-error
       [error]="mutation().isError() && mutation().failureReason()?.message"
+      class="mt-8"
     />
     <p-button
       [label]="submitButtonText()"
       type="submit"
       rounded
-      class="mt-8"
       [loading]="mutation().isPending()"
     />
   </div>
