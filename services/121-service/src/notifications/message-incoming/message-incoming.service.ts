@@ -28,13 +28,14 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
-import { Equal, In, IsNull, Not, Repository } from 'typeorm';
+import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageIncomingService {
@@ -50,6 +51,8 @@ export class MessageIncomingService {
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   private readonly fallbackLanguage = 'en';
   private readonly genericDefaultReplies = {
@@ -426,7 +429,15 @@ export class MessageIncomingService {
       registrationsWithPendingMessage.length === 0
     ) {
       // Hardcoded for PA-triggered auto-response, as this method isn't user-initiated and lacks userId.
-      const userId = 1;
+      const userId = await this.userRepository.findOne({
+        where: {
+          username: Like('admin@%'),
+        },
+        select: ['id'],
+        order: {
+          id: 'ASC',
+        },
+      });
       let program: ProgramEntity | undefined;
       // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
 
@@ -457,7 +468,7 @@ export class MessageIncomingService {
           message: whatsappDefaultReply.message,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
-          userId: userId,
+          userId: userId ? userId.id : 1,
         });
         return;
       } else {
@@ -467,7 +478,7 @@ export class MessageIncomingService {
           recipientPhoneNr: fromNumber,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
-          userId: userId,
+          userId: userId ? userId.id : 1,
         });
         return;
       }
