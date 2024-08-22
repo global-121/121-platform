@@ -337,6 +337,7 @@ export class RegistrationsController {
       programId,
       registrationStatus as RegistrationStatusEnum,
       dryRun,
+      userId,
       statusUpdateDto.message,
       statusUpdateDto.messageTemplateKey,
       messageContentType,
@@ -564,6 +565,7 @@ export class RegistrationsController {
       query,
       programId,
       dryRun,
+      userId,
     );
 
     if (dryRun) {
@@ -651,6 +653,7 @@ export class RegistrationsController {
       body.message,
       body.messageTemplateKey,
       dryRun,
+      userId,
     );
 
     if (dryRun) {

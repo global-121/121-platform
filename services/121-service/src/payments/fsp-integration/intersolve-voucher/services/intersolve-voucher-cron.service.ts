@@ -129,9 +129,10 @@ export class IntersolveVoucherCronService {
       const lastPayment = await this.transactionRepository
         .createQueryBuilder('transaction')
         .select('MAX(transaction.payment)', 'max')
-        .where('transaction.programId = :programId', {
-          programId: program.id,
-        })
+        .addSelect('transaction.userId', 'userId')
+        .where('transaction.programId = :programId', { programId: program.id })
+        .groupBy('transaction.userId')
+        .orderBy('max', 'DESC')
         .getRawOne();
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
@@ -195,6 +196,7 @@ export class IntersolveVoucherCronService {
           messageContentType: MessageContentType.paymentReminder,
           messageProcessType:
             MessageProcessType.whatsappTemplateVoucherReminder,
+          userId: lastPayment.userId,
         });
         const reminderVoucher =
           await this.intersolveVoucherRepository.findOneOrFail({

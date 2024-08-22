@@ -3,6 +3,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   Column,
   Entity,
@@ -80,4 +81,10 @@ export class TwilioMessageEntity extends Base121Entity {
   public transaction: Relation<TransactionEntity>;
   @Column({ type: 'int', nullable: true })
   public transactionId: number | null;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'userId' })
+  public user: Relation<UserEntity>;
+  @Column()
+  public userId: number;
 }

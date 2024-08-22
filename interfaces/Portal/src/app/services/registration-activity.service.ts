@@ -28,6 +28,7 @@ export class RegistrationActivityService {
       description: message.body,
       activityStatus: message.messageStatus,
       messageErrorCode: message.errorCode || null,
+      user: message.user.username,
     };
   }
 
