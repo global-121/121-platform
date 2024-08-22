@@ -1,4 +1,5 @@
 import { DEBUG } from '@121-service/src/config';
+import { EmailsService } from '@121-service/src/emails/emails.service';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -10,7 +11,7 @@ import {
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
-import { CreateUserAidWorkerDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
+import { CreateUsersDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
@@ -56,7 +57,10 @@ export class UserService {
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
-  public constructor(@Inject(REQUEST) private readonly request: Request) {}
+  public constructor(
+    @Inject(REQUEST) private readonly request: Request,
+    private readonly emailsService: EmailsService,
+  ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const userEntity = await this.matchPassword(loginUserDto);
@@ -241,13 +245,21 @@ export class UserService {
     return existingRole;
   }
 
-  public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {
-    const createdUser = await this.create(
-      dto.email,
-      dto.password,
-      UserType.aidWorker,
-    );
-    return await this.buildUserRO(createdUser);
+  public async createUsers(createUsersDto: CreateUsersDto): Promise<void> {
+    for (const user of createUsersDto.users) {
+      const password = this.generateStrongPassword();
+
+      await this.create(user.email, password, UserType.aidWorker);
+
+      const emailPayload = {
+        email: user.email,
+        username: user.email,
+        password: password,
+        newUserMail: true,
+      };
+
+      await this.emailsService.sendCreateUserEmail(emailPayload);
+    }
   }
 
   public async create(
@@ -278,6 +290,7 @@ export class UserService {
     newUser.password = password;
     newUser.userType = userType;
     newUser.isEntraUser = isEntraUser;
+    newUser.displayName = username.split('@')[0];
     return await this.userRepository.save(newUser);
   }
 
@@ -881,5 +894,9 @@ export class UserService {
 
   private hashPassword(password: string, salt: string): string {
     return crypto.pbkdf2Sync(password, salt, 1, 32, 'sha256').toString('hex');
+  }
+
+  private generateStrongPassword(): string {
+    return crypto.randomBytes(30).toString('base64').slice(0, 25);
   }
 }

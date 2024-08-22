@@ -1,14 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  ValidateNested,
+} from 'class-validator';
 
-export class CreateUserAidWorkerDto {
+class UserEmailDto {
   @ApiProperty({ example: 'admin@example.org' })
   @IsNotEmpty()
   @IsEmail()
   public readonly email: string;
+}
 
-  @ApiProperty({ example: 'password' })
-  @IsNotEmpty()
-  @MinLength(8)
-  public readonly password: string;
+export class CreateUsersDto {
+  @ApiProperty({ type: [UserEmailDto] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => UserEmailDto)
+  public readonly users: UserEmailDto[];
 }
