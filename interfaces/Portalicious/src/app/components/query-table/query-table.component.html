@@ -120,11 +120,11 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="loadingbody">
-      @for (row of [].constructor(5); track $index) {
+      @for (row of [].constructor(10); track $index) {
         <tr>
           @for (column of [].constructor(totalColumnCount()); track $index) {
             <td>
-              <p-skeleton />
+              <app-skeleton-inline />
             </td>
           }
         </tr>
