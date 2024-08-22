@@ -72,6 +72,7 @@ export class QueryTableComponent<TData> {
   readonly onUpdateContextMenuItem = output<TData>();
 
   @ViewChild('table') table: Table;
+  @ViewChild('contextMenu') contextMenu: Menu;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
 
   currentPageReportTemplate =
