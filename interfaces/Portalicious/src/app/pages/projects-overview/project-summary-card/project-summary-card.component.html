@@ -8,8 +8,8 @@
     >
       @if (project.isPending()) {
         <p-skeleton
-          class="my-1 cursor-progress text-xl"
-          height="1.25rem"
+          class="my-1 cursor-progress py-1"
+          height="1.5em"
           [width]="randomWidth"
         />
       } @else {
@@ -71,21 +71,21 @@
     </dl>
   </ng-template>
   <ng-template pTemplate="footer">
-    @if (payments.isPending()) {
-      <p-skeleton
-        class="my-1 cursor-progress text-lg"
-        height="1.125rem"
-        [width]="randomWidth"
-      />
-    } @else {
-      <div class="text-end font-display text-sm text-grey-700">
+    <div class="flex justify-end font-display text-sm text-grey-700">
+      @if (payments.isPending()) {
+        <p-skeleton
+          class="cursor-progress text-sm"
+          height="1.25em"
+          [style.flex-basis]="'40%'"
+        />
+      } @else {
         @if (getLastPayment()) {
           <ng-container i18n>Last payment: </ng-container>
           {{ getLastPayment()!.paymentDate | date: 'dd-MM-yyyy' }}
         } @else {
           <ng-container i18n>No payments yet</ng-container>
         }
-      </div>
-    }
+      }
+    </div>
   </ng-template>
 </p-card>
