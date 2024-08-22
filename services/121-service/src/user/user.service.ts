@@ -11,7 +11,7 @@ import {
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
-import { CreateUsersDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
+import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
@@ -249,11 +249,11 @@ export class UserService {
     for (const user of createUsersDto.users) {
       const password = this.generateStrongPassword();
 
-      await this.create(user.email, password, UserType.aidWorker);
+      await this.create(user.username, password, UserType.aidWorker);
 
       const emailPayload = {
-        email: user.email,
-        username: user.email,
+        email: user.username,
+        username: user.username,
         password: password,
         newUserMail: true,
       };
@@ -884,8 +884,17 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     user.salt = this.generateSalt();
-    user.password = this.hashPassword(changePasswordDto.password, user.salt);
+    const password = this.generateStrongPassword();
+    user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
+    const emailPayload = {
+      email: user.username ?? '',
+      username: user.username ?? '',
+      password: password,
+      newUserMail: false,
+    };
+
+    await this.emailsService.sendPasswordResetEmail(emailPayload);
   }
 
   private generateSalt(): string {

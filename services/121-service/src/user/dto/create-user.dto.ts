@@ -12,7 +12,7 @@ class UserEmailDto {
   @ApiProperty({ example: 'admin@example.org' })
   @IsNotEmpty()
   @IsEmail()
-  public readonly email: string;
+  public readonly username: string;
 }
 
 export class CreateUsersDto {

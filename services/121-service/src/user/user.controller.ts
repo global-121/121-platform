@@ -7,7 +7,7 @@ import {
   UpdateProgramAssignmentDto,
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
-import { CreateUsersDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
+import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
