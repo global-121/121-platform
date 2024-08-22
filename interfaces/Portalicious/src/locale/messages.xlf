@@ -178,8 +178,8 @@
         <source>Change password</source>
         <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
-      <trans-unit id="2342712167124906317" datatype="html">
-        <source>Targeted people</source>
+      <trans-unit id="7148904805726439689" datatype="html">
+        <source>Target registrations</source>
       </trans-unit>
       <trans-unit id="3010710400268626539" datatype="html">
         <source>No Projects found</source>
@@ -193,8 +193,8 @@
       <trans-unit id="8550882715313062083" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
       </trans-unit>
-      <trans-unit id="8675927317645341841" datatype="html">
-        <source>Included people</source>
+      <trans-unit id="19569847887954644" datatype="html">
+        <source>Included registrations</source>
       </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>

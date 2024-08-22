@@ -238,13 +238,13 @@
         <target state="translated">Verander wachtwoord</target>
         <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
-      <trans-unit id="2342712167124906317" datatype="html">
-        <source>Targeted people</source>
-        <target state="new">Targeted people</target>
+      <trans-unit id="7148904805726439689" datatype="html">
+        <source>Target registrations</source>
+        <target state="new">Target registrations</target>
       </trans-unit>
-      <trans-unit id="8675927317645341841" datatype="html">
-        <source>Included people</source>
-        <target state="new">Included people</target>
+      <trans-unit id="19569847887954644" datatype="html">
+        <source>Included registrations</source>
+        <target state="new">Included registrations</target>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
