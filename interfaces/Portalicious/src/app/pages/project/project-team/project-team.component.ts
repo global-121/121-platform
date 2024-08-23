@@ -21,15 +21,11 @@ import {
   QueryTableColumn,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
+import { ProjectUserWithRolesLabel } from '~/models/project.model';
 import { AddUserButtonComponent } from '~/pages/project/project-team/add-user-button/add-user-button.component';
-import { ApiEndpoints, ApiService } from '~/services/api.service';
+import { ApiService } from '~/services/api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { ArrayElement } from '~/utils/type-helpers';
-
-type UserInProject = ArrayElement<
-  Awaited<ReturnType<ApiService['getUsersInProject']>>
->;
 
 @Component({
   selector: 'app-project-team',
@@ -55,30 +51,23 @@ export class ProjectTeamComponent {
   @ViewChild('confirmationDialog')
   private confirmationDialog: ConfirmationDialogComponent;
 
-  selectedUser = signal<undefined | UserInProject>(undefined);
+  selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
 
   // this is injected by the router
   projectId = input.required<number>();
 
-  project = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.projectId()],
-    queryFn: () => this.apiService.getProjectById(this.projectId()),
-  }));
-
-  projectUsers = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.projectId(), ApiEndpoints.users],
-    queryFn: () => this.apiService.getUsersInProject(this.projectId()),
-  }));
+  project = injectQuery(this.apiService.getProject(this.projectId));
+  projectUsers = injectQuery(this.apiService.getProjectUsers(this.projectId));
 
   removeUserMutation = injectMutation(() => ({
     mutationFn: ({ userId }: { userId: number }) =>
-      this.apiService.removeUserFromProject(this.projectId(), userId),
+      this.apiService.removeProjectUser(this.projectId(), userId),
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`User removed`,
       });
       void this.queryClient.invalidateQueries({
-        queryKey: [ApiEndpoints.projects, this.projectId(), ApiEndpoints.users],
+        queryKey: this.apiService.getProject(this.projectId)().queryKey,
       });
     },
     onError: () => {
@@ -86,7 +75,7 @@ export class ProjectTeamComponent {
     },
   }));
 
-  columns = computed<QueryTableColumn<UserInProject>[]>(() => [
+  columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(() => [
     {
       field: 'username',
       header: $localize`User name`,

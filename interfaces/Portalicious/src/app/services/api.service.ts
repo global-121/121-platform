@@ -1,15 +1,21 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
+import { queryOptions } from '@tanstack/angular-query-experimental';
 import { VersionInfo } from '~/models/health.model';
 import { Payment } from '~/models/payment.model';
-import { Project, ProjectMetrics, ProjectUser } from '~/models/project.model';
+import {
+  Project,
+  ProjectMetrics,
+  ProjectUser,
+  ProjectUserWithRolesLabel,
+} from '~/models/project.model';
 import { User } from '~/models/user.model';
 import { HttpWrapperService } from '~/services/http-wrapper.service';
 
 export enum ApiEndpoints {
-  payments = 'payments',
+  projectMetrics = 'metrics/program-stats-summary',
+  projectPayments = 'payments',
   projects = 'programs',
-  projectsMetrics = 'metrics/program-stats-summary',
-  users = 'users',
+  projectUsers = 'users',
   usersChangePassword = 'users/password',
   usersCurrent = 'users/current',
   usersLogin = 'users/login',
@@ -22,6 +28,22 @@ export enum ApiEndpoints {
 })
 export class ApiService {
   private httpWrapperService = inject(HttpWrapperService);
+
+  /** Health */
+
+  getVersionInfo() {
+    return () =>
+      queryOptions({
+        queryKey: [ApiEndpoints.versionInfo],
+        queryFn: () =>
+          this.httpWrapperService.perform121ServiceRequest<VersionInfo>({
+            method: 'GET',
+            endpoint: ApiEndpoints.versionInfo,
+          }),
+      });
+  }
+
+  /** User */
 
   login({ username, password }: { username: string; password: string }) {
     return this.httpWrapperService.perform121ServiceRequest<User>({
@@ -38,22 +60,6 @@ export class ApiService {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint: ApiEndpoints.usersLogout,
-    });
-  }
-
-  getCurrentUser() {
-    return this.httpWrapperService.perform121ServiceRequest<
-      { user?: User } | undefined
-    >({
-      method: 'GET',
-      endpoint: ApiEndpoints.usersCurrent,
-    });
-  }
-
-  getVersionInfo() {
-    return this.httpWrapperService.perform121ServiceRequest<VersionInfo>({
-      method: 'GET',
-      endpoint: ApiEndpoints.versionInfo,
     });
   }
 
@@ -77,28 +83,85 @@ export class ApiService {
     });
   }
 
-  async getProjectById(id: number | string) {
-    return this.httpWrapperService.perform121ServiceRequest<Project>({
-      method: 'GET',
-      endpoint: `${ApiEndpoints.projects}/${id.toString()}`,
-    });
+  /** Project */
+
+  getProject(projectId: Signal<number | undefined>) {
+    return () =>
+      queryOptions({
+        queryKey: [ApiEndpoints.projects, projectId()],
+        queryFn: () =>
+          this.httpWrapperService.perform121ServiceRequest<Project>({
+            method: 'GET',
+            // this is safe because the query is only enabled when projectId is truthy
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            endpoint: `${ApiEndpoints.projects}/${projectId()!.toString()}`,
+          }),
+        enabled: !!projectId(),
+      });
   }
 
-  async getProjectSummaryMetrics(id: number) {
-    return this.httpWrapperService.perform121ServiceRequest<ProjectMetrics>({
-      method: 'GET',
-      endpoint: `${ApiEndpoints.projects}/${id.toString()}/${ApiEndpoints.projectsMetrics}`,
-    });
+  getProjectSummaryMetrics(projectId: Signal<number>) {
+    return () =>
+      queryOptions({
+        queryKey: [
+          ApiEndpoints.projects,
+          projectId(),
+          ApiEndpoints.projectMetrics,
+        ],
+        queryFn: async () =>
+          this.httpWrapperService.perform121ServiceRequest<ProjectMetrics>({
+            method: 'GET',
+            endpoint: `${ApiEndpoints.projects}/${projectId().toString()}/${ApiEndpoints.projectMetrics}`,
+          }),
+      });
   }
 
-  async getPayments(id: number) {
-    return this.httpWrapperService.perform121ServiceRequest<Payment[]>({
-      method: 'GET',
-      endpoint: `${ApiEndpoints.projects}/${id.toString()}/${ApiEndpoints.payments}`,
-    });
+  getProjectPayments(projectId: Signal<number>) {
+    return () =>
+      queryOptions({
+        queryKey: [
+          ApiEndpoints.projects,
+          projectId(),
+          ApiEndpoints.projectPayments,
+        ],
+        queryFn: async () =>
+          this.httpWrapperService.perform121ServiceRequest<Payment[]>({
+            method: 'GET',
+            endpoint: `${ApiEndpoints.projects}/${projectId().toString()}/${ApiEndpoints.projectPayments}`,
+          }),
+      });
   }
 
-  async createProjectFromKobo({
+  getProjectUsers(projectId: Signal<number>) {
+    return () =>
+      queryOptions({
+        queryKey: [
+          ApiEndpoints.projects,
+          projectId(),
+          ApiEndpoints.projectUsers,
+        ],
+        queryFn: async () => {
+          const users = await this.httpWrapperService.perform121ServiceRequest<
+            ProjectUser[]
+          >({
+            method: 'GET',
+            endpoint: `${ApiEndpoints.projects}/${projectId().toString()}/${ApiEndpoints.projectUsers}`,
+          });
+
+          const usersWithRolesLabel: ProjectUserWithRolesLabel[] = users.map(
+            (user) => ({
+              ...user,
+              allRolesLabel: user.roles.map((role) => role.label).join('; '),
+              lastLogin: user.lastLogin ? new Date(user.lastLogin) : undefined,
+            }),
+          );
+
+          return usersWithRolesLabel;
+        },
+      });
+  }
+
+  createProjectFromKobo({
     token,
     assetId,
   }: {
@@ -118,25 +181,10 @@ export class ApiService {
     });
   }
 
-  async getUsersInProject(projectId: number) {
-    const users = await this.httpWrapperService.perform121ServiceRequest<
-      ProjectUser[]
-    >({
-      method: 'GET',
-      endpoint: `${ApiEndpoints.projects}/${projectId.toString()}/${ApiEndpoints.users}`,
-    });
-
-    return users.map((user) => ({
-      ...user,
-      allRolesLabel: user.roles.map((role) => role.label).join('; '),
-      lastLogin: user.lastLogin ? new Date(user.lastLogin) : undefined,
-    }));
-  }
-
-  async removeUserFromProject(projectId: number, userId: number) {
+  removeProjectUser(projectId: number, userId: number) {
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'DELETE',
-      endpoint: `${ApiEndpoints.projects}/${projectId.toString()}/${ApiEndpoints.users}/${userId.toString()}`,
+      endpoint: `${ApiEndpoints.projects}/${projectId.toString()}/${ApiEndpoints.projectUsers}/${userId.toString()}`,
     });
   }
 }
