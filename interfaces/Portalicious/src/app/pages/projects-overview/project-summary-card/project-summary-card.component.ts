@@ -14,7 +14,7 @@ import { AppRoutes } from '~/app.routes';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectMetricContainerComponent } from '~/pages/projects-overview/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { ApiEndpoints, ApiService } from '~/services/api.service';
+import { ApiService } from '~/services/api.service';
 
 @Component({
   selector: 'app-project-summary-card',
@@ -38,20 +38,13 @@ export class ProjectSummaryCardComponent {
 
   public id = input.required<number>();
 
-  public project = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.id()],
-    queryFn: () => this.apiService.getProjectById(this.id()),
-  }));
-
+  public project = injectQuery(this.apiService.getProject(this.id));
   public metrics = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.id(), ApiEndpoints.projectsMetrics],
-    queryFn: () => this.apiService.getProjectSummaryMetrics(this.id()),
+    ...this.apiService.getProjectSummaryMetrics(this.id)(),
     enabled: !!this.project.data()?.id,
   }));
-
   public payments = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.id(), ApiEndpoints.payments],
-    queryFn: () => this.apiService.getPayments(this.id()),
+    ...this.apiService.getProjectPayments(this.id)(),
     enabled: !!this.project.data()?.id,
   }));
   projectLink = (projectId: number) => ['/', AppRoutes.project, projectId];
