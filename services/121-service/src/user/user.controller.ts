@@ -204,6 +204,7 @@ export class UserController {
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
         isEntraUser: loginResponse.userRo.user.isEntraUser,
+        isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
       });
     } catch (error) {
       throw error;

@@ -555,6 +555,7 @@ export class UserService {
         username: user.username,
         exp: exp.getTime() / 1000,
         admin: user.admin,
+        isOrganizationAdmin: user.isOrganizationAdmin,
       },
       process.env.SECRETS_121_SERVICE_SECRET!,
     );
@@ -586,6 +587,7 @@ export class UserService {
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
       lastLogin: user.lastLogin ?? undefined,
+      isOrganizationAdmin: user.isOrganizationAdmin,
     };
 
     // For SSO-users, token expiration is handled by Azure
