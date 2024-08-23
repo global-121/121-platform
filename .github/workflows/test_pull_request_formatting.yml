@@ -1,0 +1,45 @@
+name: PR linter
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check_pr_description:
+    name: Check PR metadata
+    runs-on: ubuntu-latest
+    # Don't run this check on dependabot PRs
+    if: contains(github.actor, 'dependabot') == false
+
+    steps:
+      - name: Check PR description and labels
+        id: fetch_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            core.startGroup('Received PR Data')
+            core.info(JSON.stringify(pr.data, null, 4));
+            core.endGroup()
+
+            const prDescription = pr.data.body;
+            if (!/AB#\d{5}/.test(prDescription)) {
+              core.setFailed('Please make sure you have replaced AB#XXXX with a valid DevOps ID in your PR description');
+            } else {
+              core.notice('✅ PR description contains a DevOps ID');
+            }
+
+            const validLabels = ['enhancement', 'bugfix', 'dependencies', 'chore', 'ignore-for-release', 'portalicious'];
+            const prLabels = pr.data.labels.map(label => label.name);
+            if (!prLabels.some(label => validLabels.includes(label))) {
+              core.setFailed('Add one of the following labels to your PR: enhancement, bugfix, chore, ignore-for-release, portalicious');
+            } else {
+              core.notice('✅ PR has at least one valid label');
+            }
+
+            return pr.data;
