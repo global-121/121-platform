@@ -1,14 +1,10 @@
-<dd class="px-2 pt-2">
+<dd class="px-2 pt-2 font-bold txt-h-2">
   @if (pending()) {
-    <p-skeleton
-      class="my-1 cursor-progress"
-      height="1.125rem"
-      [width]="randomWidth()"
-    />
+    <app-skeleton-inline />
   } @else {
-    <span class="font-display text-[18px] font-bold">{{ value() }}</span>
+    {{ value() }}
   }
 </dd>
-<dt class="px-2 pb-2 pt-1 text-sm">
+<dt class="px-2 pb-2 pt-1 txt-body-s">
   {{ label() }}
 </dt>

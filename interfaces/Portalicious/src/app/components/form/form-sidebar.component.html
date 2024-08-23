@@ -10,6 +10,9 @@
       (ngSubmit)="onFormSubmit()"
     >
       <div class="flex grow flex-col gap-2">
+        <h2 class="mb-5">
+          {{ formTitle() }}
+        </h2>
         <ng-content></ng-content>
       </div>
       <app-form-error

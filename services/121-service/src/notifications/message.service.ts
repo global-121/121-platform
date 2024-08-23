@@ -46,6 +46,7 @@ export class MessageService {
         case MessageProcessType.sms:
           await this.smsService.sendSms(
             messageText,
+            messageJobDto.userId,
             messageJobDto.phoneNumber,
             messageJobDto.registrationId,
             messageJobDto.messageContentType,
@@ -62,6 +63,7 @@ export class MessageService {
             registrationId: messageJobDto.registrationId,
             messageContentType: messageJobDto.messageContentType,
             tryWhatsapp: true,
+            userId: messageJobDto.userId,
           });
           break;
         case MessageProcessType.whatsappTemplateGeneric:
@@ -76,6 +78,7 @@ export class MessageService {
             registrationId: messageJobDto.registrationId,
             messageContentType: messageJobDto.messageContentType,
             tryWhatsapp: false,
+            userId: messageJobDto.userId,
           });
           break;
         case MessageProcessType.whatsappPendingMessage:
@@ -98,6 +101,7 @@ export class MessageService {
             messageContentType: messageJobDto.messageContentType,
             messageProcessType: messageJobDto.messageProcessType,
             existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
+            userId: messageJobDto.userId,
           });
           break;
         default:
@@ -150,6 +154,7 @@ export class MessageService {
         messageContentType: messageJobDto.messageContentType,
         messageProcessType: messageJobDto.messageProcessType,
         existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
+        userId: messageJobDto.userId,
       })
       .then(async () => {
         if (!messageJobDto.customData?.pendingMessageId) {
@@ -174,6 +179,7 @@ export class MessageService {
         registrationId: messageJobDto.registrationId,
         messageContentType: messageJobDto.messageContentType,
         messageProcessType: messageJobDto.messageProcessType,
+        userId: messageJobDto.userId,
       })
       .then(
         (response) => {
@@ -213,6 +219,7 @@ export class MessageService {
         messageContentType: messageJobDto.messageContentType,
         messageProcessType: messageJobDto.messageProcessType,
         existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
+        userId: messageJobDto.userId,
       })
       .then(
         (response) => {
@@ -252,12 +259,14 @@ export class MessageService {
     registrationId,
     messageContentType,
     tryWhatsapp = false,
+    userId,
   }: {
     message: string;
     recipientPhoneNr: string;
     registrationId: number;
     messageContentType?: MessageContentType;
     tryWhatsapp?: boolean;
+    userId: number;
   }): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
@@ -267,6 +276,7 @@ export class MessageService {
     pendingMesssage.registrationId = registrationId;
     pendingMesssage.contentType =
       messageContentType ?? MessageContentType.custom;
+    pendingMesssage.userId = userId;
     await this.whatsappPendingMessageRepo.save(pendingMesssage);
 
     const registration = await this.registrationRepository.findOne({
@@ -285,6 +295,7 @@ export class MessageService {
       registrationId,
       messageContentType: MessageContentType.genericTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      userId,
     });
     if (tryWhatsapp) {
       const tryWhatsapp = {

@@ -132,4 +132,11 @@ export class ApiService {
       lastLogin: user.lastLogin ? new Date(user.lastLogin) : undefined,
     }));
   }
+
+  async removeUserFromProject(projectId: number, userId: number) {
+    return this.httpWrapperService.perform121ServiceRequest<Project>({
+      method: 'DELETE',
+      endpoint: `${ApiEndpoints.projects}/${projectId.toString()}/${ApiEndpoints.users}/${userId.toString()}`,
+    });
+  }
 }

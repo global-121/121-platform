@@ -22,6 +22,7 @@ export class SmsService {
 
   public async sendSms(
     message: string,
+    userId: number,
     recipientPhoneNr?: string,
     registrationId?: number,
     messageContentType?: MessageContentType,
@@ -53,6 +54,7 @@ export class SmsService {
       };
       throw error;
     } finally {
+      messageToStore.userId = userId;
       await this.storeSendSms(
         messageToStore,
         registrationId,
@@ -80,6 +82,7 @@ export class SmsService {
     twilioMessage.registrationId = registrationId ?? null;
     twilioMessage.contentType = messageContentType ?? MessageContentType.custom;
     twilioMessage.processType = messageProcessType ?? null;
+    twilioMessage.userId = message.userId;
     if (message.errorCode) {
       twilioMessage.errorCode = message.errorCode;
     }

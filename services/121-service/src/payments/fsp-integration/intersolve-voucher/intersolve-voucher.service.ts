@@ -320,6 +320,7 @@ export class IntersolveVoucherService
       paPaymentData.paymentAddress,
       payment,
       amount,
+      paPaymentData.userId,
     );
 
     await this.imageCodeService.createVoucherExportVouchers(
@@ -387,6 +388,7 @@ export class IntersolveVoucherService
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
       customData: { payment: payment, amount: calculatedAmount },
       bulksize: paymentInfo.bulkSize,
+      userId: paymentInfo.userId,
     });
     result.status = StatusEnum.waiting;
     return result;
@@ -426,6 +428,7 @@ export class IntersolveVoucherService
     phoneNumber: string,
     payment: number,
     amount: number,
+    userId: number,
   ): Promise<IntersolveVoucherEntity> {
     const voucherData = new IntersolveVoucherEntity();
     voucherData.barcode = cardNumber;
@@ -434,6 +437,7 @@ export class IntersolveVoucherService
     voucherData.send = false;
     voucherData.payment = payment;
     voucherData.amount = amount;
+    voucherData.userId = userId;
     return this.intersolveVoucherScopedRepository.save(voucherData);
   }
 

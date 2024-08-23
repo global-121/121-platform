@@ -8,7 +8,7 @@
     [filterLocale]="locale"
     (onFilter)="onFilter($event)"
     [rowHover]="contextMenuItems()"
-    [contextMenu]="extraOptionsMenu"
+    [contextMenu]="contextMenu"
     (contextMenuSelectionChange)="onUpdateContextMenuItem.emit($event)"
     [globalFilterFields]="globalFilterFields()"
     [paginator]="true"
@@ -120,11 +120,11 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="loadingbody">
-      @for (row of [].constructor(5); track $index) {
+      @for (row of [].constructor(10); track $index) {
         <tr>
           @for (column of [].constructor(totalColumnCount()); track $index) {
             <td>
-              <p-skeleton />
+              <app-skeleton-inline />
             </td>
           }
         </tr>
@@ -163,11 +163,19 @@
     </ng-template>
   </p-table>
   @if (contextMenuItems()) {
+    <!-- Opened when right-clicking on a row -->
     <p-contextMenu
       [model]="contextMenuItems()"
-      #extraOptionsMenu
+      #contextMenu
       popup
       appendTo="body"
+    />
+    <!-- Opened when clicking on the ellipsis button -->
+    <!-- We can't re-use the same #contextMenu element because of a bug with keyboard events (AB#29766) -->
+    <p-menu
+      #extraOptionsMenu
+      [model]="contextMenuItems()"
+      popup
     />
   }
 </p-card>

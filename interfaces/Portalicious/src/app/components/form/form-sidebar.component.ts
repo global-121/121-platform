@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  model,
+} from '@angular/core';
 
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -23,4 +28,5 @@ export class FormSidebarComponent<
   T extends FormGroup,
 > extends FormBaseComponent<T> {
   visible = model<boolean>(false);
+  formTitle = input.required<string>();
 }

@@ -28,13 +28,14 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
-import { Equal, In, IsNull, Not, Repository } from 'typeorm';
+import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageIncomingService {
@@ -50,6 +51,8 @@ export class MessageIncomingService {
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   private readonly fallbackLanguage = 'en';
   private readonly genericDefaultReplies = {
@@ -257,6 +260,7 @@ export class MessageIncomingService {
         pendingMessageId: message.id, // This will also get filled (incorrectly) for payment-reply messages, but it will simply not be handled on the processor-side
         existingMessageSid: callbackData.MessageSid,
       },
+      userId: message.userId,
     });
   }
 
@@ -286,6 +290,7 @@ export class MessageIncomingService {
           message: w.body,
           messageContentType: MessageContentType.invited,
           messageProcessType: MessageProcessType.sms,
+          userId: whatsappPendingMessages[0].userId,
         });
         await this.whatsappPendingMessageRepo.remove(w);
       }
@@ -418,12 +423,21 @@ export class MessageIncomingService {
 
     const registrationsWithOpenVouchers =
       await this.getRegistrationsWithOpenVouchers(registrationsWithPhoneNumber);
-
     // If no registrations with outstanding vouchers or messages: send auto-reply
     if (
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
     ) {
+      // Hardcoded for PA-triggered auto-response, as this method isn't user-initiated and lacks userId.
+      const userId = await this.userRepository.findOne({
+        where: {
+          username: Like('admin@%'),
+        },
+        select: ['id'],
+        order: {
+          id: 'ASC',
+        },
+      });
       let program: ProgramEntity | undefined;
       // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
 
@@ -436,6 +450,7 @@ export class MessageIncomingService {
           program = programs[0];
         }
       }
+
       if (program) {
         const language =
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
@@ -453,6 +468,7 @@ export class MessageIncomingService {
           message: whatsappDefaultReply.message,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
+          userId: userId ? userId.id : 1,
         });
         return;
       } else {
@@ -462,6 +478,7 @@ export class MessageIncomingService {
           recipientPhoneNr: fromNumber,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
+          userId: userId ? userId.id : 1,
         });
         return;
       }
@@ -518,6 +535,7 @@ export class MessageIncomingService {
             amount: intersolveVoucher.amount ?? undefined,
             intersolveVoucherId: intersolveVoucher.id,
           },
+          userId: intersolveVoucher.userId,
         });
         firstVoucherSent = true;
 
@@ -533,6 +551,7 @@ export class MessageIncomingService {
           messageContentType: MessageContentType.paymentInstructions,
           messageProcessType: MessageProcessType.whatsappVoucherInstructions,
           mediaUrl: `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
+          userId: intersolveVouchersPerPa[0].userId,
         });
       }
     }
@@ -557,6 +576,7 @@ export class MessageIncomingService {
             messageProcessType: MessageProcessType.whatsappPendingMessage,
             mediaUrl: message.mediaUrl,
             customData: { pendingMessageId: message.id },
+            userId: message.userId,
           });
           await waitFor(2_000);
         }
