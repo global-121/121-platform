@@ -10,13 +10,13 @@ import { CreateMutationResult } from '@tanstack/angular-query-experimental';
  * - `FormSidebarComponent`
  */
 @Component({
-  selector: 'app-form-base-do-not-use',
+  selector: 'app-abstract-form-do-not-use',
   standalone: true,
   imports: [],
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormBaseComponent<T extends FormGroup> {
+export abstract class FormComponent<T extends FormGroup> {
   formGroup = input.required<T>();
   mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

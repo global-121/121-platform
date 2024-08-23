@@ -11,7 +11,6 @@ import {
 import {
   injectMutation,
   injectQuery,
-  injectQueryClient,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -21,9 +20,9 @@ import {
   QueryTableColumn,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
-import { ProjectUserWithRolesLabel } from '~/models/project.model';
+import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { AddUserButtonComponent } from '~/pages/project/project-team/add-user-button/add-user-button.component';
-import { ApiService } from '~/services/api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -43,10 +42,9 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectTeamComponent {
-  private apiService = inject(ApiService);
+  private projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
-  private queryClient = injectQueryClient();
 
   @ViewChild('confirmationDialog')
   private confirmationDialog: ConfirmationDialogComponent;
@@ -56,19 +54,19 @@ export class ProjectTeamComponent {
   // this is injected by the router
   projectId = input.required<number>();
 
-  project = injectQuery(this.apiService.getProject(this.projectId));
-  projectUsers = injectQuery(this.apiService.getProjectUsers(this.projectId));
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  projectUsers = injectQuery(
+    this.projectApiService.getProjectUsers(this.projectId),
+  );
 
   removeUserMutation = injectMutation(() => ({
     mutationFn: ({ userId }: { userId: number }) =>
-      this.apiService.removeProjectUser(this.projectId(), userId),
+      this.projectApiService.removeProjectUser(this.projectId, userId),
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`User removed`,
       });
-      void this.queryClient.invalidateQueries({
-        queryKey: this.apiService.getProject(this.projectId)().queryKey,
-      });
+      void this.projectApiService.invalidateCache(this.projectId);
     },
     onError: () => {
       this.toastService.showGenericError();

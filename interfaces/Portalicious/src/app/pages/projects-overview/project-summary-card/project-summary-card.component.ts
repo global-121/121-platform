@@ -12,9 +12,10 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AppRoutes } from '~/app.routes';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectMetricContainerComponent } from '~/pages/projects-overview/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { ApiService } from '~/services/api.service';
 
 @Component({
   selector: 'app-project-summary-card',
@@ -34,17 +35,18 @@ import { ApiService } from '~/services/api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSummaryCardComponent {
-  private apiService = inject(ApiService);
+  private projectApiService = inject(ProjectApiService);
+  private paymentApiService = inject(PaymentApiService);
 
   public id = input.required<number>();
 
-  public project = injectQuery(this.apiService.getProject(this.id));
+  public project = injectQuery(this.projectApiService.getProject(this.id));
   public metrics = injectQuery(() => ({
-    ...this.apiService.getProjectSummaryMetrics(this.id)(),
+    ...this.projectApiService.getProjectSummaryMetrics(this.id)(),
     enabled: !!this.project.data()?.id,
   }));
   public payments = injectQuery(() => ({
-    ...this.apiService.getProjectPayments(this.id)(),
+    ...this.paymentApiService.getPayments(this.id)(),
     enabled: !!this.project.data()?.id,
   }));
   projectLink = (projectId: number) => ['/', AppRoutes.project, projectId];
