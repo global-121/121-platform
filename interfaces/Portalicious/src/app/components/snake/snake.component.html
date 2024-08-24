@@ -1,16 +1,23 @@
-@if (!isGameStarted) {
-  <p-button
-    i18n
-    class=""
-    (click)="startButtonClick()"
-    >Start game</p-button
-  >
-}
 <div class="margin-0 flex h-full w-full items-center justify-center bg-black">
+  @if (!isGameStarted) {
+    <div
+      class="absolute bg-grey-300 opacity-70"
+      style="height: 100vmin; width: 100vmin"
+    ></div>
+    <p-button
+      i18n
+      class="absolute z-10"
+      [size]="'large'"
+      [raised]="'true'"
+      [severity]="'info'"
+      (click)="startButtonClick()"
+      >Play Snake</p-button
+    >
+  }
   <div
     #board
     id="board"
-    class="grid bg-grey-500"
+    class="grid border-2 border-black bg-grey-300"
     style="
       height: 100vmin;
       width: 100vmin;
