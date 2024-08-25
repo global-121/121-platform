@@ -1,0 +1,55 @@
+<p-dialog
+  header="Game over!"
+  i18n-header
+  [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="false"
+  [(visible)]="isGameOver"
+  [closable]="false"
+>
+  <b
+    i18n
+    class="mb-4 block"
+    >Your score is {{ score() }}.
+  </b>
+  <div class="flex justify-end gap-2">
+    <p-button
+      label="Okay"
+      i18n-label
+      (click)="initialize()"
+    />
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Let's start!"
+  i18n-header
+  [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="false"
+  [visible]="!isGameStarted()"
+  [closable]="false"
+>
+  <b
+    i18n
+    class="mb-4 block"
+    >Use the arrow keys or W A S D to play the game</b
+  >
+  <div class="flex justify-end gap-2">
+    <p-button
+      label="Start!"
+      i18n-label
+      (click)="startButtonClick()"
+    />
+  </div>
+</p-dialog>
+
+<div
+  #board
+  id="board"
+  class="border-1 grid aspect-square h-full w-full border-black bg-green-500 bg-opacity-35"
+  style="
+    grid-template-rows: repeat(21, 1fr);
+    grid-template-columns: repeat(21, 1fr);
+  "
+></div>

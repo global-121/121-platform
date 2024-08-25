@@ -22,6 +22,7 @@ export enum AppRoutes {
   projects = 'projects',
   projectTeam = 'team',
   registrationLookup = 'registration-lookup',
+  snake = 'snake',
   userRoles = 'user-roles',
   users = 'users',
 }
@@ -37,6 +38,11 @@ export const routes: Routes = [
       import('~/pages/auth-callback/auth-callback.page').then(
         (x) => x.AuthCallbackPageComponent,
       ),
+  },
+  {
+    path: AppRoutes.snake,
+    loadComponent: () =>
+      import('~/pages/snake/snake.page').then((x) => x.SnakePageComponent),
   },
   {
     path: AppRoutes.changePassword,
