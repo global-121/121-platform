@@ -5,9 +5,13 @@ import {
   Component,
   ElementRef,
   HostListener,
+  model,
+  signal,
   ViewChild,
 } from '@angular/core';
+
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 interface Vector {
   x: number;
@@ -16,13 +20,11 @@ interface Vector {
 
 @Component({
   selector: 'app-snake',
-  standalone: true,
-  imports: [ButtonModule],
+  imports: [ButtonModule, DialogModule],
   templateUrl: './snake.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SnakeComponent implements AfterViewInit {
-  @ViewChild('board', { static: false }) board: ElementRef<HTMLDivElement>;
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     switch (event.key) {
@@ -49,35 +51,34 @@ export class SnakeComponent implements AfterViewInit {
     }
   }
 
-  // ** GAME INTERNALS ** //
-  public isGameStarted = false;
+  @ViewChild('board', { static: false }) board: ElementRef<HTMLDivElement>;
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
+  public isGameStarted = signal(false);
+  public isGameOver = model(false);
+  public score = signal(0);
+
   private lastRenderTime = 0;
   private inputDirection: Vector;
   private lastInputDirection: Vector;
   private snakeBody: Vector[];
   private foodPosition: Vector;
-
-  // ** GAME SETTINGS ** //
-  private SNAKE_SPEED = 5;
+  private SNAKE_SPEED = 6;
   private EXPANSION_RATE = 1;
-
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.initialize();
   }
 
-  public startButtonClick() {
-    this.isGameStarted = true;
+  startButtonClick() {
+    this.isGameStarted.set(true);
     this.inputDirection = { x: 0, y: -1 };
     this.lastInputDirection = { x: 0, y: -1 };
     window.requestAnimationFrame(this.gameLoop.bind(this));
   }
 
-  // ** GAME METHODS ** //
-
   private gameLoop(currentTime: number) {
-    if (!this.isGameStarted) return;
+    if (!this.isGameStarted() || this.isGameOver()) return;
     window.requestAnimationFrame(this.gameLoop.bind(this));
     const secondsSinceLastRender = (currentTime - this.lastRenderTime) / 1000;
     if (secondsSinceLastRender < 1 / this.SNAKE_SPEED) return;
@@ -91,8 +92,9 @@ export class SnakeComponent implements AfterViewInit {
     this.checkGameOver();
   }
 
-  private initialize() {
-    this.isGameStarted = false;
+  initialize() {
+    this.isGameStarted.set(false);
+    this.isGameOver.set(false);
     this.inputDirection = { x: 0, y: 0 };
     this.lastInputDirection = { x: 0, y: 0 };
     this.snakeBody = [
@@ -115,11 +117,10 @@ export class SnakeComponent implements AfterViewInit {
         ignoreHead: true,
       })
     ) {
-      this.initialize();
+      this.score.set(this.snakeBody.length - 3);
+      this.isGameOver.set(true);
     }
   }
-
-  // ** FOOD METHODS ** //
 
   private updateFood() {
     if (this.isSnakeIntersecting({ position: this.foodPosition })) {
@@ -135,8 +136,6 @@ export class SnakeComponent implements AfterViewInit {
     foodElement.classList.add('bg-red-500', 'border-red-700', 'border-2');
     this.board.nativeElement.appendChild(foodElement);
   }
-
-  // ** SNAKE METHODS ** //
 
   private updateSnake() {
     const inputDirection = this.getInputDirection();
@@ -154,11 +153,7 @@ export class SnakeComponent implements AfterViewInit {
       const snakeElement = document.createElement('div');
       snakeElement.style.gridRowStart = segment.y.toString();
       snakeElement.style.gridColumnStart = segment.x.toString();
-      snakeElement.classList.add(
-        'bg-green-500',
-        'border-green-700',
-        'border-2',
-      );
+      snakeElement.classList.add('bg-grey-500', 'border-black', 'border');
       this.board.nativeElement.appendChild(snakeElement);
     });
   }
@@ -190,8 +185,6 @@ export class SnakeComponent implements AfterViewInit {
       this.snakeBody[0].y > 21
     );
   }
-
-  // ** UTILITY METHODS ** //
 
   private getInputDirection() {
     this.lastInputDirection = this.inputDirection;
