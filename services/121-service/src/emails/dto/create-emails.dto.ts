@@ -1,7 +1,7 @@
 export interface CreateUserEmailPayload {
   email: string;
   username: string;
-  password: string;
+  password?: string;
   newUserMail: boolean;
 }
 

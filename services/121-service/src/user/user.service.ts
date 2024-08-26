@@ -1,4 +1,5 @@
 import { DEBUG } from '@121-service/src/config';
+import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -251,12 +252,17 @@ export class UserService {
 
       await this.create(user.username, password, UserType.aidWorker);
 
-      const emailPayload = {
+      const emailPayload: CreateUserEmailPayload = {
         email: user.username,
         username: user.username,
         password: password,
         newUserMail: true,
       };
+
+      // Check if SSO is enabled and remove the password if it is
+      if (!!process.env.USE_SSO_AZURE_ENTRA) {
+        delete emailPayload.password; // Remove the password from the payload if SSO is enabled
+      }
 
       await this.emailsService.sendCreateUserEmail(emailPayload);
     }
