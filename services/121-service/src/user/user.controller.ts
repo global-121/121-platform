@@ -153,6 +153,7 @@ export class UserController {
   }
 
   // TODO: define response type, this cannot use an interface though
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new user' })
   @ApiResponse({
