@@ -85,8 +85,8 @@ export class CookieJwtStrategy
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     } else if (authParams.isOrganizationAdmin) {
-      const isAdmin = payload.isOrganizationAdmin === true;
-      if (!isAdmin) {
+      const isOrganizationAdmin = payload.isOrganizationAdmin === true;
+      if (!isOrganizationAdmin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }
