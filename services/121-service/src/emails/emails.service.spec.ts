@@ -55,10 +55,10 @@ describe('EmailsService', () => {
 
     const criticalPieces = [
       `<p> Dear madam/sir, </p>`,
-      `<p>Your password for the 121 Portal has been reset. You can access the 121 portal <a href="${process.env.EXTERNAL_121_SERVICE_URL}">here</a>.</p>`,
+      `<p>Your password for the 121 Portal has been reset. You can access the 121 portal <a href="${process.env.REDIRECT_PORTAL_URL_HOST}">here</a>.</p>`,
       `<p>Username: ${payload.username}</p>`,
       `<p>New Password: ${payload.password}</p>`,
-      `<p>Please change your password immediately after logging in here: ${process.env.EXTERNAL_121_SERVICE_URL}user</p>`,
+      `<p>Please change your password immediately after logging in here: ${process.env.REDIRECT_PORTAL_URL_HOST}user</p>`,
       `<p>If you did not request this password reset, please contact support immediately.</p>`,
       `<p>Kind regards,</p>`,
       `<p>121 support</p>`,

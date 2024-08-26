@@ -8,7 +8,7 @@ export class EmailsApiService {
   public async sendEmail(payload: any): Promise<void> {
     try {
       const emailApiUrl = process.env.AZURE_EMAIL_API_URL as string;
-      payload['121url'] = process.env.EXTERNAL_121_SERVICE_URL as string;
+      payload['121url'] = process.env.REDIRECT_PORTAL_URL_HOST as string;
 
       const headers = [
         {
