@@ -408,6 +408,35 @@ export class UserController {
     );
   }
 
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('users')
+  @ApiOperation({
+    summary:
+      'Update main properties of user (currently only isOrganizationAdmin)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Updated user',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+  })
+  @Patch('users/:userId')
+  public async updateUser(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserRO> {
+    const user = await this.userService.updateUser({
+      id: userId,
+      isOrganizationAdmin: updateUserDto.isOrganizationAdmin,
+    });
+
+    return this.userService.buildUserRO(user);
+  }
+
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({

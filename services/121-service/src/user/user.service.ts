@@ -574,7 +574,7 @@ export class UserService {
     }
   }
 
-  private async buildUserRO(
+  public async buildUserRO(
     user: UserEntity,
     tokenExpiration?: number,
   ): Promise<UserRO> {
