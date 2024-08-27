@@ -110,8 +110,7 @@ export class IntersolveVisaApiService {
         addresses: [
           {
             type: 'HOME',
-            addressLine1:
-              `${input.contactInformation.addressStreet} ${input.contactInformation.addressHouseNumber} ${input.contactInformation.addressHouseNumberAddition}`.trim(),
+            addressLine1: this.createAddressString(input.contactInformation),
             city: input.contactInformation.addressCity,
             postalCode: input.contactInformation.addressPostalCode,
             country: 'NL',
@@ -535,15 +534,13 @@ export class IntersolveVisaApiService {
       lastName: name,
       mobileNumber: formatPhoneNumber(contactInformation.phoneNumber), // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
       cardAddress: {
-        address1:
-          `${contactInformation.addressStreet} ${contactInformation.addressHouseNumber} ${contactInformation.addressHouseNumberAddition}`.trim(),
+        address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
         country: 'NLD',
         postalCode: contactInformation.addressPostalCode,
       },
       pinAddress: {
-        address1:
-          `${contactInformation.addressStreet} ${contactInformation.addressHouseNumber} ${contactInformation.addressHouseNumberAddition}`.trim(),
+        address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
         country: 'NLD',
         postalCode: contactInformation.addressPostalCode,
@@ -855,5 +852,9 @@ export class IntersolveVisaApiService {
     const date = new Date();
     date.setMonth(date.getMonth() - 2);
     return date;
+  }
+
+  private createAddressString(contactInformation: ContactInformation) {
+    return `${contactInformation.addressStreet} ${contactInformation.addressHouseNumber} ${contactInformation.addressHouseNumberAddition ?? ''}`.trim();
   }
 }
