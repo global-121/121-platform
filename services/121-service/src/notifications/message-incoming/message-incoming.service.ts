@@ -24,12 +24,12 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import {
   ProcessNameMessage,
   QueueNameMessageCallBack,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
