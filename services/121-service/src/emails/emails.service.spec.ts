@@ -4,6 +4,10 @@ import {
 } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsApiService } from '@121-service/src/emails/emails.api.service';
 import { EmailsService } from '@121-service/src/emails/emails.service';
+import { genericTemplate } from '@121-service/src/emails/templates/generalTemplate';
+import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
+import { createSSOUserTemplate } from '@121-service/src/emails/templates/welcomeSSOTemplate';
+import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/welcomeTemplate';
 import { Test } from '@nestjs/testing';
 
 // Mock for EmailsApiService
@@ -32,17 +36,27 @@ describe('EmailsService', () => {
     jest.clearAllMocks();
   });
 
-  it('should call sendEmail with correct payload for sendCreateUserEmail', async () => {
+  it('should call sendEmail with correct payload for sendCreateNonSSOUserEmail', async () => {
     const payload: CreateUserEmailPayload = {
       email: 'test@example.com',
       username: 'testuser',
       password: 'testpassword',
-      newUserMail: true,
     };
 
-    await emailsService.sendCreateUserEmail(payload);
+    const { subject, body } = createNonSSOUserTemplate(
+      payload.username,
+      payload.password || '',
+    );
 
-    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(payload);
+    await emailsService.sendCreateNonSSOUserEmail(payload);
+
+    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: payload.email,
+        subject: subject,
+        body: body,
+      }),
+    );
   });
 
   it('should call sendEmail with correct payload for sendPasswordResetEmail', async () => {
@@ -50,32 +64,36 @@ describe('EmailsService', () => {
       email: 'test@example.com',
       username: 'testuser',
       password: 'newpassword',
-      newUserMail: false,
     };
 
-    const criticalPieces = [
-      `<p> Dear madam/sir, </p>`,
-      `<p>Your password for the 121 Portal has been reset. You can access the 121 portal <a href="${process.env.REDIRECT_PORTAL_URL_HOST}">here</a>.</p>`,
-      `<p>Username: ${payload.username}</p>`,
-      `<p>New Password: ${payload.password}</p>`,
-      `<p>Please change your password immediately after logging in here: ${process.env.REDIRECT_PORTAL_URL_HOST}user</p>`,
-      `<p>If you did not request this password reset, please contact support immediately.</p>`,
-      `<p>Kind regards,</p>`,
-      `<p>121 support</p>`,
-    ];
+    const { subject, body } = passwordResetTemplate(
+      payload.username,
+      payload.password || '',
+    );
 
     await emailsService.sendPasswordResetEmail(payload);
-
-    const { body } = mockEmailsApiService.sendEmail.mock.calls[0][0];
-
-    criticalPieces.forEach((piece) => {
-      expect(body).toContain(piece);
-    });
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         email: payload.email,
-        subject: 'Your Password Reset Request',
+        subject: subject,
+        body: body,
+      }),
+    );
+  });
+
+  it('should call sendEmail with correct payload for sendCreateSSOUserEmail', async () => {
+    const username = 'testuser@example.com';
+
+    const { subject, body } = createSSOUserTemplate(username);
+
+    await emailsService.sendCreateSSOUserEmail(username);
+
+    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: username,
+        subject: subject,
+        body: body,
       }),
     );
   });
@@ -87,8 +105,16 @@ describe('EmailsService', () => {
       body: 'Test Body',
     };
 
+    const { subject, body } = genericTemplate(payload.subject, payload.body);
+
     await emailsService.sendGenericEmail(payload);
 
-    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(payload);
+    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: payload.email,
+        subject: subject,
+        body: body,
+      }),
+    );
   });
 });

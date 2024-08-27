@@ -256,7 +256,6 @@ export class UserService {
         email: user.username,
         username: user.username,
         password: password,
-        newUserMail: true,
       };
 
       // Check if SSO is enabled and remove the password if it is
@@ -899,7 +898,6 @@ export class UserService {
       email: user.username ?? '',
       username: user.username ?? '',
       password: password,
-      newUserMail: false,
     };
 
     await this.emailsService.sendPasswordResetEmail(emailPayload);
