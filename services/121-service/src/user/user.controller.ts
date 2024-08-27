@@ -458,7 +458,7 @@ export class UserController {
     return await this.userService.getUsersInProgram(programId);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Reset user password without current password' })
   @ApiResponse({
