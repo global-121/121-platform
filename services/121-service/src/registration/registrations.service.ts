@@ -1002,6 +1002,7 @@ export class RegistrationsService {
   public async reissueCardAndSendMessage(
     referenceId: string,
     programId: number,
+    userId: number,
   ) {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
@@ -1099,6 +1100,7 @@ export class RegistrationsService {
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      userId: userId,
     });
   }
 
@@ -1118,6 +1120,7 @@ export class RegistrationsService {
     programId: number,
     tokenCode: string,
     pause: boolean,
+    userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
@@ -1135,6 +1138,7 @@ export class RegistrationsService {
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      userId: userId,
     });
     return updatedWallet;
   }

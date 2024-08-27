@@ -733,10 +733,14 @@ export class RegistrationsController {
   public async reissueCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
+    @Req() req,
   ): Promise<void> {
+    const userId = req.user.id;
+
     await this.registrationsService.reissueCardAndSendMessage(
       referenceId,
       programId,
+      userId,
     );
   }
 
@@ -791,6 +795,7 @@ export class RegistrationsController {
       programId,
       tokenCode,
       pause,
+      userId,
     );
   }
 
