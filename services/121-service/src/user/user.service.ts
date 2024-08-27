@@ -261,10 +261,10 @@ export class UserService {
 
       // Check if SSO is enabled and remove the password if it is
       if (!!process.env.USE_SSO_AZURE_ENTRA) {
-        delete emailPayload.password; // Remove the password from the payload if SSO is enabled
+        await this.emailsService.sendCreateSSOUserEmail(user.username);
+      } else {
+        await this.emailsService.sendCreateNonSSOUserEmail(emailPayload);
       }
-
-      await this.emailsService.sendCreateUserEmail(emailPayload);
     }
   }
 

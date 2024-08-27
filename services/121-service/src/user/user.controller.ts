@@ -408,34 +408,6 @@ export class UserController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiTags('users')
-  @ApiOperation({
-    summary: 'Update user properties (currently only isOrganizationAdmin)',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Updated user',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'User not found',
-  })
-  @Patch('users/:userId')
-  public async updateUser(
-    @Param('userId', ParseIntPipe)
-    userId: number,
-
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserRO> {
-    const user = await this.userService.updateUser({
-      id: userId,
-      isOrganizationAdmin: updateUserDto.isOrganizationAdmin,
-    });
-
-    return this.userService.buildUserRO(user);
-  }
-
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
@@ -501,5 +473,34 @@ export class UserController {
     await this.userService.changePasswordWithoutCurrentPassword(
       changePasswordDto,
     );
+  }
+
+  // Make sure this endpoint to be below users/password endpoint, because controller order
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('users')
+  @ApiOperation({
+    summary: 'Update user properties (currently only isOrganizationAdmin)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Updated user',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+  })
+  @Patch('users/:userId')
+  public async updateUser(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserRO> {
+    const user = await this.userService.updateUser({
+      id: userId,
+      isOrganizationAdmin: updateUserDto.isOrganizationAdmin,
+    });
+
+    return this.userService.buildUserRO(user);
   }
 }
