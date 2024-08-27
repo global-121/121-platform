@@ -1,6 +1,6 @@
 export interface CreateUserEmailPayload {
   email: string;
-  username: string;
+  displayName: string;
   password?: string;
 }
 

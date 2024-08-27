@@ -250,17 +250,21 @@ export class UserService {
     for (const user of createUsersDto.users) {
       const password = this.generateStrongPassword();
 
-      await this.create(user.username, password, UserType.aidWorker);
+      const userEntity = await this.create(
+        user.username,
+        password,
+        UserType.aidWorker,
+      );
 
       const emailPayload: CreateUserEmailPayload = {
-        email: user.username,
-        username: user.username,
+        email: userEntity.username ?? '',
+        displayName: userEntity.displayName ?? '',
         password: password,
       };
 
-      // Check if SSO is enabled and remove the password if it is
+      // Send SSO template if SSO is enabled
       if (!!process.env.USE_SSO_AZURE_ENTRA) {
-        await this.emailsService.sendCreateSSOUserEmail(user.username);
+        await this.emailsService.sendCreateSSOUserEmail(emailPayload);
       } else {
         await this.emailsService.sendCreateNonSSOUserEmail(emailPayload);
       }
@@ -896,7 +900,7 @@ export class UserService {
     await this.userRepository.save(user);
     const emailPayload = {
       email: user.username ?? '',
-      username: user.username ?? '',
+      displayName: user.displayName ?? '',
       password: password,
     };
 

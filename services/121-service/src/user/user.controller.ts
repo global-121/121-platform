@@ -475,7 +475,7 @@ export class UserController {
     );
   }
 
-  // Make sure this endpoint to be below users/password endpoint, because controller order
+  // Make sure this endpoint is below users/password endpoint in this controller, to avoid endpoint confusion
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({

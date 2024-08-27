@@ -1,17 +1,17 @@
 import { emailStyle } from '@121-service/src/emails/templates/style';
 
-export const passwordResetTemplate = (
+export const createNonSSOUserTemplate = (
   displayName: string,
   password: string,
 ): { subject: string; body: string } => {
-  const subject = '121 Portal password reset';
+  const subject = '121 Portal account created';
 
   const body = `
-    ${emailStyle()}
+  ${emailStyle()}
 
     <div>
         <p>Dear ${displayName},</p>
-        <p>Your password for the 121 Portal has been reset. Click <a href="${process.env.REDIRECT_PORTAL_URL_HOST}">here</a> to log in again.</p>
+        <p>You have been added to the 121 Portal by the platform admin. Click <a href="${process.env.REDIRECT_PORTAL_URL_HOST}">here</a> to log in.</p>
         <br>
         <p>Password: ${password}</p>
         <br>

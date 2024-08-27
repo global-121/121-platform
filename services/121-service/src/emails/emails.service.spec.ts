@@ -4,10 +4,10 @@ import {
 } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsApiService } from '@121-service/src/emails/emails.api.service';
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { genericTemplate } from '@121-service/src/emails/templates/generalTemplate';
+import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
+import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
+import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
-import { createSSOUserTemplate } from '@121-service/src/emails/templates/welcomeSSOTemplate';
-import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/welcomeTemplate';
 import { Test } from '@nestjs/testing';
 
 // Mock for EmailsApiService
@@ -39,12 +39,12 @@ describe('EmailsService', () => {
   it('should call sendEmail with correct payload for sendCreateNonSSOUserEmail', async () => {
     const payload: CreateUserEmailPayload = {
       email: 'test@example.com',
-      username: 'testuser',
+      displayName: 'testuser',
       password: 'testpassword',
     };
 
     const { subject, body } = createNonSSOUserTemplate(
-      payload.username,
+      payload.displayName,
       payload.password || '',
     );
 
@@ -62,12 +62,12 @@ describe('EmailsService', () => {
   it('should call sendEmail with correct payload for sendPasswordResetEmail', async () => {
     const payload: CreateUserEmailPayload = {
       email: 'test@example.com',
-      username: 'testuser',
+      displayName: 'testuser',
       password: 'newpassword',
     };
 
     const { subject, body } = passwordResetTemplate(
-      payload.username,
+      payload.displayName,
       payload.password || '',
     );
 
@@ -83,15 +83,21 @@ describe('EmailsService', () => {
   });
 
   it('should call sendEmail with correct payload for sendCreateSSOUserEmail', async () => {
-    const username = 'testuser@example.com';
+    const payload: CreateUserEmailPayload = {
+      email: 'test@example.com',
+      displayName: 'testuser',
+    };
 
-    const { subject, body } = createSSOUserTemplate(username);
+    const { subject, body } = createSSOUserTemplate(
+      payload.email,
+      payload.displayName,
+    );
 
-    await emailsService.sendCreateSSOUserEmail(username);
+    await emailsService.sendCreateSSOUserEmail(payload);
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
-        email: username,
+        email: payload.email,
         subject: subject,
         body: body,
       }),
