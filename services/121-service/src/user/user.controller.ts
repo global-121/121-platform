@@ -411,8 +411,7 @@ export class UserController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({
-    summary:
-      'Update main properties of user (currently only isOrganizationAdmin)',
+    summary: 'Update user properties (currently only isOrganizationAdmin)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
