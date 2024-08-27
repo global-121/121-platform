@@ -12,7 +12,7 @@ export class AddIsOrganizationAdminAndDisplayNameColumns1724250798233
     // Set all current admin users also as organization admins
     await queryRunner.query(`
       UPDATE "121-service"."user"
-      SET "isOrganizationAdmin" = true WHERE "isAdmin" = true
+      SET "isOrganizationAdmin" = true WHERE "admin" = true
     `);
 
     await queryRunner.query(
