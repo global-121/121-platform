@@ -207,6 +207,7 @@ export class TransactionJobProcessorsService {
       amountTransferred:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
       bulkSize: input.bulkSize,
+      userId: input.userId,
     });
 
     await this.createTransactionAndUpdateRegistration({
@@ -278,10 +279,12 @@ export class TransactionJobProcessorsService {
 
   private async addMessageJobToQueue({
     registration,
+    userId,
     message,
     bulksize,
   }: {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
+    userId: number;
     message?: string;
     messageTemplateKey?: string;
     bulksize?: number;
@@ -293,6 +296,7 @@ export class TransactionJobProcessorsService {
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
       bulksize: bulksize,
+      userId: userId,
     });
   }
 
@@ -369,12 +373,14 @@ export class TransactionJobProcessorsService {
     registration,
     amountTransferred,
     bulkSize,
+    userId,
   }: {
     type: ProgramNotificationEnum;
     programId: number;
     registration: RegistrationEntity;
     amountTransferred: number;
     bulkSize: number;
+    userId: number;
   }) {
     const templates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
@@ -408,6 +414,7 @@ export class TransactionJobProcessorsService {
       registration: registration,
       message: messageContent,
       bulksize: bulkSize,
+      userId: userId,
     });
   }
 }
