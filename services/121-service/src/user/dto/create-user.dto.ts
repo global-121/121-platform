@@ -16,7 +16,11 @@ class UserEmailDto {
   @IsEmail()
   public readonly username: string;
 
-  @ApiProperty({ example: 'admin' })
+  @ApiProperty({
+    example: 'admin',
+    description:
+      'Optional. If not supplied, the part of the email before the @ is used.',
+  })
   @IsOptional()
   @IsString()
   public readonly displayName: string;
