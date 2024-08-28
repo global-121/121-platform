@@ -180,7 +180,7 @@ export class RegistrationsController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('programs/registrations')
   @ApiOperation({
     summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows`,

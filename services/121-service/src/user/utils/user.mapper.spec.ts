@@ -29,6 +29,8 @@ describe('User mapper', () => {
       deleteOneToMany: async () => {},
       created: new Date(),
       updated: new Date(),
+      isOrganizationAdmin: false,
+      displayName: username.split('@')[0],
     };
 
     const expectedResult: UserOwnerDto = {

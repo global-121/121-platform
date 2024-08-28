@@ -1,3 +1,4 @@
+import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
@@ -17,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       ProgramAidworkerAssignmentEntity,
       PermissionEntity,
     ]),
+    EmailsModule,
   ],
   providers: [UserService],
   controllers: [UserController],

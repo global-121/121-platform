@@ -9,15 +9,15 @@ export class UpdateUserPasswordDto extends LoginUserDto {
 }
 
 export class UpdateUserDto {
-  @ApiProperty({ example: 1 })
-  @IsNotEmpty()
   public readonly id: number;
 
-  @ApiProperty({ example: true })
   @IsOptional()
   public readonly isEntraUser?: boolean;
 
-  @ApiProperty({ example: new Date() })
   @IsOptional()
   public readonly lastLogin?: Date;
+
+  @ApiProperty({ example: true }) // Only this field is @ApiProperty, as only this field is currently used from endpoint/swagger, the rest only from service.
+  @IsOptional()
+  public readonly isOrganizationAdmin?: boolean;
 }
