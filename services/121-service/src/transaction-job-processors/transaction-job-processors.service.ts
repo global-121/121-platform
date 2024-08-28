@@ -231,7 +231,7 @@ export class TransactionJobProcessorsService {
     input: SafaricomTransactionJobDto,
   ): Promise<void> {
     // 1. Get registration details needed for the transfer
-    // TODO: this is duplicate code with Visa-method > simplify
+    // TODO: this is duplicate code with Visa-method > simplify (can it go in createTransactionAndUpdateRegistration, as that's where it's used?)
     const registration =
       await this.registrationScopedRepository.getByReferenceId({
         referenceId: input.referenceId,
@@ -249,9 +249,9 @@ export class TransactionJobProcessorsService {
     if (!financialServiceProvider) {
       throw new Error('Financial Service Provider not found');
     }
-    // 2. Make necessary preparation steps for transfer and save error transaction on failure
+    // 2. Make necessary preparation steps for transfer and save error transaction on failure (not needed for safaricom)
     // 3. Start the transfer, save error transaction on failure
-    // TODO: put in try catch block and save error transaction on failure
+    // TODO: put in try catch block and save error transaction on failure? (or can this work different for safaricom and for Visa?)
     const safaricomDoTransferResult = await this.safaricomService.doTransfer({
       transactionAmount: input.transactionAmount,
       programId: input.programId,
@@ -262,24 +262,19 @@ export class TransactionJobProcessorsService {
       phoneNumber: input.phoneNumber,
       nationalId: input.nationalId,
     });
-    // 4. If transfer is successful, create message and add to queue (if needed)
+    // 4. If transfer is successful, create message and add to queue (not needed for safaricom)
     // 5. create success transaction and update registration
-    const transactionRelationDetails = {
-      programId: input.programId,
-      paymentNr: input.paymentNumber,
-      userId: input.userId,
-    };
-    // Storing the per payment so you can continiously seed updates of transactions in Portal
     const transaction = await this.createTransactionAndUpdateRegistration({
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTranserAmountInMajorUnit: safaricomDoTransferResult.calculatedAmount,
+      calculatedTranserAmountInMajorUnit:
+        safaricomDoTransferResult.calculatedAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
-      status: StatusEnum.success,
+      status: safaricomDoTransferResult.status, // TODO: this is different then Visa, where it is always success at this point (failures are stored earlier)
     });
 
     // Storing safaricom transfer data

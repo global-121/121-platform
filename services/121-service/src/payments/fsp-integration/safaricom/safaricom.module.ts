@@ -1,5 +1,4 @@
-import { PaymentProcessorSafaricom } from '@121-service/src/payments/fsp-integration/safaricom/processors/safaricom.processor';
-import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
@@ -20,18 +19,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forFeature([
       TransactionEntity,
       RegistrationEntity,
-      SafaricomRequestEntity,
+      SafaricomTransferEntity,
     ]),
     UserModule,
     TransactionsModule,
     RedisModule,
   ],
-  providers: [
-    SafaricomService,
-    SafaricomApiService,
-    CustomHttpService,
-    PaymentProcessorSafaricom,
-  ],
+  providers: [SafaricomService, SafaricomApiService, CustomHttpService],
   controllers: [SafaricomController],
   exports: [SafaricomService, SafaricomApiService],
 })

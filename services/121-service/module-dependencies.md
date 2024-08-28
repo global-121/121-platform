@@ -88,6 +88,7 @@ graph LR
   AuthModule-->PassportModule
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule
+  TransactionJobProcessorsModule-->SafaricomModule
   TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule
