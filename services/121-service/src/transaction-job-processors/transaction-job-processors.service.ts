@@ -231,7 +231,7 @@ export class TransactionJobProcessorsService {
     input: SafaricomTransactionJobDto,
   ): Promise<void> {
     // 1. Get registration details needed for the transfer
-    // TODO: this is duplicate code with Visa-method > simplify (can it go in createTransactionAndUpdateRegistration, as that's where it's used?)
+    // TODO: this is duplicate code with Visa-method > simplify
     const registration =
       await this.registrationScopedRepository.getByReferenceId({
         referenceId: input.referenceId,
@@ -249,9 +249,32 @@ export class TransactionJobProcessorsService {
     if (!financialServiceProvider) {
       throw new Error('Financial Service Provider not found');
     }
-    // 2. Make necessary preparation steps for transfer and save error transaction on failure (not needed for safaricom)
+
+    // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
+    for (const [name, value] of Object.entries(input)) {
+      // TODO: make some properties optional like in Visa, but why?
+
+      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
+      if (value === null || value === undefined || value === '') {
+        const errorText = `Property ${name} is undefined`;
+        await this.createTransactionAndUpdateRegistration({
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
+          calculatedTranserAmountInMajorUnit: input.transactionAmount,
+          financialServiceProviderId: financialServiceProvider.id,
+          registration,
+          oldRegistration,
+          isRetry: input.isRetry,
+          status: StatusEnum.error,
+          errorText,
+        });
+        return;
+      }
+    }
+
     // 3. Start the transfer, save error transaction on failure
-    // TODO: put in try catch block and save error transaction on failure? (or can this work different for safaricom and for Visa?)
+    // TODO: put in try catch block and save error transaction on failure. And refactor doTransfer to throw error on failure instead of returning a status
     const safaricomDoTransferResult = await this.safaricomService.doTransfer({
       transactionAmount: input.transactionAmount,
       programId: input.programId,
@@ -262,7 +285,9 @@ export class TransactionJobProcessorsService {
       phoneNumber: input.phoneNumber,
       nationalId: input.nationalId,
     });
+
     // 4. If transfer is successful, create message and add to queue (not needed for safaricom)
+
     // 5. create success transaction and update registration
     const transaction = await this.createTransactionAndUpdateRegistration({
       programId: input.programId,
@@ -277,7 +302,7 @@ export class TransactionJobProcessorsService {
       status: safaricomDoTransferResult.status, // TODO: this is different then Visa, where it is always success at this point (failures are stored earlier)
     });
 
-    // Storing safaricom transfer data
+    // 6. Storing safaricom transfer data (new compared to visa)
     await this.safaricomService.createAndSaveSafaricomTransferData(
       safaricomDoTransferResult,
       transaction,
