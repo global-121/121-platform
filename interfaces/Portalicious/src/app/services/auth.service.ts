@@ -2,8 +2,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from '~/app.routes';
-import { User } from '~/models/user.model';
-import { ApiService } from '~/services/api.service';
+import { UserApiService } from '~/domains/user/user.api.service';
+import { User } from '~/domains/user/user.model';
 import { LogEvent, LogService } from '~/services/log.service';
 import { environment } from '~environment';
 
@@ -37,7 +37,7 @@ export function getUserFromLocalStorage(): LocalStorageUser | null {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly apiService = inject(ApiService);
+  private readonly userApiService = inject(UserApiService);
   private readonly logService = inject(LogService);
   private readonly router = inject(Router);
 
@@ -94,7 +94,7 @@ export class AuthService {
     this.logService.logEvent(LogEvent.userLogin);
 
     try {
-      const user = await this.apiService.login({ username, password });
+      const user = await this.userApiService.login({ username, password });
       this.setUserInStorage(user);
     } catch (error) {
       console.error('AuthService: login error: ', error);
@@ -118,7 +118,7 @@ export class AuthService {
     // Cleanup local state, to leave no trace of the user.
     localStorage.removeItem(LOCAL_STORAGE_AUTH_USER_KEY);
 
-    await this.apiService.logout();
+    await this.userApiService.logout();
     await this.router.navigate(['/', AppRoutes.login]);
   }
 
@@ -141,7 +141,7 @@ export class AuthService {
       );
     }
 
-    return await this.apiService.changePassword({
+    return await this.userApiService.changePassword({
       username,
       password,
       newPassword,

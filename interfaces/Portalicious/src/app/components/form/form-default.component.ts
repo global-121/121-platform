@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { FormBaseComponent } from '~/components/form/components/form-base/form-base.component';
+import { FormComponent } from '~/components/form/form.component';
 
 @Component({
   selector: 'app-form-default',
@@ -15,4 +15,4 @@ import { FormBaseComponent } from '~/components/form/components/form-base/form-b
 })
 export class FormDefaultComponent<
   T extends FormGroup,
-> extends FormBaseComponent<T> {}
+> extends FormComponent<T> {}
