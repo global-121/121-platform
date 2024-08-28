@@ -19,14 +19,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   beforeEach(async () => {
     const PA1 = {
       phoneNumber: '14155238886',
-      lastName: 'succeed',
+      fullName: 'succeed',
       addressStreet: 'Straat',
       addressHouseNumber: '1',
       addressHouseNumberAddition: 'A',
     };
     const PA2 = {
       phoneNumber: '14155238886',
-      lastName: 'mock-fail-create-customer',
+      fullName: 'mock-fail-create-customer',
       addressStreet: 'Straat',
       addressHouseNumber: '1',
       addressHouseNumberAddition: 'A',
@@ -63,14 +63,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   it('Should bulk update and validate changed records', async () => {
     const PA1Patch = {
       phoneNumber: '14155238880',
-      lastName: 'updated name1',
+      fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
       addressHouseNumberAddition: '',
     };
     const PA2Patch = {
       phoneNumber: '14155238881',
-      lastName: 'updated name 2',
+      fullName: 'updated name 2',
       addressStreet: 'newStreet2',
       addressHouseNumber: '3',
       addressHouseNumberAddition: 'updated',
@@ -80,6 +80,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       programIdOcw,
       './test-registration-data/test-registrations-patch-OCW.csv',
       accessToken,
+      'Bulk update for test registrations due to data validation improvements',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
@@ -107,14 +108,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   it('Should bulk update if phoneNumber column is empty and program is configured as not allowing empty phone number', async () => {
     const PA1Patch = {
       phoneNumber: '14155238886',
-      lastName: 'updated name1',
+      fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
       addressHouseNumberAddition: '',
     };
     const PA2Patch = {
       phoneNumber: '14155238886',
-      lastName: 'updated name 2',
+      fullName: 'updated name 2',
       addressStreet: 'newStreet2',
       addressHouseNumber: '3',
       addressHouseNumberAddition: 'updated',
@@ -124,6 +125,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       programIdOcw,
       './test-registration-data/test-registrations-patch-OCW-without-phoneNumber-column.csv',
       accessToken,
+      'Bulk update for test registrations due to data validation improvements',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 

@@ -8,9 +8,6 @@ import { RegistrationsService } from '@121-service/src/registration/registration
 import { Process, Processor } from '@nestjs/bull';
 import { Scope } from '@nestjs/common';
 import { Job } from 'bull';
-
-const bulkUpdateReason = 'Changed via mass update';
-
 @Processor({
   name: QueueNameRegistration.registration,
   scope: Scope.REQUEST,
@@ -23,7 +20,7 @@ export class RegistrationUpdateProcessor {
     const jobData = job.data as RegistrationsUpdateJobDto;
     const dto: UpdateRegistrationDto = {
       data: jobData.data,
-      reason: bulkUpdateReason,
+      reason: jobData.reason,
     };
     await this.registrationsService.updateRegistration(
       jobData.programId,

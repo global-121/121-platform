@@ -232,6 +232,7 @@ export class ProgramService {
     program.enableScope = programData.enableScope;
     program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
+    program.budget = programData.budget ?? null;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();

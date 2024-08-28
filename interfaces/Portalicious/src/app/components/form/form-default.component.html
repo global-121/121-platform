@@ -1,0 +1,19 @@
+<form
+  class="block w-full"
+  [formGroup]="formGroup()"
+  (ngSubmit)="onFormSubmit()"
+>
+  <div class="flex flex-col gap-2">
+    <ng-content></ng-content>
+    <app-form-error
+      [error]="mutation().isError() && mutation().failureReason()?.message"
+      class="mt-8"
+    />
+    <p-button
+      [label]="submitButtonText()"
+      type="submit"
+      rounded
+      [loading]="mutation().isPending()"
+    />
+  </div>
+</form>

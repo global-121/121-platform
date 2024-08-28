@@ -20,6 +20,7 @@ const mockMessageJob: MessageJobDto = {
   messageTemplateKey: 'messageTemplateKey',
   messageContentType: MessageContentType.custom,
   messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+  userId: 1,
 };
 const testJob = { data: mockMessageJob } as Job;
 

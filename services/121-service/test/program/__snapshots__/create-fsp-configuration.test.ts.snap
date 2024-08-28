@@ -1,0 +1,544 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create program questions should create a program with FSP configuration: Create program response for program: NLRC OCW program 1`] = `
+{
+  "aboutProgram": {
+    "en": "This is the OCW program.",
+  },
+  "allowEmptyPhoneNumber": false,
+  "budget": null,
+  "currency": "EUR",
+  "deprecatedCustomDataKeys": [],
+  "description": {
+    "en": "",
+  },
+  "distributionDuration": 46,
+  "distributionFrequency": "2-weeks",
+  "editableAttributes": [
+    {
+      "label": {
+        "en": "Full Name",
+      },
+      "name": "fullName",
+      "type": "text",
+    },
+  ],
+  "enableMaxPayments": false,
+  "enableScope": false,
+  "filterableAttributes": [
+    {
+      "filters": [
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "lastMessageStatus",
+        },
+      ],
+      "group": "messages",
+    },
+    {
+      "filters": [
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "addressCity",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "addressHouseNumber",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "addressHouseNumberAddition",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "addressPostalCode",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "addressStreet",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "financialServiceProvider",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "fullName",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "inclusionScore",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "paymentAmountMultiplier",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "personAffectedSequence",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "phoneNumber",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "preferredLanguage",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "referenceId",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "registrationCreatedDate",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "whatsappPhoneNumber",
+        },
+      ],
+      "group": "paAttributes",
+    },
+    {
+      "filters": [
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "failedPayment",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "notYetSentPayment",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "paymentCount",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "successPayment",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$null",
+          ],
+          "isInteger": true,
+          "name": "waitingPayment",
+        },
+      ],
+      "group": "payments",
+    },
+  ],
+  "financialServiceProviders": [
+    {
+      "displayName": {
+        "en": "Visa debit card",
+      },
+      "fsp": "Intersolve-visa",
+      "hasReconciliation": false,
+      "id": 3,
+      "integrationType": "api",
+      "notifyOnTransaction": true,
+      "questions": [
+        {
+          "answerType": "text",
+          "duplicateCheck": false,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 3,
+          "id": 6,
+          "label": {
+            "en": "Address city",
+          },
+          "name": "addressCity",
+          "options": null,
+          "pattern": ".+",
+          "placeholder": null,
+          "showInPeopleAffectedTable": false,
+        },
+        {
+          "answerType": "numeric",
+          "duplicateCheck": false,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 3,
+          "id": 3,
+          "label": {
+            "en": "Address house number",
+          },
+          "name": "addressHouseNumber",
+          "options": null,
+          "pattern": null,
+          "placeholder": null,
+          "showInPeopleAffectedTable": false,
+        },
+        {
+          "answerType": "text",
+          "duplicateCheck": false,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 3,
+          "id": 4,
+          "label": {
+            "en": "Address house number addition",
+          },
+          "name": "addressHouseNumberAddition",
+          "options": null,
+          "pattern": null,
+          "placeholder": null,
+          "showInPeopleAffectedTable": false,
+        },
+        {
+          "answerType": "text",
+          "duplicateCheck": false,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 3,
+          "id": 5,
+          "label": {
+            "en": "Address postal code",
+          },
+          "name": "addressPostalCode",
+          "options": null,
+          "pattern": ".+",
+          "placeholder": null,
+          "showInPeopleAffectedTable": false,
+        },
+        {
+          "answerType": "text",
+          "duplicateCheck": false,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 3,
+          "id": 2,
+          "label": {
+            "en": "Address street",
+          },
+          "name": "addressStreet",
+          "options": null,
+          "pattern": ".+",
+          "placeholder": null,
+          "showInPeopleAffectedTable": false,
+        },
+        {
+          "answerType": "tel",
+          "duplicateCheck": true,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 3,
+          "id": 7,
+          "label": {
+            "en": "WhatsApp Nr.",
+          },
+          "name": "whatsappPhoneNumber",
+          "options": null,
+          "pattern": null,
+          "placeholder": {
+            "ar": "00 00 00 00 0 00+",
+            "en": "+00 0 00 00 00 00",
+          },
+          "showInPeopleAffectedTable": false,
+        },
+      ],
+    },
+    {
+      "displayName": {
+        "en": "Intersolve Voucher WhatsApp",
+        "es": "Intersolve Voucher WhatsApp Spanish translation",
+        "nl": "Intersolve Voucher WhatsApp Dutch translation",
+      },
+      "fsp": "Intersolve-voucher-whatsapp",
+      "hasReconciliation": false,
+      "id": 1,
+      "integrationType": "api",
+      "notifyOnTransaction": false,
+      "questions": [
+        {
+          "answerType": "tel",
+          "duplicateCheck": true,
+          "export": [
+            "all-people-affected",
+            "included",
+          ],
+          "fspId": 1,
+          "id": 1,
+          "label": {
+            "en": "WhatsApp Nr.",
+          },
+          "name": "whatsappPhoneNumber",
+          "options": null,
+          "pattern": null,
+          "placeholder": {
+            "ar": "00 00 00 00 0 00+",
+            "en": "+00 0 00 00 00 00",
+          },
+          "showInPeopleAffectedTable": true,
+        },
+      ],
+    },
+  ],
+  "fixedTransferValue": 25,
+  "fullnameNamingConvention": [
+    "fullName",
+  ],
+  "id": 4,
+  "languages": [
+    "en",
+    "nl",
+    "ar",
+    "tr",
+  ],
+  "location": "Nederland",
+  "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
+  "ngo": "NLRC",
+  "paTableAttributes": [
+    {
+      "label": {
+        "en": "Address city",
+      },
+      "name": "addressCity",
+      "questionType": "fspQuestion",
+      "type": "text",
+    },
+    {
+      "label": {
+        "en": "Address house number",
+      },
+      "name": "addressHouseNumber",
+      "questionType": "fspQuestion",
+      "type": "numeric",
+    },
+    {
+      "label": {
+        "en": "Address house number addition",
+      },
+      "name": "addressHouseNumberAddition",
+      "questionType": "fspQuestion",
+      "type": "text",
+    },
+    {
+      "label": {
+        "en": "Address postal code",
+      },
+      "name": "addressPostalCode",
+      "questionType": "fspQuestion",
+      "type": "text",
+    },
+    {
+      "label": {
+        "en": "Address street",
+      },
+      "name": "addressStreet",
+      "questionType": "fspQuestion",
+      "type": "text",
+    },
+    {
+      "label": {
+        "en": "Full Name",
+      },
+      "name": "fullName",
+      "questionType": "programQuestion",
+      "type": "text",
+    },
+    {
+      "label": {
+        "en": "Phone Number",
+      },
+      "name": "phoneNumber",
+      "questionType": "programQuestion",
+      "type": "tel",
+    },
+    {
+      "label": {
+        "en": "WhatsApp Nr.",
+      },
+      "name": "whatsappPhoneNumber",
+      "questionType": "fspQuestion",
+      "type": "tel",
+    },
+    {
+      "label": {
+        "en": "WhatsApp Nr.",
+      },
+      "name": "whatsappPhoneNumber",
+      "questionType": "fspQuestion",
+      "type": "tel",
+    },
+  ],
+  "paymentAmountMultiplierFormula": null,
+  "programCustomAttributes": [],
+  "programQuestions": [
+    {
+      "answerType": "text",
+      "duplicateCheck": false,
+      "editableInPortal": true,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 5,
+      "label": {
+        "en": "Full Name",
+      },
+      "name": "fullName",
+      "options": null,
+      "pattern": null,
+      "persistence": true,
+      "placeholder": null,
+      "programId": 4,
+      "questionType": "standard",
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+    },
+    {
+      "answerType": "tel",
+      "duplicateCheck": true,
+      "editableInPortal": false,
+      "export": [],
+      "id": 6,
+      "label": {
+        "en": "Phone Number",
+      },
+      "name": "phoneNumber",
+      "options": null,
+      "pattern": null,
+      "persistence": true,
+      "placeholder": {
+        "en": "+31 6 00 00 00 00",
+      },
+      "programId": 4,
+      "questionType": "standard",
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+    },
+  ],
+  "published": true,
+  "targetNrRegistrations": 100000,
+  "titlePortal": {
+    "en": "NLRC OCW program",
+  },
+  "tryWhatsAppFirst": true,
+  "validation": false,
+}
+`;

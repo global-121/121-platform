@@ -91,6 +91,7 @@ test('[28450] OCW: Retry payment for all failed payments of PAs', async ({
       programIdOCW,
       './test-registration-data/test-registrations-patch-OCW.csv',
       accessToken,
+      'Bulk update for test registrations due to data validation improvements',
     );
     await paymentsPage.retryPayment({
       buttonName: ok,

@@ -1,0 +1,181 @@
+<p-card>
+  <p-table
+    #table
+    [value]="query().data() ?? []"
+    [loading]="query().isPending()"
+    [showLoader]="false"
+    [filterDelay]="0"
+    [filterLocale]="locale"
+    (onFilter)="onFilter($event)"
+    [rowHover]="contextMenuItems()"
+    [contextMenu]="contextMenu"
+    (contextMenuSelectionChange)="onUpdateContextMenuItem.emit($event)"
+    [globalFilterFields]="globalFilterFields()"
+    [paginator]="true"
+    [paginatorLocale]="locale"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 20, 40, 80, 100]"
+    [showCurrentPageReport]="true"
+    [currentPageReportTemplate]="currentPageReportTemplate"
+    stateStorage="local"
+    [stateKey]="localStorageKey()"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        @if (globalFilterFields()) {
+          <p-iconField iconPosition="left">
+            <p-inputIcon styleClass="pi pi-search" />
+            <input
+              pInputText
+              type="text"
+              [(ngModel)]="globalFilterValue"
+              (input)="table.filterGlobal(globalFilterValue(), 'contains')"
+              placeholder="Search keyword"
+              i18n-placeholder="@@form-quick-search"
+            />
+          </p-iconField>
+        }
+        <p-button
+          label="Clear all filters"
+          i18n-label="@@form-clear-filters"
+          [outlined]="true"
+          icon="pi pi-filter-slash"
+          (onClick)="clearAllFilters()"
+          [disabled]="!isFiltered()"
+          class="ms-auto"
+        />
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        @for (column of visibleColumns(); track $index) {
+          <th
+            [pSortableColumn]="column.field"
+            style="min-width: 14rem"
+          >
+            <div class="justify-content-between align-items-center flex">
+              <ng-container>{{ column.header }}</ng-container>
+              <p-sortIcon [field]="column.field" />
+              <p-columnFilter
+                [type]="column.type ?? 'text'"
+                [field]="column.field"
+                display="menu"
+                class="ms-2"
+              />
+            </div>
+          </th>
+        }
+        @if (contextMenuItems()) {
+          <!-- Extra column for the ellipsis button -->
+          <th></th>
+        }
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-item
+    >
+      <tr [pContextMenuRow]="item">
+        @for (column of visibleColumns(); track $index) {
+          <td>
+            <!--
+
+            This forbidden code allows for custom components to be rendered in the table.
+            I've disabled it for now because I don't think it's necessary.
+            But we might change our minds in the future......
+
+            @if (column.component) {
+              <ng-container
+                *ngComponentOutlet="
+                  column.component;
+                  inputs: { value: item[column.field] }
+                "
+              />
+            }
+
+            -->
+            @switch (column.type) {
+              @case ('date') {
+                <app-table-cell-date [value]="item[column.field]" />
+              }
+              @default {
+                <app-table-cell-text [value]="item[column.field]" />
+              }
+            }
+          </td>
+        }
+        @if (contextMenuItems()) {
+          <td class="w-0 py-0 ps-0">
+            <p-button
+              text
+              plain
+              icon="pi pi-ellipsis-h"
+              (click)="
+                onUpdateContextMenuItem.emit(item);
+                extraOptionsMenu.toggle($event)
+              "
+            />
+          </td>
+        }
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="loadingbody">
+      @for (row of [].constructor(10); track $index) {
+        <tr>
+          @for (column of [].constructor(totalColumnCount()); track $index) {
+            <td>
+              <app-skeleton-inline />
+            </td>
+          }
+        </tr>
+      }
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="totalColumnCount()">
+          <div class="w-full py-6 text-center">
+            <i class="pi pi-filter mb-5 inline text-xl"></i>
+
+            <p
+              i18n
+              class="mb-2 font-bold"
+            >
+              No results found
+            </p>
+
+            <p
+              i18n
+              class="mb-8"
+            >
+              There are no records that match the selected filters, clear some
+              or all filters to continue.
+            </p>
+
+            <p-button
+              label="Clear all filters"
+              i18n-label="@@form-clear-filters"
+              link
+              (onClick)="clearAllFilters()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  @if (contextMenuItems()) {
+    <!-- Opened when right-clicking on a row -->
+    <p-contextMenu
+      [model]="contextMenuItems()"
+      #contextMenu
+      popup
+      appendTo="body"
+    />
+    <!-- Opened when clicking on the ellipsis button -->
+    <!-- We can't re-use the same #contextMenu element because of a bug with keyboard events (AB#29766) -->
+    <p-menu
+      #extraOptionsMenu
+      [model]="contextMenuItems()"
+      popup
+    />
+  }
+</p-card>

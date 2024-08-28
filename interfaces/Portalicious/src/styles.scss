@@ -15,40 +15,21 @@ html {
 }
 
 body {
-  @apply bg-grey-100 font-body;
+  @apply bg-grey-100 font-body text-black;
   overflow-y: scroll; /* Always show scrollbars to avoid page skipping about */
 }
 
-// For now we're just overriding some defaults here
-// instead of extending the whole theme, while we wait
-// for PrimeNG v18 to be released with the new theming system.
-
-$toolbar-height: 48px;
-
-@layer primeng {
-  .p-button,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-display font-bold;
-  }
-
+@layer tailwind-base {
   h1 {
-    font-size: 20px;
-    line-height: 140%;
+    @apply font-bold txt-h-1;
   }
 
   h2 {
-    font-size: 18px;
-    line-height: 140%;
+    @apply font-bold txt-h-2;
   }
 
   h3 {
-    font-size: 16px;
-    line-height: 140%;
+    @apply font-bold txt-h-3;
   }
 
   label {
@@ -64,11 +45,40 @@ $toolbar-height: 48px;
     @apply text-blue-500;
     @apply underline;
   }
+}
 
-  .p-card-title {
-    @apply font-display font-bold text-black;
-    font-size: 18px;
-    line-height: 140%;
+// For now we're just overriding some defaults here
+// instead of extending the whole theme, while we wait
+// for PrimeNG v18 to be released with the new theming system.
+
+:root {
+  // primeng uses this variable on all of its components by default
+  --font-family: theme(fontFamily.body);
+}
+
+$toolbar-height: 48px;
+
+@layer primeng {
+  .p-button {
+    .p-button-label {
+      @apply txt-system-bold-m;
+    }
+
+    &.p-button-sm {
+      @apply txt-system-s;
+    }
+
+    &.p-button-link {
+      @apply p-0;
+    }
+  }
+
+  .p-card {
+    @apply text-black;
+
+    .p-card-title {
+      @apply text-black txt-h-2;
+    }
   }
 
   .p-tabmenu .p-tabmenu-nav,
@@ -77,6 +87,8 @@ $toolbar-height: 48px;
   }
 
   .p-sidebar {
+    color: inherit;
+
     .p-sidebar-header {
       @apply pl-3;
       height: $toolbar-height - 2;
@@ -97,9 +109,30 @@ $toolbar-height: 48px;
   .p-toolbar {
     @apply rounded-none border-x-0 border-t-0 border-b-purple bg-navy py-0;
     height: $toolbar-height;
+    flex-wrap: nowrap !important;
+
+    .p-toolbar-group-left {
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
-  .p-button-link {
-    @apply p-0;
+  .p-toast-message-content {
+    border: none;
+  }
+
+  // apply these styles only when the table is inside a card
+  .p-card .p-datatable {
+    .p-datatable-header {
+      @apply px-0 pb-4 pt-0;
+    }
+
+    .p-paginator {
+      @apply border-b-0 pb-0 pt-4;
+
+      .p-paginator-current {
+        @apply me-auto ms-0 ps-0 txt-system-s;
+      }
+    }
   }
 }

@@ -23,6 +23,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: test
 
     steps:
       - name: Check out repository code
@@ -79,7 +80,9 @@ jobs:
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
         env:
-          BASE_URL: http://localhost:8088
+          BASE_URL_PORTALICIOUS: http://localhost:8088
+          E2E_TEST_KOBO_ASSET_ID: ${{ vars.E2E_TEST_KOBO_ASSET_ID }}
+          E2E_TEST_KOBO_TOKEN: ${{ secrets.E2E_TEST_KOBO_TOKEN }}
         run: |
           npm run test:portalicious
 

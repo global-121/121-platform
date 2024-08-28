@@ -79,34 +79,31 @@
         <target state="translated">Uitloggen</target>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="6425467213960794982" datatype="html">
+      <trans-unit id="page-title-all-projects" datatype="html">
         <source>All projects</source>
         <target state="translated">Alle projecten</target>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="4555457172864212828" datatype="html">
+      <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
         <target state="translated">Gebruikers</target>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="5942556817969302760" datatype="html">
+      <trans-unit id="page-title-roles-and-permissions" datatype="html">
         <source>Roles and permissions</source>
         <target state="translated">Rollen en Rechten</target>
-        <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="2614607010577950577" datatype="html">
-        <source>Overview</source>
-        <target state="translated">Overzicht</target>
+      <trans-unit id="page-title-project-monitoring" datatype="html">
+        <source>Monitoring</source>
+        <target state="new">Monitoring</target>
       </trans-unit>
-      <trans-unit id="3724068243287682962" datatype="html">
+      <trans-unit id="page-title-project-team" datatype="html">
         <source>Team</source>
         <target state="final">Team</target>
       </trans-unit>
-      <trans-unit id="17234570072885140" datatype="html">
+      <trans-unit id="page-title-project-registrations" datatype="html">
         <source>Registrations</source>
         <target state="final">Registraties</target>
       </trans-unit>
-      <trans-unit id="1131264372756277854" datatype="html">
+      <trans-unit id="page-title-project-payments" datatype="html">
         <source>Payments</source>
         <target state="translated">Betalingen</target>
       </trans-unit>
@@ -145,10 +142,6 @@
       <trans-unit id="2772023564304193657" datatype="html">
         <source>Enter your password</source>
         <target state="translated">Vul een wachtwoord in</target>
-      </trans-unit>
-      <trans-unit id="1429324684050248432" datatype="html">
-        <source>project-overview works!</source>
-        <target state="new">project-overview werkt!</target>
       </trans-unit>
       <trans-unit id="7596687906875795034" datatype="html">
         <source>project-payments works!</source>
@@ -240,22 +233,18 @@
         <source>The confirm password must be equal to the new password.</source>
         <target state="translated">De wachtwoorden moeten hetzelfde zijn.</target>
       </trans-unit>
-      <trans-unit id="7750851942089216450" datatype="html">
-        <source>Failed to change the password. Please refresh the page and try again.</source>
-        <target state="translated">Het wachtwoord is niet veranderd. Herlaad de pagina en probeer het opnieuw.</target>
-      </trans-unit>
       <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
         <target state="translated">Verander wachtwoord</target>
         <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
-      <trans-unit id="2342712167124906317" datatype="html">
-        <source>Targeted people</source>
-        <target state="new">Targeted people</target>
+      <trans-unit id="7148904805726439689" datatype="html">
+        <source>Target registrations</source>
+        <target state="new">Target registrations</target>
       </trans-unit>
-      <trans-unit id="8675927317645341841" datatype="html">
-        <source>Included people</source>
-        <target state="new">Included people</target>
+      <trans-unit id="19569847887954644" datatype="html">
+        <source>Included registrations</source>
+        <target state="new">Included registrations</target>
       </trans-unit>
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
@@ -265,15 +254,6 @@
         <source>Cash disbursed</source>
         <target state="new">Cash disbursed</target>
       </trans-unit>
-      <trans-unit id="2980109580182727209" datatype="html">
-        <source>All projects</source>
-        <target state="translated">Alle projecten</target>
-      </trans-unit>
-      <trans-unit id="7113499429942611780" datatype="html">
-        <source>Create new project</source>
-        <target state="translated">Nieuw project maken</target>
-        <note priority="1" from="description">Button-label</note>
-      </trans-unit>
       <trans-unit id="3010710400268626539" datatype="html">
         <source>No Projects found</source>
         <target state="translated">Geen projecten gevonden</target>
@@ -282,13 +262,150 @@
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
         <target state="translated">U bent nog niet aan een project toegevoegd, neem contact op met een beheerder om de 121 Portal te gebruiken.</target>
       </trans-unit>
-      <trans-unit id="6129171651911996363" datatype="html">
-        <source>project-team works!</source>
-        <target state="new">project-team wekrt!</target>
-      </trans-unit>
       <trans-unit id="8934662076309331939" datatype="html">
         <source>Last payment:</source>
         <target state="new">Last payment:</target>
+      </trans-unit>
+      <trans-unit id="935187492052582731" datatype="html">
+        <source>Submit</source>
+        <target state="new">Submit</target>
+      </trans-unit>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+        <target state="new">Cancel</target>
+      </trans-unit>
+      <trans-unit id="7750664097458673871" datatype="html">
+        <source>Kobo Token</source>
+        <target state="new">Kobo Token</target>
+      </trans-unit>
+      <trans-unit id="1887371025019909976" datatype="html">
+        <source>Kobo Asset ID</source>
+        <target state="new">Kobo Asset ID</target>
+      </trans-unit>
+      <trans-unit id="3086090297914662332" datatype="html">
+        <source>No Project-ID returned.</source>
+        <target state="new">No Project-ID returned.</target>
+      </trans-unit>
+      <trans-unit id="2046529380163546074" datatype="html">
+        <source>Project successfully created.</source>
+        <target state="new">Project successfully created.</target>
+      </trans-unit>
+      <trans-unit id="generic-error" datatype="html">
+        <source>An unexpected error has occurred. Please try again later.</source>
+        <target state="new">An unexpected error has occurred. Please try again later.</target>
+      </trans-unit>
+      <trans-unit id="error-rate-limit" datatype="html">
+        <source>Rate limit exceeded. Please try again later.</source>
+        <target state="new">Rate limit exceeded. Please try again later.</target>
+      </trans-unit>
+      <trans-unit id="error-token-expired" datatype="html">
+        <source>Token expired</source>
+        <target state="new">Token expired</target>
+      </trans-unit>
+      <trans-unit id="generic-error-with-message" datatype="html">
+        <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
+        <target state="new">Something went wrong: <x equiv-text="errorMessage" id="PH"/></target>
+      </trans-unit>
+      <trans-unit id="1196626764275836870" datatype="html">
+        <source>project-monitoring works!</source>
+        <target state="new">project-monitoring works!</target>
+      </trans-unit>
+      <trans-unit id="add-project-label" datatype="html">
+        <source>Add project</source>
+        <target state="new">Add project</target>
+      </trans-unit>
+      <trans-unit id="7476141645378496788" datatype="html">
+        <source>No payments yet</source>
+        <target state="new">No payments yet</target>
+      </trans-unit>
+      <trans-unit id="form-clear-filters" datatype="html">
+        <source>Clear all filters</source>
+        <target state="new">Clear all filters</target>
+      </trans-unit>
+      <trans-unit id="5312727456282218392" datatype="html">
+        <source>User name</source>
+        <target state="new">User name</target>
+      </trans-unit>
+      <trans-unit id="795890916060309463" datatype="html">
+        <source>Roles</source>
+        <target state="new">Roles</target>
+      </trans-unit>
+      <trans-unit id="5590086849807274701" datatype="html">
+        <source>Scope</source>
+        <target state="new">Scope</target>
+      </trans-unit>
+      <trans-unit id="5995811927641285296" datatype="html">
+        <source>Last log in</source>
+        <target state="new">Last log in</target>
+      </trans-unit>
+      <trans-unit id="2099886964241384522" datatype="html">
+        <source>Copy email</source>
+        <target state="new">Copy email</target>
+      </trans-unit>
+      <trans-unit id="8255959026836387530" datatype="html">
+        <source>Email copied to clipboard</source>
+        <target state="new">Email copied to clipboard</target>
+      </trans-unit>
+      <trans-unit id="generic-edit" datatype="html">
+        <source>Edit</source>
+        <target state="new">Edit</target>
+      </trans-unit>
+      <trans-unit id="remove-user-button" datatype="html">
+        <source>Remove user</source>
+        <target state="new">Remove user</target>
+      </trans-unit>
+      <trans-unit id="form-quick-search" datatype="html">
+        <source>Search keyword</source>
+        <target state="new">Search keyword</target>
+      </trans-unit>
+      <trans-unit id="541221802269521915" datatype="html">
+        <source>Add user to team</source>
+        <target state="new">Add user to team</target>
+      </trans-unit>
+      <trans-unit id="remove-user-title" datatype="html">
+        <source>Remove user from team</source>
+        <target state="new">Remove user from team</target>
+      </trans-unit>
+      <trans-unit id="generic-cancel" datatype="html">
+        <source>Cancel</source>
+        <target state="new">Cancel</target>
+      </trans-unit>
+      <trans-unit id="8875170340911342447" datatype="html">
+        <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
+        <target state="new">You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</target>
+      </trans-unit>
+      <trans-unit id="8117831125016931547" datatype="html">
+        <source>User removed</source>
+        <target state="new">User removed</target>
+      </trans-unit>
+      <trans-unit id="generic-toast-error-header" datatype="html">
+        <source>Error</source>
+        <target state="new">Error</target>
+      </trans-unit>
+      <trans-unit id="generic-toast-success-header" datatype="html">
+        <source>Success</source>
+        <target state="new">Success</target>
+      </trans-unit>
+      <trans-unit id="2236371857137398396" datatype="html">
+        <source>No results found</source>
+        <target state="new">No results found</target>
+      </trans-unit>
+      <trans-unit id="9011868136618282915" datatype="html">
+        <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
+        <target state="new">There are no records that match the selected filters, clear some or all filters to continue.</target>
+      </trans-unit>
+      <trans-unit id="3871260480214506166" datatype="html">
+        <source>Showing [first] to [last] of [totalRecords] records</source>
+        <target state="new">Showing [first] to [last] of [totalRecords] records</target>
+        <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
+      </trans-unit>
+      <trans-unit id="confirmation-dialog-header" datatype="html">
+        <source>Are you sure?</source>
+        <target state="new">Are you sure?</target>
+      </trans-unit>
+      <trans-unit id="generic-proceed" datatype="html">
+        <source>Proceed</source>
+        <target state="new">Proceed</target>
       </trans-unit>
     </body>
   </file>

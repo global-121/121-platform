@@ -14,6 +14,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -74,14 +75,17 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/block',
   )
   public async blockWallet(
+    @Req() req: any,
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
+    const userId = req.user.id;
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       true,
       programId,
+      userId,
     );
   }
 
@@ -101,14 +105,17 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/unblock',
   )
   public async unblockWallet(
+    @Req() req: any,
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
+    const userId = req.user.id;
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       false,
       programId,
+      userId,
     );
   }
 
@@ -154,13 +161,16 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId/wallets',
   )
   public async reissueWalletAndCard(
+    @Req() req: any,
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
+    const userId = req.user.id;
     return await this.intersolveVisaService.reissueWalletAndCard(
       params.referenceId,
       programId,
+      userId,
     );
   }
 

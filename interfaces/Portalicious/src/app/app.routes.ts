@@ -1,8 +1,9 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { Routes } from '@angular/router';
-import { authGuard } from '~/auth.guard';
+import { authGuard, projectPermissionsGuard } from '~/auth.guard';
 import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';
-import { ProjectOverviewComponent } from '~/pages/project/project-overview/project-overview.component';
+import { ProjectMonitoringComponent } from '~/pages/project/project-monitoring/project-monitoring.component';
 import { ProjectPaymentsComponent } from '~/pages/project/project-payments/project-payments.component';
 import { ProjectRegistrationsComponent } from '~/pages/project/project-registrations/project-registrations.component';
 import { ProjectTeamComponent } from '~/pages/project/project-team/project-team.component';
@@ -14,7 +15,7 @@ export enum AppRoutes {
   changePassword = 'change-password',
   login = 'login',
   project = 'project',
-  projectOverview = 'overview',
+  projectMonitoring = 'monitoring',
   projectPayments = 'payments',
   projectRegistrations = 'registrations',
   projects = 'projects',
@@ -53,10 +54,16 @@ export const routes: Routes = [
     path: `${AppRoutes.project}/:projectId`,
     canActivate: [authGuard],
     children: [
-      { path: AppRoutes.projectOverview, component: ProjectOverviewComponent },
+      {
+        path: AppRoutes.projectMonitoring,
+        component: ProjectMonitoringComponent,
+      },
       {
         path: AppRoutes.projectTeam,
         component: ProjectTeamComponent,
+        canActivate: [
+          projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+        ],
       },
       {
         path: AppRoutes.projectRegistrations,

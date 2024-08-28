@@ -1,12 +1,15 @@
+import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
+import BasePage from './BasePage';
 
-class LoginPage {
+class LoginPage extends BasePage {
   page: Page;
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
 
   constructor(page: Page) {
+    super(page);
     this.page = page;
     this.usernameInput = this.page.getByLabel('E-mail');
     this.passwordInput = this.page.getByLabel('Password');
@@ -29,6 +32,10 @@ class LoginPage {
     await this.page.waitForURL((url) =>
       url.pathname.startsWith('/en/projects'),
     );
+  }
+
+  async validateWrongPasswordError({ errorText }: { errorText: string }) {
+    await expect(this.page.getByText(errorText)).toBeVisible();
   }
 }
 

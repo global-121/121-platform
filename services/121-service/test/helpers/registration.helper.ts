@@ -36,11 +36,13 @@ export function bulkUpdateRegistrationsCSV(
   programId: number,
   filePath: string,
   accessToken: string,
+  reason: string,
 ): Promise<request.Response> {
   return getServer()
     .patch(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
-    .attach('file', filePath);
+    .attach('file', filePath)
+    .field('reason', reason);
 }
 
 export function deleteRegistrations(
@@ -439,6 +441,17 @@ export async function getImportRegistrationsTemplate(
 
   return getServer()
     .get(`/programs/${programId}/registrations/import-template`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+export async function getImportFspReconciliationTemplate(
+  programId: number,
+): Promise<any> {
+  const accessToken = await getAccessToken();
+
+  return getServer()
+    .get(`/programs/${programId}/payments/fsp-reconciliation/import-template`)
     .set('Cookie', [accessToken])
     .send();
 }

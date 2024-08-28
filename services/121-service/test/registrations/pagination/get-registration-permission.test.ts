@@ -58,8 +58,7 @@ describe('Load PA table', () => {
           FinancialServiceProviderName.intersolveVoucherWhatsapp,
       };
       const notExpectedValueObject = {
-        firstName: registrationOCW1.firstName,
-        lastName: registrationOCW1.lastName,
+        fullName: registrationOCW1.fullName,
         phoneNumber: registrationOCW1.phoneNumber,
         whatsappPhoneNumber: registrationOCW1.whatsappPhoneNumber,
         addressStreet: registrationOCW1.addressStreet,

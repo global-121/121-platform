@@ -1,0 +1,40 @@
+<p-button
+  label="Add project"
+  i18n-label="@@add-project-label"
+  outlined
+  rounded
+  icon="pi pi-plus"
+  (click)="formVisible.set(true)"
+/>
+<app-form-sidebar
+  [(visible)]="formVisible"
+  [formGroup]="formGroup"
+  [mutation]="createProjectMutation"
+  formTitle="Add project"
+  i18n-formTitle="@@add-project-label"
+>
+  <app-form-field-wrapper
+    label="Kobo Asset ID"
+    i18n-label
+    [errorMessage]="formFieldErrors()('assetId')"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="assetId"
+      autocomplete="off"
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Kobo Token"
+    i18n-label
+    [errorMessage]="formFieldErrors()('token')"
+  >
+    <p-password
+      formControlName="token"
+      autocomplete="off"
+      [toggleMask]="true"
+      [feedback]="false"
+    />
+  </app-form-field-wrapper>
+</app-form-sidebar>

@@ -49,7 +49,7 @@ describe('Do payment to 1 PA', () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
       await waitFor(2_000);
-      registrationVisa.lastName = 'Doe';
+      registrationVisa.fullName = 'Doe';
     });
 
     it('should succesfully pay-out Visa Debit', async () => {
@@ -98,7 +98,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail pay-out Visa Debit (CREATE CUSTOMER ERROR)', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-create-customer';
+      registrationVisa.fullName = 'mock-fail-create-customer';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -142,7 +142,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail pay-out Visa Debit (CREATE WALLET ERROR)', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-create-wallet';
+      registrationVisa.fullName = 'mock-fail-create-wallet';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -186,7 +186,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail pay-out Visa Debit (LINK CUSTOMER ERROR)', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-link-customer-wallet';
+      registrationVisa.fullName = 'mock-fail-link-customer-wallet';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -230,7 +230,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail pay-out Visa Debit (CREATE DEBIT CARD ERROR)', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-create-debit-card';
+      registrationVisa.fullName = 'mock-fail-create-debit-card';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -274,7 +274,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail pay-out Visa Debit (CALCULATE TOPUP AMOUNT ERROR)', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-get-wallet';
+      registrationVisa.fullName = 'mock-fail-get-wallet';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -337,7 +337,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should successfully load balance Visa Debit', async () => {
       // Arrange
-      registrationVisa.lastName = 'succeed';
+      registrationVisa.fullName = 'succeed';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -401,7 +401,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should successfully retry pay-out after create customer error', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-create-customer';
+      registrationVisa.fullName = 'mock-fail-create-customer';
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
         programIdVisa,
@@ -433,7 +433,7 @@ describe('Do payment to 1 PA', () => {
       await updateRegistration(
         programIdVisa,
         registrationVisa.referenceId,
-        { lastName: 'succeed' },
+        { fullName: 'succeed' },
         'automated test',
         accessToken,
       );
@@ -459,7 +459,7 @@ describe('Do payment to 1 PA', () => {
 
     it('should not multiply again on retry', async () => {
       // Arrange
-      registrationVisa.lastName = 'mock-fail-create-customer';
+      registrationVisa.fullName = 'mock-fail-create-customer';
       registrationVisa.paymentAmountMultiplier = 3;
       await importRegistrations(programIdVisa, [registrationVisa], accessToken);
       await awaitChangePaStatus(
@@ -492,7 +492,7 @@ describe('Do payment to 1 PA', () => {
       await updateRegistration(
         programIdVisa,
         registrationVisa.referenceId,
-        { lastName: 'succeed' },
+        { fullName: 'succeed' },
         'automated test',
         accessToken,
       );
@@ -518,16 +518,16 @@ describe('Do payment to 1 PA', () => {
     it('should payout different amounts based on current balance and spend', async () => {
       // Arrange
       const testPaymentNumber = 2;
-      registrationVisa.lastName = 'mock-current-balance-13000-mock-spent-1000';
+      registrationVisa.fullName = 'mock-current-balance-13000-mock-spent-1000';
       registrationVisa.paymentAmountMultiplier = 3;
 
-      registrationOCW2.lastName = 'mock-current-balance-14000-mock-spent-1000';
+      registrationOCW2.fullName = 'mock-current-balance-14000-mock-spent-1000';
       registrationOCW2.paymentAmountMultiplier = 3;
 
-      registrationOCW3.lastName = 'success';
+      registrationOCW3.fullName = 'success';
       registrationOCW3.paymentAmountMultiplier = 3;
 
-      registrationOCW4.lastName = 'mock-current-balance-0-mock-spent-6000';
+      registrationOCW4.fullName = 'mock-current-balance-0-mock-spent-6000';
       registrationOCW4.paymentAmountMultiplier = 3;
 
       const registrations = [

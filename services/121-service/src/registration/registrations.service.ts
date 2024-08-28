@@ -373,11 +373,13 @@ export class RegistrationsService {
     csvFile: any,
     programId: number,
     userId: number,
+    reason: string,
   ): Promise<void> {
     return await this.registrationsImportService.patchBulk(
       csvFile,
       programId,
       userId,
+      reason,
     );
   }
 
@@ -847,8 +849,11 @@ export class RegistrationsService {
         'twilioMessage.mediaUrl as "mediaUrl"',
         'twilioMessage.contentType as "contentType"',
         'twilioMessage.errorCode as "errorCode"',
+        'user.id as "userId"',
+        'user.username as "username"',
       ])
       .leftJoin('registration.twilioMessages', 'twilioMessage')
+      .leftJoin('twilioMessage.user', 'user')
       .andWhere('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
@@ -861,7 +866,19 @@ export class RegistrationsService {
     ) {
       return [];
     }
-    return messageHistoryArray;
+
+    const result = messageHistoryArray.map((row) => {
+      const { userId, username, ...rest } = row;
+      return {
+        ...rest,
+        user: {
+          id: userId,
+          username,
+        },
+      };
+    });
+
+    return result;
   }
 
   public async getReferenceId(

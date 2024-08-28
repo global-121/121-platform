@@ -345,6 +345,24 @@ export class ProgramsServiceApiService {
     });
   }
 
+  async downloadFspInstructionsImportTemplate(
+    programId: number,
+    type: ImportType,
+  ): Promise<void> {
+    const downloadData: string[] = await this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/payments/fsp-reconciliation/import-template`,
+    );
+
+    const csvContents = downloadData.join(';') + '\r\n';
+
+    saveAs(
+      new Blob([csvContents], { type: 'text/csv' }),
+      `${type}-TEMPLATE.csv`,
+    );
+    return;
+  }
+
   exportFspInstructions(programId: number, payment: number) {
     return this.apiService.get(
       environment.url_121_service_api,

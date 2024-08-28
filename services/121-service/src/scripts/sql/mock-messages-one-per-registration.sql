@@ -13,7 +13,8 @@ INSERT INTO "121-service"."twilio_message" (
   updated,
   "contentType",
   "errorCode",
-  "errorMessage"
+  "errorMessage",
+  "userId"
 )
 SELECT
   created + (20 * INTERVAL '1 minute'),
@@ -30,6 +31,7 @@ SELECT
   updated,
   "contentType",
   "errorCode",
-  "errorMessage"
+  "errorMessage",
+  "userId"
 FROM
   "121-service".twilio_message;

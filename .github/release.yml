@@ -2,9 +2,7 @@ changelog:
   exclude:
     labels:
       - dependencies # dependabot
-      - chore # manually excluded
       - ignore-for-release # manually excluded
-      - portalicious # manually excluded
   categories:
     - title: New Features 🎉
       labels:
@@ -12,6 +10,12 @@ changelog:
     - title: Bug Fixes 🛠
       labels:
         - bugfix
+    - title: Chores 🧹
+      labels:
+        - chore
+    - title: Portalicious 🚀
+      labels:
+        - portalicious
     - title: Other Changes
       labels:
         - '*'

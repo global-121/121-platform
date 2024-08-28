@@ -1,7 +1,6 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { assertObjectsAreEqual } from '@121-service/test/helpers/assert.helper';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
@@ -39,11 +38,8 @@ describe('Update program', () => {
     // Assert
     // Check the response to see if the attributes were actually updated
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    const keyToIgnore = [''];
-    assertObjectsAreEqual(
-      updateProgramResponse.body.titlePortal,
+    expect(updateProgramResponse.body.titlePortal).toMatchObject(
       program.titlePortal,
-      keyToIgnore,
     );
     expect(updateProgramResponse.body.published).toBe(program.published);
     expect(updateProgramResponse.body.distributionDuration).toBe(

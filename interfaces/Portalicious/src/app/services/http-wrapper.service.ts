@@ -7,6 +7,7 @@ import {
   HttpStatusCode,
 } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { get } from 'lodash';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { getUserFromLocalStorage } from '~/services/auth.service';
@@ -18,7 +19,12 @@ interface PerformRequestParams {
   body?: unknown;
   responseAsBlob?: boolean;
   isUpload?: boolean;
-  params?: HttpParams;
+  params?:
+    | HttpParams
+    | Record<
+        string,
+        boolean | number | readonly (boolean | number | string)[] | string
+      >;
 }
 
 @Injectable({
@@ -49,9 +55,15 @@ export class HttpWrapperService {
       !this.isRateLimitErrorShown
     ) {
       this.isRateLimitErrorShown = true;
-      window.alert('Rate limit exceeded. Please try again later.');
+      window.alert(
+        $localize`:@@error-rate-limit:Rate limit exceeded. Please try again later.`,
+      );
       this.isRateLimitErrorShown = false;
-      return of(new Error('Rate limit exceeded'));
+      return of(
+        new Error(
+          $localize`:@@error-rate-limit:Rate limit exceeded. Please try again later.`,
+        ),
+      );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
@@ -66,12 +78,58 @@ export class HttpWrapperService {
         const expires = Date.parse(user.expires);
 
         if (expires < Date.now()) {
-          return of(new Error('Token expired'));
+          return of(new Error($localize`:@@error-token-expired:Token expired`));
         }
       }
-
-      return of(new Error('Not authorized'));
     }
+
+    let errorMessage = get(error.error, 'message') as string | undefined;
+
+    const errors: unknown = get(error, 'error.errors');
+    if (errors) {
+      let errorArray: unknown[] = [];
+
+      if (typeof errors === 'string') {
+        errorArray = [errors];
+      } else if (Array.isArray(errors) && errors.length > 0) {
+        errorArray = errors;
+      }
+
+      if (errorArray.length > 0) {
+        errorMessage = errorArray
+          .map((err) => {
+            if (typeof err !== 'string') {
+              return err;
+            }
+
+            try {
+              const text = JSON.parse(err) as { detail?: string };
+              return text.detail ?? err;
+            } catch {
+              return err;
+            }
+          })
+          .join(' - ');
+      }
+    }
+
+    if (errorMessage) {
+      return of(
+        new Error(
+          $localize`:@@generic-error-with-message:Something went wrong: ${errorMessage}`,
+        ),
+      );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    if (error.status === HttpStatusCode.InternalServerError) {
+      return of(
+        new Error(
+          $localize`:@@generic-error:An unexpected error has occurred. Please try again later.`,
+        ),
+      );
+    }
+
     return of(error);
   }
 
@@ -99,7 +157,7 @@ export class HttpWrapperService {
             tap((response) => {
               console.log(
                 `HttpWrapperService ${method}: ${url}${
-                  params ? `\nParams ${params.toString()}` : ''
+                  params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
                 }${body ? `\nBody: ${JSON.stringify(body, null, 2)}` : ''}`,
                 '\nResponse:',
                 response,
