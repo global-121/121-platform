@@ -115,6 +115,7 @@ export class AzureAdStrategy
         const password = generateRandomString(16);
         user = await this.userService.create(
           username,
+          null, // pass empty displayName to trigger the default value logic
           password,
           UserType.aidWorker,
           true,

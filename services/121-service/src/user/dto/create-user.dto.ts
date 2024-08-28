@@ -5,6 +5,8 @@ import {
   IsArray,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 
@@ -13,6 +15,11 @@ class UserEmailDto {
   @IsNotEmpty()
   @IsEmail()
   public readonly username: string;
+
+  @ApiProperty({ example: 'admin' })
+  @IsOptional()
+  @IsString()
+  public readonly displayName: string;
 }
 
 export class CreateUsersDto {

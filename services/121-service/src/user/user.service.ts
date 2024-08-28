@@ -252,6 +252,7 @@ export class UserService {
 
       const userEntity = await this.create(
         user.username,
+        user.displayName,
         password,
         UserType.aidWorker,
       );
@@ -273,6 +274,7 @@ export class UserService {
 
   public async create(
     username: string,
+    displayName: string | null,
     password: string,
     userType: UserType,
     isEntraUser = false,
@@ -299,7 +301,7 @@ export class UserService {
     newUser.password = password;
     newUser.userType = userType;
     newUser.isEntraUser = isEntraUser;
-    newUser.displayName = username.split('@')[0];
+    newUser.displayName = displayName || username.split('@')[0];
     return await this.userRepository.save(newUser);
   }
 
