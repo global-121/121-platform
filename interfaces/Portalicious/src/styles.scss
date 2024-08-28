@@ -135,4 +135,22 @@ $toolbar-height: 48px;
       }
     }
   }
+
+  // Form inputs (Overrides for PrimeNG-components)
+  // All inputs used inside a form-field-wrapper, should be full-width, the wrapper should be in control of the width.
+  app-form-field-wrapper {
+    .p-password,
+    .p-dropdown,
+    .p-multiselect {
+      @apply w-full;
+    }
+    .p-dropdown-panel,
+    .p-multiselect-panel {
+      @apply max-w-full;
+    }
+    // Prevent contents being cut off, always wrap and align checkboxes to the top
+    .p-multiselect-item {
+      @apply items-start text-wrap;
+    }
+  }
 }

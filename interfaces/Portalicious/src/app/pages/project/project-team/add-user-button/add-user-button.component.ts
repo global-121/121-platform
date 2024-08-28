@@ -23,7 +23,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { ToastService } from '~/services/toast.service';
@@ -53,13 +52,18 @@ type AddUserToTeamFormGroup =
 })
 export class AddUserButtonComponent {
   projectId = input.required<number>();
-  projectUsers = input.required<ProjectUserWithRolesLabel[] | undefined>();
   enableScope = input.required<boolean | undefined>();
 
   private projectApiService = inject(ProjectApiService);
   private userApiService = inject(UserApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
+
+  roles = injectQuery(this.roleApiService.getRoles());
+  allUsers = injectQuery(this.userApiService.getAllUsers());
+  projectUsers = injectQuery(
+    this.projectApiService.getProjectUsers(this.projectId),
+  );
 
   formVisible = signal(false);
 
@@ -94,23 +98,24 @@ export class AddUserButtonComponent {
     },
   );
 
-  allUsers = injectQuery(this.userApiService.getAllUsers());
+  availableUsersIsLoading = computed(
+    () => this.allUsers.isPending() || this.projectUsers.isPending(),
+  );
 
-  unassignedUsers = computed(() => {
-    this.projectUsers();
+  availableUsers = computed(() => {
     const allUsers = this.allUsers.data();
-    if (!this.projectUsers() || !allUsers) {
+    const projectUsers = this.projectUsers.data();
+
+    if (!projectUsers || !allUsers) {
       return [];
     }
     return allUsers.filter(
       (anyUser) =>
-        !this.projectUsers()?.some(
+        !projectUsers.some(
           (thisProjectUser) => thisProjectUser.id === anyUser.id,
         ),
     );
   });
-
-  roles = injectQuery(this.roleApiService.getRoles());
 
   assignUserMutation = injectMutation(() => ({
     mutationFn: ({

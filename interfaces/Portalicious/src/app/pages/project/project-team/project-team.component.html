@@ -7,7 +7,6 @@
     @if (canManageAidworkers()) {
       <app-add-user-button
         [projectId]="projectId()"
-        [projectUsers]="projectUsers.data()"
         [enableScope]="enableScope()"
       />
     }

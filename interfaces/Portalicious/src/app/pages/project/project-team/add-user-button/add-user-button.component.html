@@ -1,9 +1,8 @@
 <p-button
   label="Add team member"
   i18n-label="@@add-team-member"
-  outlined
+  rounded
   icon="pi pi-plus"
-  class="text-xs sm:text-base"
   (click)="formVisible.set(true)"
 />
 
@@ -18,19 +17,16 @@
     label="Choose user"
     i18n-label
     [errorMessage]="formFieldErrors()('userValue')"
-    class="mb-3"
   >
     <p-dropdown
-      [options]="unassignedUsers()"
+      [options]="availableUsers()"
       [optionLabel]="'username'"
       [optionValue]="'id'"
       [filter]="true"
       formControlName="userValue"
       placeholder="Type or select"
-      i18n-placeholder
-      class="block w-full"
-      styleClass="w-full"
-      [loading]="allUsers.isPending() || !projectUsers"
+      i18n-placeholder="@@generic-type-or-select"
+      [loading]="availableUsersIsLoading()"
     >
     </p-dropdown>
   </app-form-field-wrapper>
@@ -39,20 +35,14 @@
     label="Assign roles"
     i18n-label
     [errorMessage]="formFieldErrors()('rolesValue')"
-    class="mb-3"
   >
     <p-multiSelect
-      [options]="roles!.data()"
+      [options]="roles.data()"
       [optionLabel]="'label'"
       [optionValue]="'role'"
       formControlName="rolesValue"
       placeholder="Type or select"
-      i18n-placeholder
-      class="block w-full"
-      styleClass="w-full"
-      [panelStyleClass]="
-        'max-w-full [&_.p-multiselect-item]:items-start [&_.p-multiselect-item]:text-wrap'
-      "
+      i18n-placeholder="@@generic-type-or-select"
       [showToggleAll]="false"
       [overlayOptions]="{
         target: '@parent',
@@ -73,18 +63,20 @@
         type="text"
         formControlName="scopeValue"
         autocomplete="off"
-        i18n-placeholder
-        class="mb-2 font-mono"
+        class="font-mono"
       />
       <ng-container slot="details">
         <p
           i18n
-          class="mb-2"
+          class="my-2"
         >
           * Leaving this field empty means the team member will have access to
           <strong>all PAs</strong>
         </p>
-        <p i18n>
+        <p
+          i18n
+          class="my-2"
+        >
           * To use a subscope type a dot between the scope and subscope (e.g.
           <code>amsterdam.west</code>)
         </p>
