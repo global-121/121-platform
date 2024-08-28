@@ -598,6 +598,7 @@ export class UserService {
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
       lastLogin: user.lastLogin ?? undefined,
+      displayName: user.displayName ?? undefined,
       isOrganizationAdmin: user.isOrganizationAdmin,
     };
 
@@ -696,6 +697,8 @@ export class UserService {
         admin: true,
         active: true,
         lastLogin: true,
+        displayName: true,
+        isOrganizationAdmin: true,
       },
       where: {
         userType: Equal(UserType.aidWorker),
