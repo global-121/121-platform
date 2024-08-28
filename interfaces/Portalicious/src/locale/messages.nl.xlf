@@ -66,7 +66,7 @@
         <source>Close</source>
         <target state="translated">Sluiten</target>
       </trans-unit>
-      <trans-unit id="4501314745488687296" datatype="html">
+      <trans-unit id="generic-opens-in-new-window" datatype="html">
         <source>Opens in a new window</source>
         <target state="translated">Opent in een nieuw venster</target>
       </trans-unit>
@@ -411,7 +411,7 @@
         <source>Choose user</source>
         <target state="new">Choose user</target>
       </trans-unit>
-      <trans-unit id="3596028580515360519" datatype="html">
+      <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
         <target state="new">Type or select</target>
       </trans-unit>
@@ -427,9 +427,9 @@
         <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
         <target state="new">* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></target>
       </trans-unit>
-      <trans-unit id="2110601028652261922" datatype="html">
-        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.zuid<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
-        <target state="new">* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.zuid<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</target>
+      <trans-unit id="4273825032754891897" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
+        <target state="new">* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</target>
       </trans-unit>
       <trans-unit id="5438647545299330818" datatype="html">
         <source>Enter a valid scope. No spaces are allowed.</source>

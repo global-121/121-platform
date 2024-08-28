@@ -63,7 +63,7 @@
       <trans-unit id="4371726377430146531" datatype="html">
         <source>Questions or feedback? Contact us</source>
       </trans-unit>
-      <trans-unit id="4501314745488687296" datatype="html">
+      <trans-unit id="generic-opens-in-new-window" datatype="html">
         <source>Opens in a new window</source>
       </trans-unit>
       <trans-unit id="page-title-users" datatype="html">
@@ -305,13 +305,13 @@
       <trans-unit id="confirmation-dialog-header" datatype="html">
         <source>Are you sure?</source>
       </trans-unit>
-      <trans-unit id="2110601028652261922" datatype="html">
-        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.zuid<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
+      <trans-unit id="4273825032754891897" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
       </trans-unit>
       <trans-unit id="2372906683883945604" datatype="html">
         <source>Choose user</source>
       </trans-unit>
-      <trans-unit id="3596028580515360519" datatype="html">
+      <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
       </trans-unit>
       <trans-unit id="5017538200388607229" datatype="html">
