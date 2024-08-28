@@ -306,10 +306,6 @@
         <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
         <target state="new">Something went wrong: <x equiv-text="errorMessage" id="PH"/></target>
       </trans-unit>
-      <trans-unit id="1196626764275836870" datatype="html">
-        <source>project-monitoring works!</source>
-        <target state="new">project-monitoring works!</target>
-      </trans-unit>
       <trans-unit id="add-project-label" datatype="html">
         <source>Add project</source>
         <target state="new">Add project</target>
@@ -438,6 +434,86 @@
       <trans-unit id="generic-error-try-again" datatype="html">
         <source>An unexpected error has occurred. Please try again later.</source>
         <target state="new">An unexpected error has occurred. Please try again later.</target>
+      </trans-unit>
+      <trans-unit id="generic-not-available" datatype="html">
+        <source>Not available</source>
+        <target state="new">Not available</target>
+      </trans-unit>
+      <trans-unit id="2309376472788575612" datatype="html">
+        <source>Registrations with the status “new”.</source>
+        <target state="new">Registrations with the status “new”.</target>
+      </trans-unit>
+      <trans-unit id="1024350856876797494" datatype="html">
+        <source>People registered</source>
+        <target state="new">People registered</target>
+      </trans-unit>
+      <trans-unit id="7687442073351590218" datatype="html">
+        <source>Total registrations excluding rejected and deleted registrations.</source>
+        <target state="new">Total registrations excluding rejected and deleted registrations.</target>
+      </trans-unit>
+      <trans-unit id="9063819144679824048" datatype="html">
+        <source>People included</source>
+        <target state="new">People included</target>
+      </trans-unit>
+      <trans-unit id="3046019795799616878" datatype="html">
+        <source>Registrations with the status “included”.</source>
+        <target state="new">Registrations with the status “included”.</target>
+      </trans-unit>
+      <trans-unit id="6651655904432464973" datatype="html">
+        <source>Amount of payments done in the project so far.</source>
+        <target state="new">Amount of payments done in the project so far.</target>
+      </trans-unit>
+      <trans-unit id="2756397788360043544" datatype="html">
+        <source>Remaining budget</source>
+        <target state="new">Remaining budget</target>
+      </trans-unit>
+      <trans-unit id="3783659685891310731" datatype="html">
+        <source>Project description:</source>
+        <target state="new">Project description:</target>
+      </trans-unit>
+      <trans-unit id="2801963853605151683" datatype="html">
+        <source>No PowerBI dashboard has been configured for this project, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
+        <target state="new">No PowerBI dashboard has been configured for this project, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</target>
+      </trans-unit>
+      <trans-unit id="2342712167124906317" datatype="html">
+        <source>Targeted people</source>
+        <target state="new">Targeted people</target>
+      </trans-unit>
+      <trans-unit id="888341446683346521" datatype="html">
+        <source>Start date</source>
+        <target state="new">Start date</target>
+      </trans-unit>
+      <trans-unit id="471816275243265264" datatype="html">
+        <source>Location</source>
+        <target state="new">Location</target>
+      </trans-unit>
+      <trans-unit id="126074860850048964" datatype="html">
+        <source>End date</source>
+        <target state="new">End date</target>
+      </trans-unit>
+      <trans-unit id="1224115488810733068" datatype="html">
+        <source>FSP(s)</source>
+        <target state="new">FSP(s)</target>
+      </trans-unit>
+      <trans-unit id="1194881950571757496" datatype="html">
+        <source>Payment frequency</source>
+        <target state="new">Payment frequency</target>
+      </trans-unit>
+      <trans-unit id="7410432243549869948" datatype="html">
+        <source>Duration</source>
+        <target state="new">Duration</target>
+      </trans-unit>
+      <trans-unit id="7549920543899608806" datatype="html">
+        <source><x equiv-text="projectData.distributionDuration" id="PH"/> disbursements</source>
+        <target state="new"><x equiv-text="projectData.distributionDuration" id="PH"/> disbursements</target>
+      </trans-unit>
+      <trans-unit id="926636196686296455" datatype="html">
+        <source>Base transfer value</source>
+        <target state="new">Base transfer value</target>
+      </trans-unit>
+      <trans-unit id="6102855402615761891" datatype="html">
+        <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
+        <target state="new">The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</target>
       </trans-unit>
     </body>
   </file>

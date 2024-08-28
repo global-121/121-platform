@@ -37,6 +37,10 @@ export class ProjectHeaderComponent {
       label: $localize`:@@page-title-project-monitoring:Monitoring`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}`,
       icon: 'pi pi-chart-bar',
+      visible: this.authService.hasPermission(
+        this.projectId(),
+        PermissionEnum.ProgramMetricsREAD,
+      ),
     },
     {
       label: $localize`:@@page-title-project-team:Team`,

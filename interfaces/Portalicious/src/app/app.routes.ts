@@ -57,6 +57,9 @@ export const routes: Routes = [
       {
         path: AppRoutes.projectMonitoring,
         component: ProjectMonitoringComponent,
+        canActivate: [
+          projectPermissionsGuard(PermissionEnum.ProgramMetricsREAD),
+        ],
       },
       {
         path: AppRoutes.projectTeam,

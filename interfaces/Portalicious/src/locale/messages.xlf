@@ -232,9 +232,6 @@
       <trans-unit id="5901643806193916083" datatype="html">
         <source>About 121 Portal</source>
       </trans-unit>
-      <trans-unit id="1196626764275836870" datatype="html">
-        <source>project-monitoring works!</source>
-      </trans-unit>
       <trans-unit id="7476141645378496788" datatype="html">
         <source>No payments yet</source>
       </trans-unit>
@@ -331,6 +328,66 @@
       </trans-unit>
       <trans-unit id="generic-error-try-again" datatype="html">
         <source>An unexpected error has occurred. Please try again later.</source>
+      </trans-unit>
+      <trans-unit id="1024350856876797494" datatype="html">
+        <source>People registered</source>
+      </trans-unit>
+      <trans-unit id="1194881950571757496" datatype="html">
+        <source>Payment frequency</source>
+      </trans-unit>
+      <trans-unit id="1224115488810733068" datatype="html">
+        <source>FSP(s)</source>
+      </trans-unit>
+      <trans-unit id="126074860850048964" datatype="html">
+        <source>End date</source>
+      </trans-unit>
+      <trans-unit id="2309376472788575612" datatype="html">
+        <source>Registrations with the status “new”.</source>
+      </trans-unit>
+      <trans-unit id="2342712167124906317" datatype="html">
+        <source>Targeted people</source>
+      </trans-unit>
+      <trans-unit id="2756397788360043544" datatype="html">
+        <source>Remaining budget</source>
+      </trans-unit>
+      <trans-unit id="2801963853605151683" datatype="html">
+        <source>No PowerBI dashboard has been configured for this project, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
+      </trans-unit>
+      <trans-unit id="3046019795799616878" datatype="html">
+        <source>Registrations with the status “included”.</source>
+      </trans-unit>
+      <trans-unit id="3783659685891310731" datatype="html">
+        <source>Project description:</source>
+      </trans-unit>
+      <trans-unit id="471816275243265264" datatype="html">
+        <source>Location</source>
+      </trans-unit>
+      <trans-unit id="6102855402615761891" datatype="html">
+        <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
+      </trans-unit>
+      <trans-unit id="6651655904432464973" datatype="html">
+        <source>Amount of payments done in the project so far.</source>
+      </trans-unit>
+      <trans-unit id="7410432243549869948" datatype="html">
+        <source>Duration</source>
+      </trans-unit>
+      <trans-unit id="7549920543899608806" datatype="html">
+        <source><x equiv-text="projectData.distributionDuration" id="PH"/> disbursements</source>
+      </trans-unit>
+      <trans-unit id="7687442073351590218" datatype="html">
+        <source>Total registrations excluding rejected and deleted registrations.</source>
+      </trans-unit>
+      <trans-unit id="888341446683346521" datatype="html">
+        <source>Start date</source>
+      </trans-unit>
+      <trans-unit id="9063819144679824048" datatype="html">
+        <source>People included</source>
+      </trans-unit>
+      <trans-unit id="926636196686296455" datatype="html">
+        <source>Base transfer value</source>
+      </trans-unit>
+      <trans-unit id="generic-not-available" datatype="html">
+        <source>Not available</source>
       </trans-unit>
     </body>
   </file>

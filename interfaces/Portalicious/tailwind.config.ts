@@ -71,8 +71,28 @@ export default {
       s: '0.85rem', // ~12px
       m: '1rem', // ~14px
     },
+    extend: {
+      gridTemplateAreas: {
+        'project-monitoring': [
+          'metric1 metric2',
+          'metric3 metric4',
+          'description description',
+          'iframe iframe',
+        ],
+        'project-monitoring-wide': [
+          'metric1 metric2 description',
+          'metric3 metric4 description',
+          'iframe iframe iframe',
+        ],
+      },
+      gridTemplateColumns: {
+        'project-monitoring-wide': '16rem 16rem 1fr',
+      },
+    },
   },
   plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@savvywombat/tailwindcss-grid-areas'),
     plugin(function ({ matchUtilities, theme }) {
       // heading utilities
       matchUtilities(

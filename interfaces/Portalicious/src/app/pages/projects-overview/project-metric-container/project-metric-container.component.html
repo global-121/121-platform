@@ -2,7 +2,7 @@
   @if (pending()) {
     <app-skeleton-inline />
   } @else {
-    {{ value() }}
+    {{ value() ?? '-' }}
   }
 </dd>
 <dt class="px-2 pb-2 pt-1 txt-body-s">

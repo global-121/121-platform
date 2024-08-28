@@ -37,7 +37,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "lodash": "^4.17.21",
     "primeicons": "^7.0.0",
-    "primeng": "^17.18.2",
+    "primeng": "^17.18.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
@@ -50,6 +50,7 @@
     "@azure/static-web-apps-cli": "^2.0.1",
     "@microsoft/applicationinsights-debugplugin-js": "^3.3.0",
     "@prettier/plugin-xml": "^3.4.1",
+    "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
     "@tanstack/eslint-plugin-query": "^5.50.0",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.6",

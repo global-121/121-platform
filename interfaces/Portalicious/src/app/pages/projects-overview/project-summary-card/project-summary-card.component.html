@@ -40,11 +40,11 @@
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="
-            (metrics.data()?.totalBudget
+            metrics.data()?.totalBudget
               | currency
                 : project.data()?.currency ?? 'EUR'
                 : 'symbol-narrow'
-                : '1.0-0') || '-'
+                : '1.0-0'
           "
           label="Budget"
           i18n-label
@@ -54,11 +54,11 @@
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="
-            (metrics.data()?.spentMoney
+            metrics.data()?.spentMoney
               | currency
                 : project.data()?.currency ?? 'EUR'
                 : 'symbol-narrow'
-                : '1.0-0') || '-'
+                : '1.0-0'
           "
           label="Cash disbursed"
           i18n-label

@@ -13,9 +13,9 @@ import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AppRoutes } from '~/app.routes';
-import { HealthWidgetComponent } from '~/components/health-widget/health-widget.component';
 import { LanguageSwitcherComponent } from '~/components/language-switcher/language-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
+import { HealthWidgetComponent } from '~/components/page-layout/components/health-widget/health-widget.component';
 import { AuthService } from '~/services/auth.service';
 
 @Component({

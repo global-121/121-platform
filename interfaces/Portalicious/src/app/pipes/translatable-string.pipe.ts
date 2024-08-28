@@ -1,36 +1,23 @@
-import { LOCALE_ID, Pipe, PipeTransform, inject } from '@angular/core';
-import { Locale } from '~/utils/locale';
+import { Pipe, PipeTransform, inject } from '@angular/core';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Pipe({
   name: 'translatableString',
   standalone: true,
 })
 export class TranslatableStringPipe implements PipeTransform {
-  private fallbackLocale = Locale.en;
-  private currentLocale = inject(LOCALE_ID);
+  private translatableStringService = inject(TranslatableStringService);
 
-  transform(value: null | Record<string, string> | string | undefined) {
-    if (!value) {
-      return '';
+  transform(
+    value: null | Record<string, string> | string | undefined,
+    defaultValue = '',
+  ): string {
+    const extractedValue = this.translatableStringService.translate(value);
+
+    if (!extractedValue || extractedValue === '') {
+      return defaultValue;
     }
 
-    if (typeof value === 'string') {
-      return value;
-    }
-
-    if (value[this.currentLocale]) {
-      return value[this.currentLocale];
-    }
-
-    if (value[this.fallbackLocale]) {
-      return value[this.fallbackLocale];
-    }
-
-    // If even the fallback-language is not available, return any other language's value
-    if (typeof value === 'object' && Object.keys(value).length > 0) {
-      return value[Object.keys(value)[0]];
-    }
-
-    return '';
+    return extractedValue;
   }
 }
