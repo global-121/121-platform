@@ -84,6 +84,11 @@ export class CookieJwtStrategy
       if (!isAdmin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
+    } else if (authParams.isOrganizationAdmin) {
+      const isOrganizationAdmin = payload.isOrganizationAdmin === true;
+      if (!isOrganizationAdmin) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
     }
     const username = (payload.username ?? '').toLowerCase();
     const user = await this.userService.findByUsernameOrThrow(username);
@@ -96,6 +101,7 @@ export class CookieJwtStrategy
       scope: request.params.programId
         ? this.userService.getScopeForUser(user, request.params.programId)
         : '',
+      isOrganizationAdmin: payload.isOrganizationAdmin,
     };
     return userToken;
   }

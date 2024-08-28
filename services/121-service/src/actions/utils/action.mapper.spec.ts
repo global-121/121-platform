@@ -37,6 +37,8 @@ describe('Action mapper', () => {
       deleteOneToMany: async () => {},
       created: createdDate,
       updated: new Date(),
+      isOrganizationAdmin: false,
+      displayName: username.split('@')[0],
     };
     const actionEntity: ActionEntity = {
       id: actionId,

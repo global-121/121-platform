@@ -1,4 +1,6 @@
 import { DEBUG } from '@121-service/src/config';
+import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
+import { EmailsService } from '@121-service/src/emails/emails.service';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -10,7 +12,7 @@ import {
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto';
-import { CreateUserAidWorkerDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
+import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
@@ -56,7 +58,10 @@ export class UserService {
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
-  public constructor(@Inject(REQUEST) private readonly request: Request) {}
+  public constructor(
+    @Inject(REQUEST) private readonly request: Request,
+    private readonly emailsService: EmailsService,
+  ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const userEntity = await this.matchPassword(loginUserDto);
@@ -241,17 +246,35 @@ export class UserService {
     return existingRole;
   }
 
-  public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {
-    const createdUser = await this.create(
-      dto.email,
-      dto.password,
-      UserType.aidWorker,
-    );
-    return await this.buildUserRO(createdUser);
+  public async createUsers(createUsersDto: CreateUsersDto): Promise<void> {
+    for (const user of createUsersDto.users) {
+      const password = this.generateStrongPassword();
+
+      const userEntity = await this.create(
+        user.username,
+        user.displayName,
+        password,
+        UserType.aidWorker,
+      );
+
+      const emailPayload: CreateUserEmailPayload = {
+        email: userEntity.username ?? '',
+        displayName: userEntity.displayName ?? '',
+        password: password,
+      };
+
+      // Send SSO template if SSO is enabled
+      if (!!process.env.USE_SSO_AZURE_ENTRA) {
+        await this.emailsService.sendCreateSSOUserEmail(emailPayload);
+      } else {
+        await this.emailsService.sendCreateNonSSOUserEmail(emailPayload);
+      }
+    }
   }
 
   public async create(
     username: string,
+    displayName: string | null,
     password: string,
     userType: UserType,
     isEntraUser = false,
@@ -278,6 +301,7 @@ export class UserService {
     newUser.password = password;
     newUser.userType = userType;
     newUser.isEntraUser = isEntraUser;
+    newUser.displayName = displayName || username.split('@')[0];
     return await this.userRepository.save(newUser);
   }
 
@@ -542,6 +566,7 @@ export class UserService {
         username: user.username,
         exp: exp.getTime() / 1000,
         admin: user.admin,
+        isOrganizationAdmin: user.isOrganizationAdmin,
       },
       process.env.SECRETS_121_SERVICE_SECRET!,
     );
@@ -560,7 +585,7 @@ export class UserService {
     }
   }
 
-  private async buildUserRO(
+  public async buildUserRO(
     user: UserEntity,
     tokenExpiration?: number,
   ): Promise<UserRO> {
@@ -573,6 +598,7 @@ export class UserService {
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
       lastLogin: user.lastLogin ?? undefined,
+      isOrganizationAdmin: user.isOrganizationAdmin,
     };
 
     // For SSO-users, token expiration is handled by Azure
@@ -871,8 +897,16 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     user.salt = this.generateSalt();
-    user.password = this.hashPassword(changePasswordDto.password, user.salt);
+    const password = this.generateStrongPassword();
+    user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
+    const emailPayload = {
+      email: user.username ?? '',
+      displayName: user.displayName ?? '',
+      password: password,
+    };
+
+    await this.emailsService.sendPasswordResetEmail(emailPayload);
   }
 
   private generateSalt(): string {
@@ -881,5 +915,9 @@ export class UserService {
 
   private hashPassword(password: string, salt: string): string {
     return crypto.pbkdf2Sync(password, salt, 1, 32, 'sha256').toString('hex');
+  }
+
+  private generateStrongPassword(): string {
+    return crypto.randomBytes(30).toString('base64').slice(0, 25);
   }
 }
