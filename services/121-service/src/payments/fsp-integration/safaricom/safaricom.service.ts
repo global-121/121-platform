@@ -3,29 +3,19 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
-import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
+import {
+  SafaricomTransferPayload,
+  SafaricomTransferPayloadParams,
+} from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
+import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
 import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
-import {
-  REDIS_CLIENT,
-  getRedisSetName,
-} from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -34,75 +24,84 @@ export class SafaricomService
 {
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
-  @InjectRepository(TransactionEntity)
-  private readonly transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  // @InjectRepository(TransactionEntity)
+  // private readonly transactionRepository: Repository<TransactionEntity>;
+  // @InjectRepository(RegistrationEntity)
+  // private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
-    private readonly transactionsService: TransactionsService,
-    @InjectQueue(QueueNamePayment.paymentSafaricom)
-    private readonly paymentSafaricomQueue: Queue,
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: Redis,
+    // private readonly transactionsService: TransactionsService,
+    // @InjectQueue(QueueNamePayment.paymentSafaricom)
+    // private readonly paymentSafaricomQueue: Queue,
+    // @Inject(REDIS_CLIENT)
+    // private readonly redisClient: Redis,
   ) {}
 
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
   public async sendPayment(
-    paymentList: PaPaymentDataDto[],
-    programId: number,
-    paymentNr: number,
+    _paymentList: PaPaymentDataDto[],
+    _programId: number,
+    _paymentNr: number,
   ): Promise<void> {
-    for (const paPaymentData of paymentList) {
-      const jobData: SafaricomJobDto = {
-        paPaymentData: paPaymentData,
-        programId: programId,
-        paymentNr: paymentNr,
-        userId: paPaymentData.userId,
-      };
-      const job = await this.paymentSafaricomQueue.add(
-        ProcessNamePayment.sendPayment,
-        jobData,
-      );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    // for (const paPaymentData of paymentList) {
+    //   const jobData: SafaricomJobDto = {
+    //     paPaymentData: paPaymentData,
+    //     programId: programId,
+    //     paymentNr: paymentNr,
+    //     userId: paPaymentData.userId,
+    //   };
+    //   const job = await this.paymentSafaricomQueue.add(
+    //     ProcessNamePayment.sendPayment,
+    //     jobData,
+    //   );
+    //   await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    // }
+
+    throw new Error('Method should not be called anymore.');
   }
 
-  public async processQueuedPayment(jobData: SafaricomJobDto): Promise<void> {
+  public async doTransfer(
+    transferData: SafaricomTransferParams,
+  ): Promise<PaTransactionResultDto> {
     await this.safaricomApiService.authenticate();
 
-    // TODO Refactor this to get all this data before the job is created at once
-    const registrationData = await this.getRegistrationProgramIdAndNationalId(
-      jobData.paPaymentData.referenceId,
-    );
+    // TODO: get this data before queueing in payments.service
+    // const registrationData = await this.getRegistrationProgramIdAndNationalId(
+    //   transferData.referenceId,
+    // );
 
-    const nationalId = registrationData?.nationalId;
-    const registrationProgramId = registrationData?.registrationProgramId;
+    // const nationalId = registrationData?.nationalId;
+    // const registrationProgramId = registrationData?.registrationProgramId;
 
+    // TODO: simplify input
     const payload = this.createPayloadPerPa(
-      jobData.paPaymentData,
-      jobData.programId,
-      jobData.paymentNr,
-      nationalId,
-      registrationProgramId,
+      transferData.programId,
+      transferData.paymentNr,
+      transferData.transactionAmount,
+      transferData.phoneNumber,
+      transferData.referenceId,
+      transferData.nationalId,
+      transferData.registrationProgramId,
     );
 
-    const paymentRequestResultPerPa = await this.sendPaymentPerPa(
-      payload,
-      jobData.paPaymentData.referenceId,
-    );
+    // TODO: change return type to safaricom-specific interface instead of generic PaTransactionResultDto
+    return await this.sendPaymentPerPa(payload, transferData.referenceId);
 
-    const transactionRelationDetails = {
-      programId: jobData.programId,
-      paymentNr: jobData.paymentNr,
-      userId: jobData.userId,
-    };
-    // Storing the per payment so you can continiously seed updates of transactions in Portal
-    const transaction =
-      await this.transactionsService.storeTransactionUpdateStatus(
-        paymentRequestResultPerPa,
-        transactionRelationDetails,
-      );
+    // const transactionRelationDetails = {
+    //   programId: transferData.programId,
+    //   paymentNr: transferData.paymentNr,
+    //   userId: transferData.userId,
+    // };
+    // // Storing the per payment so you can continiously seed updates of transactions in Portal
+    // const transaction =
+    //   await this.transactionsService.storeTransactionUpdateStatus(
+    //     paymentRequestResultPerPa,
+    //     transactionRelationDetails,
+    //   );
 
     await this.processSafaricomRequest(
       payload,
@@ -135,9 +134,12 @@ export class SafaricomService
   }
 
   public createPayloadPerPa(
-    paymentData: PaPaymentDataDto,
+    // paymentData: PaPaymentDataDto,
     programId: number,
     paymentNr: number,
+    transactionAmount: number,
+    phoneNumber: string,
+    referenceId: string,
     nationalId: string | undefined,
     registrationProgramId: number | undefined,
   ): SafaricomTransferPayload {
@@ -157,13 +159,13 @@ export class SafaricomService
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
       CommandID: 'BusinessPayment',
-      Amount: paymentData.transactionAmount,
+      Amount: transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: paymentData.paymentAddress,
+      PartyB: phoneNumber,
       Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: paymentData.referenceId,
+      Occassion: referenceId,
       OriginatorConversationID: `P${programId}PA${registrationProgramId}_${formatDate(
         new Date(),
       )}_${generateRandomString(3)}`,
@@ -173,7 +175,7 @@ export class SafaricomService
   }
 
   public async sendPaymentPerPa(
-    payload: SafaricomTransferPayload,
+    payload: SafaricomTransferPayloadParams,
     referenceId: string,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
@@ -186,10 +188,8 @@ export class SafaricomService
 
     if (result && result.ResponseCode === '0') {
       paTransactionResult.status = StatusEnum.waiting;
-      payload.status = StatusEnum.waiting;
     } else {
       paTransactionResult.status = StatusEnum.error;
-      payload.status = StatusEnum.error;
       paTransactionResult.message = result.errorMessage;
     }
 
