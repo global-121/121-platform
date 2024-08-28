@@ -31,21 +31,18 @@ export class SafaricomTransactionJobDto {
   public readonly userId: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  public readonly bulkSize: number;
+
+  @IsNotEmpty()
+  @IsString()
+  public readonly phoneNumber: string;
+
+  @IsNotEmpty()
   @IsString()
   public readonly nationalId: string;
 
   @IsNotEmpty()
   @IsNumber()
   public readonly registrationProgramId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  public readonly bulkSize: number;
-
-  // @IsOptional()
-  // public readonly name?: string;
-
-  @IsNotEmpty()
-  @IsString()
-  public readonly phoneNumber: string;
 }

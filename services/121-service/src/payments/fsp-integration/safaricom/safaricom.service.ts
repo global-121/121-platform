@@ -8,7 +8,7 @@ import {
   SafaricomTransferPayloadParams,
 } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
-import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
@@ -22,8 +22,8 @@ import { Repository } from 'typeorm';
 export class SafaricomService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(SafaricomRequestEntity)
-  private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
+  @InjectRepository(SafaricomTransferEntity)
+  private readonly safaricomTransferRepository: Repository<SafaricomTransferEntity>;
   // @InjectRepository(TransactionEntity)
   // private readonly transactionRepository: Repository<TransactionEntity>;
   // @InjectRepository(RegistrationEntity)
@@ -199,29 +199,24 @@ export class SafaricomService
     return paTransactionResult;
   }
 
-  public async processSafaricomRequest(
-    payload,
-    paymentRequestResultPerPa,
+  public async createAndSaveSafaricomTransferData(
+    safaricomDoTransferResult: PaTransactionResultDto,
     transaction: TransactionEntity,
   ): Promise<any> {
-    const payloadResult = Object.fromEntries(
-      Object.entries(payload).map(([k, v]) => [
-        k.charAt(0).toLowerCase() + k.slice(1),
-        v,
-      ]),
-    );
+    const safaricomTransferEntity = new SafaricomTransferEntity();
 
-    const safaricomCustomData = { ...paymentRequestResultPerPa.customData };
-
-    payloadResult.requestResult = safaricomCustomData.requestResult;
-    payloadResult.conversationID =
+    const safaricomCustomData = { ...safaricomDoTransferResult.customData };
+    safaricomTransferEntity.mpesaConversationId =
       safaricomCustomData &&
       safaricomCustomData.requestResult &&
       safaricomCustomData.requestResult.ConversationID
         ? safaricomCustomData.requestResult.ConversationID
         : 'Invalid Request';
-    payloadResult.transaction = transaction;
-    await this.safaricomRequestRepository.save(payloadResult);
+
+    safaricomTransferEntity.mpesaTransactionId = transaction;
+    safaricomTransferEntity.originatorConversationID = ''; //TODO: no idea how should get it
+
+    await this.safaricomTransferRepository.save(safaricomTransferEntity);
   }
 
   public async processSafaricomResult(

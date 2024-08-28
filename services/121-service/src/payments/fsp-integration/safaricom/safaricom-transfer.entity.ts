@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('safaricom_request')
-export class SafaricomRequestEntity {
+@Entity('safaricom_transfer')
+export class SafaricomTransferEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 

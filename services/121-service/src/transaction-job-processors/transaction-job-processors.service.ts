@@ -270,24 +270,23 @@ export class TransactionJobProcessorsService {
       userId: input.userId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
-    const transaction =
-      await this.transactionsService.storeTransactionUpdateStatus(
-        safaricomDoTransferResult,
-        transactionRelationDetails,
-      );
-
-    await this.createTransactionAndUpdateRegistration({
+    const transaction = await this.createTransactionAndUpdateRegistration({
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTranserAmountInMajorUnit:
-        safaricomDoTransferResult.amountTransferredInMajorUnit,
+      calculatedTranserAmountInMajorUnit: safaricomDoTransferResult.calculatedAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
       status: StatusEnum.success,
     });
+
+    // Storing safaricom transfer data
+    await this.safaricomService.createAndSaveSafaricomTransferData(
+      safaricomDoTransferResult,
+      transaction,
+    );
   }
 
   private async createTransactionAndUpdateRegistration({
@@ -301,7 +300,7 @@ export class TransactionJobProcessorsService {
     isRetry,
     status,
     errorText: errorMessage,
-  }: ProcessTransactionResultInput): Promise<void> {
+  }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTranserAmountInMajorUnit,
       registration: registration,
@@ -341,6 +340,8 @@ export class TransactionJobProcessorsService {
         );
       }
     }
+
+    return resultTransaction;
   }
 
   private async addMessageJobToQueue({
