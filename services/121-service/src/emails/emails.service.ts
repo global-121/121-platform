@@ -18,6 +18,7 @@ export class EmailsService {
   ): Promise<void> {
     const { subject, body } = createNonSSOUserTemplate(
       payload.displayName,
+      payload.email,
       payload.password || '',
     );
 
@@ -33,6 +34,7 @@ export class EmailsService {
   ): Promise<void> {
     const { subject, body } = passwordResetTemplate(
       payload.displayName,
+      payload.email,
       payload.password || '',
     );
 
