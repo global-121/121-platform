@@ -27,7 +27,6 @@ export abstract class DomainApiService {
     processResponse?: (data: BackendDataShape) => ProcessedResponseShape;
   } & Partial<UndefinedInitialDataOptions<ProcessedResponseShape>>) {
     return () => {
-      console.log('path', path);
       const queryKey = this.pathToQueryKey(path);
       const endpoint = queryKey.join('/');
 
