@@ -92,4 +92,11 @@ export class UserEntity extends CascadeDeleteEntity {
   @Column({ type: 'timestamp', nullable: true })
   @ApiProperty({ example: new Date() })
   public lastLogin: Date | null;
+
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  public isOrganizationAdmin: boolean;
+
+  @Column({ type: 'character varying', nullable: false })
+  public displayName: string | null;
 }

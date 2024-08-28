@@ -42,6 +42,10 @@ class BasePage {
     await this.projectHeader.getByRole('menuitem', { name: pageName }).click();
   }
 
+  async selectProgram(programName: string) {
+    await this.page.getByRole('link', { name: programName }).click();
+  }
+
   async changeLanguage(language: string) {
     await this.openSidebar();
     await this.languageDropdown.selectOption({ label: language });

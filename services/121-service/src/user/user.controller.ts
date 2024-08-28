@@ -7,7 +7,7 @@ import {
   UpdateProgramAssignmentDto,
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
-import { CreateUserAidWorkerDto } from '@121-service/src/user/dto/create-user-aid-worker.dto';
+import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
@@ -153,17 +153,17 @@ export class UserController {
   }
 
   // TODO: define response type, this cannot use an interface though
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('users')
-  @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new Aid Worker user' })
+  @ApiOperation({ summary: '[EXTERNALLY USED] Sign-up new user' })
   @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Created new Aid Worker user',
+    status: HttpStatus.NO_CONTENT,
+    description: 'Successfully created new user(s)',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post('users')
-  public async createAw(
-    @Body() userData: CreateUserAidWorkerDto,
-  ): Promise<UserRO> {
-    return this.userService.createAidWorker(userData);
+  public async createUsers(@Body() userData: CreateUsersDto): Promise<void> {
+    return this.userService.createUsers(userData);
   }
 
   @Throttle(
@@ -205,6 +205,7 @@ export class UserController {
         expires: loginResponse.cookieSettings.expires,
         isAdmin: loginResponse.userRo.user.isAdmin,
         isEntraUser: loginResponse.userRo.user.isEntraUser,
+        isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
       });
     } catch (error) {
       throw error;
@@ -457,7 +458,7 @@ export class UserController {
     return await this.userService.getUsersInProgram(programId);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Reset user password without current password' })
   @ApiResponse({
@@ -472,5 +473,34 @@ export class UserController {
     await this.userService.changePasswordWithoutCurrentPassword(
       changePasswordDto,
     );
+  }
+
+  // Make sure this endpoint is below users/password endpoint in this controller, to avoid endpoint confusion
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('users')
+  @ApiOperation({
+    summary: 'Update user properties (currently only isOrganizationAdmin)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Updated user',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+  })
+  @Patch('users/:userId')
+  public async updateUser(
+    @Param('userId', ParseIntPipe)
+    userId: number,
+
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserRO> {
+    const user = await this.userService.updateUser({
+      id: userId,
+      isOrganizationAdmin: updateUserDto.isOrganizationAdmin,
+    });
+
+    return this.userService.buildUserRO(user);
   }
 }
