@@ -4,6 +4,7 @@ import { SetMetadata } from '@nestjs/common';
 export interface AuthenticatedUserParameters {
   permissions?: PermissionEnum[];
   isAdmin?: boolean;
+  isOrganizationAdmin?: boolean;
   readonly isGuarded?: boolean;
 }
 
