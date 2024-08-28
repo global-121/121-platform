@@ -45,6 +45,7 @@ describe('EmailsService', () => {
 
     const { subject, body } = createNonSSOUserTemplate(
       payload.displayName,
+      payload.email,
       payload.password || '',
     );
 
@@ -68,6 +69,7 @@ describe('EmailsService', () => {
 
     const { subject, body } = passwordResetTemplate(
       payload.displayName,
+      payload.email,
       payload.password || '',
     );
 
