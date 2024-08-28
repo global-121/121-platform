@@ -15,6 +15,26 @@ const BASE_ENDPOINT = 'programs';
   providedIn: 'root',
 })
 export class ProjectApiService extends DomainApiService {
+  createProjectFromKobo({
+    token,
+    assetId,
+  }: {
+    token: string;
+    assetId: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Project | undefined
+    >({
+      method: 'POST',
+      endpoint: BASE_ENDPOINT,
+      params: {
+        importFromKobo: true,
+        koboToken: token,
+        koboAssetId: assetId,
+      },
+    });
+  }
+
   getProject(projectId: Signal<number | undefined>) {
     return this.generateQueryOptions<Project>({
       path: [BASE_ENDPOINT, projectId],
@@ -44,27 +64,6 @@ export class ProjectApiService extends DomainApiService {
         );
 
         return usersWithRolesLabel;
-      },
-    });
-  }
-
-  // TODO: Move to end of this file (outside of "project user"-related methods)
-  createProjectFromKobo({
-    token,
-    assetId,
-  }: {
-    token: string;
-    assetId: string;
-  }) {
-    return this.httpWrapperService.perform121ServiceRequest<
-      Project | undefined
-    >({
-      method: 'POST',
-      endpoint: BASE_ENDPOINT,
-      params: {
-        importFromKobo: true,
-        koboToken: token,
-        koboAssetId: assetId,
       },
     });
   }
