@@ -98,5 +98,5 @@ export class UserEntity extends CascadeDeleteEntity {
   public isOrganizationAdmin: boolean;
 
   @Column({ type: 'character varying', nullable: false })
-  public displayName: string | null;
+  public displayName: string;
 }

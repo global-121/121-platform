@@ -8,6 +8,7 @@ export interface UserData {
   isEntraUser?: boolean;
   lastLogin?: Date;
   expires?: Date;
+  displayName?: string;
   isOrganizationAdmin?: boolean;
 }
 
