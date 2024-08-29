@@ -127,10 +127,7 @@ export class ProjectTeamComponent {
         label: $localize`:@@generic-edit:Edit`,
         icon: 'pi pi-pencil',
         command: () => {
-          this.toastService.showToast({
-            detail: `Edit functionality has not been implemented yet so don't be impatient`,
-            severity: 'warn',
-          });
+          // toggle sidebar with edit form
         },
       },
       {

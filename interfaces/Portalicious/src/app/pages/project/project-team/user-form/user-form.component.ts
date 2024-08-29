@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
-  signal,
 } from '@angular/core';
 import {
   FormControl,
@@ -16,7 +18,6 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -25,7 +26,7 @@ import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { UserApiService } from '~/domains/user/user.api.service';
-import { UserFormComponent } from '~/pages/project/project-team/user-form/user-form.component';
+import type { AddUserButtonComponent } from '~/pages/project/project-team/add-user-button/add-user-button.component';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -36,23 +37,22 @@ type AddUserToTeamFormGroup =
   (typeof AddUserButtonComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-add-user-button',
-  styles: ``,
+  selector: 'app-user-form',
   standalone: true,
-  templateUrl: './add-user-button.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ButtonModule,
     FormSidebarComponent,
     FormFieldWrapperComponent,
     DropdownModule,
     MultiSelectModule,
     InputTextModule,
     ReactiveFormsModule,
-    UserFormComponent,
   ],
+  templateUrl: './user-form.component.html',
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddUserButtonComponent {
+export class UserFormComponent {
+  mode = input.required<'edit' | 'new'>();
   projectId = input.required<number>();
   enableScope = input.required<boolean | undefined>();
 
@@ -67,7 +67,8 @@ export class AddUserButtonComponent {
     this.projectApiService.getProjectUsers(this.projectId),
   );
 
-  formVisible = signal(false);
+  formTitle = input.required<string>();
+  formVisible = input.required<boolean>();
 
   formGroup = new FormGroup({
     userValue: new FormControl<number>(-1, {
@@ -119,6 +120,12 @@ export class AddUserButtonComponent {
     );
   });
 
+  getMutation() {
+    return this.mode() === 'edit'
+      ? this.updateUserAssignmentMutation
+      : this.assignUserMutation;
+  }
+
   assignUserMutation = injectMutation(() => ({
     mutationFn: ({
       userValue,
@@ -132,14 +139,38 @@ export class AddUserButtonComponent {
       });
     },
     onSuccess: () => {
-      this.formVisible.set(false);
-      this.formGroup.reset();
-
-      this.toastService.showToast({
-        detail: $localize`User added`,
-      });
-
-      void this.projectApiService.invalidateCache(this.projectId);
+      this.onSubmitSuccess($localize`User added`);
     },
   }));
+
+  updateUserAssignmentMutation = injectMutation(() => ({
+    mutationFn: ({
+      userValue,
+      rolesValue,
+      scopeValue,
+    }: Required<AddUserToTeamFormGroup['value']>) => {
+      return this.projectApiService.updateProjectUserAssignment(
+        this.projectId,
+        {
+          userId: userValue,
+          roles: rolesValue,
+          scope: scopeValue,
+        },
+      );
+    },
+    onSuccess: () => {
+      this.onSubmitSuccess($localize`User assignment updated`);
+    },
+  }));
+
+  onSubmitSuccess(message: string) {
+    this.formVisible.set(false);
+    this.formGroup.reset();
+
+    this.toastService.showToast({
+      detail: message,
+    });
+
+    void this.projectApiService.invalidateCache(this.projectId);
+  }
 }

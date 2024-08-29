@@ -1,27 +1,8 @@
-<p-button
-  label="Add team member"
-  i18n-label="@@add-team-member"
-  rounded
-  icon="pi pi-plus"
-  (click)="formVisible.set(true)"
-/>
-
-<app-user-form
-  [projectId]="projectId()"
-  [enableScope]="enableScope()"
-  [formVisible]="formVisible()"
-  [mode]="'new'"
-  formTitle="Add team member"
-  i18n-formTitle="@@add-team-member"
-/>
-
-<!--
 <app-form-sidebar
-  [(visible)]="formVisible"
+  [visible]="formVisible()"
   [formGroup]="formGroup"
-  [mutation]="assignUserMutation"
-  formTitle="Add team member"
-  i18n-formTitle="@@add-team-member"
+  [mutation]="getMutation()"
+  [formTitle]="formTitle()"
 >
   <app-form-field-wrapper
     label="Choose user"
@@ -94,4 +75,3 @@
     </app-form-field-wrapper>
   }
 </app-form-sidebar>
--->
