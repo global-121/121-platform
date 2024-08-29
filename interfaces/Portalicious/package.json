@@ -18,6 +18,7 @@
     "test:all": "npm run lint && npm test",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "test": "ng test",
+    "typecheck": "npx tsc --noEmit",
     "extract-i18n": "ng extract-i18n"
   },
   "private": true,
@@ -60,6 +61,7 @@
     "eslint-plugin-no-relative-import-paths": "^1.5.5",
     "eslint-plugin-perfectionist": "^2.11.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-regexp": "^2.6.0",
     "globals": "^15.7.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",

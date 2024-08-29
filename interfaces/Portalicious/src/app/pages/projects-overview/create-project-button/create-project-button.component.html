@@ -22,7 +22,8 @@
       pInputText
       type="text"
       formControlName="assetId"
-      autocomplete="off"
+      autocomplete="one-time-code"
+      class="font-mono"
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
@@ -32,7 +33,7 @@
   >
     <p-password
       formControlName="token"
-      autocomplete="off"
+      autocomplete="one-time-code"
       [toggleMask]="true"
       [feedback]="false"
     />

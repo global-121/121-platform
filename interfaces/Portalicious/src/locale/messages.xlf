@@ -63,7 +63,7 @@
       <trans-unit id="4371726377430146531" datatype="html">
         <source>Questions or feedback? Contact us</source>
       </trans-unit>
-      <trans-unit id="4501314745488687296" datatype="html">
+      <trans-unit id="generic-opens-in-new-window" datatype="html">
         <source>Opens in a new window</source>
       </trans-unit>
       <trans-unit id="page-title-users" datatype="html">
@@ -218,7 +218,7 @@
         <source>No Project-ID returned.</source>
       </trans-unit>
       <trans-unit id="generic-error" datatype="html">
-        <source>An unexpected error has occurred. Please try again later.</source>
+        <source>Error</source>
       </trans-unit>
       <trans-unit id="error-rate-limit" datatype="html">
         <source>Rate limit exceeded. Please try again later.</source>
@@ -271,9 +271,6 @@
       <trans-unit id="form-quick-search" datatype="html">
         <source>Search keyword</source>
       </trans-unit>
-      <trans-unit id="541221802269521915" datatype="html">
-        <source>Add user to team</source>
-      </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>
       </trans-unit>
@@ -283,10 +280,7 @@
       <trans-unit id="generic-cancel" datatype="html">
         <source>Cancel</source>
       </trans-unit>
-      <trans-unit id="generic-toast-error-header" datatype="html">
-        <source>Error</source>
-      </trans-unit>
-      <trans-unit id="generic-toast-success-header" datatype="html">
+      <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
       </trans-unit>
       <trans-unit id="2236371857137398396" datatype="html">
@@ -299,7 +293,7 @@
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
       </trans-unit>
-      <trans-unit id="remove-user-title" datatype="html">
+      <trans-unit id="4533999713544924009" datatype="html">
         <source>Remove user from team</source>
       </trans-unit>
       <trans-unit id="generic-proceed" datatype="html">
@@ -307,6 +301,36 @@
       </trans-unit>
       <trans-unit id="confirmation-dialog-header" datatype="html">
         <source>Are you sure?</source>
+      </trans-unit>
+      <trans-unit id="4273825032754891897" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
+      </trans-unit>
+      <trans-unit id="2372906683883945604" datatype="html">
+        <source>Choose user</source>
+      </trans-unit>
+      <trans-unit id="generic-type-or-select" datatype="html">
+        <source>Type or select</source>
+      </trans-unit>
+      <trans-unit id="5017538200388607229" datatype="html">
+        <source>Assign roles</source>
+      </trans-unit>
+      <trans-unit id="5395278318341499807" datatype="html">
+        <source>Assign scope</source>
+      </trans-unit>
+      <trans-unit id="5438647545299330818" datatype="html">
+        <source>Enter a valid scope. No spaces are allowed.</source>
+      </trans-unit>
+      <trans-unit id="8200577595704036068" datatype="html">
+        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
+      <trans-unit id="834363245149274787" datatype="html">
+        <source>User added</source>
+      </trans-unit>
+      <trans-unit id="add-team-member" datatype="html">
+        <source>Add team member</source>
+      </trans-unit>
+      <trans-unit id="generic-error-try-again" datatype="html">
+        <source>An unexpected error has occurred. Please try again later.</source>
       </trans-unit>
     </body>
   </file>

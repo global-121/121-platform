@@ -7,6 +7,7 @@ import {
 
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { FocusTrapModule } from 'primeng/focustrap';
 import { SidebarModule } from 'primeng/sidebar';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormComponent } from '~/components/form/form.component';
@@ -19,6 +20,7 @@ import { FormComponent } from '~/components/form/form.component';
     ReactiveFormsModule,
     FormErrorComponent,
     SidebarModule,
+    FocusTrapModule,
   ],
   templateUrl: './form-sidebar.component.html',
   styles: ``,
