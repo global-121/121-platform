@@ -11,7 +11,7 @@
 @import 'tailwindcss/utilities.css' layer(tailwind-utilities);
 
 html {
-  font-size: 14px;
+  font-size: calc(14 / 16 * 1rem);
 }
 
 body {
@@ -47,18 +47,30 @@ body {
   }
 }
 
-// For now we're just overriding some defaults here
-// instead of extending the whole theme, while we wait
-// for PrimeNG v18 to be released with the new theming system.
-
-:root {
-  // primeng uses this variable on all of its components by default
-  --font-family: theme(fontFamily.body);
-}
-
-$toolbar-height: 48px;
-
+// PrimeNG Component overrides
+//
+// For now we're just overriding some defaults here instead of extending the whole theme,
+// while we wait for PrimeNG v18 to be released with the new theming system.
+//
+// Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
+// Following the pattern:
+//
+// .p-component-X {
+//   .p-component-X-element {
+//     // Override styles here
+//   }
+// }
+//
+// So there will only be ONE section/grouping per PrimeNG component.
+//
 @layer primeng {
+  :root {
+    // primeng uses this variable on all of its components by default
+    --font-family: theme(fontFamily.body);
+  }
+
+  $toolbar-height: calc(48 / 14 * 1rem);
+
   .p-button {
     .p-button-label {
       @apply txt-system-bold-m;
@@ -81,9 +93,11 @@ $toolbar-height: 48px;
     }
   }
 
-  .p-tabmenu .p-tabmenu-nav,
-  .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
-    border-color: transparent;
+  .p-tabmenu {
+    .p-tabmenu-nav,
+    .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+      border-color: transparent;
+    }
   }
 
   .p-sidebar {
@@ -117,37 +131,48 @@ $toolbar-height: 48px;
     }
   }
 
-  .p-toast-message-content {
-    border: none;
+  .p-toast {
+    .p-toast-message-content {
+      border: none;
+    }
   }
 
-  // apply these styles only when the table is inside a card
-  .p-card .p-datatable {
-    .p-datatable-header {
-      @apply px-0 pb-4 pt-0;
-    }
+  .p-datatable {
+    // Apply these styles ONLY when the table is INSIDE a Card
+    .p-card & {
+      .p-datatable-header {
+        @apply px-0 pb-4 pt-0;
+      }
 
-    .p-paginator {
-      @apply border-b-0 pb-0 pt-4;
+      .p-paginator {
+        @apply border-b-0 pb-0 pt-4;
 
-      .p-paginator-current {
-        @apply me-auto ms-0 ps-0 txt-system-s;
+        .p-paginator-current {
+          @apply me-auto ms-0 ps-0 txt-system-s;
+        }
       }
     }
   }
 
-  // Form inputs (Overrides for PrimeNG-components)
-  // All inputs used inside a form-field-wrapper, should be full-width, the wrapper should be in control of the width.
-  app-form-field-wrapper {
-    .p-password,
-    .p-dropdown,
-    .p-multiselect {
-      @apply w-full;
-    }
+  // All form-inputs should be full-width, a wrapper should be in control of the width.
+  .p-password,
+  .p-dropdown,
+  .p-multiselect {
+    @apply w-full;
+
     .p-dropdown-panel,
     .p-multiselect-panel {
       @apply max-w-full;
     }
+  }
+
+  .p-password {
+    .p-password-input {
+      @apply font-mono; // Improve readability and spot typos between similar characters (o,O,0 or i,l,L,1 etc.)
+    }
+  }
+
+  .p-multiselect {
     // Prevent contents being cut off, always wrap and align checkboxes to the top
     .p-multiselect-item {
       @apply items-start text-wrap;
