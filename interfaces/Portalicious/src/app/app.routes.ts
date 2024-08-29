@@ -5,6 +5,9 @@ import { ChangePasswordComponent } from '~/pages/change-password/change-password
 import { LoginComponent } from '~/pages/login/login.component';
 import { ProjectMonitoringComponent } from '~/pages/project/project-monitoring/project-monitoring.component';
 import { ProjectPaymentsComponent } from '~/pages/project/project-payments/project-payments.component';
+import { ProjectRegistrationActivityLogPageComponent } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
+import { ProjectRegistrationDebitCardsPageComponent } from '~/pages/project/project-registrations/project-registration-debit-cards/project-registration-debit-cards.page';
+import { ProjectRegistrationPersonalInformationPageComponent } from '~/pages/project/project-registrations/project-registration-personal-information/project-registration-personal-information.page';
 import { ProjectRegistrationsComponent } from '~/pages/project/project-registrations/project-registrations.component';
 import { ProjectTeamComponent } from '~/pages/project/project-team/project-team.component';
 import { ProjectsOverviewComponent } from '~/pages/projects-overview/projects-overview.component';
@@ -18,6 +21,9 @@ export enum AppRoutes {
   projectMonitoring = 'monitoring',
   projectPayments = 'payments',
   projectRegistration = 'registration',
+  projectRegistrationActivityLog = 'activity-log',
+  projectRegistrationDebitCards = 'debit-cards',
+  projectRegistrationPersonalInformation = 'personal-information',
   projectRegistrations = 'registrations',
   projects = 'projects',
   projectTeam = 'team',
@@ -72,6 +78,28 @@ export const routes: Routes = [
       {
         path: AppRoutes.projectRegistrations,
         component: ProjectRegistrationsComponent,
+      },
+      {
+        path: AppRoutes.projectRegistration,
+        children: [
+          {
+            path: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
+            component: ProjectRegistrationActivityLogPageComponent,
+          },
+          {
+            path: `:registrationId/${AppRoutes.projectRegistrationPersonalInformation}`,
+            component: ProjectRegistrationPersonalInformationPageComponent,
+          },
+          {
+            path: `:registrationId/${AppRoutes.projectRegistrationDebitCards}`,
+            component: ProjectRegistrationDebitCardsPageComponent,
+          },
+          {
+            path: `:registrationId`,
+            pathMatch: 'full',
+            redirectTo: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
+          },
+        ],
       },
       { path: AppRoutes.projectPayments, component: ProjectPaymentsComponent },
       {

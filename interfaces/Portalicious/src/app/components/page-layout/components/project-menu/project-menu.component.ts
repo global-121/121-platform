@@ -12,13 +12,13 @@ import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 
 @Component({
-  selector: 'app-project-header',
+  selector: 'app-project-menu',
   standalone: true,
   imports: [TabMenuModule],
-  templateUrl: './project-header.component.html',
+  templateUrl: './project-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectHeaderComponent {
+export class ProjectMenuComponent {
   private authService = inject(AuthService);
   projectId = input.required<number>();
 

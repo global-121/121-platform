@@ -7,7 +7,13 @@ import {
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
 
-export type ChipVariant = 'blue' | 'green' | 'purple';
+export type ChipVariant =
+  | 'blue'
+  | 'green'
+  | 'grey'
+  | 'orange'
+  | 'purple'
+  | 'red';
 
 @Component({
   selector: 'app-colored-chip',
@@ -39,6 +45,12 @@ export class ColoredChipComponent {
         return `${baseClass} bg-green-100 text-green-700`;
       case 'purple':
         return `${baseClass} bg-purple-100 text-purple-700`;
+      case 'red':
+        return `${baseClass} bg-red-100 text-red-700`;
+      case 'orange':
+        return `${baseClass} bg-orange-100 text-orange-700`;
+      case 'grey':
+        return `${baseClass} bg-grey-100 text-grey-700`;
       default:
         return '';
     }

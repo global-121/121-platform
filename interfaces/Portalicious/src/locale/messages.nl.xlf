@@ -147,10 +147,6 @@
         <source>project-payments works!</source>
         <target state="new">project-payments werkt!</target>
       </trans-unit>
-      <trans-unit id="6118183885046046400" datatype="html">
-        <source>project-registrations works!</source>
-        <target state="new">project-registrations werkt!</target>
-      </trans-unit>
       <trans-unit id="8837209833313387366" datatype="html">
         <source>roles-and-permissions works!</source>
         <target state="new">roles-and-permissions werkt!</target>
@@ -518,6 +514,90 @@
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
         <target state="new">User updated</target>
+      </trans-unit>
+      <trans-unit id="add-note" datatype="html">
+        <source>Add note</source>
+        <target state="new">Add note</target>
+      </trans-unit>
+      <trans-unit id="350646349607555710" datatype="html">
+        <source>Registered:</source>
+        <target state="new">Registered:</target>
+      </trans-unit>
+      <trans-unit id="registration-status" datatype="html">
+        <source>Status</source>
+        <target state="new">Status</target>
+      </trans-unit>
+      <trans-unit id="registration-phone-number" datatype="html">
+        <source>Phone number</source>
+        <target state="new">Phone number</target>
+      </trans-unit>
+      <trans-unit id="registration-payments" datatype="html">
+        <source>Payments</source>
+        <target state="new">Payments</target>
+      </trans-unit>
+      <trans-unit id="registration-scope" datatype="html">
+        <source>Scope</source>
+        <target state="new">Scope</target>
+      </trans-unit>
+      <trans-unit id="7786605624712277167" datatype="html">
+        <source><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</source>
+        <target state="new"><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</target>
+      </trans-unit>
+      <trans-unit id="8915674564851115041" datatype="html">
+        <source>label</source>
+        <target state="new">label</target>
+      </trans-unit>
+      <trans-unit id="3375720161310377589" datatype="html">
+        <source>value</source>
+        <target state="new">value</target>
+      </trans-unit>
+      <trans-unit id="8285202625820348519" datatype="html">
+        <source>registration-debit-cards works</source>
+        <target state="new">registration-debit-cards works</target>
+      </trans-unit>
+      <trans-unit id="1533306147940335597" datatype="html">
+        <source>registration-personal-information works</source>
+        <target state="new">registration-personal-information works</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-activity-log" datatype="html">
+        <source>Activity-log</source>
+        <target state="new">Activity-log</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-personal-information" datatype="html">
+        <source>Personal-information</source>
+        <target state="new">Personal-information</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-debit-cards" datatype="html">
+        <source>Debit-cards</source>
+        <target state="new">Debit-cards</target>
+      </trans-unit>
+      <trans-unit id="registration-status-included" datatype="html">
+        <source>Included</source>
+        <target state="new">Included</target>
+      </trans-unit>
+      <trans-unit id="registration-status-registered" datatype="html">
+        <source>Registered</source>
+        <target state="new">Registered</target>
+      </trans-unit>
+      <trans-unit id="registration-status-validated" datatype="html">
+        <source>Validated</source>
+        <target state="new">Validated</target>
+      </trans-unit>
+      <trans-unit id="registration-status-declined" datatype="html">
+        <source>Declined</source>
+        <target state="new">Declined</target>
+      </trans-unit>
+      <trans-unit id="registration-status-completed" datatype="html">
+        <source>Completed</source>
+        <target state="new">Completed</target>
+      </trans-unit>
+      <trans-unit id="registration-status-deleted" datatype="html">
+        <source>Deleted</source>
+        <target state="new">Deleted</target>
+      </trans-unit>
+      <trans-unit id="registration-status-paused" datatype="html">
+        <source>Paused</source>
+        <target state="new">Paused</target>
       </trans-unit>
     </body>
   </file>

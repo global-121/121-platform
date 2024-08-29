@@ -102,9 +102,6 @@
       <trans-unit id="7807685431509530550" datatype="html">
         <source>API Documentation</source>
       </trans-unit>
-      <trans-unit id="6118183885046046400" datatype="html">
-        <source>project-registrations works!</source>
-      </trans-unit>
       <trans-unit id="8837209833313387366" datatype="html">
         <source>roles-and-permissions works!</source>
       </trans-unit>
@@ -391,6 +388,69 @@
       </trans-unit>
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
+      </trans-unit>
+      <trans-unit id="1533306147940335597" datatype="html">
+        <source>registration-personal-information works</source>
+      </trans-unit>
+      <trans-unit id="3375720161310377589" datatype="html">
+        <source>value</source>
+      </trans-unit>
+      <trans-unit id="350646349607555710" datatype="html">
+        <source>Registered:</source>
+      </trans-unit>
+      <trans-unit id="7786605624712277167" datatype="html">
+        <source><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</source>
+      </trans-unit>
+      <trans-unit id="8285202625820348519" datatype="html">
+        <source>registration-debit-cards works</source>
+      </trans-unit>
+      <trans-unit id="8915674564851115041" datatype="html">
+        <source>label</source>
+      </trans-unit>
+      <trans-unit id="add-note" datatype="html">
+        <source>Add note</source>
+      </trans-unit>
+      <trans-unit id="registration-payments" datatype="html">
+        <source>Payments</source>
+      </trans-unit>
+      <trans-unit id="registration-phone-number" datatype="html">
+        <source>Phone number</source>
+      </trans-unit>
+      <trans-unit id="registration-scope" datatype="html">
+        <source>Scope</source>
+      </trans-unit>
+      <trans-unit id="registration-status" datatype="html">
+        <source>Status</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-activity-log" datatype="html">
+        <source>Activity-log</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-debit-cards" datatype="html">
+        <source>Debit-cards</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-personal-information" datatype="html">
+        <source>Personal-information</source>
+      </trans-unit>
+      <trans-unit id="registration-status-included" datatype="html">
+        <source>Included</source>
+      </trans-unit>
+      <trans-unit id="registration-status-completed" datatype="html">
+        <source>Completed</source>
+      </trans-unit>
+      <trans-unit id="registration-status-declined" datatype="html">
+        <source>Declined</source>
+      </trans-unit>
+      <trans-unit id="registration-status-deleted" datatype="html">
+        <source>Deleted</source>
+      </trans-unit>
+      <trans-unit id="registration-status-paused" datatype="html">
+        <source>Paused</source>
+      </trans-unit>
+      <trans-unit id="registration-status-registered" datatype="html">
+        <source>Registered</source>
+      </trans-unit>
+      <trans-unit id="registration-status-validated" datatype="html">
+        <source>Validated</source>
       </trans-unit>
     </body>
   </file>

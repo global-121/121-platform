@@ -2,20 +2,36 @@
   <app-header [projectId]="projectId()" />
   <div class="flex-1">
     @if (projectId()) {
-      <app-project-header [projectId]="projectId()!" />
+      <app-project-menu [projectId]="projectId()!" />
     }
-    <div class="px-6 py-8 lg:px-24">
-      @if (pageTitle()) {
-        <div class="flex items-start justify-between pb-9 pt-1">
-          <h1 class="my-0 min-w-48">
-            {{ pageTitle() }}
-          </h1>
+    @if (registrationId()) {
+      <div class="mt-2 px-6 pb-8 pt-4 lg:px-24">
+        <app-registration-header
+          [projectId]="projectId()!"
+          [registrationId]="registrationId()!"
+        />
+        <p-card styleClass="mt-6">
+          <app-registration-menu
+            [projectId]="projectId()!"
+            [registrationId]="registrationId()!"
+          />
+          <ng-content select="[registration-profile]"></ng-content>
+        </p-card>
+      </div>
+    } @else {
+      <div class="px-6 py-8 lg:px-24">
+        @if (pageTitle()) {
+          <div class="flex items-start justify-between pb-9 pt-1">
+            <h1 class="my-0 min-w-48">
+              {{ pageTitle() }}
+            </h1>
 
-          <ng-content select="[header-actions]"></ng-content>
-        </div>
-      }
-      <ng-content></ng-content>
-    </div>
+            <ng-content select="[header-actions]"></ng-content>
+          </div>
+        }
+        <ng-content></ng-content>
+      </div>
+    }
   </div>
   <app-footer />
 </div>
