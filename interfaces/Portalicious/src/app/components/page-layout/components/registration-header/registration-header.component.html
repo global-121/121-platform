@@ -1,0 +1,21 @@
+<p-card
+  styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
+  i18n
+>
+  <ng-template pTemplate="title"> Amin Maalouf </ng-template>
+
+  <ng-template pTemplate="content">
+    <dl class="flex flex-wrap divide-y">
+      <div class="basis-1/2 border-b border-grey-100 px-1 py-2">Status:</div>
+      <div class="basis-1/2 border-b border-grey-100 px-1 py-2">
+        Phone number:
+      </div>
+      <div class="basis-1/2 border-b border-grey-100 px-1 py-2">Payments:</div>
+      <div class="basis-1/2 border-b border-grey-100 px-1 py-2">Scope:</div>
+    </dl>
+  </ng-template>
+</p-card>
+<div class="p-4"></div>
+<div class="w-full bg-white px-2 pt-2">
+  <p-tabMenu [model]="navMenuItems()" />
+</div>

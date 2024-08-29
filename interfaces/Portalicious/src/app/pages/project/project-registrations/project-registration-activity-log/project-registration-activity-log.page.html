@@ -1,0 +1,24 @@
+<app-page-layout
+  pageTitle=""
+  i18n-pageTitle="@@page-title-project-registration-activity-log"
+  [projectId]="projectId()"
+  [registrationId]="registrationId()"
+>
+  <div registration-profile>
+    <p-card
+      styleClass="[&_.p-card-content]:flex-end group relative h-full border border-transparent *:h-full [&_.p-card-title]:flex-grow"
+      i18n
+    >
+      <div class="mt-5">
+        <p-selectButton
+          [options]="stateOptions"
+          [(ngModel)]="value"
+          optionLabel="label"
+          i18n-optionLabel
+          optionValue="value"
+          i18n-optionValue
+        />
+      </div>
+    </p-card>
+  </div>
+</app-page-layout>
