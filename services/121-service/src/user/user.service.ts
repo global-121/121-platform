@@ -598,7 +598,7 @@ export class UserService {
       isAdmin: user.admin,
       isEntraUser: user.isEntraUser,
       lastLogin: user.lastLogin ?? undefined,
-      displayName: user.displayName ?? undefined,
+      displayName: user.displayName,
       isOrganizationAdmin: user.isOrganizationAdmin,
     };
 
