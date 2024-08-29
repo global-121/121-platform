@@ -18,8 +18,8 @@ export class ToastService {
       summary: message.summary
         ? message.summary
         : message.severity === 'error'
-          ? $localize`:@@generic-toast-error-header:Error`
-          : $localize`:@@generic-toast-success-header:Success`,
+          ? $localize`:@@generic-error:Error`
+          : $localize`:@@generic-success:Success`,
       detail: message.detail,
       key: ToastService.TOAST_KEY,
     });
@@ -28,7 +28,7 @@ export class ToastService {
   showGenericError() {
     this.showToast({
       severity: 'error',
-      detail: $localize`:@@generic-error:An unexpected error has occurred. Please try again later.`,
+      detail: $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
     });
   }
 }

@@ -218,7 +218,7 @@
         <source>No Project-ID returned.</source>
       </trans-unit>
       <trans-unit id="generic-error" datatype="html">
-        <source>An unexpected error has occurred. Please try again later.</source>
+        <source>Error</source>
       </trans-unit>
       <trans-unit id="error-rate-limit" datatype="html">
         <source>Rate limit exceeded. Please try again later.</source>
@@ -280,10 +280,7 @@
       <trans-unit id="generic-cancel" datatype="html">
         <source>Cancel</source>
       </trans-unit>
-      <trans-unit id="generic-toast-error-header" datatype="html">
-        <source>Error</source>
-      </trans-unit>
-      <trans-unit id="generic-toast-success-header" datatype="html">
+      <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
       </trans-unit>
       <trans-unit id="2236371857137398396" datatype="html">
@@ -296,7 +293,7 @@
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
       </trans-unit>
-      <trans-unit id="remove-user-title" datatype="html">
+      <trans-unit id="4533999713544924009" datatype="html">
         <source>Remove user from team</source>
       </trans-unit>
       <trans-unit id="generic-proceed" datatype="html">
@@ -331,6 +328,9 @@
       </trans-unit>
       <trans-unit id="add-team-member" datatype="html">
         <source>Add team member</source>
+      </trans-unit>
+      <trans-unit id="generic-error-try-again" datatype="html">
+        <source>An unexpected error has occurred. Please try again later.</source>
       </trans-unit>
     </body>
   </file>

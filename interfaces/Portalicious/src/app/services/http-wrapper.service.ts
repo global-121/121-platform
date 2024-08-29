@@ -125,7 +125,7 @@ export class HttpWrapperService {
     if (error.status === HttpStatusCode.InternalServerError) {
       return of(
         new Error(
-          $localize`:@@generic-error:An unexpected error has occurred. Please try again later.`,
+          $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
         ),
       );
     }

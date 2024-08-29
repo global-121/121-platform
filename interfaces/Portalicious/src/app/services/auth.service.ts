@@ -137,7 +137,7 @@ export class AuthService {
 
     if (!username) {
       throw new Error(
-        $localize`:@@generic-error:An unexpected error has occurred. Please try again later.`,
+        $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
       );
     }
 

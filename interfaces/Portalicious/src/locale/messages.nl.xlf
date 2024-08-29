@@ -291,8 +291,8 @@
         <target state="new">Project successfully created.</target>
       </trans-unit>
       <trans-unit id="generic-error" datatype="html">
-        <source>An unexpected error has occurred. Please try again later.</source>
-        <target state="new">An unexpected error has occurred. Please try again later.</target>
+        <source>Error</source>
+        <target state="new">Error</target>
       </trans-unit>
       <trans-unit id="error-rate-limit" datatype="html">
         <source>Rate limit exceeded. Please try again later.</source>
@@ -358,7 +358,7 @@
         <source>Search keyword</source>
         <target state="new">Search keyword</target>
       </trans-unit>
-      <trans-unit id="remove-user-title" datatype="html">
+      <trans-unit id="4533999713544924009" datatype="html">
         <source>Remove user from team</source>
         <target state="new">Remove user from team</target>
       </trans-unit>
@@ -374,11 +374,7 @@
         <source>User removed</source>
         <target state="new">User removed</target>
       </trans-unit>
-      <trans-unit id="generic-toast-error-header" datatype="html">
-        <source>Error</source>
-        <target state="new">Error</target>
-      </trans-unit>
-      <trans-unit id="generic-toast-success-header" datatype="html">
+      <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
         <target state="new">Success</target>
       </trans-unit>
@@ -438,6 +434,10 @@
       <trans-unit id="834363245149274787" datatype="html">
         <source>User added</source>
         <target state="new">User added</target>
+      </trans-unit>
+      <trans-unit id="generic-error-try-again" datatype="html">
+        <source>An unexpected error has occurred. Please try again later.</source>
+        <target state="new">An unexpected error has occurred. Please try again later.</target>
       </trans-unit>
     </body>
   </file>
