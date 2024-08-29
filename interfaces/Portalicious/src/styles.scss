@@ -133,7 +133,7 @@ body {
 
   .p-toast {
     .p-toast-message-content {
-      border: none;
+      border: none; // Hide the 'thick' border, the box-shadow alone is enough emphasis
     }
   }
 
