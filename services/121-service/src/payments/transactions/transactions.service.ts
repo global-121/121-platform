@@ -215,6 +215,7 @@ export class TransactionsService {
           messageProcessType:
             MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
           bulksize: transactionNotification.bulkSize,
+          userId: relationDetails.userId,
         });
       }
     }

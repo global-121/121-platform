@@ -1,10 +1,16 @@
-import { ChangeDetectionStrategy, Component, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  model,
+} from '@angular/core';
 
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { FocusTrapModule } from 'primeng/focustrap';
 import { SidebarModule } from 'primeng/sidebar';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { FormBaseComponent } from '~/components/form/components/form-base/form-base.component';
+import { FormComponent } from '~/components/form/form.component';
 
 @Component({
   selector: 'app-form-sidebar',
@@ -14,6 +20,7 @@ import { FormBaseComponent } from '~/components/form/components/form-base/form-b
     ReactiveFormsModule,
     FormErrorComponent,
     SidebarModule,
+    FocusTrapModule,
   ],
   templateUrl: './form-sidebar.component.html',
   styles: ``,
@@ -21,6 +28,7 @@ import { FormBaseComponent } from '~/components/form/components/form-base/form-b
 })
 export class FormSidebarComponent<
   T extends FormGroup,
-> extends FormBaseComponent<T> {
+> extends FormComponent<T> {
   visible = model<boolean>(false);
+  formTitle = input.required<string>();
 }

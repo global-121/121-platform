@@ -73,6 +73,7 @@ export class RegistrationsBulkService {
     programId: number,
     registrationStatus: RegistrationStatusEnum,
     dryRun: boolean,
+    userId: number,
     message?: string,
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
@@ -107,6 +108,7 @@ export class RegistrationsBulkService {
         registrationStatus,
         usedPlaceholders,
         allowedCurrentStatuses,
+        userId,
         message,
         messageTemplateKey,
         messageContentType,
@@ -123,6 +125,7 @@ export class RegistrationsBulkService {
     paginateQuery: PaginateQuery,
     programId: number,
     dryRun: boolean,
+    userId: number,
   ): Promise<BulkActionResultDto> {
     paginateQuery = this.setQueryPropertiesBulkAction(
       paginateQuery,
@@ -141,11 +144,14 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
     if (!dryRun) {
-      this.deleteBatch(paginateQuery, programId, allowedCurrentStatuses).catch(
-        (error) => {
-          this.azureLogService.logError(error, true);
-        },
-      );
+      this.deleteBatch(
+        paginateQuery,
+        programId,
+        allowedCurrentStatuses,
+        userId,
+      ).catch((error) => {
+        this.azureLogService.logError(error, true);
+      });
     }
     return resultDto;
   }
@@ -156,6 +162,7 @@ export class RegistrationsBulkService {
     message: string,
     messageTemplateKey: string,
     dryRun: boolean,
+    userId: number,
   ): Promise<BulkActionResultDto> {
     if (messageTemplateKey) {
       await this.validateTemplateKey(programId, messageTemplateKey);
@@ -189,6 +196,7 @@ export class RegistrationsBulkService {
         resultDto.applicableCount,
         usedPlaceholders,
         messageTemplateKey,
+        userId,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -204,6 +212,7 @@ export class RegistrationsBulkService {
     bulkSize: number,
     usedPlaceholders: string[],
     messageTemplateKey: string,
+    userId: number,
   ): Promise<void> {
     paginateQuery.limit = chunkSize;
     const registrationsMetadata =
@@ -232,6 +241,7 @@ export class RegistrationsBulkService {
         message,
         bulkSize,
         usedPlaceholders,
+        userId,
         messageTemplateKey,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
@@ -329,6 +339,7 @@ export class RegistrationsBulkService {
     registrationStatus: RegistrationStatusEnum,
     usedPlaceholders: string[],
     allowedCurrentStatuses: RegistrationStatusEnum[],
+    userId: number,
     message?: string,
     messageTemplateKey?: string,
     messageContentType?: MessageContentType,
@@ -361,6 +372,7 @@ export class RegistrationsBulkService {
         );
       await this.updateRegistrationStatusChunk(
         registrationsForUpdate.data,
+        userId,
         registrationStatus,
         {
           message,
@@ -377,6 +389,7 @@ export class RegistrationsBulkService {
     filteredRegistrations: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
     >['data'],
+    userId: number,
     registrationStatus: RegistrationStatusEnum,
     messageSizeType?: Partial<MessageSizeTypeDto>,
     usedPlaceholders?: string[],
@@ -431,6 +444,7 @@ export class RegistrationsBulkService {
             messageProcessType,
             customData: { placeholderData },
             bulksize: bulkSize,
+            userId,
           });
         } catch (error) {
           if (process.env.NODE_ENV === 'development') {
@@ -447,6 +461,7 @@ export class RegistrationsBulkService {
     paginateQuery: PaginateQuery,
     programId: number,
     allowedCurrentStatuses: RegistrationStatusEnum[],
+    userId: number,
   ): Promise<void> {
     const chunkSize = 10000;
     paginateQuery.limit = chunkSize;
@@ -475,7 +490,7 @@ export class RegistrationsBulkService {
           ),
         );
 
-      await this.deleteRegistrationsChunk(registrationsForDelete.data);
+      await this.deleteRegistrationsChunk(registrationsForDelete.data, userId);
     }
   }
 
@@ -483,9 +498,11 @@ export class RegistrationsBulkService {
     registrationsForDelete: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
     >['data'],
+    userId: number,
   ): Promise<void> {
     await this.updateRegistrationStatusChunk(
       registrationsForDelete,
+      userId,
       RegistrationStatusEnum.deleted,
     );
     const registrationsIds = registrationsForDelete.map((r) => r.id);
@@ -574,6 +591,7 @@ export class RegistrationsBulkService {
     message: string,
     bulksize: number,
     usedPlaceholders: string[],
+    userId: number,
     messageTemplateKey?: string,
   ): Promise<void> {
     for (const registration of registrations) {
@@ -590,6 +608,7 @@ export class RegistrationsBulkService {
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         customData: { placeholderData },
         bulksize,
+        userId,
       });
     }
   }

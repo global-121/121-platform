@@ -4,15 +4,15 @@
   outlined
   rounded
   icon="pi pi-plus"
-  class="text-xs sm:text-base"
   (click)="formVisible.set(true)"
 />
 <app-form-sidebar
   [(visible)]="formVisible"
   [formGroup]="formGroup"
   [mutation]="createProjectMutation"
+  formTitle="Add project"
+  i18n-formTitle="@@add-project-label"
 >
-  <h2 i18n="@@add-project-label">Add project</h2>
   <app-form-field-wrapper
     label="Kobo Asset ID"
     i18n-label
@@ -22,7 +22,8 @@
       pInputText
       type="text"
       formControlName="assetId"
-      autocomplete="off"
+      autocomplete="one-time-code"
+      class="font-mono"
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
@@ -32,7 +33,7 @@
   >
     <p-password
       formControlName="token"
-      autocomplete="off"
+      autocomplete="one-time-code"
       [toggleMask]="true"
       [feedback]="false"
     />

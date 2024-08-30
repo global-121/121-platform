@@ -131,6 +131,7 @@ export class SeedHelper {
         username: userInput.username,
         password: crypto.createHmac('sha256', userInput.password).digest('hex'),
         userType: UserType.aidWorker,
+        displayName: userInput.username.split('@')[0],
       });
     }
   }

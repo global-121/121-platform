@@ -8,6 +8,8 @@ export interface UserData {
   isEntraUser?: boolean;
   lastLogin?: Date;
   expires?: Date;
+  displayName?: string;
+  isOrganizationAdmin?: boolean;
 }
 
 export interface UserRO {
@@ -20,6 +22,7 @@ export interface UserRequestData {
   exp: number;
   admin: boolean;
   scope: string;
+  isOrganizationAdmin: boolean;
 }
 
 type UserPermissions = Record<number, PermissionEnum[]>;

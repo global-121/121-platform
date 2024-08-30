@@ -10,7 +10,8 @@ INSERT INTO "121-service"."intersolve_voucher" (
   updated,
   "updatedLastRequestedBalance",
   "lastRequestedBalance",
-  "reminderCount"
+  "reminderCount",
+  "userId"
 )
 SELECT
   created,
@@ -24,6 +25,7 @@ SELECT
   updated,
   "updatedLastRequestedBalance",
   "lastRequestedBalance",
-  "reminderCount"
+  "reminderCount",
+  "userId"
 FROM
   "121-service"."intersolve_voucher";

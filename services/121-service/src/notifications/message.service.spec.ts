@@ -22,6 +22,7 @@ const defaultMessageJob = {
   message: 'test message',
   messageTemplateKey: 'messageTemplateKey',
   customData: {},
+  userId: 1,
 } as MessageJobDto;
 const mockDefaultNotificationText = 'default notification';
 let getNotificationTextMock: jest.SpyInstance;
@@ -77,6 +78,7 @@ describe('MessageService', () => {
     expect(smsService.sendSms).toHaveBeenCalledTimes(1);
     expect(smsService.sendSms).toHaveBeenCalledWith(
       messageJobSms.message,
+      messageJobSms.userId,
       messageJobSms.phoneNumber,
       messageJobSms.registrationId,
       messageJobSms.messageContentType,
@@ -102,6 +104,7 @@ describe('MessageService', () => {
       expect(smsService.sendSms).toHaveBeenCalledTimes(1);
       expect(smsService.sendSms).toHaveBeenCalledWith(
         testMessageJob.message,
+        testMessageJob.userId,
         testMessageJob.phoneNumber,
         testMessageJob.registrationId,
         testMessageJob.messageContentType,
@@ -130,6 +133,7 @@ describe('MessageService', () => {
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
         message: testNotificationText,
+        userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.phoneNumber,
         registrationId: testMessageJob.registrationId,
         messageContentType: MessageContentType.genericTemplated,
@@ -159,6 +163,7 @@ describe('MessageService', () => {
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
         message: testNotificationText,
+        userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
         registrationId: testMessageJob.registrationId,
         messageContentType: MessageContentType.genericTemplated,
@@ -191,6 +196,7 @@ describe('MessageService', () => {
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
         message: testMessageJob.message,
+        userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
         registrationId: testMessageJob.registrationId,
         messageContentType: testMessageJob.messageContentType,
@@ -241,6 +247,7 @@ describe('MessageService', () => {
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
         message: '', // it's important that this stays empty
+        userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
         mediaUrl: testMessageJob.mediaUrl,
         registrationId: testMessageJob.registrationId,

@@ -1,7 +1,12 @@
 <p-sidebar
+  #sideBar
   [(visible)]="visible"
   position="right"
-  styleClass="min-w-[30rem]"
+  styleClass="max-w-[96vw] sm:min-w-[30rem]"
+  pFocusTrap
+  [pFocusTrapDisabled]="!visible"
+  [blockScroll]="true"
+  (onHide)="formGroup().reset()"
 >
   <ng-template pTemplate="headless">
     <form
@@ -10,6 +15,9 @@
       (ngSubmit)="onFormSubmit()"
     >
       <div class="flex grow flex-col gap-2">
+        <h2 class="mb-5">
+          {{ formTitle() }}
+        </h2>
         <ng-content></ng-content>
       </div>
       <app-form-error
@@ -23,7 +31,7 @@
           rounded
           outlined
           [disabled]="mutation().isPending()"
-          (click)="visible.set(false)"
+          (click)="sideBar.close($event)"
         />
         <p-button
           [label]="submitButtonText()"

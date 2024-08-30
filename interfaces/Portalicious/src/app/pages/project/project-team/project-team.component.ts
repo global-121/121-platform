@@ -11,7 +11,6 @@ import {
 import {
   injectMutation,
   injectQuery,
-  injectQueryClient,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -21,15 +20,11 @@ import {
   QueryTableColumn,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
+import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { AddUserButtonComponent } from '~/pages/project/project-team/add-user-button/add-user-button.component';
-import { ApiEndpoints, ApiService } from '~/services/api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import { ArrayElement } from '~/utils/type-helpers';
-
-type UserInProject = ArrayElement<
-  Awaited<ReturnType<ApiService['getUsersInProject']>>
->;
 
 @Component({
   selector: 'app-project-team',
@@ -47,46 +42,38 @@ type UserInProject = ArrayElement<
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectTeamComponent {
-  private apiService = inject(ApiService);
+  private projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
-  private queryClient = injectQueryClient();
 
   @ViewChild('confirmationDialog')
   private confirmationDialog: ConfirmationDialogComponent;
 
-  selectedUser = signal<undefined | UserInProject>(undefined);
+  selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
 
   // this is injected by the router
   projectId = input.required<number>();
 
-  project = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.projectId()],
-    queryFn: () => this.apiService.getProjectById(this.projectId()),
-  }));
-
-  projectUsers = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.projectId(), ApiEndpoints.users],
-    queryFn: () => this.apiService.getUsersInProject(this.projectId()),
-  }));
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  projectUsers = injectQuery(
+    this.projectApiService.getProjectUsers(this.projectId),
+  );
 
   removeUserMutation = injectMutation(() => ({
     mutationFn: ({ userId }: { userId: number }) =>
-      this.apiService.removeUserFromProject(this.projectId(), userId),
+      this.projectApiService.removeProjectUser(this.projectId, userId),
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`User removed`,
       });
-      void this.queryClient.invalidateQueries({
-        queryKey: [ApiEndpoints.projects, this.projectId(), ApiEndpoints.users],
-      });
+      void this.projectApiService.invalidateCache(this.projectId);
     },
     onError: () => {
       this.toastService.showGenericError();
     },
   }));
 
-  columns = computed<QueryTableColumn<UserInProject>[]>(() => [
+  columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(() => [
     {
       field: 'username',
       header: $localize`User name`,

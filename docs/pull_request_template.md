@@ -1,8 +1,8 @@
-<!--- AB#1234 Only if relevant, start with a link to an issue on Azure DevOps -->
+AB#XXXX <!--- Replace this with a reference to a devops issue -->
 
 ## Describe your changes
 
-Brief description of your changes - not in-depth because the bulk of the description should be in the task on DevOps.
+<!--- Add a brief description of your changes - not in-depth because the bulk of the description should be in the task on DevOps. -->
 
 ## Checklist before requesting a review
 

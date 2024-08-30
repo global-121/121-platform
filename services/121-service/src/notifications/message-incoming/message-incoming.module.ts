@@ -18,6 +18,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
 import { BullModule } from '@nestjs/bull';
 import {
@@ -37,6 +38,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       RegistrationEntity,
       WhatsappPendingMessageEntity,
       TryWhatsappEntity,
+      UserEntity,
     ]),
     ImageCodeModule,
     UserModule,

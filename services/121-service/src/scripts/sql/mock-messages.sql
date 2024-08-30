@@ -14,7 +14,8 @@
           updated,
           "contentType",
           "errorCode",
-          "errorMessage"
+          "errorMessage",
+          "userId"
         )
         SELECT
           created + random() * (timestamp '2023-01-01 00:00:00' -
@@ -32,6 +33,7 @@
           updated,
           "contentType",
           "errorCode",
-          "errorMessage"
+          "errorMessage",
+          "userId"
         FROM
           "121-service"."twilio_message";

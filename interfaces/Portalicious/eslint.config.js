@@ -7,6 +7,7 @@ const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommen
 const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
 const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
 const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
+const eslintPluginRegexp = require('eslint-plugin-regexp');
 
 module.exports = tseslint.config(
   {
@@ -22,6 +23,7 @@ module.exports = tseslint.config(
     plugins: {
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
+      regexp: eslintPluginRegexp,
     },
     extends: [
       eslint.configs.recommended,
@@ -29,6 +31,7 @@ module.exports = tseslint.config(
       ...tseslint.configs.stylisticTypeChecked,
       ...angular.configs.tsRecommended,
       ...eslintPluginQuery.configs['flat/recommended'],
+      eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     processor: angular.processInlineTemplates,
@@ -89,21 +92,22 @@ module.exports = tseslint.config(
         {
           checkId: false,
           ignoreAttributes: [
+            'app-query-table[localStorageKey]',
             'data-testid',
-            'icon',
-            'iconPos',
-            'ngSrc',
-            'styleClass',
-            'position',
-            'pSortableColumn',
             'field',
-            'display',
-            'sortField',
-            'appendTo',
-            'iconPosition',
-            'stateStorage',
-            'stateKey',
-            'localStorageKey',
+            'img[ngSrc]',
+            'inputStyleClass',
+            'ng-container[slot]',
+            'p-button[icon]',
+            'p-button[iconPos]',
+            'p-columnFilter[display]',
+            'p-contextMenu[appendTo]',
+            'p-iconField[iconPosition]',
+            'p-sidebar[position]',
+            'p-table[stateKey]',
+            'p-table[stateStorage]',
+            'styleClass',
+            'th[pSortableColumn]',
           ],
         },
       ],

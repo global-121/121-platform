@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
 
 export default {
   content: ['./src/**/*.{html,ts}'],
@@ -9,6 +10,7 @@ export default {
     fontFamily: {
       display: ['Montserrat', 'sans-serif'],
       body: ['"Open Sans"', 'sans-serif'],
+      mono: ['monospace'],
     },
     colors: {
       transparent: 'transparent',
@@ -60,6 +62,72 @@ export default {
         DEFAULT: '#0F1218',
       },
     },
+    headingSizes: {
+      1: '1.43rem', // ~20px
+      2: '1.28rem', // ~18px
+      3: '1.15rem', // ~16px
+    },
+    typographySizes: {
+      s: '0.85rem', // ~12px
+      m: '1rem', // ~14px
+    },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ matchUtilities, theme }) {
+      // heading utilities
+      matchUtilities(
+        {
+          // Use like 'txt-h-1' or 'txt-h-2' or 'txt-h-3'
+          ['txt-h']: (value: string) => ({
+            fontSize: value,
+            fontFamily: theme('fontFamily.display'),
+            lineHeight: '140%',
+          }),
+        },
+        { values: theme('headingSizes') },
+      );
+      // body text utilities
+      matchUtilities(
+        {
+          // Use like 'txt-body-s' or 'txt-body-m'
+          ['txt-body']: (value: string) => ({
+            fontSize: value,
+            fontFamily: theme('fontFamily.body'),
+            lineHeight: value === '1rem' ? '140%' : '120%',
+            letterSpacing: '0px',
+          }),
+        },
+        { values: theme('typographySizes') },
+      );
+      // system text utilities
+      // This is the only one that needs a different variant for bold text
+      // because system texts don't default to 400 font weight
+      matchUtilities(
+        {
+          // Use like 'txt-system-s' or 'txt-system-m'
+          ['txt-system']: (value: string) => ({
+            fontSize: value,
+            fontFamily: theme('fontFamily.display'),
+            lineHeight: '140%',
+            letterSpacing: '0px',
+            fontWeight: '500',
+          }),
+        },
+        { values: theme('typographySizes') },
+      );
+      matchUtilities(
+        {
+          // Use like 'txt-system-bold-s' or 'txt-system-bold-m'
+          ['txt-system-bold']: (value: string) => ({
+            fontSize: value,
+            fontFamily: theme('fontFamily.display'),
+            lineHeight: '140%',
+            letterSpacing: '0px',
+            fontWeight: '700',
+          }),
+        },
+        { values: theme('typographySizes') },
+      );
+    }),
+  ],
 } satisfies Config;

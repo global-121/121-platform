@@ -3,6 +3,7 @@
 import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 @Entity('whatsapp_pending_message')
@@ -31,4 +32,10 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'userId' })
+  public user: Relation<UserEntity>;
+  @Column()
+  public userId: number;
 }

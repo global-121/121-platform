@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { ApiEndpoints, ApiService } from '~/services/api.service';
 
 @Component({
   selector: 'app-logo',
@@ -19,15 +19,12 @@ import { ApiEndpoints, ApiService } from '~/services/api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogoComponent {
-  private apiService = inject(ApiService);
+  private projectApiService = inject(ProjectApiService);
 
   projectId = input<number>();
   projectTitle = computed(() => this.project.data()?.titlePortal);
 
-  public project = injectQuery(() => ({
-    queryKey: [ApiEndpoints.projects, this.projectId()],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    queryFn: () => this.apiService.getProjectById(this.projectId()!),
-    enabled: !!this.projectId(),
-  }));
+  public project = injectQuery(
+    this.projectApiService.getProject(this.projectId),
+  );
 }

@@ -129,6 +129,11 @@ export class AzureAdStrategy
       if (!user.admin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
+    } else if (authParams.isOrganizationAdmin) {
+      const isAdmin = payload.isOrganizationAdmin === true;
+      if (!isAdmin) {
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
     }
 
     const userToken: UserRequestData = {
@@ -139,6 +144,7 @@ export class AzureAdStrategy
       scope: request.params.programId
         ? this.userService.getScopeForUser(user, request.params.programId)
         : '',
+      isOrganizationAdmin: payload.isOrganizationAdmin,
     };
     return userToken;
   }

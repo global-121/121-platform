@@ -25,6 +25,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Table, TableFilterEvent, TableModule } from 'primeng/table';
 import { TableCellDateComponent } from '~/components/query-table/table-cell-date/table-cell-date.component';
 import { TableCellTextComponent } from '~/components/query-table/table-cell-text/table-cell-text.component';
+import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { Locale } from '~/utils/locale';
 
 export interface QueryTableColumn<TData, TField = keyof TData & string> {
@@ -54,6 +55,7 @@ export interface QueryTableColumn<TData, TField = keyof TData & string> {
     InputTextModule,
     InputIconModule,
     FormsModule,
+    SkeletonInlineComponent,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -70,6 +72,7 @@ export class QueryTableComponent<TData> {
   readonly onUpdateContextMenuItem = output<TData>();
 
   @ViewChild('table') table: Table;
+  @ViewChild('contextMenu') contextMenu: Menu;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
 
   currentPageReportTemplate =

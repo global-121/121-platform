@@ -20,7 +20,7 @@ import { PasswordModule } from 'primeng/password';
 import { AppRoutes } from '~/app.routes';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
-import { ApiService } from '~/services/api.service';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -48,7 +48,7 @@ type CreateProjectFormGroup =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateProjectButtonComponent {
-  private apiService = inject(ApiService);
+  private projectApiService = inject(ProjectApiService);
   private router = inject(Router);
   private toastService = inject(ToastService);
 
@@ -80,7 +80,7 @@ export class CreateProjectButtonComponent {
       token,
       assetId,
     }: Required<CreateProjectFormGroup['value']>) =>
-      this.apiService.createProjectFromKobo({ token, assetId }),
+      this.projectApiService.createProjectFromKobo({ token, assetId }),
     onSuccess: (project) => {
       if (!project?.id) {
         throw new Error($localize`No Project-ID returned.`);

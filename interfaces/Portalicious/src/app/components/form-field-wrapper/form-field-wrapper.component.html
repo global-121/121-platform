@@ -1,6 +1,9 @@
 <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-<label class="[&_.p-password]:block [&_input]:w-full">
-  <span class="mb-2 inline-block">{{ label() }}</span>
+<label class="block [&_input]:w-full">
+  <strong class="mb-2 inline-block">
+    {{ label() }}
+  </strong>
   <ng-content></ng-content>
+  <app-form-error [error]="errorMessage()" />
 </label>
-<app-form-error [error]="errorMessage()" />
+<ng-content select="[slot='details']"></ng-content>

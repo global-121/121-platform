@@ -1,3 +1,4 @@
+import { User } from 'src/app/models/user.model';
 import { TranslatableString } from './translatable-string.model';
 
 export class Message {
@@ -11,6 +12,7 @@ export class Message {
   errorCode: string;
   status: TwilioStatus;
   messageStatus: MessageStatus;
+  user: User;
 }
 
 export enum TwilioStatus {

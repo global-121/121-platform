@@ -1,5 +1,5 @@
 <div
-  class="ms-2 font-display text-[20px] text-white"
+  class="ms-2 !leading-[initial] text-white txt-h-1"
   data-testid="logo"
 >
   <a
@@ -9,7 +9,7 @@
     >121 Portal</a
   >
   @if (projectTitle()) {
-    <span class="ms-2 h-[22px] border-s-2 border-s-white ps-2">{{
+    <span class="ms-2 h-6 border-s-2 border-s-white ps-2">{{
       projectTitle() | translatableString
     }}</span>
   }
