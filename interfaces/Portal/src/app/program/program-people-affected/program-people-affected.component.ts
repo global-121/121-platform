@@ -556,9 +556,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
             this.currentProgramTab === ProgramTab.payment
-              ? `(${
-                  person.maxPayments - person.paymentCount
-                } ${this.translate.instant(
+              ? `(${person.paymentCountRemaining} ${this.translate.instant(
                   'page.program.program-people-affected.max-payments.left',
                 )})`
               : ''

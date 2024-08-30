@@ -178,6 +178,11 @@ export class ProgramAttributesService {
         type: 'numeric',
         label: null,
       });
+      defaultAttributes.push({
+        name: 'paymentCountRemaining',
+        type: 'numeric',
+        label: null,
+      });
     }
     return defaultAttributes;
   }
