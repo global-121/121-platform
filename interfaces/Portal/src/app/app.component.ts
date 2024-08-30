@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (
       // Do not check the current users' logged-in state on "login-related" pages:
-      ![AppRoutes.login, AppRoutes.auth].includes(
+      ![AppRoutes.root, AppRoutes.login, AppRoutes.auth].includes(
         window.location.pathname.substring(1) as AppRoutes,
       )
     ) {
