@@ -1,14 +1,19 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { isPopupBlocked } from 'src/app/shared/utils/check-pop-up-is-blocked.utils';
 import { isIframed } from 'src/app/shared/utils/is-iframed.util';
 import { environment } from '../../../environments/environment';
 import { AppRoutes } from '../../app-routes.enum';
-import { AuthService } from '../../auth/auth.service';
+import {
+  AuthService,
+  SSO_ERRORS,
+  SSO_ERROR_KEY,
+} from '../../auth/auth.service';
 import { SystemNotificationComponent } from '../../components/system-notification/system-notification.component';
 
 @Component({
@@ -16,7 +21,7 @@ import { SystemNotificationComponent } from '../../components/system-notificatio
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnDestroy {
+export class LoginPage implements OnDestroy, OnInit {
   public useSso = environment.use_sso_azure_entra;
 
   @ViewChild('loginForm')
@@ -46,12 +51,28 @@ export class LoginPage implements OnDestroy {
 
   private msalSubscription: Subscription;
 
+  public ssoUserIsNotFound: boolean;
+  public isPopupBlocked = false;
+
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
     private router: Router,
     private msalService?: MsalService,
   ) {}
+
+  ngOnInit(): void {
+    if (environment.use_sso_azure_entra) {
+      // Retrieve the error message from session storage
+      this.ssoUserIsNotFound =
+        sessionStorage.getItem(SSO_ERROR_KEY) === SSO_ERRORS.notFound;
+      sessionStorage.removeItem(SSO_ERROR_KEY);
+
+      if (isIframed()) {
+        this.isPopupBlocked = isPopupBlocked();
+      }
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.msalSubscription) {
