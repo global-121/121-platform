@@ -19,6 +19,12 @@ body {
   overflow-y: scroll; /* Always show scrollbars to avoid page skipping about */
 }
 
+:root {
+  // primeng uses this variable on all of its components by default
+  // and it does not work if we set it within the 'primeng' layer
+  --font-family: theme(fontFamily.body);
+}
+
 @layer tailwind-base {
   h1 {
     @apply font-bold txt-h-1;
@@ -64,11 +70,6 @@ body {
 // So there will only be ONE section/grouping per PrimeNG component.
 //
 @layer primeng {
-  :root {
-    // primeng uses this variable on all of its components by default
-    --font-family: theme(fontFamily.body);
-  }
-
   $toolbar-height: calc(48 / 14 * 1rem);
 
   .p-button {
@@ -189,6 +190,13 @@ body {
     // Prevent contents being cut off, always wrap and align checkboxes to the top
     .p-multiselect-item {
       @apply items-start text-wrap;
+    }
+  }
+
+  .p-element.ng-touched.ng-invalid {
+    .p-inputwrapper,
+    .p-inputtext {
+      border-color: theme('colors.red.500') !important;
     }
   }
 }

@@ -389,6 +389,9 @@
       <trans-unit id="generic-not-available" datatype="html">
         <source>Not available</source>
       </trans-unit>
+      <trans-unit id="1755386264837692034" datatype="html">
+        <source>User updated</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -5,9 +5,18 @@
 >
   <div header-actions>
     @if (canManageAidworkers()) {
-      <app-add-user-button
+      <p-button
+        label="Add team member"
+        i18n-label="@@add-team-member"
+        rounded
+        icon="pi pi-plus"
+        (click)="openForm('add')"
+      />
+      <app-add-user-form
         [projectId]="projectId()"
         [enableScope]="enableScope()"
+        [(formVisible)]="formVisible"
+        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
       />
     }
   </div>

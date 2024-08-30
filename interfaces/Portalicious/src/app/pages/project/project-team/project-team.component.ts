@@ -22,7 +22,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
-import { AddUserButtonComponent } from '~/pages/project/project-team/add-user-button/add-user-button.component';
+import { AddUserFormComponent } from '~/pages/project/project-team/add-user-form/add-user-form.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -32,7 +32,7 @@ import { ToastService } from '~/services/toast.service';
   imports: [
     PageLayoutComponent,
     QueryTableComponent,
-    AddUserButtonComponent,
+    AddUserFormComponent,
     ConfirmDialogModule,
     ConfirmationDialogComponent,
   ],
@@ -49,10 +49,12 @@ export class ProjectTeamComponent {
   @ViewChild('confirmationDialog')
   private confirmationDialog: ConfirmationDialogComponent;
 
-  selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
-
   // this is injected by the router
   projectId = input.required<number>();
+
+  selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
+  formVisible = signal(false);
+  formMode = signal<'add' | 'edit'>('add');
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   projectUsers = injectQuery(
@@ -101,12 +103,14 @@ export class ProjectTeamComponent {
     ),
   );
 
-  enableScope = computed(() => this.project.data()?.enableScope);
+  enableScope = computed(() => this.project.data()?.enableScope ?? false);
 
-  contextMenuItems = computed<MenuItem[] | undefined>(() => {
-    if (!this.canManageAidworkers()) {
-      return undefined;
-    }
+  openForm(formMode: 'add' | 'edit') {
+    this.formMode.set(formMode);
+    this.formVisible.set(true);
+  }
+
+  contextMenuItems = computed<MenuItem[]>(() => {
     return [
       {
         label: $localize`Copy email`,
@@ -126,16 +130,15 @@ export class ProjectTeamComponent {
       {
         label: $localize`:@@generic-edit:Edit`,
         icon: 'pi pi-pencil',
+        disabled: !this.canManageAidworkers(),
         command: () => {
-          this.toastService.showToast({
-            detail: `Edit functionality has not been implemented yet so don't be impatient`,
-            severity: 'warn',
-          });
+          this.openForm('edit');
         },
       },
       {
         label: $localize`:@@remove-user-button:Remove user`,
         icon: 'pi pi-times text-red-500',
+        disabled: !this.canManageAidworkers(),
         command: () => {
           const user = this.selectedUser();
           if (!user) {

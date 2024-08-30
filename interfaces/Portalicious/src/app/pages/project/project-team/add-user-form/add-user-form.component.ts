@@ -2,9 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
-  signal,
+  model,
 } from '@angular/core';
 import {
   FormControl,
@@ -23,6 +24,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { ToastService } from '~/services/toast.service';
@@ -32,13 +34,13 @@ import {
 } from '~/utils/form-validation';
 
 type AddUserToTeamFormGroup =
-  (typeof AddUserButtonComponent)['prototype']['formGroup'];
+  (typeof AddUserFormComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-add-user-button',
+  selector: 'app-add-user-form',
   styles: ``,
   standalone: true,
-  templateUrl: './add-user-button.component.html',
+  templateUrl: './add-user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
@@ -50,22 +52,48 @@ type AddUserToTeamFormGroup =
     ReactiveFormsModule,
   ],
 })
-export class AddUserButtonComponent {
+export class AddUserFormComponent {
   projectId = input.required<number>();
-  enableScope = input.required<boolean | undefined>();
+  enableScope = input.required<boolean>();
+  formVisible = model.required<boolean>();
+  userToEdit = input<ProjectUserWithRolesLabel | undefined>();
 
   private projectApiService = inject(ProjectApiService);
   private userApiService = inject(UserApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
 
+  constructor() {
+    effect(
+      () => {
+        const user = this.userToEdit();
+        if (user) {
+          this.formGroup.patchValue({
+            userValue: user.id,
+            rolesValue: user.roles.map(({ role }) => role),
+            scopeValue: user.scope,
+          });
+          this.formGroup.controls.userValue.disable();
+        } else {
+          this.formGroup.patchValue({
+            userValue: -1,
+          });
+          this.formGroup.controls.userValue.enable();
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
+  }
+
+  isEditing = computed(() => !!this.userToEdit());
+
   roles = injectQuery(this.roleApiService.getRoles());
   allUsers = injectQuery(this.userApiService.getAllUsers());
   projectUsers = injectQuery(
     this.projectApiService.getProjectUsers(this.projectId),
   );
-
-  formVisible = signal(false);
 
   formGroup = new FormGroup({
     userValue: new FormControl<number>(-1, {
@@ -99,7 +127,9 @@ export class AddUserButtonComponent {
   );
 
   availableUsersIsLoading = computed(
-    () => this.allUsers.isPending() || this.projectUsers.isPending(),
+    () =>
+      this.allUsers.isPending() ||
+      (!this.isEditing() && this.projectUsers.isPending()),
   );
 
   availableUsers = computed(() => {
@@ -109,6 +139,11 @@ export class AddUserButtonComponent {
     if (!projectUsers || !allUsers) {
       return [];
     }
+
+    if (this.isEditing()) {
+      return allUsers;
+    }
+
     return allUsers.filter(
       (anyUser) =>
         !projectUsers.some(
@@ -122,7 +157,29 @@ export class AddUserButtonComponent {
       userValue,
       rolesValue,
       scopeValue,
-    }: Required<AddUserToTeamFormGroup['value']>) => {
+    }: {
+      userValue?: number; // this is undefined when editing because the field is disabled
+      rolesValue: string[];
+      scopeValue: string;
+    }) => {
+      if (!userValue) {
+        const userId = this.userToEdit()?.id;
+        if (!userId) {
+          throw new Error(
+            $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
+          );
+        }
+
+        return this.projectApiService.updateProjectUserAssignment(
+          this.projectId,
+          {
+            userId,
+            roles: rolesValue,
+            scope: scopeValue,
+          },
+        );
+      }
+
       return this.projectApiService.assignProjectUser(this.projectId, {
         userId: userValue,
         roles: rolesValue,
@@ -134,7 +191,9 @@ export class AddUserButtonComponent {
       this.formGroup.reset();
 
       this.toastService.showToast({
-        detail: $localize`User added`,
+        detail: this.isEditing()
+          ? $localize`User updated`
+          : $localize`User added`,
       });
 
       void this.projectApiService.invalidateCache(this.projectId);

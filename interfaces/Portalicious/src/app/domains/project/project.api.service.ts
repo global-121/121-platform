@@ -92,6 +92,30 @@ export class ProjectApiService extends DomainApiService {
     );
   }
 
+  updateProjectUserAssignment(
+    projectId: Signal<number>,
+    {
+      userId,
+      roles,
+      scope,
+    }: {
+      userId: number;
+      roles: Role['role'][];
+      scope: string;
+    },
+  ) {
+    return this.httpWrapperService.perform121ServiceRequest<ProjectUserAssignment>(
+      {
+        method: 'PATCH',
+        endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/users/${userId.toString()}`,
+        body: {
+          rolesToAdd: roles,
+          scope,
+        },
+      },
+    );
+  }
+
   removeProjectUser(projectId: Signal<number>, userId: number) {
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'DELETE',
