@@ -230,7 +230,9 @@ export class TransactionJobProcessorsService {
   public async processSafaricomTransactionJob(
     input: SafaricomTransactionJobDto,
   ): Promise<void> {
-    // 1. Get registration details needed for the transfer
+    // TODO: update/remove the numbered steps below, which were initially written down as a general structure based on Intersolve
+
+    // 1. Get registration details needed
     // TODO: this is duplicate code with Visa-method > simplify
     const registration =
       await this.registrationScopedRepository.getByReferenceId({
@@ -299,7 +301,7 @@ export class TransactionJobProcessorsService {
       registration,
       oldRegistration,
       isRetry: input.isRetry,
-      status: safaricomDoTransferResult.status, // TODO: this is different then Visa, where it is always success at this point (failures are stored earlier)
+      status: safaricomDoTransferResult.status, // TODO: align this with Visa, where at this point it should always be success. Failures are stored earlier. See above.
     });
 
     // 6. Storing safaricom transfer data (new compared to visa)
