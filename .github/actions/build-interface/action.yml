@@ -92,6 +92,12 @@ runs:
         mv -f ./staticwebapp.config.override.json ./staticwebapp.config.json
         cat ./staticwebapp.config.json
 
+    - name: Add logout escape-hatch
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        cp -r -f src/logout/ www/logout/
+
     - name: Add VERSION to deployment
       id: version
       shell: bash
