@@ -28,7 +28,7 @@
     {
       "route": "/logout*",
       "headers": {
-        "Cache-Control": "must-revalidate, no-transform, max-age=0"
+        "Cache-Control": "must-revalidate, no-transform, max-age=0, no-store"
       }
     },
     {
