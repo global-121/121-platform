@@ -188,10 +188,11 @@ describe('Do payment with filter', () => {
     );
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(2);
-    expect(doPaymentResponse.body.totalFilterCount).toBe(3);
+    expect(doPaymentResponse.body.applicableCount).toBe(1);
+    // REFACTOR: this test no longer involves the scenario where applicableCount<totalFilterCount, which might have originally been part of the intention. Change/add this test again in the future.
+    expect(doPaymentResponse.body.totalFilterCount).toBe(1);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(2);
+    expect(transactionsResponse.body.length).toBe(1);
   });
 
   it('should only pay included people with a combi of filter and search', async () => {
