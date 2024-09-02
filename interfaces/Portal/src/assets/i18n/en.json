@@ -148,6 +148,7 @@
       "portalTitle": "Portal",
       "sso": {
         "btn-text": "Log in via SSO",
+        "force-logout-try-again-notice": "If you have trouble logging in, <a href='/logout'>try to log-out</a> and try again.",
         "label": "121 Portal uses Single Sign-On (SSO) to securely authenticate and log in all (121 & Redline) users.",
         "popup-is-blocked": "Please allow pop-up windows to login.",
         "user-not-found": "Unknown user account or authentication failed."

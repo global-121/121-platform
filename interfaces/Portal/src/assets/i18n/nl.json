@@ -133,7 +133,10 @@
       "portalTitle": "Portal",
       "sso": {
         "btn-text": "Log in via SSO",
-        "label": "121 maakt gebruik van Single Sign-On (SSO) om u veilig te authenticeren en in te loggen in de portal. Klik op de knop om in te loggen via SSO."
+        "force-logout-try-again-notice": "Heb je probleem met inloggen, <a href='/logout'>log uit</a> en probeer het opnieuw.",
+        "label": "121 maakt gebruik van Single Sign-On (SSO) om u veilig te authenticeren en in te loggen in de portal. Klik op de knop om in te loggen via SSO.",
+        "popup-is-blocked": "Sta  pop-ups toe om in te kunnen loggen.",
+        "user-not-found": "Onbekend account of het inloggen is mislukt."
       }
     },
     "program": {
