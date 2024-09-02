@@ -127,7 +127,6 @@ export class SafaricomService
 
     paTransactionResult.customData = {
       requestResult: result,
-      originatorConversationId: payload.OriginatorConversationID,
     };
     return paTransactionResult;
   }
@@ -145,10 +144,14 @@ export class SafaricomService
       safaricomCustomData.requestResult.ConversationID
         ? safaricomCustomData.requestResult.ConversationID
         : 'Invalid Request';
+    safaricomTransferEntity.originatorConversationId =
+      safaricomCustomData &&
+      safaricomCustomData.requestResult &&
+      safaricomCustomData.requestResult.OriginatorConversationID
+        ? safaricomCustomData.requestResult.OriginatorConversationID
+        : 'Invalid Request';
 
     safaricomTransferEntity.mpesaTransactionId = transaction.id;
-    safaricomTransferEntity.originatorConversationId =
-      safaricomDoTransferResult.customData.originatorConversationId;
 
     await this.safaricomTransferRepository.save(safaricomTransferEntity);
   }
