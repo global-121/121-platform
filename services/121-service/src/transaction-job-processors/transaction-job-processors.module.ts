@@ -12,6 +12,7 @@ import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-servic
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
+import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-job-processors/processors/transaction-job-safaricom.processor';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -32,6 +33,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   providers: [
     TransactionJobProcessorsService,
     TransactionJobProcessorIntersolveVisa,
+    TransactionJobProcessorSafaricom,
     createScopedRepositoryProvider(TransactionEntity),
   ],
 })
