@@ -3,16 +3,25 @@
 ```mermaid
 graph LR
   CronjobModule-->ExchangeRateModule
+  ExchangeRateModule-->UserModule
+  UserModule-->EmailsModule
+  MessageTemplateModule-->UserModule
   MessageTemplateModule-->ProgramAttributesModule
   ProgramModule-->ActionsModule
+  ActionsModule-->UserModule
+  ProgramModule-->UserModule
   ProgramModule-->FinancialServiceProvidersModule
+  FinancialServiceProvidersModule-->UserModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
   ProgramModule-->IntersolveVisaModule
+  IntersolveVisaModule-->UserModule
+  OrganizationModule-->UserModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
+  WhatsappModule-->UserModule
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->QueueMessageModule
@@ -20,13 +29,16 @@ graph LR
   QueueMessageModule-->RegistrationDataModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
+  IntersolveVoucherModule-->UserModule
   IntersolveVoucherModule-->TransactionsModule
+  TransactionsModule-->UserModule
   TransactionsModule-->ActionsModule
   TransactionsModule-->QueueMessageModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->EventsModule
+  EventsModule-->UserModule
   IntersolveVoucherModule-->QueueMessageModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
@@ -34,7 +46,9 @@ graph LR
   IntersolveVoucherModule-->RedisModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
+  MetricsModule-->UserModule
   MetricsModule-->RegistrationsModule
+  RegistrationsModule-->UserModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
@@ -48,15 +62,18 @@ graph LR
   RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
+  PaymentsModule-->UserModule
   PaymentsModule-->ActionsModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->VodacashModule
+  VodacashModule-->UserModule
   VodacashModule-->TransactionsModule
   VodacashModule-->RegistrationDataModule
   VodacashModule-->RegistrationsModule
   PaymentsModule-->SafaricomModule
+  SafaricomModule-->UserModule
   SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
   PaymentsModule-->ExcelModule
@@ -64,6 +81,7 @@ graph LR
   ExcelModule-->RegistrationsModule
   PaymentsModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
+  CommercialBankEthiopiaModule-->UserModule
   CommercialBankEthiopiaModule-->RedisModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
@@ -78,13 +96,17 @@ graph LR
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
   MetricsModule-->RegistrationDataModule
+  MigrateVisaModule-->UserModule
   MessageIncomingModule-->ImageCodeModule
+  MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
   MessageIncomingModule-->QueueMessageModule
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
+  NoteModule-->UserModule
+  AuthModule-->UserModule
   AuthModule-->PassportModule
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule

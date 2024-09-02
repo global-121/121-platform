@@ -1,6 +1,7 @@
 import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
+import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { FinancialServiceProviderCallbackJobProcessorsModule } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-job-processors.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
@@ -37,6 +38,7 @@ import { DataSource } from 'typeorm';
     MigrateVisaModule,
     MessageIncomingModule,
     NoteModule,
+    EmailsModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

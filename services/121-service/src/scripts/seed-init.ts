@@ -258,6 +258,9 @@ export class SeedInit implements InterfaceScript {
         .digest('hex'),
       userType: UserType.aidWorker,
       admin: true,
+      isOrganizationAdmin: true,
+      displayName:
+        process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!.split('@')[0],
     });
   }
 
