@@ -1,6 +1,7 @@
 import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
+import { FinancialServiceProviderCallbackJobProcessorsModule } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-job-processors.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { MigrateVisaModule } from '@121-service/src/migrate-visa/migrate-visa.module';
@@ -59,6 +60,7 @@ import { DataSource } from 'typeorm';
     AuthModule,
     TransactionQueuesModule,
     TransactionJobProcessorsModule,
+    FinancialServiceProviderCallbackJobProcessorsModule,
   ],
   controllers: [AppController],
   providers: [

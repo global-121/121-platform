@@ -30,7 +30,6 @@ import { Module } from '@nestjs/common';
     EventsModule,
     MessageTemplateModule,
   ],
-
   providers: [
     TransactionJobProcessorsService,
     TransactionJobProcessorIntersolveVisa,

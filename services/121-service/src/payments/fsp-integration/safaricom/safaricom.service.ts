@@ -1,15 +1,27 @@
 import { EXTERNAL_API } from '@121-service/src/config';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-callback-job.dto';
 import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
+import {
+  REDIS_CLIENT,
+  getRedisSetName,
+} from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import {
+  ProcessNamePayment,
+  QueueNamePaymentCallBack,
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
-import { Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -21,6 +33,10 @@ export class SafaricomService
 
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
+    @InjectQueue(QueueNamePaymentCallBack.safaricom)
+    private readonly safaricomCallbackQueue: Queue,
   ) {}
 
   /**
@@ -50,7 +66,6 @@ export class SafaricomService
       transferData.nationalId,
       transferData.registrationProgramId,
     );
-    console.log('payload: ', payload);
 
     return await this.sendPaymentPerPa(payload);
   }
@@ -101,7 +116,6 @@ export class SafaricomService
     const result = await this.safaricomApiService.transfer(payload);
 
     if (result && result.ResponseCode !== '0') {
-      //TODO: currently no customData.requestResult is returned and stored in case of failure. Check later if this is OK?
       throw new Error(result.errorMessage);
     }
 
@@ -133,54 +147,41 @@ export class SafaricomService
         ? safaricomCustomData.requestResult['OriginatorConversationID']
         : 'Invalid Request';
 
-    safaricomTransferEntity.mpesaTransactionId = transaction.id;
+    safaricomTransferEntity.transactionId = transaction.id;
 
     await this.safaricomTransferRepository.save(safaricomTransferEntity);
   }
 
-  public async processSafaricomResult(
-    _safaricomPaymentResultData: any,
+  public async processSafaricomCallback(
+    safaricomPaymentResultData: SafaricomTransferCallbackJobDto,
     _attempt = 1,
   ): Promise<void> {
-    // TODO: uncomment this method again, but refactor where needed and so that transactionRepository is not needed
-    // const safaricomDbRequest = await this.safaricomTransferRepository
-    //   .createQueryBuilder('safaricom_request')
-    //   .leftJoinAndSelect('safaricom_request.transaction', 'transaction')
-    //   .where(
-    //     'safaricom_request.originatorConversationID = :originatorConversationID',
-    //     {
-    //       originatorConversationID:
-    //         safaricomPaymentResultData.Result.OriginatorConversationID,
-    //     },
-    //   )
-    //   .getMany();
-    // if (safaricomDbRequest[0] === undefined && attempt <= 3) {
-    //   attempt++;
-    //   await waitFor(850);
-    //   await this.processSafaricomResult(safaricomPaymentResultData, attempt);
-    //   return;
-    // }
-    // let paymentStatus: StatusEnum | null = null;
-    // if (
-    //   safaricomPaymentResultData &&
-    //   safaricomPaymentResultData.Result &&
-    //   safaricomPaymentResultData.Result.ResultCode === 0
-    // ) {
-    //   paymentStatus = StatusEnum.success;
-    // } else {
-    //   paymentStatus = StatusEnum.error;
-    //   safaricomDbRequest[0].transaction.errorMessage =
-    //     safaricomPaymentResultData.Result.ResultDesc;
-    // }
-    // safaricomDbRequest[0].status = paymentStatus;
-    // safaricomDbRequest[0].paymentResult = safaricomPaymentResultData;
-    // const safaricomCustomData = {
-    //   ...safaricomDbRequest[0].transaction.customData,
-    // };
-    // safaricomCustomData['paymentResult'] = safaricomPaymentResultData;
-    // safaricomDbRequest[0].transaction.status = paymentStatus;
-    // safaricomDbRequest[0].transaction.customData = safaricomCustomData;
-    // await this.safaricomTransferRepository.save(safaricomDbRequest);
-    // await this.transactionRepository.save(safaricomDbRequest[0].transaction);
+    const job = await this.safaricomCallbackQueue.add(
+      ProcessNamePayment.callbackPayment,
+      safaricomPaymentResultData,
+    );
+    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+  }
+
+  public async getSafaricomTransferByOriginatorConversationId(
+    originatorConversationId: string,
+  ): Promise<SafaricomTransferEntity[]> {
+    const safaricomTransfers = await this.safaricomTransferRepository
+      .createQueryBuilder('safaricom_transfer')
+      .leftJoinAndSelect('safaricom_transfer.transaction', 'transaction')
+      .where(
+        'safaricom_transfer."originatorConversationId" = :originatorConversationId',
+        {
+          originatorConversationId: originatorConversationId,
+        },
+      )
+      .getMany();
+    return safaricomTransfers;
+  }
+
+  public async updateSafaricomTransfer(
+    safaricomTransfer: SafaricomTransferEntity,
+  ): Promise<void> {
+    await this.safaricomTransferRepository.save(safaricomTransfer);
   }
 }

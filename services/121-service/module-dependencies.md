@@ -97,4 +97,6 @@ graph LR
   TransactionJobProcessorsModule-->FinancialServiceProvidersModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->RedisModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->SafaricomModule
 ```

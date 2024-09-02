@@ -1,3 +1,4 @@
+//TODO: replace these dto's with interfaces where necessary
 export class SafaricomTransferResponseDto {
   public data: SafaricomTransferResponseBodyDto;
 }

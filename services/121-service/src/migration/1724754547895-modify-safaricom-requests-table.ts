@@ -47,23 +47,25 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" DROP COLUMN "paymentResult"`,
     );
 
-    // Step 2: Rename the necessary columns
+    // Step 2: Add the necessary columns
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" ADD COLUMN IF NOT EXISTS "mpesaTransactionId" character varying`,
+    );
+
+    // Step 3: Rename the necessary columns
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "conversationID" TO "mpesaConversationId"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "transactionId" TO "mpesaTransactionId"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "originatorConversationID" TO "originatorConversationId"`,
     );
 
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."safaricom_request" DROP CONSTRAINT "FK_76a85e893850c2ef7ce4b6441a0"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "FK_1f9a3e9003d584d12009b19b568" FOREIGN KEY ("mpesaTransactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
+    // await queryRunner.query(
+    //   `ALTER TABLE "121-service"."safaricom_request" DROP CONSTRAINT "FK_76a85e893850c2ef7ce4b6441a0"`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "FK_1f9a3e9003d584d12009b19b568" FOREIGN KEY ("mpesaTransactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
 
     await queryRunner.query(
       `ALTER SEQUENCE IF EXISTS "121-service".safaricom_request_id_seq RENAME TO safaricom_transfer_id_seq;`,
@@ -73,7 +75,7 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."safaricom_transfer_id_seq"')`,
     );
 
-    // Step 3: Rename the table
+    // Step 4: Rename the table
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME TO "safaricom_transfer"`,
     );

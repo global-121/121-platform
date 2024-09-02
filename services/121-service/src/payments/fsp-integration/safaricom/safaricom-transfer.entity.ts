@@ -12,17 +12,18 @@ export class SafaricomTransferEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  //TODO: should this be called mpesaOriginatorConversationId?
   @Column()
   public originatorConversationId: string;
 
   @Column()
   public mpesaConversationId: string;
 
-  // TODO: is this rename actually correct? this transactionId is to link to our internal transaction table, not something of mpesa.
+  @Column({ nullable: true })
+  public mpesaTransactionId: string;
+
   @OneToOne(() => TransactionEntity)
-  @JoinColumn({ name: 'mpesaTransactionId' })
+  @JoinColumn({ name: 'transactionId' })
   transaction: TransactionEntity;
   @Column({ type: 'int', nullable: true })
-  public mpesaTransactionId: number | null;
+  public transactionId: number | null;
 }

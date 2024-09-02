@@ -30,6 +30,7 @@ export enum ProcessNameRegistration {
 // Queues for processing payments
 export enum ProcessNamePayment {
   sendPayment = 'sendPayment',
+  callbackPayment = 'callbackPayment',
 }
 
 export enum QueueNamePayment {
@@ -37,4 +38,8 @@ export enum QueueNamePayment {
   paymentIntersolveVoucher = 'paymentIntersolveVoucher',
   paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
   paymentSafaricom = 'paymentSafaricom',
+}
+
+export enum QueueNamePaymentCallBack {
+  safaricom = 'safaricomCallback',
 }
