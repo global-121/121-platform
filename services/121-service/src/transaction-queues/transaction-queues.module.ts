@@ -28,7 +28,7 @@ import { Module } from '@nestjs/common';
         },
       ],
       limiter: {
-        max: 5, // Max number of jobs processed
+        max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),
