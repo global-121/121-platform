@@ -7,7 +7,7 @@ import { PaymentProcessorSafaricom } from '@121-service/src/payments/fsp-integra
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
@@ -23,7 +23,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     TypeOrmModule.forFeature([
       TransactionEntity,
       RegistrationEntity,
-      SafaricomRequestEntity,
+      SafaricomTransferEntity,
     ]),
     UserModule,
     TransactionsModule,
