@@ -24,6 +24,10 @@
     {
       "route": "/nl/*",
       "rewrite": "/nl/index.html"
+    },
+    {
+      "route": "/*",
+      "redirect": "/en/index.html"
     }
   ],
   "trailingSlash": "auto",
