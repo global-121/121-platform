@@ -12,6 +12,7 @@ import { QueueMessageService } from '@121-service/src/notifications/queue-messag
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -33,7 +34,7 @@ interface ProcessTransactionResultInput {
   programId: number;
   paymentNumber: number;
   userId: number;
-  calculatedTranserAmountInMajorUnit: number;
+  calculatedTransferAmountInMajorUnit: number;
   financialServiceProviderId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
@@ -94,7 +95,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTranserAmountInMajorUnit:
+          calculatedTransferAmountInMajorUnit:
             input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
           financialServiceProviderId: financialServiceProvider.id,
           registration,
@@ -120,7 +121,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTranserAmountInMajorUnit: transferAmountInMajorUnit,
+          calculatedTransferAmountInMajorUnit: transferAmountInMajorUnit,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
@@ -183,7 +184,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTranserAmountInMajorUnit: transferAmountInMajorUnit,
+          calculatedTransferAmountInMajorUnit: transferAmountInMajorUnit,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
@@ -218,7 +219,7 @@ export class TransactionJobProcessorsService {
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTranserAmountInMajorUnit:
+      calculatedTransferAmountInMajorUnit:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
@@ -231,6 +232,7 @@ export class TransactionJobProcessorsService {
   public async processSafaricomTransactionJob(
     input: SafaricomTransactionJobDto,
   ): Promise<void> {
+    console.log('input: ', input);
     // TODO: update/remove the numbered steps below, which were initially written down as a general structure based on Intersolve
 
     // 1. Get registration details needed
@@ -264,7 +266,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTranserAmountInMajorUnit: input.transactionAmount,
+          calculatedTransferAmountInMajorUnit: input.transactionAmount,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
@@ -277,17 +279,34 @@ export class TransactionJobProcessorsService {
     }
 
     // 3. Start the transfer, save error transaction on failure
-    // TODO: put in try catch block and save error transaction on failure. And refactor doTransfer to throw error on failure instead of returning a status
-    const safaricomDoTransferResult = await this.safaricomService.doTransfer({
-      transactionAmount: input.transactionAmount,
-      programId: input.programId,
-      paymentNr: input.paymentNumber,
-      userId: input.userId,
-      referenceId: input.referenceId,
-      registrationProgramId: input.registrationProgramId,
-      phoneNumber: input.phoneNumber,
-      nationalId: input.nationalId,
-    });
+    let safaricomDoTransferResult: DoTransferReturnParams;
+    try {
+      safaricomDoTransferResult = await this.safaricomService.doTransfer({
+        transactionAmount: input.transactionAmount,
+        programId: input.programId,
+        paymentNr: input.paymentNumber,
+        userId: input.userId,
+        referenceId: input.referenceId,
+        registrationProgramId: input.registrationProgramId,
+        phoneNumber: input.phoneNumber,
+        nationalId: input.nationalId,
+      });
+      console.log('safaricomDoTransferResult: ', safaricomDoTransferResult);
+    } catch (error) {
+      await this.createTransactionAndUpdateRegistration({
+        programId: input.programId,
+        paymentNumber: input.paymentNumber,
+        userId: input.userId,
+        calculatedTransferAmountInMajorUnit: input.transactionAmount,
+        financialServiceProviderId: financialServiceProvider.id,
+        registration,
+        oldRegistration,
+        isRetry: input.isRetry,
+        status: StatusEnum.error,
+        errorText: error?.message,
+      });
+      return;
+    }
 
     // 4. If transfer is successful, create message and add to queue (not needed for safaricom)
 
@@ -296,17 +315,19 @@ export class TransactionJobProcessorsService {
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTranserAmountInMajorUnit:
-        safaricomDoTransferResult.calculatedAmount,
+      calculatedTransferAmountInMajorUnit:
+        safaricomDoTransferResult.amountTransferredInMajorUnit,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
-      status: safaricomDoTransferResult.status, // TODO: align this with Visa, where at this point it should always be success. Failures are stored earlier. See above.
+      status: StatusEnum.success,
       customData: safaricomDoTransferResult.customData,
     });
+    console.log('transaction: ', transaction);
 
     // 6. Storing safaricom transfer data (new compared to visa)
+    // TODO: refactor/move this up, so that this is also saved on error transactions.
     await this.safaricomService.createAndSaveSafaricomTransferData(
       safaricomDoTransferResult,
       transaction,
@@ -317,7 +338,7 @@ export class TransactionJobProcessorsService {
     programId,
     paymentNumber,
     userId,
-    calculatedTranserAmountInMajorUnit,
+    calculatedTransferAmountInMajorUnit: calculatedTranserAmountInMajorUnit,
     financialServiceProviderId,
     registration,
     oldRegistration,
