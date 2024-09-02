@@ -247,12 +247,16 @@
             </div>
             <div *ngIf="!isLogoutForced">
               <br />
-              <small
-                [innerHTML]="
-                  'page.login.sso.force-logout-try-again-notice' | translate
-                "
-              >
+              <!-- TODO: Hard-coded in to provide users with a working, clickable link; Without any caching-issues or out-of-date-translations -->
+              <small>
+                If you have trouble logging in,
+                <a href="/logout">try to log-out</a> and try again.
               </small>
+              <!-- TODO: Original code kept, to cache translation for future releases (can be removed for upcoming releases) -->
+              <small
+                hidden
+                innerHTML="'page.login.sso.force-logout-try-again-notice' | translate"
+              ></small>
             </div>
           </form>
         </div>
