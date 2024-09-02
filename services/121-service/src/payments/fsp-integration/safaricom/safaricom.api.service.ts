@@ -6,7 +6,7 @@ import {
   SafaricomTransferResponseBodyDto,
   SafaricomTransferResponseDto,
 } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
-import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
+import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -51,9 +51,7 @@ export class SafaricomApiService {
     }
   }
 
-  public async transfer(
-    payload: SafaricomTransferPayload,
-  ): Promise<SafaricomTransferResponseBodyDto> {
+  public async transfer(payload: SafaricomTransferPayloadParams): Promise<SafaricomTransferResponseBodyDto> {
     try {
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`

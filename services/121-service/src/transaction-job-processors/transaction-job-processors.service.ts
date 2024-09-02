@@ -41,6 +41,7 @@ interface ProcessTransactionResultInput {
   isRetry: boolean;
   status: TransactionStatusEnum;
   errorText?: string;
+  customData?: Record<string, unknown>;
 }
 
 @Injectable()
@@ -305,6 +306,7 @@ export class TransactionJobProcessorsService {
       oldRegistration,
       isRetry: input.isRetry,
       status: safaricomDoTransferResult.status, // TODO: align this with Visa, where at this point it should always be success. Failures are stored earlier. See above.
+      customData: safaricomDoTransferResult.customData,
     });
 
     // 6. Storing safaricom transfer data (new compared to visa)
@@ -325,6 +327,7 @@ export class TransactionJobProcessorsService {
     isRetry,
     status,
     errorText: errorMessage,
+    customData,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTranserAmountInMajorUnit,
@@ -335,6 +338,7 @@ export class TransactionJobProcessorsService {
       userId,
       status,
       errorMessage,
+      customData,
     });
 
     await this.latestTransactionRepository.insertOrUpdateFromTransaction(
@@ -400,6 +404,7 @@ export class TransactionJobProcessorsService {
     userId,
     status,
     errorMessage,
+    customData,
   }: {
     amount: number;
     registration: RegistrationEntity;
@@ -409,6 +414,7 @@ export class TransactionJobProcessorsService {
     userId: number;
     status: TransactionStatusEnum;
     errorMessage?: string;
+    customData?: Record<string, unknown>;
   }) {
     const transaction = new TransactionEntity();
     transaction.amount = amount;
@@ -421,6 +427,7 @@ export class TransactionJobProcessorsService {
     transaction.status = status;
     transaction.transactionStep = 1;
     transaction.errorMessage = errorMessage ?? null;
+    transaction.customData = customData ?? {};
 
     return await this.transactionScopedRepository.save(transaction);
   }
