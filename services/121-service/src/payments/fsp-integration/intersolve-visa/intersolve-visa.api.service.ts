@@ -126,33 +126,14 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'customer-payments'
-      : 'customer';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/create-individual`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
     const createCustomerResponseDto =
-      await this.httpService.post<CreateCustomerResponseDto>(
-        url,
-        createCustomerRequestDto,
-        headers,
-      );
-
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      createCustomerResponseDto,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.createCustomerError}: ${errorMessage}`,
-      );
-    }
+      await this.intersolveApiRequest<CreateCustomerResponseDto>({
+        errorPrefix: IntersolveVisa121ErrorText.createCustomerError,
+        method: 'POST',
+        payload: createCustomerRequestDto,
+        apiPath: 'customer',
+        endpoint: 'customers/create-individual',
+      });
 
     // If the response does not contain errors
     // Put relevant stuff from createCustomerResponseDto into a CreateCustomerResultDto and return
@@ -162,46 +143,29 @@ export class IntersolveVisaApiService {
     return createCustomerResultDto;
   }
 
-  public async issueToken(issueTokenParams: {
+  public async issueToken({
+    brandCode,
+    activate,
+    reference,
+  }: {
     brandCode: string;
     activate: boolean;
     reference?: string;
   }): Promise<IssueTokenReturnType> {
     // Create the request body to send
     const issueTokenRequestDto: IssueTokenRequestDto = {
-      reference: issueTokenParams.reference
-        ? issueTokenParams.reference
-        : uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
-      activate: issueTokenParams.activate,
+      reference: reference ?? uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
+      activate,
     };
     // Send the request: https://service-integration.intersolve.nl/pointofsale/swagger/index.html
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'pointofsale-payments'
-      : 'pointofsale';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${issueTokenParams.brandCode}/issue-token`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
     const issueTokenResponseDto =
-      await this.httpService.post<IssueTokenResponseDto>(
-        url,
-        issueTokenRequestDto,
-        headers,
-      );
-
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      issueTokenResponseDto,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.issueTokenError}: ${errorMessage}`,
-      );
-    }
+      await this.intersolveApiRequest<IssueTokenResponseDto>({
+        errorPrefix: IntersolveVisa121ErrorText.issueTokenError,
+        method: 'POST',
+        payload: issueTokenRequestDto,
+        apiPath: 'pointofsale',
+        endpoint: `brand-types/${brandCode}/issue-token`,
+      });
 
     // If the response does not contain errors
     // Put relevant stuff from issueTokenResponseDto into a CreateCustomerResultDto and return
@@ -216,30 +180,13 @@ export class IntersolveVisaApiService {
 
   public async getToken(tokenCode: string): Promise<GetTokenReturnType> {
     // Send the request
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'pointofsale-payments'
-      : 'pointofsale';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}?includeBalances=true`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const getTokenResponseDto = await this.httpService.get<GetTokenResponseDto>(
-      url,
-      headers,
-    );
-
-    // Handle the response
-
-    const errorMessage =
-      this.createErrorMessageIfRequestFailed(getTokenResponseDto);
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.getTokenError}: ${errorMessage}`,
-      );
-    }
+    const getTokenResponseDto =
+      await this.intersolveApiRequest<GetTokenResponseDto>({
+        errorPrefix: IntersolveVisa121ErrorText.getTokenError,
+        method: 'GET',
+        apiPath: 'pointofsale',
+        endpoint: `tokens/${tokenCode}?includeBalances=true`,
+      });
 
     let blocked;
     let status;
@@ -273,26 +220,13 @@ export class IntersolveVisaApiService {
     tokenCode: string,
   ): Promise<GetPhysicalCardReturnType> {
     // Send the request
-    const authToken = await this.getAuthenticationToken();
-    const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/physical-card-data`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
     const getPhysicalCardResponseDto =
-      await this.httpService.get<GetPhysicalCardResponseDto>(url, headers);
-
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      getPhysicalCardResponseDto,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.getPhysicalCardError}: ${errorMessage}`,
-      );
-    }
+      await this.intersolveApiRequest<GetPhysicalCardResponseDto>({
+        errorPrefix: IntersolveVisa121ErrorText.getPhysicalCardError,
+        method: 'GET',
+        apiPath: 'payment-instrument-payment',
+        endpoint: `tokens/${tokenCode}/physical-card-data`,
+      });
 
     // If the response does not contain errors
     const getPhysicalCardReturnDto: GetPhysicalCardReturnType = {
@@ -352,31 +286,15 @@ export class IntersolveVisaApiService {
     fromDate?: Date;
   }): Promise<GetTransactionsResponseDto> {
     // Send the request
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'wallet-payments'
-      : 'wallet';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/transactions${
-      fromDate ? `?dateFrom=${fromDate.toISOString()}` : ''
-    }`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-
     const getTransactionsResponseDto =
-      await this.httpService.get<GetTransactionsResponseDto>(url, headers);
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      getTransactionsResponseDto,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.getTransactionError}: ${errorMessage}`,
-      );
-    }
+      await this.intersolveApiRequest<GetTransactionsResponseDto>({
+        errorPrefix: IntersolveVisa121ErrorText.getTransactionError,
+        method: 'GET',
+        apiPath: 'wallet',
+        endpoint: `tokens/${tokenCode}/transactions${
+          fromDate ? `?dateFrom=${fromDate.toISOString()}` : ''
+        }`,
+      });
 
     return getTransactionsResponseDto;
   }
@@ -438,36 +356,13 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'wallet-payments'
-      : 'wallet';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/register-holder`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    // On success this returns a 204 No Content
-    const registerHolderResponse = await this.httpService.post<any>(
-      url,
-      registerHolderRequest,
-      headers,
-    );
-
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      registerHolderResponse,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.resgisterHolderError}: ${errorMessage}`,
-      );
-    }
-
-    // If the response does not contain errors
-    // On success this returns a 204 No Content
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.registerHolderError,
+      method: 'POST',
+      payload: registerHolderRequest,
+      apiPath: 'wallet',
+      endpoint: `tokens/${tokenCode}/register-holder`,
+    });
   }
 
   // Link a (parent) token to a (child) token
@@ -484,36 +379,13 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'wallet-payments'
-      : 'wallet';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${parentTokenCode}/link-token`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    // On success this returns a 204 No Content
-    const linkTokenResponse =
-      await this.httpService.post<IntersolveVisaBaseResponseDto>(
-        url,
-        linkTokenRequest,
-        headers,
-      );
-
-    // Handle the response
-    const errorMessage =
-      this.createErrorMessageIfRequestFailed(linkTokenResponse);
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.linkTokenError}: ${errorMessage}`,
-      );
-    }
-
-    // If the response does not contain errors
-    // On success this returns a 204 No Content
-    return;
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.linkTokenError,
+      method: 'POST',
+      payload: linkTokenRequest,
+      apiPath: 'wallet',
+      endpoint: `tokens/${parentTokenCode}/link-token`,
+    });
   }
 
   public async createPhysicalCard({
@@ -550,34 +422,13 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request: https://service-integration.intersolve.nl/payment-instrument-payment/swagger/index.html
-    const authToken = await this.getAuthenticationToken();
-    const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/create-physical-card`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    // On success this returns a 200 with a body containing correlationId
-    const createPhysicalCardResponse =
-      await this.httpService.post<IntersolveVisaBaseResponseDto>(
-        url,
-        request,
-        headers,
-      );
-
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      createPhysicalCardResponse,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.createPhysicalCardError}: ${errorMessage}`,
-      );
-    }
-
-    // If the response does not contain errors
-    return;
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.createPhysicalCardError,
+      method: 'POST',
+      payload: request,
+      apiPath: 'payment-instrument-payment',
+      endpoint: `tokens/${tokenCode}/create-physical-card`,
+    });
   }
 
   public async transfer({
@@ -607,34 +458,13 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'wallet-payments'
-      : 'wallet';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${fromTokenCode}/transfer`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const transferResponse = await this.httpService.post<TransferResponseDto>(
-      url,
-      transferRequestDto,
-      headers,
-    );
-
-    // Handle the response
-
-    const errorMessage =
-      this.createErrorMessageIfRequestFailed(transferResponse);
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.transferError}: ${errorMessage}`,
-      );
-    }
-
-    // If the response does not contain errors
-    return;
+    await this.intersolveApiRequest<TransferResponseDto>({
+      errorPrefix: IntersolveVisa121ErrorText.transferError,
+      method: 'POST',
+      payload: transferRequestDto,
+      apiPath: 'wallet',
+      endpoint: `tokens/${fromTokenCode}/transfer`,
+    });
   }
 
   public async substituteToken({
@@ -651,70 +481,32 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'wallet-payments'
-      : 'wallet';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${oldTokenCode}/substitute-token`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    // On success this returns a 204 No Content
-    const substituteTokenResponse =
-      await this.httpService.post<IntersolveVisaBaseResponseDto>(
-        url,
-        substituteTokenRequestDto,
-        headers,
-      );
-
-    // Handle the response
-
-    const errorMessage = this.createErrorMessageIfRequestFailed(
-      substituteTokenResponse,
-    );
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.substituteTokenError}: ${errorMessage}`,
-      );
-    }
-
-    // If the response does not contain errors
-    return;
+    await this.intersolveApiRequest<TransferResponseDto>({
+      errorPrefix: IntersolveVisa121ErrorText.substituteTokenError,
+      method: 'POST',
+      payload: substituteTokenRequestDto,
+      apiPath: 'wallet',
+      endpoint: `tokens/${oldTokenCode}/substitute-token`,
+    });
   }
 
   public async setTokenBlocked(
     tokenCode: string,
     blocked: boolean,
   ): Promise<void> {
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'pointofsale-payments'
-      : 'pointofsale';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/${
-      blocked ? 'block' : 'unblock'
-    }`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
     const payload = {
       reasonCode: blocked
         ? IntersolveBlockTokenReasonCodeEnum.BLOCK_GENERAL
         : IntersolveBlockTokenReasonCodeEnum.UNBLOCK_GENERAL,
     };
-    const blockResult = await this.httpService.post<any>(url, payload, headers);
 
-    const errorMessage = this.createErrorMessageIfRequestFailed(blockResult);
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.blockTokenError}: ${errorMessage}`,
-      );
-    }
-
-    return;
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.blockTokenError,
+      method: 'POST',
+      payload,
+      apiPath: 'pointofsale',
+      endpoint: `tokens/${tokenCode}/${blocked ? 'block' : 'unblock'}`,
+    });
   }
 
   public async updateCustomerPhoneNumber({
@@ -732,25 +524,13 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'customer-payments'
-      : 'customer';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/${holderId}/contact-info/phone-numbers`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const response = await this.httpService.put<any>(url, requestBody, headers);
-
-    // Handle the response
-    const errorMessage = this.createErrorMessageIfRequestFailed(response);
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.updatePhoneNumberError}: ${errorMessage}`,
-      );
-    }
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.updatePhoneNumberError,
+      method: 'PUT',
+      payload: requestBody,
+      apiPath: 'customer',
+      endpoint: `customers/${holderId}/contact-info/phone-numbers`,
+    });
   }
 
   public async updateCustomerAddress({
@@ -780,27 +560,13 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
-    const authToken = await this.getAuthenticationToken();
-    const apiPath = process.env.INTERSOLVE_VISA_PROD
-      ? 'customer-payments'
-      : 'customer';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/${holderId}/contact-info/addresses`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const response = await this.httpService.put<any>(url, requestBody, headers);
-
-    // Handle the response
-    const errorMessage = this.createErrorMessageIfRequestFailed(response);
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(
-        `${IntersolveVisa121ErrorText.updatePhoneNumberError}: ${errorMessage}`,
-      );
-    }
-
-    return;
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.updateCustomerAddressError,
+      method: 'PUT',
+      payload: requestBody,
+      apiPath: 'customer',
+      endpoint: `customers/${holderId}/contact-info/addresses`,
+    });
   }
 
   // Helper function to convert errors in an Intersolve API Response into a message string.
@@ -826,9 +592,67 @@ export class IntersolveVisaApiService {
     return status >= 200 && status < 300;
   }
 
-  private createErrorMessageIfRequestFailed(
-    response: IntersolveVisaBaseResponseDto,
-  ): string | undefined {
+  private async intersolveApiRequest<
+    ResponseDtoType extends IntersolveVisaBaseResponseDto | void,
+  >({
+    errorPrefix,
+    method,
+    payload,
+    endpoint,
+    apiPath,
+  }: {
+    errorPrefix: string;
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH';
+    endpoint: string;
+    apiPath:
+      | 'customer'
+      | 'pointofsale'
+      | 'payment-instrument-payment'
+      | 'wallet';
+    payload?: unknown;
+  }) {
+    const authToken = await this.getAuthenticationToken();
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+
+    let intersolveVisaApiPath: string = apiPath;
+
+    if (process.env.INTERSOLVE_VISA_PROD) {
+      switch (apiPath) {
+        case 'customer':
+          intersolveVisaApiPath = 'customer-payments';
+          break;
+        case 'pointofsale':
+          intersolveVisaApiPath = 'pointofsale-payments';
+          break;
+        case 'wallet':
+          intersolveVisaApiPath = 'wallet-payments';
+          break;
+      }
+    }
+
+    const response = await this.httpService.request<ResponseDtoType>({
+      method,
+      url: `${intersolveVisaApiUrl}/${intersolveVisaApiPath}/v1/${endpoint}`,
+      payload,
+      headers,
+    });
+
+    const errorMessage = this.createErrorMessageIfRequestFailed(response);
+
+    // If the response contains errors
+    if (errorMessage) {
+      throw new IntersolveVisaApiError(`${errorPrefix}: ${errorMessage}`);
+    }
+
+    return response;
+  }
+
+  private createErrorMessageIfRequestFailed<
+    ResponseDtoType extends IntersolveVisaBaseResponseDto | void,
+  >(response: ResponseDtoType): string | undefined {
     if (!response) {
       return 'Intersolve URL could not be reached.';
     }
