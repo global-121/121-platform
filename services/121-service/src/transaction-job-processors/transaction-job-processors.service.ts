@@ -246,7 +246,7 @@ export class TransactionJobProcessorsService {
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
       await this.financialServiceProviderRepository.getByName(
-        FinancialServiceProviderName.intersolveVisa,
+        FinancialServiceProviderName.safaricom,
       );
     if (!financialServiceProvider) {
       throw new Error('Financial Service Provider not found');

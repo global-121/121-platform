@@ -54,6 +54,9 @@ export class ModifySafaricomRequestsTable1724754547895
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "transactionId" TO "mpesaTransactionId"`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "originatorConversationID" TO "originatorConversationId"`,
+    );
 
     // Step 3: Rename the table
     await queryRunner.query(
