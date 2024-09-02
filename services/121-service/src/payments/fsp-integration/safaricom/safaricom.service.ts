@@ -1,7 +1,5 @@
-import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
@@ -14,17 +12,10 @@ import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safar
 import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
-import {
-  getRedisSetName,
-  REDIS_CLIENT,
-} from '@121-service/src/payments/redis/redis-client';
+import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -43,8 +34,8 @@ export class SafaricomService
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly transactionsService: TransactionsService,
-    @InjectQueue(QueueNamePayment.paymentSafaricom)
-    private readonly paymentSafaricomQueue: Queue,
+    // @InjectQueue(QueueNamePayment.paymentSafaricom)
+    // private readonly paymentSafaricomQueue: Queue,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
@@ -61,11 +52,14 @@ export class SafaricomService
         paymentNr,
         userId: paPaymentData.userId,
       };
+      console.log('jobData: ', jobData);
+      /*
       const job = await this.paymentSafaricomQueue.add(
         ProcessNamePayment.sendPayment,
         jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      */
     }
   }
 

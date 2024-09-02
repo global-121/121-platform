@@ -21,6 +21,18 @@ import { TransactionQueuesService } from '@121-service/src/transaction-queues/tr
         duration: 1000, // per duration in milliseconds
       },
     }),
+    BullModule.registerQueue({
+      name: QueueNamePayment.paymentSafaricom,
+      processors: [
+        {
+          path: 'src/transaction-job-processors/processors/transaction-job-safaricom.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 5, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
   ],
   providers: [TransactionQueuesService],
   exports: [TransactionQueuesService],

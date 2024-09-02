@@ -1,4 +1,4 @@
-import { Process, Processor } from '@nestjs/bull';
+import { Process } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
@@ -8,12 +8,9 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { ProcessNamePayment } from '@121-service/src/shared/enum/queue-process.names.enum';
 
-@Processor(QueueNamePayment.paymentSafaricom)
+// @Processor(QueueNamePayment.paymentSafaricom)
 export class PaymentProcessorSafaricom {
   constructor(
     private readonly safaricomService: SafaricomService,
