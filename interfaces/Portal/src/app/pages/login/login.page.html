@@ -245,6 +245,15 @@
                 {{ 'page.login.sso.popup-is-blocked' | translate }}
               </ion-text>
             </div>
+            <div *ngIf="!isLogoutForced">
+              <br />
+              <small
+                [innerHTML]="
+                  'page.login.sso.force-logout-try-again-notice' | translate
+                "
+              >
+              </small>
+            </div>
           </form>
         </div>
       </div>

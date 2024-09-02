@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { LoggingService } from 'src/app/services/logging.service';
 import { isPopupBlocked } from 'src/app/shared/utils/check-pop-up-is-blocked.utils';
 import { isIframed } from 'src/app/shared/utils/is-iframed.util';
 import { environment } from '../../../environments/environment';
@@ -53,12 +54,14 @@ export class LoginPage implements OnDestroy, OnInit {
 
   public ssoUserIsNotFound: boolean;
   public isPopupBlocked = false;
+  public isLogoutForced = false;
 
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
     private router: Router,
     private msalService?: MsalService,
+    private loggingService?: LoggingService,
   ) {}
 
   ngOnInit(): void {
@@ -71,6 +74,8 @@ export class LoginPage implements OnDestroy, OnInit {
       if (isIframed()) {
         this.isPopupBlocked = isPopupBlocked();
       }
+
+      this.isLogoutForced = window.location.search.includes('?forced');
     }
   }
 
@@ -155,6 +160,10 @@ export class LoginPage implements OnDestroy, OnInit {
       },
       error: (error) => {
         console.error('Error during Azure Entra authentication', error);
+        this.loggingService.logException(error);
+        this.loggingService.logEvent('error-sso-unknown', {
+          message: error.message ?? 'unknown',
+        });
       },
     });
   }
