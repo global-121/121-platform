@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { PaymentProcessorSafaricom } from '@121-service/src/payments/fsp-integration/safaricom/processors/safaricom.processor';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
@@ -27,12 +26,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     TransactionsModule,
     RedisModule,
   ],
-  providers: [
-    SafaricomService,
-    SafaricomApiService,
-    CustomHttpService,
-    PaymentProcessorSafaricom,
-  ],
+  providers: [SafaricomService, SafaricomApiService, CustomHttpService],
   controllers: [SafaricomController],
   exports: [SafaricomService, SafaricomApiService],
 })
