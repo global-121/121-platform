@@ -96,7 +96,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
-        sed --in-place --expression 's|NG_URL_121_SERVICE_API|${{ env.NG_URL_121_SERVICE_API }}|g' --file=src/logout/logout.js
+        sed --in-place --expression 's|NG_URL_121_SERVICE_API|${{ env.NG_URL_121_SERVICE_API }}|g' src/logout/logout.js
         cp -r -f src/logout/ www/logout/
 
     - name: Add VERSION to deployment
