@@ -95,7 +95,10 @@ runs:
     - name: Add logout escape-hatch
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
+      env:
+        NG_URL_121_SERVICE_API: ${{ env.NG_URL_121_SERVICE_API }}
       run: |
+        sed -i '' "s|NG_URL_121_SERVICE_API|$NG_URL_121_SERVICE_API|g" src/logout/logout.js
         cp -r -f src/logout/ www/logout/
 
     - name: Add VERSION to deployment
