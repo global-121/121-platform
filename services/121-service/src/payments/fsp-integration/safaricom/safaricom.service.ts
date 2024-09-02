@@ -144,9 +144,14 @@ export class SafaricomService
       safaricomCustomData.requestResult.ConversationID
         ? safaricomCustomData.requestResult.ConversationID
         : 'Invalid Request';
+    safaricomTransferEntity.originatorConversationId =
+      safaricomCustomData &&
+      safaricomCustomData.requestResult &&
+      safaricomCustomData.requestResult.OriginatorConversationID
+        ? safaricomCustomData.requestResult.OriginatorConversationID
+        : 'Invalid Request';
 
     safaricomTransferEntity.mpesaTransactionId = transaction.id;
-    safaricomTransferEntity.originatorConversationId = ''; //TODO: no idea how should get it
 
     await this.safaricomTransferRepository.save(safaricomTransferEntity);
   }
