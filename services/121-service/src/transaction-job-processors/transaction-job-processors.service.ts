@@ -24,6 +24,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -222,6 +223,15 @@ export class TransactionJobProcessorsService {
       isRetry: input.isRetry,
       status: StatusEnum.success,
     });
+  }
+
+  public async processSafaricomTransactionJob(
+    input: SafaricomTransactionJobDto,
+  ) {
+    console.log(
+      'TODO: Implement processSafaricomTransactionJob with data - ',
+      input,
+    );
   }
 
   private async createTransactionAndUpdateRegistration({

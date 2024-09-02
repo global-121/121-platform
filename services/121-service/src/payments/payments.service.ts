@@ -52,6 +52,7 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
@@ -607,6 +608,23 @@ export class PaymentsService {
           });
         }
 
+        if (fsp === FinancialServiceProviderName.safaricom) {
+          return await this.createAndAddSafaricomTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
+            programId,
+            paymentNumber: payment,
+            isRetry,
+          });
+        }
+
         const [paymentService, useWhatsapp] =
           this.financialServiceProviderNameToServiceMap[fsp];
         return await paymentService.sendPayment(
@@ -684,6 +702,7 @@ export class PaymentsService {
       ]),
     );
 
+    console.log('registrationViews: ', registrationViews);
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
@@ -711,6 +730,86 @@ export class PaymentsService {
       );
     await this.transactionQueuesService.addIntersolveVisaTransactionJobs(
       intersolveVisaTransferJobs,
+    );
+  }
+
+  /**
+   * Creates and adds safaricom transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Safaricom. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddSafaricomTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    const safaricomQuestions =
+      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+        FinancialServiceProviderName.safaricom,
+      );
+    const safaricomQuestionNames = safaricomQuestions.map((q) => q.name);
+    const dataFieldNames = [
+      'fullName',
+      'phoneNumber',
+      'nationalId',
+      'registrationProgramId',
+      ...safaricomQuestionNames,
+    ];
+    const referenceIds = referenceIdsTransactionAmounts.map(
+      (r) => r.referenceId,
+    );
+    const paginateQuery =
+      this.registrationsBulkService.getRegistrationsForPaymentQuery(
+        referenceIds,
+        dataFieldNames,
+      );
+
+    const registrationViews =
+      await this.registrationsPaginationService.getRegistrationsChunked(
+        programId,
+        paginateQuery,
+        4000,
+      );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const safaricomTransferJobs: SafaricomTransactionJobDto[] =
+      registrationViews.map((registrationView): SafaricomTransactionJobDto => {
+        return {
+          programId: programId,
+          paymentNumber: paymentNumber,
+          referenceId: registrationView.referenceId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId: userId,
+          bulkSize: referenceIds.length,
+          phoneNumber: registrationView.phoneNumber,
+          nationalId: registrationView['nationalId'],
+          registrationProgramId: registrationView.registrationProgramId,
+        };
+      });
+    await this.transactionQueuesService.addSafaricomTransactionJobs(
+      safaricomTransferJobs,
     );
   }
 
