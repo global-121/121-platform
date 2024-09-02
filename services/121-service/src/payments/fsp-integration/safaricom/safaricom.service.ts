@@ -5,7 +5,7 @@ import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-tr
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
 import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
-import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
   REDIS_CLIENT,
@@ -32,8 +32,8 @@ import { Repository } from 'typeorm';
 export class SafaricomService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(SafaricomRequestEntity)
-  private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
+  @InjectRepository(SafaricomTransferEntity)
+  private readonly safaricomRequestRepository: Repository<SafaricomTransferEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(RegistrationEntity)
