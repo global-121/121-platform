@@ -12,6 +12,7 @@ import { QueueMessageService } from '@121-service/src/notifications/queue-messag
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
@@ -45,6 +46,7 @@ interface ProcessTransactionResultInput {
 export class TransactionJobProcessorsService {
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly safaricomService: SafaricomService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -227,10 +229,85 @@ export class TransactionJobProcessorsService {
 
   public async processSafaricomTransactionJob(
     input: SafaricomTransactionJobDto,
-  ) {
-    console.log(
-      'TODO: Implement processSafaricomTransactionJob with data - ',
-      input,
+  ): Promise<void> {
+    // TODO: update/remove the numbered steps below, which were initially written down as a general structure based on Intersolve
+
+    // 1. Get registration details needed
+    // TODO: this is duplicate code with Visa-method > simplify
+    const registration =
+      await this.registrationScopedRepository.getByReferenceId({
+        referenceId: input.referenceId,
+      });
+    if (!registration) {
+      throw new Error(
+        `Registration was not found for referenceId ${input.referenceId}`,
+      );
+    }
+    const oldRegistration = structuredClone(registration);
+    const financialServiceProvider =
+      await this.financialServiceProviderRepository.getByName(
+        FinancialServiceProviderName.safaricom,
+      );
+    if (!financialServiceProvider) {
+      throw new Error('Financial Service Provider not found');
+    }
+
+    // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
+    for (const [name, value] of Object.entries(input)) {
+      // TODO: make some properties optional like in Visa, but why?
+
+      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
+      if (value === null || value === undefined || value === '') {
+        const errorText = `Property ${name} is undefined`;
+        await this.createTransactionAndUpdateRegistration({
+          programId: input.programId,
+          paymentNumber: input.paymentNumber,
+          userId: input.userId,
+          calculatedTranserAmountInMajorUnit: input.transactionAmount,
+          financialServiceProviderId: financialServiceProvider.id,
+          registration,
+          oldRegistration,
+          isRetry: input.isRetry,
+          status: StatusEnum.error,
+          errorText,
+        });
+        return;
+      }
+    }
+
+    // 3. Start the transfer, save error transaction on failure
+    // TODO: put in try catch block and save error transaction on failure. And refactor doTransfer to throw error on failure instead of returning a status
+    const safaricomDoTransferResult = await this.safaricomService.doTransfer({
+      transactionAmount: input.transactionAmount,
+      programId: input.programId,
+      paymentNr: input.paymentNumber,
+      userId: input.userId,
+      referenceId: input.referenceId,
+      registrationProgramId: input.registrationProgramId,
+      phoneNumber: input.phoneNumber,
+      nationalId: input.nationalId,
+    });
+
+    // 4. If transfer is successful, create message and add to queue (not needed for safaricom)
+
+    // 5. create success transaction and update registration
+    const transaction = await this.createTransactionAndUpdateRegistration({
+      programId: input.programId,
+      paymentNumber: input.paymentNumber,
+      userId: input.userId,
+      calculatedTranserAmountInMajorUnit:
+        safaricomDoTransferResult.calculatedAmount,
+      financialServiceProviderId: financialServiceProvider.id,
+      registration,
+      oldRegistration,
+      isRetry: input.isRetry,
+      status: safaricomDoTransferResult.status, // TODO: align this with Visa, where at this point it should always be success. Failures are stored earlier. See above.
+    });
+
+    // 6. Storing safaricom transfer data (new compared to visa)
+    await this.safaricomService.createAndSaveSafaricomTransferData(
+      safaricomDoTransferResult,
+      transaction,
     );
   }
 
@@ -245,7 +322,7 @@ export class TransactionJobProcessorsService {
     isRetry,
     status,
     errorText: errorMessage,
-  }: ProcessTransactionResultInput): Promise<void> {
+  }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTranserAmountInMajorUnit,
       registration: registration,
@@ -285,6 +362,8 @@ export class TransactionJobProcessorsService {
         );
       }
     }
+
+    return resultTransaction;
   }
 
   private async addMessageJobToQueue({
