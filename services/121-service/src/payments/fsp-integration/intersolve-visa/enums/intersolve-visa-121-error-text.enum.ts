@@ -1,7 +1,7 @@
 export enum IntersolveVisa121ErrorText {
   createCustomerError = 'CREATE CUSTOMER ERROR',
   issueTokenError = 'ISSUE TOKEN ERROR',
-  resgisterHolderError = 'REGISTER HOLDER ERROR',
+  registerHolderError = 'REGISTER HOLDER ERROR',
   createPhysicalCardError = 'CREATE PHYSICAL CARD ERROR',
   getPhysicalCardError = 'GET PHYSICAL CARD ERROR',
   getTokenError = 'GET TOKEN ERROR',
@@ -10,6 +10,7 @@ export enum IntersolveVisa121ErrorText {
   transferError = 'TRANSFER ERROR',
   substituteTokenError = 'SUBSTITUTE TOKEN ERROR',
   blockTokenError = 'BLOCK TOKEN ERROR',
+  updateCustomerAddressError = 'UPDATE CUSTOMER ADDRESS ERROR',
   updatePhoneNumberError = 'UPDATE PHONE NUMBER ERROR',
   calculatingTransferAmount = 'Error calculating transfer amount',
   reissueCard = 'Error reissuing card',
