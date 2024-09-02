@@ -1,14 +1,12 @@
 import { EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,18 +18,9 @@ export class SafaricomService
 {
   @InjectRepository(SafaricomTransferEntity)
   private readonly safaricomTransferRepository: Repository<SafaricomTransferEntity>;
-  // @InjectRepository(TransactionEntity)
-  // private readonly transactionRepository: Repository<TransactionEntity>;
-  // @InjectRepository(RegistrationEntity)
-  // private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
-    // private readonly transactionsService: TransactionsService,
-    // @InjectQueue(QueueNamePayment.paymentSafaricom)
-    // private readonly paymentSafaricomQueue: Queue,
-    // @Inject(REDIS_CLIENT)
-    // private readonly redisClient: Redis,
   ) {}
 
   /**
@@ -48,7 +37,7 @@ export class SafaricomService
 
   public async doTransfer(
     transferData: SafaricomTransferParams,
-  ): Promise<PaTransactionResultDto> {
+  ): Promise<DoTransferReturnParams> {
     await this.safaricomApiService.authenticate();
 
     // TODO: simplify input
@@ -61,9 +50,9 @@ export class SafaricomService
       transferData.nationalId,
       transferData.registrationProgramId,
     );
+    console.log('payload: ', payload);
 
-    // TODO: change return type to safaricom-specific interface instead of generic PaTransactionResultDto
-    return await this.sendPaymentPerPa(payload, transferData.referenceId);
+    return await this.sendPaymentPerPa(payload);
   }
 
   public createPayloadPerPa(
@@ -108,31 +97,35 @@ export class SafaricomService
 
   public async sendPaymentPerPa(
     payload: SafaricomTransferPayloadParams,
-    referenceId: string,
-  ): Promise<PaTransactionResultDto> {
-    const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FinancialServiceProviderName.safaricom;
-    paTransactionResult.referenceId = referenceId;
-    paTransactionResult.date = new Date();
-    paTransactionResult.calculatedAmount = payload.Amount;
+  ): Promise<DoTransferReturnParams> {
+    // const paTransactionResult = new PaTransactionResultDto();
+    // paTransactionResult.fspName = FinancialServiceProviderName.safaricom;
+    // paTransactionResult.referenceId = referenceId;
+    // paTransactionResult.date = new Date();
+    // paTransactionResult.calculatedAmount = payload.Amount;
 
     const result = await this.safaricomApiService.transfer(payload);
 
-    if (result && result.ResponseCode === '0') {
-      paTransactionResult.status = StatusEnum.waiting;
-    } else {
-      paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message = result.errorMessage;
+    if (result && result.ResponseCode !== '0') {
+      throw new Error(result.errorMessage);
+      // paTransactionResult.status = StatusEnum.waiting;
     }
+    // else {
+    //   paTransactionResult.status = StatusEnum.error;
+    //   paTransactionResult.message = result.errorMessage;
+    // }
 
-    paTransactionResult.customData = {
-      requestResult: result,
+    // return paTransactionResult;
+    return {
+      amountTransferredInMajorUnit: payload.Amount,
+      customData: {
+        requestResult: result,
+      },
     };
-    return paTransactionResult;
   }
 
   public async createAndSaveSafaricomTransferData(
-    safaricomDoTransferResult: PaTransactionResultDto,
+    safaricomDoTransferResult: DoTransferReturnParams,
     transaction: TransactionEntity,
   ): Promise<any> {
     const safaricomTransferEntity = new SafaricomTransferEntity();
@@ -141,14 +134,14 @@ export class SafaricomService
     safaricomTransferEntity.mpesaConversationId =
       safaricomCustomData &&
       safaricomCustomData.requestResult &&
-      safaricomCustomData.requestResult.ConversationID
-        ? safaricomCustomData.requestResult.ConversationID
+      safaricomCustomData.requestResult['ConversationID']
+        ? safaricomCustomData.requestResult['ConversationID']
         : 'Invalid Request';
     safaricomTransferEntity.originatorConversationId =
       safaricomCustomData &&
       safaricomCustomData.requestResult &&
-      safaricomCustomData.requestResult.OriginatorConversationID
-        ? safaricomCustomData.requestResult.OriginatorConversationID
+      safaricomCustomData.requestResult['OriginatorConversationID']
+        ? safaricomCustomData.requestResult['OriginatorConversationID']
         : 'Invalid Request';
 
     safaricomTransferEntity.mpesaTransactionId = transaction.id;
