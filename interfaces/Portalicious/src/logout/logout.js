@@ -13,7 +13,11 @@ window.setTimeout(async () => {
       credentials: 'include',
       method: 'POST',
       mode: 'cors',
-      contentType: 'application/json',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-121-Interface': 'portal',
+      },
     })
     .finally(() => {
       redirectToLogin();
