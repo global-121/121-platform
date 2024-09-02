@@ -2,6 +2,12 @@
   "$schema": "https://json.schemastore.org/staticwebapp.config.json",
   "routes": [
     {
+      "route": "/logout*",
+      "headers": {
+        "Cache-Control": "must-revalidate, no-transform, max-age=0, no-store"
+      }
+    },
+    {
       "route": "/*.js",
       "headers": {
         "Cache-Control": "immutable, no-transform, max-age=31536000"
@@ -23,12 +29,6 @@
       "route": "/assets/*",
       "headers": {
         "Cache-Control": "must-revalidate, no-transform, max-age=2592000"
-      }
-    },
-    {
-      "route": "/logout*",
-      "headers": {
-        "Cache-Control": "must-revalidate, no-transform, max-age=0, no-store"
       }
     },
     {
