@@ -8,11 +8,14 @@ window.setTimeout(async () => {
   window.localStorage.clear();
   window.sessionStorage.clear();
 
-  await window.fetch(`${window.API_URL}/users/logout`, {
-    credentials: 'include',
-    method: 'POST',
-    mode: 'cors',
-  });
-
-  redirectToLogin();
-}, 100);
+  await window
+    .fetch(`${window.API_URL}/users/logout`, {
+      credentials: 'include',
+      method: 'POST',
+      mode: 'cors',
+      contentType: 'application/json',
+    })
+    .finally(() => {
+      redirectToLogin();
+    });
+}, 1_000);
