@@ -82,7 +82,7 @@ export class SafaricomService
       CommandID: 'BusinessPayment',
       Amount: transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: phoneNumber,
+      PartyB: phoneNumber, // Set to empty string to trigger mock failure
       Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
@@ -98,24 +98,13 @@ export class SafaricomService
   public async sendPaymentPerPa(
     payload: SafaricomTransferPayloadParams,
   ): Promise<DoTransferReturnParams> {
-    // const paTransactionResult = new PaTransactionResultDto();
-    // paTransactionResult.fspName = FinancialServiceProviderName.safaricom;
-    // paTransactionResult.referenceId = referenceId;
-    // paTransactionResult.date = new Date();
-    // paTransactionResult.calculatedAmount = payload.Amount;
-
     const result = await this.safaricomApiService.transfer(payload);
 
     if (result && result.ResponseCode !== '0') {
+      //TODO: currently no customData.requestResult is returned and stored in case of failure. Check later if this is OK?
       throw new Error(result.errorMessage);
-      // paTransactionResult.status = StatusEnum.waiting;
     }
-    // else {
-    //   paTransactionResult.status = StatusEnum.error;
-    //   paTransactionResult.message = result.errorMessage;
-    // }
 
-    // return paTransactionResult;
     return {
       amountTransferredInMajorUnit: payload.Amount,
       customData: {

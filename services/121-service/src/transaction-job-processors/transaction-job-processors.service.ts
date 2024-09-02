@@ -327,7 +327,7 @@ export class TransactionJobProcessorsService {
     console.log('transaction: ', transaction);
 
     // 6. Storing safaricom transfer data (new compared to visa)
-    // TODO: move this up above the transaction creation, so that error transaction can be stored in case this step fails.
+    // TODO: refactor/move this up, so that this is also saved on error transactions.
     await this.safaricomService.createAndSaveSafaricomTransferData(
       safaricomDoTransferResult,
       transaction,
