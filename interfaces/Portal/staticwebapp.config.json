@@ -26,6 +26,12 @@
       }
     },
     {
+      "route": "/logout*",
+      "headers": {
+        "Cache-Control": "must-revalidate, no-transform, max-age=0"
+      }
+    },
+    {
       "route": "/.well-known/change-password",
       "redirect": "/user",
       "statusCode": 302
