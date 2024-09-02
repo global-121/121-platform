@@ -3,7 +3,7 @@ import { Queue } from 'bull';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
+import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer.dto';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import {
   ProcessNamePayment,
