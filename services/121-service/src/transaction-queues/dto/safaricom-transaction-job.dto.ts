@@ -36,7 +36,7 @@ export class SafaricomTransactionJobDto {
 
   @IsNotEmpty()
   @IsString()
-  public readonly phoneNumber?: string;
+  public readonly phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()

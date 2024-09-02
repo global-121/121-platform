@@ -3,6 +3,7 @@ import { FinancialServiceProvidersModule } from '@121-service/src/financial-serv
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
+import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
@@ -19,6 +20,7 @@ import { Module } from '@nestjs/common';
   imports: [
     RedisModule,
     IntersolveVisaModule,
+    SafaricomModule,
     ProgramFinancialServiceProviderConfigurationsModule,
     RegistrationsModule,
     ProgramModule,
