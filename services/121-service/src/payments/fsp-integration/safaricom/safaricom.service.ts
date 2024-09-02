@@ -43,20 +43,6 @@ export class SafaricomService
     _programId: number,
     _paymentNr: number,
   ): Promise<void> {
-    // for (const paPaymentData of paymentList) {
-    //   const jobData: SafaricomJobDto = {
-    //     paPaymentData: paPaymentData,
-    //     programId: programId,
-    //     paymentNr: paymentNr,
-    //     userId: paPaymentData.userId,
-    //   };
-    //   const job = await this.paymentSafaricomQueue.add(
-    //     ProcessNamePayment.sendPayment,
-    //     jobData,
-    //   );
-    //   await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    // }
-
     throw new Error('Method should not be called anymore.');
   }
 
@@ -64,13 +50,6 @@ export class SafaricomService
     transferData: SafaricomTransferParams,
   ): Promise<PaTransactionResultDto> {
     await this.safaricomApiService.authenticate();
-
-    // TODO: get this data before queueing in payments.service
-    // const registrationData = await this.getRegistrationProgramIdAndNationalId(
-    //   transferData.referenceId,
-    // );
-    // const nationalId = registrationData?.nationalId;
-    // const registrationProgramId = registrationData?.registrationProgramId;
 
     // TODO: simplify input
     const payload = this.createPayloadPerPa(
@@ -86,29 +65,6 @@ export class SafaricomService
     // TODO: change return type to safaricom-specific interface instead of generic PaTransactionResultDto
     return await this.sendPaymentPerPa(payload, transferData.referenceId);
   }
-
-  // TODO: move this logic to payments.service to get before queue
-  // public async getRegistrationProgramIdAndNationalId(
-  //   referenceId: string,
-  // ): Promise<
-  //   { registrationProgramId: number; nationalId: string } | undefined
-  // > {
-  //   return await this.registrationRepository
-  //     .createQueryBuilder('registration')
-  //     .select([
-  //       'registration."registrationProgramId" AS "registrationProgramId"',
-  //       'data.value AS "nationalId"',
-  //     ])
-  //     .where('registration.referenceId = :referenceId', {
-  //       referenceId: referenceId,
-  //     })
-  //     .andWhere('programQuestion.name IN (:...names)', {
-  //       names: ['nationalId'],
-  //     })
-  //     .leftJoin('registration.data', 'data')
-  //     .leftJoin('data.programQuestion', 'programQuestion')
-  //     .getRawOne();
-  // }
 
   public createPayloadPerPa(
     programId: number,

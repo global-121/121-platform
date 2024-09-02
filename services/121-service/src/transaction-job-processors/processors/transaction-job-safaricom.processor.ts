@@ -12,7 +12,6 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
-// TODO: REFACTOR: Rename QueueNamePayment to transferQueueNames or something, and move the enum to the TransferQueues Module. Also rename the paymentIntersolveVisa to IntersolveVisa probably.
 @Processor(QueueNamePayment.paymentSafaricom)
 export class TransactionJobProcessorSafaricom {
   constructor(

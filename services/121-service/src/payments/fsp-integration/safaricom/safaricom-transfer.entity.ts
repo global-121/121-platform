@@ -13,7 +13,7 @@ export class SafaricomTransferEntity {
   public id: number;
 
   @Column()
-  public originatorConversationID: string;
+  public originatorConversationId: string;
 
   @Column()
   public mpesaConversationId: string;
