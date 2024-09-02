@@ -24,6 +24,8 @@ describe('Send custom message with placeholders', () => {
     phoneNumber: '14155238886',
     fspName: FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
+    maxPayments: 2,
+    paymentCountRemaining: 2,
   };
 
   let accessToken: string;
@@ -38,7 +40,7 @@ describe('Send custom message with placeholders', () => {
   it('should send message with placeholder values processed', async () => {
     // Arrange
     const message =
-      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayName[registrationAh.preferredLanguage]}} and {{fullName}}';
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayName[registrationAh.preferredLanguage]}} and {{fullName}} and {{paymentCountRemaining}}';
 
     // Act
     await sendMessage(
@@ -79,6 +81,10 @@ describe('Send custom message with placeholders', () => {
     processedMessage = processedMessage.replace(
       new RegExp('{{fullName}}', 'g'),
       registrationAh.fullName,
+    );
+    processedMessage = processedMessage.replace(
+      new RegExp('{{paymentCountRemaining}}', 'g'),
+      String(registrationAh.paymentCountRemaining),
     );
 
     expect(messageHistory[0].body).toEqual(processedMessage);
