@@ -5,7 +5,7 @@ import {
   SafaricomAuthResponseDto,
   SafaricomTransferResponseDto,
 } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
-import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
+import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
