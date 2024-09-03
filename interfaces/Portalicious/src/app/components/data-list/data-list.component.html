@@ -8,6 +8,12 @@
         @if (item.tooltip) {
           <app-info-tooltip [message]="item.tooltip" />
         }
+        @if (item.chipLabel && item.chipVariant) {
+          <app-colored-chip
+            [variant]="item.chipVariant"
+            [label]="item.chipLabel"
+          />
+        }
         @if (item.value) {
           <span>
             @switch (item.type) {

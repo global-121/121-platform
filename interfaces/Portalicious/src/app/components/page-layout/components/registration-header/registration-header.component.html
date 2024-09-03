@@ -2,10 +2,21 @@
   styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
   i18n
 >
-  <h2>Amin Maalouf</h2>
+  <div class="flex">
+    <h2>Amin Maalouf</h2>
+    <p-button
+      label="Add note"
+      i18n-label="@@add-note"
+      rounded
+      outlined
+      icon="pi pi-pen-to-square"
+      (click)="openAddNoteDialog()"
+      class="ml-auto"
+    />
+  </div>
   <app-data-list [data]="registrationGeneralDetails()" />
 </p-card>
-<div class="p-4"></div>
-<div class="w-full bg-white px-2 pt-2">
+
+<div class="mt-6 w-full rounded-t-lg bg-white px-2 pt-2">
   <p-tabMenu [model]="navMenuItems()" />
 </div>

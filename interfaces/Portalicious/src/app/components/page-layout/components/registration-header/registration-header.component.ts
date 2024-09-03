@@ -5,6 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { AppRoutes } from '~/app.routes';
@@ -16,7 +17,7 @@ import {
 @Component({
   selector: 'app-registration-header',
   standalone: true,
-  imports: [TabMenuModule, CardModule, DataListComponent],
+  imports: [TabMenuModule, CardModule, DataListComponent, ButtonModule],
   templateUrl: './registration-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -61,17 +62,19 @@ export class RegistrationHeaderComponent {
     const data: DataListItem[] = [
       {
         label: $localize`:@@registration-status:Status`,
-        value: 'Registered',
+        value: '09-15-2024',
+        type: 'date',
+        chipLabel: 'Registered',
+        chipVariant: 'green',
+      },
+      {
+        label: $localize`:@@registration-phone-number:Phone number`,
+        value: '0031612345678',
         type: 'text',
       },
       {
         label: $localize`:@@registration-payments:Payments`,
-        value: '6 out of 12',
-        type: 'text',
-      },
-      {
-        label: $localize`:@@registration-phone-number:Phone number`,
-        value: '+31612345678',
+        value: '6 (out of 12)',
         type: 'text',
       },
       {
@@ -82,4 +85,8 @@ export class RegistrationHeaderComponent {
     ];
     return data;
   });
+
+  public openAddNoteDialog() {
+    console.log('open dialog');
+  }
 }

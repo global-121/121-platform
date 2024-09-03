@@ -1,6 +1,9 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
+import {
+  ChipVariant,
+  ColoredChipComponent,
+} from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 
@@ -36,6 +39,7 @@ export type DataListItem = {
     DatePipe,
     DecimalPipe,
     SkeletonInlineComponent,
+    ColoredChipComponent,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,
