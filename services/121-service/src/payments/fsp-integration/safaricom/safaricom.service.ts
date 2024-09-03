@@ -56,28 +56,13 @@ export class SafaricomService
   ): Promise<DoTransferReturnParams> {
     await this.safaricomApiService.authenticate();
 
-    // TODO: simplify input
-    const payload = this.createPayloadPerPa(
-      transferData.programId,
-      transferData.paymentNr,
-      transferData.transactionAmount,
-      transferData.phoneNumber,
-      transferData.referenceId,
-      transferData.nationalId,
-      transferData.registrationProgramId,
-    );
+    const payload = this.createPayloadPerPa(transferData);
 
     return await this.sendPaymentPerPa(payload);
   }
 
   public createPayloadPerPa(
-    programId: number,
-    paymentNr: number,
-    transactionAmount: number,
-    phoneNumber: string,
-    referenceId: string,
-    nationalId: string | undefined,
-    registrationProgramId: number | undefined,
+    transferData: SafaricomTransferParams,
   ): SafaricomTransferPayloadParams {
     function padTo2Digits(num: number): string {
       return num.toString().padStart(2, '0');
@@ -95,18 +80,18 @@ export class SafaricomService
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
       CommandID: 'BusinessPayment',
-      Amount: transactionAmount,
+      Amount: transferData.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: phoneNumber, // Set to empty string to trigger mock failure
-      Remarks: `Payment ${paymentNr}`,
+      PartyB: transferData.phoneNumber, // Set to empty string to trigger mock failure
+      Remarks: `Payment ${transferData.paymentNr}`,
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: referenceId,
-      OriginatorConversationID: `P${programId}PA${registrationProgramId}_${formatDate(
+      Occassion: transferData.referenceId,
+      OriginatorConversationID: `P${transferData.programId}PA${transferData.registrationProgramId}_${formatDate(
         new Date(),
       )}_${generateRandomString(3)}`,
       IDType: process.env.SAFARICOM_IDTYPE!,
-      IDNumber: nationalId,
+      IDNumber: transferData.nationalId,
     };
   }
 
