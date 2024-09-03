@@ -60,15 +60,21 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "originatorConversationID" TO "originatorConversationId"`,
     );
 
+    // Step 4: Fix constraints and sequences
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" DROP CONSTRAINT "FK_76a85e893850c2ef7ce4b6441a0"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "FK_71eecfc6a9376e289b2a52cdf55" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
     await queryRunner.query(
       `ALTER SEQUENCE IF EXISTS "121-service".safaricom_request_id_seq RENAME TO safaricom_transfer_id_seq;`,
     );
-
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."safaricom_transfer_id_seq"')`,
     );
 
-    // Step 4: Rename the table
+    // Step 5: Rename the table
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME TO "safaricom_transfer"`,
     );
