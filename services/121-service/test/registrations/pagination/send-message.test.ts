@@ -49,13 +49,12 @@ describe('send arbitrary messages to set of registrations', () => {
       message,
     );
 
-    await waitForMessagesToComplete(
-      programIdOCW,
-      [referenceIds[0]],
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [referenceIds[0]],
       accessToken,
-      10_000,
-      2,
-    );
+      minimumNumberOfMessages: 2,
+    });
 
     const messageHistories: any[] = [];
     for (const referenceId of referenceIds) {
@@ -96,13 +95,15 @@ describe('send arbitrary messages to set of registrations', () => {
       }, // This combination should only apply to  registrationOCW3, registrationOCW4
     );
 
-    await waitForMessagesToComplete(
-      programIdOCW,
-      [registrationOCW3.referenceId, registrationOCW4.referenceId],
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [
+        registrationOCW3.referenceId,
+        registrationOCW4.referenceId,
+      ],
       accessToken,
-      10_000,
-      2,
-    );
+      minimumNumberOfMessages: 2,
+    });
 
     const messageHistory1 = (
       await getMessageHistory(

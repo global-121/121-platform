@@ -64,12 +64,11 @@ describe('Sending templated message', () => {
         true, // check the checkbox for sending templated message about status change
       );
 
-      await waitForMessagesToComplete(
+      await waitForMessagesToComplete({
         programId,
-        [registrationAh.referenceId],
+        referenceIds: [registrationAh.referenceId],
         accessToken,
-        15_000,
-      );
+      });
 
       const messageHistory = (
         await getMessageHistory(
@@ -123,12 +122,11 @@ describe('Sending templated message', () => {
         templateKey,
       );
 
-      await waitForMessagesToComplete(
+      await waitForMessagesToComplete({
         programId,
-        [registrationAh.referenceId],
+        referenceIds: [registrationAh.referenceId],
         accessToken,
-        15_000,
-      );
+      });
 
       const messageHistory = (
         await getMessageHistory(

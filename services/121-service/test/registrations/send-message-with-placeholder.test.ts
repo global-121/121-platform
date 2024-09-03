@@ -50,12 +50,11 @@ describe('Send custom message with placeholders', () => {
       message,
     );
 
-    await waitForMessagesToComplete(
+    await waitForMessagesToComplete({
       programId,
-      [registrationAh.referenceId],
+      referenceIds: [registrationAh.referenceId],
       accessToken,
-      8000,
-    );
+    });
 
     const messageHistory = (
       await getMessageHistory(

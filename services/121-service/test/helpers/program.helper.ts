@@ -359,13 +359,18 @@ export async function waitForStatusUpdateToComplete(
   }
 }
 
-export async function waitForMessagesToComplete(
-  programId: number,
-  referenceIds: string[],
-  accessToken: string,
-  maxWaitTimeMs: number,
+export async function waitForMessagesToComplete({
+  programId,
+  referenceIds,
+  accessToken,
   minimumNumberOfMessages = 1,
-): Promise<void> {
+}: {
+  programId: number;
+  referenceIds: string[];
+  accessToken: string;
+  minimumNumberOfMessages?: number;
+}): Promise<void> {
+  const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
   let allMessageUpdatesSuccessful = false;
 
