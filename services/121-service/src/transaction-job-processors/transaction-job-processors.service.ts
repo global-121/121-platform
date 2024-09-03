@@ -3,6 +3,7 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -63,23 +64,12 @@ export class TransactionJobProcessorsService {
   public async processIntersolveVisaTransactionJob(
     input: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
-    const registration =
-      await this.registrationScopedRepository.getByReferenceId({
-        referenceId: input.referenceId,
-      });
-    if (!registration) {
-      throw new Error(
-        `Registration was not found for referenceId ${input.referenceId}`,
-      );
-    }
+    const registration = await this.getRegistrationOrThrow(input.referenceId);
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
-      await this.financialServiceProviderRepository.getByName(
+      await this.getFinancialServiceProviderOrThrow(
         FinancialServiceProviderName.intersolveVisa,
       );
-    if (!financialServiceProvider) {
-      throw new Error('Financial Service Provider not found');
-    }
 
     let transferAmountInMajorUnit: number;
     try {
@@ -234,24 +224,12 @@ export class TransactionJobProcessorsService {
     // TODO: update/remove the numbered steps below, which were initially written down as a general structure based on Intersolve
 
     // 1. Get registration details needed
-    // TODO: this is duplicate code with Visa-method > simplify
-    const registration =
-      await this.registrationScopedRepository.getByReferenceId({
-        referenceId: input.referenceId,
-      });
-    if (!registration) {
-      throw new Error(
-        `Registration was not found for referenceId ${input.referenceId}`,
-      );
-    }
+    const registration = await this.getRegistrationOrThrow(input.referenceId);
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
-      await this.financialServiceProviderRepository.getByName(
+      await this.getFinancialServiceProviderOrThrow(
         FinancialServiceProviderName.safaricom,
       );
-    if (!financialServiceProvider) {
-      throw new Error('Financial Service Provider not found');
-    }
 
     // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
     for (const [name, value] of Object.entries(input)) {
@@ -327,6 +305,32 @@ export class TransactionJobProcessorsService {
       safaricomDoTransferResult,
       transaction,
     );
+  }
+
+  private async getRegistrationOrThrow(
+    referenceId: string,
+  ): Promise<RegistrationEntity> {
+    const registration =
+      await this.registrationScopedRepository.getByReferenceId({
+        referenceId: referenceId,
+      });
+    if (!registration) {
+      throw new Error(
+        `Registration was not found for referenceId ${referenceId}`,
+      );
+    }
+    return registration;
+  }
+
+  private async getFinancialServiceProviderOrThrow(
+    fspName: FinancialServiceProviderName,
+  ): Promise<FinancialServiceProviderEntity> {
+    const financialServiceProvider =
+      await this.financialServiceProviderRepository.getByName(fspName);
+    if (!financialServiceProvider) {
+      throw new Error('Financial Service Provider not found');
+    }
+    return financialServiceProvider;
   }
 
   private async createTransactionAndUpdateRegistration({
