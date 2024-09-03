@@ -250,7 +250,7 @@ describe('Do payment to 1 PA', () => {
       );
       expect(getTransactionsBody.body[0].status).toBe(StatusEnum.error);
       expect(getTransactionsBody.body[0].errorMessage).toBe(
-        'The initiator information is invalid.',
+        'Property phoneNumber is undefined',
       );
     });
   });
