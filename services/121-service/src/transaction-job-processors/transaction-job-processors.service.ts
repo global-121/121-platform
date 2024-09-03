@@ -233,8 +233,6 @@ export class TransactionJobProcessorsService {
 
     // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
     for (const [name, value] of Object.entries(input)) {
-      // TODO: make some properties optional like in Visa, but why?
-
       // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
       if (value === null || value === undefined || value === '') {
         const errorText = `Property ${name} is undefined`;
@@ -263,9 +261,9 @@ export class TransactionJobProcessorsService {
         paymentNr: input.paymentNumber,
         userId: input.userId,
         referenceId: input.referenceId,
-        registrationProgramId: input.registrationProgramId,
-        phoneNumber: input.phoneNumber,
-        nationalId: input.nationalId,
+        registrationProgramId: input.registrationProgramId!,
+        phoneNumber: input.phoneNumber!,
+        nationalId: input.nationalId!,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
