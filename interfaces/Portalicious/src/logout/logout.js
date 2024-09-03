@@ -5,7 +5,7 @@
 window.API_URL = `NG_URL_121_SERVICE_API`;
 
 function redirectToLogin() {
-  window.location.assign('/login?forced=' + Date.now());
+  window.location.assign('/en/login?' + Date.now());
 }
 
 window.setTimeout(async () => {
