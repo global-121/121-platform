@@ -3,6 +3,7 @@ import {
   QueueNameMessageCallBack,
 } from '@121-service/src/notifications/enum/queue.names.enum';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
+import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
@@ -14,7 +15,9 @@ export class MessageStatusCallbackProcessor {
   ) {}
 
   @Process(ProcessNameMessage.whatsapp)
-  async handleStatusCallbackWhatsapp(job: Job): Promise<void> {
+  async handleStatusCallbackWhatsapp(
+    job: Job<TwilioStatusCallbackDto>,
+  ): Promise<void> {
     const callbackData = job.data;
     await this.messageIncomingService
       .processWhatsappStatusCallback(callbackData)
@@ -25,7 +28,9 @@ export class MessageStatusCallbackProcessor {
   }
 
   @Process(ProcessNameMessage.sms)
-  async handleStatusCallbackSms(job: Job): Promise<void> {
+  async handleStatusCallbackSms(
+    job: Job<TwilioStatusCallbackDto>,
+  ): Promise<void> {
     const callbackData = job.data;
     await this.messageIncomingService
       .processSmsStatusCallback(callbackData)
