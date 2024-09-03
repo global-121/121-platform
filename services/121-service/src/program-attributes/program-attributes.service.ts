@@ -172,7 +172,7 @@ export class ProgramAttributesService {
         label: null,
       },
     ];
-    if (hasMaxPayments) {
+    if (hasMaxPayments?.enableMaxPayments) {
       defaultAttributes.push({
         name: 'maxPayments',
         type: 'numeric',
