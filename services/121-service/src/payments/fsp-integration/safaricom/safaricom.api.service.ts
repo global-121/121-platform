@@ -1,8 +1,6 @@
-import {
-  SafaricomAuthResponseDto,
-  SafaricomTransferResponseDto,
-} from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
+import { SafaricomAuthResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-auth-response.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
+import { SafaricomTransferResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import { TokenSet } from 'openid-client';
@@ -28,7 +26,7 @@ export class SafaricomApiService {
     try {
       const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
 
-      const { data } = await this.httpService.get<SafaricomAuthResponseDto>(
+      const { data } = await this.httpService.get<SafaricomAuthResponseParams>(
         `${accessTokenUrl}`,
         headers,
       );
@@ -62,7 +60,7 @@ export class SafaricomApiService {
       ];
 
       const { data } =
-        await this.httpService.post<SafaricomTransferResponseDto>(
+        await this.httpService.post<SafaricomTransferResponseParams>(
           `${paymentUrl}`,
           payload,
           headers,
