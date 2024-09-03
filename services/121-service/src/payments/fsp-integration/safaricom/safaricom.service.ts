@@ -121,9 +121,8 @@ export class SafaricomService
 
     return {
       amountTransferredInMajorUnit: payload.Amount,
-      customData: {
-        requestResult: result,
-      },
+      originatorConversationId: result.OriginatorConversationID,
+      conversationId: result.ConversationID,
     };
   }
 
@@ -133,18 +132,14 @@ export class SafaricomService
   ): Promise<any> {
     const safaricomTransferEntity = new SafaricomTransferEntity();
 
-    const safaricomCustomData = { ...safaricomDoTransferResult.customData };
     safaricomTransferEntity.mpesaConversationId =
-      safaricomCustomData &&
-      safaricomCustomData.requestResult &&
-      safaricomCustomData.requestResult['ConversationID']
-        ? safaricomCustomData.requestResult['ConversationID']
+      safaricomDoTransferResult && safaricomDoTransferResult.conversationId
+        ? safaricomDoTransferResult.conversationId
         : 'Invalid Request';
     safaricomTransferEntity.originatorConversationId =
-      safaricomCustomData &&
-      safaricomCustomData.requestResult &&
-      safaricomCustomData.requestResult['OriginatorConversationID']
-        ? safaricomCustomData.requestResult['OriginatorConversationID']
+      safaricomDoTransferResult &&
+      safaricomDoTransferResult.originatorConversationId
+        ? safaricomDoTransferResult.originatorConversationId
         : 'Invalid Request';
 
     safaricomTransferEntity.transactionId = transaction.id;
