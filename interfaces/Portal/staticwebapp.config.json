@@ -26,6 +26,12 @@
       }
     },
     {
+      "route": "/assets/i18n/*.json",
+      "headers": {
+        "Cache-Control": "must-revalidate, no-transform, max-age=3600"
+      }
+    },
+    {
       "route": "/assets/*",
       "headers": {
         "Cache-Control": "must-revalidate, no-transform, max-age=2592000"
