@@ -16,10 +16,10 @@ export class SafaricomController {
   })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Notified' })
   @Post('transaction')
-  public async resultCallback(
+  public async processSafaricomCallback(
     @Body() safaricomPaymentResultData: any,
   ): Promise<any> {
-    await this.safaricomService.processSafaricomResult(
+    await this.safaricomService.processSafaricomCallback(
       safaricomPaymentResultData,
     );
   }
