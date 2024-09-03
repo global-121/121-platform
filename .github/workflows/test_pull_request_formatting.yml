@@ -5,8 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  check_pr_description:
-    name: Check PR metadata
+  test:
     runs-on: ubuntu-latest
     # Don't run this check on dependabot PRs
     if: contains(github.actor, 'dependabot') == false
