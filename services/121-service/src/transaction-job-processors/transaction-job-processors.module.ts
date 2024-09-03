@@ -31,7 +31,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     EventsModule,
     MessageTemplateModule,
   ],
-
   providers: [
     TransactionJobProcessorsService,
     TransactionJobProcessorIntersolveVisa,
