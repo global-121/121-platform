@@ -37,7 +37,7 @@ export class TwilioController {
   public createMessage(
     @Body() twilioMessagesCreateDto: TwilioMessagesCreateDto | any,
     @Param('accountSid') accountSid: string,
-  ): object {
+  ): Record<string, unknown> {
     console.info(`POST api/2010-04-01/Accounts/${accountSid}/Messages.json`, {
       ...twilioMessagesCreateDto,
       Body: twilioMessagesCreateDto.Body?.substring(0, 42).concat('…'),
