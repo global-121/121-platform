@@ -98,6 +98,15 @@ body {
     .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
       border-color: transparent;
     }
+
+    // The ink bar is manually positioned via the 'left' property, but it is broken on page load.
+    // These two rules fix the issue by hiding the ink bar and overriding the default behaviour of the selected tab.
+    .p-tabmenu-ink-bar {
+      display: none;
+    }
+    .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+      @apply border-purple-700 text-purple-700;
+    }
   }
 
   .p-sidebar {
@@ -152,6 +161,10 @@ body {
         }
       }
     }
+  }
+
+  .p-chip .p-chip-text {
+    @apply font-semibold txt-body-m;
   }
 
   // All form-inputs should be full-width, a wrapper should be in control of the width.

@@ -1101,6 +1101,22 @@ export class MetricsService {
       },
     });
 
+    const newPeople = await this.registrationScopedRepository.count({
+      where: {
+        program: { id: Equal(programId) },
+        registrationStatus: Equal(RegistrationStatusEnum.registered),
+      },
+    });
+
+    const registeredPeople = await this.registrationScopedRepository.count({
+      where: {
+        program: { id: Equal(programId) },
+        registrationStatus: Not(
+          In([RegistrationStatusEnum.declined, RegistrationStatusEnum.deleted]),
+        ),
+      },
+    });
+
     const result = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select('SUM(transaction.amount)', 'spentMoney')
@@ -1116,6 +1132,8 @@ export class MetricsService {
       programId,
       targetedPeople,
       includedPeople,
+      newPeople,
+      registeredPeople,
       totalBudget,
       spentMoney,
     };

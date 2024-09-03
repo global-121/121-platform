@@ -9,6 +9,7 @@ import {
   UpdateProgramCustomAttributeDto,
 } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import {
   CreateProgramQuestionDto,
   UpdateProgramQuestionDto,
@@ -29,15 +30,6 @@ import { UserService } from '@121-service/src/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
-
-interface FoundProgram
-  extends Omit<
-      ProgramEntity,
-      'monitoringDashboardUrl' | 'programFspConfiguration'
-    >,
-    Partial<
-      Pick<ProgramEntity, 'monitoringDashboardUrl' | 'programFspConfiguration'>
-    > {}
 
 @Injectable()
 export class ProgramService {
@@ -64,7 +56,7 @@ export class ProgramService {
   public async findProgramOrThrow(
     programId: number,
     userId?: number,
-  ): Promise<FoundProgram> {
+  ): Promise<FoundProgramDto> {
     let includeMetricsUrl = false;
     if (userId) {
       includeMetricsUrl = await this.userService.canActivate(
@@ -113,7 +105,7 @@ export class ProgramService {
     program['filterableAttributes'] =
       this.programAttributesService.getFilterableAttributes(program);
 
-    const outputProgram: FoundProgram = program;
+    const outputProgram: FoundProgramDto = program;
 
     if (!includeMetricsUrl) {
       delete outputProgram.monitoringDashboardUrl;
@@ -382,7 +374,7 @@ export class ProgramService {
   }
 
   // This function takes a filled ProgramEntity and returns a filled ProgramReturnDto
-  private fillProgramReturnDto(program: FoundProgram): ProgramReturnDto {
+  private fillProgramReturnDto(program: FoundProgramDto): ProgramReturnDto {
     const programDto: ProgramReturnDto = {
       id: program.id,
       published: program.published,

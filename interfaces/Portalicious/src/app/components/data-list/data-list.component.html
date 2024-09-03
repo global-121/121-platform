@@ -1,0 +1,44 @@
+<div class="mt-3 grid grid-cols-2 gap-x-5 border-t border-grey-300">
+  @for (item of data(); track $index) {
+    <p class="trim space-x-1 border-b border-grey-300 py-3">
+      @if (item.loading) {
+        <app-skeleton-inline />
+      } @else {
+        <strong> {{ item.label }}:</strong>
+        @if (item.tooltip) {
+          <app-info-tooltip [message]="item.tooltip" />
+        }
+        @if (item.value) {
+          <span>
+            @switch (item.type) {
+              @case ('currency') {
+                {{
+                  item.value
+                    | currency
+                      : item.currencyCode ?? 'EUR'
+                      : 'symbol-narrow'
+                      : item.currencyFormat
+                }}
+              }
+              @case ('date') {
+                {{ item.value | date }}
+              }
+              @case ('number') {
+                {{ item.value | number }}
+              }
+              @default {
+                {{ item.value }}
+              }
+            }
+          </span>
+        } @else {
+          <span
+            i18n="@@generic-not-available"
+            class="text-grey-500"
+            >Not available</span
+          >
+        }
+      }
+    </p>
+  }
+</div>
