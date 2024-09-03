@@ -42,7 +42,6 @@ interface ProcessTransactionResultInput {
   isRetry: boolean;
   status: StatusEnum;
   errorText?: string;
-  customData?: Record<string, unknown>;
 }
 
 @Injectable()
@@ -235,7 +234,6 @@ export class TransactionJobProcessorsService {
   public async processSafaricomTransactionJob(
     input: SafaricomTransactionJobDto,
   ): Promise<void> {
-    console.log('input: ', input);
     // TODO: update/remove the numbered steps below, which were initially written down as a general structure based on Intersolve
 
     // 1. Get registration details needed
@@ -294,7 +292,6 @@ export class TransactionJobProcessorsService {
         phoneNumber: input.phoneNumber,
         nationalId: input.nationalId,
       });
-      console.log('safaricomDoTransferResult: ', safaricomDoTransferResult);
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
         programId: input.programId,
@@ -324,10 +321,8 @@ export class TransactionJobProcessorsService {
       registration,
       oldRegistration,
       isRetry: input.isRetry,
-      status: StatusEnum.success,
-      customData: safaricomDoTransferResult.customData,
+      status: StatusEnum.waiting, // This will only go to 'success' via callback
     });
-    console.log('transaction: ', transaction);
 
     // 6. Storing safaricom transfer data (new compared to visa)
     // TODO: refactor/move this up, so that this is also saved on error transactions.
@@ -348,7 +343,6 @@ export class TransactionJobProcessorsService {
     isRetry,
     status,
     errorText: errorMessage,
-    customData,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTranserAmountInMajorUnit,
@@ -359,7 +353,6 @@ export class TransactionJobProcessorsService {
       userId,
       status,
       errorMessage,
-      customData,
     });
 
     await this.latestTransactionRepository.insertOrUpdateFromTransaction(
@@ -425,7 +418,6 @@ export class TransactionJobProcessorsService {
     userId,
     status,
     errorMessage,
-    customData,
   }: {
     amount: number;
     registration: RegistrationEntity;
@@ -435,7 +427,6 @@ export class TransactionJobProcessorsService {
     userId: number;
     status: StatusEnum;
     errorMessage?: string;
-    customData?: Record<string, unknown>;
   }) {
     const transaction = new TransactionEntity();
     transaction.amount = amount;
@@ -448,7 +439,6 @@ export class TransactionJobProcessorsService {
     transaction.status = status;
     transaction.transactionStep = 1;
     transaction.errorMessage = errorMessage ?? null;
-    transaction.customData = customData ?? {};
 
     return await this.transactionScopedRepository.save(transaction);
   }
