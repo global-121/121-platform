@@ -4,15 +4,18 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
   patchProgram,
+  retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -252,6 +255,77 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].errorMessage).toBe(
         'Property phoneNumber is undefined',
       );
+    });
+
+    it('should successfully retry pay-out after empty phoneNumber error', async () => {
+      const program = {
+        allowEmptyPhoneNumber: true,
+      };
+
+      // Act
+      // Call the update function
+      await patchProgram(2, program as UpdateProgramDto, accessToken);
+
+      // Arrange
+      registrationSafaricom.phoneNumber = '';
+      await importRegistrations(
+        programId,
+        [registrationSafaricom],
+        accessToken,
+      );
+      await awaitChangePaStatus(
+        programId,
+        [registrationSafaricom.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationSafaricom.referenceId];
+
+      // Act
+      // Initial failing payment
+      const doPaymentResponse = await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        Object.values(StatusEnum),
+      );
+
+      // update PA
+      await updateRegistration(
+        programId,
+        registrationSafaricom.referenceId,
+        { phoneNumber: '254708374149' },
+        'automated test',
+        accessToken,
+      );
+      // await waitFor(2_000);
+
+      // retry payment
+      await retryPayment(programId, payment, accessToken);
+      await waitFor(2_000);
+
+      // Assert
+      const getTransactionsBody = await getTransactions(
+        programId,
+        payment,
+        registrationSafaricom.referenceId,
+        accessToken,
+      );
+
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(getTransactionsBody.body[0].status).toBe(StatusEnum.success);
     });
   });
 });
