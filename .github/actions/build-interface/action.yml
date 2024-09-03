@@ -93,7 +93,7 @@ runs:
         cat ./staticwebapp.config.json
 
     - name: Add Log-Out Manual Override
-      # See interfaces/Portal/src/logout/README.md for more information
+      # See interfaces/Portal(icious)/src/logout/README.md for more information
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
