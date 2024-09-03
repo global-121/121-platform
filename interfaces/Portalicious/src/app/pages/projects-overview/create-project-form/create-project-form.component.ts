@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  signal,
+  model,
 } from '@angular/core';
 import {
   FormControl,
@@ -28,10 +28,10 @@ import {
 } from '~/utils/form-validation';
 
 type CreateProjectFormGroup =
-  (typeof CreateProjectButtonComponent)['prototype']['formGroup'];
+  (typeof CreateProjectFormComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-create-project-button',
+  selector: 'app-create-project-form',
   standalone: true,
   imports: [
     InputTextModule,
@@ -43,16 +43,16 @@ type CreateProjectFormGroup =
     FormFieldWrapperComponent,
   ],
   providers: [ToastService],
-  templateUrl: './create-project-button.component.html',
+  templateUrl: './create-project-form.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateProjectButtonComponent {
+export class CreateProjectFormComponent {
   private projectApiService = inject(ProjectApiService);
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  formVisible = signal(false);
+  formVisible = model.required<boolean>();
 
   formGroup = new FormGroup({
     token: new FormControl('', {

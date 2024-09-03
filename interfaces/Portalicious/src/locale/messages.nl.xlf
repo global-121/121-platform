@@ -515,6 +515,10 @@
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
         <target state="new">The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</target>
       </trans-unit>
+      <trans-unit id="1755386264837692034" datatype="html">
+        <source>User updated</source>
+        <target state="new">User updated</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

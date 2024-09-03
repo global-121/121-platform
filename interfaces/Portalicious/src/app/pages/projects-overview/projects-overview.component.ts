@@ -1,9 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { CreateProjectButtonComponent } from '~/pages/projects-overview/create-project-button/create-project-button.component';
+import { CreateProjectFormComponent } from '~/pages/projects-overview/create-project-form/create-project-form.component';
 import { ProjectSummaryCardComponent } from '~/pages/projects-overview/project-summary-card/project-summary-card.component';
 import { AuthService } from '~/services/auth.service';
 
@@ -16,7 +21,7 @@ import { AuthService } from '~/services/auth.service';
     PageLayoutComponent,
     RouterLink,
     ProjectSummaryCardComponent,
-    CreateProjectButtonComponent,
+    CreateProjectFormComponent,
   ],
   templateUrl: './projects-overview.component.html',
   styles: ``,
@@ -28,4 +33,6 @@ export class ProjectsOverviewComponent {
   public canCreateProjects = this.authService.isAdmin;
 
   public assignedProjects = this.authService.getAssignedProjectIds();
+
+  formVisible = signal(false);
 }
