@@ -8,11 +8,15 @@ import { MenuItem } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { AppRoutes } from '~/app.routes';
+import {
+  DataListComponent,
+  DataListItem,
+} from '~/components/data-list/data-list.component';
 
 @Component({
   selector: 'app-registration-header',
   standalone: true,
-  imports: [TabMenuModule, CardModule],
+  imports: [TabMenuModule, CardModule, DataListComponent],
   templateUrl: './registration-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -52,4 +56,30 @@ export class RegistrationHeaderComponent {
       // ),
     },
   ]);
+
+  registrationGeneralDetails = computed(() => {
+    const data: DataListItem[] = [
+      {
+        label: $localize`:@@registration-status:Status`,
+        value: 'Registered',
+        type: 'text',
+      },
+      {
+        label: $localize`:@@registration-payments:Payments`,
+        value: '6 out of 12',
+        type: 'text',
+      },
+      {
+        label: $localize`:@@registration-phone-number:Phone number`,
+        value: '+31612345678',
+        type: 'text',
+      },
+      {
+        label: $localize`:@@registration-scope:Scope`,
+        value: 'utrecht',
+        type: 'text',
+      },
+    ];
+    return data;
+  });
 }
