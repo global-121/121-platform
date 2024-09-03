@@ -92,10 +92,12 @@ runs:
         mv -f ./staticwebapp.config.override.json ./staticwebapp.config.json
         cat ./staticwebapp.config.json
 
-    - name: Add logout escape-hatch
+    - name: Add Log-Out Manual Override
+      # See interfaces/Portal(icious)/src/logout/README.md for more information
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
+        sed --in-place --expression 's|NG_URL_121_SERVICE_API|${{ env.NG_URL_121_SERVICE_API }}|g' src/logout/logout.js
         cp -r -f src/logout/ www/logout/
 
     - name: Add VERSION to deployment
