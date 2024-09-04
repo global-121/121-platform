@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -13,6 +15,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 @Component({
   selector: 'app-registration-header',
@@ -22,8 +25,53 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationHeaderComponent {
+  readonly registrationApiService = inject(RegistrationApiService);
+
   projectId = input.required<number>();
   registrationId = input.required<number>();
+  registration = injectQuery(
+    this.registrationApiService.getReferenceIdByRegistrationId(
+      this.projectId,
+      this.registrationId,
+    ),
+  );
+
+  registrationData = computed(() => {
+    const registrationRawData = this.registration.data();
+    const listData: DataListItem[] = [
+      {
+        label: $localize`:@@registration-status:Status`,
+        value: '01-01-2024',
+        type: 'date',
+        chipLabel: registrationRawData?.registrationStatus?.toString(),
+        // TODO: Make helper to determine the variant based on status
+        chipVariant: 'green',
+      },
+      {
+        label: $localize`:@@registration-phone-number:Phone number`,
+        value: registrationRawData?.phoneNumber,
+        type: 'text',
+      },
+      {
+        label: $localize`:@@registration-payments:Payments`,
+        value: this.getPaymentCountString(
+          registrationRawData?.paymentCount,
+          registrationRawData?.maxPayments,
+        ),
+        type: 'text',
+      },
+      {
+        label: $localize`:@@registration-scope:Scope`,
+        value: registrationRawData?.scope,
+        type: 'text',
+      },
+    ];
+
+    return listData.map((item) => ({
+      ...item,
+      loading: this.registration.isPending(),
+    }));
+  });
 
   items: MenuItem[] = [
     { label: 'Activity log', icon: 'pi pi-list', route: './activity-log' },
@@ -58,35 +106,20 @@ export class RegistrationHeaderComponent {
     },
   ]);
 
-  registrationGeneralDetails = computed(() => {
-    const data: DataListItem[] = [
-      {
-        label: $localize`:@@registration-status:Status`,
-        value: '09-15-2024',
-        type: 'date',
-        chipLabel: 'Registered',
-        chipVariant: 'green',
-      },
-      {
-        label: $localize`:@@registration-phone-number:Phone number`,
-        value: '0031612345678',
-        type: 'text',
-      },
-      {
-        label: $localize`:@@registration-payments:Payments`,
-        value: '6 (out of 12)',
-        type: 'text',
-      },
-      {
-        label: $localize`:@@registration-scope:Scope`,
-        value: 'utrecht',
-        type: 'text',
-      },
-    ];
-    return data;
-  });
-
   public openAddNoteDialog() {
     console.log('open dialog');
+  }
+
+  private getPaymentCountString(
+    paymentCount?: null | number,
+    maxPayments?: null | number,
+  ): string | undefined {
+    if (paymentCount != null && !maxPayments) {
+      return paymentCount.toString();
+    } else if (paymentCount != null && maxPayments != null) {
+      return `${paymentCount.toString()} (out of ${maxPayments.toString()})`;
+    } else {
+      return;
+    }
   }
 }
