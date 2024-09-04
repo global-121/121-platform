@@ -5,6 +5,7 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -64,23 +65,12 @@ export class TransactionJobProcessorsService {
   public async processIntersolveVisaTransactionJob(
     input: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
-    const registration =
-      await this.registrationScopedRepository.getByReferenceId({
-        referenceId: input.referenceId,
-      });
-    if (!registration) {
-      throw new Error(
-        `Registration was not found for referenceId ${input.referenceId}`,
-      );
-    }
+    const registration = await this.getRegistrationOrThrow(input.referenceId);
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
-      await this.financialServiceProviderRepository.getByName(
+      await this.getFinancialServiceProviderOrThrow(
         FinancialServiceProviderName.intersolveVisa,
       );
-    if (!financialServiceProvider) {
-      throw new Error('Financial Service Provider not found');
-    }
 
     let transferAmountInMajorUnit: number;
     try {
@@ -234,32 +224,16 @@ export class TransactionJobProcessorsService {
   public async processSafaricomTransactionJob(
     input: SafaricomTransactionJobDto,
   ): Promise<void> {
-    // TODO: update/remove the numbered steps below, which were initially written down as a general structure based on Intersolve
-
-    // 1. Get registration details needed
-    // TODO: this is duplicate code with Visa-method > simplify
-    const registration =
-      await this.registrationScopedRepository.getByReferenceId({
-        referenceId: input.referenceId,
-      });
-    if (!registration) {
-      throw new Error(
-        `Registration was not found for referenceId ${input.referenceId}`,
-      );
-    }
+    // 1. Get additional data
+    const registration = await this.getRegistrationOrThrow(input.referenceId);
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
-      await this.financialServiceProviderRepository.getByName(
+      await this.getFinancialServiceProviderOrThrow(
         FinancialServiceProviderName.safaricom,
       );
-    if (!financialServiceProvider) {
-      throw new Error('Financial Service Provider not found');
-    }
 
     // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
     for (const [name, value] of Object.entries(input)) {
-      // TODO: make some properties optional like in Visa, but why?
-
       // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
       if (value === null || value === undefined || value === '') {
         const errorText = `Property ${name} is undefined`;
@@ -279,7 +253,7 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Start the transfer, save error transaction on failure
+    // 3. Start the transfer, save error transaction on failure and return early
     let safaricomDoTransferResult: DoTransferReturnParams;
     try {
       safaricomDoTransferResult = await this.safaricomService.doTransfer({
@@ -288,9 +262,9 @@ export class TransactionJobProcessorsService {
         paymentNr: input.paymentNumber,
         userId: input.userId,
         referenceId: input.referenceId,
-        registrationProgramId: input.registrationProgramId,
-        phoneNumber: input.phoneNumber,
-        nationalId: input.nationalId,
+        registrationProgramId: input.registrationProgramId!,
+        phoneNumber: input.phoneNumber!,
+        nationalId: input.nationalId!,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
@@ -308,7 +282,7 @@ export class TransactionJobProcessorsService {
       return;
     }
 
-    // 4. If transfer is successful, create message and add to queue (not needed for safaricom)
+    // 4. If transfer is successful, create message and add to queue (not needed right now for safaricom)
 
     // 5. create success transaction and update registration
     const transaction = await this.createTransactionAndUpdateRegistration({
@@ -325,11 +299,37 @@ export class TransactionJobProcessorsService {
     });
 
     // 6. Storing safaricom transfer data (new compared to visa)
-    // TODO: refactor/move this up, so that this is also saved on error transactions.
+    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship. This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
     await this.safaricomService.createAndSaveSafaricomTransferData(
       safaricomDoTransferResult,
       transaction,
     );
+  }
+
+  private async getRegistrationOrThrow(
+    referenceId: string,
+  ): Promise<RegistrationEntity> {
+    const registration =
+      await this.registrationScopedRepository.getByReferenceId({
+        referenceId,
+      });
+    if (!registration) {
+      throw new Error(
+        `Registration was not found for referenceId ${referenceId}`,
+      );
+    }
+    return registration;
+  }
+
+  private async getFinancialServiceProviderOrThrow(
+    fspName: FinancialServiceProviderName,
+  ): Promise<FinancialServiceProviderEntity> {
+    const financialServiceProvider =
+      await this.financialServiceProviderRepository.getByName(fspName);
+    if (!financialServiceProvider) {
+      throw new Error('Financial Service Provider not found');
+    }
+    return financialServiceProvider;
   }
 
   private async createTransactionAndUpdateRegistration({
