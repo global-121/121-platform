@@ -55,7 +55,7 @@ export class EventsService {
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<EventEntity[]> {
-    const exportLimit = 100000;
+    const exportLimit = 500000;
     const events = await this.eventScopedRepository.find({
       where: this.createWhereClause(programId, searchOptions),
       relations: ['registration', 'user', 'attributes'],
