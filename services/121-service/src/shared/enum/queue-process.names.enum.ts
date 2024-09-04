@@ -1,4 +1,4 @@
-// Queues for sening messages
+// Queues for sending messages
 export enum ProcessNameMessage {
   send = 'send',
   sms = 'sms',
@@ -25,21 +25,4 @@ export enum QueueNameRegistration {
 
 export enum ProcessNameRegistration {
   update = 'updateRegistration',
-}
-
-// Queues for processing payments
-export enum ProcessNamePayment {
-  sendPayment = 'sendPayment',
-  callbackPayment = 'callbackPayment',
-}
-
-export enum QueueNamePayment {
-  paymentIntersolveVisa = 'paymentIntersolveVisa',
-  paymentIntersolveVoucher = 'paymentIntersolveVoucher',
-  paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
-  paymentSafaricom = 'paymentSafaricom',
-}
-
-export enum QueueNamePaymentCallBack {
-  safaricom = 'safaricomCallback',
 }

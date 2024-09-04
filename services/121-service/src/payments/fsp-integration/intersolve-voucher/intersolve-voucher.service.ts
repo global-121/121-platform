@@ -40,11 +40,9 @@ import { RegistrationUtilsService } from '@121-service/src/registration/modules/
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -82,7 +80,7 @@ export class IntersolveVoucherService
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
-    @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
+    @InjectQueue(TransactionQueueNames.paymentIntersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -114,7 +112,7 @@ export class IntersolveVoucherService
 
     for (const paymentInfo of paPaymentList) {
       const job = await this.paymentIntersolveVoucherQueue.add(
-        ProcessNamePayment.sendPayment,
+        PaymentQueueNames.sendPayment,
         {
           paymentInfo: paymentInfo,
           useWhatsapp: useWhatsapp,

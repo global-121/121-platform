@@ -4,7 +4,6 @@ export interface SafaricomTransferParams {
   readonly paymentNr: number;
   readonly userId: number;
   readonly referenceId: string;
-  readonly registrationProgramId: number;
   readonly phoneNumber: string;
-  readonly nationalId: string;
+  readonly idNumber: string;
 }

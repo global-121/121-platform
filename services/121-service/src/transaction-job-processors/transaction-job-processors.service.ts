@@ -14,6 +14,7 @@ import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-i
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -59,6 +60,7 @@ export class TransactionJobProcessorsService {
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
+    private readonly safaricomTransferRepository: SafaricomTransferRepository,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
@@ -259,9 +261,8 @@ export class TransactionJobProcessorsService {
         paymentNr: input.paymentNumber,
         userId: input.userId,
         referenceId: input.referenceId,
-        registrationProgramId: input.registrationProgramId!,
         phoneNumber: input.phoneNumber!,
-        nationalId: input.nationalId!,
+        idNumber: input.idNumber!,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
@@ -296,8 +297,9 @@ export class TransactionJobProcessorsService {
     });
 
     // 6. Storing safaricom transfer data (new compared to visa)
-    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship. This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
-    await this.safaricomService.createAndSaveSafaricomTransferData(
+    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship.
+    // This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
+    await this.safaricomTransferRepository.createAndSaveSafaricomTransferData(
       safaricomDoTransferResult,
       transaction,
     );

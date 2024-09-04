@@ -1,7 +1,7 @@
 import { EXTERNAL_API } from '@121-service/src/config';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-callback-job.dto';
+import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
@@ -11,11 +11,8 @@ import {
   REDIS_CLIENT,
   getRedisSetName,
 } from '@121-service/src/payments/redis/redis-client';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import {
-  ProcessNamePayment,
-  QueueNamePaymentCallBack,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
@@ -35,8 +32,10 @@ export class SafaricomService
     private readonly safaricomApiService: SafaricomApiService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(QueueNamePaymentCallBack.safaricom)
-    private readonly safaricomCallbackQueue: Queue,
+    @InjectQueue(
+      FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+    )
+    private readonly safaricomTransferCallbackQueue: Queue,
   ) {}
 
   /**
@@ -86,12 +85,12 @@ export class SafaricomService
       Remarks: `Payment ${transferData.paymentNr}`, // This data shows up in Safaricom reconciliation reports, and the KRCS Team uses it.
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl, // TODO: Check if we need to implement this. Now this has an endpoint that does not exist.
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: transferData.referenceId, // TODO: Check if this field is used by the KRCS Program Team, ask Tijs and/or Account Manager. Note, this field is alphanumeric.
-      OriginatorConversationID: `P${transferData.programId}PA${transferData.registrationProgramId}_${formatDate(
+      Occassion: transferData.referenceId,
+      OriginatorConversationID: `P${transferData.programId}_${formatDate(
         new Date(),
       )}_${generateRandomString(3)}`, // TODO: Implement idempotency like Ashish proposed in: https://dev.azure.com/redcrossnl/121%20Platform/_sprints/taskboard/121%20Development%20Team/121%20Platform/Sprint%20135?workitem=29155
       IDType: process.env.SAFARICOM_IDTYPE!,
-      IDNumber: transferData.nationalId,
+      IDNumber: transferData.idNumber,
     };
   }
 
@@ -111,57 +110,14 @@ export class SafaricomService
     };
   }
 
-  public async createAndSaveSafaricomTransferData(
-    safaricomDoTransferResult: DoTransferReturnParams,
-    transaction: TransactionEntity,
-  ): Promise<any> {
-    const safaricomTransferEntity = new SafaricomTransferEntity();
-
-    safaricomTransferEntity.mpesaConversationId =
-      safaricomDoTransferResult && safaricomDoTransferResult.conversationId
-        ? safaricomDoTransferResult.conversationId
-        : 'Invalid Request';
-    safaricomTransferEntity.originatorConversationId =
-      safaricomDoTransferResult &&
-      safaricomDoTransferResult.originatorConversationId
-        ? safaricomDoTransferResult.originatorConversationId
-        : 'Invalid Request';
-
-    safaricomTransferEntity.transactionId = transaction.id;
-
-    await this.safaricomTransferRepository.save(safaricomTransferEntity);
-  }
-
   public async processSafaricomCallback(
-    safaricomPaymentResultData: SafaricomTransferCallbackJobDto,
-    _attempt = 1,
+    safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto,
   ): Promise<void> {
-    const job = await this.safaricomCallbackQueue.add(
-      ProcessNamePayment.callbackPayment,
-      safaricomPaymentResultData,
+    const job = await this.safaricomTransferCallbackQueue.add(
+      PaymentQueueNames.financialServiceProviderCallback,
+      safaricomTransferCallbackJob,
     );
+
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-  }
-
-  public async getSafaricomTransferByOriginatorConversationId(
-    originatorConversationId: string,
-  ): Promise<SafaricomTransferEntity[]> {
-    const safaricomTransfers = await this.safaricomTransferRepository
-      .createQueryBuilder('safaricom_transfer')
-      .leftJoinAndSelect('safaricom_transfer.transaction', 'transaction')
-      .where(
-        'safaricom_transfer."originatorConversationId" = :originatorConversationId',
-        {
-          originatorConversationId: originatorConversationId,
-        },
-      )
-      .getMany();
-    return safaricomTransfers;
-  }
-
-  public async updateSafaricomTransfer(
-    safaricomTransfer: SafaricomTransferEntity,
-  ): Promise<void> {
-    await this.safaricomTransferRepository.save(safaricomTransfer);
   }
 }

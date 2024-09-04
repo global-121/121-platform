@@ -6,7 +6,7 @@ import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/s
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { QueueNamePaymentCallBack } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -19,8 +19,7 @@ const mockedSafaricomTransferParams: SafaricomTransferParams = {
   transactionAmount: 100,
   phoneNumber: '254708374149',
   referenceId: 'mocked_reference_id',
-  nationalId: 'mocked_national_id',
-  registrationProgramId: 2,
+  idNumber: 'mocked_national_id',
 };
 
 const mockedSafaricomTransferPayloadParams: SafaricomTransferPayloadParams = {
@@ -74,13 +73,16 @@ describe('SafaricomService', () => {
           useClass: Repository,
         },
         {
-          provide: QueueNamePaymentCallBack.safaricom,
+          provide:
+            FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
           useValue: {
             add: jest.fn(),
           },
         },
         {
-          provide: getQueueName(QueueNamePaymentCallBack.safaricom),
+          provide: getQueueName(
+            FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+          ),
           useValue: {
             add: jest.fn(),
           },

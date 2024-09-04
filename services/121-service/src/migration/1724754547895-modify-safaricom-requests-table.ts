@@ -74,7 +74,11 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."safaricom_transfer_id_seq"')`,
     );
 
-    // Step 5: Rename the table
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "uniqueOriginatorConversationId" UNIQUE ("originatorConversationId")`,
+    );
+
+    // Step 4: Rename the table
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME TO "safaricom_transfer"`,
     );

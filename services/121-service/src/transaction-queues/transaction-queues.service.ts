@@ -2,10 +2,8 @@ import {
   REDIS_CLIENT,
   getRedisSetName,
 } from '@121-service/src/payments/redis/redis-client';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { InjectQueue } from '@nestjs/bull';
@@ -18,9 +16,9 @@ export class TransactionQueuesService {
   public constructor(
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
+    @InjectQueue(TransactionQueueNames.paymentIntersolveVisa)
     private readonly paymentIntersolveVisaQueue: Queue,
-    @InjectQueue(QueueNamePayment.paymentSafaricom)
+    @InjectQueue(TransactionQueueNames.paymentSafaricom)
     private readonly paymentSafaricomQueue: Queue,
   ) {}
 
@@ -29,7 +27,7 @@ export class TransactionQueuesService {
   ): Promise<void> {
     for (const transferJob of transferJobs) {
       const job = await this.paymentIntersolveVisaQueue.add(
-        ProcessNamePayment.sendPayment,
+        PaymentQueueNames.sendPayment,
         transferJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
@@ -37,12 +35,12 @@ export class TransactionQueuesService {
   }
 
   public async addSafaricomTransactionJobs(
-    transferJobs: SafaricomTransactionJobDto[],
+    safaricomTransactionJobs: SafaricomTransactionJobDto[],
   ): Promise<void> {
-    for (const transferJob of transferJobs) {
+    for (const safaricomTransactionJob of safaricomTransactionJobs) {
       const job = await this.paymentSafaricomQueue.add(
-        ProcessNamePayment.sendPayment,
-        transferJob,
+        PaymentQueueNames.sendPayment,
+        safaricomTransactionJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
