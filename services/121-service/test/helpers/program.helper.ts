@@ -1,3 +1,4 @@
+import { DEBUG } from '@121-service/src/config';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
@@ -359,56 +360,79 @@ export async function waitForStatusUpdateToComplete(
   }
 }
 
-export async function waitForMessagesToComplete(
-  programId: number,
-  referenceIds: string[],
-  accessToken: string,
-  maxWaitTimeMs: number,
+export async function waitForMessagesToComplete({
+  programId,
+  referenceIds,
+  accessToken,
   minimumNumberOfMessages = 1,
-): Promise<void> {
+}: {
+  programId: number;
+  referenceIds: string[];
+  accessToken: string;
+  minimumNumberOfMessages?: number;
+}): Promise<void> {
+  const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
-  let allMessageUpdatesSuccessful = false;
+
+  let referenceIdsWaitingForMessages = [...referenceIds];
 
   while (
     Date.now() - startTime < maxWaitTimeMs &&
-    !allMessageUpdatesSuccessful
+    referenceIdsWaitingForMessages.length > 0
   ) {
-    // Get message histories
-    const messageHistories: any[] = [];
-    for (const referenceId of referenceIds) {
-      const response = await getMessageHistory(
-        programId,
-        referenceId,
-        accessToken,
-      );
-      const messages = response.body;
-      messageHistories.push(messages);
-    }
+    const messageHistories = await Promise.all(
+      referenceIdsWaitingForMessages.map(async (referenceId) => {
+        const response = await getMessageHistory(
+          programId,
+          referenceId,
+          accessToken,
+        );
+        return { referenceId, messageHistory: response.body as any[] };
+      }),
+    );
 
-    // Check if all message histories are at least minimumNumberOfMessages
-    const amountOfRegistrationWithMessages = messageHistories.filter(
-      (messageHistory) =>
-        messageHistory.filter(
-          (m) =>
-            [
-              MessageStatus.read,
-              MessageStatus.delivered,
-              MessageStatus.failed,
-              MessageStatus.sent, // sent is also a final status for SMS, how does this change the below comment for WhatsApp?
-            ].includes(m.status), // wait for messages actually being on a final status, given that's also something we check for in the test
-        ).length >= minimumNumberOfMessages,
-    ).length;
+    const messageHistoriesWithoutMinimumMessages = messageHistories.filter(
+      ({ messageHistory }) => {
+        const messagesWithValidStatus = messageHistory.filter((m) => {
+          const validStatuses = [MessageStatus.read, MessageStatus.failed];
 
-    allMessageUpdatesSuccessful =
-      amountOfRegistrationWithMessages === referenceIds.length;
+          if (m.type === 'sms') {
+            validStatuses.push(MessageStatus.sent);
+          }
 
-    // If not all PAs received a message, wait for a short interval before checking again
-    if (!allMessageUpdatesSuccessful) {
-      await waitFor(1_000);
-    }
+          // wait for messages actually being on a final status, given that's also something we check for in the test
+          return validStatuses.includes(m.status);
+        });
+
+        return messagesWithValidStatus.length < minimumNumberOfMessages;
+      },
+    );
+
+    referenceIdsWaitingForMessages = messageHistoriesWithoutMinimumMessages.map(
+      ({ referenceId }) => referenceId,
+    );
   }
 
-  if (!allMessageUpdatesSuccessful) {
+  if (referenceIdsWaitingForMessages.length > 0) {
+    if (DEBUG) {
+      console.log('Reference Ids: ', referenceIds);
+      console.log(
+        'Reference Ids Waiting for Messages: ',
+        referenceIdsWaitingForMessages,
+      );
+      console.log('Expected number of messages: ', minimumNumberOfMessages);
+      for (const referenceId of referenceIdsWaitingForMessages) {
+        const response = await getMessageHistory(
+          programId,
+          referenceId,
+          accessToken,
+        );
+        console.log('Message History for ', referenceId);
+        // remove body to make for better console output
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        console.table(response.body.map(({ body, ...m }) => ({ ...m })));
+      }
+    }
     throw new Error(`Timeout waiting for messages to be sent`);
   }
 }

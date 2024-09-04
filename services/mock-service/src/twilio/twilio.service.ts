@@ -43,10 +43,10 @@ export class TwilioService {
     };
   }
 
-  public async createMessage(
+  public createMessage(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     accountSid: string,
-  ): Promise<object> {
+  ): Record<string, unknown> {
     const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
     const response = {
       body: twilioMessagesCreateDto.Body,
@@ -82,15 +82,15 @@ export class TwilioService {
       response.status = TwilioStatus.failed;
       response.error_code = '1';
       response.error_message = 'Magic fail';
-      this.sendStatusResponse121(
+      this.sendDelayedStatusCallback121({
         twilioMessagesCreateDto,
         messageSid,
         response,
-      ).catch((e) => {
-        console.log('TWILIO MOCK: Error sending status response: ', e);
       });
       return response;
-    } else if (
+    }
+
+    if (
       twilioMessagesCreateDto.To.includes(
         MockPhoneNumbers.FailFaultyTemplateError,
       ) &&
@@ -101,15 +101,15 @@ export class TwilioService {
       response.error_code = '63016';
       response.error_message =
         'Failed to send freeform message because you are outside the allowed window. If you are using WhatsApp, please use a Message Template.';
-      this.sendStatusResponse121(
+      this.sendDelayedStatusCallback121({
         twilioMessagesCreateDto,
         messageSid,
         response,
-      ).catch((e) => {
-        console.log('TWILIO MOCK: Error sending status response: ', e);
       });
       return response;
-    } else if (
+    }
+
+    if (
       twilioMessagesCreateDto.To.includes(
         MockPhoneNumbers.FailNoWhatsAppNumber,
       ) &&
@@ -119,34 +119,32 @@ export class TwilioService {
       response.error_code = '63003';
       response.error_message =
         'Channel could not find To address. You have tried to send a message to a To address that is inactive or invalid.';
-      this.sendStatusResponse121(
+      this.sendDelayedStatusCallback121({
         twilioMessagesCreateDto,
         messageSid,
         response,
-      ).catch((e) => {
-        console.log('TWILIO MOCK: Error sending status response: ', e);
       });
       return response;
-    } else {
-      // 2. else, send (multiple) success status reponses
-      let statuses = [];
-      if (twilioMessagesCreateDto.To.includes('whatsapp')) {
-        statuses = [
-          TwilioStatus.queued,
-          TwilioStatus.sent,
-          TwilioStatus.delivered,
-          TwilioStatus.read,
-        ];
-      } else {
-        statuses = [TwilioStatus.queued, TwilioStatus.sent];
-      }
-      await this.sendMultipleSuccessStatusResponses(
-        twilioMessagesCreateDto,
-        messageSid,
-        response,
-        statuses,
-      );
     }
+
+    // 2. else, send (multiple) success status reponses
+    let statuses = [];
+    if (twilioMessagesCreateDto.To.includes('whatsapp')) {
+      statuses = [
+        TwilioStatus.queued,
+        TwilioStatus.sent,
+        TwilioStatus.delivered,
+        TwilioStatus.read,
+      ];
+    } else {
+      statuses = [TwilioStatus.queued, TwilioStatus.sent];
+    }
+    this.sendMultipleSuccessStatusCallbacks({
+      twilioMessagesCreateDto,
+      messageSid,
+      response,
+      statuses,
+    });
 
     // 3. and if applicable, send incoming whatsapp reply
     let isYesMessage = false;
@@ -161,41 +159,50 @@ export class TwilioService {
         MockPhoneNumbers.NoIncomingYesMessage,
       )
     ) {
-      this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
-        (e) => {
-          console.log('TWILIO MOCK: Error sending incoming whatsapp ', e);
-        },
-      );
+      this.sendIncomingWhatsapp({ twilioMessagesCreateDto, messageSid });
     }
 
     return response;
   }
 
-  private async sendMultipleSuccessStatusResponses(
-    twilioMessagesCreateDto: TwilioMessagesCreateDto,
-    messageSid: string,
+  private sendMultipleSuccessStatusCallbacks({
+    twilioMessagesCreateDto,
+    messageSid,
     response,
-    statuses: TwilioStatus[],
-  ): Promise<void> {
-    for (const status of statuses) {
+    statuses,
+  }: {
+    twilioMessagesCreateDto: TwilioMessagesCreateDto;
+    messageSid: string;
+    response;
+    statuses: TwilioStatus[];
+  }): void {
+    for (let i = 0; i < statuses.length; i++) {
+      const status = statuses[i];
       const modifiedResponse = { ...response };
       modifiedResponse.status = status;
-      await setTimeoutQueue(30); // ensure order and some delay so that initial api-response is stored in 121-db
-      this.sendStatusResponse121(
-        twilioMessagesCreateDto,
-        messageSid,
-        modifiedResponse,
-      ).catch((e) => {
-        console.log('TWILIO MOCK: Error sending status response: ', e);
-      });
+
+      setTimeout(
+        () => {
+          this.sendDelayedStatusCallback121({
+            twilioMessagesCreateDto,
+            messageSid,
+            response: modifiedResponse,
+          });
+        },
+        250 * (i + 1),
+      );
     }
   }
 
-  private async sendStatusResponse121(
-    twilioMessagesCreateDto: TwilioMessagesCreateDto,
-    messageSid: string,
+  private sendDelayedStatusCallback121({
+    twilioMessagesCreateDto,
+    messageSid,
     response,
-  ): Promise<void> {
+  }: {
+    twilioMessagesCreateDto: TwilioMessagesCreateDto;
+    messageSid: string;
+    response;
+  }): void {
     const request = new TwilioStatusCallbackDto();
     request.MessageSid = messageSid;
     request.MessageStatus = response.status;
@@ -209,23 +216,35 @@ export class TwilioService {
         ? API_PATHS.whatsAppStatus
         : API_PATHS.smsStatus;
       url = `${EXTERNAL_API_ROOT}/${path}`;
+      console.log(messageSid, response.status);
     }
 
-    const httpService = new HttpService();
-    await lastValueFrom(httpService.post(url, request)).catch((error) =>
-      console.error(error),
-    );
+    // This is to simulate a delay in the callback
+    // and to avoid the Twilio service to send the status callback
+    // before the message is processed in the 121 service
+    //
+    // It cannot be done within a promise / await because
+    // otherwise the 121 service will be waiting for this to happen
+    // before creating the message entity in the db.
+    setTimeout(() => {
+      const httpService = new HttpService();
+      lastValueFrom(httpService.post(url, request)).catch((error) =>
+        console.log('TWILIO MOCK: Error sending status response: ', error),
+      );
+    }, 250);
   }
 
-  private async sendIncomingWhatsapp(
-    twilioMessagesCreateDto: TwilioMessagesCreateDto,
-    messageSid: string,
-  ): Promise<void> {
+  private sendIncomingWhatsapp({
+    twilioMessagesCreateDto,
+    messageSid,
+  }: {
+    twilioMessagesCreateDto: TwilioMessagesCreateDto;
+    messageSid: string;
+  }): void {
     if (
       twilioMessagesCreateDto.From &&
       twilioMessagesCreateDto.From.includes('whatsapp')
     ) {
-      await setTimeoutQueue(1000);
       const request = new TwilioIncomingCallbackDto();
       request.MessageSid = messageSid;
       request.From = twilioMessagesCreateDto.To;
@@ -238,10 +257,19 @@ export class TwilioService {
             API_PATHS.whatsAppIncoming,
           );
 
-      const httpService = new HttpService();
-      await lastValueFrom(httpService.post(url, request)).catch((error) =>
-        console.error(error),
-      );
+      // This is to simulate a delay in the callback
+      // and to avoid the Twilio service to send the status callback
+      // before the message is processed in the 121 service
+      //
+      // It cannot be done within a promise / await because
+      // otherwise the 121 service will be waiting for this to happen
+      // before creating the message entity in the db.
+      setTimeout(() => {
+        const httpService = new HttpService();
+        lastValueFrom(httpService.post(url, request)).catch((error) =>
+          console.error('TWILIO MOCK: Error sending incoming whatsapp ', error),
+        );
+      }, 1000);
     }
   }
 

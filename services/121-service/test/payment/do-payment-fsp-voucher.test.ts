@@ -104,13 +104,12 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody[0].errorMessage).toBe(null);
       expect(getTransactionsBody[0].user).toMatchObject(adminOwnerDto);
 
-      await waitForMessagesToComplete(
+      await waitForMessagesToComplete({
         programId,
-        [registrationAh.referenceId],
+        referenceIds: [registrationAh.referenceId],
         accessToken,
-        10_000,
-        3,
-      );
+        minimumNumberOfMessages: 3,
+      });
 
       const { body: messages } = await getMessageHistory(
         programId,
