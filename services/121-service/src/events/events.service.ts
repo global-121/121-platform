@@ -55,13 +55,14 @@ export class EventsService {
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<EventEntity[]> {
-    const exportLimit = 500000;
+    const exportLimit = 100000;
     const events = await this.eventScopedRepository.find({
       where: this.createWhereClause(programId, searchOptions),
       relations: ['registration', 'user', 'attributes'],
-      order: { created: 'DESC', attributes: { key: 'ASC' } }, // This order by attributes.key makes use of the fact that the alphabetical ordering of the possible enum-values happens to be the correct order. This is not very robust.
+      order: { created: 'DESC' },
+      take: exportLimit,
     });
-    return events.slice(0, exportLimit);
+    return events;
   }
 
   private createWhereClause(
