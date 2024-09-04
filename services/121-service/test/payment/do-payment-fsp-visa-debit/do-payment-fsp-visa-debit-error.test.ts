@@ -28,15 +28,16 @@ import {
 import { HttpStatus } from '@nestjs/common';
 
 describe('Do failing payment with FSP Visa Debit', () => {
-  // Set WhatsApp-number for ALL tests in this suite only
-  const registrationVisa = {
-    ...registrationVisaDefault,
-    whatsappPhoneNumber: registrationVisaDefault.phoneNumber,
-  };
+  let registrationVisa;
 
   let accessToken: string;
 
   beforeEach(async () => {
+    // This should be redefined in each test, so that changed values are not carried over to the next test
+    registrationVisa = {
+      ...registrationVisaDefault,
+      whatsappPhoneNumber: registrationVisaDefault.phoneNumber, // Set WhatsApp-number for ALL tests in this suite only
+    };
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     await waitFor(2_000);
