@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsNumberString,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -16,6 +17,7 @@ export class SafaricomTransactionJobDto {
   public readonly paymentNumber: number;
 
   @IsNotEmpty()
+  @IsString()
   public readonly referenceId: string;
 
   @IsNotEmpty()
@@ -34,15 +36,12 @@ export class SafaricomTransactionJobDto {
   @IsNumber()
   public readonly bulkSize: number;
 
-  @IsNotEmpty()
-  @IsString()
-  public readonly phoneNumber: string;
+  @IsOptional()
+  public readonly phoneNumber?: string;
 
-  @IsNotEmpty()
-  @IsString()
-  public readonly nationalId: string;
+  @IsOptional()
+  public readonly nationalId?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  public readonly registrationProgramId: number;
+  @IsOptional()
+  public readonly registrationProgramId?: number;
 }
