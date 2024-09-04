@@ -107,9 +107,8 @@ describe('SafaricomService', () => {
     it('should authenticate and send payment', async () => {
       const result: DoTransferReturnParams = {
         amountTransferredInMajorUnit: 100,
-        customData: {
-          requestResult: { ResponseCode: '0' },
-        },
+        conversationId: 'mocked_conversation_id',
+        originatorConversationId: 'mocked_originator_conversation_id',
       };
 
       jest
@@ -126,13 +125,7 @@ describe('SafaricomService', () => {
 
       expect(safaricomApiService.authenticate).toHaveBeenCalled();
       expect(service.createPayloadPerPa).toHaveBeenCalledWith(
-        3,
-        1,
-        100,
-        '254708374149',
-        'mocked_reference_id',
-        'mocked_national_id',
-        2,
+        mockedSafaricomTransferParams,
       );
       expect(service.sendPaymentPerPa).toHaveBeenCalledWith(
         mockedSafaricomTransferPayloadParams,
@@ -145,12 +138,8 @@ describe('SafaricomService', () => {
     it('should create and save a safaricom transfer entity', async () => {
       const transferResult: DoTransferReturnParams = {
         amountTransferredInMajorUnit: 100,
-        customData: {
-          requestResult: {
-            ConversationID: 'mocked_conversation_id',
-            OriginatorConversationID: 'mocked_originator_conversation_id',
-          },
-        },
+        conversationId: 'mocked_conversation_id',
+        originatorConversationId: 'mocked_originator_conversation_id',
       };
 
       const transaction = { id: 1 } as TransactionEntity;
