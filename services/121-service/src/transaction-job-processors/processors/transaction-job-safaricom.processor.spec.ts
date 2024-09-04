@@ -7,19 +7,15 @@ import { TransactionJobProcessorsService } from '@121-service/src/transaction-jo
 const mockPaymentJob = {
   id: 11,
   programId: 3,
-  userId: 1,
   paymentNumber: 3,
-  referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
+  referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
   transactionAmount: 25,
   isRetry: false,
+  userId: 1,
   bulkSize: 10,
-  name: 'mock-fail-create-debit-card',
-  addressStreet: 'Straat',
-  addressHouseNumber: '1',
-  addressHouseNumberAddition: 'A',
-  addressPostalCode: '1234AB',
-  addressCity: 'Den Haag',
-  phoneNumber: '14155238886',
+  phoneNumber: '254708374149',
+  nationalId: 'nat-123',
+  registrationProgramId: 2,
 };
 const testJob = { data: mockPaymentJob } as Job;
 
