@@ -1,4 +1,5 @@
 export interface DoTransferReturnParams {
   amountTransferredInMajorUnit: number;
-  customData: Record<string, unknown>;
+  originatorConversationId: string;
+  conversationId: string;
 }
