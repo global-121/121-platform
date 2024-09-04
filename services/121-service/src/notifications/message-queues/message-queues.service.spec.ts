@@ -4,8 +4,8 @@ import {
   MessageJobDto,
   MessageProcessType,
 } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -29,15 +29,15 @@ const defaultMessageJob = {
   userId: 1,
 } as MessageJobDto;
 
-describe('QueueMessageService', () => {
-  let queueMessageService: QueueMessageService;
+describe('MessageQueuesService', () => {
+  let queueMessageService: MessageQueuesService;
   let messageQueue: jest.Mocked<Queue>;
   let programAttributesService: ProgramAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(QueueMessageService).compile();
+    const { unit, unitRef } = TestBed.create(MessageQueuesService).compile();
 
     queueMessageService = unit;
     messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
@@ -63,7 +63,7 @@ describe('QueueMessageService', () => {
     registration['whatsappPhoneNumber'] = '0987654321';
 
     // Act
-    await queueMessageService.addMessageToQueue({
+    await queueMessageService.addMessageJob({
       registration,
       message: 'test message',
       messageTemplateKey: defaultMessageJob.messageTemplateKey,
@@ -102,7 +102,7 @@ describe('QueueMessageService', () => {
       .mockResolvedValue(whatsappNumber);
 
     // Act
-    await queueMessageService.addMessageToQueue({
+    await queueMessageService.addMessageJob({
       registration,
       message: 'test message',
       messageTemplateKey: defaultMessageJob.messageTemplateKey,

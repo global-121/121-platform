@@ -7,7 +7,7 @@ import {
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -85,7 +85,7 @@ export class RegistrationsService {
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationDataService: RegistrationDataService,
@@ -1094,7 +1094,7 @@ export class RegistrationsService {
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
     });
 
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration: registration,
       messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
       messageContentType: MessageContentType.custom,
@@ -1130,7 +1130,7 @@ export class RegistrationsService {
       tokenCode,
       pause,
     );
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration: registration,
       messageTemplateKey: pause
         ? ProgramNotificationEnum.pauseVisaCard

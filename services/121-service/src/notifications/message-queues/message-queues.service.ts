@@ -29,7 +29,7 @@ import { Queue } from 'bull';
 import { Equal, Repository } from 'typeorm';
 
 @Injectable()
-export class QueueMessageService {
+export class MessageQueuesService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
   private readonly queueNameToQueueMap: Record<QueueNameCreateMessage, Queue>;
@@ -58,8 +58,7 @@ export class QueueMessageService {
     };
   }
 
-  // TODO: REFACTOR: Rename to addMessageJob()
-  public async addMessageToQueue({
+  public async addMessageJob({
     registration,
     message,
     messageTemplateKey,

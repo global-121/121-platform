@@ -1,8 +1,8 @@
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventsModule } from '@121-service/src/events/events.module';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
-import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
@@ -30,7 +30,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UserModule,
     HttpModule,
     ActionsModule,
-    QueueMessageModule,
+    MessageQueuesModule,
     MessageTemplateModule,
     RegistrationUtilsModule,
     EventsModule,

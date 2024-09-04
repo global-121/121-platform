@@ -572,13 +572,13 @@ export class IntersolveVisaApiService {
   // Helper function to convert errors in an Intersolve API Response into a message string.
   private convertResponseErrorsToMessage(
     errorsInResponseDto: ErrorsInResponse[] | undefined,
-  ): string {
+  ): string | undefined {
     if (
       !errorsInResponseDto ||
       !Array.isArray(errorsInResponseDto) ||
       !errorsInResponseDto.length
     ) {
-      return '';
+      return undefined;
     }
     let message = '';
     for (const [i, error] of errorsInResponseDto.entries()) {
@@ -664,7 +664,7 @@ export class IntersolveVisaApiService {
     }
     if (!this.isSuccessResponseStatus(response.status)) {
       return `${
-        this.convertResponseErrorsToMessage(response.data?.errors) ||
+        this.convertResponseErrorsToMessage(response.data?.errors) ??
         `${response.status} - ${response.statusText}`
       }`;
     } else {

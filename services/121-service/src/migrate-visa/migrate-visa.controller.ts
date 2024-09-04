@@ -7,7 +7,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('migrate')
 @Controller('migrate-visa')
-export class MigrateVisaSController {
+export class MigrateVisaController {
   public constructor(private readonly migrateVisaService: MigrateVisaService) {}
 
   @AuthenticatedUser({ isAdmin: true })

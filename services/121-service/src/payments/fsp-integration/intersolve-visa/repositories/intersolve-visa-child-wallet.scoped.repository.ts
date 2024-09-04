@@ -13,6 +13,4 @@ export class IntersolveVisaChildWalletScopedRepository extends ScopedRepository<
   ) {
     super(request, scopedRepository);
   }
-
-  // Functions need to be implemented here
 }

@@ -1,3 +1,4 @@
+import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { MessageService } from '@121-service/src/notifications/message.service';
@@ -8,7 +9,6 @@ import {
   MessageProcessorReplyOnIncoming,
   MessageProcessorSmallBulk,
 } from '@121-service/src/notifications/processors/message.processor';
-import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { SmsModule } from '@121-service/src/notifications/sms/sms.module';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -30,7 +30,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ]),
     WhatsappModule,
     SmsModule,
-    QueueMessageModule,
+    MessageQueuesModule,
     IntersolveVoucherModule,
     MessageTemplateModule,
     ProgramModule,

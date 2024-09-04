@@ -1,7 +1,7 @@
 import { EventsModule } from '@121-service/src/events/events.module';
 import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
+import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
-import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -22,7 +22,7 @@ import { Module } from '@nestjs/common';
     RegistrationsModule,
     ProgramModule,
     TransactionsModule,
-    QueueMessageModule,
+    MessageQueuesModule,
     FinancialServiceProvidersModule,
     EventsModule,
     MessageTemplateModule,

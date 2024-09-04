@@ -2,10 +2,10 @@ import { API_PATHS } from '@121-service/src/config';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
 import { MessageIncomingController } from '@121-service/src/notifications/message-incoming/message-incoming.controller';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
+import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { MessageIncomingProcessor } from '@121-service/src/notifications/processors/message-incoming.processor';
 import { MessageStatusCallbackProcessor } from '@121-service/src/notifications/processors/message-status-callback.processor';
-import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -44,7 +44,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UserModule,
     IntersolveVoucherModule,
     WhatsappModule,
-    QueueMessageModule,
+    MessageQueuesModule,
     MessageTemplateModule,
     RegistrationDataModule,
     BullModule.registerQueue({

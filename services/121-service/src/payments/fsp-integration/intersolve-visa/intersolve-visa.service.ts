@@ -65,19 +65,27 @@ export class IntersolveVisaService
    * @param {DoTransferOrIssueCardParams} input - The parameters for the transfer or card issuance.
    * @returns {Promise<DoTransferOrIssueCardReturnType>} The result of the operation, including whether a card was created, whether a transfer was done, and the amount transferred in major units.
    */
-  public async doTransferOrIssueCard(
-    input: DoTransferOrIssueCardParams,
-  ): Promise<DoTransferOrIssueCardReturnType> {
+  public async doTransferOrIssueCard({
+    registrationId,
+    createCustomerReference,
+    name,
+    contactInformation,
+    brandCode,
+    coverLetterCode,
+    fundingTokenCode,
+    transferAmountInMajorUnit,
+    transferReference,
+  }: DoTransferOrIssueCardParams): Promise<DoTransferOrIssueCardReturnType> {
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
-      registrationId: input.registrationId,
-      createCustomerReference: input.createCustomerReference,
-      name: input.name,
-      contactInformation: input.contactInformation,
+      registrationId,
+      createCustomerReference,
+      name,
+      contactInformation,
     });
 
     const intersolveVisaParentWallet = await this.getParentWalletOrCreate({
-      intersolveVisaCustomer: intersolveVisaCustomer,
-      brandCode: input.brandCode,
+      intersolveVisaCustomer,
+      brandCode,
     });
 
     await this.linkParentWalletToCustomerIfUnlinked(
@@ -87,7 +95,7 @@ export class IntersolveVisaService
 
     const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne(
       intersolveVisaParentWallet,
-      input.brandCode,
+      brandCode,
     );
 
     // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
@@ -102,23 +110,23 @@ export class IntersolveVisaService
     // Check if debit card is created
     const createDebitCardReturn = await this.createDebitCardIfNotExists({
       childWallet: newestChildWallet,
-      name: input.name,
-      contactInformation: input.contactInformation,
-      coverLetterCode: input.coverLetterCode,
+      name,
+      contactInformation,
+      coverLetterCode,
     });
 
     // Transfer money from the client's funding token to the parent token
-    if (input.transferAmountInMajorUnit > 0) {
+    if (transferAmountInMajorUnit > 0) {
       await this.intersolveVisaApiService.transfer({
-        fromTokenCode: input.fundingTokenCode,
+        fromTokenCode: fundingTokenCode,
         toTokenCode: intersolveVisaParentWallet.tokenCode,
-        amount: input.transferAmountInMajorUnit,
-        reference: input.transferReference,
+        amount: transferAmountInMajorUnit,
+        reference: transferReference,
       });
     }
     return {
       isNewCardCreated: createDebitCardReturn.isNewCardCreated,
-      amountTransferredInMajorUnit: input.transferAmountInMajorUnit,
+      amountTransferredInMajorUnit: transferAmountInMajorUnit,
     };
   }
 
