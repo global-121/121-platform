@@ -205,7 +205,8 @@ class RegistrationDetails {
     oldValue: string,
     newValue: string,
   ) {
-    const historyTile = this.historyTile.nth(0);
+    const title = this.historyTileTitle.filter({ hasText: changeTitle });
+    const historyTile = this.historyTile.filter({ has: title }).nth(0);
     const oldValueHolder = this.tileInformationPlaceHolder
       .filter({ hasText: 'Old:' })
       .nth(0);
