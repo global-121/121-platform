@@ -17,6 +17,7 @@
     "ms-azuretools.vscode-azureresourcegroups",
     "ms-azuretools.vscode-azurestaticwebapps",
     "github.vscode-github-actions",
-    "arahata.linter-actionlint"
+    "arahata.linter-actionlint",
+    "ms-playwright.playwright"
   ]
 }

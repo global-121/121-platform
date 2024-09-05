@@ -1,74 +1,58 @@
-# <p align="center"> API & E2E testing suites </p>
+# E2E testing suite <!-- omit from toc -->
 
-<p align="center">
-  <a href="https://playwright.dev/">
-    <img width="140" alt="Playwright Logo" src="https://seeklogo.com/images/P/playwright-logo-22FA8B9E63-seeklogo.com.png" />
-  </a>
-</p>
+> [!NOTE]
+> This documentation is about the "E2E Playwright test suite" _only_;
+> For other testing, see the [root-README](../README.md#testing).
 
-<p align="center">
-  This documentation touches upon E2E Playwright test suite for API refer to <a href="https://github.com/global-121/121-platform?tab=readme-ov-file#testing">features/</a>.
-</p>
+## Table of Contents <!-- omit from toc -->
 
-# Table of Contents
+- [Installation](#installation)
+  - [Install E2E-test dependencies](#install-e2e-test-dependencies)
+  - [Set necessary Environment-variables](#set-necessary-environment-variables)
+- [Running tests](#running-tests)
+  - [Using the command-line](#using-the-command-line)
+  - [Using the VS Code-extension](#using-the-vs-code-extension)
+- [Tests and Page Object Model (POM)](#tests-and-page-object-model-pom)
+  - [What is Page Object Model (POM)?](#what-is-page-object-model-pom)
+  - [Benefits of Using POM](#benefits-of-using-pom)
+  - [Implementing POM](#implementing-pom)
+- [Writing Tests](#writing-tests)
+  - [Example Test](#example-test)
+  - [Best Practices](#best-practices)
+  - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
+  - [How to generate Screenshots for the "User Manual"?](#how-to-generate-screenshots-for-the-user-manual)
 
-1. [Advantages of Playwright Automated Tests](#advantages-of-playwright-automated-tests)
-2. [Prerequisite](#prerequisite)
-3. [Installation](#installation)
-4. [Environmental Variables](#environmental-variables)
-5. [Run Tests via Console](#run-tests-via-console)
-6. [Run Tests using Built-in Runner via VS Code](#run-tests-using-built-in-runner-via-vs-code)
-7. [Tests and Page Object Model (POM)](#tests-and-page-object-model-pom)
-   - [What is Page Object Model (POM)?](#what-is-page-object-model-pom)
-   - [Benefits of Using POM](#benefits-of-using-pom)
-   - [Implementing POM](#implementing-pom)
-8. [Writing Tests](#writing-tests)
-   - [Example Test](#example-test)
-   - [Best Practices](#best-practices)
-   - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
-9. [How to generate Screenshots for "User Manual"](#how-to-generate-screenshots-for-user-manual)
+---
 
-## Advantages of Playwright Automated Tests
+## Installation
 
-- **Simulating User Interactions**: Playwright enables you to simulate user interactions in the interface across different browsers and devices.
+Clone the repository and run local Docker environment following the general [installation-documentation](../README.md#getting-started).
 
-- **Reuse of API Tests**: With Playwright, you can reuse API tests and include parts of those tests in the setup of front-end automation.
+### Install E2E-test dependencies
 
-- **Automation of UI Regression Tests**: While UI regression tests are typically done manually, Playwright allows you to automate these repeatable tasks efficiently.
+From the repository root-folder, move into this folder: `cd ./e2e/`
 
-- **Headless Testing on Pipelines**: Playwright supports headless testing, making it suitable for integration with CI/CD pipelines.
-
-- **Rich APIs and Debugging Capabilities**: Playwright offers a rich collection of APIs for writing tests and extensive debugging capabilities, including screenshots, videos, and trace logs.
-
-- **Easy reporting setup for Azure Test Plan**: Thanks to many different ways of connecting Playwright report to Azure Test Plan QA can create result outputs from simple pass/fail to more complex charts and reports.
-
-> 🚩 **Prerequisite**
->
-> The only prerequisite is to have Node.js, Plawyright and Playwright Add On for VS Code installed on your machine
-
-### Installation
-
-<p>Clone the repository and run local Docker enviroment following <a href="https://github.com/global-121/121-platform?tab=readme-ov-file#setup-services">installation/</a> documentation</p>
-
-**Install Playwright dependecies**
-
-```shell
-cd /121-platform/e2e
-```
-
-Then:
+Then, in _this_ folder, run:
 
 ```shell
 npm install
 ```
 
-**Install missing dependencies**
+The, install Playwright Browsers(-drivers):
 
-## Enviromental variables
+```shell
+npx playwright install
+```
 
-Base Url, Azure Token and test users data are stored in .env file.
+### Set necessary Environment-variables
 
-### Run tests via console
+See the "Testing only"-section at the end of the [`services/.env.example`](../services/.env.example)-file.
+
+Make sure to fill in all relevant variables in your local `services/.env`-file.
+
+## Running tests
+
+### Using the command-line
 
 ```shell
 npm test
@@ -80,15 +64,19 @@ Or run them in "headed" mode (you can see the browser)
 npm test -- --headed
 ```
 
- <h2>
-  <b>Or run them using built in runner via VS Code</b>
-    <a href="https://playwright.dev/">
-      <img width="40" alt="Playwright Logo" src="https://seeklogo.com/images/P/playwright-logo-22FA8B9E63-seeklogo.com.png" />
-    </a>
-  </h2>
-  <a>
-    <img alt="playwright tool" src="https://github.com/microsoft/playwright/assets/13063165/348e18ff-f819-4caa-8f7e-f16c20724f56"/>
-  </a>
+Or, for [Portalicious](../interfaces/Portalicious/)-specific tests:
+
+```shell
+npm run  test:portalicious
+```
+
+### Using the VS Code-extension
+
+Use the built-in runner of the VS Code-extension: [`#ms-playwright.playwright`](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
+
+![Screenshot of Playwright-extension in VS Code](https://github.com/microsoft/playwright/assets/13063165/348e18ff-f819-4caa-8f7e-f16c20724f56)
+
+---
 
 ## Tests and Page Object Model (POM)
 
@@ -107,7 +95,7 @@ The Page Object Model is a design pattern that creates an object repository for 
 Page Classes
 Create a page class for each page representing different module and/ or functionality in your application. Here is an example of how you can structure your HomePage class:
 
-```
+```ts
 import { Locator, expect } from '@playwright/test';
 import { Page } from 'playwright';
 
@@ -134,7 +122,7 @@ export default HomePage;
 
 Here is a simple example of writing a test using the POM structure:
 
-```
+```ts
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -182,9 +170,9 @@ test('[27493] Navigate to programme', async ({ page }) => {
 - **Timeouts**: Increase the default timeout if elements take longer to load.
 - **Test Flakiness**: Use wait methods to handle dynamic content and animations.
 
-For extended documentation refer to Plawyright's page: https://playwright.dev/docs/getting-started-vscode
+For extended documentation see: <https://playwright.dev/docs/getting-started-vscode>
 
-### How to generate Screenshots for "User Manual":
+### How to generate Screenshots for the "User Manual"?
 
 - Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
 - Remove "skip" command from the test
