@@ -1,4 +1,4 @@
-FROM node:18-slim AS base
+FROM node:20-slim AS base
 
 # Install curl (Used by healthchecks) and procps (Used by swc)
 RUN apt-get update && apt-get install -y curl procps

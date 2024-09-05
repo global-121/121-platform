@@ -9,7 +9,7 @@ module.exports = {
       },
       parserOptions: {
         sourceType: 'script',
-        ecmaVersion: 2021,
+        ecmaVersion: 2022,
       },
       rules: {},
     },
@@ -28,7 +28,7 @@ module.exports = {
       ],
       parserOptions: {
         parser: '@typescript-eslint/parser',
-        ecmaVersion: 2021, // Allows for the parsing of modern ECMAScript features
+        ecmaVersion: 2022, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
         project: true,
         tsconfigRootDir: __dirname,
