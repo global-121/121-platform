@@ -16,6 +16,7 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
 import { QueryTableColumn } from '~/components/query-table/query-table.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { RegistrationActivityLogEntry } from '~/domains/registration/registration.model';
+import { TransactionApiService } from '~/domains/transaction/transaction.api.service';
 
 @Component({
   selector: 'app-project-registration-activity-log',
@@ -39,6 +40,7 @@ export class ProjectRegistrationActivityLogPageComponent {
   registrationId = input.required<number>();
 
   registrationService = inject(RegistrationApiService);
+  transactionService = inject(TransactionApiService);
 
   referenceId = injectQuery(
     this.registrationService.getRegistrationReferenceId(
@@ -63,9 +65,18 @@ export class ProjectRegistrationActivityLogPageComponent {
     enabled: !!this.projectId() && !!this.referenceId.isSuccess(),
   }));
 
+  registrationTransactions = injectQuery(() => ({
+    ...this.transactionService.getRegistrationTransactions(
+      this.projectId,
+      this.referenceId.data() ?? '',
+    )(),
+    enabled: () => !!this.projectId() && !!this.referenceId.isSuccess(),
+  }));
+
   activityLog = computed<RegistrationActivityLogEntry[]>(() => [
     ...(this.registrationEvents.data() ?? []),
     ...(this.registrationMessageHistory.data() ?? []),
+    ...(this.registrationTransactions.data() ?? []),
   ]);
 
   columns = computed<QueryTableColumn<RegistrationActivityLogEntry>[]>(() => [
