@@ -8,4 +8,5 @@ export class MessageHistoryDto {
   public status: string;
   public type: NotificationType;
   public mediaUrl: string;
+  public user: { id: number; username: string };
 }

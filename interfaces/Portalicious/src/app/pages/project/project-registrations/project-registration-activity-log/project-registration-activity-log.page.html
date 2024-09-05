@@ -19,6 +19,28 @@
           i18n-optionValue
         />
       </div>
+      <p-table
+        [value]="activityLog()"
+        [columns]="columns()"
+      >
+        <ng-template
+          pTemplate="header"
+          let-columns
+        >
+          <tr>
+            <th *ngFor="let col of columns">{{ col.header }}</th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-columns="columns"
+        >
+          <tr>
+            <td *ngFor="let col of columns">{{ rowData[col.field] }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </p-card>
   </div>
 </app-page-layout>
