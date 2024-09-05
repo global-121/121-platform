@@ -190,7 +190,9 @@ body {
 
   .p-element.ng-touched.ng-invalid {
     .p-inputwrapper,
-    .p-inputtext {
+    .p-inputtext,
+    &.p-inputtext,
+    &.p-inputtextarea {
       border-color: theme('colors.red.500') !important;
     }
   }
