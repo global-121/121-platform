@@ -56,7 +56,13 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   private fspWithQueueServiceMapping: Partial<
-    Record<FinancialServiceProviderName, any>
+    Record<
+      FinancialServiceProviderName,
+      | IntersolveVoucherService
+      | IntersolveVisaService
+      | SafaricomService
+      | CommercialBankEthiopiaService
+    >
   >;
 
   private financialServiceProviderNameToServiceMap: Record<
