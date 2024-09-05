@@ -6,4 +6,4 @@ This allows a user to log out of the platform manually, without a functioning Po
 The user would only have to visit the `/logout`-URL in their browser.
 
 > [!WARNING]
-> The [build-action/workflow(s)](../../../../.github/actions/build-interface/action.yml) depend on these files; Make sure to update any references when moving/changing these files.
+> The post-build script: [`npm run build:manual-logout`](../../_build-manual-logout.js) depend on these files; Make sure to update any references when moving/changing these files.
