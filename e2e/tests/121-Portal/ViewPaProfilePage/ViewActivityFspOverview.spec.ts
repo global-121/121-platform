@@ -28,6 +28,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
 import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
+import FspName from '../../../../interfaces/Portal/src/app/enums/fsp-name.enum';
 import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
 import Helpers from '../../../pages/Helpers/Helpers';
 
@@ -89,7 +90,7 @@ test.beforeEach(async ({ page }) => {
     programIdVisa,
     accessToken,
     paymentReferenceIds,
-    'Intersolve-voucher-paper',
+    FspName.intersolveVoucherPaper,
     '31600000000',
     'a',
     '2',

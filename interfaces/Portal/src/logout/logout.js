@@ -26,4 +26,4 @@ window.setTimeout(async () => {
     .finally(() => {
       redirectToLogin();
     });
-}, 1_000);
+}, 16);
