@@ -52,6 +52,14 @@ Make sure to fill in all relevant variables in your local `services/.env`-file.
 
 ## Running tests
 
+Before running the tests, make sure the local environment is running.
+
+Run, from the repository-root: `npm run start:services`
+
+The interface(s) need to be run in _production_-mode.
+
+From the Portal/Portalicious-folder, run: `npm run start:debug-production`
+
 ### Using the command-line
 
 ```shell
