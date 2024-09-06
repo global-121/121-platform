@@ -177,7 +177,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(
-      IntersolveVisa121ErrorText.resgisterHolderError,
+      IntersolveVisa121ErrorText.registerHolderError,
     );
   });
 
