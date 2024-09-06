@@ -54,11 +54,4 @@ export class SafaricomTransferRepository extends Repository<SafaricomTransferEnt
 
     return safaricomTransfer;
   }
-
-  public async updateSafaricomTransfer(
-    safaricomTransferId: number,
-    data: Partial<Omit<SafaricomTransferEntity, 'transaction'>>,
-  ): Promise<void> {
-    await this.baseRepository.update({ id: safaricomTransferId }, data);
-  }
 }

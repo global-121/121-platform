@@ -37,8 +37,8 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
     }
 
     // Update safaricom transfer with mpesaTransactionId
-    await this.safaricomTransferRepository.updateSafaricomTransfer(
-      safaricomTransfer.id,
+    await this.safaricomTransferRepository.update(
+      { id: safaricomTransfer.id },
       {
         mpesaTransactionId: safaricomTransferCallbackJob.mpesaTransactionId,
       },
