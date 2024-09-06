@@ -263,6 +263,7 @@ export class TransactionJobProcessorsService {
         referenceId: input.referenceId,
         phoneNumber: input.phoneNumber!,
         idNumber: input.idNumber!,
+        registrationProgramId: registration.registrationProgramId,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({

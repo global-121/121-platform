@@ -1,5 +1,5 @@
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';

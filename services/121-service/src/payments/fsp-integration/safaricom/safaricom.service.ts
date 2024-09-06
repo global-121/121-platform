@@ -5,8 +5,7 @@ import { TransferParams } from '@121-service/src/payments/fsp-integration/safari
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
-import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
   REDIS_CLIENT,
@@ -17,18 +16,13 @@ import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-na
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class SafaricomService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(SafaricomTransferEntity)
-  private readonly safaricomTransferRepository: Repository<SafaricomTransferEntity>;
-
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     @Inject(REDIS_CLIENT)
@@ -52,7 +46,7 @@ export class SafaricomService
   }
 
   public async doTransfer(
-    transferData: SafaricomTransferParams,
+    transferData: DoTransferParams,
   ): Promise<DoTransferReturnType> {
     await this.safaricomApiService.authenticate();
 
@@ -61,9 +55,7 @@ export class SafaricomService
     return await this.sendPaymentPerPa(payload);
   }
 
-  public createPayloadPerPa(
-    transferData: SafaricomTransferParams,
-  ): TransferParams {
+  public createPayloadPerPa(transferData: DoTransferParams): TransferParams {
     function padTo2Digits(num: number): string {
       return num.toString().padStart(2, '0');
     }
@@ -87,7 +79,7 @@ export class SafaricomService
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl, // TODO: Check if we need to implement this. Now this has an endpoint that does not exist.
       ResultURL: EXTERNAL_API.safaricomResultUrl,
       Occassion: transferData.referenceId,
-      OriginatorConversationID: `P${transferData.programId}_${formatDate(
+      OriginatorConversationID: `P${transferData.programId}PA${transferData.registrationProgramId}_${formatDate(
         new Date(),
       )}_${generateRandomString(3)}`, // TODO: Implement idempotency like Ashish proposed in: https://dev.azure.com/redcrossnl/121%20Platform/_sprints/taskboard/121%20Development%20Team/121%20Platform/Sprint%20135?workitem=29155
       IDType: process.env.SAFARICOM_IDTYPE!,
@@ -101,7 +93,7 @@ export class SafaricomService
     const result = await this.safaricomApiService.transfer(payload);
 
     if (result && result.ResponseCode !== '0') {
-      throw new Error(result.errorMessage);
+      throw new Error(result.errorMessage || result.ResponseDescription);
     }
 
     return {
@@ -110,7 +102,7 @@ export class SafaricomService
     };
   }
 
-  public async processSafaricomCallback(
+  public async processTransferCallback(
     safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<void> {
     const safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto = {

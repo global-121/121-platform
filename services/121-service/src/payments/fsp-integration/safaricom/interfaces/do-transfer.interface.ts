@@ -1,4 +1,4 @@
-export interface SafaricomTransferParams {
+export interface DoTransferParams {
   readonly transactionAmount: number;
   readonly programId: number;
   readonly paymentNr: number;
@@ -6,4 +6,5 @@ export interface SafaricomTransferParams {
   readonly referenceId: string;
   readonly phoneNumber: string;
   readonly idNumber: string;
+  readonly registrationProgramId: number;
 }
