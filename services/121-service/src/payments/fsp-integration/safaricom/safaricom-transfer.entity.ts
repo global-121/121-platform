@@ -12,7 +12,7 @@ export class SafaricomTransferEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Column({ unique: true })
   public originatorConversationId: string;
 
   @Column()
