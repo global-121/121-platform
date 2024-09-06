@@ -105,7 +105,6 @@ export class SafaricomService
     }
 
     return {
-      amountTransferredInMajorUnit: payload.Amount,
       originatorConversationId: result.OriginatorConversationID,
       conversationId: result.ConversationID,
     };

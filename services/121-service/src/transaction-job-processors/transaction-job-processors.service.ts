@@ -287,8 +287,7 @@ export class TransactionJobProcessorsService {
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTransferAmountInMajorUnit:
-        safaricomDoTransferResult.amountTransferredInMajorUnit,
+      calculatedTransferAmountInMajorUnit: input.transactionAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
