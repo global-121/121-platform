@@ -10,11 +10,11 @@ import {
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
@@ -46,7 +46,7 @@ export class VodacashService
         referenceId: payment.referenceId,
         date: new Date(),
         calculatedAmount: payment.transactionAmount,
-        status: StatusEnum.waiting,
+        status: TransactionStatusEnum.waiting,
         userId: payment.userId,
         message: null,
       };
@@ -195,7 +195,7 @@ export class VodacashService
     paTransactionResult.registrationId = registrationdId;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.fspName = FinancialServiceProviderName.vodacash;
-    paTransactionResult.status = StatusEnum.error;
+    paTransactionResult.status = TransactionStatusEnum.error;
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(
         programId,
@@ -205,7 +205,7 @@ export class VodacashService
     )[0].amount;
     if (record) {
       // Vodacash reconciliation data only contains successful records
-      paTransactionResult.status = StatusEnum.success;
+      paTransactionResult.status = TransactionStatusEnum.success;
       paTransactionResult.calculatedAmount = Number(record.amount);
     }
     return paTransactionResult;

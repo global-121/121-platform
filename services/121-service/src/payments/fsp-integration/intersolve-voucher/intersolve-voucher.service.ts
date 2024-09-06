@@ -31,6 +31,7 @@ import {
   REDIS_CLIENT,
   getRedisSetName,
 } from '@121-service/src/payments/redis/redis-client';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
@@ -41,7 +42,6 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
@@ -173,7 +173,7 @@ export class IntersolveVoucherService
     paResult.referenceId = paymentInfo.referenceId;
 
     if (!credentials?.username || !credentials?.password) {
-      paResult.status = StatusEnum.error;
+      paResult.status = TransactionStatusEnum.error;
       paResult.message =
         'Creating intersolve voucher failed. Error retrieving Intersolve credentials';
       return paResult;
@@ -196,7 +196,7 @@ export class IntersolveVoucherService
         return;
       } else {
         // .. if existing voucher is found, then continue with that one, and don't create new one
-        paResult.status = StatusEnum.success;
+        paResult.status = TransactionStatusEnum.success;
       }
     } else {
       // .. if no existing voucher found, then create new one
@@ -215,9 +215,9 @@ export class IntersolveVoucherService
           payment,
           calculatedAmount,
         );
-        paResult.status = StatusEnum.success;
+        paResult.status = TransactionStatusEnum.success;
       } else {
-        paResult.status = StatusEnum.error;
+        paResult.status = TransactionStatusEnum.error;
         paResult.message =
           'Creating intersolve voucher failed. Status code: ' +
           (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
@@ -236,7 +236,7 @@ export class IntersolveVoucherService
 
     // If no whatsapp: return early
     if (!useWhatsapp) {
-      paResult.status = StatusEnum.success;
+      paResult.status = TransactionStatusEnum.success;
       return paResult;
     }
 
@@ -328,7 +328,7 @@ export class IntersolveVoucherService
     );
 
     paResult.status = transferResult.status;
-    if (transferResult.status === StatusEnum.error) {
+    if (transferResult.status === TransactionStatusEnum.error) {
       paResult.message =
         'Voucher(s) created, but something went wrong in sending voucher.\n' +
         transferResult.message;
@@ -374,7 +374,7 @@ export class IntersolveVoucherService
       bulksize: paymentInfo.bulkSize,
       userId: paymentInfo.userId,
     });
-    result.status = StatusEnum.waiting;
+    result.status = TransactionStatusEnum.waiting;
     return result;
   }
 
@@ -433,9 +433,9 @@ export class IntersolveVoucherService
     const failStatuses = [TwilioStatus.undelivered, TwilioStatus.failed];
     let status: string;
     if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
-      status = StatusEnum.success;
+      status = TransactionStatusEnum.success;
     } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
-      status = StatusEnum.error;
+      status = TransactionStatusEnum.error;
     } else {
       // For other statuses, no update needed
       return;
@@ -446,14 +446,14 @@ export class IntersolveVoucherService
     };
     // if success, then only update if transaction is a 'voucher sent' message
     // if error, then always update
-    if (status === StatusEnum.success) {
+    if (status === TransactionStatusEnum.success) {
       transactionToUpdateFilter['transactionStep'] = 2;
     }
     // No scoped needed as this is for incoming whatsapp messages
     await this.transactionRepository.update(transactionToUpdateFilter, {
       status: status,
       errorMessage:
-        status === StatusEnum.error
+        status === TransactionStatusEnum.error
           ? (statusCallbackData.ErrorMessage || '') +
             ' (ErrorCode: ' +
             statusCallbackData.ErrorCode +
@@ -465,7 +465,7 @@ export class IntersolveVoucherService
   public async updateTransactionBasedTwilioMessageCreate(
     payment: number,
     regisrationId: number,
-    status: StatusEnum,
+    status: TransactionStatusEnum,
     transactionStep: number,
     messageSid?: string,
     errorMessage?: string,
@@ -729,7 +729,7 @@ export class IntersolveVoucherService
     amount: number,
     registrationId: number,
     transactionStep: number,
-    status: StatusEnum,
+    status: TransactionStatusEnum,
     errorMessage: string | null,
     programId: number,
     options: IntersolveStoreVoucherOptionsDto,
@@ -797,7 +797,7 @@ export class IntersolveVoucherService
     amount: number,
     registrationId: number,
     transactionStep: number,
-    status: StatusEnum,
+    status: TransactionStatusEnum,
     errorMessage: string | null,
     messageSid?: string,
   ): Promise<PaTransactionResultDto> {

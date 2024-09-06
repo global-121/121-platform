@@ -21,6 +21,7 @@ import {
   REDIS_CLIENT,
   getRedisSetName,
 } from '@121-service/src/payments/redis/redis-client';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
@@ -28,7 +29,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { InjectQueue } from '@nestjs/bull';
@@ -285,10 +285,10 @@ export class CommercialBankEthiopiaService
       result.Status.successIndicator &&
       result.Status.successIndicator._text === 'Success'
     ) {
-      paTransactionResult.status = StatusEnum.success;
-      payload.status = StatusEnum.success;
+      paTransactionResult.status = TransactionStatusEnum.success;
+      payload.status = TransactionStatusEnum.success;
     } else {
-      paTransactionResult.status = StatusEnum.error;
+      paTransactionResult.status = TransactionStatusEnum.error;
       paTransactionResult.message =
         result.resultDescription ||
         (result.Status &&
