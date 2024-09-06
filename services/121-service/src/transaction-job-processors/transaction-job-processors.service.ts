@@ -265,6 +265,7 @@ export class TransactionJobProcessorsService {
           new Date(),
         )}_${generateRandomString(3)}`,
         idNumber: input.idNumber!,
+        registrationProgramId: registration.registrationProgramId,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
