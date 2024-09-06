@@ -3,5 +3,15 @@
   i18n-pageTitle="@@page-title-project-registrations"
   [projectId]="projectId()"
 >
-  <p i18n>project-registrations works!</p>
+  @if (registrations.isSuccess()) {
+    <ul>
+      @for (registration of registrations.data().data; track $index) {
+        <li>
+          <a [routerLink]="registrationLink(registration.id)">
+            {{ registration.name }}
+          </a>
+        </li>
+      }
+    </ul>
+  }
 </app-page-layout>

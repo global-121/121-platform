@@ -1,4 +1,4 @@
-// TODO: fix all strict problems in 121 service to avoid hardcoding this type
+// TODO: AB#30152 This type should be refactored to use Dto121Service
 export interface Payment {
   payment: number;
   paymentDate: string;
