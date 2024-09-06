@@ -78,6 +78,16 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "uniqueOriginatorConversationId" UNIQUE ("originatorConversationId")`,
     );
 
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" ADD "created" TIMESTAMP NOT NULL DEFAULT now()`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" ADD "updated" TIMESTAMP NOT NULL DEFAULT now()`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_b33c0bf1d6306f931afec51522" ON "121-service"."safaricom_request" ("created") `,
+    );
+
     // Step 4: Rename the table
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME TO "safaricom_transfer"`,
