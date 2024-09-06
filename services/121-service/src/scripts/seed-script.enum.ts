@@ -9,4 +9,5 @@ export enum SeedScript {
   nlrcMultipleMock = 'nlrc-multiple-mock-data',
   ethJointResponse = 'eth-joint-response',
   krcsMultiple = 'krcs-multiple',
+  oneAdmin = 'one-admin',
 }
