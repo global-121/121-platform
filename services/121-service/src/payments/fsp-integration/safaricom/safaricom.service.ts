@@ -2,6 +2,7 @@ import { EXTERNAL_API } from '@121-service/src/config';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
+import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
@@ -111,8 +112,17 @@ export class SafaricomService
   }
 
   public async processSafaricomCallback(
-    safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto,
+    safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<void> {
+    const safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto = {
+      originatorConversationId:
+        safaricomTransferCallback.Result.OriginatorConversationID,
+      mpesaConversationId: safaricomTransferCallback.Result.ConversationID,
+      mpesaTransactionId: safaricomTransferCallback.Result.TransactionID,
+      resultCode: safaricomTransferCallback.Result.ResultCode,
+      resultDescription: safaricomTransferCallback.Result.ResultDesc,
+    };
+
     const job = await this.safaricomTransferCallbackQueue.add(
       PaymentQueueNames.financialServiceProviderCallback,
       safaricomTransferCallbackJob,

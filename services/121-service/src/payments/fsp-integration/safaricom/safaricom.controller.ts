@@ -1,4 +1,4 @@
-import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
+import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -18,20 +18,10 @@ export class SafaricomController {
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Notified' })
   @Post('transaction')
   public async processSafaricomCallback(
-    @Body() safaricomPaymentResultData: any,
+    @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<any> {
-    // Prepare the safaricom transfer callback job from callback data
-    const safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto = {
-      originatorConversationId:
-        safaricomPaymentResultData.Result.OriginatorConversationID,
-      mpesaConversationId: safaricomPaymentResultData.Result.ConversationID,
-      mpesaTransactionId: safaricomPaymentResultData.Result.TransactionID,
-      resultCode: safaricomPaymentResultData.Result.ResultCode,
-      resultDescription: safaricomPaymentResultData.Result.ResultDesc,
-    };
-
     await this.safaricomService.processSafaricomCallback(
-      safaricomTransferCallbackJob,
+      safaricomTransferCallback,
     );
   }
 }

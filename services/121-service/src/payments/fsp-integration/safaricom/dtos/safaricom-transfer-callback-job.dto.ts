@@ -1,7 +1,7 @@
 export interface SafaricomTransferCallbackJobDto {
-  originatorConversationId: string;
-  mpesaConversationId: string;
-  mpesaTransactionId: string;
-  resultCode: number;
-  resultDescription: string;
+  readonly originatorConversationId: string;
+  readonly mpesaConversationId: string;
+  readonly mpesaTransactionId: string;
+  readonly resultCode: number;
+  readonly resultDescription: string;
 }
