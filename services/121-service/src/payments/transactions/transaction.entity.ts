@@ -41,7 +41,6 @@ export class TransactionEntity extends Base121AuditedEntity {
     default: {},
   })
   public customData: Record<string, unknown>;
-
   @Column({ default: 1 })
   @Index()
   public transactionStep: number;

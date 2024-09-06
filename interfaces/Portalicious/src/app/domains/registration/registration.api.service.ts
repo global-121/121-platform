@@ -70,10 +70,13 @@ export class RegistrationApiService extends DomainApiService {
         ],
         processResponse: (messages) =>
           messages.map((message) => ({
+            //TODO: find a better way? id needed for expanding table row
+            id: crypto.randomUUID(),
             activityType: 'message',
-            overview: message.body,
+            overview: message.type,
             doneBy: message.user.username || 'Unknown',
             timestamp: new Date(message.created),
+            details: message.body,
           })),
         enabled: () => !!projectId() && !!referenceId,
         initialData: undefined,
@@ -98,6 +101,8 @@ export class RegistrationApiService extends DomainApiService {
       ],
       processResponse: (registrationEvents) =>
         registrationEvents.map((registrationEvent) => ({
+          //TODO: find a better way? id needed for expanding table row
+          id: crypto.randomUUID(),
           activityType: registrationEvent.type,
           overview: Object.keys(registrationEvent.attributes)
             // TODO: avoid disabling rule
@@ -106,6 +111,7 @@ export class RegistrationApiService extends DomainApiService {
             .join(', '),
           doneBy: registrationEvent.user.username ?? 'Unknown',
           timestamp: new Date(registrationEvent.created),
+          details: 'TODO: Implement event details',
         })),
       enabled: () => !!projectId() && !!registartionId(),
       initialData: undefined,

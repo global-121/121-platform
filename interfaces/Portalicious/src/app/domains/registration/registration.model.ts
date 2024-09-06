@@ -10,8 +10,10 @@ export type Message = Dto<MessageHistoryDto>;
 export type RegistrationEvent = Dto<EventEntity>;
 
 export interface RegistrationActivityLogEntry {
+  id: string;
   activityType: string;
   overview: string;
   doneBy: string;
   timestamp: Date;
+  details: string;
 }

@@ -8,12 +8,13 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { DataListComponent } from '~/components/data-list/data-list.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { QueryTableColumn } from '~/components/query-table/query-table.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { RegistrationActivityLogEntry } from '~/domains/registration/registration.model';
 import { TransactionApiService } from '~/domains/transaction/transaction.api.service';
@@ -29,6 +30,8 @@ import { TransactionApiService } from '~/domains/transaction/transaction.api.ser
     FormsModule,
     SelectButtonModule,
     TableModule,
+    ButtonModule,
+    DataListComponent,
   ],
   templateUrl: './project-registration-activity-log.page.html',
   styles: ``,
@@ -79,23 +82,28 @@ export class ProjectRegistrationActivityLogPageComponent {
     ...(this.registrationTransactions.data() ?? []),
   ]);
 
-  columns = computed<QueryTableColumn<RegistrationActivityLogEntry>[]>(() => [
+  //NOTE: had to set the width (in px, couldn't in rem) because the Activity column would change width on expand
+  columns = computed(() => [
     {
       field: 'activityType',
       header: $localize`Activity`,
+      width: '176px',
     },
     {
       field: 'overview',
       header: $localize`Overview`,
+      width: '480px',
     },
     {
       field: 'doneBy',
       header: $localize`Done by`,
+      width: '160px',
     },
     {
       field: 'timestamp',
       header: $localize`Time and date`,
       type: 'date',
+      width: '176px',
     },
   ]);
 
@@ -108,4 +116,17 @@ export class ProjectRegistrationActivityLogPageComponent {
     { label: 'Data changes', value: 'data-changes' },
   ];
   value = 'all';
+
+  onRowExpand($event) {
+    console.log(
+      '🚀 ~ ProjectRegistrationActivityLogPageComponent ~ onRowExpand ~ $event:',
+      $event,
+    );
+  }
+  onRowCollapse($event) {
+    console.log(
+      '🚀 ~ ProjectRegistrationActivityLogPageComponent ~ onRowCollapse ~ $event:',
+      $event,
+    );
+  }
 }

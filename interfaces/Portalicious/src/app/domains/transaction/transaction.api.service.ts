@@ -22,10 +22,13 @@ export class TransactionApiService extends DomainApiService {
       ],
       processResponse: (transactions) =>
         transactions.map((transaction) => ({
+          //TODO: find a better way? id needed for expanding table row
+          id: crypto.randomUUID(),
           activityType: 'transaction',
           doneBy: transaction.user.username ?? '',
           timestamp: new Date(transaction.created),
           overview: `Transfer ${transaction.payment.toString()}`,
+          details: 'TODO: Implement event details',
         })),
     });
   }

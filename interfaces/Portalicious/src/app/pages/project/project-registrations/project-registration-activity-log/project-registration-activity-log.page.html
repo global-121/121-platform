@@ -22,22 +22,57 @@
       <p-table
         [value]="activityLog()"
         [columns]="columns()"
+        (onRowExpand)="onRowExpand($event)"
+        (onRowCollapse)="onRowCollapse($event)"
+        [dataKey]="'id'"
+        [resizableColumns]="false"
       >
         <ng-template
           pTemplate="header"
           let-columns
         >
           <tr>
-            <th *ngFor="let col of columns">{{ col.header }}</th>
+            <th [attr.width]="'4rem'"></th>
+            @for (col of columns; track col) {
+              <th [attr.width]="col.width">{{ col.header }}</th>
+            }
           </tr>
         </ng-template>
         <ng-template
           pTemplate="body"
           let-rowData
           let-columns="columns"
+          let-expanded="expanded"
         >
           <tr>
-            <td *ngFor="let col of columns">{{ rowData[col.field] }}</td>
+            <td>
+              <p-button
+                type="button"
+                pRipple
+                [pRowToggler]="rowData"
+                [text]="true"
+                [rounded]="true"
+                [plain]="true"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              />
+            </td>
+            @for (col of columns; track col) {
+              <td [attr.width]="col.width">{{ rowData[col.field] }}</td>
+            }
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="rowexpansion"
+          let-activityLogEntry
+        >
+          <tr>
+            <td [attr.colspan]="1"></td>
+            <td
+              [attr.colspan]="4"
+              style="white-space: normal"
+            >
+              {{ activityLogEntry.details }}
+            </td>
           </tr>
         </ng-template>
       </p-table>
