@@ -118,21 +118,6 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
-  // TODO: Add transactions
-  // getRegistrationTransactions(
-  //   projectId: Signal<number | undefined>,
-  //   referenceId: Signal<string | undefined>,
-  // ) {
-  //   return this.generateQueryOptions<[]>({
-  //     path: [
-  //       BASE_ENDPOINT,
-  //       projectId,
-
-  //       `transactions?reference_id=${referenceId}`,
-  //     ],
-  //   });
-  // }
-
   // TODO: Do some smart stuff to invalidate the cache
   //   public invalidateCache(projectId?: Signal<number>): Promise<void> {
   //     const path: (Signal<number> | string)[] = [BASE_ENDPOINT];
