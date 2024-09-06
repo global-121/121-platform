@@ -68,10 +68,6 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "FK_71eecfc6a9376e289b2a52cdf55" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."safaricom_request" ADD CONSTRAINT "UQ_995cb444541e19201d105909d82" UNIQUE ("originatorConversationId")`,
-    );
-
-    await queryRunner.query(
       `ALTER SEQUENCE IF EXISTS "121-service".safaricom_request_id_seq RENAME TO safaricom_transfer_id_seq;`,
     );
     await queryRunner.query(
