@@ -3,7 +3,7 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
-import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
@@ -53,7 +53,7 @@ export class SafaricomService
 
   public async doTransfer(
     transferData: SafaricomTransferParams,
-  ): Promise<DoTransferReturnParams> {
+  ): Promise<DoTransferReturnType> {
     await this.safaricomApiService.authenticate();
 
     const payload = this.createPayloadPerPa(transferData);
@@ -97,7 +97,7 @@ export class SafaricomService
 
   public async sendPaymentPerPa(
     payload: SafaricomTransferPayloadParams,
-  ): Promise<DoTransferReturnParams> {
+  ): Promise<DoTransferReturnType> {
     const result = await this.safaricomApiService.transfer(payload);
 
     if (result && result.ResponseCode !== '0') {

@@ -13,7 +13,7 @@ import { QueueMessageService } from '@121-service/src/notifications/queue-messag
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -253,7 +253,7 @@ export class TransactionJobProcessorsService {
     }
 
     // 3. Start the transfer, save error transaction on failure and return early
-    let safaricomDoTransferResult: DoTransferReturnParams;
+    let safaricomDoTransferResult: DoTransferReturnType;
     try {
       safaricomDoTransferResult = await this.safaricomService.doTransfer({
         transactionAmount: input.transactionAmount,

@@ -1,4 +1,4 @@
-import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
@@ -107,7 +107,7 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should authenticate and send payment', async () => {
-      const result: DoTransferReturnParams = {
+      const result: DoTransferReturnType = {
         amountTransferredInMajorUnit: 100,
         conversationId: 'mocked_conversation_id',
         originatorConversationId: 'mocked_originator_conversation_id',
@@ -138,7 +138,7 @@ describe('SafaricomService', () => {
 
   describe('createAndSaveSafaricomTransferData', () => {
     it('should create and save a safaricom transfer entity', async () => {
-      const transferResult: DoTransferReturnParams = {
+      const transferResult: DoTransferReturnType = {
         amountTransferredInMajorUnit: 100,
         conversationId: 'mocked_conversation_id',
         originatorConversationId: 'mocked_originator_conversation_id',

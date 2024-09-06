@@ -1,4 +1,4 @@
-export interface DoTransferReturnParams {
+export interface DoTransferReturnType {
   originatorConversationId: string;
   conversationId: string;
 }

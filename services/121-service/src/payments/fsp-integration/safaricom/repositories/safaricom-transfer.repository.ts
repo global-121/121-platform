@@ -1,4 +1,4 @@
-import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { NotFoundException } from '@nestjs/common';
@@ -18,7 +18,7 @@ export class SafaricomTransferRepository extends Repository<SafaricomTransferEnt
   }
 
   public async createAndSaveSafaricomTransferData(
-    safaricomDoTransferResult: DoTransferReturnParams,
+    safaricomDoTransferResult: DoTransferReturnType,
     transaction: TransactionEntity,
   ): Promise<any> {
     const safaricomTransferEntity = new SafaricomTransferEntity();
