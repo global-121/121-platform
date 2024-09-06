@@ -1,4 +1,4 @@
-export interface SafaricomTransferPayloadParams {
+export interface TransferParams {
   readonly InitiatorName: string;
   readonly SecurityCredential: string;
   readonly CommandID: string;
@@ -12,8 +12,4 @@ export interface SafaricomTransferPayloadParams {
   readonly OriginatorConversationID: string;
   readonly IDType: string;
   readonly IDNumber: string | undefined;
-  readonly conversationId?: string;
-  readonly status?: string;
-  readonly requestResult?: Record<string, unknown>;
-  readonly paymentResult?: Record<string, unknown>;
 }
