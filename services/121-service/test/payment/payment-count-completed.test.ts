@@ -1,10 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -104,7 +104,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
+      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 
       expect(getRegistration.status).toBe(RegistrationStatusEnum.completed);

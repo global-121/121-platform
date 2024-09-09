@@ -2,29 +2,27 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
-import { SafaricomTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer.interface';
-import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
+import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { QueueNamePaymentCallBack } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
-const mockedSafaricomTransferParams: SafaricomTransferParams = {
-  userId: 1,
-  programId: 3,
-  paymentNr: 1,
+const mockedSafaricomTransferParams: DoTransferParams = {
   transactionAmount: 100,
   phoneNumber: '254708374149',
-  referenceId: 'mocked_reference_id',
-  nationalId: 'mocked_national_id',
-  registrationProgramId: 2,
+  remarks: 'Payment 1',
+  occasion: 'mocked_occasion',
+  originatorConversationId: 'mocked_originator_conversation_id',
+  idNumber: 'mocked_national_id',
 };
 
-const mockedSafaricomTransferPayloadParams: SafaricomTransferPayloadParams = {
+const mockedSafaricomTransferPayloadParams: TransferParams = {
   InitiatorName: 'initiator_name',
   SecurityCredential: 'security_credential',
   CommandID: 'command_id',
@@ -43,7 +41,6 @@ const mockedSafaricomTransferPayloadParams: SafaricomTransferPayloadParams = {
 describe('SafaricomService', () => {
   let service: SafaricomService;
   let safaricomApiService: SafaricomApiService;
-  let safaricomTransferRepository: Repository<SafaricomTransferEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -55,10 +52,6 @@ describe('SafaricomService', () => {
             authenticate: jest.fn(),
             transfer: jest.fn(),
           },
-        },
-        {
-          provide: getRepositoryToken(SafaricomTransferEntity),
-          useClass: Repository,
         },
         {
           provide: REDIS_CLIENT,
@@ -75,13 +68,16 @@ describe('SafaricomService', () => {
           useClass: Repository,
         },
         {
-          provide: QueueNamePaymentCallBack.safaricom,
+          provide:
+            FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
           useValue: {
             add: jest.fn(),
           },
         },
         {
-          provide: getQueueName(QueueNamePaymentCallBack.safaricom),
+          provide: getQueueName(
+            FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+          ),
           useValue: {
             add: jest.fn(),
           },
@@ -91,9 +87,6 @@ describe('SafaricomService', () => {
 
     service = module.get<SafaricomService>(SafaricomService);
     safaricomApiService = module.get<SafaricomApiService>(SafaricomApiService);
-    safaricomTransferRepository = module.get<
-      Repository<SafaricomTransferEntity>
-    >(getRepositoryToken(SafaricomTransferEntity));
   });
 
   describe('sendPayment', () => {
@@ -106,8 +99,7 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should authenticate and send payment', async () => {
-      const result: DoTransferReturnParams = {
-        amountTransferredInMajorUnit: 100,
+      const result: DoTransferReturnType = {
         conversationId: 'mocked_conversation_id',
         originatorConversationId: 'mocked_originator_conversation_id',
       };
@@ -132,74 +124,6 @@ describe('SafaricomService', () => {
         mockedSafaricomTransferPayloadParams,
       );
       expect(transferResult).toEqual(result);
-    });
-  });
-
-  describe('createAndSaveSafaricomTransferData', () => {
-    it('should create and save a safaricom transfer entity', async () => {
-      const transferResult: DoTransferReturnParams = {
-        amountTransferredInMajorUnit: 100,
-        conversationId: 'mocked_conversation_id',
-        originatorConversationId: 'mocked_originator_conversation_id',
-      };
-
-      const transaction = { id: 1 } as TransactionEntity;
-      const saveSpy = jest
-        .spyOn(safaricomTransferRepository, 'save')
-        .mockResolvedValue({ id: 1 } as SafaricomTransferEntity);
-
-      await service.createAndSaveSafaricomTransferData(
-        transferResult,
-        transaction,
-      );
-
-      expect(saveSpy).toHaveBeenCalled();
-      expect(saveSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mpesaConversationId: 'mocked_conversation_id',
-          originatorConversationId: 'mocked_originator_conversation_id',
-          transactionId: 1,
-        }),
-      );
-    });
-  });
-
-  describe('getSafaricomTransferByOriginatorConversationId', () => {
-    it('should return safaricom transfer entities by originatorConversationId', async () => {
-      const originatorConversationId = 'OriginatorConversationID';
-
-      const safaricomTransferEntities: SafaricomTransferEntity[] = [
-        { id: 1, originatorConversationId } as SafaricomTransferEntity,
-      ];
-
-      jest
-        .spyOn(safaricomTransferRepository, 'createQueryBuilder')
-        .mockReturnValue({
-          leftJoinAndSelect: jest.fn().mockReturnThis(),
-          where: jest.fn().mockReturnThis(),
-          getMany: jest.fn().mockResolvedValue(safaricomTransferEntities),
-        } as any);
-
-      const result =
-        await service.getSafaricomTransferByOriginatorConversationId(
-          originatorConversationId,
-        );
-
-      expect(result).toEqual(safaricomTransferEntities);
-    });
-  });
-
-  describe('updateSafaricomTransfer', () => {
-    it('should save the updated safaricom transfer entity', async () => {
-      const safaricomTransferEntity = { id: 1 } as SafaricomTransferEntity;
-
-      const saveSpy = jest
-        .spyOn(safaricomTransferRepository, 'save')
-        .mockResolvedValue(safaricomTransferEntity);
-
-      await service.updateSafaricomTransfer(safaricomTransferEntity);
-
-      expect(saveSpy).toHaveBeenCalledWith(safaricomTransferEntity);
     });
   });
 });

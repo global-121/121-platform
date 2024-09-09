@@ -14,9 +14,9 @@ import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-w
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
@@ -192,7 +192,9 @@ export class MessageService {
         },
       );
     const transactionStep = 1;
-    const status = messageSid ? StatusEnum.waiting : StatusEnum.error;
+    const status = messageSid
+      ? TransactionStatusEnum.waiting
+      : TransactionStatusEnum.error;
 
     if (messageJobDto.customData?.payment) {
       await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
@@ -200,8 +202,8 @@ export class MessageService {
         messageJobDto.registrationId,
         status,
         transactionStep,
-        status === StatusEnum.error ? undefined : messageSid, // else = 'waiting'
-        status === StatusEnum.error ? errorMessage : undefined, // else = 'waiting'
+        status === TransactionStatusEnum.error ? undefined : messageSid, // else = 'waiting'
+        status === TransactionStatusEnum.error ? errorMessage : undefined, // else = 'waiting'
       );
     }
   }
@@ -232,7 +234,7 @@ export class MessageService {
         },
       );
     const transactionStep = 2;
-    const status = StatusEnum.success;
+    const status = TransactionStatusEnum.success;
 
     if (
       messageJobDto.customData?.payment &&
