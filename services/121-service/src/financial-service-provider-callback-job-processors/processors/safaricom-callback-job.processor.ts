@@ -8,23 +8,23 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import {
-  ProcessNamePayment,
-  QueueNamePaymentCallBack,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
 
-@Processor(QueueNamePaymentCallBack.safaricom)
-export class CallbackJobProcessorSafaricom {
+@Processor(
+  FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+)
+export class TransferCallbackJobProcessorSafaricom {
   constructor(
     private readonly financialServiceProviderCallbackJobProcessorsService: FinancialServiceProviderCallbackJobProcessorsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(ProcessNamePayment.callbackPayment)
-  async handleSafaricomCallbackJob(job: Job): Promise<void> {
+  @Process(PaymentQueueNames.financialServiceProviderCallback)
+  async handleSafaricomTransferCallbackJob(job: Job): Promise<void> {
     try {
-      await this.financialServiceProviderCallbackJobProcessorsService.processSafaricomCallbackJob(
+      await this.financialServiceProviderCallbackJobProcessorsService.processSafaricomTransferCallbackJob(
         job.data,
       );
     } catch (error) {

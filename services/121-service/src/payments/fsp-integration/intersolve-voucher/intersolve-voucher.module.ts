@@ -25,7 +25,7 @@ import { RegistrationDataModule } from '@121-service/src/registration/modules/re
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { QueueNamePayment } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -52,7 +52,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     RegistrationDataModule,
     RegistrationUtilsModule,
     BullModule.registerQueue({
-      name: QueueNamePayment.paymentIntersolveVoucher,
+      name: TransactionQueueNames.paymentIntersolveVoucher,
       processors: [
         {
           path: 'src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor.ts',

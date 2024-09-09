@@ -27,7 +27,7 @@ export class SafaricomMockService {
     transferDto: SafaricomTransferPayload,
   ): Promise<SafaricomTransferResponseBodyDto> {
     let mockScenario: MockScenario = MockScenario.success;
-    if (!transferDto.PartyB) {
+    if (transferDto.PartyB === '25400000000') {
       mockScenario = MockScenario.otherFailure;
     }
 

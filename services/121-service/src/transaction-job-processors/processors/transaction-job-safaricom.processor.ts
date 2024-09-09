@@ -7,13 +7,11 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 
-@Processor(QueueNamePayment.paymentSafaricom)
+@Processor(TransactionQueueNames.paymentSafaricom)
 export class TransactionJobProcessorSafaricom {
   constructor(
     private readonly transactionJobProcessorsService: TransactionJobProcessorsService,
@@ -21,7 +19,7 @@ export class TransactionJobProcessorSafaricom {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(ProcessNamePayment.sendPayment)
+  @Process(PaymentQueueNames.sendPayment)
   async handleSafaricomTransactionJob(job: Job): Promise<void> {
     try {
       await this.transactionJobProcessorsService.processSafaricomTransactionJob(
