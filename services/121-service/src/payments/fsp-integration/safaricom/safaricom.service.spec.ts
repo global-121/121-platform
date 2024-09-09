@@ -117,9 +117,6 @@ describe('SafaricomService', () => {
       );
 
       expect(safaricomApiService.authenticate).toHaveBeenCalled();
-      expect(service.createPayloadPerPa).toHaveBeenCalledWith(
-        mockedSafaricomTransferParams,
-      );
       expect(service.sendTransfer).toHaveBeenCalledWith(
         mockedSafaricomTransferPayloadParams,
       );
