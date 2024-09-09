@@ -1,5 +1,5 @@
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
 import ChangePasswordPage from '@121-e2e/portalicious/pages/ChangePasswordPage';
+import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
