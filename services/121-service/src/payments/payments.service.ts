@@ -55,17 +55,15 @@ export class PaymentsService {
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
-  private fspWithQueueServiceMapping = {
-    [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-    [FinancialServiceProviderName.intersolveVoucherPaper]:
-      this.intersolveVoucherService,
-    [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
-      this.intersolveVoucherService,
-    [FinancialServiceProviderName.safaricom]: this.safaricomService,
-    [FinancialServiceProviderName.commercialBankEthiopia]:
-      this.commercialBankEthiopiaService,
-    // Add more FSP mappings if they work queue-based
-  };
+  private fspWithQueueServiceMapping: Partial<
+    Record<
+      FinancialServiceProviderName,
+      | IntersolveVoucherService
+      | IntersolveVisaService
+      | SafaricomService
+      | CommercialBankEthiopiaService
+    >
+  >;
 
   private financialServiceProviderNameToServiceMap: Record<
     FinancialServiceProviderName,
@@ -88,6 +86,18 @@ export class PaymentsService {
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
   ) {
+    this.fspWithQueueServiceMapping = {
+      [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
+      [FinancialServiceProviderName.intersolveVoucherPaper]:
+        this.intersolveVoucherService,
+      [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
+        this.intersolveVoucherService,
+      [FinancialServiceProviderName.safaricom]: this.safaricomService,
+      [FinancialServiceProviderName.commercialBankEthiopia]:
+        this.commercialBankEthiopiaService,
+      // Add more FSP mappings if they work queue-based
+    };
+
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
         this.intersolveVoucherService,

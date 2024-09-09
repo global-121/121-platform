@@ -25,10 +25,11 @@ describe('/ Users', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.CREATED);
+      const cookies = response.get('Set-Cookie');
+      expect(cookies).toBeDefined(); // Ensure cookies are defined
       expect(
-        response
-          .get('Set-Cookie')
-          .findIndex((cookie) => cookie.startsWith(CookieNames.general)),
+        cookies &&
+          cookies.findIndex((cookie) => cookie.startsWith(CookieNames.general)),
       ).not.toBe(-1);
       expect(response.body.username).toBe(testUser.username);
       expect(response.body.expires).toBeDefined();
