@@ -3,35 +3,26 @@ import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { QueueNamePaymentCallBack } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { UserModule } from '@121-service/src/user/user.module';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([
-      TransactionEntity,
-      RegistrationEntity,
-      SafaricomTransferEntity,
-    ]),
-    UserModule,
-    TransactionsModule,
+    TypeOrmModule.forFeature([SafaricomTransferEntity]),
     RedisModule,
     BullModule.registerQueue({
-      name: QueueNamePaymentCallBack.safaricom,
+      name: FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
       processors: [
         {
-          path: 'src/financial-service-provider-callback-job-processors/processors/callback-job-safaricom.processor.ts',
+          path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-callback-job.processor.ts',
         },
       ],
       limiter: {
@@ -40,9 +31,14 @@ import { UserModule } from '@121-service/src/user/user.module';
       },
     }),
   ],
-  providers: [SafaricomService, SafaricomApiService, CustomHttpService],
+  providers: [
+    SafaricomService,
+    SafaricomApiService,
+    CustomHttpService,
+    SafaricomTransferRepository,
+  ],
   controllers: [SafaricomController],
-  exports: [SafaricomService, SafaricomApiService],
+  exports: [SafaricomService, SafaricomTransferRepository],
 })
 export class SafaricomModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

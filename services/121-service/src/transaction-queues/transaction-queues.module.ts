@@ -3,14 +3,14 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { QueueNamePayment } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 
 @Module({
   imports: [
     RedisModule,
     BullModule.registerQueue({
-      name: QueueNamePayment.paymentIntersolveVisa,
+      name: TransactionQueueNames.paymentIntersolveVisa,
       processors: [
         {
           path: 'src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor.ts',
@@ -22,7 +22,7 @@ import { TransactionQueuesService } from '@121-service/src/transaction-queues/tr
       },
     }),
     BullModule.registerQueue({
-      name: QueueNamePayment.paymentSafaricom,
+      name: TransactionQueueNames.paymentSafaricom,
       processors: [
         {
           path: 'src/transaction-job-processors/processors/transaction-job-safaricom.processor.ts',

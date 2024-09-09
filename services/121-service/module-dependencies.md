@@ -73,8 +73,6 @@ graph LR
   VodacashModule-->RegistrationDataModule
   VodacashModule-->RegistrationsModule
   PaymentsModule-->SafaricomModule
-  SafaricomModule-->UserModule
-  SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule

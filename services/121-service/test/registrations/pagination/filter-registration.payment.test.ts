@@ -1,7 +1,7 @@
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
   doPayment,
   waitForPaymentTransactionsToComplete,
@@ -74,7 +74,11 @@ describe('Load PA table', () => {
         paymentReferenceIds,
         accessToken,
         50_000,
-        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
+        [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+          TransactionStatusEnum.error,
+        ],
         payment1,
       );
       await doPayment(
@@ -89,7 +93,11 @@ describe('Load PA table', () => {
         paymentReferenceIds,
         accessToken,
         50_000,
-        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
+        [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+          TransactionStatusEnum.error,
+        ],
         payment2,
       );
     });
@@ -231,7 +239,11 @@ describe('Load PA table', () => {
         [paymentReferenceIds[0]],
         accessToken,
         50_000,
-        [StatusEnum.success, StatusEnum.waiting, StatusEnum.error],
+        [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+          TransactionStatusEnum.error,
+        ],
         payment3,
       );
 

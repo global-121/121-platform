@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -8,7 +9,6 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -67,7 +67,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa,
     );
 
@@ -96,7 +96,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(transactionsResponse.text).toContain(StatusEnum.success);
+    expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
   });
 
   it('should not multiply again on retry', async () => {
@@ -126,7 +126,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa,
     );
 
@@ -154,6 +154,6 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     expect(transactionsResponse.body[0].amount).toBe(
       amountVisa * registrationVisa.paymentAmountMultiplier,
     );
-    expect(transactionsResponse.text).toContain(StatusEnum.success);
+    expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
   });
 });

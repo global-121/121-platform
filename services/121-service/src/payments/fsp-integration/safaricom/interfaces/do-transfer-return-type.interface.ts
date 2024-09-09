@@ -1,5 +1,4 @@
-export interface DoTransferReturnParams {
-  amountTransferredInMajorUnit: number;
+export interface DoTransferReturnType {
   originatorConversationId: string;
   conversationId: string;
 }

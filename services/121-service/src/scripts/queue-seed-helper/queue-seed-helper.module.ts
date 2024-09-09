@@ -6,12 +6,12 @@ import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
-import { QueueNamePayment } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 
 @Module({
   imports: [
     BullModule.registerQueue(
-      ...Object.values(QueueNamePayment).map((name) => ({ name })),
+      ...Object.values(TransactionQueueNames).map((name) => ({ name })),
       ...Object.values(QueueNameCreateMessage).map((name) => ({ name })),
       ...Object.values(QueueNameMessageCallBack).map((name) => ({ name })),
     ),
