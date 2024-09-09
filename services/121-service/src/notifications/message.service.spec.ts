@@ -7,9 +7,9 @@ import { MessageService } from '@121-service/src/notifications/message.service';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { TestBed } from '@automock/jest';
 
@@ -211,7 +211,7 @@ describe('MessageService', () => {
       ).toHaveBeenCalledWith(
         testMessageJob.customData.payment,
         testMessageJob.registrationId,
-        StatusEnum.waiting,
+        TransactionStatusEnum.waiting,
         1,
         testMessageID,
         undefined,
@@ -265,7 +265,7 @@ describe('MessageService', () => {
         testMessageJob.customData.amount,
         testMessageJob.registrationId,
         2,
-        StatusEnum.success,
+        TransactionStatusEnum.success,
         undefined,
         testMessageJob.programId,
         {

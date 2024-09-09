@@ -2,12 +2,12 @@ import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getMessageHistory,
@@ -286,7 +286,7 @@ export async function waitForPaymentTransactionsToComplete(
   paymentReferenceIds: string[],
   accessToken: string,
   maxWaitTimeMs: number,
-  completeStatusses: string[] = [StatusEnum.success],
+  completeStatusses: string[] = [TransactionStatusEnum.success],
   payment = 1,
 ): Promise<void> {
   const startTime = Date.now();

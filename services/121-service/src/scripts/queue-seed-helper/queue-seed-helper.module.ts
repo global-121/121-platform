@@ -2,15 +2,15 @@ import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-help
 import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
-  QueueNamePayment,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
     BullModule.registerQueue(
-      ...Object.values(QueueNamePayment).map((name) => ({ name })),
+      ...Object.values(TransactionQueueNames).map((name) => ({ name })),
       ...Object.values(QueueNameCreateMessage).map((name) => ({ name })),
       ...Object.values(QueueNameMessageCallBack).map((name) => ({ name })),
     ),

@@ -3,11 +3,11 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
   deleteFspConfiguration,
   doPayment,
@@ -79,7 +79,7 @@ describe('Do payment with Excel FSP', () => {
       referenceIdsWesteros,
       accessToken,
       10_000,
-      [StatusEnum.waiting],
+      [TransactionStatusEnum.waiting],
     );
 
     ////////////////////////////
@@ -149,7 +149,7 @@ describe('Do payment with Excel FSP', () => {
       // Assert
       // Check if transactions are on 'waiting' status
       for (const transaction of transactionsResponse.body) {
-        expect(transaction.status).toBe(StatusEnum.waiting);
+        expect(transaction.status).toBe(TransactionStatusEnum.waiting);
       }
 
       // Also check if the right amount of transactions are created
@@ -251,13 +251,13 @@ describe('Do payment with Excel FSP', () => {
       const reconciliationData = [
         {
           [matchColumn]: registrationWesteros1.phoneNumber,
-          status: StatusEnum.success,
+          status: TransactionStatusEnum.success,
         },
         {
           [matchColumn]: registrationWesteros2.phoneNumber,
-          status: StatusEnum.error,
+          status: TransactionStatusEnum.error,
         },
-        { [matchColumn]: '123456789', status: StatusEnum.error },
+        { [matchColumn]: '123456789', status: TransactionStatusEnum.error },
       ];
 
       // Act
@@ -274,7 +274,7 @@ describe('Do payment with Excel FSP', () => {
         referenceIdsWesteros,
         accessToken,
         10_000,
-        [StatusEnum.success, StatusEnum.error], // Hmm, this is sort of stepping on the feet of the assert already
+        [TransactionStatusEnum.success, TransactionStatusEnum.error], // Hmm, this is sort of stepping on the feet of the assert already
       );
       const transactionsResponse = await getTransactions(
         programIdWesteros,

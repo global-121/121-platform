@@ -1,5 +1,5 @@
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, IsOptional } from 'class-validator';
 
@@ -8,7 +8,7 @@ export class ImportFspReconciliationArrayDto {
   @IsOptional()
   public phoneNumber?: string;
 
-  @ApiProperty({ example: StatusEnum.success })
+  @ApiProperty({ example: TransactionStatusEnum.success })
   @IsOptional()
   public status?: string;
 
