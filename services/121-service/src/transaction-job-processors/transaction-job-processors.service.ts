@@ -29,6 +29,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
+import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -257,13 +258,13 @@ export class TransactionJobProcessorsService {
     try {
       safaricomDoTransferResult = await this.safaricomService.doTransfer({
         transactionAmount: input.transactionAmount,
-        programId: input.programId,
-        paymentNr: input.paymentNumber,
-        userId: input.userId,
-        referenceId: input.referenceId,
         phoneNumber: input.phoneNumber!,
+        remarks: `Payment ${input.paymentNumber}`,
+        occasion: input.referenceId,
+        originatorConversationId: `P${input.programId}PA${registration.registrationProgramId}_${this.formatDate(
+          new Date(),
+        )}_${generateRandomString(3)}`,
         idNumber: input.idNumber!,
-        registrationProgramId: registration.registrationProgramId,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
@@ -525,5 +526,17 @@ export class TransactionJobProcessorsService {
       bulksize: bulkSize,
       userId: userId,
     });
+  }
+
+  private padTo2Digits(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  private formatDate(date: Date): string {
+    return [
+      date.getFullYear().toString().substring(2),
+      this.padTo2Digits(date.getMonth() + 1),
+      this.padTo2Digits(date.getDate()),
+    ].join('');
   }
 }

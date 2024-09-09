@@ -13,7 +13,6 @@ import {
 } from '@121-service/src/payments/redis/redis-client';
 import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -56,32 +55,18 @@ export class SafaricomService
   }
 
   public createPayloadPerPa(transferData: DoTransferParams): TransferParams {
-    function padTo2Digits(num: number): string {
-      return num.toString().padStart(2, '0');
-    }
-
-    function formatDate(date: Date): string {
-      return [
-        date.getFullYear().toString().substring(2),
-        padTo2Digits(date.getMonth() + 1),
-        padTo2Digits(date.getDate()),
-      ].join('');
-    }
-
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
       CommandID: 'BusinessPayment',
       Amount: transferData.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: transferData.phoneNumber, // Set to empty string to trigger mock failure
-      Remarks: `Payment ${transferData.paymentNr}`, // This data shows up in Safaricom reconciliation reports, and the KRCS Team uses it.
-      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl, // TODO: Check if we need to implement this. Now this has an endpoint that does not exist.
+      PartyB: transferData.phoneNumber, // Set to '25400000000' to trigger mock failure
+      Remarks: transferData.remarks,
+      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: transferData.referenceId,
-      OriginatorConversationID: `P${transferData.programId}PA${transferData.registrationProgramId}_${formatDate(
-        new Date(),
-      )}_${generateRandomString(3)}`, // TODO: Implement idempotency like Ashish proposed in: https://dev.azure.com/redcrossnl/121%20Platform/_sprints/taskboard/121%20Development%20Team/121%20Platform/Sprint%20135?workitem=29155
+      Occassion: transferData.occasion,
+      OriginatorConversationID: transferData.originatorConversationId,
       IDType: process.env.SAFARICOM_IDTYPE!,
       IDNumber: transferData.idNumber,
     };

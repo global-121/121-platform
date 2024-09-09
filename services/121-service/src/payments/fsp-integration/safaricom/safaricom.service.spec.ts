@@ -14,12 +14,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 const mockedSafaricomTransferParams: DoTransferParams = {
-  userId: 1,
-  programId: 3,
-  paymentNr: 1,
   transactionAmount: 100,
   phoneNumber: '254708374149',
-  referenceId: 'mocked_reference_id',
+  remarks: 'Payment 1',
+  occasion: 'mocked_occasion',
+  originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
 };
 
