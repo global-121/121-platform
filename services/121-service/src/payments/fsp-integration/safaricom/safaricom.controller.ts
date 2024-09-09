@@ -4,19 +4,18 @@ import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
-@ApiTags('callbacks/safaricom')
-// TODO: REFACTOR: rename to /callbacks/safaricom
-@Controller('payments/safaricom')
+@ApiTags('financial-service-providers/safaricom')
+@Controller('financial-service-providers/safaricom')
 export class SafaricomController {
   public constructor(private safaricomService: SafaricomService) {}
 
   @SkipThrottle()
   @ApiOperation({
     summary:
-      'Notification callback used by Safaricom to notify status of payment to us.',
+      'Notification callback used by Safaricom to notify status of transfer to us.',
   })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Notified' })
-  @Post('transaction')
+  @Post('callback')
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<any> {
