@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { TokenSet } from 'openid-client';
 
-import {
-  SafaricomTransferResponseBodyDto
-} from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
+import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
 import { SafaricomAuthResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-auth-response.interface';
-import { SafaricomTransferPayloadParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-payload.interface';
 import { SafaricomTransferResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -51,7 +48,7 @@ export class SafaricomApiService {
     }
   }
 
-  public async transfer(payload: SafaricomTransferPayloadParams): Promise<SafaricomTransferResponseBodyDto> {
+  public async transfer(payload: TransferParams): Promise<any> {
     try {
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`

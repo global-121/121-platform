@@ -14,7 +14,7 @@ const mockPaymentJob = {
   userId: 1,
   bulkSize: 10,
   phoneNumber: '254708374149',
-  nationalId: 'nat-123',
+  idNumber: 'nat-123',
   registrationProgramId: 2,
 };
 const testJob = { data: mockPaymentJob } as Job;

@@ -36,10 +36,8 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -62,7 +60,7 @@ export class CommercialBankEthiopiaService
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
-    @InjectQueue(QueueNamePayment.paymentCommercialBankEthiopia)
+    @InjectQueue(TransactionQueueNames.paymentCommercialBankEthiopia)
     private readonly commercialBankEthiopiaQueue: Queue,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly transactionsService: TransactionsService,
@@ -113,7 +111,7 @@ export class CommercialBankEthiopiaService
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
-        ProcessNamePayment.sendPayment,
+        PaymentQueueNames.sendPayment,
         jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);

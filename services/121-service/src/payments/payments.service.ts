@@ -797,7 +797,6 @@ export class PaymentsService {
       'fullName',
       'phoneNumber',
       'nationalId',
-      'registrationProgramId',
       ...safaricomQuestionNames,
     ];
     const referenceIds = referenceIdsTransactionAmounts.map(
@@ -837,8 +836,7 @@ export class PaymentsService {
           userId,
           bulkSize: referenceIds.length,
           phoneNumber: registrationView.phoneNumber,
-          nationalId: registrationView['nationalId'],
-          registrationProgramId: registrationView.registrationProgramId,
+          idNumber: registrationView['nationalId'],
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(

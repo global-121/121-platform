@@ -330,7 +330,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(TransactionStatusEnum.success);
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.success,
+      );
     });
   });
 });

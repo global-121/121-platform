@@ -14,7 +14,7 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entit
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-transfer.entity';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';

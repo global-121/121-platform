@@ -15,7 +15,8 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
-import { DoTransferReturnParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
@@ -30,6 +31,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
+import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 interface ProcessTransactionResultInput {
@@ -60,6 +62,7 @@ export class TransactionJobProcessorsService {
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
+    private readonly safaricomTransferRepository: SafaricomTransferRepository,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
@@ -246,7 +249,7 @@ export class TransactionJobProcessorsService {
           registration,
           oldRegistration,
           isRetry: input.isRetry,
-          status: StatusEnum.error,
+          status: TransactionStatusEnum.error,
           errorText,
         });
         return;
@@ -254,17 +257,17 @@ export class TransactionJobProcessorsService {
     }
 
     // 3. Start the transfer, save error transaction on failure and return early
-    let safaricomDoTransferResult: DoTransferReturnParams;
+    let safaricomDoTransferResult: DoTransferReturnType;
     try {
       safaricomDoTransferResult = await this.safaricomService.doTransfer({
         transactionAmount: input.transactionAmount,
-        programId: input.programId,
-        paymentNr: input.paymentNumber,
-        userId: input.userId,
-        referenceId: input.referenceId,
-        registrationProgramId: input.registrationProgramId!,
         phoneNumber: input.phoneNumber!,
-        nationalId: input.nationalId!,
+        remarks: `Payment ${input.paymentNumber}`,
+        occasion: input.referenceId,
+        originatorConversationId: `P${input.programId}PA${registration.registrationProgramId}_${this.formatDate(
+          new Date(),
+        )}_${generateRandomString(3)}`,
+        idNumber: input.idNumber!,
       });
     } catch (error) {
       await this.createTransactionAndUpdateRegistration({
@@ -276,7 +279,7 @@ export class TransactionJobProcessorsService {
         registration,
         oldRegistration,
         isRetry: input.isRetry,
-        status: StatusEnum.error,
+        status: TransactionStatusEnum.error,
         errorText: error?.message,
       });
       return;
@@ -289,18 +292,18 @@ export class TransactionJobProcessorsService {
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTransferAmountInMajorUnit:
-        safaricomDoTransferResult.amountTransferredInMajorUnit,
+      calculatedTransferAmountInMajorUnit: input.transactionAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
-      status: StatusEnum.waiting, // This will only go to 'success' via callback
+      status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
 
     // 6. Storing safaricom transfer data (new compared to visa)
-    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship. This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
-    await this.safaricomService.createAndSaveSafaricomTransferData(
+    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship.
+    // This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
+    await this.safaricomTransferRepository.createAndSaveSafaricomTransferData(
       safaricomDoTransferResult,
       transaction,
     );
@@ -525,5 +528,17 @@ export class TransactionJobProcessorsService {
       bulksize: bulkSize,
       userId,
     });
+  }
+
+  private padTo2Digits(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  private formatDate(date: Date): string {
+    return [
+      date.getFullYear().toString().substring(2),
+      this.padTo2Digits(date.getMonth() + 1),
+      this.padTo2Digits(date.getDate()),
+    ].join('');
   }
 }
