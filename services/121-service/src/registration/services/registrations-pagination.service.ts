@@ -1,4 +1,5 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
@@ -22,7 +23,6 @@ import { RegistrationDataEntity } from '@121-service/src/registration/registrati
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -660,17 +660,17 @@ export class RegistrationsPaginationService {
       {
         key: PaymentFilterEnum.successPayment,
         alias: 'latestTransactionsSuccess',
-        status: StatusEnum.success,
+        status: TransactionStatusEnum.success,
       },
       {
         key: PaymentFilterEnum.failedPayment,
         alias: 'latestTransactionsFailed',
-        status: StatusEnum.error,
+        status: TransactionStatusEnum.error,
       },
       {
         key: PaymentFilterEnum.waitingPayment,
         alias: 'latestTransactionsWaiting',
-        status: StatusEnum.waiting,
+        status: TransactionStatusEnum.waiting,
       },
       {
         key: PaymentFilterEnum.notYetSentPayment,
@@ -709,7 +709,7 @@ export class RegistrationsPaginationService {
   }: {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
     alias: string;
-    status: StatusEnum | null;
+    status: TransactionStatusEnum | null;
     paymentNumber: string;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const paymentNumberKey = `${alias}PaymentNumber`;
@@ -736,7 +736,7 @@ export class RegistrationsPaginationService {
     programId: number,
     payment: number,
     fspName: FinancialServiceProviderName,
-    status?: StatusEnum,
+    status?: TransactionStatusEnum,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.registrationViewScopedRepository
       .createQueryBuilder('registration')

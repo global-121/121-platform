@@ -40,8 +40,5 @@ export class SafaricomTransactionJobDto {
   public readonly phoneNumber?: string;
 
   @IsOptional()
-  public readonly nationalId?: string;
-
-  @IsOptional()
-  public readonly registrationProgramId?: number;
+  public readonly idNumber?: string;
 }

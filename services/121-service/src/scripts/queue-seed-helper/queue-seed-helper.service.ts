@@ -2,8 +2,8 @@ import { createRedisClient } from '@121-service/src/payments/redis/redis-client'
 import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
-  QueueNamePayment,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -11,13 +11,13 @@ import { Queue } from 'bull';
 @Injectable()
 export class QueueSeedHelperService {
   constructor(
-    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
+    @InjectQueue(TransactionQueueNames.paymentIntersolveVisa)
     private paymentIntersolveVisa: Queue,
-    @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
+    @InjectQueue(TransactionQueueNames.paymentIntersolveVoucher)
     private paymentIntersolveVoucher: Queue,
-    @InjectQueue(QueueNamePayment.paymentCommercialBankEthiopia)
+    @InjectQueue(TransactionQueueNames.paymentCommercialBankEthiopia)
     private paymentCommercialBankEthiopia: Queue,
-    @InjectQueue(QueueNamePayment.paymentSafaricom)
+    @InjectQueue(TransactionQueueNames.paymentSafaricom)
     private paymentSafaricom: Queue,
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
     private replyOnIncoming: Queue,

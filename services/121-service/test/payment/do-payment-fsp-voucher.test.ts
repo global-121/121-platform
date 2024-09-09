@@ -1,8 +1,8 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import {
@@ -81,7 +81,7 @@ describe('Do payment to 1 PA', () => {
 
         if (
           getTransactionsBody.length > 0 &&
-          getTransactionsBody[0].status === StatusEnum.success
+          getTransactionsBody[0].status === TransactionStatusEnum.success
         ) {
           break;
         }
@@ -100,7 +100,7 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
         registrationAh.paymentAmountMultiplier,
       );
-      expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
+      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
       expect(getTransactionsBody[0].user).toMatchObject(adminOwnerDto);
 

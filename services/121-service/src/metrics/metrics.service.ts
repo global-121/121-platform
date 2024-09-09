@@ -10,6 +10,7 @@ import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-inte
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -33,7 +34,6 @@ import { RegistrationViewScopedRepository } from '@121-service/src/registration/
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
@@ -1044,7 +1044,7 @@ export class MetricsService {
       await this.transactionScopedRepository.findAndCount({
         where: {
           program: { id: Equal(programId) },
-          status: Equal(StatusEnum.success),
+          status: Equal(TransactionStatusEnum.success),
           payment: Equal(payment),
           transactionStep: Equal(transactionStepOfInterest),
         },
@@ -1067,7 +1067,7 @@ export class MetricsService {
           payment: payment - 1,
         })
         .andWhere('transaction.status = :status', {
-          status: StatusEnum.success,
+          status: TransactionStatusEnum.success,
         })
         .andWhere('transaction.transactionStep = :transactionStep', {
           transactionStep: transactionStepOfInterest,
