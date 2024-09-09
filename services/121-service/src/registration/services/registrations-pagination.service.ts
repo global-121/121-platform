@@ -10,6 +10,7 @@ import {
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
 } from '@121-service/src/registration/const/filter-operation.const';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
   RegistrationDataInfo,
   RegistrationDataRelation,
@@ -498,7 +499,7 @@ export class RegistrationsPaginationService {
     fullnameNamingConvention: string[];
     hasPersonalReadPermission: boolean;
     programId: number;
-  }) {
+  }): Promise<MappedPaginatedRegistrationDto[]> {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
       relations: ['financialServiceProviders', 'programFspConfiguration'],
@@ -512,7 +513,7 @@ export class RegistrationsPaginationService {
         hasPersonalReadPermission,
       );
       // Add personal data permission check here
-      let mappedRegistration = this.mapRegistrationData(
+      const mappedRegistration = this.mapRegistrationData(
         registration.data,
         mappedRootRegistration,
         registrationDataRelations,
@@ -531,7 +532,7 @@ export class RegistrationsPaginationService {
       }
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
-        mappedRegistration = this.mapRegistrationName({
+        return this.mapRegistrationName({
           registration: mappedRegistration,
           select,
           orignalSelect,
@@ -606,19 +607,19 @@ export class RegistrationsPaginationService {
     return mappedRegistration;
   }
 
-  private mapRegistrationName({
+  private mapRegistrationName<
+    T extends ReturnType<RegistrationsPaginationService['mapRootRegistration']>,
+  >({
     registration,
     select,
     orignalSelect,
     fullnameNamingConvention,
   }: {
-    registration: ReturnType<
-      RegistrationsPaginationService['mapRootRegistration']
-    >;
+    registration: T;
     select?: string[];
     orignalSelect: string[];
     fullnameNamingConvention: string[];
-  }) {
+  }): T & { name: string } {
     if (select && select.includes('name')) {
       const differenceOrignalSelect = select.filter(
         (x) => !orignalSelect.includes(x),

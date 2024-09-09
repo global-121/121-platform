@@ -4,7 +4,10 @@ import {
   queryOptions,
   UndefinedInitialDataOptions,
 } from '@tanstack/angular-query-experimental';
-import { HttpWrapperService } from '~/services/http-wrapper.service';
+import {
+  HttpWrapperService,
+  Perform121ServiceRequestParams,
+} from '~/services/http-wrapper.service';
 
 export abstract class DomainApiService {
   protected httpWrapperService = inject(HttpWrapperService);
@@ -21,10 +24,15 @@ export abstract class DomainApiService {
   >({
     path,
     processResponse,
+    requestOptions = {},
     ...opts
   }: {
     path: Parameters<typeof DomainApiService.prototype.pathToQueryKey>[0];
     processResponse?: (data: BackendDataShape) => ProcessedResponseShape;
+    requestOptions?: Omit<
+      Perform121ServiceRequestParams,
+      'endpoint' | 'method'
+    >;
   } & Partial<UndefinedInitialDataOptions<ProcessedResponseShape>>) {
     return () => {
       const queryKey = this.pathToQueryKey(path);
@@ -38,6 +46,7 @@ export abstract class DomainApiService {
           const response =
             await this.httpWrapperService.perform121ServiceRequest<BackendDataShape>(
               {
+                ...requestOptions,
                 method: 'GET',
                 endpoint,
               },

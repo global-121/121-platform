@@ -113,6 +113,30 @@ export class RegistrationsService {
     return paginateResult.data[0];
   }
 
+  // This methods can be used to get the same formattted data as the pagination query using referenceId
+  public async getPaginateRegistrationById({
+    id,
+    programId,
+  }: {
+    id: number;
+    programId: number;
+  }) {
+    const queryBuilder = this.registrationViewScopedRepository
+      .createQueryBuilder('registration')
+      .andWhere({
+        id,
+      });
+    const paginateResult =
+      await this.registrationsPaginationService.getPaginate(
+        { path: '' },
+        programId,
+        true,
+        false,
+        queryBuilder,
+      );
+    return paginateResult.data[0];
+  }
+
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },

@@ -27,6 +27,11 @@ interface PerformRequestParams {
       >;
 }
 
+export type Perform121ServiceRequestParams = { endpoint: string } & Omit<
+  PerformRequestParams,
+  'url'
+>;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -181,7 +186,7 @@ export class HttpWrapperService {
   }
 
   public async perform121ServiceRequest<T>(
-    options: { endpoint: string } & Omit<PerformRequestParams, 'url'>,
+    options: Perform121ServiceRequestParams,
   ): Promise<T> {
     return this.performRequest<T>({
       ...options,
