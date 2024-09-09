@@ -13,7 +13,6 @@ import { QueueMessageService } from '@121-service/src/notifications/queue-messag
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -253,38 +252,7 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Start the transfer, save error transaction on failure and return early
-    let safaricomDoTransferResult: DoTransferReturnType;
-    try {
-      safaricomDoTransferResult = await this.safaricomService.doTransfer({
-        transactionAmount: input.transactionAmount,
-        phoneNumber: input.phoneNumber!,
-        remarks: `Payment ${input.paymentNumber}`,
-        occasion: input.referenceId,
-        originatorConversationId: `P${input.programId}PA${registration.registrationProgramId}_${this.formatDate(
-          new Date(),
-        )}_${generateRandomString(3)}`,
-        idNumber: input.idNumber!,
-      });
-    } catch (error) {
-      await this.createTransactionAndUpdateRegistration({
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        calculatedTransferAmountInMajorUnit: input.transactionAmount,
-        financialServiceProviderId: financialServiceProvider.id,
-        registration,
-        oldRegistration,
-        isRetry: input.isRetry,
-        status: TransactionStatusEnum.error,
-        errorText: error?.message,
-      });
-      return;
-    }
-
-    // 4. If transfer is successful, create message and add to queue (not needed right now for safaricom)
-
-    // 5. create success transaction and update registration
+    // 3. Store 'waiting' transaction before starting transfer, because of callback.
     const transaction = await this.createTransactionAndUpdateRegistration({
       programId: input.programId,
       paymentNumber: input.paymentNumber,
@@ -297,13 +265,30 @@ export class TransactionJobProcessorsService {
       status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
 
-    // 6. Storing safaricom transfer data (new compared to visa)
-    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship.
-    // This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
-    await this.safaricomTransferRepository.createAndSaveSafaricomTransferData(
-      safaricomDoTransferResult,
-      transaction,
-    );
+    // 4. Start the transfer, if failure update to error transaction and return early
+    try {
+      await this.safaricomService.doTransfer({
+        transactionAmount: input.transactionAmount,
+        phoneNumber: input.phoneNumber!,
+        remarks: `Payment ${input.paymentNumber}`,
+        occasion: input.referenceId,
+        originatorConversationId: `P${input.programId}PA${registration.registrationProgramId}_${this.formatDate(
+          new Date(),
+        )}_${generateRandomString(3)}`,
+        idNumber: input.idNumber!,
+        transactionId: transaction.id,
+      });
+    } catch (error) {
+      await this.transactionScopedRepository.update(
+        { id: transaction.id },
+        { status: TransactionStatusEnum.error, errorMessage: error?.message },
+      );
+      return;
+    }
+
+    // 5. No messages sent for safaricom
+
+    // 6. No transaction stored or updated, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   private async getRegistrationOrThrow(

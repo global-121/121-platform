@@ -19,6 +19,7 @@ const mockedSafaricomTransferParams: DoTransferParams = {
   occasion: 'mocked_occasion',
   originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
+  transactionId: 1,
 };
 
 const mockedSafaricomTransferPayloadParams: TransferParams = {
@@ -104,9 +105,9 @@ describe('SafaricomService', () => {
       };
 
       jest
-        .spyOn(service, 'createPayloadPerPa')
+        .spyOn(service, 'createPayload')
         .mockReturnValue(mockedSafaricomTransferPayloadParams);
-      jest.spyOn(service, 'sendPaymentPerPa').mockResolvedValue(result);
+      jest.spyOn(service, 'sendTransfer').mockResolvedValue(result);
       jest
         .spyOn(safaricomApiService, 'authenticate')
         .mockResolvedValue('mocked-access-token');
@@ -119,7 +120,7 @@ describe('SafaricomService', () => {
       expect(service.createPayloadPerPa).toHaveBeenCalledWith(
         mockedSafaricomTransferParams,
       );
-      expect(service.sendPaymentPerPa).toHaveBeenCalledWith(
+      expect(service.sendTransfer).toHaveBeenCalledWith(
         mockedSafaricomTransferPayloadParams,
       );
       expect(transferResult).toEqual(result);

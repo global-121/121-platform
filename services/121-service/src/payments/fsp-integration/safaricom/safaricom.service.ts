@@ -6,6 +6,7 @@ import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-i
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
+import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
   REDIS_CLIENT,
@@ -24,6 +25,7 @@ export class SafaricomService
 {
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
+    private readonly safaricomTransferRepository: SafaricomTransferRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
     @InjectQueue(
@@ -47,14 +49,28 @@ export class SafaricomService
   public async doTransfer(
     transferData: DoTransferParams,
   ): Promise<DoTransferReturnType> {
+    // Store initial transfer record before transfer because of callback
+    const safaricomTransfer =
+      await this.safaricomTransferRepository.storeSafaricomTransfer(
+        transferData.originatorConversationId,
+        transferData.transactionId,
+      );
+
+    // Do transfer
     await this.safaricomApiService.authenticate();
+    const payload = this.createPayload(transferData);
+    const transferResult = await this.sendTransfer(payload);
 
-    const payload = this.createPayloadPerPa(transferData);
+    // Update transfer record with conversation ID
+    await this.safaricomTransferRepository.update(
+      { id: safaricomTransfer.id },
+      { mpesaConversationId: transferResult.conversationId },
+    );
 
-    return await this.sendPaymentPerPa(payload);
+    return transferResult;
   }
 
-  public createPayloadPerPa(transferData: DoTransferParams): TransferParams {
+  public createPayload(transferData: DoTransferParams): TransferParams {
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
@@ -72,7 +88,7 @@ export class SafaricomService
     };
   }
 
-  public async sendPaymentPerPa(
+  public async sendTransfer(
     payload: TransferParams,
   ): Promise<DoTransferReturnType> {
     const result = await this.safaricomApiService.transfer(payload);

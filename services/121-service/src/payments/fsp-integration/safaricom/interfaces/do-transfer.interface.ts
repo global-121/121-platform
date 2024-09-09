@@ -5,4 +5,5 @@ export interface DoTransferParams {
   readonly occasion: string;
   readonly originatorConversationId: string;
   readonly idNumber: string;
+  readonly transactionId: number;
 }
