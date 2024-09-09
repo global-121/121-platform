@@ -2,9 +2,9 @@ import { Injectable, Signal } from '@angular/core';
 import { DomainApiService } from '~/domains/domain-api.service';
 import { Payment } from '~/domains/payment/payment.model';
 
-const BASE_ENDPOINT = (paymentId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
-  paymentId,
+  projectId,
   'payments',
 ];
 

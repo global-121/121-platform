@@ -17,6 +17,7 @@ export enum AppRoutes {
   project = 'project',
   projectMonitoring = 'monitoring',
   projectPayments = 'payments',
+  projectRegistration = 'registration',
   projectRegistrations = 'registrations',
   projects = 'projects',
   projectTeam = 'team',

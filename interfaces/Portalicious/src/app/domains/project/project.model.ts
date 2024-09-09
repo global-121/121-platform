@@ -4,8 +4,10 @@ import { UserController } from '@121-service/src/user/user.controller';
 import { Dto, Dto121Service } from '~/utils/dto-type';
 import { ArrayElement } from '~/utils/type-helpers';
 
+// TODO: AB#30152 This type should be refactored to use Dto121Service
 export type Project = Dto<FoundProgramDto>;
 
+// TODO: AB#30152 This type should be refactored to use Dto121Service
 export type ProjectMetrics = Dto<ProgramStats>;
 
 export type ProjectUser = ArrayElement<

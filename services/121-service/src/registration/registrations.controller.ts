@@ -10,6 +10,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
@@ -706,5 +707,43 @@ export class RegistrationsController {
       params.programId,
       params.paId,
     );
+  }
+
+  // This "wildcard" endpoint needs to be at the bottom of the file to avoid conflicts with other endpoints
+  @ApiTags('programs/registrations')
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] Get a specific registration view based on registration id.',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    type: 'integer',
+  })
+  @Get('programs/:programId/registrations/:id')
+  public async findOne(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<MappedPaginatedRegistrationDto> {
+    const registrationEntity =
+      await this.registrationsService.getPaginateRegistrationById({
+        id,
+        programId,
+      });
+
+    if (!registrationEntity) {
+      throw new HttpException(
+        `No registration found for id ${id}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return registrationEntity;
   }
 }
