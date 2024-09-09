@@ -702,7 +702,6 @@ export class PaymentsService {
       ]),
     );
 
-    console.log('registrationViews: ', registrationViews);
     const intersolveVisaTransferJobs: IntersolveVisaTransactionJobDto[] =
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
