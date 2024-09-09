@@ -221,10 +221,12 @@ export class TransactionJobProcessorsService {
   }
 
   public async processSafaricomTransactionJob(
-    input: SafaricomTransactionJobDto,
+    transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
     // 1. Get additional data
-    const registration = await this.getRegistrationOrThrow(input.referenceId);
+    const registration = await this.getRegistrationOrThrow(
+      transactionJob.referenceId,
+    );
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
       await this.getFinancialServiceProviderOrThrow(
@@ -232,19 +234,19 @@ export class TransactionJobProcessorsService {
       );
 
     // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(input)) {
+    for (const [name, value] of Object.entries(transactionJob)) {
       // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
       if (value === null || value === undefined || value === '') {
         const errorText = `Property ${name} is undefined`;
         await this.createTransactionAndUpdateRegistration({
-          programId: input.programId,
-          paymentNumber: input.paymentNumber,
-          userId: input.userId,
-          calculatedTransferAmountInMajorUnit: input.transactionAmount,
+          programId: transactionJob.programId,
+          paymentNumber: transactionJob.paymentNumber,
+          userId: transactionJob.userId,
+          calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
-          isRetry: input.isRetry,
+          isRetry: transactionJob.isRetry,
           status: TransactionStatusEnum.error,
           errorText,
         });
@@ -252,31 +254,32 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Store 'waiting' transaction before starting transfer, because of callback.
+    // 3. Save the transaction into database with 'waiting' status and then call to safaricom for payouts. And then safaricom will return the
+    // actual payout status in callback url and then we will update the transaction status to success or error after procced the callback.
     const transaction = await this.createTransactionAndUpdateRegistration({
-      programId: input.programId,
-      paymentNumber: input.paymentNumber,
-      userId: input.userId,
-      calculatedTransferAmountInMajorUnit: input.transactionAmount,
+      programId: transactionJob.programId,
+      paymentNumber: transactionJob.paymentNumber,
+      userId: transactionJob.userId,
+      calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
-      isRetry: input.isRetry,
+      isRetry: transactionJob.isRetry,
       status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
 
     // 4. Start the transfer, if failure update to error transaction and return early
     try {
       await this.safaricomService.doTransfer({
-        transactionAmount: input.transactionAmount,
-        phoneNumber: input.phoneNumber!,
-        remarks: `Payment ${input.paymentNumber}`,
-        occasion: input.referenceId,
-        originatorConversationId: `P${input.programId}PA${registration.registrationProgramId}_${this.formatDate(
+        transactionId: transaction.id,
+        transferAmount: transactionJob.transactionAmount,
+        phoneNumber: transactionJob.phoneNumber!,
+        idNumber: transactionJob.idNumber!,
+        remarks: `Payment ${transactionJob.paymentNumber}`,
+        occasion: transactionJob.referenceId,
+        originatorConversationId: `P${transactionJob.programId}PA${registration.registrationProgramId}_${this.formatDate(
           new Date(),
         )}_${generateRandomString(3)}`,
-        idNumber: input.idNumber!,
-        transactionId: transaction.id,
       });
     } catch (error) {
       await this.transactionScopedRepository.update(

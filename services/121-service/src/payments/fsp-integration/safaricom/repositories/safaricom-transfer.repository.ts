@@ -15,17 +15,6 @@ export class SafaricomTransferRepository extends Repository<SafaricomTransferEnt
     );
   }
 
-  public async storeSafaricomTransfer(
-    originatorConversationId: string,
-    transactionId: number,
-  ): Promise<SafaricomTransferEntity> {
-    const safaricomTransferEntity = new SafaricomTransferEntity();
-    safaricomTransferEntity.originatorConversationId = originatorConversationId;
-    safaricomTransferEntity.transactionId = transactionId;
-
-    return await this.baseRepository.save(safaricomTransferEntity);
-  }
-
   public async getSafaricomTransferByOriginatorConversationId(
     originatorConversationId: string,
   ): Promise<SafaricomTransferEntity> {

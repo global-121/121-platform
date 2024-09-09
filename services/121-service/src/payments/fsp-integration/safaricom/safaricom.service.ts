@@ -1,9 +1,9 @@
-import { EXTERNAL_API } from '@121-service/src/config';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
@@ -50,16 +50,21 @@ export class SafaricomService
     transferData: DoTransferParams,
   ): Promise<DoTransferReturnType> {
     // Store initial transfer record before transfer because of callback
-    const safaricomTransfer =
-      await this.safaricomTransferRepository.storeSafaricomTransfer(
-        transferData.originatorConversationId,
-        transferData.transactionId,
-      );
+    const safaricomTransfer = new SafaricomTransferEntity();
+    safaricomTransfer.originatorConversationId =
+      transferData.originatorConversationId;
+    safaricomTransfer.transactionId = transferData.transactionId;
+
+    // Save the safaricom transfer entity
+    await this.safaricomTransferRepository.save(safaricomTransfer);
 
     // Do transfer
     await this.safaricomApiService.authenticate();
-    const payload = this.createPayload(transferData);
-    const transferResult = await this.sendTransfer(payload);
+
+    // Prepare the transfer payload and send the request to safaricom
+    const transferPayload =
+      this.safaricomApiService.createTransferPayload(transferData);
+    const transferResult = await this.sendTransfer(transferPayload);
 
     // Update transfer record with conversation ID
     await this.safaricomTransferRepository.update(
@@ -68,24 +73,6 @@ export class SafaricomService
     );
 
     return transferResult;
-  }
-
-  public createPayload(transferData: DoTransferParams): TransferParams {
-    return {
-      InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
-      SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
-      CommandID: 'BusinessPayment',
-      Amount: transferData.transactionAmount,
-      PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: transferData.phoneNumber, // Set to '25400000000' to trigger mock failure
-      Remarks: transferData.remarks,
-      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
-      ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: transferData.occasion,
-      OriginatorConversationID: transferData.originatorConversationId,
-      IDType: process.env.SAFARICOM_IDTYPE!,
-      IDNumber: transferData.idNumber,
-    };
   }
 
   public async sendTransfer(
