@@ -85,13 +85,13 @@ export class SafaricomService
       Amount: transferData.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
       PartyB: transferData.phoneNumber, // Set to empty string to trigger mock failure
-      Remarks: `Payment ${transferData.paymentNr}`,
-      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
+      Remarks: `Payment ${transferData.paymentNr}`, // This data shows up in Safaricom reconciliation reports, and the KRCS Team uses it.
+      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl, // TODO: Check if we need to implement this. Now this has an endpoint that does not exist.
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: transferData.referenceId,
+      Occassion: transferData.referenceId, // TODO: Check if this field is used by the KRCS Program Team, ask Tijs and/or Account Manager. Note, this field is alphanumeric.
       OriginatorConversationID: `P${transferData.programId}PA${transferData.registrationProgramId}_${formatDate(
         new Date(),
-      )}_${generateRandomString(3)}`,
+      )}_${generateRandomString(3)}`, // TODO: Implement idempotency like Ashish proposed in: https://dev.azure.com/redcrossnl/121%20Platform/_sprints/taskboard/121%20Development%20Team/121%20Platform/Sprint%20135?workitem=29155
       IDType: process.env.SAFARICOM_IDTYPE!,
       IDNumber: transferData.nationalId,
     };
