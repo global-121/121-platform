@@ -2,7 +2,6 @@ import { TransferParams } from '@121-service/src/payments/fsp-integration/safari
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
@@ -41,7 +40,6 @@ const mockedSafaricomTransferPayloadParams: TransferParams = {
 describe('SafaricomService', () => {
   let service: SafaricomService;
   let safaricomApiService: SafaricomApiService;
-  let safaricomTransferRepository: SafaricomTransferRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,10 +51,6 @@ describe('SafaricomService', () => {
             authenticate: jest.fn(),
             transfer: jest.fn(),
           },
-        },
-        {
-          provide: getRepositoryToken(SafaricomTransferEntity),
-          useClass: Repository,
         },
         {
           provide: REDIS_CLIENT,
@@ -92,9 +86,6 @@ describe('SafaricomService', () => {
 
     service = module.get<SafaricomService>(SafaricomService);
     safaricomApiService = module.get<SafaricomApiService>(SafaricomApiService);
-    safaricomTransferRepository = module.get<SafaricomTransferRepository>(
-      SafaricomTransferRepository,
-    );
   });
 
   describe('sendPayment', () => {
@@ -132,78 +123,6 @@ describe('SafaricomService', () => {
         mockedSafaricomTransferPayloadParams,
       );
       expect(transferResult).toEqual(result);
-    });
-  });
-
-  describe('createAndSaveSafaricomTransferData', () => {
-    it('should create and save a safaricom transfer entity', async () => {
-      const transferResult: DoTransferReturnType = {
-<<<<<<< HEAD
-        amountTransferredInMajorUnit: 100,
-=======
->>>>>>> 197d97614 (fix: rename and update TransferParams)
-        conversationId: 'mocked_conversation_id',
-        originatorConversationId: 'mocked_originator_conversation_id',
-      };
-
-      const transaction = { id: 1 } as TransactionEntity;
-      const saveSpy = jest
-        .spyOn(safaricomTransferRepository, 'save')
-        .mockResolvedValue({ id: 1 } as SafaricomTransferEntity);
-
-      await safaricomTransferRepository.createAndSaveSafaricomTransferData(
-        transferResult,
-        transaction,
-      );
-
-      expect(saveSpy).toHaveBeenCalled();
-      expect(saveSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mpesaConversationId: 'mocked_conversation_id',
-          originatorConversationId: 'mocked_originator_conversation_id',
-          transactionId: 1,
-        }),
-      );
-    });
-  });
-
-  describe('getSafaricomTransferByOriginatorConversationId', () => {
-    it('should return safaricom transfer entities by originatorConversationId', async () => {
-      const originatorConversationId = 'OriginatorConversationID';
-
-      const safaricomTransferEntities: SafaricomTransferEntity[] = [
-        { id: 1, originatorConversationId } as SafaricomTransferEntity,
-      ];
-
-      jest
-        .spyOn(safaricomTransferRepository, 'createQueryBuilder')
-        .mockReturnValue({
-          leftJoinAndSelect: jest.fn().mockReturnThis(),
-          where: jest.fn().mockReturnThis(),
-          getMany: jest.fn().mockResolvedValue(safaricomTransferEntities),
-        } as any);
-
-      const result =
-        await safaricomTransferRepository.getSafaricomTransferByOriginatorConversationId(
-          originatorConversationId,
-        );
-
-      expect(result).toEqual(safaricomTransferEntities);
-    });
-  });
-
-  describe('updateSafaricomTransfer', () => {
-    it('should save the updated safaricom transfer entity', async () => {
-      const safaricomTransferEntity = { id: 1 } as SafaricomTransferEntity;
-
-      const saveSpy = jest
-        .spyOn(safaricomTransferRepository, 'save')
-        .mockResolvedValue(safaricomTransferEntity);
-
-      // TODO: fix this test
-      // await safaricomTransferRepository.updateSafaricomTransfer(safaricomTransferEntity);
-
-      expect(saveSpy).toHaveBeenCalledWith(safaricomTransferEntity);
     });
   });
 });
