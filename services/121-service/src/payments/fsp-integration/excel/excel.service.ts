@@ -17,11 +17,11 @@ import {
 } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 @Injectable()
 export class ExcelService
@@ -50,7 +50,7 @@ export class ExcelService
       transactionResult.calculatedAmount = paPayment.transactionAmount;
       transactionResult.fspName = FinancialServiceProviderName.excel;
       transactionResult.referenceId = paPayment.referenceId;
-      transactionResult.status = StatusEnum.waiting;
+      transactionResult.status = TransactionStatusEnum.waiting;
       fspTransactionResult.paList.push(transactionResult);
     }
     const transactionRelationDetails = {
@@ -77,7 +77,7 @@ export class ExcelService
       programId,
       payment,
       FinancialServiceProviderName.excel,
-      StatusEnum.waiting,
+      TransactionStatusEnum.waiting,
     );
     const chunkSize = 400000;
     const registrations =
@@ -260,7 +260,7 @@ export class ExcelService
 
     const importResponseRecords = importRecordsOrdered.map((record) => {
       if (
-        ![StatusEnum.success, StatusEnum.error].includes(
+        ![TransactionStatusEnum.success, TransactionStatusEnum.error].includes(
           record[this.statusColumnName]?.toLowerCase(),
         )
       ) {
@@ -299,7 +299,7 @@ export class ExcelService
     paTransactionResult.fspName = FinancialServiceProviderName.excel;
     paTransactionResult.status = importResponseRecord[
       this.statusColumnName
-    ]?.toLowerCase() as StatusEnum;
+    ]?.toLowerCase() as TransactionStatusEnum;
     paTransactionResult.calculatedAmount = registrationWithAmount.amount;
     return paTransactionResult;
   }

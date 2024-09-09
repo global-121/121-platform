@@ -12,10 +12,6 @@ export class SafaricomTransferPayload {
   public OriginatorConversationID: string;
   public IDType: string;
   public IDNumber: string;
-  public conversationId?: string;
-  public status?: string;
-  public requestResult?: Record<string, unknown>;
-  public paymentResult?: Record<string, unknown>;
 }
 
 export class SafaricomTransferResponseBodyDto {

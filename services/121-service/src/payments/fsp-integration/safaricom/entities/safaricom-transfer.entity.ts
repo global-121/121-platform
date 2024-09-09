@@ -6,14 +6,15 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Base121Entity } from '@121-service/src/base.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 
 @Entity('safaricom_transfer')
-export class SafaricomTransferEntity {
+export class SafaricomTransferEntity extends Base121Entity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Column({ unique: true })
   public originatorConversationId: string;
 
   @Column()
