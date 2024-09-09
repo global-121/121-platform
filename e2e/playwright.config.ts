@@ -49,7 +49,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     video: 'on-first-retry',
     screenshot: 'only-on-failure',
-    headless: false,
+    headless: true,
     acceptDownloads: true,
     actionTimeout: 20000,
     launchOptions: {

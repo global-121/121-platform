@@ -5,7 +5,7 @@ import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { test } from '@playwright/test';
 
-const expectedAssignedUsers = [
+const expectedInitialAssignedUsers = [
   'admin@example.org',
   'program-admin@example.org',
   'view-user@example.org',
@@ -15,6 +15,16 @@ const expectedAssignedUsers = [
   'finance-manager@example.org',
   'finance-officer@example.org',
   'view-no-pii@example.org',
+];
+const expectedFinalAssignedUsers = [
+  'admin@example.org',
+  'program-admin@example.org',
+  'view-user@example.org',
+  'kobo-user@example.org',
+  'cva-manager@example.org',
+  'cva-officer@example.org',
+  'finance-manager@example.org',
+  'finance-officer@example.org',
 ];
 
 test.beforeEach(async ({ page }) => {
@@ -42,10 +52,14 @@ test('[29760] Users should be removable from "project team"', async ({
   });
 
   await test.step('Validate assigned users are visible', async () => {
-    await manageTeam.validateAssignedTeamMembers(expectedAssignedUsers);
+    await manageTeam.validateAssignedTeamMembers(expectedInitialAssignedUsers);
   });
 
   await test.step('Validate available system users are visible', async () => {
-    console.log('Validate available system users are visible');
+    await manageTeam.removeUserFromTeam({
+      userEmail: 'view-no-pii@example.org',
+    });
+    await manageTeam.validateToastMessage('User removed');
+    await manageTeam.validateAssignedTeamMembers(expectedFinalAssignedUsers);
   });
 });

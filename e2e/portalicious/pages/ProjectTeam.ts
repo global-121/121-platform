@@ -9,6 +9,7 @@ class ProjectTeam extends BasePage {
   readonly chooseUserDropdown: Locator;
   readonly chooseRoleDropdown: Locator;
   readonly submitButton: Locator;
+  readonly removeUserButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -22,6 +23,9 @@ class ProjectTeam extends BasePage {
       `[formControlName="rolesValue"]`,
     );
     this.submitButton = this.page.getByRole('button', { name: 'Submit' });
+    this.removeUserButton = this.page.getByRole('button', {
+      name: 'Remove user',
+    });
   }
 
   async validateAssignedTeamMembers(expectedAssignedUsers: string[]) {
@@ -76,6 +80,15 @@ class ProjectTeam extends BasePage {
     );
 
     expect(sortedActualUsers).toEqual(sortedExpectedUsers);
+  }
+
+  async removeUserFromTeam({ userEmail }: { userEmail: string }) {
+    await this.page
+      .getByRole('row', { name: userEmail })
+      .getByRole('button')
+      .click();
+    await this.page.getByLabel('Remove user').click();
+    await this.removeUserButton.click();
   }
 }
 
