@@ -39,7 +39,7 @@ test('[29759] Assign successfully roles to a user ', async ({ page }) => {
       userEmail: userFullEmail,
       role: userRole,
     });
-    await page.waitForTimeout(1000);
+    await manageTeam.validateToastMessage('User added');
     await manageTeam.validateAssignedTeamMembers(expectedAssignedUsers);
   });
 });
