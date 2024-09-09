@@ -1,10 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
+import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
@@ -39,8 +37,7 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
     userId: 1,
     bulkSize: 10,
     phoneNumber: '254708374149',
-    nationalId: 'nat-123',
-    registrationProgramId: 2,
+    idNumber: 'nat-123',
   },
 ];
 
@@ -56,11 +53,11 @@ describe('TransactionQueuesService', () => {
 
     transactionQueuesService = unit;
     intersolveVisaQueue = unitRef.get(
-      getQueueName(QueueNamePayment.paymentIntersolveVisa),
+      getQueueName(TransactionQueueNames.paymentIntersolveVisa),
     );
 
     safaricomQueue = unitRef.get(
-      getQueueName(QueueNamePayment.paymentSafaricom),
+      getQueueName(TransactionQueueNames.paymentSafaricom),
     );
   });
 
@@ -84,7 +81,7 @@ describe('TransactionQueuesService', () => {
     // Assert
     expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
     expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
-      ProcessNamePayment.sendPayment,
+      PaymentQueueNames.sendPayment,
       mockIntersolveVisaTransactionJobDto[0],
     );
   });
@@ -105,7 +102,7 @@ describe('TransactionQueuesService', () => {
     // Assert
     expect(safaricomQueue.add).toHaveBeenCalledTimes(1);
     expect(safaricomQueue.add).toHaveBeenCalledWith(
-      ProcessNamePayment.sendPayment,
+      PaymentQueueNames.sendPayment,
       mockSafaricomTransactionJobDto[0],
     );
   });

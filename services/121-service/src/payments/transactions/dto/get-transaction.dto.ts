@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 
 export class TransactionReturnDto {
@@ -15,7 +15,7 @@ export class TransactionReturnDto {
   public payment: number;
   @ApiProperty({ example: '2982g82bdsf89sdsd', type: 'string' })
   public referenceId: string;
-  @ApiProperty({ example: StatusEnum.success, type: 'string' })
+  @ApiProperty({ example: TransactionStatusEnum.success, type: 'string' })
   public status: string;
   @ApiProperty({ example: 25, type: 'number' })
   public amount: number;

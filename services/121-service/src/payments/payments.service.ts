@@ -34,6 +34,7 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
@@ -56,7 +57,6 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -197,14 +197,17 @@ export class PaymentsService {
     );
     return {
       nrSuccess:
-        statusAggregation.find((row) => row.status === StatusEnum.success)
-          ?.count || 0,
+        statusAggregation.find(
+          (row) => row.status === TransactionStatusEnum.success,
+        )?.count || 0,
       nrWaiting:
-        statusAggregation.find((row) => row.status === StatusEnum.waiting)
-          ?.count || 0,
+        statusAggregation.find(
+          (row) => row.status === TransactionStatusEnum.waiting,
+        )?.count || 0,
       nrError:
-        statusAggregation.find((row) => row.status === StatusEnum.error)
-          ?.count || 0,
+        statusAggregation.find(
+          (row) => row.status === TransactionStatusEnum.error,
+        )?.count || 0,
     };
   }
 
@@ -791,7 +794,6 @@ export class PaymentsService {
       'fullName',
       'phoneNumber',
       'nationalId',
-      'registrationProgramId',
       ...safaricomQuestionNames,
     ];
     const referenceIds = referenceIdsTransactionAmounts.map(
@@ -831,8 +833,7 @@ export class PaymentsService {
           userId,
           bulkSize: referenceIds.length,
           phoneNumber: registrationView.phoneNumber,
-          nationalId: registrationView['nationalId'],
-          registrationProgramId: registrationView.registrationProgramId,
+          idNumber: registrationView['nationalId'],
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
@@ -866,7 +867,7 @@ export class PaymentsService {
       AND transaction.payment = transaction_max_created.payment
       AND transaction."transactionStep" = transaction_max_created."transactionStep"
       AND transaction."created" = transaction_max_created."created"
-      AND transaction.status = '${StatusEnum.error}'`,
+      AND transaction.status = '${TransactionStatusEnum.error}'`,
       )
       .addSelect([
         'transaction.amount AS "transactionAmount"',
@@ -933,7 +934,7 @@ export class PaymentsService {
           programId,
           payment,
           undefined,
-          StatusEnum.error,
+          TransactionStatusEnum.error,
         )
       ).map((t) => t.referenceId);
       // .. if nothing found, throw an error
@@ -1041,7 +1042,7 @@ export class PaymentsService {
       if (
         // For fsp's with reconciliation export only export waiting transactions
         registration.fsp.hasReconciliation &&
-        transaction.status !== StatusEnum.waiting
+        transaction.status !== TransactionStatusEnum.waiting
       ) {
         continue;
       }
@@ -1062,7 +1063,7 @@ export class PaymentsService {
     const excelTransactions = exportPaymentTransactions.filter(
       (t) =>
         t.fsp === FinancialServiceProviderName.excel &&
-        t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
+        t.status === TransactionStatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
       csvInstructions = await this.excelService.getFspInstructions(
@@ -1182,10 +1183,12 @@ export class PaymentsService {
       transactionsToSave.push(importResponseRecord.paTransactionResult);
       importResponseRecord.importStatus = ImportStatus.imported;
       countPaymentSuccess += Number(
-        importResponseRecord.paTransactionResult.status === StatusEnum.success,
+        importResponseRecord.paTransactionResult.status ===
+          TransactionStatusEnum.success,
       );
       countPaymentFailed += Number(
-        importResponseRecord.paTransactionResult.status === StatusEnum.error,
+        importResponseRecord.paTransactionResult.status ===
+          TransactionStatusEnum.error,
       );
       delete importResponseRecord.paTransactionResult;
     }

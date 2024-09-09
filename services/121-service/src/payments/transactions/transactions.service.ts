@@ -20,6 +20,7 @@ import {
   AuditedTransactionReturnDto,
   TransactionReturnDto,
 } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -32,7 +33,6 @@ import {
   ScopedRepository,
 } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -86,7 +86,7 @@ export class TransactionsService {
     programId: number,
     payment?: number,
     referenceId?: string,
-    status?: StatusEnum,
+    status?: TransactionStatusEnum,
     fspName?: FinancialServiceProviderName,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
@@ -102,7 +102,7 @@ export class TransactionsService {
     programId: number,
     payment?: number,
     referenceId?: string,
-    status?: StatusEnum,
+    status?: TransactionStatusEnum,
     fspName?: FinancialServiceProviderName,
   ): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.transactionScopedRepository
@@ -198,7 +198,7 @@ export class TransactionsService {
     );
     await this.updateLatestTransaction(transaction);
     if (
-      transactionResponse.status === StatusEnum.success &&
+      transactionResponse.status === TransactionStatusEnum.success &&
       fsp.notifyOnTransaction &&
       transactionResponse.notificationObjects &&
       transactionResponse.notificationObjects.length > 0
@@ -414,7 +414,7 @@ export class TransactionsService {
   public async updateWaitingTransaction(
     payment: number,
     regisrationId: number,
-    status: StatusEnum,
+    status: TransactionStatusEnum,
     transactionStep: number,
     messageSid?: string,
     errorMessage?: string,
@@ -424,11 +424,11 @@ export class TransactionsService {
         payment: Equal(payment),
         registrationId: Equal(regisrationId),
         transactionStep: Equal(transactionStep),
-        status: Equal(StatusEnum.waiting),
+        status: Equal(TransactionStatusEnum.waiting),
       },
     });
     if (foundTransaction) {
-      if (status === StatusEnum.waiting && messageSid) {
+      if (status === TransactionStatusEnum.waiting && messageSid) {
         await this.twilioMessageRepository.update(
           { sid: messageSid },
           {
@@ -436,7 +436,7 @@ export class TransactionsService {
           },
         );
       }
-      if (status === StatusEnum.error) {
+      if (status === TransactionStatusEnum.error) {
         foundTransaction.status = status;
         foundTransaction.errorMessage = errorMessage ?? null;
         await this.transactionScopedRepository.save(foundTransaction);

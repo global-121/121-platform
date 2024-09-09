@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -10,7 +11,6 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   deleteFspConfiguration,
@@ -70,7 +70,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
     );
 
     // Assert
@@ -116,7 +116,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
     );
 
     // Assert
@@ -162,7 +162,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
     );
 
     // Assert
@@ -208,7 +208,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
     );
 
     // Assert
@@ -254,7 +254,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
     );
 
     // do payment 2
@@ -270,7 +270,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa + 1,
     );
 
@@ -353,7 +353,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa,
     );
 

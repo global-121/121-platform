@@ -6,7 +6,6 @@ import {
   IsOptional,
 } from 'class-validator';
 
-// TODO: Make properties read-only according to DTO guidelines
 export class IntersolveVisaTransactionJobDto {
   @IsNotEmpty()
   @IsNumberString()

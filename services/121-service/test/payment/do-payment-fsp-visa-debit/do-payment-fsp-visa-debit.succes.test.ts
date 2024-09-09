@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -8,7 +9,6 @@ import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import {
@@ -72,7 +72,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
     );
 
     // Assert
@@ -87,7 +87,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(transactionsResponse.text).toContain(StatusEnum.success);
+    expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
     expect(transactionsResponse.body[0].user).toMatchObject(adminOwnerDto);
   });
 
@@ -118,7 +118,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa,
     );
 
@@ -136,7 +136,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       3001,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa + 1,
     );
 
@@ -152,7 +152,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     expect(doSecondPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(transactionsResponse.text).toContain(StatusEnum.success);
+    expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
   });
 
   it('should payout different amounts based on current balance and spend', async () => {
@@ -202,7 +202,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       referenceIds,
       accessToken,
       6_000,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       paymentNrVisa,
     );
 
@@ -227,7 +227,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       referenceIds,
       accessToken,
       6_000,
-      Object.values(StatusEnum),
+      Object.values(TransactionStatusEnum),
       testPaymentNumber,
     );
 
@@ -276,7 +276,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     expect(transactionsResponse1.body[0].amount).toBe(
       expectedCalculatedAmountPa1,
     );
-    expect(transactionsResponse1.text).toContain(StatusEnum.success);
+    expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
     expect(messagesHistoryPa1.text).toContain(
       `€${expectedCalculatedAmountPa1}`,
@@ -286,7 +286,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     expect(transactionsResponse2.body[0].amount).toBe(
       expectedCalculatedAmountPa2, // = 0 : A transaction of 0 is created
     );
-    expect(transactionsResponse2.text).toContain(StatusEnum.success);
+    expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
     expect(messagesHistoryPa2.text).toContain(
       `€${expectedCalculatedAmountPa2}`,
@@ -296,13 +296,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     expect(transactionsResponse3.body[0].amount).toBe(
       amountVisa * registrationOCW3.paymentAmountMultiplier,
     );
-    expect(transactionsResponse3.text).toContain(StatusEnum.success);
+    expect(transactionsResponse3.text).toContain(TransactionStatusEnum.success);
 
     // Kyc requirement
     expect(transactionsResponse4.body[0].amount).toBe(
       // 150 - 6000 / 100 - 0, // = 90 maximum of 90 can be put on this card so we expect the amount to be 75
       75,
     );
-    expect(transactionsResponse4.text).toContain(StatusEnum.success);
+    expect(transactionsResponse4.text).toContain(TransactionStatusEnum.success);
   });
 });
