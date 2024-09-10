@@ -1,6 +1,5 @@
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
@@ -64,29 +63,18 @@ export class SafaricomService
     // Prepare the transfer payload and send the request to safaricom
     const transferPayload =
       this.safaricomApiService.createTransferPayload(transferData);
-    const transferResult = await this.sendTransfer(transferPayload);
+    const transferResult =
+      await this.safaricomApiService.sendTransfer(transferPayload);
 
     // Update transfer record with conversation ID
     await this.safaricomTransferRepository.update(
       { id: safaricomTransfer.id },
-      { mpesaConversationId: transferResult.conversationId },
+      { mpesaConversationId: transferResult.ConversationID },
     );
 
-    return transferResult;
-  }
-
-  public async sendTransfer(
-    payload: TransferParams,
-  ): Promise<DoTransferReturnType> {
-    const result = await this.safaricomApiService.transfer(payload);
-
-    if (result && result.ResponseCode !== '0') {
-      throw new Error(result.errorMessage || result.ResponseDescription);
-    }
-
     return {
-      originatorConversationId: result.OriginatorConversationID,
-      conversationId: result.ConversationID,
+      originatorConversationId: transferResult.OriginatorConversationID,
+      conversationId: transferResult.ConversationID,
     };
   }
 
