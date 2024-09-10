@@ -17,7 +17,9 @@ const expectedInitialAssignedUsers = [
   'view-no-pii@example.org',
 ];
 const userToRemove = 'view-no-pii@example.org';
-const expectedFinalAssignedUsers = expectedInitialAssignedUsers.filter(email => email !== userToRemove);
+const expectedFinalAssignedUsers = expectedInitialAssignedUsers.filter(
+  (email) => email !== userToRemove,
+);
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.test);
