@@ -288,7 +288,6 @@ export class TransactionJobProcessorsService {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
     userId: number;
     message?: string;
-    messageTemplateKey?: string;
     bulksize?: number;
   }): Promise<void> {
     await this.queueMessageService.addMessageJob({

@@ -268,6 +268,7 @@ export class PaymentsService {
       }
     }
 
+    // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
     for (const fsp of fspsInPayment) {
       await this.validateRequiredFinancialServiceProviderConfigurations(
         fsp,
