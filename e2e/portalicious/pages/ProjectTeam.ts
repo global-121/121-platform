@@ -41,7 +41,7 @@ class ProjectTeam extends BasePage {
     expect(sortedActualUsers).toEqual(sortedExpectedUsers);
   }
 
-  async navigateToAddTeamMemebers() {
+  async openAddUserForm() {
     await this.page.getByRole('button', { name: 'Add team member' }).click();
   }
 
