@@ -1,6 +1,4 @@
-<div
-  class="mt-3 grid grid-cols-1 gap-x-5 border-t border-grey-300 md:grid-cols-2 xl:grid-cols-4"
->
+<div class="grid grid-cols-1 gap-x-5 md:grid-cols-2 2xl:grid-cols-4">
   @for (item of data(); track $index) {
     <p class="trim space-x-1 border-b border-grey-300 py-3">
       @if (item.loading) {

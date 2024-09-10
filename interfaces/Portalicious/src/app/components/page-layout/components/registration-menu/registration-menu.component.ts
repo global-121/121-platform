@@ -37,17 +37,17 @@ export class RegistrationMenuComponent {
   navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-registrations-activity-log:Activity-log`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistration}/${this.registrationId().toString()}/activity-log`,
+      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/activity-log`,
       icon: 'pi pi-list',
     },
     {
       label: $localize`:@@page-title-project-registrations-personal-information:Personal-information`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistration}/${this.registrationId().toString()}/personal-information`,
+      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/personal-information`,
       icon: 'pi pi-card',
     },
     {
       label: $localize`:@@page-title-project-registrations-debit-cards:Debit-cards`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistration}/${this.registrationId().toString()}/debit-cards`,
+      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/debit-cards`,
       icon: 'pi pi-credit-card',
       visible:
         this.registration.data()?.financialServiceProvider ===

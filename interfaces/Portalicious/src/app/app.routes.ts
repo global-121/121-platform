@@ -20,7 +20,6 @@ export enum AppRoutes {
   project = 'project',
   projectMonitoring = 'monitoring',
   projectPayments = 'payments',
-  projectRegistration = 'registration',
   projectRegistrationActivityLog = 'activity-log',
   projectRegistrationDebitCards = 'debit-cards',
   projectRegistrationPersonalInformation = 'personal-information',
@@ -77,11 +76,11 @@ export const routes: Routes = [
       },
       {
         path: AppRoutes.projectRegistrations,
-        component: ProjectRegistrationsComponent,
-      },
-      {
-        path: AppRoutes.projectRegistration,
         children: [
+          {
+            path: ``,
+            component: ProjectRegistrationsComponent,
+          },
           {
             path: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
             component: ProjectRegistrationActivityLogPageComponent,

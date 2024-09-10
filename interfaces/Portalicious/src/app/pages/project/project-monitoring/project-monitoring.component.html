@@ -58,26 +58,28 @@
     />
 
     <p-card class="grid-in-description">
-      <p
-        i18n
-        class="mb-1 font-semibold"
-      >
-        Project description:
-      </p>
-      @if (project.isPending()) {
-        <app-skeleton-inline />
-      } @else if (projectDescription()) {
-        <p>
-          {{ projectDescription() }}
-        </p>
-      } @else {
+      <div class="border-b border-grey-300 pb-3">
         <p
-          i18n="@@generic-not-available"
-          class="text-grey-500"
+          i18n
+          class="mb-1 font-semibold"
         >
-          Not available
+          Project description:
         </p>
-      }
+        @if (project.isPending()) {
+          <app-skeleton-inline />
+        } @else if (projectDescription()) {
+          <p class="border-b border-grey-300">
+            {{ projectDescription() }}
+          </p>
+        } @else {
+          <p
+            i18n="@@generic-not-available"
+            class="text-grey-500"
+          >
+            Not available
+          </p>
+        }
+      </div>
       <app-data-list [data]="projectDescriptionData()" />
     </p-card>
     @if (project.isPending()) {
