@@ -1,12 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { TokenSet } from 'openid-client';
 
-import { EXTERNAL_API } from '@121-service/src/config';
 import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomAuthResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-auth-response.interface';
-import { SafaricomTransferResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
+import {
+  SafaricomTransferResponseBody,
+  SafaricomTransferResponseParams,
+} from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+
+const safaricomApiUrl = process.env.MOCK_SAFARICOM
+  ? process.env.MOCK_SERVICE_URL
+  : process.env.SAFARICOM_API_URL;
+
+const safaricomQueueTimeoutUrl = `${safaricomApiUrl}financial-service-providers/safaricom/timeout`;
+const safaricomResultUrl = `${safaricomApiUrl}financial-service-providers/safaricom/callback`;
 
 @Injectable()
 export class SafaricomApiService {
@@ -47,10 +57,14 @@ export class SafaricomApiService {
     } catch (error) {
       console.log(error, 'authenticate');
       console.error('Failed to make OAuth Access Token payment API call');
+
+      throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
 
-  public async transfer(payload: TransferParams): Promise<any> {
+  public async transfer(
+    payload: TransferParams,
+  ): Promise<SafaricomTransferResponseBody> {
     try {
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
@@ -77,6 +91,18 @@ export class SafaricomApiService {
     }
   }
 
+  public async sendTransfer(
+    payload: TransferParams,
+  ): Promise<SafaricomTransferResponseBody> {
+    const result = await this.transfer(payload);
+
+    if (result && result.ResponseCode !== '0') {
+      throw new SafaricomApiError(result.ResponseDescription);
+    }
+
+    return result;
+  }
+
   public createTransferPayload(transferData: DoTransferParams): TransferParams {
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
@@ -86,8 +112,8 @@ export class SafaricomApiService {
       PartyA: process.env.SAFARICOM_PARTY_A!,
       PartyB: transferData.phoneNumber, // Set to '25400000000' to trigger mock failure
       Remarks: transferData.remarks,
-      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
-      ResultURL: EXTERNAL_API.safaricomResultUrl,
+      QueueTimeOutURL: safaricomQueueTimeoutUrl,
+      ResultURL: safaricomResultUrl,
       Occassion: transferData.occasion,
       OriginatorConversationID: transferData.originatorConversationId,
       IDType: process.env.SAFARICOM_IDTYPE!,
