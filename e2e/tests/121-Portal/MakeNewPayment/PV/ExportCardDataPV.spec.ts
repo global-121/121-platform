@@ -48,11 +48,11 @@ test('[28647] Export Visa Card Data', async ({ page }) => {
 
   await test.step('Should export all debit card data', async () => {
     await table.exportDebitCardData({
-      registrationStatus: registrationStatus,
-      paId: paId,
-      balance: balance,
-      spentThisMonth: spentThisMonth,
-      isCurrentWallet: isCurrentWallet,
+      registrationStatus,
+      paId,
+      balance,
+      spentThisMonth,
+      isCurrentWallet,
     });
   });
 });

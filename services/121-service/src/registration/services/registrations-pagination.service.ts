@@ -106,7 +106,7 @@ export class RegistrationsPaginationService {
     queryBuilder = queryBuilder.andWhere(
       '"registration"."programId" = :programId',
       {
-        programId: programId,
+        programId,
       },
     );
 
@@ -320,8 +320,8 @@ export class RegistrationsPaginationService {
       .leftJoin('assignment.program', 'program')
       .leftJoin('assignment.roles', 'roles')
       .leftJoin('roles.permissions', 'permissions')
-      .where('user.id = :userId', { userId: userId })
-      .andWhere('program.id = :programId', { programId: programId })
+      .where('user.id = :userId', { userId })
+      .andWhere('program.id = :programId', { programId })
       .andWhere('permissions.name = :permissions', {
         permissions: permission,
       })

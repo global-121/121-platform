@@ -82,7 +82,7 @@ export class WhatsappService {
       messageToStore = {
         accountSid: process.env.TWILIO_SID,
         body: payload.body,
-        mediaUrl: mediaUrl,
+        mediaUrl,
         to: payload.to,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         dateCreated: new Date().toISOString(),
@@ -121,7 +121,7 @@ export class WhatsappService {
           status: message.status,
           sid: message.sid,
           body: message.body,
-          mediaUrl: mediaUrl,
+          mediaUrl,
         },
       );
     } else {
@@ -159,7 +159,7 @@ export class WhatsappService {
       await this.testProgramTemplate(program, sessionId);
     }
     return {
-      sessionId: sessionId,
+      sessionId,
     };
   }
 
@@ -194,7 +194,7 @@ export class WhatsappService {
           language: messageTemplate.language,
           programId: messageTemplate.programId,
           messageKey: messageTemplate.type,
-          sessionId: sessionId,
+          sessionId,
         });
         return 'Succes';
       });

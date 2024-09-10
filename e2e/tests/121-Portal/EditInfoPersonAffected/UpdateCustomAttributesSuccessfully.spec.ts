@@ -66,7 +66,7 @@ test('[28043] Update custom attributes successfully', async ({ page }) => {
   await test.step('Validate the "Payments" tab on the PA Activity Overview table to Contain Payment notifications, correct status, userName and date', async () => {
     await registration.openActivityOverviewTab('Data changes');
     await registration.validateDataChangesTab({
-      dataChangesLabel: dataChangesLabel,
+      dataChangesLabel,
       oldValue: oldAmount,
       newValue: String(Number(oldAmount) + 1),
     });

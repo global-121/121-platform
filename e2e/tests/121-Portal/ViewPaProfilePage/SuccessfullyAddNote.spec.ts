@@ -74,7 +74,7 @@ test('[27499] Successfully add note', async ({ page }) => {
     });
     await registration.validateNoteTile({
       changeTitle: columnNote,
-      userName: userName,
+      userName,
       date: await Helpers.getTodaysDate(),
       noteContent: noteVisible,
     });

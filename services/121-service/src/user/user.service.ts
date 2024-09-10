@@ -76,7 +76,7 @@ export class UserService {
     const cookieSettings = this.buildCookieByRequest(token);
     userEntity.lastLogin = new Date();
     await this.userRepository.save(userEntity);
-    return { userRo: user, cookieSettings: cookieSettings, token: token };
+    return { userRo: user, cookieSettings, token };
   }
 
   public async canActivate(
@@ -90,10 +90,10 @@ export class UserService {
       .leftJoin('assignment.program', 'program')
       .leftJoin('assignment.roles', 'roles')
       .leftJoin('roles.permissions', 'permissions')
-      .where('user.id = :userId', { userId: userId })
-      .andWhere('program.id = :programId', { programId: programId })
+      .where('user.id = :userId', { userId })
+      .andWhere('program.id = :programId', { programId })
       .andWhere('permissions.name IN (:...permissions)', {
-        permissions: permissions,
+        permissions,
       })
       .getCount();
     return results === 1;
@@ -260,7 +260,7 @@ export class UserService {
       const emailPayload: CreateUserEmailPayload = {
         email: userEntity.username ?? '',
         displayName: userEntity.displayName ?? '',
-        password: password,
+        password,
       };
 
       // Send SSO template if SSO is enabled
@@ -397,7 +397,7 @@ export class UserService {
       user: { id: user.id },
       program: { id: program.id },
       roles: newRoles,
-      scope: scope,
+      scope,
     });
     response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
     return response;
@@ -659,7 +659,7 @@ export class UserService {
     const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
-      .where({ username: username })
+      .where({ username })
       .getOne();
 
     if (!saltCheck) {
@@ -669,7 +669,7 @@ export class UserService {
     const userSalt = saltCheck.salt;
 
     const findOneOptions = {
-      username: username,
+      username,
       password: userSalt
         ? crypto
             .pbkdf2Sync(loginUserDto.password, userSalt, 1, 32, 'sha256')
@@ -906,7 +906,7 @@ export class UserService {
     const emailPayload = {
       email: user.username ?? '',
       displayName: user.displayName ?? '',
-      password: password,
+      password,
     };
 
     await this.emailsService.sendPasswordResetEmail(emailPayload);

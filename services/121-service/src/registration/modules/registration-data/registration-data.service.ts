@@ -73,16 +73,16 @@ export class RegistrationDataService {
       .andWhere('registration.id = :id', { id: registration.id })
       .andWhere(
         new Brackets((qb) => {
-          qb.andWhere(`programQuestion.name = :name`, { name: name })
+          qb.andWhere(`programQuestion.name = :name`, { name })
             .orWhere(
               `(fspQuestion.name = :name AND "fspQuestion"."fspId" = :fsp)`,
               {
-                name: name,
+                name,
                 fsp: registration.fspId,
               },
             )
             .orWhere(`programCustomAttribute.name = :name`, {
-              name: name,
+              name,
             });
         }),
       );
@@ -124,7 +124,7 @@ export class RegistrationDataService {
       .andWhere('program.id = :programId', {
         programId: registration.programId,
       })
-      .andWhere('programQuestion.name = :name', { name: name })
+      .andWhere('programQuestion.name = :name', { name })
       .select('"programQuestion".id', 'id');
 
     const resultProgramQuestion = await query.getRawOne();
@@ -141,7 +141,7 @@ export class RegistrationDataService {
       .andWhere('registration.id = :registration', {
         registration: registration.id,
       })
-      .andWhere('question.name = :name', { name: name })
+      .andWhere('question.name = :name', { name })
       .andWhere('question."fspId" = fsp.id')
       .select('"question".id', 'id')
       .getRawOne();
@@ -155,7 +155,7 @@ export class RegistrationDataService {
       .andWhere('program.id = :programId', {
         programId: registration.programId,
       })
-      .andWhere('programCustomAttribute.name = :name', { name: name })
+      .andWhere('programCustomAttribute.name = :name', { name })
       .select('"programCustomAttribute".id', 'id')
       .getRawOne();
     if (resultProgramCustomAttribute) {
@@ -261,7 +261,7 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.programQuestion', 'programQuestion')
-      .andWhere('programQuestion.id = :id', { id: id })
+      .andWhere('programQuestion.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -286,7 +286,7 @@ export class RegistrationDataService {
 
     await repoRegistrationData.delete({
       registration: { id: registration.id },
-      programQuestion: { id: id },
+      programQuestion: { id },
     });
 
     for await (const value of values) {
@@ -310,7 +310,7 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.fspQuestion', 'fspQuestion')
-      .andWhere('fspQuestion.id = :id', { id: id })
+      .andWhere('fspQuestion.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -331,7 +331,7 @@ export class RegistrationDataService {
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      fspQuestion: { id: id },
+      fspQuestion: { id },
     });
 
     for await (const value of values) {
@@ -355,7 +355,7 @@ export class RegistrationDataService {
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
       )
-      .andWhere('programCustomAttribute.id = :id', { id: id })
+      .andWhere('programCustomAttribute.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -376,7 +376,7 @@ export class RegistrationDataService {
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      programCustomAttribute: { id: id },
+      programCustomAttribute: { id },
     });
 
     for await (const value of values) {

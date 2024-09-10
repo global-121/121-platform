@@ -101,11 +101,11 @@ export class QueueMessageService {
     try {
       const queueName = this.getQueueName(messageProcessType, bulksize);
       const messageJob: MessageJobDto = {
-        messageProcessType: messageProcessType,
+        messageProcessType,
         registrationId: registration.id,
         referenceId: registration.referenceId,
         preferredLanguage: registration.preferredLanguage ?? LanguageEnum.en,
-        whatsappPhoneNumber: whatsappPhoneNumber,
+        whatsappPhoneNumber,
         phoneNumber: registration.phoneNumber ?? undefined,
         programId: registration.programId,
         message,

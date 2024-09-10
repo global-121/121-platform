@@ -90,10 +90,10 @@ describe('ExcelService', () => {
           calculatedAmount: transactionAmount,
           fspName: FinancialServiceProviderName.excel,
           referenceId: referenceid,
-          registrationId: registrationId,
+          registrationId,
           status: transactionStatus,
         },
-        phoneNumber: phoneNumber,
+        phoneNumber,
         status: transactionStatus,
       },
     ];

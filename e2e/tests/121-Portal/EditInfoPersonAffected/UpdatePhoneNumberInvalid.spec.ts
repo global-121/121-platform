@@ -57,7 +57,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   await test.step('Update phone number with empty string', async () => {
     const phoneNumber = '';
     await piiPopUp.updatePhoneNumber({
-      phoneNumber: phoneNumber,
+      phoneNumber,
       saveButtonName: save,
       okButtonName: ok,
       alert: alertPattern.replace('{{error}}', noneEmptyPhoneNumberAlert),
@@ -68,7 +68,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
     const phoneNumber = '123456789012345678';
     const alertMessage = createAlertMessage(alertPattern, phoneNumber);
     await piiPopUp.updatePhoneNumber({
-      phoneNumber: phoneNumber,
+      phoneNumber,
       saveButtonName: save,
       okButtonName: ok,
       alert: alertMessage,
@@ -79,7 +79,7 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
     const phoneNumber = '1234567';
     const alertMessage = createAlertMessage(alertPattern, phoneNumber);
     await piiPopUp.updatePhoneNumber({
-      phoneNumber: phoneNumber,
+      phoneNumber,
       saveButtonName: save,
       okButtonName: ok,
       alert: alertMessage,

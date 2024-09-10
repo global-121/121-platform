@@ -77,6 +77,7 @@ module.exports = tseslint.config(
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
+      'object-shorthand': 'error',
     },
   },
   {

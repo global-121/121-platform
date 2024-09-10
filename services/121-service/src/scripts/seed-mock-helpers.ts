@@ -305,7 +305,7 @@ export class SeedMockHelper {
     )}`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     const body = {
-      status: status,
+      status,
       message: null,
     };
 
@@ -399,7 +399,7 @@ export class SeedMockHelper {
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     const body = {
       payment: paymentNr,
-      amount: amount,
+      amount,
     };
 
     return await this.httpService.post(url, body, headers);

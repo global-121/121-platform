@@ -105,10 +105,10 @@ export class CommercialBankEthiopiaService
 
       const jobData: CommercialBankEthiopiaJobDto = {
         paPaymentData: paPayment,
-        paymentNr: paymentNr,
-        programId: programId,
-        payload: payload,
-        credentials: credentials,
+        paymentNr,
+        programId,
+        payload,
+        credentials,
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
@@ -193,7 +193,7 @@ export class CommercialBankEthiopiaService
         'COALESCE("programQuestion".name, "fspQuestion".name) AS "fieldName"',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
-        referenceIds: referenceIds,
+        referenceIds,
       })
       .andWhere(
         '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
@@ -496,7 +496,7 @@ export class CommercialBankEthiopiaService
         .createQueryBuilder('cbe')
         .innerJoin('cbe.registration', 'registration')
         .andWhere('registration.programId = :programId', {
-          programId: programId,
+          programId,
         })
         .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
           statusValues: ['deleted', 'paused'],

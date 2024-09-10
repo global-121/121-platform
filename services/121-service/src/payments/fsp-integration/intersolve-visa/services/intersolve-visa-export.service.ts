@@ -79,7 +79,7 @@ export class IntersolveVisaExportService {
         balance: wallet.balance / 100,
         explanation: statusInfo.explanation,
         spentThisMonth: wallet.spentThisMonth / 100,
-        isCurrentWallet: isCurrentWallet,
+        isCurrentWallet,
       });
       previousRegistrationProgramId = wallet.paId;
     }

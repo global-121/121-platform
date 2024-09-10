@@ -320,9 +320,9 @@ class PaymentsPage {
       await this.page.reload();
       await this.openMessage({});
       await this.validateSentMessagesTab({
-        messageNotification: messageNotification,
-        messageContext: messageContext,
-        messageType: messageType,
+        messageNotification,
+        messageContext,
+        messageType,
       });
     }
   }

@@ -418,7 +418,7 @@ export class IntersolveVisaMockService {
             tokenCode: 'random token code',
           },
           debtor: {
-            tokenCode: tokenCode,
+            tokenCode,
           },
           reference: 'string',
           type: 'CHARGE',
@@ -454,7 +454,7 @@ export class IntersolveVisaMockService {
           tokenCode: 'random token code',
         },
         debtor: {
-          tokenCode: tokenCode,
+          tokenCode,
         },
         reference: 'string',
         type: 'RESERVATION',
@@ -480,7 +480,7 @@ export class IntersolveVisaMockService {
           tokenCode: 'random token code',
         },
         debtor: {
-          tokenCode: tokenCode,
+          tokenCode,
         },
         reference: 'string',
         type: 'RESERVATION',

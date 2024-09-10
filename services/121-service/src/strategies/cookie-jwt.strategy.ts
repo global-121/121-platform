@@ -95,7 +95,7 @@ export class CookieJwtStrategy
 
     const userToken: UserRequestData = {
       id: payload.id,
-      username: username,
+      username,
       exp: payload.exp,
       admin: payload.admin,
       scope: request.params.programId

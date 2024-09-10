@@ -29,9 +29,9 @@ export class SoapService {
       'Content-Type': 'text/xml;charset=UTF-8',
     };
     return soapRequest({
-      headers: headers,
-      url: url,
-      xml: xml,
+      headers,
+      url,
+      xml,
       timeout: 150000,
     })
       .then((rawResponse: any) => {
@@ -155,7 +155,7 @@ export class SoapService {
     const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
     const headers = {
       'Content-Type': 'text/xml;charset=UTF-8',
-      soapAction: soapAction,
+      soapAction,
     };
 
     let agent;
@@ -170,7 +170,7 @@ export class SoapService {
     }
 
     return soapRequest({
-      headers: headers,
+      headers,
       url: soapUrl,
       xml: soapRequestXml,
       timeout: 150000,

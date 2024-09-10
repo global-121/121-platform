@@ -44,7 +44,7 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
           for (const [key, text] of Object.entries(messages)) {
             const messageTemplate = {
               programId: program['id'],
-              language: language,
+              language,
               type: key,
               message: text,
               isWhatsappTemplate: whatsAppMessageTemplateNames.includes(key),

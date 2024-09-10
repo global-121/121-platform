@@ -74,7 +74,7 @@ export class ProgramService {
 
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
-      relations: relations,
+      relations,
     });
     if (!program) {
       const errors = `No program found with id ${programId}`;

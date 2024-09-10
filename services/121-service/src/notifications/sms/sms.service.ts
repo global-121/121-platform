@@ -38,14 +38,14 @@ export class SmsService {
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
-        to: to,
+        to,
       });
     } catch (error) {
       console.log('Error from Twilio:', error);
       messageToStore = {
         accountSid: process.env.TWILIO_SID,
         body: message,
-        to: to,
+        to,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         dateCreated: new Date().toISOString(),
         sid: `failed-${uuid()}`,
@@ -96,7 +96,7 @@ export class SmsService {
 
   public async findOne(sid: string): Promise<TwilioMessageEntity | null> {
     const findOneOptions = {
-      sid: sid,
+      sid,
     };
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }

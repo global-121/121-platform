@@ -513,7 +513,7 @@ export class RegistrationsInputValidator {
       const errorObj = {
         lineNumber: i + 1,
         column: 'phoneNumber',
-        value: value,
+        value,
         error: 'PhoneNumber is not valid according to Twilio lookup',
       };
       return { errorObj, sanitized };
@@ -532,7 +532,7 @@ export class RegistrationsInputValidator {
       const errorObj = {
         lineNumber: i + 1,
         column: columnName,
-        value: value,
+        value,
         error: `Value is not a valid ${type}`,
       };
       return errorObj;

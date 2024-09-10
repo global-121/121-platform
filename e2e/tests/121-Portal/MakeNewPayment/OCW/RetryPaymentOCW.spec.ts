@@ -77,7 +77,7 @@ test('[28450] OCW: Retry payment for all failed payments of PAs', async ({
       programId: programIdOCW,
       paymentNr: 1,
       amount: defaultTransferValue,
-      accessToken: accessToken,
+      accessToken,
     });
     await page.reload();
     await paymentsPage.validatePaymentStatus({});

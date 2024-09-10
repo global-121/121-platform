@@ -33,6 +33,11 @@
     "test:portal": "npm test --prefix=interfaces/Portal/",
     "test:portalicious": "npm test --prefix=interfaces/Portalicious/",
     "fix:prettier": "npm run test:prettier -- --write",
+    "fix:121-service": "npm run fix --prefix=services/121-service",
+    "fix:mock-service": "npm run fix --prefix=services/mock-service",
+    "fix:portal": "npm run fix --prefix=interfaces/Portal/",
+    "fix:portalicious": "npm run fix --prefix=interfaces/Portalicious/",
+    "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal fix:portalicious",
     "prepare": "husky"
   },
   "devDependencies": {

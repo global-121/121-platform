@@ -50,7 +50,7 @@ test('[28037] Open the popup to view and edit information', async ({
   await test.step('Validate information shown', async () => {
     await piiPopUp.validatePiiPopUp({
       paId: 'PA #',
-      whatsappLabel: whatsappLabel,
+      whatsappLabel,
       saveButtonName: save,
     });
   });

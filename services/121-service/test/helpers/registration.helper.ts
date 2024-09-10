@@ -170,7 +170,7 @@ export async function awaitChangePaStatus(
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({
-      status: status,
+      status,
       message: null,
       messageTemplateKey: includeTemplatedMessage ? status : null,
     });
@@ -250,8 +250,8 @@ export function updateRegistration(
     .patch(`/programs/${programId}/registrations/${referenceId}`)
     .set('Cookie', [accessToken])
     .send({
-      data: data,
-      reason: reason,
+      data,
+      reason,
     });
 }
 
@@ -261,7 +261,7 @@ export function getRegistrationChangeLog(
   accessToken: string,
 ): Promise<request.Response> {
   const queryParams = {
-    referenceId: referenceId,
+    referenceId,
   };
 
   return getServer()
@@ -277,7 +277,7 @@ export function getVisaWalletsAndDetails(
   accessToken: string,
 ): Promise<request.Response> {
   const queryParams = {
-    referenceId: referenceId,
+    referenceId,
   };
 
   return getServer()

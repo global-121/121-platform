@@ -19,7 +19,7 @@ describe('Action mapper', () => {
     const createdDate = new Date();
     const user: UserEntity = {
       id: userId,
-      username: username,
+      username,
       password: 'testPassword',
       programAssignments: [],
       actions: [],
@@ -43,16 +43,16 @@ describe('Action mapper', () => {
     const actionEntity: ActionEntity = {
       id: actionId,
       actionType: AdditionalActionType.importPeopleAffected,
-      user: user,
+      user,
       program: {} as ProgramEntity,
-      userId: userId,
+      userId,
       created: createdDate,
       updated: new Date(),
     };
 
     const expectedUserOwnerResult: UserOwnerDto = {
       id: userId,
-      username: username,
+      username,
     };
     const expectedResult: ActionReturnDto = {
       id: actionId,

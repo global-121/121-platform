@@ -24,8 +24,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 
@@ -40,8 +40,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 
@@ -55,8 +55,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 
@@ -65,8 +65,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 }

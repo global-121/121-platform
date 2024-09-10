@@ -46,7 +46,7 @@ test('[27498] View Activity overview “Payments tab"', async ({ page }) => {
     await registration.validateHeaderToContainText(pageTitle);
     await registration.openActivityOverviewTab('Payments');
     await registration.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });

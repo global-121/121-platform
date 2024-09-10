@@ -49,6 +49,7 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'object-shorthand': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',

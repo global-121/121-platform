@@ -35,7 +35,7 @@ export class EventsMapper {
           : null,
       registrationId: event.registrationId,
       type: event.type,
-      attributes: attributes,
+      attributes,
     };
   }
 

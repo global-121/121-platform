@@ -82,7 +82,7 @@ export class ProgramAttributesService {
           PaginateConfigRegistrationViewWithPayments.filterableColumns?.[name]
         ) {
           filterableAttributesPerGroup.push({
-            name: name,
+            name,
             allowedOperators: PaginateConfigRegistrationViewWithPayments
               .filterableColumns[name] as FilterOperator[],
             isInteger:
@@ -94,7 +94,7 @@ export class ProgramAttributesService {
           // If no allowed operators are defined than the attribute is
           // registration data which is stored as a string
           filterableAttributesPerGroup.push({
-            name: name,
+            name,
             allowedOperators: AllowedFilterOperatorsString,
             isInteger: false,
           });
