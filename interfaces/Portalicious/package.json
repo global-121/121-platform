@@ -12,7 +12,7 @@
     "prebuild": "npm run set-env-variables -- env=production",
     "build": "ng build --localize",
     "build:prod": "npm run build -- --configuration=production",
-    "postbuild": "shx mv www/browser/* www/ && touch www/index.html && npm run build:manual-logout",
+    "postbuild": "shx mv www/browser/* www/ && shx touch www/index.html && npm run build:manual-logout",
     "watch": "ng build --watch --configuration=development",
     "lint": "ng lint",
     "fix": "ng lint --fix",
