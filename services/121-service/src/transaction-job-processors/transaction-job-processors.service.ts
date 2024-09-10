@@ -17,6 +17,7 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -285,11 +286,15 @@ export class TransactionJobProcessorsService {
         )}_${generateRandomString(3)}`,
       });
     } catch (error) {
-      await this.transactionScopedRepository.update(
-        { id: transaction.id },
-        { status: TransactionStatusEnum.error, errorMessage: error?.message },
-      );
-      return;
+      if (error instanceof SafaricomApiError) {
+        await this.transactionScopedRepository.update(
+          { id: transaction.id },
+          { status: TransactionStatusEnum.error, errorMessage: error?.message },
+        );
+        return;
+      } else {
+        throw error;
+      }
     }
 
     // 5. No messages sent for safaricom
