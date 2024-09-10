@@ -301,7 +301,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         3001,
-        Object.values(StatusEnum),
+        Object.values(TransactionStatusEnum),
       );
 
       // update PA
