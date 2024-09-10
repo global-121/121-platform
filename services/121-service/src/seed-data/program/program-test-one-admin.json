@@ -1,0 +1,202 @@
+{
+  "published": true,
+  "validation": true,
+  "location": "Warsaw",
+  "ngo": "White Cross",
+  "titlePortal": {
+    "ar": "برنامج النقدية فيستروس",
+    "en": "Cash program Warsaw",
+    "es": "Programa de efectivo Poniente",
+    "fr": "Programme de trésorerie Warsaw",
+    "nl": "Cashprogramma Warsaw"
+  },
+  "description": {
+    "ar": "يهدف هذا البرنامج إلى مساعدة عامة الناس في ويستروس الأكثر تضرراً من حرب الملوك الخمسة.",
+    "en": "This program is aimed to help the commoners in Warsaw most affected by the War of the Five Kings.",
+    "es": "Este programa tiene como objetivo ayudar a los plebeyos de Poniente más afectados por la Guerra de los Cinco Reyes.",
+    "fr": "Ce programme vise à aider les roturiers de Warsaw les plus touchés par la guerre des Cinq Rois.",
+    "nl": "Dit programma is bedoeld om de gewone mensen in Warsaw te helpen die het zwaarst getroffen zijn door de Oorlog van de Vijf Koningen."
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "MWK",
+  "distributionFrequency": "month",
+  "distributionDuration": 8,
+  "fixedTransferValue": 10,
+  "paymentAmountMultiplierFormula": "1 + 1 * dragon",
+  "financialServiceProviders": [
+    {
+      "fsp": "Intersolve-voucher-whatsapp",
+      "configuration": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "fsp": "bank_a"
+    },
+    {
+      "fsp": "fsp_all_attributes"
+    },
+    {
+      "fsp": "fsp_no_attributes"
+    },
+    {
+      "fsp": "VodaCash"
+    },
+    {
+      "fsp": "Excel",
+      "configuration": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "dob", "house", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ],
+  "targetNrRegistrations": 250,
+  "programQuestions": [
+    {
+      "name": "name",
+      "label": {
+        "ar": "الاسم",
+        "en": "Name",
+        "es": "Nombre",
+        "fr": "Nom",
+        "nl": "Naam"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "dob",
+      "label": {
+        "ar": "تاريخ الميلاد",
+        "en": "Birth date",
+        "es": "Fecha de nacimiento",
+        "fr": "Date de naissance",
+        "nl": "Geboortedatum"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "house",
+      "label": {
+        "ar": "بيت العائلة",
+        "en": "House",
+        "es": "Casa",
+        "fr": "Maison",
+        "nl": "Huis"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "lannister",
+          "label": {
+            "en": "Lannister"
+          }
+        },
+        {
+          "option": "stark",
+          "label": {
+            "en": "Stark"
+          }
+        },
+        {
+          "option": "greyjoy",
+          "label": {
+            "en": "Greyjoy"
+          }
+        }
+      ],
+      "scoring": {
+        "lannister": 3,
+        "stark": 6,
+        "greyjoy": 9
+      },
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "dragon",
+      "label": {
+        "ar": "عدد التنين",
+        "en": "Dragon count",
+        "es": "Recuento de dragones",
+        "fr": "Nombre de dragons",
+        "nl": "Aantal draken"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "editableInPortal": true,
+      "scoring": {
+        "multiplier": 2
+      },
+      "showInPeopleAffectedTable": false
+    }
+  ],
+  "programCustomAttributes": [
+    {
+      "label": {
+        "ar": "لا يعرف شيئًا",
+        "en": "Knows nothing",
+        "es": "No sabe nada",
+        "fr": "Ne sait rien",
+        "nl": "Weet niets"
+      },
+      "name": "knowsNothing",
+      "type": "boolean",
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "label": {
+        "ar": "الشعار",
+        "en": "Motto",
+        "es": "Lema",
+        "fr": "Devise",
+        "nl": "Motto"
+      },
+      "name": "motto",
+      "type": "text",
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": true
+    }
+  ],
+  "aboutProgram": {
+    "ar": "[حول برنامج المساعدات]",
+    "en": "[about aid program]",
+    "es": "[sobre el programa de ayuda]",
+    "fr": "[à propos du programme d'aide]",
+    "nl": "[beschrijving van het programma]"
+  },
+  "fullnameNamingConvention": ["name"],
+  "languages": ["ar", "en", "es", "fr", "nl"],
+  "tryWhatsAppFirst": true,
+  "enableMaxPayments": false,
+  "enableScope": false,
+  "allowEmptyPhoneNumber": false
+}
