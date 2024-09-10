@@ -18,6 +18,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29635] Create project successfully', async ({ page }) => {
+  test.fixme(!!process.env.CI, 'Disable use of third-party API in CI only');
+
   const homePage = new HomePage(page);
   const createProject = new CreateProject(page);
 
