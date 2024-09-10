@@ -15,10 +15,16 @@ class ProjectTeam extends BasePage {
     super(page);
     this.page = page;
     this.tableRows = this.page.locator('table tbody tr');
-    this.usersDropdown = this.page.getByRole('option');
-    this.chooseUserDropdown = this.page.getByLabel('Choose user')
-    this.chooseRoleDropdown = this.page.getByLabel('Assign roles');
-    this.submitButton = this.page.getByRole('button', { name: 'Submit' });
+    this.addUserFormUsersDropdown = this.page.getByRole('option');
+    this.addUserFormChooseUserDropdown = this.page.locator(
+      `[formControlName="userValue"]`,
+    );
+    this.addUserFormChooseRoleDropdown = this.page.locator(
+      `[formControlName="rolesValue"]`,
+    );
+    this.addUserFormSubmitButton = this.page.getByRole('button', {
+      name: 'Submit',
+    });
     this.removeUserButton = this.page.getByRole('button', {
       name: 'Remove user',
     });
@@ -54,17 +60,17 @@ class ProjectTeam extends BasePage {
     userEmail: string;
     role: string;
   }) {
-    await this.chooseUserDropdown.click();
-    await this.chooseUserDropdown.fill(userSearchPhrase);
+    await this.addUserFormChooseUserDropdown.click();
+    await this.addUserFormChooseUserDropdown.fill(userSearchPhrase);
     await this.page.getByText(userEmail).click();
-    await this.chooseRoleDropdown.click();
+    await this.addUserFormChooseRoleDropdown.click();
     await this.page.getByText(role).click();
-    await this.submitButton.click();
+    await this.addUserFormSubmitButton.click();
   }
 
   async validateAvailableSystemUsers(expectedAssignedUsers: string[]) {
-    await this.chooseUserDropdown.click();
-    const actualAssignedUsers = await this.usersDropdown.evaluateAll(
+    await this.addUserFormChooseUserDropdown.click();
+    const actualAssignedUsers = await this.addUserFormUsersDropdown.evaluateAll(
       (options) => options.map((option) => option.textContent.trim()),
     );
 

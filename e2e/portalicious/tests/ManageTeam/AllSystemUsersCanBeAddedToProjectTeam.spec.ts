@@ -46,7 +46,7 @@ test('[29758] All system-users are available to be added to a "project team"', a
   });
 
   await test.step('Validate available system users are visible', async () => {
-    await manageTeam.navigateToAddTeamMemebers();
+    await manageTeam.openAddUserForm();
     await manageTeam.validateAvailableSystemUsers(expectedAvailablesystemUsers);
   });
 });
