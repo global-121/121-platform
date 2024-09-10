@@ -1,4 +1,6 @@
+import { EXTERNAL_API } from '@121-service/src/config';
 import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
+import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomAuthResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-auth-response.interface';
 import { SafaricomTransferResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -72,5 +74,23 @@ export class SafaricomApiService {
       console.error('Failed to make Safaricom B2C payment API call');
       return error.response.data;
     }
+  }
+
+  public createTransferPayload(transferData: DoTransferParams): TransferParams {
+    return {
+      InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
+      SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
+      CommandID: 'BusinessPayment',
+      Amount: transferData.transferAmount,
+      PartyA: process.env.SAFARICOM_PARTY_A!,
+      PartyB: transferData.phoneNumber, // Set to '25400000000' to trigger mock failure
+      Remarks: transferData.remarks,
+      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
+      ResultURL: EXTERNAL_API.safaricomResultUrl,
+      Occassion: transferData.occasion,
+      OriginatorConversationID: transferData.originatorConversationId,
+      IDType: process.env.SAFARICOM_IDTYPE!,
+      IDNumber: transferData.idNumber,
+    };
   }
 }

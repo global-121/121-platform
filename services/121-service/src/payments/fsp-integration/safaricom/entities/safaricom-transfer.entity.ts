@@ -16,7 +16,7 @@ export class SafaricomTransferEntity extends Base121Entity {
   @Column({ unique: true })
   public originatorConversationId: string;
 
-  @Column()
+  @Column({ nullable: true })
   public mpesaConversationId: string;
 
   @Column({ nullable: true })
