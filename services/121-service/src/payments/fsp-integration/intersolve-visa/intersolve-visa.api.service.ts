@@ -91,7 +91,12 @@ export class IntersolveVisaApiService {
     return timeLeftBeforeExpire > 60000;
   }
 
-  public async createCustomer(input: {
+  public async createCustomer({
+    externalReference,
+    name,
+    contactInformation,
+    estimatedAnnualPaymentVolumeMajorUnit,
+  }: {
     externalReference: string;
     name: string;
     contactInformation: ContactInformation;
@@ -99,27 +104,26 @@ export class IntersolveVisaApiService {
   }): Promise<CreateCustomerReturnType> {
     // Create the request body to send
     const createCustomerRequestDto: CreateCustomerRequestDto = {
-      externalReference: input.externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
+      externalReference: externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
       individual: {
         firstName: '', // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name, so just give an empty string
-        lastName: input.name,
-        estimatedAnnualPaymentVolumeMajorUnit:
-          input.estimatedAnnualPaymentVolumeMajorUnit,
+        lastName: name,
+        estimatedAnnualPaymentVolumeMajorUnit,
       },
       contactInfo: {
         addresses: [
           {
             type: 'HOME',
-            addressLine1: this.createAddressString(input.contactInformation),
-            city: input.contactInformation.addressCity,
-            postalCode: input.contactInformation.addressPostalCode,
+            addressLine1: this.createAddressString(contactInformation),
+            city: contactInformation.addressCity,
+            postalCode: contactInformation.addressPostalCode,
             country: 'NL',
           },
         ],
         phoneNumbers: [
           {
             type: 'MOBILE',
-            value: formatPhoneNumber(input.contactInformation.phoneNumber),
+            value: formatPhoneNumber(contactInformation.phoneNumber),
           },
         ],
       },

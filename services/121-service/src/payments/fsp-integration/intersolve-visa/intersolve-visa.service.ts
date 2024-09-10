@@ -88,15 +88,15 @@ export class IntersolveVisaService
       brandCode,
     });
 
-    await this.linkParentWalletToCustomerIfUnlinked(
+    await this.linkParentWalletToCustomerIfUnlinked({
       intersolveVisaCustomer,
       intersolveVisaParentWallet,
-    );
+    });
 
-    const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne(
+    const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne({
       intersolveVisaParentWallet,
       brandCode,
-    );
+    });
 
     // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
     intersolveVisaChildWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
@@ -222,7 +222,12 @@ export class IntersolveVisaService
     );
   }
 
-  private async getCustomerOrCreate(input: {
+  private async getCustomerOrCreate({
+    registrationId,
+    createCustomerReference,
+    name,
+    contactInformation,
+  }: {
     registrationId: number;
     createCustomerReference: string;
     name: string;
@@ -230,7 +235,7 @@ export class IntersolveVisaService
   }): Promise<IntersolveVisaCustomerEntity> {
     let intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
-        input.registrationId,
+        registrationId,
       );
     if (intersolveVisaCustomer) {
       return intersolveVisaCustomer;
@@ -238,23 +243,25 @@ export class IntersolveVisaService
 
     const createCustomerResult =
       await this.intersolveVisaApiService.createCustomer({
-        externalReference: input.createCustomerReference,
-        name: input.name,
-        contactInformation: {
-          addressStreet: input.contactInformation.addressStreet,
-          addressHouseNumber: input.contactInformation.addressHouseNumber,
-          addressHouseNumberAddition:
-            input.contactInformation.addressHouseNumberAddition,
-          addressPostalCode: input.contactInformation.addressPostalCode,
-          addressCity: input.contactInformation.addressCity,
-          phoneNumber: input.contactInformation.phoneNumber,
+        externalReference: {
+          externalReference: createCustomerReference,
+          name,
+          contactInformation: {
+            addressStreet: contactInformation.addressStreet,
+            addressHouseNumber: contactInformation.addressHouseNumber,
+            addressHouseNumberAddition:
+              contactInformation.addressHouseNumberAddition,
+            addressPostalCode: contactInformation.addressPostalCode,
+            addressCity: contactInformation.addressCity,
+            phoneNumber: contactInformation.phoneNumber,
+          },
+          estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100,
         },
-        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100, // This is assuming 44 euro per month for a year for 1 child; Assuming this parameter is in cents
       });
 
     // if success, store customer
     const newIntersolveVisaCustomer = new IntersolveVisaCustomerEntity();
-    newIntersolveVisaCustomer.registrationId = input.registrationId;
+    newIntersolveVisaCustomer.registrationId = registrationId;
     newIntersolveVisaCustomer.holderId = createCustomerResult.holderId;
     intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.save(
@@ -263,11 +270,13 @@ export class IntersolveVisaService
     return intersolveVisaCustomer;
   }
 
-  private async getParentWalletOrCreate(input: {
+  private async getParentWalletOrCreate({
+    intersolveVisaCustomer,
+    brandCode,
+  }: {
     intersolveVisaCustomer: IntersolveVisaCustomerEntity;
     brandCode: string;
   }): Promise<IntersolveVisaParentWalletEntity> {
-    const { intersolveVisaCustomer, brandCode } = input;
     // Check if a parent wallet exists and return it if it does
     if (intersolveVisaCustomer.intersolveVisaParentWallet) {
       return intersolveVisaCustomer.intersolveVisaParentWallet;
@@ -275,7 +284,7 @@ export class IntersolveVisaService
 
     // If not, create parent wallet
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
-      brandCode: brandCode,
+      brandCode,
       activate: true, // Parent Wallets are always created activated
       reference: process.env.MOCK_INTERSOLVE
         ? intersolveVisaCustomer.holderId
@@ -298,10 +307,13 @@ export class IntersolveVisaService
     return savedIntersolveVisaParentWallet;
   }
 
-  private async linkParentWalletToCustomerIfUnlinked(
-    intersolveVisaCustomer: IntersolveVisaCustomerEntity,
-    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
-  ): Promise<void> {
+  private async linkParentWalletToCustomerIfUnlinked({
+    intersolveVisaCustomer,
+    intersolveVisaParentWallet,
+  }: {
+    intersolveVisaCustomer: IntersolveVisaCustomerEntity;
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity;
+  }): Promise<void> {
     // Check if parent wallet is linked to customer
     if (intersolveVisaParentWallet.isLinkedToVisaCustomer) {
       return;
@@ -320,10 +332,13 @@ export class IntersolveVisaService
     );
   }
 
-  private async getChildWalletsOrCreateOne(
-    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
-    brandCode: string,
-  ): Promise<IntersolveVisaChildWalletEntity[]> {
+  private async getChildWalletsOrCreateOne({
+    intersolveVisaParentWallet,
+    brandCode,
+  }: {
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity;
+    brandCode: string;
+  }): Promise<IntersolveVisaChildWalletEntity[]> {
     // Check if at least one child wallet exists
     if (intersolveVisaParentWallet.intersolveVisaChildWallets.length) {
       return intersolveVisaParentWallet.intersolveVisaChildWallets;
@@ -331,7 +346,7 @@ export class IntersolveVisaService
 
     // If not, create new child wallet
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
-      brandCode: brandCode,
+      brandCode,
       activate: false, // Child Wallets are always created deactivated
       reference: process.env.MOCK_INTERSOLVE
         ? intersolveVisaParentWallet.intersolveVisaCustomer.holderId
@@ -377,14 +392,17 @@ export class IntersolveVisaService
     );
   }
 
-  private async createDebitCardIfNotExists(input: {
+  private async createDebitCardIfNotExists({
+    childWallet,
+    name,
+    contactInformation,
+    coverLetterCode,
+  }: {
     childWallet: IntersolveVisaChildWalletEntity;
     name: string;
     contactInformation: ContactInformation;
     coverLetterCode: string;
   }): Promise<{ isNewCardCreated: boolean }> {
-    const { childWallet, name, contactInformation, coverLetterCode } = input;
-
     // Check if debit card is created
     if (childWallet.isDebitCardCreated) {
       return {
@@ -395,7 +413,7 @@ export class IntersolveVisaService
     // If not, create debit card
     const createPhysicalCardDto: CreatePhysicalCardParams = {
       tokenCode: childWallet.tokenCode,
-      name: name,
+      name,
       contactInformation: {
         addressStreet: contactInformation.addressStreet,
         addressHouseNumber: contactInformation.addressHouseNumber,
@@ -405,7 +423,7 @@ export class IntersolveVisaService
         addressCity: contactInformation.addressCity,
         phoneNumber: contactInformation.phoneNumber,
       },
-      coverLetterCode: coverLetterCode,
+      coverLetterCode,
     };
 
     await this.intersolveVisaApiService.createPhysicalCard(
@@ -553,7 +571,8 @@ export class IntersolveVisaService
     }
   }
 
-  public async executeReissueCardSteps(
+  // TODO: REFACTOR: Do not "blindly" re-use input parameters from one function (reissueCard) in another function (executeReissueCardSteps), instead only pass in parameters the function needs to perform its responsibility.
+  private async executeReissueCardSteps(
     input: ReissueCardParams,
     intersolveVisaCustomer: IntersolveVisaCustomerEntity,
     childWalletToReplace: IntersolveVisaChildWalletEntity,
@@ -639,7 +658,7 @@ export class IntersolveVisaService
   }
 
   /**
-   * This function calculates the transfer amount after updating the wallet information for a given registration ID.
+   * This function calculates the transfer amount after retrieving the wallet information for a given registration ID.
    * - It finds a customer for registrationId. If the customer has any child wallets, it retrieves and updates the latest information of the wallets and card from Intersolve.
    * - It then calculates the amount that should be transferred. If the registration does not have a customer yet, the spentThisMonth and balance will be 0.
    *
@@ -648,10 +667,13 @@ export class IntersolveVisaService
    * @throws {Error} Throws an Error if no customer is found for the given registration ID.
    * @returns {Promise<number>} The calculated transfer amount. This is the inputTransferAmount amount capped by 150 - spendThisMonth - currentBalance.
    */
-  public async calculateTransferAmountWithWalletUpdate(
-    registrationId: number,
-    inputTransferAmountInMajorUnit: number,
-  ): Promise<number> {
+  public async calculateTransferAmountWithWalletRetrieval({
+    registrationId,
+    inputTransferAmountInMajorUnit,
+  }: {
+    registrationId: number;
+    inputTransferAmountInMajorUnit: number;
+  }): Promise<number> {
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
@@ -757,27 +779,27 @@ export class IntersolveVisaService
    * @throws {Error} Throws an Error if no customer is found for the given registration ID.
    * @returns {Promise<void>}
    */
-  public async sendUpdatedContactInformation(
-    input: SendUpdatedContactInformationParams,
-  ): Promise<void> {
+  public async sendUpdatedContactInformation({
+    registrationId,
+    contactInformation,
+  }: SendUpdatedContactInformationParams): Promise<void> {
     const customer =
       await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
-        input.registrationId,
+        registrationId,
       );
 
     await this.intersolveVisaApiService.updateCustomerAddress({
       holderId: customer.holderId,
-      addressStreet: input.contactInformation.addressStreet,
-      addressHouseNumber: input.contactInformation.addressHouseNumber,
-      addressHouseNumberAddition:
-        input.contactInformation.addressHouseNumberAddition,
-      addressPostalCode: input.contactInformation.addressPostalCode,
-      addressCity: input.contactInformation.addressCity,
+      addressStreet: contactInformation.addressStreet,
+      addressHouseNumber: contactInformation.addressHouseNumber,
+      addressHouseNumberAddition: contactInformation.addressHouseNumberAddition,
+      addressPostalCode: contactInformation.addressPostalCode,
+      addressCity: contactInformation.addressCity,
     });
 
     await this.intersolveVisaApiService.updateCustomerPhoneNumber({
       holderId: customer.holderId,
-      phoneNumber: input.contactInformation.phoneNumber,
+      phoneNumber: contactInformation.phoneNumber,
     });
   }
 

@@ -80,9 +80,11 @@ export class TransactionJobProcessorsService {
     let transferAmountInMajorUnit: number;
     try {
       transferAmountInMajorUnit =
-        await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
-          registration.id,
-          input.transactionAmountInMajorUnit,
+        await this.intersolveVisaService.calculateTransferAmountWithWalletRetrieval(
+          {
+            registrationId: registration.id,
+            inputTransferAmountInMajorUnit: input.transactionAmountInMajorUnit,
+          },
         );
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
