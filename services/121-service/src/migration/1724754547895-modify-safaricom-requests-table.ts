@@ -57,6 +57,9 @@ export class ModifySafaricomRequestsTable1724754547895
       `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "conversationID" TO "mpesaConversationId"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."safaricom_request" ALTER COLUMN "mpesaConversationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_request" RENAME COLUMN "originatorConversationID" TO "originatorConversationId"`,
     );
 
