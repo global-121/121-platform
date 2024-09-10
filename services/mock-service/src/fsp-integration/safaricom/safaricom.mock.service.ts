@@ -40,17 +40,14 @@ export class SafaricomMockService {
           : 'Mock error message',
     };
 
-    this.sendStatusCallback(
-      transferDto.ResultURL,
-      transferResponse,
-      mockScenario,
-    ).catch((error) => console.log(error));
+    this.sendStatusCallback(transferResponse, mockScenario).catch((error) =>
+      console.log(error),
+    );
 
     return transferResponse;
   }
 
   private async sendStatusCallback(
-    callbackUrl: string,
     transferResponse: SafaricomTransferResponseBodyDto,
     mockScenario: MockScenario,
   ): Promise<void> {
@@ -141,8 +138,7 @@ export class SafaricomMockService {
       Result: Status.Result,
     };
     const httpService = new HttpService();
-    const url =
-      callbackUrl || `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
+    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
 
     await lastValueFrom(httpService.post(url, response)).catch((error) =>
       console.log(error),
