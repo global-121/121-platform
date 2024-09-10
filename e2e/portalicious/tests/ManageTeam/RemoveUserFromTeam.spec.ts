@@ -49,7 +49,7 @@ test('[29760] Users should be removable from "project team"', async ({
 
   await test.step('Validate available system users are visible', async () => {
     await manageTeam.removeUserFromTeam({
-      userEmail: 'view-no-pii@example.org',
+      userEmail: userToRemove,
     });
     await manageTeam.validateToastMessage('User removed');
     await manageTeam.validateAssignedTeamMembers(expectedFinalAssignedUsers);
