@@ -74,12 +74,14 @@ export class RegistrationHeaderComponent {
         ),
         type: 'text',
       },
-      {
+    ];
+    if (this.project.data()?.enableScope) {
+      listData.push({
         label: $localize`:@@registration-scope:Scope`,
         value: registrationRawData?.scope,
         type: 'text',
-      },
-    ];
+      });
+    }
 
     return listData.map((item) => ({
       ...item,
