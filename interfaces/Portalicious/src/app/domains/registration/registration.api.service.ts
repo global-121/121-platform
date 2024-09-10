@@ -19,6 +19,7 @@ import {
   Registration,
   StatusUpdateActivity,
   TransferActivity,
+  WalletWithCards,
 } from '~/domains/registration/registration.model';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
@@ -250,6 +251,70 @@ export class RegistrationApiService extends DomainApiService {
         },
       });
     };
+  }
+  getWalletWithCardsByReferenceId(
+    projectId: Signal<number>,
+    referenceId: Signal<string | undefined>,
+  ) {
+    return this.generateQueryOptions<WalletWithCards>({
+      path: [
+        ...BASE_ENDPOINT(projectId),
+        referenceId,
+        'financial-service-providers',
+        'intersolve-visa',
+        'wallet',
+      ],
+      enabled: () => !!referenceId(),
+    });
+  }
+
+  pauseCard({
+    projectId,
+    referenceId,
+    tokenCode,
+    pause,
+  }: {
+    projectId: Signal<number>;
+    referenceId: string;
+    tokenCode: string;
+    pause: boolean;
+  }) {
+    const endpoint = this.pathToQueryKey([
+      ...BASE_ENDPOINT(projectId),
+      referenceId,
+      'financial-service-providers',
+      'intersolve-visa',
+      'wallet',
+      'cards',
+      tokenCode,
+    ]).join('/');
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: endpoint + '?pause=' + pause.toString(),
+    });
+  }
+
+  reissueCard({
+    projectId,
+    referenceId,
+  }: {
+    projectId: Signal<number>;
+    referenceId: string;
+  }) {
+    const endpoint = this.pathToQueryKey([
+      ...BASE_ENDPOINT(projectId),
+      referenceId,
+      'financial-service-providers',
+      'intersolve-visa',
+      'wallet',
+      'cards',
+    ]).join('/');
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint,
+    });
   }
 
   public invalidateCache(

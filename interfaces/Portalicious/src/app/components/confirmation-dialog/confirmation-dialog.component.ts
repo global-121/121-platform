@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -20,21 +15,31 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 export class ConfirmationDialogComponent {
   private confirmationService = inject(ConfirmationService);
 
-  header = input($localize`:@@confirmation-dialog-header:Are you sure?`);
-  acceptLabel = input($localize`:@@generic-proceed:Proceed`);
-  rejectLabel = input($localize`:@@generic-cancel:Cancel`);
-  acceptIcon = input('none');
-  rejectIcon = input('none');
-
-  confirm({ accept, reject }: { accept: () => void; reject?: () => void }) {
+  confirm({
+    accept,
+    reject,
+    header = $localize`:@@confirmation-dialog-header:Are you sure?`,
+    acceptLabel = $localize`:@@generic-proceed:Proceed`,
+    rejectLabel = $localize`:@@generic-cancel:Cancel`,
+    acceptIcon = 'none',
+    rejectIcon = 'none',
+  }: {
+    accept: () => void;
+    reject?: () => void;
+    header?: string;
+    acceptLabel?: string;
+    rejectLabel?: string;
+    acceptIcon?: string;
+    rejectIcon?: string;
+  }) {
     this.confirmationService.confirm({
       accept,
       reject,
-      header: this.header(),
-      acceptLabel: this.acceptLabel(),
-      rejectLabel: this.rejectLabel(),
-      acceptIcon: this.acceptIcon(),
-      rejectIcon: this.rejectIcon(),
+      header,
+      acceptLabel,
+      rejectLabel,
+      acceptIcon,
+      rejectIcon,
       rejectButtonStyleClass: 'p-button-rounded p-button-outlined',
       acceptButtonStyleClass: 'p-button-rounded',
     });

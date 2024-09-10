@@ -1,3 +1,4 @@
+import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
@@ -92,3 +93,5 @@ export interface ActivityLogItemDto {
     count: Partial<Record<ActivityLogItemType, number>>;
   };
 }
+// TODO: AB#30152 This type should be refactored to use Dto121Service
+export type WalletWithCards = Dto<IntersolveVisaWalletDto>;

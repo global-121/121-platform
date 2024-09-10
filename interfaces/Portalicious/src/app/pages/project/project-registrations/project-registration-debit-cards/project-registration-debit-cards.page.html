@@ -8,6 +8,95 @@
     registration-page
     class="px-2"
   >
-    <p i18n>registration-debit-cards works</p>
+    <div class="my-auto ms-auto flex">
+      <!-- TODO: WTF is this notation, most certainly it's wrong -->
+      @for (
+        action of walletWithCardsData.data()?.cards?.[0]?.actions ?? [];
+        track $index
+      ) {
+        @switch (action) {
+          @case ('pause') {
+            <p-button
+              label="Pause card"
+              i18n-label="@@pause-card"
+              rounded
+              outlined
+              icon="pi pi-pause"
+              class="ml-auto"
+              (click)="
+                pauseCard(walletWithCardsData.data()?.cards?.[0]?.tokenCode!)
+              "
+              [disabled]="pauseCardMutation.isPending()"
+              [loading]="pauseCardMutation.isPending()"
+            />
+          }
+          @case ('unpause') {
+            <p-button
+              label="Unpause card"
+              i18n-label="@@unpause-card"
+              rounded
+              outlined
+              icon="pi pi-play"
+              class="ml-auto"
+              (click)="
+                unpauseCard(walletWithCardsData.data()?.cards?.[0]?.tokenCode!)
+              "
+              [disabled]="unpauseCardMutation.isPending()"
+              [loading]="unpauseCardMutation.isPending()"
+            />
+          }
+          @case ('reissue') {
+            <p-button
+              label="Replace card"
+              i18n-label="@@replace-card"
+              rounded
+              outlined
+              icon="pi pi-refresh"
+              class="ms-4"
+              (click)="
+                reissueCard(walletWithCardsData.data()?.cards?.[0]?.tokenCode!)
+              "
+              [disabled]="reissueCardMutation.isPending()"
+              [loading]="reissueCardMutation.isPending()"
+            />
+          }
+        }
+      }
+    </div>
+    <app-data-list [data]="walletWithCurrentCard()" />
+    <div class="py-1"></div>
+    @if (oldCardsData()) {
+      <p-accordion>
+        @for (card of oldCardsData(); track $index) {
+          <p-accordionTab
+            class="[&_.p-accordion-content]:px-1 [&_.p-accordion-header-link]:px-0 [&_.p-accordion-header-link]:text-black"
+          >
+            <ng-template pTemplate="header">
+              <span class="flex items-center gap-1">
+                <strong i18n>Old card:</strong>
+                <span class="font-normal"> {{ card.tokenCode }} </span>
+                <app-colored-chip
+                  [variant]="card.chipVariant"
+                  [label]="card.chipLabel"
+                />
+              </span>
+            </ng-template>
+            <app-data-list
+              class="text-black"
+              [data]="card.data"
+              [hideBottomBorder]="true"
+            />
+          </p-accordionTab>
+        }
+      </p-accordion>
+    }
   </div>
 </app-page-layout>
+<app-confirmation-dialog
+  #confirmationDialog
+  class="[&_.p-dialog-content]:max-w-[632px]"
+>
+  @if (dialogContentText) {
+    <p class="whitespace-pre-line">{{ dialogContentText }}</p>
+  }
+</app-confirmation-dialog>

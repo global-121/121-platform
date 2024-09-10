@@ -395,9 +395,6 @@
       <trans-unit id="7786605624712277167" datatype="html">
         <source><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</source>
       </trans-unit>
-      <trans-unit id="8285202625820348519" datatype="html">
-        <source>registration-debit-cards works</source>
-      </trans-unit>
       <trans-unit id="add-note" datatype="html">
         <source>Add note</source>
       </trans-unit>
@@ -529,6 +526,93 @@
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
+      </trans-unit>
+      <trans-unit id="1213562405715531722" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="tokenCode" id="PH"/>. This will block the current card and a new card will be issued. A message will be sent to the registration about this update.</source>
+      </trans-unit>
+      <trans-unit id="159499234601402136" datatype="html">
+        <source>Replace card</source>
+      </trans-unit>
+      <trans-unit id="2302473294809665492" datatype="html">
+        <source>You&apos;re about to unpause debit card number <x equiv-text="tokenCode" id="PH"/>. A message will be sent to the registration about this update.</source>
+      </trans-unit>
+      <trans-unit id="2822637782545574249" datatype="html">
+        <source>Unpause card</source>
+      </trans-unit>
+      <trans-unit id="3737809832278587019" datatype="html">
+        <source>Card is paused</source>
+      </trans-unit>
+      <trans-unit id="4003316872443248895" datatype="html">
+        <source>Pause card</source>
+      </trans-unit>
+      <trans-unit id="4695223329134690303" datatype="html">
+        <source>Card is replaced</source>
+      </trans-unit>
+      <trans-unit id="599273143956738520" datatype="html">
+        <source>Card is unpaused</source>
+      </trans-unit>
+      <trans-unit id="6987397690071959130" datatype="html">
+        <source>Old card:</source>
+      </trans-unit>
+      <trans-unit id="8542661547655836379" datatype="html">
+        <source>You&apos;re about to pause debit card number <x equiv-text="tokenCode" id="PH"/>. A message will be sent to the registration about this update.</source>
+      </trans-unit>
+      <trans-unit id="debit-card-balance" datatype="html">
+        <source>Current balance</source>
+      </trans-unit>
+      <trans-unit id="debit-card-explanation" datatype="html">
+        <source>Explanation</source>
+      </trans-unit>
+      <trans-unit id="debit-card-issued-on" datatype="html">
+        <source>Issued on</source>
+      </trans-unit>
+      <trans-unit id="debit-card-last-used" datatype="html">
+        <source>Last used</source>
+      </trans-unit>
+      <trans-unit id="debit-card-number" datatype="html">
+        <source>Card number</source>
+      </trans-unit>
+      <trans-unit id="debit-card-spent-this-month" datatype="html">
+        <source>Spent this month (max. EUR 150)</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status" datatype="html">
+        <source>Card status</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-active" datatype="html">
+        <source>Active</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-blocked" datatype="html">
+        <source>Blocked</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-card-data-missing" datatype="html">
+        <source>Debit card data missing</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-issued" datatype="html">
+        <source>Issued</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-paused" datatype="html">
+        <source>Paused</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-substituted" datatype="html">
+        <source>Substituted</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-suspected-fraud" datatype="html">
+        <source>Suspected fraud</source>
+      </trans-unit>
+      <trans-unit id="debit-card-status-unknown" datatype="html">
+        <source>Unknown</source>
+      </trans-unit>
+      <trans-unit id="pause-card" datatype="html">
+        <source>Pause card</source>
+      </trans-unit>
+      <trans-unit id="replace-card" datatype="html">
+        <source>Replace card</source>
+      </trans-unit>
+      <trans-unit id="unpause-card" datatype="html">
+        <source>Unpause card</source>
+      </trans-unit>
+      <trans-unit id="128402705185541160" datatype="html">
+        <source>Remove user</source>
       </trans-unit>
     </body>
   </file>

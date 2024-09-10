@@ -151,6 +151,8 @@ export class ProjectTeamComponent {
             return;
           }
           this.confirmationDialog.confirm({
+            header: $localize`Remove user from team`,
+            acceptLabel: $localize`Remove user`,
             accept: () => {
               this.removeUserMutation.mutate({ userId: user.id });
             },

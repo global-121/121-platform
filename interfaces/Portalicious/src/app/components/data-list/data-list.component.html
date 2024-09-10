@@ -19,7 +19,7 @@
             [label]="item.chipLabel"
           />
         }
-        @if (item.value) {
+        @if (item.value || item.value === 0) {
           <span>
             @switch (item.type) {
               @case ('currency') {
