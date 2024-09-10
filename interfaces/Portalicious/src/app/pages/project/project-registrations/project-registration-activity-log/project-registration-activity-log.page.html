@@ -1,0 +1,17 @@
+<app-page-layout
+  pageTitle=""
+  i18n-pageTitle="@@page-title-project-registration-activity-log"
+  [projectId]="projectId()"
+  [registrationId]="registrationId()"
+>
+  <div registration-page>
+    <p-selectButton
+      [options]="stateOptions"
+      [(ngModel)]="value"
+      optionLabel="label"
+      i18n-optionLabel
+      optionValue="value"
+      i18n-optionValue
+    />
+  </div>
+</app-page-layout>

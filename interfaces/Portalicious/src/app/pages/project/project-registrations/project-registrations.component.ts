@@ -32,7 +32,7 @@ export class ProjectRegistrationsComponent {
     '/',
     AppRoutes.project,
     this.projectId(),
-    AppRoutes.projectRegistration,
+    AppRoutes.projectRegistrations,
     registrationId,
   ];
 }

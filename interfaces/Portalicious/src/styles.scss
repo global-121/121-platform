@@ -95,11 +95,6 @@ body {
   }
 
   .p-tabmenu {
-    .p-tabmenu-nav,
-    .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
-      border-color: transparent;
-    }
-
     // The ink bar is manually positioned via the 'left' property, but it is broken on page load.
     // These two rules fix the issue by hiding the ink bar and overriding the default behaviour of the selected tab.
     .p-tabmenu-ink-bar {

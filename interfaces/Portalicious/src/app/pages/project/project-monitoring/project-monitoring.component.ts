@@ -15,6 +15,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import { NotAvailableLabelComponent } from '~/components/not-available-label/not-available-label.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -39,6 +40,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     DecimalPipe,
     DataListComponent,
     SkeletonInlineComponent,
+    NotAvailableLabelComponent,
   ],
   templateUrl: './project-monitoring.component.html',
   styles: ``,
