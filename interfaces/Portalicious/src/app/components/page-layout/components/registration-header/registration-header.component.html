@@ -10,7 +10,7 @@
       outlined
       icon="pi pi-pen-to-square"
       (click)="openAddNoteDialog()"
-      class="ml-auto"
+      class="ms-auto"
     />
   </div>
   <app-data-list [data]="registrationData()" />
@@ -23,9 +23,7 @@
       @if (registration.data()?.registrationCreatedDate) {
         {{ registration.data()?.registrationCreatedDate | date: 'dd-MM-yyyy' }}
       } @else {
-        <ng-container i18n="@@generic-not-available"
-          >Not available</ng-container
-        >
+        <app-not-available-label />
       }
     </span>
   </div>

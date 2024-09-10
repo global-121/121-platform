@@ -72,12 +72,7 @@
             {{ projectDescription() }}
           </p>
         } @else {
-          <p
-            i18n="@@generic-not-available"
-            class="text-grey-500"
-          >
-            Not available
-          </p>
+          <app-not-available-label />
         }
       </div>
       <app-data-list [data]="projectDescriptionData()" />

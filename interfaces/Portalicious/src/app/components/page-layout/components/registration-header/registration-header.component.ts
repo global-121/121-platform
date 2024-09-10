@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,6 +15,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { NotAvailableLabelComponent } from '~/components/not-available-label/not-available-label.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -27,8 +28,9 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
     CardModule,
     DataListComponent,
     ButtonModule,
-    CommonModule,
+    DatePipe,
     SkeletonInlineComponent,
+    NotAvailableLabelComponent,
   ],
   templateUrl: './registration-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,8 +58,8 @@ export class RegistrationHeaderComponent {
     const listData: DataListItem[] = [
       {
         label: $localize`:@@registration-status:Status`,
-        chipLabel: chipLabel,
-        chipVariant: chipVariant,
+        chipLabel,
+        chipVariant,
       },
       {
         label: $localize`:@@registration-phone-number:Phone number`,
