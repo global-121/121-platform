@@ -1,6 +1,4 @@
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
@@ -15,27 +13,6 @@ export class SafaricomTransferRepository extends Repository<SafaricomTransferEnt
       baseRepository.manager,
       baseRepository.queryRunner,
     );
-  }
-
-  public async createAndSaveSafaricomTransferData(
-    safaricomDoTransferResult: DoTransferReturnType,
-    transaction: TransactionEntity,
-  ): Promise<any> {
-    const safaricomTransferEntity = new SafaricomTransferEntity();
-
-    safaricomTransferEntity.mpesaConversationId =
-      safaricomDoTransferResult && safaricomDoTransferResult.conversationId
-        ? safaricomDoTransferResult.conversationId
-        : 'Invalid Request';
-    safaricomTransferEntity.originatorConversationId =
-      safaricomDoTransferResult &&
-      safaricomDoTransferResult.originatorConversationId
-        ? safaricomDoTransferResult.originatorConversationId
-        : 'Invalid Request';
-
-    safaricomTransferEntity.transactionId = transaction.id;
-
-    await this.baseRepository.save(safaricomTransferEntity);
   }
 
   public async getSafaricomTransferByOriginatorConversationId(
