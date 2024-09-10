@@ -7,9 +7,11 @@ import {
   input,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
+
 import { AppRoutes } from '~/app.routes';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';

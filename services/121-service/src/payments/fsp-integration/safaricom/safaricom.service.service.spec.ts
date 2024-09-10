@@ -1,3 +1,6 @@
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -7,8 +10,6 @@ import {
 import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 const programId = 3;
 const paymentNr = 5;

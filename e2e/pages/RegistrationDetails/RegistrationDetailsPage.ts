@@ -1,6 +1,8 @@
-import { Locator, expect } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
-import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+
 import Helpers from '../Helpers/Helpers';
 
 const updateSuccesfullNotification =

@@ -1,4 +1,5 @@
 import { check, sleep } from 'k6';
+
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
 import resetModel from '../models/reset.js';

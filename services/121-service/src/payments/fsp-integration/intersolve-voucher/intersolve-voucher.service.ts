@@ -1,3 +1,11 @@
+import { InjectQueue } from '@nestjs/bull';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import crypto from 'crypto';
+import Redis from 'ioredis';
+import { Equal, Repository } from 'typeorm';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -28,8 +36,8 @@ import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-int
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
-import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import {
   getRedisSetName,
@@ -46,13 +54,6 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import crypto from 'crypto';
-import Redis from 'ioredis';
-import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveVoucherService

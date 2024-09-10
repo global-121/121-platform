@@ -1,13 +1,14 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { EmailsModule } from '@121-service/src/emails/emails.module';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
-import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { UserController } from '@121-service/src/user/user.controller';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 
 @Module({
   imports: [

@@ -1,3 +1,5 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
@@ -9,7 +11,6 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {

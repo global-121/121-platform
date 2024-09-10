@@ -1,18 +1,3 @@
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import {
-  ExportDetailsQueryParamsDto,
-  ExportType,
-} from '@121-service/src/metrics/dto/export-details.dto';
-import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
-import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
-import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
-import { MetricsService } from '@121-service/src/metrics/metrics.service';
-import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
-import { WrapperType } from '@121-service/src/wrapper.type';
 import {
   Controller,
   Get,
@@ -32,7 +17,23 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
+
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import {
+  ExportDetailsQueryParamsDto,
+  ExportType,
+} from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
+import { MetricsService } from '@121-service/src/metrics/metrics.service';
+import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('metrics')

@@ -1,11 +1,3 @@
-import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
-import { EventsService } from '@121-service/src/events/events.service';
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { UserService } from '@121-service/src/user/user.service';
-import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 import {
   Controller,
   Get,
@@ -25,6 +17,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
+import { EventsService } from '@121-service/src/events/events.service';
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { UserService } from '@121-service/src/user/user.service';
+import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()

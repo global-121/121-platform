@@ -1,3 +1,8 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Equal, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+
 import {
   EXTERNAL_API,
   TWILIO_SANDBOX_WHATSAPP_NUMBER,
@@ -16,10 +21,6 @@ import {
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class WhatsappService {

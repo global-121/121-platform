@@ -6,10 +6,12 @@ import {
   inject,
   input,
 } from '@angular/core';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TabMenuModule } from 'primeng/tabmenu';
+
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,

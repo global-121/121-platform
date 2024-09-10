@@ -1,9 +1,3 @@
-import { Base121Entity } from '@121-service/src/base.entity';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   Column,
   Entity,
@@ -13,6 +7,13 @@ import {
   OneToOne,
   Relation,
 } from 'typeorm';
+
+import { Base121Entity } from '@121-service/src/base.entity';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 export enum NotificationType {
   Sms = 'sms',

@@ -1,6 +1,7 @@
-import { formatWhatsAppNumber } from '@mock-service/src/utils/phone-number.helpers';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsUrl } from 'class-validator';
+
+import { formatWhatsAppNumber } from '@mock-service/src/utils/phone-number.helpers';
 
 export enum TwilioStatus {
   delivered = 'delivered',

@@ -1,5 +1,6 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 export class BulkActionResultDto {
   @ApiProperty({

@@ -1,3 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import crypto from 'crypto';
+import { DataSource, Equal } from 'typeorm';
+
 import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
@@ -14,13 +18,10 @@ import fspVodaCash from '@121-service/src/seed-data/fsp/fsp-vodacash.json';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { Injectable } from '@nestjs/common';
-import crypto from 'crypto';
-import { DataSource, Equal } from 'typeorm';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {

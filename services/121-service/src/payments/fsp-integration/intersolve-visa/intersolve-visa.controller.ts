@@ -1,9 +1,3 @@
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { IntersolveBlockWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
-import { GetWalletsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
-import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Controller,
   Get,
@@ -24,6 +18,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { IntersolveBlockWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
+import { GetWalletsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
+import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-visa')

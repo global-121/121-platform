@@ -1,15 +1,3 @@
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import {
-  CreateMessageTemplateDto,
-  DeleteTemplateParamDto,
-  DeleteTemplateQueryDto,
-  UpdateTemplateBodyDto,
-  UpdateTemplateParamDto,
-} from '@121-service/src/notifications/message-template/dto/message-template.dto';
-import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -32,6 +20,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
+
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import {
+  CreateMessageTemplateDto,
+  DeleteTemplateParamDto,
+  DeleteTemplateQueryDto,
+  UpdateTemplateBodyDto,
+  UpdateTemplateParamDto,
+} from '@121-service/src/notifications/message-template/dto/message-template.dto';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('notifications')

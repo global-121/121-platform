@@ -1,3 +1,8 @@
+import { TestBed } from '@automock/jest';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import { Repository } from 'typeorm';
+
 import { DEFAULT_QUEUE_CREATE_MESSAGE } from '@121-service/src/notifications/enum/message-queue-mapping.const';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/queue.names.enum';
@@ -9,14 +14,10 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import { Repository } from 'typeorm';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',

@@ -1,10 +1,11 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   getAccessToken,
   getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { HttpStatus } from '@nestjs/common';
 
 describe('/ Users', () => {
   describe('/ Roles', () => {

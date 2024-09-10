@@ -3,6 +3,7 @@ module.exports = {
   env: {
     node: true,
   },
+  plugins: ['simple-import-sort'],
   overrides: [
     {
       files: ['*.js'],
@@ -51,6 +52,24 @@ module.exports = {
         'promise/prefer-await-to-callbacks': 'error',
         'promise/prefer-await-to-then': 'error',
         'promise/valid-params': 'error',
+        'simple-import-sort/imports': [
+          'error',
+          {
+            groups: [
+              // Packages.
+              // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+              ['^@?\\w'],
+              // Alias imports
+              ['^@121-portal', '^@121-service'],
+              // Local imports
+              ['^@121-e2e'],
+              // Relative imports.
+              // Anything that starts with a dot.
+              ['^\\.'],
+            ],
+          },
+        ],
+        'simple-import-sort/exports': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
       },
     },

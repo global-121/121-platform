@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import { Role } from '~/domains/role/role.model';
 

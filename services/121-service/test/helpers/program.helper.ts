@@ -1,10 +1,12 @@
+import * as request from 'supertest';
+
 import { DEBUG } from '@121-service/src/config';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
-import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -15,7 +17,6 @@ import {
   getRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
-import * as request from 'supertest';
 
 enum MessageStatus {
   sent = 'sent',

@@ -1,3 +1,10 @@
+import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
+import { Repository } from 'typeorm';
+
 import { EXTERNAL_API } from '@121-service/src/config';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -9,11 +16,11 @@ import {
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
 import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
-import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
+import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import {
-  REDIS_CLIENT,
   getRedisSetName,
+  REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -21,12 +28,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import Redis from 'ioredis';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class SafaricomService

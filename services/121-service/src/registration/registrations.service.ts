@@ -1,3 +1,9 @@
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import { Equal, Repository } from 'typeorm';
+
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
@@ -9,8 +15,8 @@ import { QueueMessageService } from '@121-service/src/notifications/queue-messag
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
 import {
   ImportRegistrationsDto,
   ImportResult,
@@ -36,9 +42,9 @@ import {
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
@@ -50,11 +56,6 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
-import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsService {

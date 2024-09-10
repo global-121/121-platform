@@ -1,11 +1,3 @@
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
-import { NameConstraintQuestions } from '@121-service/src/shared/const';
-
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-
 import {
   BeforeRemove,
   Check,
@@ -17,6 +9,13 @@ import {
   Relation,
   Unique,
 } from 'typeorm';
+
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @Unique('programCustomAttributeUnique', ['name', 'programId'])
 @Entity('program_custom_attribute')

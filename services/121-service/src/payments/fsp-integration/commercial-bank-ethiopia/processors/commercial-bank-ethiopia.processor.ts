@@ -1,16 +1,17 @@
+import { Process, Processor } from '@nestjs/bull';
+import { Inject } from '@nestjs/common';
+import { Job } from 'bull';
+import Redis from 'ioredis';
+
 import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '@121-service/src/payments/enum/queue.names.enum';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import {
-  REDIS_CLIENT,
   getRedisSetName,
+  REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
-import { Process, Processor } from '@nestjs/bull';
-import { Inject } from '@nestjs/common';
-import { Job } from 'bull';
-import Redis from 'ioredis';
 
 @Processor(QueueNamePayment.paymentCommercialBankEthiopia)
 export class PaymentProcessorCommercialBankEthiopia {

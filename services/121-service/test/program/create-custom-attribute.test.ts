@@ -1,4 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
+import { HttpStatus } from '@nestjs/common';
+
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { postCustomAttribute } from '@121-service/test/helpers/program.helper';
 import {
@@ -6,7 +8,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Create program custom attributes', () => {
   let accessToken: string;

@@ -1,3 +1,12 @@
+import { BullModule } from '@nestjs/bull';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { API_PATHS } from '@121-service/src/config';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
 import { QueueNameMessageCallBack } from '@121-service/src/notifications/enum/queue.names.enum';
@@ -9,8 +18,8 @@ import { MessageStatusCallbackProcessor } from '@121-service/src/notifications/p
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
-import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
+import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -20,14 +29,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
-import { BullModule } from '@nestjs/bull';
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [

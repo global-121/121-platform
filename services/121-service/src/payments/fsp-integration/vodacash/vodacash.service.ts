@@ -1,3 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import fs from 'fs';
+import * as convert from 'xml-js';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   ImportFspReconciliationArrayDto,
@@ -16,9 +20,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { Injectable } from '@nestjs/common';
-import fs from 'fs';
-import * as convert from 'xml-js';
 
 @Injectable()
 export class VodacashService

@@ -1,10 +1,3 @@
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
-import { NameConstraintQuestions } from '@121-service/src/shared/const';
-import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   BeforeRemove,
@@ -17,6 +10,14 @@ import {
   Relation,
   Unique,
 } from 'typeorm';
+
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @Unique('programQuestionUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)

@@ -1,10 +1,9 @@
-import Helpers from '@121-e2e/pages/Helpers/Helpers';
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import ProgramTeam from '@121-e2e/pages/ProgramTeam/ProgramTeamPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
-import TableModule from '@121-e2e/pages/Table/TableModule';
-import UsersAndRoles from '@121-e2e/pages/UsersAndRoles/UsersAndRolesPage';
+import { test } from '@playwright/test';
+import { Page } from 'playwright';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import { BulkActionId } from '@121-portal/src/app/models/bulk-actions.models';
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
@@ -12,11 +11,14 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
-import { Page } from 'playwright';
-import { BulkActionId } from '../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
-import { AppRoutes } from '../../../interfaces/Portal/src/app/app-routes.enum';
-import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import Helpers from '@121-e2e/pages/Helpers/Helpers';
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import ProgramTeam from '@121-e2e/pages/ProgramTeam/ProgramTeamPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
+import UsersAndRoles from '@121-e2e/pages/UsersAndRoles/UsersAndRolesPage';
 
 const TIMEOUT_DURATION = 200;
 const PROGRAM_ID = 3;

@@ -1,6 +1,3 @@
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { isObject } from 'lodash';
 import {
   Column,
@@ -10,6 +7,10 @@ import {
   Relation,
   Unique,
 } from 'typeorm';
+
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 
 @Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
 @Entity('program_fsp_configuration')

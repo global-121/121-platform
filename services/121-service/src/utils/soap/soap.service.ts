@@ -1,9 +1,10 @@
-import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import https from 'https';
 import * as convert from 'xml-js';
+
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class SoapService {

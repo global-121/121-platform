@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -13,7 +15,6 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { HttpStatus } from '@nestjs/common';
 
 const updatePhoneNumber = '15005550099';
 

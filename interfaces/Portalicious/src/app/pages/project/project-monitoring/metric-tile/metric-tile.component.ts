@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
+
 import {
   ChipVariant,
   ColoredChipComponent,

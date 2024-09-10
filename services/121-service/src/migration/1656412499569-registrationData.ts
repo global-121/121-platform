@@ -1,10 +1,3 @@
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import fs from 'fs';
 import {
   Check,
@@ -16,6 +9,14 @@ import {
   OneToOne,
   QueryRunner,
 } from 'typeorm';
+
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
 
 // This entity was copied here during the deletion of monitoringQuestions and everything related to it
 @Entity('monitoring_question')

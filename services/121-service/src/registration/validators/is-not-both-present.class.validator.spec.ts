@@ -1,5 +1,6 @@
-import { IsNotBothPresent } from '@121-service/src/registration/validators/is-not-both-present.class.validator';
 import { validate } from 'class-validator';
+
+import { IsNotBothPresent } from '@121-service/src/registration/validators/is-not-both-present.class.validator';
 
 class TestClass {
   @IsNotBothPresent<TestClass>('testOtherProperty')

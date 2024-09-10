@@ -1,16 +1,17 @@
+import { Process, Processor } from '@nestjs/bull';
+import { Inject } from '@nestjs/common';
+import { Job } from 'bull';
+import Redis from 'ioredis';
+
 import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '@121-service/src/payments/enum/queue.names.enum';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import {
-  REDIS_CLIENT,
   getRedisSetName,
+  REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
-import { Process, Processor } from '@nestjs/bull';
-import { Inject } from '@nestjs/common';
-import { Job } from 'bull';
-import Redis from 'ioredis';
 
 @Processor(QueueNamePayment.paymentIntersolveVisa)
 export class PaymentProcessorIntersolveVisa {

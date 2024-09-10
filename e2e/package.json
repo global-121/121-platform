@@ -23,9 +23,9 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-promise": "^7.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.9.0",
     "prettier": "3.3.3",
-    "prettier-plugin-organize-imports": "^4.0.0",
     "supertest": "^7.0.0",
     "typescript-eslint": "^8.5.0"
   },
