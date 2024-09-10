@@ -149,11 +149,11 @@ export class IntersolveVoucherCronService {
         .leftJoin('image.registration', 'registration')
         .where('send = false')
         .andWhere('voucher.created < :sixteenHoursAgo', {
-          sixteenHoursAgo: sixteenHoursAgo,
+          sixteenHoursAgo,
         })
         .andWhere('"whatsappPhoneNumber" is not NULL')
         .andWhere('voucher.payment >= :minimumPayment', {
-          minimumPayment: minimumPayment,
+          minimumPayment,
         })
         .andWhere('registration.programId = :programId', {
           programId: program.id,
@@ -218,7 +218,7 @@ export class IntersolveVoucherCronService {
     referenceId: string,
   ): Promise<string> {
     const registration = await this.registrationRepository.findOneBy({
-      referenceId: referenceId,
+      referenceId,
     });
 
     if (registration && registration.preferredLanguage) {

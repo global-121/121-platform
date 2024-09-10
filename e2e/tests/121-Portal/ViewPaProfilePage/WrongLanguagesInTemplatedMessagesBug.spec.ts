@@ -80,9 +80,9 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.applyBulkAction(BulkActionId.sendMessage);
     await table.selectFieldsforCustomMessage({
-      selectFieldDropdownName: selectFieldDropdownName,
-      fullName: fullName,
-      addPersonalizedFieldName: addPersonalizedFieldName,
+      selectFieldDropdownName,
+      fullName,
+      addPersonalizedFieldName,
       okButtonName: ok,
     });
   });

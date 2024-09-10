@@ -180,8 +180,8 @@ class TableModule {
 
     if (
       !(await this.retryCheckTextContent({
-        textLocator: textLocator,
-        expectedText: expectedText,
+        textLocator,
+        expectedText,
       }))
     ) {
       expect(expectedText).toBe(await textLocator.textContent());
@@ -253,9 +253,9 @@ class TableModule {
 
     if (
       !(await this.retryCheckTextContentOfBulkAction({
-        textLocator: textLocator,
-        expectedText: expectedText,
-        bulkAction: bulkAction,
+        textLocator,
+        expectedText,
+        bulkAction,
       }))
     ) {
       expect(expectedText).toBe(await textLocator.textContent());

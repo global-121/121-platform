@@ -355,8 +355,8 @@ export class SeedHelper {
       id: userId,
     });
     await assignmentRepository.save({
-      scope: scope,
-      user: user,
+      scope,
+      user,
       program: await programRepository.findOne({
         where: {
           id: Equal(programId),

@@ -11,7 +11,7 @@ describe('User mapper', () => {
     const username = 'test@example.org';
     const user: UserEntity = {
       id: userId,
-      username: username,
+      username,
       password: 'testPassword',
       programAssignments: [],
       actions: [],
@@ -35,7 +35,7 @@ describe('User mapper', () => {
 
     const expectedResult: UserOwnerDto = {
       id: userId,
-      username: username,
+      username,
     };
 
     // Act

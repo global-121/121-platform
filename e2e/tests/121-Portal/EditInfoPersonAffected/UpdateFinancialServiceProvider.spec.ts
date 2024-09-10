@@ -62,7 +62,7 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
 
   await test.step('Validate Finacial service provider be updated', async () => {
     await table.validateFspCell({
-      rowNumber: rowNumber,
+      rowNumber,
       fspName: visaFspName,
     });
   });

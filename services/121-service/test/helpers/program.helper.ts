@@ -113,7 +113,7 @@ export async function doPayment(
     .query(queryParams)
     .send({
       payment: paymentNr,
-      amount: amount,
+      amount,
     });
 }
 
@@ -133,7 +133,7 @@ export async function doPaymentForAllPAs({
     .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
-      amount: amount,
+      amount,
     });
 }
 
@@ -168,7 +168,7 @@ export async function getTransactions(
   return await getServer()
     .get(`/programs/${programId}/transactions`)
     .set('Cookie', [accessToken])
-    .query({ payment: paymentNr, referenceId: referenceId });
+    .query({ payment: paymentNr, referenceId });
 }
 
 export async function getFspInstructions(
@@ -198,14 +198,14 @@ export async function updateFinancialServiceProvider(
     .put(`/programs/${programId}/registrations/${paymentReferenceIds}/fsp`)
     .set('Cookie', [accessToken])
     .send({
-      newFspName: newFspName,
+      newFspName,
       newFspAttributes: {
-        whatsappPhoneNumber: whatsappPhoneNumber,
-        addressStreet: addressStreet,
-        addressHouseNumber: addressHouseNumber,
-        addressHouseNumberAddition: addressHouseNumberAddition,
-        addressPostalCode: addressPostalCode,
-        addressCity: addressCity,
+        whatsappPhoneNumber,
+        addressStreet,
+        addressHouseNumber,
+        addressHouseNumberAddition,
+        addressPostalCode,
+        addressCity,
       },
     });
 }
@@ -468,7 +468,7 @@ export async function postNote(
   return await getServer()
     .post(`/programs/${programId}/notes`)
     .set('Cookie', [accessToken])
-    .send({ referenceId: referenceId, text: text });
+    .send({ referenceId, text });
 }
 
 export async function getNotes(

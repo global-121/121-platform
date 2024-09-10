@@ -182,7 +182,7 @@ export class MetricsService {
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
-      data: data,
+      data,
     };
     return response;
   }
@@ -195,7 +195,7 @@ export class MetricsService {
     );
     const response = {
       fileName: 'inclusion-list',
-      data: data,
+      data,
     };
     return response;
   }
@@ -413,7 +413,7 @@ export class MetricsService {
     // Create an empty scoped querybuilder object
     let queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
-      .andWhere({ programId: programId });
+      .andWhere({ programId });
 
     if (exportType !== ExportType.allPeopleAffected && !filter?.['status']) {
       queryBuilder = queryBuilder.andWhere(
@@ -458,11 +458,11 @@ export class MetricsService {
     const chunkSize = 10000;
     const paginateQuery = {
       path: 'registration',
-      filter: filter,
+      filter,
       limit: chunkSize,
       page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
-      search: search,
+      search,
     };
 
     const data =
@@ -491,11 +491,11 @@ export class MetricsService {
         'registration."scope" AS scope',
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
-      .andWhere({ programId: programId })
+      .andWhere({ programId })
       .andWhere(
         'registration."registrationProgramId" IN (:...registrationIds)',
         {
-          registrationIds: registrationIds,
+          registrationIds,
         },
       )
       .orderBy('"registration"."registrationProgramId"', 'ASC');
@@ -870,11 +870,11 @@ export class MetricsService {
       .addSelect('transaction.payment', 'payment')
       .addSelect('MAX(transaction.created)', 'maxCreated')
       .andWhere('transaction.program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .andWhere('transaction.payment between :minPaymentId and :maxPaymentId', {
-        minPaymentId: minPaymentId,
-        maxPaymentId: maxPaymentId,
+        minPaymentId,
+        maxPaymentId,
       })
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
@@ -1004,7 +1004,7 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       })
       .getRawOne();
     const program = await this.programRepository.findOneByOrFail({
@@ -1020,7 +1020,7 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       })
       .getRawOne();
     while (i <= paymentNrSearch) {
@@ -1073,7 +1073,7 @@ export class MetricsService {
           transactionStep: transactionStepOfInterest,
         })
         .andWhere('transaction.programId = :programId', {
-          programId: programId,
+          programId,
         })
         .getCount();
     } else {
@@ -1122,7 +1122,7 @@ export class MetricsService {
       .select('SUM(transaction.amount)', 'spentMoney')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       })
       .getRawOne();
     const spentMoney = result.spentMoney;
@@ -1157,7 +1157,7 @@ export class MetricsService {
       .createQueryBuilder('registration')
       .select(`registration."registrationStatus" AS status`)
       .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
-      .andWhere({ programId: programId })
+      .andWhere({ programId })
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();

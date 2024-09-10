@@ -121,7 +121,7 @@ export class ExcelService
         },
       )
       .andWhere('program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .getOneOrFail();
 
@@ -198,7 +198,7 @@ export class ExcelService
         { configName: FinancialServiceProviderConfigurationEnum.columnToMatch },
       )
       .andWhere('program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .getOne();
     const matchColumn: string = programWithConfig?.programFspConfiguration[0]

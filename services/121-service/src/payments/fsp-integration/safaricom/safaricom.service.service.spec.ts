@@ -21,15 +21,15 @@ const sendPaymentData: PaPaymentDataDto[] = [
     paymentAddress: '14155238886',
     fspName: FinancialServiceProviderName.safaricom,
     bulkSize: 1,
-    userId: userId,
+    userId,
   },
 ];
 
 const paymentDetailsResult: SafaricomJobDto = {
   paPaymentData: sendPaymentData[0],
-  programId: programId,
-  paymentNr: paymentNr,
-  userId: userId,
+  programId,
+  paymentNr,
+  userId,
 };
 
 describe('SafaricomService', () => {

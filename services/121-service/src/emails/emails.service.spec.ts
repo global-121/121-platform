@@ -54,8 +54,8 @@ describe('EmailsService', () => {
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         email: payload.email,
-        subject: subject,
-        body: body,
+        subject,
+        body,
       }),
     );
   });
@@ -78,8 +78,8 @@ describe('EmailsService', () => {
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         email: payload.email,
-        subject: subject,
-        body: body,
+        subject,
+        body,
       }),
     );
   });
@@ -100,8 +100,8 @@ describe('EmailsService', () => {
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         email: payload.email,
-        subject: subject,
-        body: body,
+        subject,
+        body,
       }),
     );
   });
@@ -120,8 +120,8 @@ describe('EmailsService', () => {
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         email: payload.email,
-        subject: subject,
-        body: body,
+        subject,
+        body,
       }),
     );
   });

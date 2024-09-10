@@ -72,7 +72,7 @@ export class EventsService {
     const { registrationId, queryParams } = searchOptions;
     const whereStatement = {
       registration: {
-        programId: programId,
+        programId,
       },
     };
     if (registrationId) {

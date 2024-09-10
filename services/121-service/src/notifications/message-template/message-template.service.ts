@@ -23,18 +23,18 @@ export class MessageTemplateService {
     type?: string,
     language?: string,
   ): Promise<MessageTemplateEntity[]> {
-    let where: any = { programId: programId };
+    let where: any = { programId };
 
     if (type) {
-      where = { ...where, type: type };
+      where = { ...where, type };
     }
 
     if (language) {
-      where = { ...where, language: language };
+      where = { ...where, language };
     }
 
     return await this.messageTemplateRepository.find({
-      where: where,
+      where,
     });
   }
 
@@ -107,13 +107,13 @@ export class MessageTemplateService {
   ): Promise<DeleteResult> {
     if (language) {
       return await this.messageTemplateRepository.delete({
-        programId: programId,
+        programId,
         type: messageType,
-        language: language,
+        language,
       });
     } else {
       return await this.messageTemplateRepository.delete({
-        programId: programId,
+        programId,
         type: messageType,
       });
     }

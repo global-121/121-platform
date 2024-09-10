@@ -48,6 +48,7 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'object-shorthand': 'error',
         'promise/no-nesting': 'error',
         'promise/no-callback-in-promise': 'error',
         'promise/no-multiple-resolved': 'error',

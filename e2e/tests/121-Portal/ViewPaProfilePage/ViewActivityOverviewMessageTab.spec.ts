@@ -52,8 +52,8 @@ test('[27497] View Activity overview “Messages tab"', async ({ page }) => {
     await registration.openActivityOverviewTab('Messages');
     await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
-      messageContext: messageContext,
-      messageType: messageType,
+      messageContext,
+      messageType,
     });
   });
 });

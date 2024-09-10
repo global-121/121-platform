@@ -132,7 +132,7 @@ export class PaymentsService {
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
       .andWhere('transaction.program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .groupBy('payment')
       .getRawMany();
@@ -240,7 +240,7 @@ export class PaymentsService {
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
-      fspsInPayment: fspsInPayment,
+      fspsInPayment,
     };
 
     const referenceIds = registrationsForPayment.map(
@@ -618,7 +618,7 @@ export class PaymentsService {
     let rawResult;
     if (referenceIds && referenceIds.length > 0) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
-        referenceIds: referenceIds,
+        referenceIds,
       });
       rawResult = await q.getRawMany();
       for (const row of rawResult) {
@@ -666,13 +666,13 @@ export class PaymentsService {
     const q = this.getPaymentRegistrationsQuery(programId);
     q.addSelect('registration."paymentAmountMultiplier"');
     q.andWhere('registration."referenceId" IN (:...referenceIds)', {
-      referenceIds: referenceIds,
+      referenceIds,
     });
     const result = await q.getRawMany();
     const paPaymentDataList: PaPaymentDataDto[] = [];
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
-        userId: userId,
+        userId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
@@ -783,7 +783,7 @@ export class PaymentsService {
 
     return {
       data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
-      fileType: fileType,
+      fileType,
     };
   }
 

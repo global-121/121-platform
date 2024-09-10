@@ -33,7 +33,7 @@ const paymentDetailsResult: IntersolveVoucherJobDto = {
   useWhatsapp: true,
   payment: paymentNr,
   credentials: mockCredentials,
-  programId: programId,
+  programId,
 };
 
 describe('IntersolveVoucherService', () => {

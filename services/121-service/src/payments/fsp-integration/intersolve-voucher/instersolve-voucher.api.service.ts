@@ -143,7 +143,7 @@ export class IntersolveVoucherApiService {
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({
-        refPos: refPos,
+        refPos,
       });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
@@ -158,8 +158,8 @@ export class IntersolveVoucherApiService {
     const transactionId = Number(transactionIdString);
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({
-        cardId: cardId,
-        transactionId: transactionId,
+        cardId,
+        transactionId,
       });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
@@ -203,7 +203,7 @@ export class IntersolveVoucherApiService {
     };
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({
-        refPos: refPos,
+        refPos,
       });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled =

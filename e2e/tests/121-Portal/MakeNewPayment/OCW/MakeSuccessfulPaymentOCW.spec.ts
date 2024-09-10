@@ -82,7 +82,7 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
 
     await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
@@ -90,8 +90,8 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
     await registrationPage.openActivityOverviewTab(paymentFilterByTab);
     await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
-      messageContext: messageContext,
-      messageType: messageType,
+      messageContext,
+      messageType,
     });
   });
 });

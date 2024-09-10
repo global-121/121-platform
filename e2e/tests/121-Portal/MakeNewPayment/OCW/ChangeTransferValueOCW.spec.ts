@@ -90,7 +90,7 @@ test('[28447] OCW: Send payment instructions with changed transfer value', async
     await registrationPage.validateQuantityOfActivity({ quantity: 5 });
     await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
@@ -98,8 +98,8 @@ test('[28447] OCW: Send payment instructions with changed transfer value', async
     await registrationPage.openActivityOverviewTab(paymentFilterByTab);
     await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
-      messageContext: messageContext,
-      messageType: messageType,
+      messageContext,
+      messageType,
     });
   });
 });

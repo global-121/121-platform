@@ -574,7 +574,7 @@ export class RegistrationsBulkService {
       .delete()
       .from(SafaricomRequestEntity)
       .where('transactionId IN  (:...transactionIds)', {
-        transactionIds: transactionIds,
+        transactionIds,
       })
       .execute();
 

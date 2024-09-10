@@ -70,18 +70,12 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessageRequest(
-              { headers, url, payload: payload },
-              response,
-            );
+            this.logMessageRequest({ headers, url, payload }, response);
             return response;
           }),
           catchError((err) => {
             const errorResponse = err.response || this.setNoResponseError(err);
-            this.logErrorRequest(
-              { headers, url, payload: payload },
-              errorResponse,
-            );
+            this.logErrorRequest({ headers, url, payload }, errorResponse);
             return of(errorResponse);
           }),
         ),
@@ -100,18 +94,12 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessageRequest(
-              { headers, url, payload: payload },
-              response,
-            );
+            this.logMessageRequest({ headers, url, payload }, response);
             return response;
           }),
           catchError((err) => {
             const errorResponse = err.response || this.setNoResponseError(err);
-            this.logErrorRequest(
-              { headers, url, payload: payload },
-              errorResponse,
-            );
+            this.logErrorRequest({ headers, url, payload }, errorResponse);
             return of(errorResponse);
           }),
         ),
@@ -130,18 +118,12 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessageRequest(
-              { headers, url, payload: payload },
-              response,
-            );
+            this.logMessageRequest({ headers, url, payload }, response);
             return response;
           }),
           catchError((err) => {
             const errorResponse = err.response || this.setNoResponseError(err);
-            this.logErrorRequest(
-              { headers, url, payload: payload },
-              errorResponse,
-            );
+            this.logErrorRequest({ headers, url, payload }, errorResponse);
             return of(errorResponse);
           }),
         ),

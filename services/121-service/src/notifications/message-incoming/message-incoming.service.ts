@@ -102,7 +102,7 @@ export class MessageIncomingService {
 
   public async findOne(sid: string): Promise<TwilioMessageEntity | null> {
     const findOneOptions = {
-      sid: sid,
+      sid,
     };
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }

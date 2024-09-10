@@ -35,7 +35,7 @@ test('[29759] Assign successfully roles to a user ', async ({ page }) => {
   await test.step('Validate available system users are visible', async () => {
     await manageTeam.openAddUserForm();
     await manageTeam.addUserToTeam({
-      userSearchPhrase: userSearchPhrase,
+      userSearchPhrase,
       userEmail: userFullEmail,
       role: userRole,
     });

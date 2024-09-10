@@ -77,7 +77,7 @@ test('[28468] PV: Retry payment for all failed payments of PAs', async ({
       programId: programIdPV,
       paymentNr: 1,
       amount: defaultTransferValue,
-      accessToken: accessToken,
+      accessToken,
     });
     await page.reload();
     await paymentsPage.validatePaymentStatus({});

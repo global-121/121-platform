@@ -54,7 +54,7 @@ export const API_PATHS = {
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 export const EXTERNAL_API = {
-  baseApiUrl: baseApiUrl,
+  baseApiUrl,
   root: rootUrl,
   rootApi: `${rootUrl}api`,
   smsStatus: baseApiUrl + API_PATHS.smsStatus,

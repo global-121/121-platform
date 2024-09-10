@@ -346,7 +346,7 @@ export class IntersolveVisaService
       }
       const registrationDataOption = {
         name: attr,
-        relation: relation,
+        relation,
       };
       registrationDataOptions.push(registrationDataOption);
     }
@@ -774,8 +774,8 @@ export class IntersolveVisaService
     const saleId = `${referenceId}-${payment}`;
 
     const payload: IntersolveLoadDto = {
-      reference: reference,
-      saleId: saleId,
+      reference,
+      saleId,
       quantities: [
         {
           quantity: {
@@ -797,7 +797,7 @@ export class IntersolveVisaService
   ): Promise<IntersolveLoadResponseDto> {
     const reference = uuid();
     const payload: IntersolveLoadDto = {
-      reference: reference,
+      reference,
       quantities: [
         {
           quantity: {
@@ -926,8 +926,8 @@ export class IntersolveVisaService
           wallet.tokenCode === visaCustomer.visaWallets[0].tokenCode,
           {
             tokenCode: wallet.tokenCode ?? '',
-            programId: programId,
-            referenceId: referenceId,
+            programId,
+            referenceId,
           },
         );
       walletDetailsResponse.status = statusInfo.walletStatus121;
@@ -980,7 +980,7 @@ export class IntersolveVisaService
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     visaCustomer.visaWallets.sort((a, b) => (a.created > b.created ? -1 : 1));
-    return { registration: registration, visaCustomer: visaCustomer };
+    return { registration, visaCustomer };
   }
 
   public async toggleBlockWallet(
@@ -1052,7 +1052,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId: userId,
+      userId,
     });
     return result;
   }
@@ -1414,7 +1414,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId: userId,
+      userId,
     });
   }
 

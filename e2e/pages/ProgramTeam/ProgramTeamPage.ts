@@ -49,7 +49,7 @@ class ProgramTeam {
 
   async fillInTeamMemberName({ name }: { name: string }) {
     await this.page.getByPlaceholder('Select a team member').fill(name);
-    await this.page.getByRole('button', { name: name }).click();
+    await this.page.getByRole('button', { name }).click();
   }
 
   async clickEditTeamMember({ noteIndex = 0 }: { noteIndex?: number }) {

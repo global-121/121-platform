@@ -101,7 +101,7 @@ export class RegistrationsService {
   ) {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
-      .andWhere({ referenceId: referenceId });
+      .andWhere({ referenceId });
     const paginateResult =
       await this.registrationsPaginationService.getPaginate(
         { path: '' },
@@ -177,7 +177,7 @@ export class RegistrationsService {
         select: ['id', 'status'],
       });
     await this.registrationScopedRepository.updateUnscoped(
-      { referenceId: referenceId },
+      { referenceId },
       { registrationStatus: status },
     );
     const registrationAfterUpdate =
@@ -260,7 +260,7 @@ export class RegistrationsService {
     }
     const registration = await this.registrationScopedRepository.findOne({
       where: { referenceId: Equal(referenceId) },
-      relations: relations,
+      relations,
     });
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known (within your scope).`;
@@ -651,7 +651,7 @@ export class RegistrationsService {
       .createQueryBuilder('registrationData')
       .leftJoinAndSelect('registrationData.registration', 'registration')
       .andWhere('registrationData.value = :phoneNumber', {
-        phoneNumber: phoneNumber,
+        phoneNumber,
       })
       .getMany();
 
@@ -848,7 +848,7 @@ export class RegistrationsService {
       referenceId,
       attribute: attributeName,
       value,
-      userId: userId,
+      userId,
     };
     const errors = await validate(
       plainToClass(UpdateAttributeDto, attributeDto),
@@ -879,7 +879,7 @@ export class RegistrationsService {
       .leftJoin('registration.twilioMessages', 'twilioMessage')
       .leftJoin('twilioMessage.user', 'user')
       .andWhere('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
+        referenceId,
       })
       .orderBy('twilioMessage.dateCreated', 'DESC')
       .getRawMany();

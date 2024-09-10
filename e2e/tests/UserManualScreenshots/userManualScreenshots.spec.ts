@@ -81,15 +81,15 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await helpers.takeFullScreenShot({ fileName: 'HomeMenuPage' });
 
   await navigateAndScreenshot({
-    page: page,
-    helpers: helpers,
+    page,
+    helpers,
     url: '/user',
     fileName: 'ChangePassword',
   });
 
   await navigateAndScreenshot({
     page,
-    helpers: helpers,
+    helpers,
     url: '/users',
     fileName: 'ListofUsers',
   });
@@ -99,8 +99,8 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await helpers.takeFullScreenShot({ fileName: 'UsersRoleTab' });
 
   await navigateAndScreenshot({
-    page: page,
-    helpers: helpers,
+    page,
+    helpers,
     url: `/program/${PROGRAM_ID}/team`,
     fileName: 'ProgramTeam',
   });
@@ -137,8 +137,8 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   });
 
   await navigateAndScreenshot({
-    page: page,
-    helpers: helpers,
+    page,
+    helpers,
     url: `/program/${PROGRAM_ID}/overview`,
     fileName: 'ProgramDetails',
   });
@@ -236,8 +236,8 @@ test.skip('Navigates to the portal and takes screenshots', async ({ page }) => {
   await helpers.clickButton({ buttonName: OK });
 
   await navigateAndScreenshot({
-    page: page,
-    helpers: helpers,
+    page,
+    helpers,
     url: `/program/${PROGRAM_ID}/people-affected`,
     fileName: 'PeopleAffectedDifferentStatus',
   });

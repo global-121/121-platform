@@ -52,8 +52,8 @@ export class VodacashService
       };
 
       const transactionRelationDetails = {
-        programId: programId,
-        paymentNr: paymentNr,
+        programId,
+        paymentNr,
         userId: payment.userId,
       };
 

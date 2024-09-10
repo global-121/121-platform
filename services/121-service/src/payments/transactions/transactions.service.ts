@@ -122,29 +122,29 @@ export class TransactionsService {
       .leftJoin('transaction.registration', 'r')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       });
     if (payment) {
       transactionQuery = transactionQuery.andWhere(
         'transaction.payment = :payment',
-        { payment: payment },
+        { payment },
       );
     }
     if (referenceId) {
       transactionQuery = transactionQuery.andWhere(
         'r."referenceId" = :referenceId',
-        { referenceId: referenceId },
+        { referenceId },
       );
     }
     if (status) {
       transactionQuery = transactionQuery.andWhere(
         'transaction.status = :status',
-        { status: status },
+        { status },
       );
     }
     if (fspName) {
       transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
-        fspName: fspName,
+        fspName,
       });
     }
     return transactionQuery;
@@ -372,7 +372,7 @@ export class TransactionsService {
         amount: transactionResponse.calculatedAmount,
         registrationId: transactionResponse.registrationId,
         financialServiceProvider: fsp,
-        program: program,
+        program,
         payment: transactionRelationDetails.paymentNr,
         userId: transactionRelationDetails.userId,
         status: transactionResponse.status,

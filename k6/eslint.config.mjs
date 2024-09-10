@@ -8,4 +8,9 @@ export default [
   pluginJs.configs.recommended,
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
+  {
+    rules: {
+      'object-shorthand': 'error',
+    },
+  },
 ];

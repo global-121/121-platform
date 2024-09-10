@@ -75,20 +75,20 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
 
   await test.step('Check payment status under export payment data', async () => {
     await paymentsPage.verifyPaymentOptionUnderPaymentData({
-      paymentNumber: paymentNumber,
+      paymentNumber,
     });
   });
 
   await test.step('Check payment status under bulk action', async () => {
     await paymentsPage.verifyPaymentOptionUnderAction({
-      paymentNumber: paymentNumber,
+      paymentNumber,
     });
   });
 
   await test.step('Check payment history', async () => {
     await paymentsPage.openPaymentHistory({});
     await registrationPage.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
@@ -99,8 +99,8 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
     await paymentsPage.openMessage({});
     await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
-      messageContext: messageContext,
-      messageType: messageType,
+      messageContext,
+      messageType,
     });
     await paymentsPage.closePopup(cancel);
   });
@@ -109,8 +109,8 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
     const option = `Payment #${paymentNumber}`;
     await paymentsPage.selectPaymentOption(option);
     await table.exportPayMentData({
-      status: status,
-      amount: amount,
+      status,
+      amount,
     });
   });
 });

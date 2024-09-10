@@ -55,9 +55,9 @@ export class SafaricomService
   ): Promise<void> {
     for (const paPaymentData of paymentList) {
       const jobData: SafaricomJobDto = {
-        paPaymentData: paPaymentData,
-        programId: programId,
-        paymentNr: paymentNr,
+        paPaymentData,
+        programId,
+        paymentNr,
         userId: paPaymentData.userId,
       };
       const job = await this.paymentSafaricomQueue.add(
@@ -137,7 +137,7 @@ export class SafaricomService
         'data.value AS "nationalId"',
       ])
       .where('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
+        referenceId,
       })
       .andWhere('programQuestion.name IN (:...names)', {
         names: ['nationalId'],
