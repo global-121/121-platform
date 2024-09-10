@@ -25,6 +25,6 @@ export class SafaricomTransferEntity extends Base121Entity {
   @OneToOne(() => TransactionEntity)
   @JoinColumn({ name: 'transactionId' })
   transaction: TransactionEntity;
-  @Column({ type: 'int', nullable: true })
-  public transactionId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public transactionId: number;
 }

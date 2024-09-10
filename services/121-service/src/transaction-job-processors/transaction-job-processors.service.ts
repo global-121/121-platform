@@ -14,6 +14,7 @@ import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-i
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
@@ -282,11 +283,15 @@ export class TransactionJobProcessorsService {
         )}_${generateRandomString(3)}`,
       });
     } catch (error) {
-      await this.transactionScopedRepository.update(
-        { id: transaction.id },
-        { status: TransactionStatusEnum.error, errorMessage: error?.message },
-      );
-      return;
+      if (error instanceof SafaricomApiError) {
+        await this.transactionScopedRepository.update(
+          { id: transaction.id },
+          { status: TransactionStatusEnum.error, errorMessage: error?.message },
+        );
+        return;
+      } else {
+        throw error;
+      }
     }
 
     // 5. No messages sent for safaricom
