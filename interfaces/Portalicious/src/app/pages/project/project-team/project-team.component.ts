@@ -97,10 +97,10 @@ export class ProjectTeamComponent {
   ]);
 
   canManageAidworkers = computed(() =>
-    this.authService.hasPermission(
-      this.projectId(),
-      PermissionEnum.AidWorkerProgramUPDATE,
-    ),
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+    }),
   );
 
   enableScope = computed(() => this.project.data()?.enableScope ?? false);
