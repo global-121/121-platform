@@ -243,20 +243,18 @@ export class IntersolveVisaService
 
     const createCustomerResult =
       await this.intersolveVisaApiService.createCustomer({
-        externalReference: {
-          externalReference: createCustomerReference,
-          name,
-          contactInformation: {
-            addressStreet: contactInformation.addressStreet,
-            addressHouseNumber: contactInformation.addressHouseNumber,
-            addressHouseNumberAddition:
-              contactInformation.addressHouseNumberAddition,
-            addressPostalCode: contactInformation.addressPostalCode,
-            addressCity: contactInformation.addressCity,
-            phoneNumber: contactInformation.phoneNumber,
-          },
-          estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100,
+        externalReference: createCustomerReference,
+        name,
+        contactInformation: {
+          addressStreet: contactInformation.addressStreet,
+          addressHouseNumber: contactInformation.addressHouseNumber,
+          addressHouseNumberAddition:
+            contactInformation.addressHouseNumberAddition,
+          addressPostalCode: contactInformation.addressPostalCode,
+          addressCity: contactInformation.addressCity,
+          phoneNumber: contactInformation.phoneNumber,
         },
+        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100,
       });
 
     // if success, store customer
