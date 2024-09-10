@@ -30,11 +30,6 @@ import {
   QueueNameMessageCallBack,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import {
-  ProcessNameMessage,
-  QueueNameMessageCallBack,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { InjectQueue } from '@nestjs/bull';
