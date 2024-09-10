@@ -16,12 +16,8 @@ class ProjectTeam extends BasePage {
     this.page = page;
     this.tableRows = this.page.locator('table tbody tr');
     this.usersDropdown = this.page.getByRole('option');
-    this.chooseUserDropdown = this.page.locator(
-      `[formControlName="userValue"]`,
-    );
-    this.chooseRoleDropdown = this.page.locator(
-      `[formControlName="rolesValue"]`,
-    );
+    this.chooseUserDropdown = this.page.getByLabel('Choose user')
+    this.chooseRoleDropdown = this.page.getByLabel('Assign roles');
     this.submitButton = this.page.getByRole('button', { name: 'Submit' });
     this.removeUserButton = this.page.getByRole('button', {
       name: 'Remove user',
