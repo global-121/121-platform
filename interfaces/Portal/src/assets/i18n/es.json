@@ -403,7 +403,7 @@
             "error": {
               "not-an-integer": "La entrada debe ser un número entero",
               "not-empty": "La entrada no puede estar vacía",
-              "too-low": "La entrada debe ser mayor que el número de pagos que ya se han enviado"
+              "too-low": "La entrada debe ser mayor o igual que el número de pagos que ya se han enviado"
             },
             "maxPayments": {
               "explanation": "El número máximo de pagos para esta Persona Afectada. Puede eliminar el límite eliminando el valor y guardando.",

@@ -383,7 +383,7 @@
             "error": {
               "not-an-integer": "Input should be an integer",
               "not-empty": "Input cannot be empty",
-              "too-low": "Input should be higher than the number of payments that have already been sent"
+              "too-low": "Input should be higher than or equal to the number of payments that have already been sent."
             },
             "maxPayments": {
               "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.",
