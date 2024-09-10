@@ -16,16 +16,8 @@ const expectedInitialAssignedUsers = [
   'finance-officer@example.org',
   'view-no-pii@example.org',
 ];
-const expectedFinalAssignedUsers = [
-  'admin@example.org',
-  'program-admin@example.org',
-  'view-user@example.org',
-  'kobo-user@example.org',
-  'cva-manager@example.org',
-  'cva-officer@example.org',
-  'finance-manager@example.org',
-  'finance-officer@example.org',
-];
+const userToRemove = 'view-no-pii@example.org';
+const expectedFinalAssignedUsers = expectedInitialAssignedUsers.filter(email => email !== userToRemove);
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.test);
