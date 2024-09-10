@@ -3,6 +3,7 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import FspName from '@121-portal/src/app/enums/fsp-name.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -12,7 +13,6 @@ import {
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -86,7 +86,7 @@ test.beforeEach(async ({ page }) => {
     paymentReferenceIds,
     accessToken,
     3001,
-    Object.values(StatusEnum),
+    Object.values(TransactionStatusEnum),
   );
 
   await updateFinancialServiceProvider(
