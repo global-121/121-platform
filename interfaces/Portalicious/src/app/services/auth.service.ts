@@ -148,32 +148,55 @@ export class AuthService {
     });
   }
 
-  private isAssignedToProgram(
-    programId: number,
-    user?: LocalStorageUser | null,
-  ): boolean {
+  private isAssignedToProject({
+    projectId,
+    user,
+  }: {
+    projectId: number;
+    user?: LocalStorageUser | null;
+  }): boolean {
     user = user ?? this.user;
     return (
       !!user?.permissions &&
-      Object.keys(user.permissions).includes(String(programId))
+      Object.keys(user.permissions).includes(String(projectId))
     );
   }
 
-  public hasPermission(
-    programId: number,
-    requiredPermission: PermissionEnum,
-    user?: LocalStorageUser | null,
-  ): boolean {
+  public hasPermission({
+    projectId,
+    requiredPermission,
+    user,
+  }: {
+    projectId: number;
+    requiredPermission: PermissionEnum;
+    user?: LocalStorageUser | null;
+  }): boolean {
     user = user ?? this.user;
     // During development: Use this to simulate a user not having a certain permission
-    // user.permissions[programId] = user.permissions[programId].filter(
+    // user.permissions[projectId] = user.permissions[projectId].filter(
     //   (p) => p !== Permission.FspDebitCardBLOCK,
     // );
 
     return (
       !!user?.permissions &&
-      this.isAssignedToProgram(programId, user) &&
-      user.permissions[programId].includes(requiredPermission)
+      this.isAssignedToProject({ projectId, user }) &&
+      user.permissions[projectId].includes(requiredPermission)
+    );
+  }
+
+  public hasAllPermissions({
+    projectId,
+    requiredPermissions,
+  }: {
+    projectId: number;
+    requiredPermissions: PermissionEnum[];
+  }): boolean {
+    return requiredPermissions.every((permissionName) =>
+      this.hasPermission({
+        projectId,
+        requiredPermission: permissionName,
+        user: this.user,
+      }),
     );
   }
 }

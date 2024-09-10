@@ -34,7 +34,9 @@ export const projectPermissionsGuard: (
       throw new Error('projectId is not a number');
     }
 
-    if (authService.hasPermission(projectId, permission)) {
+    if (
+      authService.hasPermission({ projectId, requiredPermission: permission })
+    ) {
       return true;
     }
 
