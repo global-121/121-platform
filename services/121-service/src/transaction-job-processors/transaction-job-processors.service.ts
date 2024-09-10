@@ -15,7 +15,6 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
-import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -225,10 +224,12 @@ export class TransactionJobProcessorsService {
   }
 
   public async processSafaricomTransactionJob(
-    input: SafaricomTransactionJobDto,
+    transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
     // 1. Get additional data
-    const registration = await this.getRegistrationOrThrow(input.referenceId);
+    const registration = await this.getRegistrationOrThrow(
+      transactionJob.referenceId,
+    );
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
       await this.getFinancialServiceProviderOrThrow(
@@ -236,19 +237,19 @@ export class TransactionJobProcessorsService {
       );
 
     // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(input)) {
+    for (const [name, value] of Object.entries(transactionJob)) {
       // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
       if (value === null || value === undefined || value === '') {
         const errorText = `Property ${name} is undefined`;
         await this.createTransactionAndUpdateRegistration({
-          programId: input.programId,
-          paymentNumber: input.paymentNumber,
-          userId: input.userId,
-          calculatedTransferAmountInMajorUnit: input.transactionAmount,
+          programId: transactionJob.programId,
+          paymentNumber: transactionJob.paymentNumber,
+          userId: transactionJob.userId,
+          calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
           financialServiceProviderId: financialServiceProvider.id,
           registration,
           oldRegistration,
-          isRetry: input.isRetry,
+          isRetry: transactionJob.isRetry,
           status: TransactionStatusEnum.error,
           errorText,
         });
@@ -256,57 +257,44 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Start the transfer, save error transaction on failure and return early
-    let safaricomDoTransferResult: DoTransferReturnType;
-    try {
-      safaricomDoTransferResult = await this.safaricomService.doTransfer({
-        transactionAmount: input.transactionAmount,
-        phoneNumber: input.phoneNumber!,
-        remarks: `Payment ${input.paymentNumber}`,
-        occasion: input.referenceId,
-        originatorConversationId: `P${input.programId}PA${registration.registrationProgramId}_${this.formatDate(
-          new Date(),
-        )}_${generateRandomString(3)}`,
-        idNumber: input.idNumber!,
-      });
-    } catch (error) {
-      await this.createTransactionAndUpdateRegistration({
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
-        calculatedTransferAmountInMajorUnit: input.transactionAmount,
-        financialServiceProviderId: financialServiceProvider.id,
-        registration,
-        oldRegistration,
-        isRetry: input.isRetry,
-        status: TransactionStatusEnum.error,
-        errorText: error?.message,
-      });
-      return;
-    }
-
-    // 4. If transfer is successful, create message and add to queue (not needed right now for safaricom)
-
-    // 5. create success transaction and update registration
+    // 3. Save the transaction into database with 'waiting' status and then call to safaricom for payouts. And then safaricom will return the
+    // actual payout status in callback url and then we will update the transaction status to success or error after procced the callback.
     const transaction = await this.createTransactionAndUpdateRegistration({
-      programId: input.programId,
-      paymentNumber: input.paymentNumber,
-      userId: input.userId,
-      calculatedTransferAmountInMajorUnit: input.transactionAmount,
+      programId: transactionJob.programId,
+      paymentNumber: transactionJob.paymentNumber,
+      userId: transactionJob.userId,
+      calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
-      isRetry: input.isRetry,
+      isRetry: transactionJob.isRetry,
       status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
 
-    // 6. Storing safaricom transfer data (new compared to visa)
-    // TODO: Currently we are creating safaricom_transfer entity after transaction entity, because of their relationship.
-    // This way, there is no error handling on this final step though. Rethink if we can create both entities simultaneously in a SQL transaction?
-    await this.safaricomTransferRepository.createAndSaveSafaricomTransferData(
-      safaricomDoTransferResult,
-      transaction,
-    );
+    // 4. Start the transfer, if failure update to error transaction and return early
+    try {
+      await this.safaricomService.doTransfer({
+        transactionId: transaction.id,
+        transferAmount: transactionJob.transactionAmount,
+        phoneNumber: transactionJob.phoneNumber!,
+        idNumber: transactionJob.idNumber!,
+        remarks: `Payment ${transactionJob.paymentNumber}`,
+        occasion: transactionJob.referenceId,
+        originatorConversationId: `P${transactionJob.programId}PA${registration.registrationProgramId}_${this.formatDate(
+          new Date(),
+        )}_${generateRandomString(3)}`,
+      });
+    } catch (error) {
+      await this.transactionScopedRepository.update(
+        { id: transaction.id },
+        { status: TransactionStatusEnum.error, errorMessage: error?.message },
+      );
+      return;
+    }
+
+    // 5. No messages sent for safaricom
+
+    // 6. No transaction stored or updated, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   private async getRegistrationOrThrow(
