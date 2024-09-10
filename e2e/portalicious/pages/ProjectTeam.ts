@@ -5,10 +5,10 @@ import BasePage from './BasePage';
 class ProjectTeam extends BasePage {
   readonly page: Page;
   readonly tableRows: Locator;
-  readonly usersDropdown: Locator;
-  readonly chooseUserDropdown: Locator;
-  readonly chooseRoleDropdown: Locator;
-  readonly submitButton: Locator;
+  readonly addUserFormUsersDropdown: Locator;
+  readonly addUserFormChooseUserDropdown: Locator;
+  readonly addUserFormChooseRoleDropdown: Locator;
+  readonly addUserFormSubmitButton: Locator;
   readonly removeUserButton: Locator;
 
   constructor(page: Page) {
