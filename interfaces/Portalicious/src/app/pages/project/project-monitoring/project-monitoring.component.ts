@@ -2,14 +2,16 @@ import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  LOCALE_ID,
   computed,
   inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
+
 import {
   DataListComponent,
   DataListItem,

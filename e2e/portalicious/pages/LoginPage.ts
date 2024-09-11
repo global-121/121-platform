@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
+
 import BasePage from './BasePage';
 
 class LoginPage extends BasePage {

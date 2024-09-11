@@ -1,10 +1,11 @@
-import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
 import { isPlainObject } from 'lodash';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
+
+import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 
 export class Header {
   public name: string;

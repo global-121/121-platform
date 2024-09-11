@@ -1,6 +1,7 @@
-import { PrimeDropdown } from '@121-e2e/portalicious/primeng-components/PrimeDropdown';
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
+
+import { PrimeDropdown } from '@121-e2e/portalicious/primeng-components/PrimeDropdown';
 
 class BasePage {
   readonly page: Page;

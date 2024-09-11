@@ -1,9 +1,10 @@
-import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+
+import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 
 @Injectable()
 export class LastMessageStatusService {

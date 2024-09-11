@@ -1,5 +1,6 @@
 import { sleep } from 'k6';
 import http from 'k6/http';
+
 import config from './config.js';
 const { baseUrl } = config;
 

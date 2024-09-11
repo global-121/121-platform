@@ -1,5 +1,7 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { Routes } from '@angular/router';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { authGuard, projectPermissionsGuard } from '~/auth.guard';
 import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';

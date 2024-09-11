@@ -1,3 +1,6 @@
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
+
 import {
   ProcessNameMessage,
   QueueNameMessageCallBack,
@@ -8,8 +11,6 @@ import {
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/twilio.dto';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;

@@ -1,3 +1,6 @@
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -7,8 +10,6 @@ import {
 import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 const programId = 3;
 const paymentNr = 5;

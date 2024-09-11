@@ -1,3 +1,7 @@
+import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
+import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
+
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
@@ -13,9 +17,6 @@ import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one
 import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
-import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
-import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()

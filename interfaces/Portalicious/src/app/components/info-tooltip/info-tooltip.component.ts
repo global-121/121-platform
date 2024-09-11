@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({

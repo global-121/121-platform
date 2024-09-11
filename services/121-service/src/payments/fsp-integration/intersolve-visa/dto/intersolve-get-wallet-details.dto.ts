@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import {
   IntersolveCreateWalletResponseAssetDto,
   IntersolveCreateWalletResponseBalanceDto,
@@ -10,7 +12,6 @@ import {
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { VisaCardActionLink } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class GetWalletDetailsResponseDto {
   @ApiProperty()

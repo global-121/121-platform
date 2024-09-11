@@ -1,6 +1,7 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 export class CreateUserRoleDto {
   @ApiProperty({ example: 'new_user_role' })

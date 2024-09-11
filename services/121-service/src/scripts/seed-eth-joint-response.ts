@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import messageTemplateAne from '@121-service/src/seed-data/message-template/message-template-joint-response-ANE.json';
@@ -7,7 +9,6 @@ import organizationEthJointResponse from '@121-service/src/seed-data/organizatio
 import programAne from '@121-service/src/seed-data/program/program-joint-response-ANE.json';
 import programDorcas from '@121-service/src/seed-data/program/program-joint-response-dorcas.json';
 import programEKHCDC from '@121-service/src/seed-data/program/program-joint-response-EKHCDC.json';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SeedEthJointResponse implements InterfaceScript {

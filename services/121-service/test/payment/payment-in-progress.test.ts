@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
@@ -16,7 +18,6 @@ import {
   programIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Payment in progress', () => {
   let accessToken: string;

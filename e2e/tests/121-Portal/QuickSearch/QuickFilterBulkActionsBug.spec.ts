@@ -1,3 +1,7 @@
+import { test } from '@playwright/test';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import { BulkActionId } from '@121-portal/src/app/models/bulk-actions.models';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
@@ -5,9 +9,7 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { test } from '@playwright/test';
-import { BulkActionId } from '../../../../../121-platform/interfaces/Portal/src/app/models/bulk-actions.models';
-import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
+
 import HomePage from '../../../pages/Home/HomePage';
 import LoginPage from '../../../pages/Login/LoginPage';
 import TableModule from '../../../pages/Table/TableModule';

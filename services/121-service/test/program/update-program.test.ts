@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -6,7 +8,6 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Update program', () => {
   let accessToken: string;

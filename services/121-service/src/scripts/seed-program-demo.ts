@@ -1,9 +1,10 @@
+import { Injectable } from '@nestjs/common';
+
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import messageTemplateDemo from '@121-service/src/seed-data/message-template/message-template-demo.json';
 import organizationDemo from '@121-service/src/seed-data/organization/organization-demo.json';
 import programDemo from '@121-service/src/seed-data/program/program-demo.json';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SeedDemoProgram implements InterfaceScript {

@@ -1,3 +1,5 @@
+import * as request from 'supertest';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -8,7 +10,6 @@ import {
   getAccessToken,
   getServer,
 } from '@121-service/test/helpers/utility.helper';
-import * as request from 'supertest';
 
 export function importRegistrations(
   programId: number,

@@ -1,6 +1,3 @@
-import { LocalizedString } from '@121-service/src//shared/types/localized-string.type';
-import { WrapperType } from '@121-service/src//wrapper.type';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
@@ -13,6 +10,10 @@ import {
   Length,
   ValidateIf,
 } from 'class-validator';
+
+import { LocalizedString } from '@121-service/src//shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src//wrapper.type';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({

@@ -1,3 +1,7 @@
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { ORMConfig } from '@121-service/src/ormconfig';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -20,9 +24,6 @@ import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one
 import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
-import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 @Module({
   imports: [

@@ -1,9 +1,10 @@
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+
 import { ResponseNoteDto } from '@121-service/src/notes/dto/response-note.dto';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class NoteService {

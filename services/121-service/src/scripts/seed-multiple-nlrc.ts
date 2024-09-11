@@ -1,3 +1,6 @@
+import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
@@ -6,8 +9,6 @@ import messageTemplatePV from '@121-service/src/seed-data/message-template/messa
 import organizationNLRC from '@121-service/src/seed-data/organization/organization-nlrc.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import programPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SeedMultipleNLRC implements InterfaceScript {

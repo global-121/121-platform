@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+
 import { ButtonModule } from 'primeng/button';
-import { FormErrorComponent } from '~/components/form-error/form-error.component';
+
 import { FormComponent } from '~/components/form/form.component';
+import { FormErrorComponent } from '~/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-form-default',

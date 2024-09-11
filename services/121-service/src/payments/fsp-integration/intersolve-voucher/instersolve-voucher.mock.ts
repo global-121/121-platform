@@ -1,6 +1,7 @@
+import { Injectable } from '@nestjs/common';
+
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class IntersolveVoucherMockService {

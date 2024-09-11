@@ -1,12 +1,3 @@
-import { ApplicationModule } from '@mock-service/src/app.module';
-import {
-  APP_FAVICON,
-  APP_TITLE,
-  APP_VERSION,
-  DEVELOPMENT,
-  PORT,
-  SWAGGER_CUSTOM_CSS,
-} from '@mock-service/src/config';
 import {
   BadRequestException,
   HttpException,
@@ -16,6 +7,16 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
+
+import { ApplicationModule } from '@mock-service/src/app.module';
+import {
+  APP_FAVICON,
+  APP_TITLE,
+  APP_VERSION,
+  DEVELOPMENT,
+  PORT,
+  SWAGGER_CUSTOM_CSS,
+} from '@mock-service/src/config';
 
 /* eslint-disable @typescript-eslint/no-namespace */
 declare global {

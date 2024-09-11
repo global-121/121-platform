@@ -1,4 +1,5 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
+
 import { Locale } from '~/utils/locale';
 
 @Injectable({

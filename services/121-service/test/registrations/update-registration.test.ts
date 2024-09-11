@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -12,7 +14,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 const updatePhoneNumber = '15005550099';
 

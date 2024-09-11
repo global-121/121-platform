@@ -1,6 +1,8 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 

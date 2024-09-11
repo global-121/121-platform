@@ -1,3 +1,13 @@
+import {
+  BeforeRemove,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  Relation,
+} from 'typeorm';
+
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
@@ -18,15 +28,6 @@ import {
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import {
-  BeforeRemove,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  Relation,
-} from 'typeorm';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {

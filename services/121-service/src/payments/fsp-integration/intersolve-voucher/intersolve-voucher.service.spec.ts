@@ -1,3 +1,6 @@
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -11,8 +14,6 @@ import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 const programId = 3;
 const paymentNr = 5;

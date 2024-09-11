@@ -1,5 +1,6 @@
-import { Base121Entity } from '@121-service/src/base.entity';
 import { Column, Entity } from 'typeorm';
+
+import { Base121Entity } from '@121-service/src/base.entity';
 
 @Entity('exchange_rate')
 export class ExchangeRateEntity extends Base121Entity {

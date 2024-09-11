@@ -1,3 +1,7 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
+
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
@@ -6,15 +10,12 @@ import {
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class RegistrationDataService {

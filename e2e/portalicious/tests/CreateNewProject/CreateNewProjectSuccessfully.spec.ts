@@ -1,9 +1,11 @@
+import { test } from '@playwright/test';
+
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
+
 import CreateProject from '@121-e2e/portalicious/pages/CreateProjectPage';
 import HomePage from '@121-e2e/portalicious/pages/HomePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.test);

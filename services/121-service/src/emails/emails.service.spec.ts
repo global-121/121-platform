@@ -1,3 +1,5 @@
+import { Test } from '@nestjs/testing';
+
 import {
   CreateUserEmailPayload,
   GenericEmailPayload,
@@ -8,7 +10,6 @@ import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/crea
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
 import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
-import { Test } from '@nestjs/testing';
 
 // Mock for EmailsApiService
 const mockEmailsApiService = {

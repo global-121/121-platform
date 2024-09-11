@@ -1,7 +1,8 @@
+import { Equal, MigrationInterface, QueryRunner } from 'typeorm';
+
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 // New permission to add
 const newPermissions = [

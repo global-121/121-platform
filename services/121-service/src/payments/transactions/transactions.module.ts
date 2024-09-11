@@ -1,3 +1,7 @@
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventsModule } from '@121-service/src/events/events.module';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
@@ -13,9 +17,6 @@ import { RegistrationUtilsModule } from '@121-service/src/registration/modules/r
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [

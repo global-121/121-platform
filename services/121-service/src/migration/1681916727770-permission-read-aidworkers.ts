@@ -1,7 +1,8 @@
+import { EntityManager, Equal, MigrationInterface, QueryRunner } from 'typeorm';
+
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { EntityManager, Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class permissionReadAidworkers1681916727770
   implements MigrationInterface

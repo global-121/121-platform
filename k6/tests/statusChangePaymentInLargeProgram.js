@@ -1,4 +1,5 @@
 import { check, sleep } from 'k6';
+
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import LoginModel from '../models/login.js';
 import PaymentsModel from '../models/payments.js';

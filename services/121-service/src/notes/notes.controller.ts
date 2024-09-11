@@ -1,9 +1,3 @@
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { CreateNoteDto } from '@121-service/src/notes/dto/note.dto';
-import { ResponseNoteDto } from '@121-service/src/notes/dto/response-note.dto';
-import { NoteService } from '@121-service/src/notes/notes.service';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -16,6 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { CreateNoteDto } from '@121-service/src/notes/dto/note.dto';
+import { ResponseNoteDto } from '@121-service/src/notes/dto/response-note.dto';
+import { NoteService } from '@121-service/src/notes/notes.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')

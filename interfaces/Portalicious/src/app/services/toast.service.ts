@@ -1,6 +1,7 @@
 // Using this pattern https://stackoverflow.com/a/78088316
 
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+
 import { Message, MessageService } from 'primeng/api';
 
 @Injectable({

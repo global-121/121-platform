@@ -1,4 +1,3 @@
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import {
   Column,
   Entity,
@@ -6,6 +5,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 
 @Entity('safaricom_request')
 export class SafaricomRequestEntity {

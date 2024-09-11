@@ -1,4 +1,4 @@
-import { Locator, expect } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
 
 class HomePage {

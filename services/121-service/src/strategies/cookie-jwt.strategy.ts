@@ -1,8 +1,3 @@
-import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
-import { UserRequestData } from '@121-service/src/user/user.interface';
-import { UserService } from '@121-service/src/user/user.service';
 import {
   HttpException,
   HttpStatus,
@@ -12,6 +7,12 @@ import {
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
+
+import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
+import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+import { UserRequestData } from '@121-service/src/user/user.interface';
+import { UserService } from '@121-service/src/user/user.service';
 
 @Injectable()
 export class CookieJwtStrategy

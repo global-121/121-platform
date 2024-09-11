@@ -1,7 +1,9 @@
-import TableModule from '@121-e2e/pages/Table/TableModule';
-import { Locator, expect } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
-import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+
+import TableModule from '@121-e2e/pages/Table/TableModule';
 
 const includedLabel =
   englishTranslations.page.program['program-payout']['make-payment'][

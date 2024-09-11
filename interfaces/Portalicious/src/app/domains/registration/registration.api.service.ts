@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import { Registration } from '~/domains/registration/registration.model';
 

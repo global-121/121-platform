@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -16,7 +18,6 @@ import {
   programIdOCW,
   programIdPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('/ Registrations - by phone-number', () => {
   let accessToken: string;

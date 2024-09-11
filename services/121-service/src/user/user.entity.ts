@@ -1,10 +1,3 @@
-import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { NoteEntity } from '@121-service/src/notes/note.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { UserType } from '@121-service/src/user/user-type-enum';
-import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import crypto from 'crypto';
 import {
@@ -16,6 +9,14 @@ import {
   OneToMany,
   Relation,
 } from 'typeorm';
+
+import { ActionEntity } from '@121-service/src/actions/action.entity';
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { NoteEntity } from '@121-service/src/notes/note.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('user')
 export class UserEntity extends CascadeDeleteEntity {
