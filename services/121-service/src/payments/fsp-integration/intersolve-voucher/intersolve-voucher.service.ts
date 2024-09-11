@@ -13,8 +13,8 @@ import {
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
@@ -81,7 +81,7 @@ export class IntersolveVoucherService
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
@@ -368,7 +368,7 @@ export class IntersolveVoucherService
       .split('[[amount]]')
       .join(String(calculatedAmount));
 
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration,
       message: whatsappPayment,
       messageContentType: MessageContentType.paymentTemplated,

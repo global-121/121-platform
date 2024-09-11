@@ -9,6 +9,7 @@ import { GetPhysicalCardResponseDto } from '@121-service/src/payments/fsp-integr
 import { GetTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-token-response.dto';
 import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request.dto';
 import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response.dto';
+import { BaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse.dto';
 import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
 import { SubstituteTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request.dto';
 import { TransferRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-request.dto';
@@ -23,7 +24,6 @@ import { CreateCustomerReturnType } from '@121-service/src/payments/fsp-integrat
 import { GetPhysicalCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-return-type.interface';
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
-import { IntersolveVisaBaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/intersolve-visa-api-default-reponse.interface';
 import { IssueTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/issue-token-return-type.interface';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
@@ -92,7 +92,12 @@ export class IntersolveVisaApiService {
     return timeLeftBeforeExpire > 60000;
   }
 
-  public async createCustomer(input: {
+  public async createCustomer({
+    externalReference,
+    name,
+    contactInformation,
+    estimatedAnnualPaymentVolumeMajorUnit,
+  }: {
     externalReference: string;
     name: string;
     contactInformation: ContactInformation;
@@ -100,27 +105,26 @@ export class IntersolveVisaApiService {
   }): Promise<CreateCustomerReturnType> {
     // Create the request body to send
     const createCustomerRequestDto: CreateCustomerRequestDto = {
-      externalReference: input.externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
+      externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
       individual: {
         firstName: '', // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name, so just give an empty string
-        lastName: input.name,
-        estimatedAnnualPaymentVolumeMajorUnit:
-          input.estimatedAnnualPaymentVolumeMajorUnit,
+        lastName: name,
+        estimatedAnnualPaymentVolumeMajorUnit,
       },
       contactInfo: {
         addresses: [
           {
             type: 'HOME',
-            addressLine1: this.createAddressString(input.contactInformation),
-            city: input.contactInformation.addressCity,
-            postalCode: input.contactInformation.addressPostalCode,
+            addressLine1: this.createAddressString(contactInformation),
+            city: contactInformation.addressCity,
+            postalCode: contactInformation.addressPostalCode,
             country: 'NL',
           },
         ],
         phoneNumbers: [
           {
             type: 'MOBILE',
-            value: formatPhoneNumber(input.contactInformation.phoneNumber),
+            value: formatPhoneNumber(contactInformation.phoneNumber),
           },
         ],
       },
@@ -573,13 +577,13 @@ export class IntersolveVisaApiService {
   // Helper function to convert errors in an Intersolve API Response into a message string.
   private convertResponseErrorsToMessage(
     errorsInResponseDto: ErrorsInResponse[] | undefined,
-  ): string {
+  ): string | undefined {
     if (
       !errorsInResponseDto ||
       !Array.isArray(errorsInResponseDto) ||
       !errorsInResponseDto.length
     ) {
-      return '';
+      return undefined;
     }
     let message = '';
     for (const [i, error] of errorsInResponseDto.entries()) {
@@ -594,7 +598,7 @@ export class IntersolveVisaApiService {
   }
 
   private async intersolveApiRequest<
-    ResponseDtoType extends IntersolveVisaBaseResponseDto | void,
+    ResponseDtoType extends BaseResponseDto | void,
   >({
     errorPrefix,
     method,
@@ -652,7 +656,7 @@ export class IntersolveVisaApiService {
   }
 
   private createErrorMessageIfRequestFailed<
-    ResponseDtoType extends IntersolveVisaBaseResponseDto | void,
+    ResponseDtoType extends BaseResponseDto | void,
   >(response: ResponseDtoType): string | undefined {
     if (!response) {
       return 'Intersolve URL could not be reached.';
@@ -665,7 +669,7 @@ export class IntersolveVisaApiService {
     }
     if (!this.isSuccessResponseStatus(response.status)) {
       return `${
-        this.convertResponseErrorsToMessage(response.data?.errors) ||
+        this.convertResponseErrorsToMessage(response.data?.errors) ??
         `${response.status} - ${response.statusText}`
       }`;
     } else {
