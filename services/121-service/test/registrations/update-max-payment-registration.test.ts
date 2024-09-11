@@ -1,3 +1,4 @@
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   searchRegistrationByReferenceId,
@@ -34,7 +35,7 @@ describe('Update maxPayments of PA', () => {
 
   it('should succesfully update maxPayments without status change', async () => {
     // Arrange
-    const initialStatus = 'included';
+    const initialStatus = RegistrationStatusEnum.included;
 
     // Act
     const response = await updateRegistration(
@@ -89,7 +90,7 @@ describe('Update maxPayments of PA', () => {
 
   it('should succesfully update maxPayments and change status to completed', async () => {
     // Arrange
-    const status = 'completed';
+    const status = RegistrationStatusEnum.completed;
     const dataUpdateMaxPaymentsSuccess = {
       maxPayments: 1,
     };

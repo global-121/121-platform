@@ -526,7 +526,7 @@ export class RegistrationsService {
     if (maxPaymentsMatchesPaymentCount) {
       registrationToUpdate = await this.updateAttribute(
         'registrationStatus',
-        'completed',
+        RegistrationStatusEnum.completed,
         registrationToUpdate,
       );
       nrAttributesUpdated++; // Increment for registrationStatus update
