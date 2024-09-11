@@ -1200,7 +1200,7 @@ export class MetricsService {
     const exportCardDetailsArray: ExportVisaCardDetails[] = [];
     for (const cardRawData of exportVisaCardRawDetails) {
       const isCurrentWallet =
-        previousRegistrationProgramId === cardRawData.paId ? false : true;
+        previousRegistrationProgramId !== cardRawData.paId;
 
       const statusInfo =
         IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({

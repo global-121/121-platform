@@ -17,7 +17,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
@@ -85,7 +85,7 @@ export class RegistrationsService {
 
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly registrationsImportService: RegistrationsImportService,
     private readonly registrationDataService: RegistrationDataService,
@@ -1122,7 +1122,7 @@ export class RegistrationsService {
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
     });
 
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration,
       messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
       messageContentType: MessageContentType.custom,
@@ -1158,7 +1158,7 @@ export class RegistrationsService {
       tokenCode,
       pause,
     );
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration,
       messageTemplateKey: pause
         ? ProgramNotificationEnum.pauseVisaCard
