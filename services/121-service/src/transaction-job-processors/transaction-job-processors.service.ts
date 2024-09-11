@@ -277,7 +277,6 @@ export class TransactionJobProcessorsService {
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,
         remarks: `Payment ${transactionJob.paymentNumber}`,
-        occasion: transactionJob.referenceId,
         originatorConversationId: `P${transactionJob.programId}PA${registration.registrationProgramId}_${this.formatDate(
           new Date(),
         )}_${generateRandomString(3)}`,

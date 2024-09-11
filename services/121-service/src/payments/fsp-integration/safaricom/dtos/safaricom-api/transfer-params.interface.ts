@@ -8,7 +8,6 @@ export interface TransferParams {
   readonly Remarks: string;
   readonly QueueTimeOutURL: string;
   readonly ResultURL: string;
-  readonly Occassion: string;
   readonly OriginatorConversationID: string;
   readonly IDType: string;
   readonly IDNumber: string | undefined;
