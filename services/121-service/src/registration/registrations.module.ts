@@ -12,8 +12,8 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
+import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -68,7 +68,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ActionsModule,
     ProgramModule,
     FinancialServiceProvidersModule,
-    QueueMessageModule,
+    MessageQueuesModule,
     IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,

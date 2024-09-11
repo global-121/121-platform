@@ -3,18 +3,15 @@ export interface CreatePhysicalCardRequestDto {
   readonly firstName: string;
   readonly lastName: string;
   readonly mobileNumber: string;
-  readonly cardAddress: {
-    readonly address1: string;
-    readonly city: string;
-    readonly country: string;
-    readonly postalCode: string;
-  };
-  readonly pinAddress: {
-    readonly address1: string;
-    readonly city: string;
-    readonly country: string;
-    readonly postalCode: string;
-  };
+  readonly cardAddress: Address;
+  readonly pinAddress: Address;
   readonly pinStatus: string;
   readonly coverLetterCode: string;
+}
+
+interface Address {
+  readonly address1: string;
+  readonly city: string;
+  readonly country: string;
+  readonly postalCode: string;
 }

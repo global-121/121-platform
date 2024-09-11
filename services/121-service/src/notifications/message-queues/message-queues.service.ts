@@ -30,7 +30,7 @@ import {
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 
 @Injectable()
-export class QueueMessageService {
+export class MessageQueuesService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
   private readonly queueNameToQueueMap: Record<QueueNameCreateMessage, Queue>;
@@ -59,8 +59,7 @@ export class QueueMessageService {
     };
   }
 
-  // TODO: REFACTOR: Rename to addMessageJob()
-  public async addMessageToQueue({
+  public async addMessageJob({
     registration,
     message,
     messageTemplateKey,
