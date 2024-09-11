@@ -9,7 +9,7 @@ import {
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
@@ -40,7 +40,7 @@ export class IntersolveVoucherCronService {
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly registrationDataService: RegistrationDataService,
   ) {}
@@ -191,7 +191,7 @@ export class IntersolveVoucherCronService {
           .split('[[amount]]')
           .join(unsentIntersolveVoucher.amount);
 
-        await this.queueMessageService.addMessageToQueue({
+        await this.queueMessageService.addMessageJob({
           registration,
           message: whatsappPayment,
           messageContentType: MessageContentType.paymentReminder,

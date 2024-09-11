@@ -8,7 +8,7 @@ import { MigrateVisaService } from '@121-service/src/migrate-visa/migrate-visa.s
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('migrate')
 @Controller('migrate-visa')
-export class MigrateVisaSController {
+export class MigrateVisaController {
   public constructor(private readonly migrateVisaService: MigrateVisaService) {}
 
   @AuthenticatedUser({ isAdmin: true })
