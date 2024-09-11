@@ -114,7 +114,6 @@ export class SafaricomApiService {
       Remarks: transferData.remarks,
       QueueTimeOutURL: safaricomQueueTimeoutUrl,
       ResultURL: safaricomResultUrl,
-      Occassion: transferData.occasion,
       OriginatorConversationID: transferData.originatorConversationId,
       IDType: process.env.SAFARICOM_IDTYPE!,
       IDNumber: transferData.idNumber,
