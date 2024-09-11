@@ -62,7 +62,7 @@ export class SafaricomApiService {
     }
   }
 
-  public async transfer(
+  private async transfer(
     payload: TransferParams,
   ): Promise<SafaricomTransferResponseBody> {
     try {
