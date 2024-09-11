@@ -8,8 +8,8 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -51,7 +51,7 @@ export class RegistrationsBulkService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly eventsService: EventsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
@@ -85,13 +85,13 @@ export class RegistrationsBulkService {
         message,
         messageTemplateKey,
       );
-    paginateQuery = this.setQueryPropertiesBulkAction(
-      paginateQuery,
-      false,
-      includeSendingMessage,
-      true,
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: includeSendingMessage,
+      includeStatusChangeProperties: true,
       usedPlaceholders,
-    );
+    });
 
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
@@ -127,12 +127,12 @@ export class RegistrationsBulkService {
     dryRun: boolean,
     userId: number,
   ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(
-      paginateQuery,
-      false,
-      false,
-      true,
-    );
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: false,
+      includeStatusChangeProperties: true,
+    });
 
     const allowedCurrentStatuses = this.getAllowedCurrentStatusesForNewStatus(
       RegistrationStatusEnum.deleted,
@@ -173,13 +173,13 @@ export class RegistrationsBulkService {
         message,
         messageTemplateKey,
       );
-    paginateQuery = this.setQueryPropertiesBulkAction(
-      paginateQuery,
-      false,
-      true,
-      false,
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: true,
+      includeStatusChangeProperties: false,
       usedPlaceholders,
-    );
+    });
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
@@ -286,14 +286,21 @@ export class RegistrationsBulkService {
       .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
   }
 
-  public setQueryPropertiesBulkAction(
-    query: PaginateQuery,
+  public setQueryPropertiesBulkAction({
+    query,
     includePaymentAttributes = false,
     includeSendMessageProperties = false,
     includeStatusChangeProperties = false,
-    usedPlaceholders?: string[],
-    selectColumns: string[] = [],
-  ): PaginateQuery {
+    usedPlaceholders,
+    selectColumns = [],
+  }: {
+    query: PaginateQuery;
+    includePaymentAttributes?: boolean;
+    includeSendMessageProperties?: boolean;
+    includeStatusChangeProperties?: boolean;
+    usedPlaceholders?: string[];
+    selectColumns?: string[];
+  }): PaginateQuery {
     query.select = ['referenceId', 'programId', ...selectColumns];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
@@ -322,17 +329,17 @@ export class RegistrationsBulkService {
     referenceIds: string[],
     dataFieldNames: string[],
   ) {
-    return this.setQueryPropertiesBulkAction(
-      {
+    return this.setQueryPropertiesBulkAction({
+      query: {
         path: '',
         filter: { referenceId: `$in:${referenceIds.join(',')}` },
       },
-      true,
-      false,
-      false,
-      [],
-      dataFieldNames,
-    );
+      includePaymentAttributes: true,
+      includeSendMessageProperties: false,
+      includeStatusChangeProperties: false,
+      usedPlaceholders: [],
+      selectColumns: dataFieldNames,
+    });
   }
 
   private getStatusUpdateBaseQuery(
@@ -453,7 +460,7 @@ export class RegistrationsBulkService {
         try {
           const { message, messageTemplateKey, messageContentType, bulkSize } =
             messageSizeType;
-          await this.queueMessageService.addMessageToQueue({
+          await this.queueMessageService.addMessageJob({
             ...messageSizeType,
             registration,
             message,
@@ -617,7 +624,7 @@ export class RegistrationsBulkService {
       for (const placeholder of usedPlaceholders) {
         placeholderData[placeholder] = registration[placeholder];
       }
-      await this.queueMessageService.addMessageToQueue({
+      await this.queueMessageService.addMessageJob({
         registration,
         message,
         messageTemplateKey,

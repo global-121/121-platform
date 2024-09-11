@@ -9,8 +9,8 @@ import { FinancialServiceProviderRepository } from '@121-service/src/financial-s
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
@@ -48,7 +48,7 @@ export class TransactionJobProcessorsService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly financialServiceProviderRepository: FinancialServiceProviderRepository,
@@ -81,9 +81,11 @@ export class TransactionJobProcessorsService {
     let transferAmountInMajorUnit: number;
     try {
       transferAmountInMajorUnit =
-        await this.intersolveVisaService.calculateTransferAmountWithWalletUpdate(
-          registration.id,
-          input.transactionAmountInMajorUnit,
+        await this.intersolveVisaService.calculateTransferAmountWithWalletRetrieval(
+          {
+            registrationId: registration.id,
+            inputTransferAmountInMajorUnit: input.transactionAmountInMajorUnit,
+          },
         );
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
@@ -101,9 +103,9 @@ export class TransactionJobProcessorsService {
           errorText: `Error calculating transfer amount: ${error?.message}`,
         });
         return;
-      } else {
-        throw error;
       }
+
+      throw error;
     }
 
     // Check if all required properties are present. If not, create a failed transaction and throw an error.
@@ -252,30 +254,30 @@ export class TransactionJobProcessorsService {
       resultTransaction,
     );
 
-    if (!isRetry) {
-      await this.updatePaymentCountAndStatusInRegistration(
-        registration,
-        programId,
-      );
-      // Added this check to avoid a bit of processing time if the status is the same
-      if (
-        oldRegistration.registrationStatus !== registration.registrationStatus
-      ) {
-        await this.eventsService.log(
-          {
-            id: oldRegistration.id,
-            status: oldRegistration.registrationStatus ?? undefined,
-          },
-          {
-            id: registration.id,
-            status: registration.registrationStatus ?? undefined,
-          },
-          {
-            registrationAttributes: ['status'],
-          },
-        );
-      }
-    }
+    if (isRetry) return;
+
+    await this.updatePaymentCountAndStatusInRegistration(
+      registration,
+      programId,
+    );
+
+    // Added this check to avoid a bit of processing time if the status is the same
+    if (oldRegistration.registrationStatus === registration.registrationStatus)
+      return;
+
+    await this.eventsService.log(
+      {
+        id: oldRegistration.id,
+        status: oldRegistration.registrationStatus ?? undefined,
+      },
+      {
+        id: registration.id,
+        status: registration.registrationStatus ?? undefined,
+      },
+      {
+        registrationAttributes: ['status'],
+      },
+    );
   }
 
   private async addMessageJobToQueue({
@@ -287,10 +289,9 @@ export class TransactionJobProcessorsService {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
     userId: number;
     message?: string;
-    messageTemplateKey?: string;
     bulksize?: number;
   }): Promise<void> {
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration,
       message,
       messageContentType: MessageContentType.payment,
