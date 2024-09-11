@@ -18,7 +18,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29636] Fill in with invalid Token', async ({ page }) => {
-  test.fixme(!!process.env.CI, 'Disable use of third-party API in CI only');
+  test.skip(
+    !process.env.KOBO_CONNECT_API_URL ||
+      !process.env.E2E_TEST_KOBO_ASSET_ID ||
+      !process.env.E2E_TEST_KOBO_TOKEN,
+    'Disable use of third-party API by default. Can be used by explicitly providing all ENV-values. See AB#30220',
+  );
 
   const homePage = new HomePage(page);
   const createProject = new CreateProject(page);

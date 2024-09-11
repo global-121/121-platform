@@ -81,8 +81,6 @@ jobs:
         working-directory: ${{ env.e2eTestsPath }}
         env:
           BASE_URL_PORTALICIOUS: http://localhost:8088
-          E2E_TEST_KOBO_ASSET_ID: ${{ vars.E2E_TEST_KOBO_ASSET_ID }}
-          E2E_TEST_KOBO_TOKEN: ${{ secrets.E2E_TEST_KOBO_TOKEN }}
         run: |
           npm run test:portalicious
 
