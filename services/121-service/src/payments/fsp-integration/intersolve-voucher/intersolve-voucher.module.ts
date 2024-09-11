@@ -3,8 +3,8 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
-import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
@@ -47,7 +47,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     ImageCodeModule,
     UserModule,
     TransactionsModule,
-    QueueMessageModule,
+    MessageQueuesModule,
     MessageTemplateModule,
     RegistrationDataModule,
     RegistrationUtilsModule,

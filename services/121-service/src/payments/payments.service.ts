@@ -232,7 +232,10 @@ export class PaymentsService {
 
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
-      this.registrationsBulkService.setQueryPropertiesBulkAction(query, true);
+      this.registrationsBulkService.setQueryPropertiesBulkAction({
+        query,
+        includePaymentAttributes: true,
+      });
 
     // Fill bulkActionResultDto with meta data of the payment being done
     const bulkActionResultDto =
@@ -278,6 +281,7 @@ export class PaymentsService {
       }
     }
 
+    // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
     for (const fsp of fspsInPayment) {
       await this.validateRequiredFinancialServiceProviderConfigurations(
         fsp,
@@ -323,7 +327,7 @@ export class PaymentsService {
   }
 
   async validateRequiredFinancialServiceProviderConfigurations(
-    fsp: string,
+    fsp: FinancialServiceProviderName,
     programId: number,
   ) {
     const requiredConfigurations =
@@ -500,12 +504,12 @@ export class PaymentsService {
     paPaymentDataList,
     programId,
     payment,
-    isRetry,
+    isRetry = false,
   }: {
     paPaymentDataList: PaPaymentDataDto[];
     programId: number;
     payment: number;
-    isRetry: boolean;
+    isRetry?: boolean;
   }): Promise<number> {
     // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);

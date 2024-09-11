@@ -24,22 +24,22 @@ graph LR
   WhatsappModule-->UserModule
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
-  MessageModule-->QueueMessageModule
-  QueueMessageModule-->ProgramAttributesModule
-  QueueMessageModule-->RegistrationDataModule
+  MessageModule-->MessageQueuesModule
+  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->RegistrationDataModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->UserModule
   TransactionsModule-->ActionsModule
-  TransactionsModule-->QueueMessageModule
+  TransactionsModule-->MessageQueuesModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->EventsModule
   EventsModule-->UserModule
-  IntersolveVoucherModule-->QueueMessageModule
+  IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
@@ -53,7 +53,7 @@ graph LR
   RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FinancialServiceProvidersModule
-  RegistrationsModule-->QueueMessageModule
+  RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
@@ -96,7 +96,7 @@ graph LR
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
-  MessageIncomingModule-->QueueMessageModule
+  MessageIncomingModule-->MessageQueuesModule
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
@@ -109,7 +109,7 @@ graph LR
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule
   TransactionJobProcessorsModule-->TransactionsModule
-  TransactionJobProcessorsModule-->QueueMessageModule
+  TransactionJobProcessorsModule-->MessageQueuesModule
   TransactionJobProcessorsModule-->FinancialServiceProvidersModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
