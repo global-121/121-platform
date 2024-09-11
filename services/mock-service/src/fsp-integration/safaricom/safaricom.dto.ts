@@ -8,7 +8,6 @@ export class SafaricomTransferPayload {
   public Remarks: string;
   public QueueTimeOutURL: string;
   public ResultURL: string;
-  public Occassion: string;
   public OriginatorConversationID: string;
   public IDType: string;
   public IDNumber: string;
