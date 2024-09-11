@@ -9,6 +9,7 @@ import { SeedProgramDrc } from '@121-service/src/scripts/seed-program-drc';
 import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
 import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
+import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
 import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -36,6 +37,7 @@ export class ScriptsController {
     private readonly seedProgramNlrcPv: SeedNLProgramPV,
     private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
     private readonly seedProgramTest: SeedTestProgram,
+    private readonly seedProgramOneAdmin: SeedTestOneAdmin,
     private readonly seedProgramValidation: SeedProgramValidation,
     private readonly seedInit: SeedInit,
     private readonly scriptsService: ScriptsService,
@@ -110,6 +112,8 @@ export class ScriptsController {
       await this.seedDemoProgram.run(isApiTests);
     } else if (script == SeedScript.test) {
       await this.seedProgramTest.run(isApiTests);
+    } else if (script == SeedScript.oneAdmin) {
+      await this.seedProgramOneAdmin.run(isApiTests);
     } else if (script == SeedScript.testMultiple) {
       await this.seedProgramTestMultiple.run(isApiTests);
     } else if (script == SeedScript.nlrcMultiple) {

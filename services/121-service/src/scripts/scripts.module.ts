@@ -16,6 +16,7 @@ import { SeedProgramDrc } from '@121-service/src/scripts/seed-program-drc';
 import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
 import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
+import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
 import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -44,6 +45,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
     SeedMultipleNLRCMockData,
     SeedProgramDrc,
     SeedTestProgram,
+    SeedTestOneAdmin,
     SeedTestMultipleProgram,
     SeedMockHelper,
     AxiosCallsService,

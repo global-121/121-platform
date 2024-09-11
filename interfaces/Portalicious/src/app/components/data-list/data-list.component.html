@@ -1,4 +1,4 @@
-<div class="mt-3 grid grid-cols-2 gap-x-5 border-t border-grey-300">
+<div class="grid grid-cols-1 gap-x-5 md:grid-cols-2 2xl:grid-cols-4">
   @for (item of data(); track $index) {
     <p class="trim space-x-1 border-b border-grey-300 py-3">
       @if (item.loading) {
@@ -7,6 +7,12 @@
         <strong> {{ item.label }}:</strong>
         @if (item.tooltip) {
           <app-info-tooltip [message]="item.tooltip" />
+        }
+        @if (item.chipLabel && item.chipVariant) {
+          <app-colored-chip
+            [variant]="item.chipVariant"
+            [label]="item.chipLabel"
+          />
         }
         @if (item.value) {
           <span>
@@ -31,12 +37,8 @@
               }
             }
           </span>
-        } @else {
-          <span
-            i18n="@@generic-not-available"
-            class="text-grey-500"
-            >Not available</span
-          >
+        } @else if (!item.chipLabel) {
+          <app-not-available-label />
         }
       }
     </p>

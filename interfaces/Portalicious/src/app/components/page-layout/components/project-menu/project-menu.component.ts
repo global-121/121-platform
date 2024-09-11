@@ -12,13 +12,13 @@ import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 
 @Component({
-  selector: 'app-project-header',
+  selector: 'app-project-menu',
   standalone: true,
   imports: [TabMenuModule],
-  templateUrl: './project-header.component.html',
+  templateUrl: './project-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectHeaderComponent {
+export class ProjectMenuComponent {
   private authService = inject(AuthService);
   projectId = input.required<number>();
 
@@ -37,20 +37,20 @@ export class ProjectHeaderComponent {
       label: $localize`:@@page-title-project-monitoring:Monitoring`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}`,
       icon: 'pi pi-chart-bar',
-      visible: this.authService.hasPermission(
-        this.projectId(),
-        PermissionEnum.ProgramMetricsREAD,
-      ),
+      visible: this.authService.hasPermission({
+        projectId: this.projectId(),
+        requiredPermission: PermissionEnum.ProgramMetricsREAD,
+      }),
     },
     {
       label: $localize`:@@page-title-project-team:Team`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectTeam}`,
       styleClass: 'ms-auto',
       icon: 'pi pi-users',
-      visible: this.authService.hasPermission(
-        this.projectId(),
-        PermissionEnum.AidWorkerProgramREAD,
-      ),
+      visible: this.authService.hasPermission({
+        projectId: this.projectId(),
+        requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+      }),
     },
   ]);
 }
