@@ -10,12 +10,9 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 import { Injectable } from '@nestjs/common';
 import { TokenSet } from 'openid-client';
 
-const safaricomApiUrl = process.env.MOCK_SAFARICOM
-  ? process.env.MOCK_SERVICE_URL
-  : process.env.SAFARICOM_API_URL;
-
-const safaricomQueueTimeoutUrl = `${safaricomApiUrl}financial-service-providers/safaricom/timeout`;
-const safaricomResultUrl = `${safaricomApiUrl}financial-service-providers/safaricom/callback`;
+const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
+const safaricomQueueTimeoutUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout`;
+const safaricomResultUrl = `${callbackBaseUrl}financial-service-providers/safaricom/callback`;
 
 @Injectable()
 export class SafaricomApiService {
