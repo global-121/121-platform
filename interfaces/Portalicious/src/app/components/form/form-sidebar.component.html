@@ -9,10 +9,13 @@
   (onHide)="formGroup().reset()"
 >
   <ng-template pTemplate="headless">
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <form
       class="flex min-h-full w-full flex-col p-4"
       [formGroup]="formGroup()"
       (ngSubmit)="onFormSubmit()"
+      (keydown.control.enter)="onFormSubmit()"
+      (keydown.meta.enter)="onFormSubmit()"
     >
       <div class="flex grow flex-col gap-2">
         <h2 class="mb-5">

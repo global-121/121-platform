@@ -1,0 +1,41 @@
+<app-form-sidebar
+  [(visible)]="formVisible"
+  [formGroup]="formGroup"
+  [mutation]="addNoteMutation"
+  formTitle="Add note"
+  i18n-formTitle="@@add-note"
+>
+  <p
+    i18n
+    class="font-semibold"
+  >
+    You are about to add a note to {{ registrationName() }}'s profile.
+  </p>
+  <p
+    i18n
+    class="mb-8"
+  >
+    The note will be visible to other 121 users who are permitted to view
+    personal profiles.
+  </p>
+  <app-form-field-wrapper
+    label="Note"
+    i18n-label
+    [errorMessage]="formFieldErrors()('note')"
+  >
+    <textarea
+      rows="5"
+      pInputTextarea
+      formControlName="note"
+      autocomplete="off"
+    ></textarea>
+    <ng-container slot="details">
+      <p
+        i18n
+        class="text-grey-500 txt-system-s"
+      >
+        Tip: Press Command / Ctrl + Enter to submit.
+      </p>
+    </ng-container>
+  </app-form-field-wrapper>
+</app-form-sidebar>
