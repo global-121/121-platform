@@ -5,6 +5,7 @@ import { GetPhysicalCardResponseDto } from '@121-service/src/payments/fsp-integr
 import { GetTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-token-response.dto';
 import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request.dto';
 import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response.dto';
+import { BaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse.dto';
 import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
 import { SubstituteTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request.dto';
 import { TransferRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-request.dto';
@@ -19,7 +20,6 @@ import { CreateCustomerReturnType } from '@121-service/src/payments/fsp-integrat
 import { GetPhysicalCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-return-type.interface';
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
-import { IntersolveVisaBaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/intersolve-visa-api-default-reponse.interface';
 import { IssueTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/issue-token-return-type.interface';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
@@ -597,7 +597,7 @@ export class IntersolveVisaApiService {
   }
 
   private async intersolveApiRequest<
-    ResponseDtoType extends IntersolveVisaBaseResponseDto | void,
+    ResponseDtoType extends BaseResponseDto | void,
   >({
     errorPrefix,
     method,
@@ -655,7 +655,7 @@ export class IntersolveVisaApiService {
   }
 
   private createErrorMessageIfRequestFailed<
-    ResponseDtoType extends IntersolveVisaBaseResponseDto | void,
+    ResponseDtoType extends BaseResponseDto | void,
   >(response: ResponseDtoType): string | undefined {
     if (!response) {
       return 'Intersolve URL could not be reached.';
