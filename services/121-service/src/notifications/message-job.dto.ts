@@ -39,7 +39,7 @@ export enum MessageProcessType {
 }
 
 // Used in places where custom message are send and it is not clear if registration has whatsapp
-// This decision is made in the queue-message.service.ts
+// This decision is made in the message-queues.service.ts
 export enum MessageProcessTypeExtension {
   smsOrWhatsappTemplateGeneric = 'sms-or-whatsapp-template-generic',
 }
