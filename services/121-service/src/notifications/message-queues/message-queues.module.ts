@@ -2,8 +2,8 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { QueueNameCreateMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
@@ -79,9 +79,9 @@ import { QueueNameCreateMessage } from '@121-service/src/shared/enum/queue-proce
       },
     }),
   ],
-  providers: [QueueMessageService],
+  providers: [MessageQueuesService],
   controllers: [],
-  exports: [QueueMessageService, BullModule],
+  exports: [MessageQueuesService, BullModule],
 })
 // TODO: REFACTOR: Rename to MessageQueuesModule
-export class QueueMessageModule {}
+export class MessageQueuesModule {}
