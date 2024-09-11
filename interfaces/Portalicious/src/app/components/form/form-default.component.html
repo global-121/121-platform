@@ -1,7 +1,10 @@
+<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
 <form
   class="block w-full"
   [formGroup]="formGroup()"
   (ngSubmit)="onFormSubmit()"
+  (keydown.control.enter)="onFormSubmit()"
+  (keydown.meta.enter)="onFormSubmit()"
 >
   <div class="flex flex-col gap-2">
     <ng-content></ng-content>

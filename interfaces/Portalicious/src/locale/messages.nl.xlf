@@ -599,6 +599,26 @@
         <source>Paused</source>
         <target state="new">Paused</target>
       </trans-unit>
+      <trans-unit id="5172848657173998509" datatype="html">
+        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <target state="new">You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</target>
+      </trans-unit>
+      <trans-unit id="4478569469579904965" datatype="html">
+        <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
+        <target state="new">The note will be visible to other 121 users who are permitted to view personal profiles.</target>
+      </trans-unit>
+      <trans-unit id="4388879716045736175" datatype="html">
+        <source>Note</source>
+        <target state="new">Note</target>
+      </trans-unit>
+      <trans-unit id="796736218174025913" datatype="html">
+        <source>Note successfully added.</source>
+        <target state="new">Note successfully added.</target>
+      </trans-unit>
+      <trans-unit id="1873935802798572654" datatype="html">
+        <source>Tip: Press Command / Ctrl + Enter to submit.</source>
+        <target state="new">Tip: Press Command / Ctrl + Enter to submit.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

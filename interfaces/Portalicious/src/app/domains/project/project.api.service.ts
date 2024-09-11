@@ -123,6 +123,25 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
+  addRegistrationNote({
+    projectId,
+    registrationReferenceId,
+    note,
+  }: {
+    projectId: Signal<number>;
+    registrationReferenceId: Signal<string>;
+    note: string;
+  }): Promise<unknown> {
+    return this.httpWrapperService.perform121ServiceRequest<Project>({
+      method: 'POST',
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/notes`,
+      body: {
+        referenceId: registrationReferenceId(),
+        text: note,
+      },
+    });
+  }
+
   public invalidateCache(projectId?: Signal<number>): Promise<void> {
     const path: (Signal<number> | string)[] = [BASE_ENDPOINT];
 

@@ -1,3 +1,4 @@
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -5,6 +6,7 @@ import {
   computed,
   inject,
   input,
+  signal,
 } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
@@ -16,9 +18,11 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { NotAvailableLabelComponent } from '~/components/not-available-label/not-available-label.component';
+import { AddNoteFormComponent } from '~/components/page-layout/components/registration-header/add-note-form/add-note-form.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-registration-header',
@@ -31,6 +35,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
     DatePipe,
     SkeletonInlineComponent,
     NotAvailableLabelComponent,
+    AddNoteFormComponent,
   ],
   templateUrl: './registration-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +43,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 export class RegistrationHeaderComponent {
   readonly registrationApiService = inject(RegistrationApiService);
   readonly projectApiService = inject(ProjectApiService);
+  private authService = inject(AuthService);
 
   projectId = input.required<number>();
   registrationId = input.required<number>();
@@ -89,9 +95,7 @@ export class RegistrationHeaderComponent {
     }));
   });
 
-  public openAddNoteDialog() {
-    console.log('open dialog');
-  }
+  addNoteFormVisible = signal(false);
 
   private getPaymentCountString(
     paymentCount?: null | number,
@@ -107,4 +111,11 @@ export class RegistrationHeaderComponent {
 
     return $localize`${paymentCount.toString()} (out of ${maxPayments.toString()})`;
   }
+
+  canUpdatePersonalData = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
+    }),
+  );
 }

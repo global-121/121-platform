@@ -452,6 +452,21 @@
       <trans-unit id="registration-status-validated" datatype="html">
         <source>Validated</source>
       </trans-unit>
+      <trans-unit id="4388879716045736175" datatype="html">
+        <source>Note</source>
+      </trans-unit>
+      <trans-unit id="4478569469579904965" datatype="html">
+        <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
+      </trans-unit>
+      <trans-unit id="5172848657173998509" datatype="html">
+        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
+      </trans-unit>
+      <trans-unit id="796736218174025913" datatype="html">
+        <source>Note successfully added.</source>
+      </trans-unit>
+      <trans-unit id="1873935802798572654" datatype="html">
+        <source>Tip: Press Command / Ctrl + Enter to submit.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
