@@ -13,7 +13,11 @@ import { HttpStatus } from '@nestjs/common';
 
 describe('Update maxPayments of PA', () => {
   const programIdPv = 2;
-  const maxPayments = 3;
+  const reason = 'automated test';
+  const testPayments = 3;
+  const dataUpdateSucces = {
+    maxPayments: testPayments,
+  };
 
   let accessToken: string;
 
@@ -21,16 +25,16 @@ describe('Update maxPayments of PA', () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
-    const registration = Object.assign({ maxPayments }, registrationPvScoped);
+    const registration = Object.assign(
+      { maxPayments: testPayments },
+      registrationPvScoped,
+    );
     await seedPaidRegistrations([registration], programIdPv);
   });
 
   it('should succesfully update maxPayments without status change', async () => {
     // Arrange
-    const reason = 'automated test';
-    const dataUpdateSucces = {
-      maxPayments: maxPayments,
-    };
+    const initialStatus = 'included';
 
     // Act
     const response = await updateRegistration(
@@ -50,12 +54,11 @@ describe('Update maxPayments of PA', () => {
       accessToken,
     );
     const registration = result.body.data[0];
-    expect(registration.maxPayments).toBe(maxPayments);
+    expect(registration.maxPayments).toBe(testPayments);
+    expect(registration.status).toBe(initialStatus);
   });
 
   it('should fail on wrong maxPayments', async () => {
-    const reason = 'automated test';
-
     // Arrange
     const dataUpdateMaxPaymentsFail = {
       maxPayments: 0,
@@ -81,14 +84,13 @@ describe('Update maxPayments of PA', () => {
     const registration = result.body.data[0];
 
     // Is old data still the same?
-    expect(registration.maxPayments).toBe(maxPayments);
+    expect(registration.maxPayments).toBe(testPayments);
   });
 
   it('should succesfully update maxPayments and change status to completed', async () => {
     // Arrange
     const status = 'completed';
-    const reason = 'automated test';
-    const dataUpdateSucces = {
+    const dataUpdateMaxPaymentsSuccess = {
       maxPayments: 1,
     };
 
@@ -96,7 +98,7 @@ describe('Update maxPayments of PA', () => {
     const response = await updateRegistration(
       programIdPv,
       registrationPvScoped.referenceId,
-      dataUpdateSucces,
+      dataUpdateMaxPaymentsSuccess,
       reason,
       accessToken,
     );
@@ -111,7 +113,9 @@ describe('Update maxPayments of PA', () => {
     );
 
     const registration = result.body.data[0];
-    expect(registration.maxPayments).toBe(dataUpdateSucces.maxPayments);
+    expect(registration.maxPayments).toBe(
+      dataUpdateMaxPaymentsSuccess.maxPayments,
+    );
     expect(registration.status).toBe(status);
   });
 });
