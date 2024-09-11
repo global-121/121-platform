@@ -301,6 +301,29 @@ class RegistrationDetails {
     expect(await timeStampLocator.textContent()).toContain(date);
   }
 
+  async validatePaymentDetails({
+    transferAmount,
+    fspName,
+    currency,
+  }: {
+    transferAmount: string;
+    fspName: string;
+    currency: string;
+  }) {
+    const fspPaymentActivityDetail =
+      this.tileInformationPlaceHolder.getByText('FSP: Safaricom');
+    const transferValueActivityDetail =
+      this.tileInformationPlaceHolder.getByText(
+        `Amount: ${currency}${transferAmount}`,
+      );
+
+    await this.tileDetailsDropdownIcon.nth(0).click();
+    expect(await fspPaymentActivityDetail.textContent()).toContain(fspName);
+    expect(await transferValueActivityDetail.textContent()).toContain(
+      transferAmount,
+    );
+  }
+
   async addNote(actions: string, addNote: string) {
     await this.page.getByText(actions).click();
     await this.page.getByText(addNote).click();
