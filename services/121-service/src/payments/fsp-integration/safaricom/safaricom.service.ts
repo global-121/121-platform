@@ -55,14 +55,10 @@ export class SafaricomService
     safaricomTransfer.originatorConversationId =
       transferData.originatorConversationId;
     safaricomTransfer.transactionId = transferData.transactionId;
-
-    // Save the safaricom transfer entity
     await this.safaricomTransferRepository.save(safaricomTransfer);
 
-    // Do transfer
-    await this.safaricomApiService.authenticate();
-
     // Prepare the transfer payload and send the request to safaricom
+    await this.safaricomApiService.authenticate();
     const transferPayload =
       this.safaricomApiService.createTransferPayload(transferData);
     const transferResult =
