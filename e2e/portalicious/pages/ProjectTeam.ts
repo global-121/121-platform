@@ -10,6 +10,7 @@ class ProjectTeam extends BasePage {
   readonly addUserFormChooseRoleDropdown: Locator;
   readonly addUserFormSubmitButton: Locator;
   readonly removeUserButton: Locator;
+  readonly scopeColumn: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -28,6 +29,7 @@ class ProjectTeam extends BasePage {
     this.removeUserButton = this.page.getByRole('button', {
       name: 'Remove user',
     });
+    this.scopeColumn = this.page.getByRole('columnheader', { name: 'Scope' });
   }
 
   async validateAssignedTeamMembers(expectedAssignedUsers: string[]) {
@@ -91,6 +93,14 @@ class ProjectTeam extends BasePage {
       .click();
     await this.page.getByLabel('Remove user').click();
     await this.removeUserButton.click();
+  }
+
+  async validateScopeColumnIsVisible() {
+    await expect(this.scopeColumn).toBeVisible();
+  }
+
+  async validateScopeColumnIsHidden() {
+    await expect(this.scopeColumn).toBeHidden();
   }
 }
 
