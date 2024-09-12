@@ -30,7 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          sparse-checkout: |
+            .github
+            ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Build Service
         id: build
