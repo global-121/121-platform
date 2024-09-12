@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -139,6 +140,31 @@ export class ProjectApiService extends DomainApiService {
       body: {
         referenceId: registrationReferenceId(),
         text: note,
+      },
+    });
+  }
+
+  getIntersolveVoucherBalance({
+    projectId,
+    registrationReferenceId,
+    paymentId,
+  }: {
+    projectId: Signal<number>;
+    registrationReferenceId: string;
+    paymentId: number;
+  }) {
+    let params = new HttpParams();
+    params = params.append('referenceId', registrationReferenceId);
+    params = params.append('payment', paymentId);
+
+    return this.generateQueryOptions<number>({
+      path: [
+        BASE_ENDPOINT,
+        projectId,
+        'financial-service-providers/intersolve-voucher/vouchers/balance',
+      ],
+      requestOptions: {
+        params,
       },
     });
   }

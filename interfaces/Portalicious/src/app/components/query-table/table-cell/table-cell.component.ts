@@ -1,5 +1,17 @@
-import { Component, InputSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, InputSignal } from '@angular/core';
 
-export interface TableCellComponent<TDataType> extends Component {
+/**
+ * Base class for table cells.
+ *
+ * Do not use this component directly.
+ */
+@Component({
+  selector: 'app-abstract-table-cell-do-not-use',
+  standalone: true,
+  imports: [],
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export abstract class TableCellComponent<TDataType> extends Component {
   value: InputSignal<TDataType>;
 }

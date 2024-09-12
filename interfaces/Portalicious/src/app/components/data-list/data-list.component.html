@@ -1,4 +1,9 @@
-<div class="grid grid-cols-1 gap-x-5 md:grid-cols-2">
+<div
+  class="grid grid-cols-1 gap-x-5 md:grid-cols-2"
+  [ngClass]="{
+    '-mb-[2px] [clip-path:inset(0_0_2px_0)]': hideBottomBorder(),
+  }"
+>
   @for (item of data(); track $index) {
     <p class="trim space-x-1 border-b border-grey-300 py-3">
       @if (item.loading) {

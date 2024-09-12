@@ -262,9 +262,6 @@
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
       </trans-unit>
-      <trans-unit id="table-quick-search" datatype="html">
-        <source>Filter by keyword</source>
-      </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>
       </trans-unit>
@@ -392,9 +389,6 @@
       <trans-unit id="1533306147940335597" datatype="html">
         <source>registration-personal-information works</source>
       </trans-unit>
-      <trans-unit id="3375720161310377589" datatype="html">
-        <source>value</source>
-      </trans-unit>
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
       </trans-unit>
@@ -403,9 +397,6 @@
       </trans-unit>
       <trans-unit id="8285202625820348519" datatype="html">
         <source>registration-debit-cards works</source>
-      </trans-unit>
-      <trans-unit id="8915674564851115041" datatype="html">
-        <source>label</source>
       </trans-unit>
       <trans-unit id="add-note" datatype="html">
         <source>Add note</source>
@@ -423,13 +414,13 @@
         <source>Status</source>
       </trans-unit>
       <trans-unit id="page-title-project-registrations-activity-log" datatype="html">
-        <source>Activity-log</source>
+        <source>Activity log</source>
       </trans-unit>
       <trans-unit id="page-title-project-registrations-debit-cards" datatype="html">
-        <source>Debit-cards</source>
+        <source>Debit cards</source>
       </trans-unit>
       <trans-unit id="page-title-project-registrations-personal-information" datatype="html">
-        <source>Personal-information</source>
+        <source>Personal information</source>
       </trans-unit>
       <trans-unit id="registration-status-included" datatype="html">
         <source>Included</source>
@@ -466,6 +457,78 @@
       </trans-unit>
       <trans-unit id="1873935802798572654" datatype="html">
         <source>Tip: Press Command / Ctrl + Enter to submit.</source>
+      </trans-unit>
+      <trans-unit id="1256134236732654436" datatype="html">
+        <source>Done by</source>
+      </trans-unit>
+      <trans-unit id="1467059276438662086" datatype="html">
+        <source>New status</source>
+      </trans-unit>
+      <trans-unit id="2352629566113014741" datatype="html">
+        <source>Old status</source>
+      </trans-unit>
+      <trans-unit id="2614607010577950577" datatype="html">
+        <source>Overview</source>
+      </trans-unit>
+      <trans-unit id="3054018033337101957" datatype="html">
+        <source>Old data</source>
+      </trans-unit>
+      <trans-unit id="3488602326654044677" datatype="html">
+        <source>Approved by</source>
+      </trans-unit>
+      <trans-unit id="5306473977542913614" datatype="html">
+        <source>Activity</source>
+      </trans-unit>
+      <trans-unit id="5581642292282365168" datatype="html">
+        <source>Time and date</source>
+      </trans-unit>
+      <trans-unit id="5587438863454126747" datatype="html">
+        <source>New data</source>
+      </trans-unit>
+      <trans-unit id="6467871397050565968" datatype="html">
+        <source>Choose option(s)</source>
+      </trans-unit>
+      <trans-unit id="6533918067030990396" datatype="html">
+        <source>Amount</source>
+      </trans-unit>
+      <trans-unit id="7481183920179363714" datatype="html">
+        <source>Sent</source>
+      </trans-unit>
+      <trans-unit id="8004775102395278439" datatype="html">
+        <source>FSP</source>
+      </trans-unit>
+      <trans-unit id="8691920320483720007" datatype="html">
+        <source>Received</source>
+      </trans-unit>
+      <trans-unit id="976904059902830801" datatype="html">
+        <source>Change reason</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-data-change" datatype="html">
+        <source>Data change</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-message" datatype="html">
+        <source>Message</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-note" datatype="html">
+        <source>Note</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-status-update" datatype="html">
+        <source>Status update</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-transfer" datatype="html">
+        <source>Transfer</source>
+      </trans-unit>
+      <trans-unit id="generic-pending" datatype="html">
+        <source>Pending</source>
+      </trans-unit>
+      <trans-unit id="3791822671319116066" datatype="html">
+        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="PH"/> <x equiv-text="item.contents.transferNumber" id="PH_1"/> of <x equiv-text="item.contents.totalTransfers" id="PH_2"/></source>
+      </trans-unit>
+      <trans-unit id="1270421233965290368" datatype="html">
+        <source>Current balance</source>
+      </trans-unit>
+      <trans-unit id="table-quick-search" datatype="html">
+        <source>Filter by keyword</source>
       </trans-unit>
     </body>
   </file>

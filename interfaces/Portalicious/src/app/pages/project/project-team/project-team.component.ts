@@ -13,6 +13,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -34,6 +35,7 @@ import { ToastService } from '~/services/toast.service';
   standalone: true,
   imports: [
     PageLayoutComponent,
+    CardModule,
     QueryTableComponent,
     AddUserFormComponent,
     ConfirmDialogModule,

@@ -1,11 +1,17 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 
+interface ChipData {
+  chipLabel: string;
+  chipVariant: ChipVariant;
+}
+
 export function getChipDataByRegistrationStatus(
   status?: null | RegistrationStatusEnum,
-): { chipLabel: string; chipVariant: ChipVariant } {
+): ChipData {
   if (!status) {
     return {
       chipVariant: 'grey',
@@ -32,6 +38,33 @@ export function getChipDataByRegistrationStatus(
       return {
         chipLabel,
         chipVariant: 'orange',
+      };
+  }
+}
+
+export function getChipDataByStatusEnum(status?: null | StatusEnum): ChipData {
+  if (!status) {
+    return {
+      chipVariant: 'grey',
+      chipLabel: $localize`:@@generic-not-available:Not available`,
+    };
+  }
+
+  switch (status) {
+    case StatusEnum.success:
+      return {
+        chipLabel: $localize`:@@generic-success:Success`,
+        chipVariant: 'green',
+      };
+    case StatusEnum.waiting:
+      return {
+        chipLabel: $localize`:@@generic-pending:Pending`,
+        chipVariant: 'orange',
+      };
+    case StatusEnum.error:
+      return {
+        chipLabel: $localize`:@@generic-error:Error`,
+        chipVariant: 'red',
       };
   }
 }
