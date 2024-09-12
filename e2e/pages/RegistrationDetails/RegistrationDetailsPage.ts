@@ -324,6 +324,19 @@ class RegistrationDetails {
     );
   }
 
+  async validatePaymentErrorMessages({
+    messageContent,
+  }: {
+    messageContent: string;
+  }) {
+    const detailsButton = this.page.getByRole('button', { name: 'Details' });
+    const errorMessage = this.page.getByText('Error message: The initiator');
+
+    await this.tileDetailsDropdownIcon.nth(0).click();
+    await detailsButton.click();
+    expect(await errorMessage.textContent()).toContain(messageContent);
+  }
+
   async addNote(actions: string, addNote: string) {
     await this.page.getByText(actions).click();
     await this.page.getByText(addNote).click();
