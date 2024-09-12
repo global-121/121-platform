@@ -207,7 +207,7 @@ export const registrationSafaricom = {
   age: 25,
   maritalStatus: 'married',
   registrationType: 'self',
-  nationalId: 32121321,
+  nationalId: '32121321',
   nameAlternate: 'test',
   totalHH: 56,
   totalSub5: 1,

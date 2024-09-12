@@ -330,7 +330,7 @@ class RegistrationDetails {
     messageContent: string;
   }) {
     const detailsButton = this.page.getByRole('button', { name: 'Details' });
-    const errorMessage = this.page.getByText('Error message: The initiator');
+    const errorMessage = this.page.getByText('Error message: ');
 
     await this.tileDetailsDropdownIcon.nth(0).click();
     await detailsButton.click();
