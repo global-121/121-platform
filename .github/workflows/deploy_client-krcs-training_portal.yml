@@ -24,9 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: |
-            .github
-            ${{ env.workingDirectory }}
+          fetch-depth: 0
 
       - name: Build Interface
         id: build
