@@ -83,7 +83,7 @@ function getViewRegistration(): RegistrationViewEntity {
     firstName: 'Jane',
     lastName: 'Doe',
     name: 'Jane Doe',
-  } as any as RegistrationViewEntity;
+  } as unknown as RegistrationViewEntity;
 }
 
 let eventScopedRepository: jest.Mocked<any>;
@@ -192,7 +192,7 @@ describe('EventsService', () => {
       chunk: 2000,
     });
   });
-
+  // I don`t know how to fix this.
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';

@@ -1,7 +1,9 @@
 import { AppDataSource } from '@121-service/src/appdatasource';
 import {
   CreateDateColumn,
+  EntityTarget,
   Index,
+  ObjectLiteral,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -28,7 +30,10 @@ export class CascadeDeleteEntity extends Base121Entity {
     }
   }
 
-  public async deleteOneToMany(entity: any, columnName: string): Promise<void> {
+  public async deleteOneToMany(
+    entity: EntityTarget<ObjectLiteral>,
+    columnName: string,
+  ): Promise<void> {
     const repo = AppDataSource.getRepository(entity);
     const deleteItems = await repo
       .createQueryBuilder('todelete')
@@ -40,5 +45,5 @@ export class CascadeDeleteEntity extends Base121Entity {
 
 class CascadeDeleteInput {
   public columnName: string;
-  public entityClass: any;
+  public entityClass: EntityTarget<ObjectLiteral>;
 }

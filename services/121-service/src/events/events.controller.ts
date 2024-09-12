@@ -3,6 +3,7 @@ import { EventsService } from '@121-service/src/events/events.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
@@ -25,6 +26,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -65,8 +67,8 @@ export class EventsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams: Record<string, string>,
     @Query('format') format = 'json',
-    @Req() req,
-    @Res() res,
+    @Req() req: ScopedUserRequest,
+    @Res() res: Response,
   ): Promise<GetEventDto[] | void> {
     // REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
     const filename = `registration-data-change-events`;
@@ -75,7 +77,15 @@ export class EventsController {
     };
     const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {
-      const userId = req.user.id;
+      const userId = req.user?.id;
+
+      if (typeof userId === 'undefined') {
+        throw new HttpException(
+          'User is not authenticated',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
       const hasPermission = await this.userService.canActivate(
         [PermissionEnum.RegistrationPersonalEXPORT],
         programId,
@@ -102,7 +112,7 @@ export class EventsController {
     if (result.length === 0) {
       throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
     }
-    return res.send(result);
+    return result;
   }
 
   // We can later extend these permissions to different types when we get more types of events

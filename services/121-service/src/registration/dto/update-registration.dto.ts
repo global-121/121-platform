@@ -39,7 +39,7 @@ export class UpdateRegistrationDto {
     description: `Key value pairs of the registration object.`,
     example: `{ "phoneNumber" : "1234567890" }`,
   })
-  public data: object;
+  public data: Record<string, string | number | boolean>;
 
   @ApiProperty({
     description: `Reason is the same for all provided attributes in one API-call`,

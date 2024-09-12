@@ -27,6 +27,7 @@ import {
   FILE_UPLOAD_API_FORMAT,
   FILE_UPLOAD_WITH_REASON_API_FORMAT,
 } from '@121-service/src/shared/file-upload-api-format';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 import {
@@ -81,12 +82,19 @@ export class RegistrationsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importRegistrations(
-    @UploadedFile() csvFile,
+    @UploadedFile() csvFile: unknown,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     return await this.registrationsService.importRegistrations(
       csvFile,
@@ -110,11 +118,17 @@ export class RegistrationsController {
     data: ImportRegistrationsDto[],
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query() queryParams,
-    @Req() req,
+    @Query('validation') validation = true,
+    @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
-    const validation = !queryParams.validation ?? true;
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     if (validation) {
       const validatedData =
@@ -155,10 +169,17 @@ export class RegistrationsController {
   )
   public async findAll(
     @Paginate() query: PaginateQuery,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
   ) {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     const hasPersonalRead =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -195,9 +216,17 @@ export class RegistrationsController {
     @UploadedFile() csvFile: any,
     @Body('reason') reason: string,
     @Param('programId', ParseIntPipe) programId: number,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     return await this.registrationsService.patchBulk(
       csvFile,
       programId,
@@ -216,10 +245,10 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get('programs/:programId/registrations/import-template')
   public async getImportRegistrationsTemplate(
-    @Param() params,
+    @Param('programId', ParseIntPipe) programId: number,
   ): Promise<string[]> {
     return await this.registrationsService.getImportRegistrationsTemplate(
-      Number(params.programId),
+      Number(programId),
     );
   }
 
@@ -275,13 +304,21 @@ export class RegistrationsController {
   public async patchRegistrationsStatus(
     @Paginate() query: PaginateQuery,
     @Body() statusUpdateDto: RegistrationStatusPatchDto,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
-    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false',
   ): Promise<BulkActionResultDto> {
     let permission: PermissionEnum | undefined;
     let messageContentType: MessageContentType | undefined;
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     const registrationStatus = statusUpdateDto.status;
     switch (registrationStatus) {
       case RegistrationStatusEnum.included:
@@ -332,12 +369,12 @@ export class RegistrationsController {
       programId,
       query,
     );
-    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    const dryRunBoolean = dryRun === 'true'; // defaults to false
     const result = await this.registrationsBulkService.patchRegistrationsStatus(
       query,
       programId,
       registrationStatus as RegistrationStatusEnum,
-      dryRun,
+      dryRunBoolean,
       userId,
       statusUpdateDto.message,
       statusUpdateDto.messageTemplateKey,
@@ -370,9 +407,17 @@ export class RegistrationsController {
     @Param('programId', new ParseIntPipe()) programId: number,
     @Param('referenceId') referenceId: string,
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
@@ -459,9 +504,16 @@ export class RegistrationsController {
   @Get('/registrations')
   public async searchRegistration(
     @Query('phonenumber') phonenumber: string,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
         'phonenumber is not a string',
@@ -489,11 +541,18 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Put('programs/:programId/registrations/:referenceId/fsp')
   public async updateChosenFsp(
-    @Param() params,
+    @Param() params: { referenceId: string; programId: number },
     @Body() data: UpdateChosenFspDto,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.registrationsService.updateChosenFsp({
       referenceId: params.referenceId,
       newFspName: data.newFspName,
@@ -550,22 +609,29 @@ export class RegistrationsController {
   @Delete('programs/:programId/registrations')
   public async delete(
     @Paginate() query: PaginateQuery,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
     @Param('programId') programId: number,
-    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
       query,
     );
 
-    const dryRun = queryParams.dryRun === 'true'; // defaults to false
+    const dryRunBoolean = dryRun === 'true'; // defaults to false
     const result = await this.registrationsBulkService.deleteRegistrations(
       query,
       programId,
-      dryRun,
+      dryRunBoolean,
       userId,
     );
 
@@ -631,18 +697,25 @@ export class RegistrationsController {
   public async sendCustomTextMessage(
     @Body() body: SendCustomTextDto,
     @Paginate() query: PaginateQuery,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
-    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
       query,
     );
-    const dryRun = queryParams.dryRun === 'true'; // defaults to false
-    if (!dryRun && body.skipMessageValidation) {
+    const dryRunBoolean = dryRun === 'true'; // defaults to false
+    if (!dryRunBoolean && body.skipMessageValidation) {
       throw new HttpException(
         'skipping Message Validation is only allowed in dryRun case',
         HttpStatus.BAD_REQUEST,
@@ -653,11 +726,11 @@ export class RegistrationsController {
       programId,
       body.message,
       body.messageTemplateKey,
-      dryRun,
+      dryRunBoolean,
       userId,
     );
 
-    if (dryRun) {
+    if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
       // I did not find another way to send a different status code than with a HttpException
       throw new HttpException(result, HttpStatus.OK);
@@ -698,7 +771,9 @@ export class RegistrationsController {
       'ReferenceId retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/registrations/referenceid/:paId')
-  public async getReferenceId(@Param() params): Promise<any> {
+  public async getReferenceId(
+    @Param() params: { programId: number; paId: number },
+  ): Promise<any> {
     if (isNaN(params.paId)) {
       throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
     }

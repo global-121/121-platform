@@ -1,4 +1,5 @@
 /* eslint-disable jest/no-conditional-expect */
+import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { postCustomAttribute } from '@121-service/test/helpers/program.helper';
 import {
@@ -30,7 +31,7 @@ describe('Create program custom attributes', () => {
   it('should post a program attributes', async () => {
     // Act
     const createReponse = await postCustomAttribute(
-      customAttribute as any,
+      customAttribute as CreateProgramCustomAttributeDto,
       programIdPV,
       accessToken,
     );
@@ -41,10 +42,14 @@ describe('Create program custom attributes', () => {
 
   it('should no be able to post a attribute with a name that already exists', async () => {
     // Arrange
-    await postCustomAttribute(customAttribute as any, programIdPV, accessToken);
+    await postCustomAttribute(
+      customAttribute as CreateProgramCustomAttributeDto,
+      programIdPV,
+      accessToken,
+    );
     // Act
     const createReponse2 = await postCustomAttribute(
-      customAttribute as any,
+      customAttribute as CreateProgramCustomAttributeDto,
       programIdPV,
       accessToken,
     );
@@ -56,11 +61,13 @@ describe('Create program custom attributes', () => {
     // Arrange
     const requiredAttributes = ['name', 'type', 'label'];
     for (const attribute of requiredAttributes) {
-      const programAttributeCopy = { ...customAttribute };
-      delete programAttributeCopy[attribute];
+      const programAttributeCopy: Partial<typeof customAttribute> = {
+        ...customAttribute,
+      };
+      delete programAttributeCopy[attribute as keyof typeof customAttribute];
 
       const createReponse = await postCustomAttribute(
-        programAttributeCopy as any,
+        programAttributeCopy as CreateProgramCustomAttributeDto,
         programIdPV,
         accessToken,
       );
@@ -78,7 +85,7 @@ describe('Create program custom attributes', () => {
 
       // Act
       const createReponse = await postCustomAttribute(
-        programAttributeCopy as any,
+        programAttributeCopy as CreateProgramCustomAttributeDto,
         programIdPV,
         accessToken,
       );

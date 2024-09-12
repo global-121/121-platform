@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class EmailsApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async sendEmail(payload: any): Promise<void> {
+  public async sendEmail(payload: unknown): Promise<void> {
     try {
       const emailApiUrl = process.env.AZURE_EMAIL_API_URL as string;
 
@@ -16,7 +16,7 @@ export class EmailsApiService {
         },
       ];
 
-      await this.httpService.post<any>(emailApiUrl, payload, headers);
+      await this.httpService.post<unknown>(emailApiUrl, payload, headers);
     } catch (error) {
       console.error('Failed to send email through API', error);
       throw new Error('Failed to send email');

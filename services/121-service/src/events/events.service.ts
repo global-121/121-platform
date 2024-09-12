@@ -18,7 +18,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
-import { Between } from 'typeorm';
+import { Between, FindOptionsWhere } from 'typeorm';
 
 type LogEntity = Partial<RegistrationViewEntity> & {
   id: number;
@@ -68,24 +68,34 @@ export class EventsService {
   private createWhereClause(
     programId: number,
     searchOptions: EventSearchOptionsDto,
-  ): object {
+  ): FindOptionsWhere<EventEntity> {
     const { registrationId, queryParams } = searchOptions;
-    const whereStatement = {
+
+    const whereStatement: FindOptionsWhere<EventEntity> & {
+      registration: {
+        programId: number;
+        id?: number;
+        referenceId?: string;
+      };
+    } = {
       registration: {
         programId: programId,
       },
     };
+
     if (registrationId) {
-      whereStatement['registration']['id'] = registrationId;
+      whereStatement.registration.id = registrationId;
     }
     if (queryParams) {
       if (queryParams['referenceId']) {
-        whereStatement['registration']['referenceId'] =
-          queryParams['referenceId'];
+        whereStatement.registration.referenceId = queryParams['referenceId'];
       }
-      whereStatement['created'] = Between(
-        queryParams['fromDate'] || new Date(2000, 1, 1),
-        queryParams['toDate'] || new Date(),
+
+      whereStatement.created = Between(
+        queryParams['fromDate']
+          ? new Date(queryParams['fromDate'])
+          : new Date(2000, 1, 1),
+        queryParams['toDate'] ? new Date(queryParams['toDate']) : new Date(),
       );
     }
     return whereStatement;
@@ -259,19 +269,27 @@ export class EventsService {
 
     const events: EventEntity[] = [];
     for (const fieldName of fieldNames) {
+      const key = fieldName as keyof LogEntity;
+
       if (
-        oldEntity[fieldName] === newEntity[fieldName] ||
-        (isObject(oldEntity[fieldName]) &&
-          isObject(newEntity[fieldName]) &&
-          isMatch(oldEntity[fieldName], newEntity[fieldName]))
+        oldEntity[key] === newEntity[key] ||
+        (isObject(oldEntity[key]) &&
+          isObject(newEntity[key]) &&
+          isMatch(oldEntity[key], newEntity[key]))
       ) {
         continue;
       }
 
+      // Ensure only string values are passed to the event creation
+      const oldValue =
+        typeof oldEntity[key] === 'string' ? oldEntity[key] : null;
+      const newValue =
+        typeof newEntity[key] === 'string' ? newEntity[key] : null;
+
       const eventForChange = this.createEventForChange(
         fieldName,
-        oldEntity[fieldName],
-        newEntity[fieldName],
+        oldValue,
+        newValue,
         oldEntity.id,
       );
       eventForChange.userId = userId ?? null;
@@ -285,13 +303,14 @@ export class EventsService {
     fieldName: string,
     oldValue: EventAttributeEntity['value'],
     newValue: EventAttributeEntity['value'],
-    registrationdId: number,
+    registrationId: number,
   ): EventEntity {
     const event = new EventEntity();
     event.type = this.getEventType(fieldName);
-    event.registrationId = registrationdId;
+    event.registrationId = registrationId;
 
-    const attributesData = {
+    // Explicitly declare attributesData as Record<string, any> to allow dynamic keys
+    const attributesData: Record<string, unknown> = {
       [EventAttributeKeyEnum.oldValue]: oldValue,
       [EventAttributeKeyEnum.newValue]: newValue,
     };

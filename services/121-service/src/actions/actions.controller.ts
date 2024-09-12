@@ -4,11 +4,13 @@ import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto'
 import { ActionDto } from '@121-service/src/actions/dto/action.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
   Get,
+  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -71,12 +73,20 @@ export class ActionsController {
   })
   @Post('programs/:programId/actions')
   public async saveAction(
-    @Req() req: any,
+    @Req() req: ScopedUserRequest,
     @Body() actionData: ActionDto,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ActionReturnDto> {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+
+    if (typeof userId === 'undefined') {
+      throw new HttpException(
+        'User is not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     return await this.actionService.postAction(
       userId,
       programId,

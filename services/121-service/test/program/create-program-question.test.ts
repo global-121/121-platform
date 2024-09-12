@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { postProgramQuestion } from '@121-service/test/helpers/program.helper';
 import {
@@ -40,7 +41,7 @@ describe('Create program', () => {
   it('should post a program questions', async () => {
     // Act
     const createReponse = await postProgramQuestion(
-      programQuestion as any,
+      programQuestion as CreateProgramQuestionDto,
       programIdPV,
       accessToken,
     );
@@ -51,10 +52,14 @@ describe('Create program', () => {
 
   it('should no be able to post a question with a name that already exists', async () => {
     // Arrange
-    await postProgramQuestion(programQuestion as any, programIdPV, accessToken);
+    await postProgramQuestion(
+      programQuestion as CreateProgramQuestionDto,
+      programIdPV,
+      accessToken,
+    );
     // Act
     const createReponse2 = await postProgramQuestion(
-      programQuestion as any,
+      programQuestion as CreateProgramQuestionDto,
       programIdPV,
       accessToken,
     );
@@ -66,16 +71,18 @@ describe('Create program', () => {
     // Arrange
     const requiredAttributes = ['name', 'questionType', 'label', 'answerType'];
     for (const attribute of requiredAttributes) {
-      const programQuestionCopy = { ...programQuestion };
-      delete programQuestionCopy[attribute];
+      const programQuestionCopy: Partial<typeof programQuestion> = {
+        ...programQuestion,
+      };
+      delete programQuestionCopy[attribute as keyof typeof programQuestion];
 
-      const createReponse = await postProgramQuestion(
-        programQuestionCopy as any,
+      const createResponse = await postProgramQuestion(
+        programQuestionCopy as CreateProgramQuestionDto,
         programIdPV,
         accessToken,
       );
       // Assert
-      expect(createReponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(createResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     }
   });
 
@@ -88,7 +95,7 @@ describe('Create program', () => {
 
       // Act
       const createReponse = await postProgramQuestion(
-        programQuestionCopy as any,
+        programQuestionCopy as CreateProgramQuestionDto,
         programIdPV,
         accessToken,
       );
