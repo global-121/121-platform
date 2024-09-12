@@ -499,12 +499,21 @@ export class RegistrationsService {
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
+    // Track whether maxPayments has been updated to match paymentCount
+    let maxPaymentsMatchesPaymentCount = false;
+
     for (const attributeKey of Object.keys(partialRegistration)) {
       const attributeValue = partialRegistration[attributeKey];
 
       const oldValue = oldViewRegistration[attributeKey];
 
       if (String(oldValue) !== String(attributeValue)) {
+        if (
+          attributeKey === 'maxPayments' &&
+          Number(attributeValue) === registrationToUpdate.paymentCount
+        ) {
+          maxPaymentsMatchesPaymentCount = true;
+        }
         registrationToUpdate = await this.updateAttribute(
           attributeKey,
           attributeValue,
@@ -512,6 +521,15 @@ export class RegistrationsService {
         );
         nrAttributesUpdated++;
       }
+    }
+
+    if (maxPaymentsMatchesPaymentCount) {
+      registrationToUpdate = await this.updateAttribute(
+        'registrationStatus',
+        RegistrationStatusEnum.completed,
+        registrationToUpdate,
+      );
+      nrAttributesUpdated++; // Increment for registrationStatus update
     }
 
     const newRegistration = await this.getPaginateRegistrationForReferenceId(

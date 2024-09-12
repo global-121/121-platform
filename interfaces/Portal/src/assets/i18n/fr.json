@@ -414,7 +414,7 @@
             "error": {
               "not-an-integer": "La valeur doit être un nombre entier",
               "not-empty": "Le champ ne peut pas être vide",
-              "too-low": "La valeur doit être supérieure au nombre de paiements qui ont déjà été émis"
+              "too-low": "La valeur doit être supérieure ou égale au nombre de paiements qui ont déjà été émis"
             },
             "maxPayments": {
               "explanation": "Le nombre maximal de paiements pour cette Personne Affectée. La limite du nombre de paiements peut être supprimée en retirant la valeur, puis sauvegarder.",

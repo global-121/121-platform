@@ -418,7 +418,7 @@
             "error": {
               "not-an-integer": "Input moet een geheel getal zijn",
               "not-empty": "De invoer kan niet leeg zijn",
-              "too-low": "De invoer moet hoger zijn dan het aantal betalingen dat al is verzonden"
+              "too-low": "De invoer moet hoger zijn dan of gelijk zijn aan het aantal betalingen dat al is verzonden"
             },
             "maxPayments": {
               "explanation": "Het maximale aantal betalingen voor deze hulpvrager. U kunt de limiet verwijderen door de waarde te verwijderen en op te slaan.",
