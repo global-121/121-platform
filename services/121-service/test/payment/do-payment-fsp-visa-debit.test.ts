@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -33,7 +35,6 @@ import {
   registrationOCW3,
   registrationOCW4,
 } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Do payment to 1 PA', () => {
   // Set WhatsApp-number for ALL tests in this suite only

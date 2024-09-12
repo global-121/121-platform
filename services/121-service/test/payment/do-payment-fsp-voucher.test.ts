@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -20,7 +22,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;

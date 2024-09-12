@@ -1,6 +1,3 @@
-import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
-import { IntersolveVisaTransformInterceptor } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-transform-intercepter';
-import { IntersolveVisaMockService } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa.mock.service';
 import {
   Body,
   Controller,
@@ -11,6 +8,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { IntersolveVisaMockService } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa.mock.service';
+import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
+import { IntersolveVisaTransformInterceptor } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-transform-intercepter';
 
 @ApiTags('fsp/intersolve-visa')
 @UseInterceptors(IntersolveVisaTransformInterceptor)

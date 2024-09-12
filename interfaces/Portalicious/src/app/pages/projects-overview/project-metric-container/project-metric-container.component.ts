@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 
 @Component({

@@ -16,7 +16,7 @@ module.exports = {
     {
       files: ['*.ts'],
       parser: '@typescript-eslint/parser',
-      plugins: ['no-relative-import-paths'],
+      plugins: ['no-relative-import-paths', 'simple-import-sort'],
       extends: [
         'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
@@ -48,6 +48,7 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'object-shorthand': 'error',
         'promise/no-nesting': 'error',
         'promise/no-callback-in-promise': 'error',
         'promise/no-multiple-resolved': 'error',
@@ -79,6 +80,22 @@ module.exports = {
               'Unsafe where condition, that can leak data. Use Equal() instead.',
           },
         ],
+        'simple-import-sort/imports': [
+          'error',
+          {
+            groups: [
+              // Packages.
+              // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+              ['^@?\\w'],
+              // Alias imports
+              ['^@121-service'],
+              // Relative imports.
+              // Anything that starts with a dot.
+              ['^\\.'],
+            ],
+          },
+        ],
+        'simple-import-sort/exports': 'error',
       },
     },
   ],

@@ -5,7 +5,9 @@ import {
   input,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
+
 import { AppRoutes } from '~/app.routes';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';

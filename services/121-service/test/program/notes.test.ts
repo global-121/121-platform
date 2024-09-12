@@ -1,4 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
+import { HttpStatus } from '@nestjs/common';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -8,7 +10,6 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Notes', () => {
   let accessToken: string;

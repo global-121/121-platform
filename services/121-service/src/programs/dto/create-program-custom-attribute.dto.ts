@@ -1,5 +1,3 @@
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -8,6 +6,9 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 export enum CustomAttributeType {
   text = 'text',

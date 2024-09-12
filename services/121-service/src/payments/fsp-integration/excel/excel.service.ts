@@ -1,3 +1,7 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -18,9 +22,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExcelService
@@ -121,7 +122,7 @@ export class ExcelService
         },
       )
       .andWhere('program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .getOneOrFail();
 
@@ -198,7 +199,7 @@ export class ExcelService
         { configName: FinancialServiceProviderConfigurationEnum.columnToMatch },
       )
       .andWhere('program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .getOne();
     const matchColumn: string = programWithConfig?.programFspConfiguration[0]

@@ -1,12 +1,3 @@
-import { AppDataSource } from '@121-service/src/appdatasource';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
-import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
-import {
-  AnswerTypes,
-  CustomAttributeType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
   registerDecorator,
   validate,
@@ -16,6 +7,16 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
+
+import { AppDataSource } from '@121-service/src/appdatasource';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
+import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
+import {
+  AnswerTypes,
+  CustomAttributeType,
+} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
 export class RegistrationDataTypeClassValidator
@@ -224,7 +225,7 @@ export function IsRegistrationDataValidType(
   return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: validationOptions,
       constraints: [validationAttributes],
       validator: RegistrationDataTypeClassValidator,

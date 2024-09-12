@@ -1,9 +1,3 @@
-import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   Column,
   Entity,
@@ -13,6 +7,13 @@ import {
   OneToOne,
   Relation,
 } from 'typeorm';
+
+import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {

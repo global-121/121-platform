@@ -1,3 +1,11 @@
+import { InjectQueue } from '@nestjs/bull';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
+import { Equal, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -23,20 +31,20 @@ import {
   UnblockReasonEnum,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
 import {
+  IntersolveAddressDto,
+  IntersolveCreateCustomerDto,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
+import {
   CreateCustomerResponseExtensionDto,
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer-response.dto';
 import {
-  IntersolveAddressDto,
-  IntersolveCreateCustomerDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-customer.dto';
-import {
   IntersolveCreateDebitCardDto,
   IntersolveCreateDebitCardResponseDto,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-debit-card.dto';
-import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
 import { IntersolveCreateWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet.dto';
+import { IntersolveCreateWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-create-wallet-response.dto';
 import {
   GetWalletDetailsResponseDto,
   GetWalletsResponseDto,
@@ -45,8 +53,8 @@ import {
   IntersolveGetTransactionsResponseDataDto,
   TransactionInfoVisa,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-transactions.dto';
-import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load.dto';
+import { IntersolveLoadResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-load-response.dto';
 import { IntersolveReponseErrorDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/payment-details.dto';
 import {
@@ -54,13 +62,13 @@ import {
   IntersolveVisaPaymentInfoEnumBackupName,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/intersolve-visa-payment-info.enum';
 import { VisaErrorCodes } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
+import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
+import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
 import {
   IntersolveVisaWalletEntity,
   IntersolveVisaWalletStatus,
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
-import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
-import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaStatusMappingService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-status-mapping.service';
 import {
   getRedisSetName,
@@ -80,13 +88,6 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import Redis from 'ioredis';
-import { Equal, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class IntersolveVisaService
@@ -346,7 +347,7 @@ export class IntersolveVisaService
       }
       const registrationDataOption = {
         name: attr,
-        relation: relation,
+        relation,
       };
       registrationDataOptions.push(registrationDataOption);
     }
@@ -774,8 +775,8 @@ export class IntersolveVisaService
     const saleId = `${referenceId}-${payment}`;
 
     const payload: IntersolveLoadDto = {
-      reference: reference,
-      saleId: saleId,
+      reference,
+      saleId,
       quantities: [
         {
           quantity: {
@@ -797,7 +798,7 @@ export class IntersolveVisaService
   ): Promise<IntersolveLoadResponseDto> {
     const reference = uuid();
     const payload: IntersolveLoadDto = {
-      reference: reference,
+      reference,
       quantities: [
         {
           quantity: {
@@ -926,8 +927,8 @@ export class IntersolveVisaService
           wallet.tokenCode === visaCustomer.visaWallets[0].tokenCode,
           {
             tokenCode: wallet.tokenCode ?? '',
-            programId: programId,
-            referenceId: referenceId,
+            programId,
+            referenceId,
           },
         );
       walletDetailsResponse.status = statusInfo.walletStatus121;
@@ -980,7 +981,7 @@ export class IntersolveVisaService
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     visaCustomer.visaWallets.sort((a, b) => (a.created > b.created ? -1 : 1));
-    return { registration: registration, visaCustomer: visaCustomer };
+    return { registration, visaCustomer };
   }
 
   public async toggleBlockWallet(
@@ -1052,7 +1053,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId: userId,
+      userId,
     });
     return result;
   }
@@ -1414,7 +1415,7 @@ export class IntersolveVisaService
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId: userId,
+      userId,
     });
   }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
-import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserMapper } from '@121-service/src/user/utils/user.mapper';
 
 describe('User mapper', () => {
@@ -11,7 +11,7 @@ describe('User mapper', () => {
     const username = 'test@example.org';
     const user: UserEntity = {
       id: userId,
-      username: username,
+      username,
       password: 'testPassword',
       programAssignments: [],
       actions: [],
@@ -35,7 +35,7 @@ describe('User mapper', () => {
 
     const expectedResult: UserOwnerDto = {
       id: userId,
-      username: username,
+      username,
     };
 
     // Act

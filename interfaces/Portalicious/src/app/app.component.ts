@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+
 import { ToastService } from '~/services/toast.service';
 
 @Component({

@@ -1,3 +1,10 @@
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { uniq, without } from 'lodash';
+import { PaginateQuery } from 'nestjs-paginate';
+import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
@@ -9,9 +16,9 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { getFspDisplayNameMapping } from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
 import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
 import {
@@ -36,12 +43,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { uniq, without } from 'lodash';
-import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
 const userPermissionMapByExportType = {
@@ -182,7 +183,7 @@ export class MetricsService {
     );
     const response = {
       fileName: ExportType.allPeopleAffected,
-      data: data,
+      data,
     };
     return response;
   }
@@ -195,7 +196,7 @@ export class MetricsService {
     );
     const response = {
       fileName: 'inclusion-list',
-      data: data,
+      data,
     };
     return response;
   }
@@ -413,7 +414,7 @@ export class MetricsService {
     // Create an empty scoped querybuilder object
     let queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
-      .andWhere({ programId: programId });
+      .andWhere({ programId });
 
     if (exportType !== ExportType.allPeopleAffected && !filter?.['status']) {
       queryBuilder = queryBuilder.andWhere(
@@ -458,11 +459,11 @@ export class MetricsService {
     const chunkSize = 10000;
     const paginateQuery = {
       path: 'registration',
-      filter: filter,
+      filter,
       limit: chunkSize,
       page: 1,
       select: defaultSelect.concat(registrationDataNamesProgram),
-      search: search,
+      search,
     };
 
     const data =
@@ -491,11 +492,11 @@ export class MetricsService {
         'registration."scope" AS scope',
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
-      .andWhere({ programId: programId })
+      .andWhere({ programId })
       .andWhere(
         'registration."registrationProgramId" IN (:...registrationIds)',
         {
-          registrationIds: registrationIds,
+          registrationIds,
         },
       )
       .orderBy('"registration"."registrationProgramId"', 'ASC');
@@ -870,11 +871,11 @@ export class MetricsService {
       .addSelect('transaction.payment', 'payment')
       .addSelect('MAX(transaction.created)', 'maxCreated')
       .andWhere('transaction.program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .andWhere('transaction.payment between :minPaymentId and :maxPaymentId', {
-        minPaymentId: minPaymentId,
-        maxPaymentId: maxPaymentId,
+        minPaymentId,
+        maxPaymentId,
       })
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
@@ -1004,7 +1005,7 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       })
       .getRawOne();
     const program = await this.programRepository.findOneByOrFail({
@@ -1020,7 +1021,7 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       })
       .getRawOne();
     while (i <= paymentNrSearch) {
@@ -1073,7 +1074,7 @@ export class MetricsService {
           transactionStep: transactionStepOfInterest,
         })
         .andWhere('transaction.programId = :programId', {
-          programId: programId,
+          programId,
         })
         .getCount();
     } else {
@@ -1122,7 +1123,7 @@ export class MetricsService {
       .select('SUM(transaction.amount)', 'spentMoney')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       })
       .getRawOne();
     const spentMoney = result.spentMoney;
@@ -1157,7 +1158,7 @@ export class MetricsService {
       .createQueryBuilder('registration')
       .select(`registration."registrationStatus" AS status`)
       .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
-      .andWhere({ programId: programId })
+      .andWhere({ programId })
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();

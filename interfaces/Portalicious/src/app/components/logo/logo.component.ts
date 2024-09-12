@@ -6,7 +6,9 @@ import {
   input,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
+
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 

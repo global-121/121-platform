@@ -1,9 +1,3 @@
-import { AppDataSource } from '@121-service/src/appdatasource';
-import { Base121Entity } from '@121-service/src/base.entity';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
   Column,
   Entity,
@@ -14,6 +8,13 @@ import {
   Relation,
   Unique,
 } from 'typeorm';
+
+import { AppDataSource } from '@121-service/src/appdatasource';
+import { Base121Entity } from '@121-service/src/base.entity';
+import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',

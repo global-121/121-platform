@@ -1,3 +1,11 @@
+import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import Redis from 'ioredis';
+import { Equal, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -11,8 +19,8 @@ import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '@121-service/src/payments/enum/queue.names.enum';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.api.service';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-job.dto';
 import {
   CommercialBankEthiopiaRegistrationData,
@@ -22,8 +30,8 @@ import {
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import {
-  REDIS_CLIENT,
   getRedisSetName,
+  REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -33,13 +41,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import Redis from 'ioredis';
-import { Equal, Repository } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -105,10 +106,10 @@ export class CommercialBankEthiopiaService
 
       const jobData: CommercialBankEthiopiaJobDto = {
         paPaymentData: paPayment,
-        paymentNr: paymentNr,
-        programId: programId,
-        payload: payload,
-        credentials: credentials,
+        paymentNr,
+        programId,
+        payload,
+        credentials,
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
@@ -193,7 +194,7 @@ export class CommercialBankEthiopiaService
         'COALESCE("programQuestion".name, "fspQuestion".name) AS "fieldName"',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
-        referenceIds: referenceIds,
+        referenceIds,
       })
       .andWhere(
         '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
@@ -496,7 +497,7 @@ export class CommercialBankEthiopiaService
         .createQueryBuilder('cbe')
         .innerJoin('cbe.registration', 'registration')
         .andWhere('registration.programId = :programId', {
-          programId: programId,
+          programId,
         })
         .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
           statusValues: ['deleted', 'paused'],

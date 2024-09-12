@@ -1,10 +1,12 @@
+import * as request from 'supertest';
+
 import { DEBUG } from '@121-service/src/config';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
-import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -15,7 +17,6 @@ import {
   getRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
-import * as request from 'supertest';
 
 enum MessageStatus {
   sent = 'sent',
@@ -113,7 +114,7 @@ export async function doPayment(
     .query(queryParams)
     .send({
       payment: paymentNr,
-      amount: amount,
+      amount,
     });
 }
 
@@ -133,7 +134,7 @@ export async function doPaymentForAllPAs({
     .set('Cookie', [accessToken])
     .send({
       payment: paymentNr,
-      amount: amount,
+      amount,
     });
 }
 
@@ -168,7 +169,7 @@ export async function getTransactions(
   return await getServer()
     .get(`/programs/${programId}/transactions`)
     .set('Cookie', [accessToken])
-    .query({ payment: paymentNr, referenceId: referenceId });
+    .query({ payment: paymentNr, referenceId });
 }
 
 export async function getFspInstructions(
@@ -198,14 +199,14 @@ export async function updateFinancialServiceProvider(
     .put(`/programs/${programId}/registrations/${paymentReferenceIds}/fsp`)
     .set('Cookie', [accessToken])
     .send({
-      newFspName: newFspName,
+      newFspName,
       newFspAttributes: {
-        whatsappPhoneNumber: whatsappPhoneNumber,
-        addressStreet: addressStreet,
-        addressHouseNumber: addressHouseNumber,
-        addressHouseNumberAddition: addressHouseNumberAddition,
-        addressPostalCode: addressPostalCode,
-        addressCity: addressCity,
+        whatsappPhoneNumber,
+        addressStreet,
+        addressHouseNumber,
+        addressHouseNumberAddition,
+        addressPostalCode,
+        addressCity,
       },
     });
 }
@@ -468,7 +469,7 @@ export async function postNote(
   return await getServer()
     .post(`/programs/${programId}/notes`)
     .set('Cookie', [accessToken])
-    .send({ referenceId: referenceId, text: text });
+    .send({ referenceId, text });
 }
 
 export async function getNotes(

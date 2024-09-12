@@ -1,3 +1,9 @@
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import { Equal, Repository } from 'typeorm';
+
 import {
   DEFAULT_QUEUE_CREATE_MESSAGE,
   MESSAGE_QUEUE_MAP,
@@ -19,14 +25,9 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class QueueMessageService {
@@ -101,11 +102,11 @@ export class QueueMessageService {
     try {
       const queueName = this.getQueueName(messageProcessType, bulksize);
       const messageJob: MessageJobDto = {
-        messageProcessType: messageProcessType,
+        messageProcessType,
         registrationId: registration.id,
         referenceId: registration.referenceId,
         preferredLanguage: registration.preferredLanguage ?? LanguageEnum.en,
-        whatsappPhoneNumber: whatsappPhoneNumber,
+        whatsappPhoneNumber,
         phoneNumber: registration.phoneNumber ?? undefined,
         programId: registration.programId,
         message,

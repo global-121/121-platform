@@ -1,5 +1,6 @@
 import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
+
 import BasePage from './BasePage';
 
 class ProjectTeam extends BasePage {

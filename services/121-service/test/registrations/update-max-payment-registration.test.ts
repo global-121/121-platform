@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -10,7 +12,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Update maxPayments of PA', () => {
   const programIdPv = 2;

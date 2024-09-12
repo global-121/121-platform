@@ -1,12 +1,3 @@
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import {
-  ScopedUserRequest,
-  ScopedUserRequestWithUser,
-} from '@121-service/src/shared/scoped-user-request';
-import {
-  convertToScopedOptions,
-  FindOptionsCombined,
-} from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -27,6 +18,16 @@ import {
 } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import {
+  ScopedUserRequest,
+  ScopedUserRequestWithUser,
+} from '@121-service/src/shared/scoped-user-request';
+import {
+  convertToScopedOptions,
+  FindOptionsCombined,
+} from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 export class ScopedQueryBuilder<
   T extends ObjectLiteral,

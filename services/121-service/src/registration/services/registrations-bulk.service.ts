@@ -1,3 +1,8 @@
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateQuery } from 'nestjs-paginate';
+import { Equal, In, Not, Repository } from 'typeorm';
+
 import { EventsService } from '@121-service/src/events/events.service';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -27,10 +32,6 @@ import {
 } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, In, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsBulkService {
@@ -574,7 +575,7 @@ export class RegistrationsBulkService {
       .delete()
       .from(SafaricomRequestEntity)
       .where('transactionId IN  (:...transactionIds)', {
-        transactionIds: transactionIds,
+        transactionIds,
       })
       .execute();
 

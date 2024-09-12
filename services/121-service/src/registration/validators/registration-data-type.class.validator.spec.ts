@@ -1,8 +1,9 @@
+import { Repository } from 'typeorm';
+
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationDataTypeClassValidator } from '@121-service/src/registration/validators/registration-data-type.class.validator';
-import { Repository } from 'typeorm';
 
 jest.mock('../../appdatasource', () => ({
   AppDataSource: {

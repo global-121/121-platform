@@ -1,6 +1,7 @@
-import { APP_VERSION } from '@mock-service/src/config';
 import { Controller, Get, Module } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { APP_VERSION } from '@mock-service/src/config';
 
 @ApiTags('instance')
 @Controller('instance')

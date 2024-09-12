@@ -1,3 +1,7 @@
+import { HttpException, Injectable } from '@nestjs/common';
+import crypto from 'crypto';
+import { DataSource, DeepPartial, Equal, In } from 'typeorm';
+
 import { DEBUG } from '@121-service/src/config';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
@@ -5,19 +9,16 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { HttpException, Injectable } from '@nestjs/common';
-import crypto from 'crypto';
-import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 @Injectable()
 export class SeedHelper {
@@ -355,8 +356,8 @@ export class SeedHelper {
       id: userId,
     });
     await assignmentRepository.save({
-      scope: scope,
-      user: user,
+      scope,
+      user,
       program: await programRepository.findOne({
         where: {
           id: Equal(programId),

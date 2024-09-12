@@ -1,13 +1,14 @@
+import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Queue } from 'bull';
+
 import {
   ProcessNameRegistration,
   QueueNameRegistration,
 } from '@121-service/src/notifications/enum/queue.names.enum';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { InjectQueue } from '@nestjs/bull';
-import { Inject, Injectable } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { Queue } from 'bull';
 
 @Injectable()
 export class QueueRegistrationUpdateService {

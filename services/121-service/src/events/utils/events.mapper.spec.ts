@@ -1,7 +1,7 @@
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';

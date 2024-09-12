@@ -1,12 +1,13 @@
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable } from '@nestjs/common';
+import { Queue } from 'bull';
+
 import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
 } from '@121-service/src/notifications/enum/queue.names.enum';
 import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
 import { createRedisClient } from '@121-service/src/payments/redis-client';
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
-import { Queue } from 'bull';
 
 @Injectable()
 export class QueueSeedHelperService {

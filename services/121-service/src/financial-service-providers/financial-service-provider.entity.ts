@@ -1,3 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, ManyToMany, OneToMany, Relation } from 'typeorm';
+
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
@@ -6,9 +9,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-con
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { WrapperType, getEnumValue } from '@121-service/src/wrapper.type';
-import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, ManyToMany, OneToMany, Relation } from 'typeorm';
+import { getEnumValue, WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {

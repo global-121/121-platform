@@ -1,3 +1,5 @@
+import * as request from 'supertest';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -8,7 +10,6 @@ import {
   getAccessToken,
   getServer,
 } from '@121-service/test/helpers/utility.helper';
-import * as request from 'supertest';
 
 export function importRegistrations(
   programId: number,
@@ -170,7 +171,7 @@ export async function awaitChangePaStatus(
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({
-      status: status,
+      status,
       message: null,
       messageTemplateKey: includeTemplatedMessage ? status : null,
     });
@@ -250,8 +251,8 @@ export function updateRegistration(
     .patch(`/programs/${programId}/registrations/${referenceId}`)
     .set('Cookie', [accessToken])
     .send({
-      data: data,
-      reason: reason,
+      data,
+      reason,
     });
 }
 
@@ -261,7 +262,7 @@ export function getRegistrationChangeLog(
   accessToken: string,
 ): Promise<request.Response> {
   const queryParams = {
-    referenceId: referenceId,
+    referenceId,
   };
 
   return getServer()
@@ -277,7 +278,7 @@ export function getVisaWalletsAndDetails(
   accessToken: string,
 ): Promise<request.Response> {
   const queryParams = {
-    referenceId: referenceId,
+    referenceId,
   };
 
   return getServer()

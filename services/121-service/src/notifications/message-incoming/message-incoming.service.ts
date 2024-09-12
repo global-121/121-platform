@@ -1,3 +1,9 @@
+import { InjectQueue } from '@nestjs/bull';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
+
 import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
@@ -19,8 +25,8 @@ import {
 } from '@121-service/src/notifications/twilio.dto';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
-import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
+import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -31,11 +37,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageIncomingService {
@@ -102,7 +103,7 @@ export class MessageIncomingService {
 
   public async findOne(sid: string): Promise<TwilioMessageEntity | null> {
     const findOneOptions = {
-      sid: sid,
+      sid,
     };
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }

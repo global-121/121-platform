@@ -1,7 +1,8 @@
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, IsOptional } from 'class-validator';
+
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 export class ImportFspReconciliationArrayDto {
   @ApiProperty({ example: +24300000000 })

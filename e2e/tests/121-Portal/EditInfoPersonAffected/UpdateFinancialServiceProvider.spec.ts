@@ -1,7 +1,7 @@
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
-import TableModule from '@121-e2e/pages/Table/TableModule';
+import { test } from '@playwright/test';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import fspIntersolveVoucher from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
@@ -9,9 +9,11 @@ import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.jso
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
-import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
-import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const save = englishTranslations.common.save;
@@ -62,7 +64,7 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
 
   await test.step('Validate Finacial service provider be updated', async () => {
     await table.validateFspCell({
-      rowNumber: rowNumber,
+      rowNumber,
       fspName: visaFspName,
     });
   });

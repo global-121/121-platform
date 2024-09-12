@@ -1,3 +1,7 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
+
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
@@ -6,15 +10,12 @@ import {
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class RegistrationDataService {
@@ -73,16 +74,16 @@ export class RegistrationDataService {
       .andWhere('registration.id = :id', { id: registration.id })
       .andWhere(
         new Brackets((qb) => {
-          qb.andWhere(`programQuestion.name = :name`, { name: name })
+          qb.andWhere(`programQuestion.name = :name`, { name })
             .orWhere(
               `(fspQuestion.name = :name AND "fspQuestion"."fspId" = :fsp)`,
               {
-                name: name,
+                name,
                 fsp: registration.fspId,
               },
             )
             .orWhere(`programCustomAttribute.name = :name`, {
-              name: name,
+              name,
             });
         }),
       );
@@ -124,7 +125,7 @@ export class RegistrationDataService {
       .andWhere('program.id = :programId', {
         programId: registration.programId,
       })
-      .andWhere('programQuestion.name = :name', { name: name })
+      .andWhere('programQuestion.name = :name', { name })
       .select('"programQuestion".id', 'id');
 
     const resultProgramQuestion = await query.getRawOne();
@@ -141,7 +142,7 @@ export class RegistrationDataService {
       .andWhere('registration.id = :registration', {
         registration: registration.id,
       })
-      .andWhere('question.name = :name', { name: name })
+      .andWhere('question.name = :name', { name })
       .andWhere('question."fspId" = fsp.id')
       .select('"question".id', 'id')
       .getRawOne();
@@ -155,7 +156,7 @@ export class RegistrationDataService {
       .andWhere('program.id = :programId', {
         programId: registration.programId,
       })
-      .andWhere('programCustomAttribute.name = :name', { name: name })
+      .andWhere('programCustomAttribute.name = :name', { name })
       .select('"programCustomAttribute".id', 'id')
       .getRawOne();
     if (resultProgramCustomAttribute) {
@@ -261,7 +262,7 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.programQuestion', 'programQuestion')
-      .andWhere('programQuestion.id = :id', { id: id })
+      .andWhere('programQuestion.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -286,7 +287,7 @@ export class RegistrationDataService {
 
     await repoRegistrationData.delete({
       registration: { id: registration.id },
-      programQuestion: { id: id },
+      programQuestion: { id },
     });
 
     for await (const value of values) {
@@ -310,7 +311,7 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin('registrationData.fspQuestion', 'fspQuestion')
-      .andWhere('fspQuestion.id = :id', { id: id })
+      .andWhere('fspQuestion.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -331,7 +332,7 @@ export class RegistrationDataService {
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      fspQuestion: { id: id },
+      fspQuestion: { id },
     });
 
     for await (const value of values) {
@@ -355,7 +356,7 @@ export class RegistrationDataService {
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
       )
-      .andWhere('programCustomAttribute.id = :id', { id: id })
+      .andWhere('programCustomAttribute.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -376,7 +377,7 @@ export class RegistrationDataService {
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      programCustomAttribute: { id: id },
+      programCustomAttribute: { id },
     });
 
     for await (const value of values) {

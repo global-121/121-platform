@@ -1,3 +1,7 @@
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
@@ -9,15 +13,12 @@ import { ProgramAttributesModule } from '@121-service/src/program-attributes/pro
 import { ProgramFspConfigurationController } from '@121-service/src/programs/fsp-configuration/fsp-configuration.controller';
 import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { UserModule } from '@121-service/src/user/user.module';
-import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [

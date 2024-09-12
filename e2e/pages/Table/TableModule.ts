@@ -1,10 +1,11 @@
-import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import { expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
-import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 
 const paymentLabel =
   englishTranslations.page.program['program-people-affected'].actions.doPayment;
@@ -180,8 +181,8 @@ class TableModule {
 
     if (
       !(await this.retryCheckTextContent({
-        textLocator: textLocator,
-        expectedText: expectedText,
+        textLocator,
+        expectedText,
       }))
     ) {
       expect(expectedText).toBe(await textLocator.textContent());
@@ -253,9 +254,9 @@ class TableModule {
 
     if (
       !(await this.retryCheckTextContentOfBulkAction({
-        textLocator: textLocator,
-        expectedText: expectedText,
-        bulkAction: bulkAction,
+        textLocator,
+        expectedText,
+        bulkAction,
       }))
     ) {
       expect(expectedText).toBe(await textLocator.textContent());

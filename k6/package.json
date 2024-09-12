@@ -16,9 +16,9 @@
     "eslint-plugin-n": "^17.10.2",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-promise": "^7.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.9.0",
-    "prettier": "^3.3.3",
-    "prettier-plugin-organize-imports": "^4.0.0"
+    "prettier": "^3.3.3"
   },
   "dependencies": {
     "dotenv-cli": "^7.4.2"

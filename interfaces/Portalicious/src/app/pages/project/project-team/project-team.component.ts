@@ -1,4 +1,3 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,12 +7,16 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
+
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {

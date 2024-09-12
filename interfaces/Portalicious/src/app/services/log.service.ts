@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { DebugPlugin } from '@microsoft/applicationinsights-debugplugin-js';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 import { environment } from 'src/environments/environment';

@@ -1,6 +1,8 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { AppRoutes } from '~/app.routes';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';

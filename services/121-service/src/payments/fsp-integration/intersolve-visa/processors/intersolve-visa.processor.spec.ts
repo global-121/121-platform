@@ -1,8 +1,9 @@
+import { TestBed } from '@automock/jest';
+import { Job } from 'bull';
+
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { PaymentProcessorIntersolveVisa } from '@121-service/src/payments/fsp-integration/intersolve-visa/processors/intersolve-visa.processor';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { TestBed } from '@automock/jest';
-import { Job } from 'bull';
 
 const mockPaymentJob = {
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',

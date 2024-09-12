@@ -1,4 +1,3 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +5,13 @@ import {
   inject,
   input,
 } from '@angular/core';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
+
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+
 import { AppRoutes } from '~/app.routes';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';

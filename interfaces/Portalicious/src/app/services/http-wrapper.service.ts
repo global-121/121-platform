@@ -1,4 +1,3 @@
-import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 import {
   HttpClient,
   HttpErrorResponse,
@@ -6,10 +5,14 @@ import {
   HttpParams,
   HttpStatusCode,
 } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+
 import { get } from 'lodash';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+
+import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+
 import { getUserFromLocalStorage } from '~/services/auth.service';
 import { environment } from '~environment';
 

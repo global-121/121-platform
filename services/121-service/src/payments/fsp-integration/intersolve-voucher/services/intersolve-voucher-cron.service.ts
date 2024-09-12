@@ -1,3 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Between, Equal, Repository } from 'typeorm';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -16,9 +20,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -149,11 +150,11 @@ export class IntersolveVoucherCronService {
         .leftJoin('image.registration', 'registration')
         .where('send = false')
         .andWhere('voucher.created < :sixteenHoursAgo', {
-          sixteenHoursAgo: sixteenHoursAgo,
+          sixteenHoursAgo,
         })
         .andWhere('"whatsappPhoneNumber" is not NULL')
         .andWhere('voucher.payment >= :minimumPayment', {
-          minimumPayment: minimumPayment,
+          minimumPayment,
         })
         .andWhere('registration.programId = :programId', {
           programId: program.id,
@@ -218,7 +219,7 @@ export class IntersolveVoucherCronService {
     referenceId: string,
   ): Promise<string> {
     const registration = await this.registrationRepository.findOneBy({
-      referenceId: referenceId,
+      referenceId,
     });
 
     if (registration && registration.preferredLanguage) {

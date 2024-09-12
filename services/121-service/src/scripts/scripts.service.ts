@@ -1,5 +1,6 @@
-import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
 import { Injectable } from '@nestjs/common';
+
+import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
 
 @Injectable()
 export class ScriptsService {

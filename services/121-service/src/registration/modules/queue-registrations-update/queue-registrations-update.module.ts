@@ -1,7 +1,8 @@
-import { QueueNameRegistration } from '@121-service/src/notifications/enum/queue.names.enum';
-import { QueueRegistrationUpdateService } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.service';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
+
+import { QueueNameRegistration } from '@121-service/src/notifications/enum/queue.names.enum';
+import { QueueRegistrationUpdateService } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.service';
 
 @Module({
   imports: [

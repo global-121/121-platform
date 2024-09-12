@@ -1,24 +1,25 @@
-import { EventLogOptionsDto } from '@121-service/src/events/dto/event-log-options.dto';
-import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
-import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
-import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { UserType } from '@121-service/src/user/user-type-enum';
-import { UserService } from '@121-service/src/user/user.service';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { JOB_REF } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
 import { Between } from 'typeorm';
+
+import { EventLogOptionsDto } from '@121-service/src/events/dto/event-log-options.dto';
+import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
+import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
+import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
+import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { UserService } from '@121-service/src/user/user.service';
+import { UserType } from '@121-service/src/user/user-type-enum';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 type LogEntity = Partial<RegistrationViewEntity> & {
   id: number;
@@ -72,7 +73,7 @@ export class EventsService {
     const { registrationId, queryParams } = searchOptions;
     const whereStatement = {
       registration: {
-        programId: programId,
+        programId,
       },
     };
     if (registrationId) {

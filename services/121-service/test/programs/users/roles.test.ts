@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import {
@@ -5,7 +7,6 @@ import {
   getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Programs / Users / Roles', () => {
   const programId = 1;

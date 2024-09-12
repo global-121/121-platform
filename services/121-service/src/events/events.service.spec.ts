@@ -1,3 +1,5 @@
+import { TestBed } from '@automock/jest';
+
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventsService } from '@121-service/src/events/events.service';
@@ -5,11 +7,10 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserType } from '@121-service/src/user/user-type-enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { TestBed } from '@automock/jest';
 
 const programId = 1;
 

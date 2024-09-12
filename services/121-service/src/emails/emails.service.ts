@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import {
   CreateUserEmailPayload,
   GenericEmailPayload,
@@ -7,7 +9,6 @@ import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/crea
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
 import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EmailsService {
@@ -24,8 +25,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 
@@ -40,8 +41,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 
@@ -55,8 +56,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 
@@ -65,8 +66,8 @@ export class EmailsService {
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
-      subject: subject,
-      body: body,
+      subject,
+      body,
     });
   }
 }

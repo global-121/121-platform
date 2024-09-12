@@ -1,9 +1,7 @@
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
-import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
-import TableModule from '@121-e2e/pages/Table/TableModule';
+import { test } from '@playwright/test';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -12,9 +10,13 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
-import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
-import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
+import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
@@ -75,20 +77,20 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
 
   await test.step('Check payment status under export payment data', async () => {
     await paymentsPage.verifyPaymentOptionUnderPaymentData({
-      paymentNumber: paymentNumber,
+      paymentNumber,
     });
   });
 
   await test.step('Check payment status under bulk action', async () => {
     await paymentsPage.verifyPaymentOptionUnderAction({
-      paymentNumber: paymentNumber,
+      paymentNumber,
     });
   });
 
   await test.step('Check payment history', async () => {
     await paymentsPage.openPaymentHistory({});
     await registrationPage.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
@@ -99,8 +101,8 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
     await paymentsPage.openMessage({});
     await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByMessage,
-      messageContext: messageContext,
-      messageType: messageType,
+      messageContext,
+      messageType,
     });
     await paymentsPage.closePopup(cancel);
   });
@@ -109,8 +111,8 @@ test.skip('[28448] OCW: Send payment instructions', async ({ page }) => {
     const option = `Payment #${paymentNumber}`;
     await paymentsPage.selectPaymentOption(option);
     await table.exportPayMentData({
-      status: status,
-      amount: amount,
+      status,
+      amount,
     });
   });
 });

@@ -14,7 +14,7 @@ export default class ResetModel {
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: timeout,
+      timeout,
     };
     const res = http.post(url, payload, params);
     return res;

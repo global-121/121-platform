@@ -1,3 +1,7 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Equal, Repository } from 'typeorm';
+
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
@@ -5,9 +9,6 @@ import {
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class MessageTemplateService {
@@ -23,18 +24,18 @@ export class MessageTemplateService {
     type?: string,
     language?: string,
   ): Promise<MessageTemplateEntity[]> {
-    let where: any = { programId: programId };
+    let where: any = { programId };
 
     if (type) {
-      where = { ...where, type: type };
+      where = { ...where, type };
     }
 
     if (language) {
-      where = { ...where, language: language };
+      where = { ...where, language };
     }
 
     return await this.messageTemplateRepository.find({
-      where: where,
+      where,
     });
   }
 
@@ -107,13 +108,13 @@ export class MessageTemplateService {
   ): Promise<DeleteResult> {
     if (language) {
       return await this.messageTemplateRepository.delete({
-        programId: programId,
+        programId,
         type: messageType,
-        language: language,
+        language,
       });
     } else {
       return await this.messageTemplateRepository.delete({
-        programId: programId,
+        programId,
         type: messageType,
       });
     }

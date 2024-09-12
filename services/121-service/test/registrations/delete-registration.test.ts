@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -9,7 +11,6 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Delete PA', () => {
   const programId = 3;

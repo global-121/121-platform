@@ -1,8 +1,9 @@
+import { expect, Locator } from '@playwright/test';
+import { Page } from 'playwright';
+
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import visaIntersolveTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import programTestTranslations from '@121-service/src/seed-data/program/program-test.json';
-import { Locator, expect } from '@playwright/test';
-import { Page } from 'playwright';
-import englishTranslations from '../../../interfaces/Portal/src/assets/i18n/en.json';
 
 const updateSuccesfullNotification =
   englishTranslations.common['update-success'];

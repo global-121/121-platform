@@ -102,7 +102,7 @@ describe('Sending templated message', () => {
         .query({})
         .send({
           status: statusChange,
-          message: message,
+          message,
           messageTemplateKey: templateKey,
         });
       // Assert

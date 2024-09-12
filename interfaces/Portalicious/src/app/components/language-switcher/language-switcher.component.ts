@@ -1,19 +1,21 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  LOCALE_ID,
   computed,
   effect,
   inject,
+  LOCALE_ID,
   model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 import { DropdownModule } from 'primeng/dropdown';
+
 import {
-  Locale,
   changeLanguage,
   getAvailableLanguages,
   getLocaleLabel,
+  Locale,
 } from '~/utils/locale';
 
 @Component({

@@ -7,8 +7,8 @@ import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto'
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
-import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserType } from '@121-service/src/user/user-type-enum';
 
 describe('Action mapper', () => {
   it('should map to correct object', async () => {
@@ -19,7 +19,7 @@ describe('Action mapper', () => {
     const createdDate = new Date();
     const user: UserEntity = {
       id: userId,
-      username: username,
+      username,
       password: 'testPassword',
       programAssignments: [],
       actions: [],
@@ -43,16 +43,16 @@ describe('Action mapper', () => {
     const actionEntity: ActionEntity = {
       id: actionId,
       actionType: AdditionalActionType.importPeopleAffected,
-      user: user,
+      user,
       program: {} as ProgramEntity,
-      userId: userId,
+      userId,
       created: createdDate,
       updated: new Date(),
     };
 
     const expectedUserOwnerResult: UserOwnerDto = {
       id: userId,
-      username: username,
+      username,
     };
     const expectedResult: ActionReturnDto = {
       id: actionId,

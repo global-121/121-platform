@@ -1,7 +1,7 @@
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
-import TableModule from '@121-e2e/pages/Table/TableModule';
+import { expect, test } from '@playwright/test';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import ProgramTest from '@121-service/src/seed-data/program/program-test.json';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
@@ -9,9 +9,11 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { expect, test } from '@playwright/test';
-import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
-import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/PersonalInformationPopUp';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 
 let accessToken: string;
 const save = englishTranslations.common.save;
