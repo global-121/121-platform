@@ -1,5 +1,6 @@
 import { FinancialServiceProviderCallbackJobProcessorsService } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.service';
 import { TransferCallbackJobProcessorSafaricom } from '@121-service/src/financial-service-provider-callback-job-processors/processors/safaricom-callback-job.processor';
+import { TimeoutCallbackJobProcessorSafaricom } from '@121-service/src/financial-service-provider-callback-job-processors/processors/safaricom-timeout-callback-job.processor';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -10,6 +11,7 @@ import { Module } from '@nestjs/common';
   imports: [RedisModule, SafaricomModule],
   providers: [
     TransferCallbackJobProcessorSafaricom,
+    TimeoutCallbackJobProcessorSafaricom,
     FinancialServiceProviderCallbackJobProcessorsService,
     createScopedRepositoryProvider(TransactionEntity),
   ],
