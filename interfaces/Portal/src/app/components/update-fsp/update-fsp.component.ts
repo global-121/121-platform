@@ -4,7 +4,10 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import FspName from 'src/app/enums/fsp-name.enum';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { AnswerType, Fsp } from '../../models/fsp.model';
+import {
+  AnswerType,
+  FinancialServiceProviderConfiguration,
+} from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -41,7 +44,7 @@ export class UpdateFspComponent implements OnInit {
   public inProgress: boolean;
 
   @Input()
-  public fspList: Fsp[];
+  public fspList: FinancialServiceProviderConfiguration[];
 
   @Input()
   public referenceId: string;

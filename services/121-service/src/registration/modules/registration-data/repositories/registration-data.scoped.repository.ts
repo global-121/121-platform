@@ -1,19 +1,18 @@
+import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
-import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-
-export class RegistrationDataScopedRepository extends ScopedRepository<RegistrationDataEntity> {
+export class RegistrationDataScopedRepository extends ScopedRepository<RegistrationAttributeData> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    scopedRepository: ScopedRepository<RegistrationDataEntity>,
+    @Inject(getScopedRepositoryProviderName(RegistrationAttributeData))
+    scopedRepository: ScopedRepository<RegistrationAttributeData>,
   ) {
     super(request, scopedRepository);
   }
@@ -38,7 +37,7 @@ export class RegistrationDataScopedRepository extends ScopedRepository<Registrat
   private getRegistrationDataArrayQuery(
     registration: RegistrationEntity,
     names: string[],
-  ): SelectQueryBuilder<RegistrationDataEntity> {
+  ): SelectQueryBuilder<RegistrationAttributeData> {
     return this.createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin('registrationData.programQuestion', 'programQuestion')

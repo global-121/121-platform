@@ -24,8 +24,7 @@
       "label": {
         "en": "Full Name"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "pattern": null,
       "options": null,
       "persistence": true,
@@ -43,7 +42,6 @@
         "en": "+31 6 00 00 00 00"
       },
       "type": "tel",
-      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": [],
@@ -126,7 +124,7 @@
   "programFinancialServiceProviderConfiguration": [
     {
       "financialServiceProvider": "Intersolve-voucher-whatsapp",
-      "attributes": [
+      "properties": [
         {
           "name": "username",
           "value": "INTERSOLVE_USERNAME"
@@ -138,11 +136,8 @@
       ]
     },
     {
-      "financialServiceProvider": "Intersolve-jumbo-physical"
-    },
-    {
       "financialServiceProvider": "Intersolve-visa",
-      "attributes": [
+      "properties": [
         {
           "name": "brandCode",
           "value": "INTERSOLVE_VISA_BRAND_CODE"

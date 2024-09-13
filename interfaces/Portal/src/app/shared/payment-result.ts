@@ -11,7 +11,7 @@ export function getFspIntegrationType(
   // This variable is only used to return different UX copy on doPayment result
   let fspIntegrationType = FspIntegrationType.api;
   for (const fsp of fspsInPayment) {
-    const programFsp = program.financialServiceProviders.find(
+    const programFsp = program.financialServiceProviderConfigurations.find(
       (f) => f.fsp === fsp,
     );
     if (

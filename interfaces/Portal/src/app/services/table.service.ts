@@ -249,6 +249,7 @@ export class TableService {
         }
       }
     }
+    console.log('🚀 ~ TableService ~ columns:', columns);
 
     return columns;
   }

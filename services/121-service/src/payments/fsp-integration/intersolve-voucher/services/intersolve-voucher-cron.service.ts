@@ -20,6 +20,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 
 @Injectable()
 export class IntersolveVoucherCronService {
@@ -33,8 +34,6 @@ export class IntersolveVoucherCronService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -43,6 +42,7 @@ export class IntersolveVoucherCronService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly registrationDataService: RegistrationDataService,
+    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
 
   public async cacheUnusedVouchers(): Promise<void> {
@@ -66,36 +66,39 @@ export class IntersolveVoucherCronService {
           toCancel: Equal(true),
         },
       });
-
-    const config = await this.programFspConfigurationRepository
-      .createQueryBuilder('fspConfig')
-      .select('name')
-      .addSelect('value')
-      .andWhere('fsp.fsp = :fspName', {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
-      })
-      .leftJoin('fspConfig.fsp', 'fsp')
-      .getRawMany();
-
-    // Instance has no intersolve voucher configuration
-    if (config.length === 0) {
+    if (failedIntersolveRquests.length === 0) {
       return;
     }
 
-    const credentials: { username: string; password: string } = {
-      username: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
-      )?.value,
-      password: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
-      )?.value,
-    };
+    // Get the first intersolve programFinancialServiceProviderConfigurationId that has intersolveVoucherWhatsapp as FSP
+    // ##TODO: store the programFspConfigurationId or the usename and password in the intersolveRequest table so we know which credentials to use for the cancelation
+    // Before the registration data/programFinancialServiceProviderConfiguration this problem already existed...
+    const configId = await this.programFspConfigurationRepository.findOne({
+      where: {
+        financialServiceProviderName:
+          FinancialServiceProviderName.intersolveVoucherWhatsapp,
+      },
+      select: ['id'],
+    });
 
+    if (!configId) {
+      return;
+    }
+
+    const usernamePassword =
+      await this.programFspConfigurationRepository.getUserNamePasswordProperties(
+        configId.id,
+      );
+    if (!usernamePassword.username || !usernamePassword.password) {
+      throw new Error(
+        'No username or password found for intersolveVoucherWhatsapp in this instance while trying to cancel by refpos',
+      );
+    }
     for (const intersolveRequest of failedIntersolveRquests) {
       await this.cancelRequestRefpos(
         intersolveRequest,
-        credentials.username,
-        credentials.password,
+        usernamePassword.username,
+        usernamePassword.password,
       );
     }
   }

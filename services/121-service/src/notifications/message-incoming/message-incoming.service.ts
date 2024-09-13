@@ -306,15 +306,15 @@ export class MessageIncomingService {
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
         where: { id: Equal(tryWhatsapp.registration.programId) },
-        relations: ['financialServiceProviders'],
+        relations: ['programFinancialServiceProviderConfigurations'],
       });
-      const fspIntersolveWhatsapp = program.financialServiceProviders.find(
-        (fsp) => {
-          return (fsp.fsp =
+      const fspConfigWithFspIntersolveWhatsapp =
+        program.programFinancialServiceProviderConfigurations.find((config) => {
+          return (config.financialServiceProviderName =
             FinancialServiceProviderName.intersolveVoucherWhatsapp);
-        },
-      )!;
-      tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;
+        })!;
+      tryWhatsapp.registration.programFinancialServiceProviderConfigurationId =
+        fspConfigWithFspIntersolveWhatsapp.id;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
       );
@@ -335,17 +335,17 @@ export class MessageIncomingService {
     const registrationsWithPhoneNumber = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration')
-      .leftJoin('registration.data', 'registration_data')
+      .leftJoin('registration.attributeData', 'registration_data')
       .leftJoinAndSelect(
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
       .leftJoinAndSelect('registration.program', 'program')
-      .leftJoin('registration_data.fspQuestion', 'fspQuestion')
+      .leftJoin('registration_data.programRegistrationAttribute', 'attribute')
       .where('registration_data.value = :whatsappPhoneNumber', {
         whatsappPhoneNumber: phoneNumber,
       })
-      .andWhere('fspQuestion.name = :name', {
+      .andWhere('attribute.name = :name', {
         name: CustomDataAttributes.whatsappPhoneNumber,
       })
       .orderBy('whatsappPendingMessages.created', 'ASC')

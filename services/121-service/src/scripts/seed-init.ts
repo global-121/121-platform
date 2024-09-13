@@ -48,7 +48,6 @@ export class SeedInit implements InterfaceScript {
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
-    await this.seedFsp();
   }
 
   private async clearCallbacksMockService(): Promise<void> {
@@ -327,18 +326,5 @@ export class SeedInit implements InterfaceScript {
     await this.dataSource.runMigrations({
       transaction: 'all',
     });
-  }
-
-  private async seedFsp(): Promise<void> {
-    await this.seedHelper.addFsp(fspIntersolveVoucher);
-    await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
-    await this.seedHelper.addFsp(fspIntersolveVisa);
-    await this.seedHelper.addFsp(fspVodaCash);
-    await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMixedAttributes);
-    await this.seedHelper.addFsp(fspNoAttributes);
-    await this.seedHelper.addFsp(fspSafaricom);
-    await this.seedHelper.addFsp(fspCommercialBankEthiopia);
-    await this.seedHelper.addFsp(fspExcel);
   }
 }

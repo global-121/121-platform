@@ -83,7 +83,7 @@ export class InclusionScoreService {
       relations: ['data', 'data.programQuestion'],
     });
     const scoreList = {};
-    for (const entry of registration.data) {
+    for (const entry of registration.attributeData) {
       if (entry.programQuestion) {
         const attrValue = entry.value;
         const newKeyName = entry.programQuestion.name;

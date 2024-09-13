@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventsModule } from '@121-service/src/events/events.module';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
@@ -13,6 +12,7 @@ import { LatestTransactionRepository } from '@121-service/src/payments/transacti
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsController } from '@121-service/src/payments/transactions/transactions.controller';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -25,8 +25,8 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([
       ProgramEntity,
       LatestTransactionEntity,
-      FinancialServiceProviderEntity,
       TwilioMessageEntity,
+      ProgramFinancialServiceProviderConfigurationEntity,
     ]),
     UserModule,
     HttpModule,

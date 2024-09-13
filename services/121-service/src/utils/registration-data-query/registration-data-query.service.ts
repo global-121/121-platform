@@ -7,7 +7,7 @@ import {
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
@@ -47,14 +47,14 @@ export class RegistrationDataScopedQueryService {
     const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
     subQuery = subQuery
       .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
-      .from(RegistrationDataEntity, uniqueSubQueryId);
+      .from(RegistrationAttributeData, uniqueSubQueryId);
     if (relation?.programQuestionId) {
       subQuery = subQuery.andWhere(
         `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
       );
-    } else if (relation?.programCustomAttributeId) {
+    } else if (relation?.programRegistrationAttributeId) {
       subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
+        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programRegistrationAttributeId}`,
       );
     } else if (relation?.fspQuestionId) {
       subQuery = subQuery.andWhere(

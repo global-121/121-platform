@@ -3,6 +3,7 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 export class PaPaymentDataDto {
   public referenceId: string;
   public paymentAddress: string;
+  public programFinancialServiceProviderConfigurationId: number;
   public fspName: FinancialServiceProviderName;
   public transactionAmount: number;
   public bulkSize: number;

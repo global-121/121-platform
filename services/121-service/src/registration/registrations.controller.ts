@@ -499,9 +499,9 @@ export class RegistrationsController {
     @Req() req,
   ) {
     const userId = req.user.id;
-    return await this.registrationsService.updateChosenFsp({
+    return await this.registrationsService.updateChosenFspConfiguration({
       referenceId: params.referenceId,
-      newFspName: data.newFspName,
+      newFspConfigurationName: data.newFspName,
       newFspAttributesRaw: data.newFspAttributes,
       userId,
     });

@@ -108,7 +108,7 @@ export class MetricsComponent implements OnInit {
       icon: 'card',
       label: 'page.program.program-details.financialServiceProviders',
       value: getValueOrEmpty(
-        this.program.financialServiceProviders,
+        this.program.financialServiceProviderConfigurations,
         (value) => value.length,
       ),
     });

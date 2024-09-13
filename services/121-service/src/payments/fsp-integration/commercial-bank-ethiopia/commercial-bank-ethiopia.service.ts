@@ -134,6 +134,8 @@ export class CommercialBankEthiopiaService
       programId: data.programId,
       paymentNr: data.paymentNr,
       userId: data.userId,
+      programFinancialServiceProviderConfigurationId:
+        data.paPaymentData.programFinancialServiceProviderConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     await this.transactionsService.storeTransactionUpdateStatus(

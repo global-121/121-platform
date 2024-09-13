@@ -8,11 +8,9 @@ import { DataSource, Equal, Repository } from 'typeorm';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import {
-  FinancialServiceProviderName,
-  RequiredFinancialServiceProviderConfigurations,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { RequiredFinancialServiceProviderConfigurations } from '@121-service/src/financial-service-providers/financial-service-provider-configuration.mapping';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import {
   CsvInstructions,
   ExportFileType,
@@ -36,6 +34,7 @@ import {
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
@@ -49,8 +48,8 @@ import {
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -62,6 +61,7 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -102,7 +102,6 @@ export class PaymentsService {
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
     private readonly transactionQueuesService: TransactionQueuesService,
-    private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -236,7 +235,7 @@ export class PaymentsService {
 
     // If amount is not defined do not calculate the totalMultiplierSum
     // This happens when you call the endpoint with dryRun=true
-    // happens in pa table to define which registrations are selectable
+    // Calling with dryrun is true happens in pa table to define which registrations are selectable
     if (!amount) {
       return {
         ...bulkActionResultDto,
@@ -676,17 +675,16 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaQuestions =
-      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
-        FinancialServiceProviderName.intersolveVisa,
-      );
-    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
+    const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
+      FinancialServiceProviderName.intersolveVisa,
+    ).attributes;
+    const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
     );
     const dataFieldNames = [
       'fullName',
       'phoneNumber',
-      ...intersolveVisaQuestionNames,
+      ...intersolveVisaAttributeNames,
     ];
     const referenceIds = referenceIdsTransactionAmounts.map(
       (r) => r.referenceId,
@@ -720,6 +718,8 @@ export class PaymentsService {
             userId,
             paymentNumber,
             referenceId: registrationView.referenceId,
+            programFinancialServiceProviderConfigurationId:
+              registrationView.programFinancialServiceProviderConfigurationId,
             // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
             transactionAmountInMajorUnit: transactionAmountsMap.get(
               registrationView.referenceId,
@@ -784,14 +784,20 @@ export class PaymentsService {
       .createQueryBuilder('registration')
       .select('"referenceId"')
       .addSelect('registration.id as id')
-      .addSelect('fsp.fsp as "fspName"')
+      .addSelect('fspConfig.financialServiceProvider as "fspName"')
+      .addSelect(
+        'fspConfig.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
+      )
       .andWhere('registration."programId" = :programId', { programId })
-      .leftJoin('registration.fsp', 'fsp');
+      .leftJoin(
+        'registration.programFinancialServiceProviderConfiguration',
+        'fspConfig',
+      );
     q.addSelect((subQuery) => {
       return subQuery
         .addSelect('value', 'paymentAddress')
-        .from(RegistrationDataEntity, 'data')
-        .leftJoin('data.fspQuestion', 'question')
+        .from(RegistrationAttributeData, 'data')
+        .leftJoin('data.programRegistrationAttribute', 'question')
         .andWhere('question.name IN (:...names)', {
           names: [
             CustomDataAttributes.phoneNumber,
@@ -872,7 +878,9 @@ export class PaymentsService {
     const paPaymentDataList: PaPaymentDataDto[] = [];
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
-        userId,
+        userId: userId,
+        programFinancialServiceProviderConfigurationId:
+          row.programFinancialServiceProviderConfigurationId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
@@ -890,11 +898,13 @@ export class PaymentsService {
     const programWithReconciliationFsps = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
-        financialServiceProviders: {
-          fsp: Equal(FinancialServiceProviderName.excel),
+        programFinancialServiceProviderConfigurations: {
+          financialServiceProviderName: Equal(
+            FinancialServiceProviderName.excel,
+          ),
         },
       },
-      relations: ['financialServiceProviders'],
+      relations: ['programFinancialServiceProviderConfigurations'],
       select: ['id'],
     });
 
@@ -932,23 +942,28 @@ export class PaymentsService {
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
-      (t) => t.fsp !== FinancialServiceProviderName.excel,
+      (t) => t.financialServiceProvider !== FinancialServiceProviderName.excel,
     )) {
       const registration =
         await this.registrationScopedRepository.findOneOrFail({
           where: { referenceId: Equal(transaction.referenceId) },
-          relations: ['fsp'],
+          relations: ['programFinancialServiceProviderConfigurations'],
         });
+
+      const fsp = findFinancialServiceProviderByNameOrFail(
+        registration.programFinancialServiceProviderConfiguration
+          .financialServiceProviderName,
+      );
 
       if (
         // For fsp's with reconciliation export only export waiting transactions
-        registration.fsp.hasReconciliation &&
+        fsp.hasReconciliation &&
         transaction.status !== StatusEnum.waiting
       ) {
         continue;
       }
 
-      if (registration.fsp.fsp === FinancialServiceProviderName.vodacash) {
+      if (fsp.name === FinancialServiceProviderName.vodacash) {
         xmlInstructions = await this.vodacashService.getFspInstructions(
           registration,
           transaction,
@@ -963,7 +978,7 @@ export class PaymentsService {
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
       (t) =>
-        t.fsp === FinancialServiceProviderName.excel &&
+        t.financialServiceProvider === FinancialServiceProviderName.excel &&
         t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
@@ -993,19 +1008,36 @@ export class PaymentsService {
     payment: number,
     userId: number,
   ): Promise<ImportResult> {
-    // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
-    const programWithReconciliationFsps =
-      await this.programRepository.findOneOrFail({
-        where: {
-          id: Equal(programId),
-          financialServiceProviders: { hasReconciliation: Equal(true) },
-        },
-        relations: ['financialServiceProviders'],
-      });
+    // ##TODO: REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 import, but does not actually handle this correctly.
+    const program = await this.programRepository.findOneOrFail({
+      where: {
+        id: Equal(programId),
+      },
+      relations: ['programFinancialServiceProviderConfigurations'],
+    });
+    const fspConfigsWithReconciliation: ProgramFinancialServiceProviderConfigurationEntity[] =
+      [];
+    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
+      const fsp = findFinancialServiceProviderByNameOrFail(
+        fspConfig.financialServiceProviderName,
+      );
+      if (fsp.hasReconciliation) {
+        fspConfigsWithReconciliation.push(fspConfig);
+      }
+    }
+    if (!fspConfigsWithReconciliation.length) {
+      throw new HttpException(
+        'No FSPs with reconciliation found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     let importResponseRecords: any[] = [];
-    for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.vodacash) {
+    for await (const fspConfig of fspConfigsWithReconciliation) {
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviderName.vodacash
+      ) {
         const vodacashRegistrations =
           await this.vodacashService.getRegistrationsForReconciliation(
             programId,
@@ -1036,7 +1068,10 @@ export class PaymentsService {
         }
       }
 
-      if (fsp.fsp === FinancialServiceProviderName.excel) {
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviderName.excel
+      ) {
         const maxRecords = 10000;
         const matchColumn =
           await this.excelService.getImportMatchColumn(programId);
@@ -1097,6 +1132,8 @@ export class PaymentsService {
         programId,
         paymentNr: payment,
         userId,
+        programFinancialServiceProviderConfigurationId:
+          transactionsToSave[0].programFinancialServiceProviderConfigurationId, // ##TODO refactor this to work per transactions -> this is horrible, it assumes one upload only contains one FSP which is not enforced
       };
       await this.transactionsService.storeAllTransactionsBulk(
         transactionsToSave,

@@ -97,6 +97,8 @@ export class SafaricomService
       programId: jobData.programId,
       paymentNr: jobData.paymentNr,
       userId: jobData.userId,
+      programFinancialServiceProviderConfigurationId:
+        jobData.paPaymentData.programFinancialServiceProviderConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     const transaction =

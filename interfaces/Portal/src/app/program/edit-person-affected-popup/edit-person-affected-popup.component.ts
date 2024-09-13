@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   AnswerType,
-  Fsp,
+  FinancialServiceProviderConfiguration,
   FspAttributeOption,
   FspQuestion,
 } from 'src/app/models/fsp.model';
@@ -67,9 +67,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public paTableAttributes: Attribute[] = [];
   private paTableAttributesInput: Program['editableAttributes'];
 
-  public fspList: Fsp[] = [];
+  public fspList: FinancialServiceProviderConfiguration[] = [];
   public programFspLength = 0;
-  public personFsp: Fsp;
+  public personFsp: FinancialServiceProviderConfiguration;
 
   public availableLanguages = [];
 
@@ -93,8 +93,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.program = await this.programsService.getProgramById(this.programId);
     this.availableLanguages = this.getAvailableLanguages();
 
-    if (this.program && this.program.financialServiceProviders) {
-      for (const fsp of this.program.financialServiceProviders) {
+    if (this.program && this.program.financialServiceProviderConfigurations) {
+      for (const fsp of this.program.financialServiceProviderConfigurations) {
         const fspDetails = await this.programsService.getFspById(fsp.id);
         fspDetails.displayName = Object.assign(
           {},

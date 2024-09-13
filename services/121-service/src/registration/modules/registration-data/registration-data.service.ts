@@ -12,7 +12,7 @@ import {
 import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
@@ -59,7 +59,7 @@ export class RegistrationDataService {
   private getRegistrationDataQuery(
     registration: RegistrationEntity,
     name: string,
-  ): SelectQueryBuilder<RegistrationDataEntity> {
+  ): SelectQueryBuilder<RegistrationAttributeData> {
     return this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
@@ -107,7 +107,7 @@ export class RegistrationDataService {
   public async getRegistrationDataEntityByName(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<RegistrationDataEntity | null> {
+  ): Promise<RegistrationAttributeData | null> {
     const query = this.getRegistrationDataQuery(registration, name);
     return query.getOne();
   }
@@ -158,7 +158,7 @@ export class RegistrationDataService {
       .select('"programCustomAttribute".id', 'id')
       .getRawOne();
     if (resultProgramCustomAttribute) {
-      result.programCustomAttributeId = resultProgramCustomAttribute.id;
+      result.programRegistrationAttributeId = resultProgramCustomAttribute.id;
       return result;
     }
     const errorMessage = `Cannot find registration data, name: '${name}' not found (In program questions, fsp questions, and program custom attributes)`;
@@ -214,11 +214,11 @@ export class RegistrationDataService {
         relation.fspQuestionId,
       );
     }
-    if (relation.programCustomAttributeId) {
+    if (relation.programRegistrationAttributeId) {
       await this.saveProgramCustomAttributeData(
         registration,
         value,
-        relation.programCustomAttributeId,
+        relation.programRegistrationAttributeId,
       );
     }
   }
@@ -242,11 +242,11 @@ export class RegistrationDataService {
         relation.fspQuestionId,
       );
     }
-    if (relation.programCustomAttributeId) {
+    if (relation.programRegistrationAttributeId) {
       await this.saveProgramCustomAttributeDataMultiSelect(
         registration,
         value,
-        relation.programCustomAttributeId,
+        relation.programRegistrationAttributeId,
       );
     }
   }
@@ -266,7 +266,7 @@ export class RegistrationDataService {
       existingEntry.value = value;
       await this.registrationDataScopedRepository.save(existingEntry);
     } else {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeData();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programQuestionId = id;
@@ -280,7 +280,7 @@ export class RegistrationDataService {
     id: number,
   ): Promise<void> {
     const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
+      RegistrationAttributeData,
     );
 
     await repoRegistrationData.delete({
@@ -289,7 +289,7 @@ export class RegistrationDataService {
     });
 
     for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeData();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programQuestionId = id;
@@ -303,7 +303,7 @@ export class RegistrationDataService {
     id: number,
   ): Promise<void> {
     const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
+      RegistrationAttributeData,
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
@@ -315,7 +315,7 @@ export class RegistrationDataService {
       existingEntry.value = value;
       await repoRegistrationData.save(existingEntry);
     } else {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeData();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.fspQuestionId = id;
@@ -334,7 +334,7 @@ export class RegistrationDataService {
     });
 
     for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeData();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.fspQuestionId = id;
@@ -360,7 +360,7 @@ export class RegistrationDataService {
       existingEntry.value = value;
       await this.registrationDataScopedRepository.save(existingEntry);
     } else {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeData();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;
@@ -379,7 +379,7 @@ export class RegistrationDataService {
     });
 
     for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeData();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
       newRegistrationData.programCustomAttributeId = id;

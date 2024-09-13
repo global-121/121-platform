@@ -1,3 +1,9 @@
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
+import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -11,14 +17,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
-import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { WrapperType } from '@121-service/src/wrapper.type';
-
-class BaseProgramQuestionDto {
+class BaseProgramRegistrationAttributeDto {
   @ApiProperty({})
   @IsNotEmpty()
   @IsString()
@@ -71,7 +70,7 @@ class BaseProgramQuestionDto {
   public duplicateCheck?: boolean;
 }
 
-export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
+export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
   @ApiProperty({
     example: {
       en: 'Please enter your last name:',
@@ -91,14 +90,10 @@ export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
     AnswerTypes.text,
     AnswerTypes.date,
   ])
-  public readonly answerType: string;
-
-  @ApiProperty({ example: 'standard' })
-  @IsIn(['standard', 'custom'])
-  public readonly questionType: string;
+  public readonly type: WrapperType<AnswerTypes>;
 }
 
-export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
+export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
   @ApiProperty({
     example: {
       en: 'Please enter your last name:',
@@ -107,7 +102,7 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public readonly label?: LocalizedString;
+  public readonly label?: WrapperType<LocalizedString>;
 
   @ApiProperty({
     example: AnswerTypes.numeric,
@@ -122,10 +117,5 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     AnswerTypes.text,
     AnswerTypes.date,
   ])
-  public readonly answerType?: WrapperType<AnswerTypes>;
-
-  @ApiProperty({ example: 'standard', required: false })
-  @IsIn(['standard', 'custom'])
-  @IsOptional()
-  public readonly questionType?: string;
+  public readonly type?: WrapperType<AnswerTypes>;
 }
