@@ -25,8 +25,15 @@ export class SafaricomMockService {
 
   public async transfer(
     transferDto: SafaricomTransferPayload,
-  ): Promise<SafaricomTransferResponseBodyDto> {
+  ): Promise<Partial<SafaricomTransferResponseBodyDto>> {
     let mockScenario: MockScenario = MockScenario.success;
+    if (transferDto.PartyB === '25400000001') {
+      return {
+        errorCode: '401.002.01',
+        errorMessage:
+          'Error Occurred - Invalid Access Token - mocked_access_token',
+      };
+    }
     if (transferDto.PartyB === '25400000000') {
       mockScenario = MockScenario.otherFailure;
     }

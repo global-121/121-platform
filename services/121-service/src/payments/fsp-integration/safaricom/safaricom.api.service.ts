@@ -92,9 +92,14 @@ export class SafaricomApiService {
     payload: TransferParams,
   ): Promise<SafaricomTransferResponseBody> {
     const result = await this.transfer(payload);
+    if (result && result?.ResponseCode !== '0') {
+      if (result?.errorCode) {
+        throw new SafaricomApiError(
+          `${result.errorCode} - ${result.errorMessage}`,
+        );
+      }
 
-    if (result && result.ResponseCode !== '0') {
-      throw new SafaricomApiError(result.ResponseDescription);
+      throw new SafaricomApiError(result?.ResponseDescription);
     }
 
     return result;

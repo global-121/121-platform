@@ -63,6 +63,8 @@ import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
+import { formatDate } from '@121-service/src/utils/formatDate';
+import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 
 @Injectable()
 export class PaymentsService {
@@ -834,6 +836,7 @@ export class PaymentsService {
           bulkSize: referenceIds.length,
           phoneNumber: registrationView.phoneNumber,
           idNumber: registrationView['nationalId'],
+          originatorConversationId: `P${programId}PA${registrationView.registrationProgramId}_${formatDate(new Date())}_${generateRandomString(3)}`,
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
