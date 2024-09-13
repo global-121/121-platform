@@ -504,7 +504,10 @@ export class RegistrationsService {
     let maxPaymentsMatchesPaymentCount = false;
 
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const attributeValue = partialRegistration[attributeKey];
+      const attributeValue: string | number | string[] =
+        typeof partialRegistration[attributeKey] === 'boolean'
+          ? String(partialRegistration[attributeKey])
+          : partialRegistration[attributeKey];
 
       const oldValue = oldViewRegistration[attributeKey];
 

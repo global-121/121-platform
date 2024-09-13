@@ -6,6 +6,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 describe('RegistrationsController', () => {
   let registrationController: RegistrationsController;
@@ -45,11 +46,13 @@ describe('RegistrationsController', () => {
     const paginateQuery: PaginateQuery = {
       path: '',
     };
-    const userId = 1;
+    const mockRequest: ScopedUserRequest = {
+      user: {
+        id: 1,
+      },
+    } as unknown as ScopedUserRequest;
     const programId = 1;
-    const queryParams = {
-      dryRun: true,
-    };
+    const dryRun = 'true';
 
     it('should throw exception when user includes a message, but does not have permission for that', async () => {
       const statusUpdateDto: RegistrationStatusPatchDto = {
@@ -62,9 +65,9 @@ describe('RegistrationsController', () => {
         registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          { user: { id: userId } },
+          mockRequest,
           programId,
-          queryParams,
+          dryRun,
         ),
       ).rejects.toHaveProperty('status', 403); // Forbidden
     });
@@ -80,9 +83,9 @@ describe('RegistrationsController', () => {
         registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          { user: { id: userId } },
+          mockRequest,
           programId,
-          queryParams,
+          dryRun,
         ),
       ).rejects.toHaveProperty('status', 403); // Forbidden
     });
@@ -98,9 +101,9 @@ describe('RegistrationsController', () => {
         await registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          { user: { id: userId } },
+          mockRequest,
           programId,
-          queryParams,
+          dryRun,
         );
 
       expect(patchRegistrationsStatusResult).toBe(
