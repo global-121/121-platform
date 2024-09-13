@@ -2,6 +2,7 @@ import { check, sleep } from 'k6';
 import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
+import ProgramsModel from '../models/programs.js';
 import RegistrationsModel from '../models/registrations.js';
 import resetModel from '../models/reset.js';
 
@@ -9,6 +10,7 @@ const paymentsPage = new paymentsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 const registrationsPage = new RegistrationsModel();
+const programsPage = new ProgramsModel();
 
 const duplicateNumber = 17;
 const programId = 3;
@@ -58,6 +60,20 @@ export default function () {
     resetPage.duplicateRegistrations(duplicateNumber);
   check(duplicateRegistration, {
     'Duplication successful status was 201': (r) => r.status == 201,
+  });
+
+  // Change status of all PAs to included and check response
+  const responseIncluded = programsPage.updateRegistrationStatusAndLog(
+    programId,
+    'included',
+  );
+  check(responseIncluded, {
+    'Status successfully changed to included: 202': (r) => {
+      if (r.status != 202) {
+        console.log(r.body);
+      }
+      return r.status == 202;
+    },
   });
 
   // Do the payment
