@@ -1,6 +1,6 @@
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { CreateProgramFspConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { ProgramFinancialServiceProviderConfigurationReturnDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-return.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-fsp-configuration.dto';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
@@ -81,7 +81,8 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Post(':programId/financial-service-provider-configurations')
   public async create(
-    @Body() programFspConfigurationData: CreateProgramFspConfigurationDto,
+    @Body()
+    programFspConfigurationData: CreateProgramFinancialServiceProviderConfigurationDto,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<number> {
