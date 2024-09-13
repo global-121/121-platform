@@ -38,7 +38,7 @@ import {
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
@@ -569,7 +569,7 @@ export class RegistrationsPaginationService {
   }
 
   private mapRegistrationData(
-    registrationDataArray: RegistrationDataEntity[],
+    registrationDataArray: RegistrationAttributeData[],
     mappedRegistration: ReturnType<
       RegistrationsPaginationService['mapRootRegistration']
     >,
@@ -580,7 +580,7 @@ export class RegistrationsPaginationService {
     }
     const findRelation = (
       dataRelation: RegistrationDataRelation,
-      data: RegistrationDataEntity,
+      data: RegistrationAttributeData,
     ): boolean => {
       const propertiesToCheck = [
         'programQuestionId',

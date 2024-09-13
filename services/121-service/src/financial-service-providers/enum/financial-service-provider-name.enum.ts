@@ -16,40 +16,5 @@ export enum FinancialServiceProviderConfigurationEnum {
   brandCode = 'brandCode',
   displayName = 'displayName',
   coverLetterCode = 'coverLetterCode',
+  fundingTokenCode = 'fundingTokenCode',
 }
-
-export const FinancialServiceProviderConfigurationMapping: {
-  [key in FinancialServiceProviderName]?: any;
-} = {
-  [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.intersolveVoucherPaper]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.intersolveVisa]: [
-    FinancialServiceProviderConfigurationEnum.brandCode,
-    FinancialServiceProviderConfigurationEnum.coverLetterCode,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.vodacash]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.safaricom]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.commercialBankEthiopia]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.excel]: [
-    FinancialServiceProviderConfigurationEnum.columnsToExport,
-    FinancialServiceProviderConfigurationEnum.columnToMatch,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-};

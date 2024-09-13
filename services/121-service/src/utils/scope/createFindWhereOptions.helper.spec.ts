@@ -1,6 +1,6 @@
 import { Equal, FindOperator } from 'typeorm';
 
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 import {
   convertToScopedOptions,
   FindOptionsCombined,
@@ -9,12 +9,12 @@ import {
 describe('createFindWhereOptions helper', () => {
   it('should return correct scoped whereFilters', () => {
     // Arrange
-    const options: FindOptionsCombined<RegistrationDataEntity> = {
+    const options: FindOptionsCombined<RegistrationAttributeData> = {
       where: {
         program: { id: Equal(3) },
         registrationStatus: Equal('included'),
       },
-    } as unknown as FindOptionsCombined<RegistrationDataEntity>;
+    } as unknown as FindOptionsCombined<RegistrationAttributeData>;
     const relationArrayToRegistration = [];
     const requestScope = 'utrecht';
 
@@ -27,15 +27,15 @@ describe('createFindWhereOptions helper', () => {
       program: { id: 3, enableScope: false },
       registrationStatus: 'included',
     };
-    const expectedOptions: FindOptionsCombined<RegistrationDataEntity> = {
+    const expectedOptions: FindOptionsCombined<RegistrationAttributeData> = {
       ...options,
       // This ensures the toEqual checks for the 'adding the where' part.
       where: [expectedWhereQueryScope, expectedWhereQueryScopeEnabled],
-    } as unknown as FindOptionsCombined<RegistrationDataEntity>;
+    } as unknown as FindOptionsCombined<RegistrationAttributeData>;
 
     // Act
     const convertedScopedOptions =
-      convertToScopedOptions<RegistrationDataEntity>(
+      convertToScopedOptions<RegistrationAttributeData>(
         options,
         relationArrayToRegistration,
         requestScope,

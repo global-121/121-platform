@@ -8,8 +8,8 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -20,7 +20,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MessageSizeType as MessageSizeTypeDto } from '@121-service/src/registration/dto/message-size-type.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -51,7 +51,7 @@ export class RegistrationsBulkService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly eventsService: EventsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
@@ -63,8 +63,7 @@ export class RegistrationsBulkService {
     private readonly intersolveVoucherScopedRepo: ScopedRepository<IntersolveVoucherEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
     private readonly twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private readonly registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(NoteEntity))
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
@@ -86,13 +85,13 @@ export class RegistrationsBulkService {
         message,
         messageTemplateKey,
       );
-    paginateQuery = this.setQueryPropertiesBulkAction(
-      paginateQuery,
-      false,
-      includeSendingMessage,
-      true,
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: includeSendingMessage,
+      includeStatusChangeProperties: true,
       usedPlaceholders,
-    );
+    });
 
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
@@ -128,12 +127,12 @@ export class RegistrationsBulkService {
     dryRun: boolean,
     userId: number,
   ): Promise<BulkActionResultDto> {
-    paginateQuery = this.setQueryPropertiesBulkAction(
-      paginateQuery,
-      false,
-      false,
-      true,
-    );
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: false,
+      includeStatusChangeProperties: true,
+    });
 
     const allowedCurrentStatuses = this.getAllowedCurrentStatusesForNewStatus(
       RegistrationStatusEnum.deleted,
@@ -174,13 +173,13 @@ export class RegistrationsBulkService {
         message,
         messageTemplateKey,
       );
-    paginateQuery = this.setQueryPropertiesBulkAction(
-      paginateQuery,
-      false,
-      true,
-      false,
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: true,
+      includeStatusChangeProperties: false,
       usedPlaceholders,
-    );
+    });
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
       programId,
@@ -287,17 +286,26 @@ export class RegistrationsBulkService {
       .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
   }
 
-  public setQueryPropertiesBulkAction(
-    query: PaginateQuery,
+  public setQueryPropertiesBulkAction({
+    query,
     includePaymentAttributes = false,
     includeSendMessageProperties = false,
     includeStatusChangeProperties = false,
-    usedPlaceholders?: string[],
-  ): PaginateQuery {
-    query.select = ['referenceId', 'programId'];
+    usedPlaceholders,
+    selectColumns = [],
+  }: {
+    query: PaginateQuery;
+    includePaymentAttributes?: boolean;
+    includeSendMessageProperties?: boolean;
+    includeStatusChangeProperties?: boolean;
+    usedPlaceholders?: string[];
+    selectColumns?: string[];
+  }): PaginateQuery {
+    query.select = ['referenceId', 'programId', ...selectColumns];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
-      query.select.push('financialServiceProvider');
+      query.select.push('programFinancialServiceProviderConfigurationId');
+      query.select.push('programFinancialServiceProviderConfigurationName');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');
@@ -316,6 +324,23 @@ export class RegistrationsBulkService {
     query.select = [...new Set(query.select)];
     query.page = undefined;
     return query;
+  }
+
+  public getRegistrationsForPaymentQuery(
+    referenceIds: string[],
+    dataFieldNames: string[],
+  ) {
+    return this.setQueryPropertiesBulkAction({
+      query: {
+        path: '',
+        filter: { referenceId: `$in:${referenceIds.join(',')}` },
+      },
+      includePaymentAttributes: true,
+      includeSendMessageProperties: false,
+      includeStatusChangeProperties: false,
+      usedPlaceholders: [],
+      selectColumns: dataFieldNames,
+    });
   }
 
   private getStatusUpdateBaseQuery(
@@ -436,7 +461,7 @@ export class RegistrationsBulkService {
         try {
           const { message, messageTemplateKey, messageContentType, bulkSize } =
             messageSizeType;
-          await this.queueMessageService.addMessageToQueue({
+          await this.queueMessageService.addMessageJob({
             ...messageSizeType,
             registration,
             message,
@@ -600,7 +625,7 @@ export class RegistrationsBulkService {
       for (const placeholder of usedPlaceholders) {
         placeholderData[placeholder] = registration[placeholder];
       }
-      await this.queueMessageService.addMessageToQueue({
+      await this.queueMessageService.addMessageJob({
         registration,
         message,
         messageTemplateKey,

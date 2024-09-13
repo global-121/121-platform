@@ -162,12 +162,12 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
     if (
       this.person.financialServiceProvider &&
-      this.program.financialServiceProviders
+      this.program.financialServiceProviderConfigurations
     ) {
       this.personalInfoTable.push({
         label: this.getLabel('fsp'),
         value: this.translatableString.get(
-          this.program.financialServiceProviders.find(
+          this.program.financialServiceProviderConfigurations.find(
             (i) => i.fsp === this.person.financialServiceProvider,
           )?.displayName,
         ),

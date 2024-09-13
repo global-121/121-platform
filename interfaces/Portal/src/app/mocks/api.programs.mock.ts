@@ -46,7 +46,7 @@ const programsArray: Program[] = [
     enableMaxPayments: true,
     enableScope: true,
     allowEmptyPhoneNumber: false,
-    financialServiceProviders: [],
+    financialServiceProviderConfigurations: [],
     aidworkerAssignments: [],
     fullnameNamingConvention: [],
     paTableAttributes: [],

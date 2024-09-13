@@ -1,6 +1,6 @@
 import { FilterOperator } from '../enums/filters.enum';
 import { Attribute } from './attribute.model';
-import { Fsp } from './fsp.model';
+import { FinancialServiceProviderConfiguration } from './fsp.model';
 import { LanguageEnum } from './person.model';
 import { TranslatableString } from './translatable-string.model';
 
@@ -18,7 +18,7 @@ export class Program {
   targetNrRegistrations?: number;
   distributionDuration: number;
   distributionFrequency: DistributionFrequency;
-  financialServiceProviders?: Fsp[];
+  financialServiceProviderConfigurations?: FinancialServiceProviderConfiguration[];
   aidworkerAssignments?: any[];
   created: string;
   updated: string;

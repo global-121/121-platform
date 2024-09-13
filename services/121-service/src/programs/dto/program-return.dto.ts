@@ -1,3 +1,6 @@
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -20,7 +23,6 @@ import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
 } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -98,24 +100,6 @@ export class ProgramReturnDto {
   @IsString()
   public readonly paymentAmountMultiplierFormula?: string;
 
-  @ApiProperty({
-    example: [
-      {
-        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
-      },
-      {
-        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
-      },
-    ],
-    description:
-      'Use the GET /financial-service-providers endpoint to find valid fspNames.',
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => ProgramFinancialServiceProviderDto)
-  public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
-
   @ApiProperty({ example: 250 })
   @IsNumber()
   @IsOptional()
@@ -124,38 +108,6 @@ export class ProgramReturnDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   public readonly tryWhatsAppFirst: boolean;
-
-  @ApiProperty({
-    example: [
-      {
-        name: 'nameParterOrganization',
-        type: CustomAttributeType.text,
-        label: { en: 'Name partner organization' },
-        export: [
-          ExportType.allPeopleAffected,
-          ExportType.included,
-          ExportType.payment,
-        ],
-        showInPeopleAffectedTable: true,
-      },
-      {
-        name: 'exampleBoolean',
-        type: CustomAttributeType.boolean,
-        label: { en: 'Example boolean' },
-        export: [
-          ExportType.allPeopleAffected,
-          ExportType.included,
-          ExportType.payment,
-        ],
-        showInPeopleAffectedTable: true,
-      },
-    ],
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => CreateProgramCustomAttributeDto)
-  public readonly programCustomAttributes: CreateProgramCustomAttributeDto[];
 
   @ApiProperty({
     example: [
@@ -238,8 +190,8 @@ export class ProgramReturnDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => CreateProgramQuestionDto)
-  public readonly programQuestions: CreateProgramQuestionDto[];
+  @Type(() => ProgramRegistrationAttributeDto)
+  public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()
@@ -269,6 +221,11 @@ export class ProgramReturnDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly allowEmptyPhoneNumber: boolean;
+
+  // ##TODO add proper API documentation
+  @ApiProperty()
+  @IsArray()
+  public readonly programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()

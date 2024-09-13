@@ -1,70 +1,65 @@
-import { isArray, isObject } from 'lodash';
-
-import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-export function overwriteProgramFspDisplayName(
-  programFinancialServiceProviders: FinancialServiceProviderEntity[],
-  programFinancialServiceProviderConfigurations: ProgramFspConfigurationEntity[],
-): FinancialServiceProviderEntity[] {
-  let overwrittenProgramFinancialServiceProviders: FinancialServiceProviderEntity[] =
-    [];
+// ##TODO: This function needs to be refactored to use the new entities
+// export function overwriteProgramFspDisplayName(
+//   programFinancialServiceProviders: FinancialServiceProviderEntity[],
+//   programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+// ): FinancialServiceProviderEntity[] {
+//   let overwrittenProgramFinancialServiceProviders: FinancialServiceProviderEntity[] =
+//     [];
 
-  if (programFinancialServiceProviders.length > 0) {
-    overwrittenProgramFinancialServiceProviders =
-      programFinancialServiceProviders.map((financialServiceProvider) => {
-        const displayNameConfig =
-          programFinancialServiceProviderConfigurations.filter(
-            (programFinancialServiceProviderConfiguration) =>
-              programFinancialServiceProviderConfiguration.fspId ===
-                financialServiceProvider.id &&
-              programFinancialServiceProviderConfiguration.name ===
-                FinancialServiceProviderConfigurationEnum.displayName,
-          );
+//   if (programFinancialServiceProviders.length > 0) {
+//     overwrittenProgramFinancialServiceProviders =
+//       programFinancialServiceProviders.map((financialServiceProvider) => {
+//         const displayNameConfig =
+//           programFinancialServiceProviderConfigurations.filter(
+//             (programFinancialServiceProviderConfiguration) =>
+//               programFinancialServiceProviderConfiguration.fspId ===
+//                 financialServiceProvider.id &&
+//               programFinancialServiceProviderConfiguration.name ===
+//                 FinancialServiceProviderConfigurationEnum.displayName,
+//           );
 
-        if (displayNameConfig.length > 0) {
-          // TODO: there should be a cleaner way to handle things here
-          // should "value" really have the capability of being all of these things?
-          if (
-            isObject(displayNameConfig[0].value) &&
-            !isArray(displayNameConfig[0].value)
-          ) {
-            financialServiceProvider.displayName = displayNameConfig[0]
-              .value as LocalizedString;
-          }
-        }
+//         if (displayNameConfig.length > 0) {
+//           // TODO: there should be a cleaner way to handle things here
+//           // should "value" really have the capability of being all of these things?
+//           if (
+//             isObject(displayNameConfig[0].value) &&
+//             !isArray(displayNameConfig[0].value)
+//           ) {
+//             financialServiceProvider.displayName = displayNameConfig[0]
+//               .value as LocalizedString;
+//           }
+//         }
 
-        return financialServiceProvider;
-      });
-  }
+//         return financialServiceProvider;
+//       });
+//   }
 
-  return overwrittenProgramFinancialServiceProviders;
-}
+//   return overwrittenProgramFinancialServiceProviders;
+// }
 
-export function getFspDisplayNameMapping(
-  program: ProgramEntity,
-): Record<string, LocalizedString> {
-  if (!program.financialServiceProviders || !program.programFspConfiguration) {
-    throw new Error(
-      `getFspDisplayNameMapping: Should be used with a program entity relations ['financialServiceProviders', 'programFspConfiguration']`,
-    );
-  }
-  const map = {};
-  if (program.financialServiceProviders.length > 0) {
-    program.financialServiceProviders = overwriteProgramFspDisplayName(
-      program.financialServiceProviders,
-      program.programFspConfiguration,
-    );
-  }
-  for (const fsp of program.financialServiceProviders) {
-    map[fsp.fsp] = fsp.displayName;
-  }
-  return map;
-}
+// export function getFspDisplayNameMapping(
+//   program: ProgramEntity,
+// ): Record<string, LocalizedString> {
+//   if (!program.financialServiceProviders || !program.programFspConfiguration) {
+//     throw new Error(
+//       `getFspDisplayNameMapping: Should be used with a program entity relations ['financialServiceProviders', 'programFspConfiguration']`,
+//     );
+//   }
+//   const map = {};
+//   if (program.financialServiceProviders.length > 0) {
+//     program.financialServiceProviders = overwriteProgramFspDisplayName(
+//       program.financialServiceProviders,
+//       program.programFspConfiguration,
+//     );
+//   }
+//   for (const fsp of program.financialServiceProviders) {
+//     map[fsp.fsp] = fsp.displayName;
+//   }
+//   return map;
+// }
 
 export function overwriteFspDisplayName(
   financialServiceProvider: RegistrationViewEntity['financialServiceProvider'],

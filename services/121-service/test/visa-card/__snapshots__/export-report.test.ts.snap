@@ -1,15 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Export Visa debit card report should succesfully generate a report of all Visa Debit cards 1`] = `
-{
-  "balance": 25,
-  "cardStatus121": "Active",
-  "explanation": "",
-  "isCurrentWallet": true,
-  "lastUsedDate": null,
-  "paId": 1,
-  "referenceId": "registration-visa-export-1",
-  "registrationStatus": "included",
-  "spentThisMonth": 0,
-}
+[
+  {
+    "balance": 25,
+    "cardStatus121": "Active",
+    "explanation": "",
+    "isCurrentWallet": true,
+    "lastUsedDate": null,
+    "paId": 1,
+    "referenceId": "registration-visa-1",
+    "registrationStatus": "included",
+    "spentThisMonth": 3,
+  },
+  {
+    "balance": 25,
+    "cardStatus121": "Substituted",
+    "explanation": "Card has been substituted due to re-issue",
+    "isCurrentWallet": false,
+    "lastUsedDate": null,
+    "paId": 1,
+    "referenceId": "registration-visa-1",
+    "registrationStatus": "included",
+    "spentThisMonth": 3,
+  },
+]
 `;

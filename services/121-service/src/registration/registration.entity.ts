@@ -22,24 +22,24 @@ import {
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-customer.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { ReferenceIdConstraints } from '@121-service/src/shared/const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { WrapperType } from '@121-service/src/wrapper.type';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
@@ -62,8 +62,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column()
   public referenceId: string;
 
-  @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
-  public data: Relation<RegistrationDataEntity[]>;
+  @OneToMany(() => RegistrationAttributeData, (data) => data.registration)
+  public attributeData: Relation<RegistrationAttributeData[]>;
 
   @Column({ type: 'character varying', nullable: true })
   public phoneNumber: string | null;
@@ -76,11 +76,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
-  @ManyToOne((_type) => FinancialServiceProviderEntity)
-  @JoinColumn({ name: 'fspId' })
-  public fsp: FinancialServiceProviderEntity;
+  // ##TODO find out if this can also be required instead of optional
+  @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity)
+  @JoinColumn({
+    name: 'programFinancialServiceProviderConfigurationId',
+  })
+  public programFinancialServiceProviderConfiguration: ProgramFinancialServiceProviderConfigurationEntity;
   @Column({ type: 'integer', nullable: true })
-  public fspId: number | null;
+  public programFinancialServiceProviderConfigurationId: number | null;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()
@@ -157,6 +160,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: false, default: '' })
   public scope: string;
 
+  @OneToOne(
+    () => IntersolveVisaCustomerEntity,
+    (intersolveVisaCustomer) => intersolveVisaCustomer.registration,
+  )
+  public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     // The order of these calls is important, because of foreign key constraints
@@ -187,7 +196,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
-        entityClass: RegistrationDataEntity,
+        entityClass: RegistrationAttributeData,
         columnName: 'registration',
       },
       {
