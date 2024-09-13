@@ -1,11 +1,14 @@
 import { check, sleep } from 'k6';
+import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
+import RegistrationsModel from '../models/registrations.js';
 import resetModel from '../models/reset.js';
 
 const paymentsPage = new paymentsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
+const registrationsPage = new RegistrationsModel();
 
 const duplicateNumber = 15;
 const programId = 3;
@@ -24,7 +27,7 @@ export const options = {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(17, '7m');
+  const reset = resetPage.resetDB();
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
@@ -39,6 +42,22 @@ export default function () {
       }
       return r.timings.duration < 200;
     },
+  });
+
+  // Upload registration
+  const registrationImport = registrationsPage.importRegistrations(
+    programId,
+    registrationSafaricom,
+  );
+  check(registrationImport, {
+    'Import of registration successful status was 201': (r) => r.status == 201,
+  });
+
+  // Duplicate registration to be more then 100k
+  const duplicateRegistration =
+    resetPage.duplicateRegistrations(duplicateNumber);
+  check(duplicateRegistration, {
+    'Duplication successful status was 201': (r) => r.status == 201,
   });
 
   // Do the payment
