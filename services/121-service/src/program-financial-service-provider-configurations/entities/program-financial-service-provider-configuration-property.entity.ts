@@ -1,5 +1,5 @@
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { isObject } from 'lodash';
 import {
   Column,

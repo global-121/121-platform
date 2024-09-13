@@ -12,7 +12,7 @@ import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payment
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { QueueNamePayment } from '@121-service/src/shared/enum/queue-process.names.enum';

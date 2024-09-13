@@ -1,6 +1,6 @@
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { ProgramFinancialServiceProviderConfigurationReturnDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-return.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 
 export class ProgramFinancialServiceProviderConfigurationDtoMapper {
   public static mapListOfEntitiesToListOfDtos(

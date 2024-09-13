@@ -15,7 +15,7 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';

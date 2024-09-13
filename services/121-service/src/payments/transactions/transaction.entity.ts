@@ -13,7 +13,7 @@ import { LatestTransactionEntity } from '@121-service/src/payments/transactions/
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {

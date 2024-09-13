@@ -38,7 +38,7 @@ import { ReferenceIdConstraints } from '@121-service/src/shared/const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { WrapperType } from '@121-service/src/wrapper.type';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { RegistrationAttributeData } from '@121-service/src/registration/registration-attribute-data.entity';
 
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])

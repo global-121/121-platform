@@ -12,7 +12,7 @@ import { LatestTransactionRepository } from '@121-service/src/payments/transacti
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsController } from '@121-service/src/payments/transactions/transactions.controller';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
