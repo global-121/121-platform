@@ -279,18 +279,15 @@ export class EventsService {
       }
 
       // Ensure only string values are passed to the event creation
-      const oldValue =
-        typeof oldEntity[key] === 'string'
-          ? oldEntity[key]
-          : (() => {
-              throw Error('something something');
-            })();
-      const newValue =
-        typeof newEntity[key] === 'string'
-          ? newEntity[key]
-          : (() => {
-              throw Error('something something');
-            })();
+      if (typeof oldEntity[key] !== 'string') {
+        throw Error('something something');
+      }
+      if (typeof newEntity[key] !== 'string') {
+        throw Error('something something');
+      }
+
+      const oldValue = oldEntity[key] as string;
+      const newValue = newEntity[key] as string;
 
       if (oldValue === null || newValue === null) {
         throw new Error(`Invalid field value for key: ${key}`);

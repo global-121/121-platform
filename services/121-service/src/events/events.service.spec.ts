@@ -192,7 +192,7 @@ describe('EventsService', () => {
       chunk: 2000,
     });
   });
-  // I don`t know how to fix this.
+  // XXX: I don`t know how to fix this.
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
