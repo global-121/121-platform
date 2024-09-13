@@ -14,6 +14,7 @@ import {
   Unique,
 } from 'typeorm';
 
+// TODO: REFACTOR: Rename database table to program_financial_service_provider_configuration
 @Unique('programFspConfigurationUnique', ['programId', 'name'])
 @Entity('program_fsp_configuration')
 export class ProgramFinancialServiceProviderConfigurationEntity extends CascadeDeleteEntity {
