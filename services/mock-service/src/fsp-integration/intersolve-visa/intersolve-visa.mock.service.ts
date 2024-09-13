@@ -1,6 +1,7 @@
-import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+
+import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
@@ -418,7 +419,7 @@ export class IntersolveVisaMockService {
             tokenCode: 'random token code',
           },
           debtor: {
-            tokenCode: tokenCode,
+            tokenCode,
           },
           reference: 'string',
           type: 'CHARGE',
@@ -454,7 +455,7 @@ export class IntersolveVisaMockService {
           tokenCode: 'random token code',
         },
         debtor: {
-          tokenCode: tokenCode,
+          tokenCode,
         },
         reference: 'string',
         type: 'RESERVATION',
@@ -480,7 +481,7 @@ export class IntersolveVisaMockService {
           tokenCode: 'random token code',
         },
         debtor: {
-          tokenCode: tokenCode,
+          tokenCode,
         },
         reference: 'string',
         type: 'RESERVATION',

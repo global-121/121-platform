@@ -1,3 +1,11 @@
+import { InjectQueue } from '@nestjs/bull';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
+import crypto from 'crypto';
+import Redis from 'ioredis';
+import { Equal, Repository } from 'typeorm';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -28,8 +36,8 @@ import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-int
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
-import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import {
   getRedisSetName,
@@ -46,13 +54,6 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { InjectQueue } from '@nestjs/bull';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
-import crypto from 'crypto';
-import Redis from 'ioredis';
-import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -116,11 +117,11 @@ export class IntersolveVoucherService
       const job = await this.paymentIntersolveVoucherQueue.add(
         ProcessNamePayment.sendPayment,
         {
-          paymentInfo: paymentInfo,
-          useWhatsapp: useWhatsapp,
-          payment: payment,
-          credentials: credentials,
-          programId: programId,
+          paymentInfo,
+          useWhatsapp,
+          payment,
+          credentials,
+          programId,
         },
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
@@ -277,10 +278,10 @@ export class IntersolveVoucherService
       .leftJoin('registration.images', 'images')
       .leftJoin('images.voucher', 'voucher')
       .andWhere('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
+        referenceId,
       })
       .andWhere('voucher.payment = :payment', {
-        payment: payment,
+        payment,
       })
       .getRawOne();
     if (!rawVoucher) {
@@ -386,7 +387,7 @@ export class IntersolveVoucherService
       message: whatsappPayment,
       messageContentType: MessageContentType.paymentTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
-      customData: { payment: payment, amount: calculatedAmount },
+      customData: { payment, amount: calculatedAmount },
       bulksize: paymentInfo.bulkSize,
       userId: paymentInfo.userId,
     });
@@ -467,7 +468,7 @@ export class IntersolveVoucherService
     }
     // No scoped needed as this is for incoming whatsapp messages
     await this.transactionRepository.update(transactionToUpdateFilter, {
-      status: status,
+      status,
       errorMessage:
         status === StatusEnum.error
           ? (statusCallbackData.ErrorMessage || '') +
@@ -615,8 +616,8 @@ export class IntersolveVoucherService
       .createQueryBuilder('fspConfig')
       .select('name')
       .addSelect('value')
-      .where('fspConfig.programId = :programId', { programId: programId })
-      .andWhere('fsp.fsp = :fspName', { fspName: fspName })
+      .where('fspConfig.programId = :programId', { programId })
+      .andWhere('fsp.fsp = :fspName', { fspName })
       .leftJoin('fspConfig.fsp', 'fsp');
 
     const config = await configQuery.getRawMany();
@@ -672,7 +673,7 @@ export class IntersolveVoucherService
       .leftJoinAndSelect('image.registration', 'registration')
       .andWhere('voucher.balanceUsed = false')
       .andWhere('registration.programId = :programId', {
-        programId: programId,
+        programId,
       })
       .getMany();
 
@@ -703,7 +704,7 @@ export class IntersolveVoucherService
         .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
         .andWhere('registration.programId = :programId', {
-          programId: programId,
+          programId,
         })
         .getRawOne()
     )?.max;
@@ -722,10 +723,10 @@ export class IntersolveVoucherService
           .leftJoinAndSelect('image.registration', 'registration')
           .andWhere('voucher.balanceUsed = false')
           .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
-            id: id,
+            id,
           })
           .andWhere('registration.programId = :programId', {
-            programId: programId,
+            programId,
           })
           .getMany();
       for await (const voucher of previouslyUnusedVouchers) {
@@ -873,7 +874,7 @@ export class IntersolveVoucherService
           .leftJoin('voucher.image', 'image')
           .leftJoin('image.registration', 'registration')
           .andWhere('registration.programId = :programId', {
-            programId: programId,
+            programId,
           })
           .getRawOne()
       )?.max;
@@ -890,10 +891,10 @@ export class IntersolveVoucherService
           .leftJoinAndSelect('image.registration', 'registration')
           .andWhere('voucher.lastRequestedBalance IS DISTINCT from 0')
           .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
-            id: id,
+            id,
           })
           .andWhere('registration.programId = :programId', {
-            programId: programId,
+            programId,
           });
 
         const vouchersToUpdate = await q.getMany();
@@ -922,7 +923,7 @@ export class IntersolveVoucherService
       .leftJoinAndSelect('image.registration', 'registration')
       .andWhere('voucher.lastRequestedBalance > 0')
       .andWhere('registration.programId = :programId', {
-        programId: programId,
+        programId,
       })
       .getMany();
     for await (const voucher of voucherWithBalanceRaw) {

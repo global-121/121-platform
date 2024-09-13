@@ -1,4 +1,3 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,8 +5,12 @@ import {
   inject,
   input,
 } from '@angular/core';
+
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 

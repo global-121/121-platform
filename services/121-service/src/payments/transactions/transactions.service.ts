@@ -1,3 +1,8 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Equal, In, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
@@ -30,10 +35,6 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, In, Repository } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class TransactionsService {
@@ -122,29 +123,29 @@ export class TransactionsService {
       .leftJoin('transaction.registration', 'r')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
-        programId: programId,
+        programId,
       });
     if (payment) {
       transactionQuery = transactionQuery.andWhere(
         'transaction.payment = :payment',
-        { payment: payment },
+        { payment },
       );
     }
     if (referenceId) {
       transactionQuery = transactionQuery.andWhere(
         'r."referenceId" = :referenceId',
-        { referenceId: referenceId },
+        { referenceId },
       );
     }
     if (status) {
       transactionQuery = transactionQuery.andWhere(
         'transaction.status = :status',
-        { status: status },
+        { status },
       );
     }
     if (fspName) {
       transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
-        fspName: fspName,
+        fspName,
       });
     }
     return transactionQuery;
@@ -372,7 +373,7 @@ export class TransactionsService {
         amount: transactionResponse.calculatedAmount,
         registrationId: transactionResponse.registrationId,
         financialServiceProvider: fsp,
-        program: program,
+        program,
         payment: transactionRelationDetails.paymentNr,
         userId: transactionRelationDetails.userId,
         status: transactionResponse.status,

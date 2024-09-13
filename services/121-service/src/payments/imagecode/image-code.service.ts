@@ -1,13 +1,14 @@
-import { EXTERNAL_API } from '@121-service/src/config';
-import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
-import { ImageCodeEntity } from '@121-service/src/payments/imagecode/image-code.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import Jimp from 'jimp';
 import { Equal, Repository } from 'typeorm';
+
+import { EXTERNAL_API } from '@121-service/src/config';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { ImageCodeEntity } from '@121-service/src/payments/imagecode/image-code.entity';
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 @Injectable()
 export class ImageCodeService {
@@ -67,7 +68,7 @@ export class ImageCodeService {
 
   public async get(secret: string): Promise<any> {
     const imageCode = await this.imageRepository.findOneBy({
-      secret: secret,
+      secret,
     });
     // Removes the image from the database after getting it
     if (imageCode) {

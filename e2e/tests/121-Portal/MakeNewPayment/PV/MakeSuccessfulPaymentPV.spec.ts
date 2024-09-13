@@ -1,9 +1,7 @@
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
-import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
-import TableModule from '@121-e2e/pages/Table/TableModule';
+import { test } from '@playwright/test';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -12,9 +10,13 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
-import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
-import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
+import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
 
 const nlrcPVProgrammeTitle = NLRCProgramPV.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
@@ -81,7 +83,7 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
 
     await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
@@ -89,8 +91,8 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
     await registrationPage.openActivityOverviewTab(paymentFilterByTab);
     await paymentsPage.validateSentMessagesTab({
       messageNotification: paymentFilterByNotification,
-      messageContext: messageContext,
-      messageType: messageType,
+      messageContext,
+      messageType,
     });
   });
 });

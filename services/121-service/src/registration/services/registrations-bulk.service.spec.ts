@@ -1,3 +1,6 @@
+import { TestBed } from '@automock/jest';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -6,8 +9,6 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
-import { TestBed } from '@automock/jest';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('RegistrationBulkService', () => {
   const paginateQuery = {

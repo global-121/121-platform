@@ -54,7 +54,7 @@ export class FileImportService {
     const parsedData: object[] = [];
     return await new Promise((resolve, reject): void => {
       stream
-        .pipe(csv({ separator: separator }))
+        .pipe(csv({ separator }))
         .on('error', (error): void => reject(error))
         .on('data', (rowData) => {
           // Clean up the keys in rowData

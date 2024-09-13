@@ -1,15 +1,3 @@
-import { ApplicationModule } from '@121-service/src/app.module';
-import {
-  APP_FAVICON,
-  APP_TITLE,
-  APP_VERSION,
-  DEBUG,
-  EXTERNAL_API,
-  PORT,
-  SWAGGER_CUSTOM_CSS,
-  SWAGGER_CUSTOM_JS,
-} from '@121-service/src/config';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import {
   BadRequestException,
   HttpException,
@@ -24,6 +12,19 @@ import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import fs from 'fs';
 import { SpelunkerModule } from 'nestjs-spelunker';
+
+import { ApplicationModule } from '@121-service/src/app.module';
+import {
+  APP_FAVICON,
+  APP_TITLE,
+  APP_VERSION,
+  DEBUG,
+  EXTERNAL_API,
+  PORT,
+  SWAGGER_CUSTOM_CSS,
+  SWAGGER_CUSTOM_JS,
+} from '@121-service/src/config';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import appInsights = require('applicationinsights');
 

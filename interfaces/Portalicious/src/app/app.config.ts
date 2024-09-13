@@ -9,9 +9,10 @@ import {
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
+
 import {
-  QueryClient,
   provideAngularQuery,
+  QueryClient,
 } from '@tanstack/angular-query-experimental';
 
 import { routes } from '~/app.routes';

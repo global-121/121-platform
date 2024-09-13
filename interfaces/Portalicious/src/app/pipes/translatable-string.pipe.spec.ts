@@ -1,5 +1,6 @@
-import { LOCALE_ID, enableProdMode } from '@angular/core';
+import { enableProdMode, LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { Locale } from '~/utils/locale';
 

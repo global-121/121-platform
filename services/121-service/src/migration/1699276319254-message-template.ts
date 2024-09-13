@@ -1,5 +1,6 @@
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { MigrationInterface, QueryRunner } from 'typeorm';
+
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 
 export class MessageTemplate1699276319254 implements MigrationInterface {
   name = 'MessageTemplate1699276319254';
@@ -44,7 +45,7 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
           for (const [key, text] of Object.entries(messages)) {
             const messageTemplate = {
               programId: program['id'],
-              language: language,
+              language,
               type: key,
               message: text,
               isWhatsappTemplate: whatsAppMessageTemplateNames.includes(key),

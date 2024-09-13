@@ -1,3 +1,7 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { IntersolveCancelTransactionByRefPosResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveGetCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
@@ -6,9 +10,6 @@ import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-int
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class IntersolveVoucherApiService {
@@ -143,7 +144,7 @@ export class IntersolveVoucherApiService {
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({
-        refPos: refPos,
+        refPos,
       });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
@@ -158,8 +159,8 @@ export class IntersolveVoucherApiService {
     const transactionId = Number(transactionIdString);
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({
-        cardId: cardId,
-        transactionId: transactionId,
+        cardId,
+        transactionId,
       });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
@@ -203,7 +204,7 @@ export class IntersolveVoucherApiService {
     };
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({
-        refPos: refPos,
+        refPos,
       });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled =

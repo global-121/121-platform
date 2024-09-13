@@ -1,3 +1,13 @@
+import {
+  BeforeRemove,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  Relation,
+} from 'typeorm';
+
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
@@ -18,15 +28,6 @@ import {
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import {
-  BeforeRemove,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  Relation,
-} from 'typeorm';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -213,7 +214,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
       .where('program.id = :programId', { programId: this.id })
-      .andWhere('programQuestion.name = :name', { name: name })
+      .andWhere('programQuestion.name = :name', { name })
       .select('"programQuestion"."answerType"', 'type')
       .addSelect('"programQuestion"."options"', 'options')
       .getRawOne();
@@ -223,7 +224,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .leftJoin('program.financialServiceProviders', 'fsp')
       .leftJoin('fsp.questions', 'question')
       .where('program.id = :programId', { programId: this.id })
-      .andWhere('question.name = :name', { name: name })
+      .andWhere('question.name = :name', { name })
       .select('"question"."answerType"', 'type')
       .addSelect('"question"."options"', 'options')
       .getRawOne();
@@ -232,7 +233,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .createQueryBuilder('program')
       .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
       .where('program.id = :programId', { programId: this.id })
-      .andWhere('programCustomAttribute.name = :name', { name: name })
+      .andWhere('programCustomAttribute.name = :name', { name })
       .select('"programCustomAttribute".type', 'type')
       .getRawOne();
 

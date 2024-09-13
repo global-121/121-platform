@@ -1,9 +1,10 @@
-import { ExchangeRateApiService } from '@121-service/src/exchange-rate/exchange-rate.api.service';
-import { ExchangeRateEntity } from '@121-service/src/exchange-rate/exchange-rate.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { ExchangeRateApiService } from '@121-service/src/exchange-rate/exchange-rate.api.service';
+import { ExchangeRateEntity } from '@121-service/src/exchange-rate/exchange-rate.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 
 @Injectable()
 export class ExchangeRateService {

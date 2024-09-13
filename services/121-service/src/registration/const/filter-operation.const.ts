@@ -1,5 +1,6 @@
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { FilterOperator, PaginateConfig } from 'nestjs-paginate';
+
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 
 export const AllowedFilterOperatorsString = [
   FilterOperator.EQ,

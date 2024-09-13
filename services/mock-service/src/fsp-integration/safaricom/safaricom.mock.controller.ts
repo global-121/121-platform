@@ -1,6 +1,7 @@
-import { SafaricomMockService } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { SafaricomMockService } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.service';
 
 @ApiTags('fsp/safaricom')
 @Controller('fsp/safaricom')

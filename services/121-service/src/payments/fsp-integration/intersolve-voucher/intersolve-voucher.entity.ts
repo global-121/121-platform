@@ -1,6 +1,3 @@
-import { Base121Entity } from '@121-service/src/base.entity';
-import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
 import {
   Column,
   Entity,
@@ -10,6 +7,10 @@ import {
   OneToMany,
   Relation,
 } from 'typeorm';
+
+import { Base121Entity } from '@121-service/src/base.entity';
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {

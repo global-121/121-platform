@@ -7,11 +7,6 @@ on:
     # See: https://crontab.guru/#42_1_*_*_*
     - cron: '42 1 * * *'
   workflow_dispatch:
-  pull_request:
-    paths:
-      - '.github/workflows/test_k6_cronjob.yml'
-      - 'k6/run-all-tests.sh'
-      - 'k6/tests/**'
 
 env:
   k6TestsPath: 'k6/'

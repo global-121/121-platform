@@ -1,4 +1,5 @@
 import { enableProdMode } from '@angular/core';
+
 import { getLocaleForInitialization, Locale } from '~/utils/locale';
 
 describe('getLocaleForInitialization', () => {

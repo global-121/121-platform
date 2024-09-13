@@ -1,6 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { TelemetryClient } from 'applicationinsights';
-
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()

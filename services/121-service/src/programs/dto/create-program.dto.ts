@@ -1,12 +1,3 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import {
-  CreateProgramCustomAttributeDto,
-  CustomAttributeType,
-} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -23,7 +14,16 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import {
+  CreateProgramCustomAttributeDto,
+  CustomAttributeType,
+} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class ProgramFinancialServiceProviderDto {
   @ApiProperty()

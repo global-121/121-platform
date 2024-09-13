@@ -1,3 +1,6 @@
+import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -12,8 +15,6 @@ import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-inte
 import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 const programId = 3;
 const paymentNr = 5;
@@ -44,8 +45,8 @@ const payload: CommercialBankEthiopiaTransferPayload[] = [
 
 const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
   paPaymentData: sendPaymentData[0],
-  paymentNr: paymentNr,
-  programId: programId,
+  paymentNr,
+  programId,
   payload: payload[0],
   credentials: mockCredentials,
   userId: sendPaymentData[0].userId,

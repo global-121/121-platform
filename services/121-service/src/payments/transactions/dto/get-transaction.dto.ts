@@ -1,7 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class TransactionReturnDto {
   @ApiProperty({

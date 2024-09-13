@@ -6,7 +6,6 @@ singleAttributePerLine: true
 singleQuote: true
 trailingComma: all
 plugins:
-  - prettier-plugin-organize-imports
   - prettier-plugin-tailwindcss
   - '@prettier/plugin-xml'
 tailwindAttributes:

@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -21,7 +23,6 @@ import {
   programIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Registrations - [Scoped]', () => {
   const OcwProgramId = programIdOCW;

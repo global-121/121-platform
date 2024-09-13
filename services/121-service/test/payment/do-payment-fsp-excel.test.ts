@@ -1,4 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
+import { HttpStatus } from '@nestjs/common';
+
 import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
@@ -33,7 +35,6 @@ import {
   registrationWesteros1,
   registrationWesteros2,
 } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;

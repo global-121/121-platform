@@ -1,6 +1,7 @@
-import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
+
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 export enum IntersolveVoucherJobName {
   getLastestVoucherBalance = 'get-latest-voucher-balance',

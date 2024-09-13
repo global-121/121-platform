@@ -1,11 +1,3 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import {
   Column,
   DataSource,
@@ -16,6 +8,15 @@ import {
   ViewColumn,
   ViewEntity,
 } from 'typeorm';
+
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @ViewEntity({
   name: 'registration_view',

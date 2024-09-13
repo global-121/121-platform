@@ -1,8 +1,3 @@
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { UpdateOrganizationDto } from '@121-service/src/organization/dto/update-organization.dto';
-import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { OrganizationService } from '@121-service/src/organization/organization.service';
 import {
   Body,
   Controller,
@@ -12,6 +7,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { UpdateOrganizationDto } from '@121-service/src/organization/dto/update-organization.dto';
+import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
+import { OrganizationService } from '@121-service/src/organization/organization.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('organization')

@@ -12,7 +12,6 @@ import {
   removePermissionsFromRole,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-
 import {
   programIdOCW,
   registrationOCW1,

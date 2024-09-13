@@ -1,11 +1,12 @@
-import { AppDataSource } from '@121-service/src/appdatasource';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import fs from 'fs';
 import path from 'path';
+
+import { AppDataSource } from '@121-service/src/appdatasource';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -305,7 +306,7 @@ export class SeedMockHelper {
     )}`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     const body = {
-      status: status,
+      status,
       message: null,
     };
 
@@ -399,7 +400,7 @@ export class SeedMockHelper {
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
     const body = {
       payment: paymentNr,
-      amount: amount,
+      amount,
     };
 
     return await this.httpService.post(url, body, headers);

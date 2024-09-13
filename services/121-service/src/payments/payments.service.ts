@@ -1,3 +1,8 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateQuery } from 'nestjs-paginate';
+import { DataSource, Equal, Repository } from 'typeorm';
+
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
@@ -32,9 +37,9 @@ import {
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -43,10 +48,6 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class PaymentsService {
@@ -132,7 +133,7 @@ export class PaymentsService {
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
       .andWhere('transaction.program.id = :programId', {
-        programId: programId,
+        programId,
       })
       .groupBy('payment')
       .getRawMany();
@@ -240,7 +241,7 @@ export class PaymentsService {
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
-      fspsInPayment: fspsInPayment,
+      fspsInPayment,
     };
 
     const referenceIds = registrationsForPayment.map(
@@ -618,7 +619,7 @@ export class PaymentsService {
     let rawResult;
     if (referenceIds && referenceIds.length > 0) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
-        referenceIds: referenceIds,
+        referenceIds,
       });
       rawResult = await q.getRawMany();
       for (const row of rawResult) {
@@ -666,13 +667,13 @@ export class PaymentsService {
     const q = this.getPaymentRegistrationsQuery(programId);
     q.addSelect('registration."paymentAmountMultiplier"');
     q.andWhere('registration."referenceId" IN (:...referenceIds)', {
-      referenceIds: referenceIds,
+      referenceIds,
     });
     const result = await q.getRawMany();
     const paPaymentDataList: PaPaymentDataDto[] = [];
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
-        userId: userId,
+        userId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
@@ -783,7 +784,7 @@ export class PaymentsService {
 
     return {
       data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
-      fileType: fileType,
+      fileType,
     };
   }
 

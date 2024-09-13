@@ -1,7 +1,8 @@
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
-import TableModule from '@121-e2e/pages/Table/TableModule';
+import { test } from '@playwright/test';
+
+import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import FspName from '@121-portal/src/app/enums/fsp-name.enum';
+import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -26,10 +27,12 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { test } from '@playwright/test';
-import { AppRoutes } from '../../../../interfaces/Portal/src/app/app-routes.enum';
-import FspName from '../../../../interfaces/Portal/src/app/enums/fsp-name.enum';
-import englishTranslations from '../../../../interfaces/Portal/src/assets/i18n/en.json';
+
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
+
 import Helpers from '../../../pages/Helpers/Helpers';
 
 let accessToken: string;

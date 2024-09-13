@@ -2,16 +2,17 @@ import { DatePipe, NgComponentOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  LOCALE_ID,
-  ViewChild,
   computed,
   inject,
   input,
+  LOCALE_ID,
   model,
   output,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 import { CreateQueryResult } from '@tanstack/angular-query-experimental';
 import { FilterMetadata, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -23,6 +24,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Table, TableFilterEvent, TableModule } from 'primeng/table';
+
 import { TableCellDateComponent } from '~/components/query-table/table-cell-date/table-cell-date.component';
 import { TableCellTextComponent } from '~/components/query-table/table-cell-text/table-cell-text.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';

@@ -1,9 +1,10 @@
-import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import https from 'https';
 import * as convert from 'xml-js';
+
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class SoapService {
@@ -29,9 +30,9 @@ export class SoapService {
       'Content-Type': 'text/xml;charset=UTF-8',
     };
     return soapRequest({
-      headers: headers,
-      url: url,
-      xml: xml,
+      headers,
+      url,
+      xml,
       timeout: 150000,
     })
       .then((rawResponse: any) => {
@@ -155,7 +156,7 @@ export class SoapService {
     const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
     const headers = {
       'Content-Type': 'text/xml;charset=UTF-8',
-      soapAction: soapAction,
+      soapAction,
     };
 
     let agent;
@@ -170,7 +171,7 @@ export class SoapService {
     }
 
     return soapRequest({
-      headers: headers,
+      headers,
       url: soapUrl,
       xml: soapRequestXml,
       timeout: 150000,

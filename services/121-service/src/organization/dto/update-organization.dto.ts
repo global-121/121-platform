@@ -1,6 +1,7 @@
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class UpdateOrganizationDto {
   @ApiProperty({ example: 'NGO-name' })

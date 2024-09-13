@@ -1,6 +1,7 @@
+import { MigrationInterface, QueryRunner } from 'typeorm';
+
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateVisaMessageTemplatesPV1707916760000
   implements MigrationInterface

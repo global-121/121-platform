@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { TestBed } from '@automock/jest';
+import { DataSource } from 'typeorm';
+
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getDataSourceMock } from '@121-service/src/utils/unit-test.helpers';
-import { TestBed } from '@automock/jest';
-import { DataSource } from 'typeorm';
 
 describe('ScopedRepository', () => {
   let scopedRepository: ScopedRepository<RegistrationDataEntity>;

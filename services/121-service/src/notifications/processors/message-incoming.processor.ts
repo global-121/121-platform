@@ -1,11 +1,12 @@
+import { Process, Processor } from '@nestjs/bull';
+import { Job } from 'bull';
+
 import {
   ProcessNameMessage,
   QueueNameMessageCallBack,
 } from '@121-service/src/notifications/enum/queue.names.enum';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
 @Processor(QueueNameMessageCallBack.incomingMessage)
 export class MessageIncomingProcessor {
   constructor(

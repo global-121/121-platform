@@ -8,6 +8,7 @@ const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-pa
 const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
 const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
 const eslintPluginRegexp = require('eslint-plugin-regexp');
+const eslintPluginSimpleSort = require('eslint-plugin-simple-import-sort');
 
 module.exports = tseslint.config(
   {
@@ -24,6 +25,7 @@ module.exports = tseslint.config(
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
+      'simple-import-sort': eslintPluginSimpleSort,
     },
     extends: [
       eslint.configs.recommended,
@@ -77,6 +79,25 @@ module.exports = tseslint.config(
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
+      'object-shorthand': 'error',
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // Angular packages.
+            ['^@angular'],
+            // Packages.
+            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+            ['^@?\\w'],
+            // Alias imports
+            ['^@121-service'],
+            // Local imports
+            // Anything that starts with a tilde.
+            ['^~'],
+          ],
+        },
+      ],
+      'simple-import-sort/exports': 'error',
     },
   },
   {

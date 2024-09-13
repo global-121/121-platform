@@ -1,4 +1,3 @@
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -8,10 +7,14 @@ import {
   input,
   signal,
 } from '@angular/core';
+
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TabMenuModule } from 'primeng/tabmenu';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,

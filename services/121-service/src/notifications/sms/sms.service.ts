@@ -1,3 +1,8 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+
 import { EXTERNAL_API } from '@121-service/src/config';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
@@ -8,10 +13,6 @@ import {
   TwilioMessageEntity,
 } from '@121-service/src/notifications/twilio.entity';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class SmsService {
@@ -38,14 +39,14 @@ export class SmsService {
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
-        to: to,
+        to,
       });
     } catch (error) {
       console.log('Error from Twilio:', error);
       messageToStore = {
         accountSid: process.env.TWILIO_SID,
         body: message,
-        to: to,
+        to,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         dateCreated: new Date().toISOString(),
         sid: `failed-${uuid()}`,
@@ -96,7 +97,7 @@ export class SmsService {
 
   public async findOne(sid: string): Promise<TwilioMessageEntity | null> {
     const findOneOptions = {
-      sid: sid,
+      sid,
     };
     return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }

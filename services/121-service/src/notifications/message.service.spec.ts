@@ -1,9 +1,11 @@
+import { TestBed } from '@automock/jest';
+
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageService } from '@121-service/src/notifications/message.service';
 import {
   MessageJobDto,
   MessageProcessType,
 } from '@121-service/src/notifications/message-job.dto';
-import { MessageService } from '@121-service/src/notifications/message.service';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -11,7 +13,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { TestBed } from '@automock/jest';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',

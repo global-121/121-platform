@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
@@ -24,7 +26,6 @@ import {
   programIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
-import { HttpStatus } from '@nestjs/common';
 
 function createExportObject(
   registration: Partial<RegistrationEntity> | any,

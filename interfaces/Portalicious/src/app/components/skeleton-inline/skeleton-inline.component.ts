@@ -1,11 +1,13 @@
-import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   input,
 } from '@angular/core';
+
 import { SkeletonModule } from 'primeng/skeleton';
+
+import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 
 @Component({
   selector: 'app-skeleton-inline',

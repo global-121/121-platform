@@ -16,7 +16,7 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
-      plugins: ['no-relative-import-paths'],
+      plugins: ['no-relative-import-paths', 'simple-import-sort'],
       extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/stylistic',
@@ -49,6 +49,7 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'object-shorthand': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
@@ -57,6 +58,22 @@ module.exports = {
             rootDir: '.',
           },
         ],
+        'simple-import-sort/imports': [
+          'error',
+          {
+            groups: [
+              // Packages.
+              // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+              ['^@?\\w'],
+              // Alias imports
+              ['^@mock-service'],
+              // Relative imports.
+              // Anything that starts with a dot.
+              ['^\\.'],
+            ],
+          },
+        ],
+        'simple-import-sort/exports': 'error',
       },
     },
   ],

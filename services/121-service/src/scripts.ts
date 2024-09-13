@@ -1,9 +1,10 @@
+import { NestFactory } from '@nestjs/core';
+import { EventEmitter } from 'events';
+
 import {
   InterfaceScript,
   ScriptsModule,
 } from '@121-service/src/scripts/scripts.module';
-import { NestFactory } from '@nestjs/core';
-import { EventEmitter } from 'events';
 
 async function runScript(scriptName): Promise<any> {
   console.log('scriptName: ', scriptName);

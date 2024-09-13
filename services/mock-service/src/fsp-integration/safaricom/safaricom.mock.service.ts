@@ -1,12 +1,13 @@
+import { HttpService } from '@nestjs/axios';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { setTimeout } from 'node:timers/promises';
+import { lastValueFrom } from 'rxjs';
+
 import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import {
   SafaricomTransferPayload,
   SafaricomTransferResponseBodyDto,
 } from '@mock-service/src/fsp-integration/safaricom/safaricom.dto';
-import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { setTimeout } from 'node:timers/promises';
-import { lastValueFrom } from 'rxjs';
 
 enum MockScenario {
   success = 'success',

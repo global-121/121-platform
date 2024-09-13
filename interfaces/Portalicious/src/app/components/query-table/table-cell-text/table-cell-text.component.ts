@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
 
 @Component({

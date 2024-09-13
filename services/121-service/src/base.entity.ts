@@ -1,4 +1,3 @@
-import { AppDataSource } from '@121-service/src/appdatasource';
 import {
   CreateDateColumn,
   EntityTarget,
@@ -7,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { AppDataSource } from '@121-service/src/appdatasource';
 
 export class Base121Entity {
   @PrimaryGeneratedColumn()

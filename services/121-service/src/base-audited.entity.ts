@@ -1,5 +1,6 @@
-import { Base121Entity } from '@121-service/src/base.entity';
 import { Column } from 'typeorm';
+
+import { Base121Entity } from '@121-service/src/base.entity';
 
 export class Base121AuditedEntity extends Base121Entity {
   @Column()

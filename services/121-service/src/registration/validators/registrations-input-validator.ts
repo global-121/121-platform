@@ -1,3 +1,8 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import { Equal, Repository } from 'typeorm';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -22,10 +27,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { validate } from 'class-validator';
-import { Equal, Repository } from 'typeorm';
 
 @Injectable()
 export class RegistrationsInputValidator {
@@ -513,7 +514,7 @@ export class RegistrationsInputValidator {
       const errorObj = {
         lineNumber: i + 1,
         column: 'phoneNumber',
-        value: value,
+        value,
         error: 'PhoneNumber is not valid according to Twilio lookup',
       };
       return { errorObj, sanitized };
@@ -532,7 +533,7 @@ export class RegistrationsInputValidator {
       const errorObj = {
         lineNumber: i + 1,
         column: columnName,
-        value: value,
+        value,
         error: `Value is not a valid ${type}`,
       };
       return errorObj;

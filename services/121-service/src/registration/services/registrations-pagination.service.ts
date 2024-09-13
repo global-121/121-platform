@@ -1,3 +1,23 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { omit } from 'lodash';
+import {
+  FilterOperator,
+  paginate,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate';
+import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
+import {
+  Brackets,
+  Equal,
+  FindOperator,
+  FindOperatorType,
+  Not,
+  Repository,
+  WhereExpressionBuilder,
+} from 'typeorm';
+
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -25,25 +45,6 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { omit } from 'lodash';
-import {
-  FilterOperator,
-  paginate,
-  Paginated,
-  PaginateQuery,
-} from 'nestjs-paginate';
-import { FilterComparator, parseFilter } from 'nestjs-paginate/lib/filter';
-import {
-  Brackets,
-  Equal,
-  FindOperator,
-  FindOperatorType,
-  Not,
-  Repository,
-  WhereExpressionBuilder,
-} from 'typeorm';
 
 interface Filter {
   comparator: FilterComparator;
@@ -106,7 +107,7 @@ export class RegistrationsPaginationService {
     queryBuilder = queryBuilder.andWhere(
       '"registration"."programId" = :programId',
       {
-        programId: programId,
+        programId,
       },
     );
 
@@ -320,8 +321,8 @@ export class RegistrationsPaginationService {
       .leftJoin('assignment.program', 'program')
       .leftJoin('assignment.roles', 'roles')
       .leftJoin('roles.permissions', 'permissions')
-      .where('user.id = :userId', { userId: userId })
-      .andWhere('program.id = :programId', { programId: programId })
+      .where('user.id = :userId', { userId })
+      .andWhere('program.id = :programId', { programId })
       .andWhere('permissions.name = :permissions', {
         permissions: permission,
       })

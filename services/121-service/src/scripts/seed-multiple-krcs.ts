@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import messageTemplateBaringo from '@121-service/src/seed-data/message-template/message-template-krcs-baringo.json';
@@ -7,7 +9,6 @@ import organizationKRCS from '@121-service/src/seed-data/organization/organizati
 import programBaringo from '@121-service/src/seed-data/program/program-krcs-baringo.json';
 import programTurkana from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import programWestPokot from '@121-service/src/seed-data/program/program-krcs-westpokot.json';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SeedMultipleKRCS implements InterfaceScript {

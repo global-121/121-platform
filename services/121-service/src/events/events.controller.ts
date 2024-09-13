@@ -73,7 +73,7 @@ export class EventsController {
     // REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
     const filename = `registration-data-change-events`;
     const searchOptions = {
-      queryParams: queryParams,
+      queryParams,
     };
     const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {

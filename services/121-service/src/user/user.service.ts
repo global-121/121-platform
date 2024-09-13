@@ -1,8 +1,17 @@
+import { HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { REQUEST } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
+import crypto from 'crypto';
+import { Request } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { Equal, In, Repository } from 'typeorm';
+
 import { DEBUG } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 import {
@@ -31,18 +40,10 @@ import {
 } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
-import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { UserType } from '@121-service/src/user/user-type-enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { REQUEST } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
-import crypto from 'crypto';
-import { Request } from 'express';
-import * as jwt from 'jsonwebtoken';
-import { Equal, In, Repository } from 'typeorm';
+import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
+import { UserType } from '@121-service/src/user/user-type-enum';
 const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -76,7 +77,7 @@ export class UserService {
     const cookieSettings = this.buildCookieByRequest(token);
     userEntity.lastLogin = new Date();
     await this.userRepository.save(userEntity);
-    return { userRo: user, cookieSettings: cookieSettings, token: token };
+    return { userRo: user, cookieSettings, token };
   }
 
   public async canActivate(
@@ -90,10 +91,10 @@ export class UserService {
       .leftJoin('assignment.program', 'program')
       .leftJoin('assignment.roles', 'roles')
       .leftJoin('roles.permissions', 'permissions')
-      .where('user.id = :userId', { userId: userId })
-      .andWhere('program.id = :programId', { programId: programId })
+      .where('user.id = :userId', { userId })
+      .andWhere('program.id = :programId', { programId })
       .andWhere('permissions.name IN (:...permissions)', {
-        permissions: permissions,
+        permissions,
       })
       .getCount();
     return results === 1;
@@ -260,7 +261,7 @@ export class UserService {
       const emailPayload: CreateUserEmailPayload = {
         email: userEntity.username ?? '',
         displayName: userEntity.displayName ?? '',
-        password: password,
+        password,
       };
 
       // Send SSO template if SSO is enabled
@@ -397,7 +398,7 @@ export class UserService {
       user: { id: user.id },
       program: { id: program.id },
       roles: newRoles,
-      scope: scope,
+      scope,
     });
     response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
     return response;
@@ -659,7 +660,7 @@ export class UserService {
     const saltCheck = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.salt')
-      .where({ username: username })
+      .where({ username })
       .getOne();
 
     if (!saltCheck) {
@@ -669,7 +670,7 @@ export class UserService {
     const userSalt = saltCheck.salt;
 
     const findOneOptions = {
-      username: username,
+      username,
       password: userSalt
         ? crypto
             .pbkdf2Sync(loginUserDto.password, userSalt, 1, 32, 'sha256')
@@ -906,7 +907,7 @@ export class UserService {
     const emailPayload = {
       email: user.username ?? '',
       displayName: user.displayName ?? '',
-      password: password,
+      password,
     };
 
     await this.emailsService.sendPasswordResetEmail(emailPayload);

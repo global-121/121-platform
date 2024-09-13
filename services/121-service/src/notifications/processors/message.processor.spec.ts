@@ -1,13 +1,14 @@
+import { TestBed } from '@automock/jest';
+import { Job } from 'bull';
+
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageService } from '@121-service/src/notifications/message.service';
 import {
   MessageJobDto,
   MessageProcessType,
 } from '@121-service/src/notifications/message-job.dto';
-import { MessageService } from '@121-service/src/notifications/message.service';
 import { MessageProcessorReplyOnIncoming } from '@121-service/src/notifications/processors/message.processor';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { TestBed } from '@automock/jest';
-import { Job } from 'bull';
 
 const mockMessageJob: MessageJobDto = {
   registrationId: 1,

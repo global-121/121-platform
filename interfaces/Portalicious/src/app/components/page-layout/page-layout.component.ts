@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import { CardModule } from 'primeng/card';
+
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
 import { ProjectMenuComponent } from '~/components/page-layout/components/project-menu/project-menu.component';

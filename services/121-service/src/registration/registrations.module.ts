@@ -1,3 +1,7 @@
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsModule } from '@121-service/src/events/events.module';
@@ -17,16 +21,16 @@ import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueueRegistrationUpdateModule } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -41,9 +45,6 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [

@@ -1,11 +1,3 @@
-import { ActionType } from '@121-service/src/actions/action.entity';
-import { ActionsService } from '@121-service/src/actions/actions.service';
-import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
-import { ActionDto } from '@121-service/src/actions/dto/action.dto';
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   Body,
   Controller,
@@ -26,6 +18,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { ActionType } from '@121-service/src/actions/action.entity';
+import { ActionsService } from '@121-service/src/actions/actions.service';
+import { ActionDto } from '@121-service/src/actions/dto/action.dto';
+import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/actions')
