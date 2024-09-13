@@ -82,7 +82,7 @@ export class RegistrationsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importRegistrations(
-    @UploadedFile() csvFile: unknown,
+    @UploadedFile() csvFile: Blob,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Req() req: ScopedUserRequest,

@@ -3,7 +3,7 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 class AttributesDto {
-  [key: string]: string | unknown;
+  [key: string]: string | number | unknown;
 }
 
 export class GetEventDto {

@@ -263,14 +263,12 @@ export class EventsService {
     // Filter out the keys that are not in the registeredAttributes
     if (registeredAttributes) {
       fieldNames = fieldNames.filter((key) =>
-        registeredAttributes.includes(key),
+        registeredAttributes.includes(key as string),
       );
     }
 
     const events: EventEntity[] = [];
-    for (const fieldName of fieldNames) {
-      const key = fieldName as keyof LogEntity;
-
+    for (const key of fieldNames) {
       if (
         oldEntity[key] === newEntity[key] ||
         (isObject(oldEntity[key]) &&
@@ -282,12 +280,24 @@ export class EventsService {
 
       // Ensure only string values are passed to the event creation
       const oldValue =
-        typeof oldEntity[key] === 'string' ? oldEntity[key] : null;
+        typeof oldEntity[key] === 'string'
+          ? oldEntity[key]
+          : (() => {
+              throw Error('something something');
+            })();
       const newValue =
-        typeof newEntity[key] === 'string' ? newEntity[key] : null;
+        typeof newEntity[key] === 'string'
+          ? newEntity[key]
+          : (() => {
+              throw Error('something something');
+            })();
+
+      if (oldValue === null || newValue === null) {
+        throw new Error(`Invalid field value for key: ${key}`);
+      }
 
       const eventForChange = this.createEventForChange(
-        fieldName,
+        key, // The key is now typed correctly
         oldValue,
         newValue,
         oldEntity.id,
@@ -309,7 +319,7 @@ export class EventsService {
     event.type = this.getEventType(fieldName);
     event.registrationId = registrationId;
 
-    // Explicitly declare attributesData as Record<string, any> to allow dynamic keys
+    // Explicitly declare attributesData as Record<string, unknown> to allow dynamic keys
     const attributesData: Record<string, unknown> = {
       [EventAttributeKeyEnum.oldValue]: oldValue,
       [EventAttributeKeyEnum.newValue]: newValue,
@@ -344,13 +354,15 @@ export class EventsService {
   private getRelevantRegistrationViewKeys(
     oldEntity: LogEntity,
     newEntity: LogEntity,
-  ): string[] {
-    const array1 = Object.keys(newEntity);
-    const array2 = Object.keys(oldEntity);
-    const mergedArray = [
-      ...new Set([...array1, ...array2]),
-    ] as (keyof RegistrationViewEntity)[];
-    const irrelevantKeys: (keyof RegistrationViewEntity | 'name')[] = [
+  ): (keyof LogEntity)[] {
+    const array1 = Object.keys(newEntity) as (keyof LogEntity)[];
+    const array2 = Object.keys(oldEntity) as (keyof LogEntity)[];
+
+    // Merge and remove duplicates by creating a Set and converting it back to an array
+    const mergedArray = Array.from(new Set([...array1, ...array2]));
+
+    // List of irrelevant keys
+    const irrelevantKeys: (keyof LogEntity)[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
@@ -361,9 +373,11 @@ export class EventsService {
       'registrationProgramId',
       'personAffectedSequence',
       'lastMessageStatus',
-      'name',
       'inclusionScore',
+      // Add 'name' only if it's part of LogEntity; otherwise, remove it
     ];
+
+    // Filter out irrelevant keys
     return mergedArray.filter((key) => !irrelevantKeys.includes(key));
   }
 
