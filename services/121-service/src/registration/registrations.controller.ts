@@ -1,35 +1,3 @@
-import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import {
-  PaginateConfigRegistrationViewOnlyFilters,
-  PaginateConfigRegistrationViewWithPayments,
-} from '@121-service/src/registration/const/filter-operation.const';
-import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import {
-  ImportRegistrationsDto,
-  ImportResult,
-} from '@121-service/src/registration/dto/bulk-import.dto';
-import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
-import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
-import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
-import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
-import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
-import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationsService } from '@121-service/src/registration/registrations.service';
-import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
-import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import {
-  FILE_UPLOAD_API_FORMAT,
-  FILE_UPLOAD_WITH_REASON_API_FORMAT,
-} from '@121-service/src/shared/file-upload-api-format';
-import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 import {
   Body,
   Controller,
@@ -60,7 +28,40 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
+
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import {
+  PaginateConfigRegistrationViewOnlyFilters,
+  PaginateConfigRegistrationViewWithPayments,
+} from '@121-service/src/registration/const/filter-operation.const';
+import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import {
+  ImportRegistrationsDto,
+  ImportResult,
+} from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
+import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
+import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
+import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
+import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
+import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
+import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import {
+  FILE_UPLOAD_API_FORMAT,
+  FILE_UPLOAD_WITH_REASON_API_FORMAT,
+} from '@121-service/src/shared/file-upload-api-format';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
