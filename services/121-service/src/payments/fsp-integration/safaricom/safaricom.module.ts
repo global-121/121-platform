@@ -30,6 +30,18 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
         duration: 1000, // per duration in milliseconds
       },
     }),
+    BullModule.registerQueue({
+      name: FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
+      processors: [
+        {
+          path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-timeout-callback-job.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
   ],
   providers: [
     SafaricomService,
