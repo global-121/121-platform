@@ -241,7 +241,7 @@
       <trans-unit id="2099886964241384522" datatype="html">
         <source>Copy email</source>
       </trans-unit>
-      <trans-unit id="form-clear-filters" datatype="html">
+      <trans-unit id="table-clear-filters" datatype="html">
         <source>Clear all filters</source>
       </trans-unit>
       <trans-unit id="5312727456282218392" datatype="html">
@@ -262,7 +262,7 @@
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
       </trans-unit>
-      <trans-unit id="form-quick-search" datatype="html">
+      <trans-unit id="table-quick-search" datatype="html">
         <source>Search keyword</source>
       </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">

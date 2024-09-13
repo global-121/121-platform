@@ -20,7 +20,6 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { NotAvailableLabelComponent } from '~/components/not-available-label/not-available-label.component';
 import { AddNoteFormComponent } from '~/components/page-layout/components/registration-header/add-note-form/add-note-form.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -37,7 +36,6 @@ import { AuthService } from '~/services/auth.service';
     ButtonModule,
     DatePipe,
     SkeletonInlineComponent,
-    NotAvailableLabelComponent,
     AddNoteFormComponent,
   ],
   templateUrl: './registration-header.component.html',

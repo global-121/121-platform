@@ -6,7 +6,6 @@ import {
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { NotAvailableLabelComponent } from '~/components/not-available-label/not-available-label.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 
 export type DataListItem = {
@@ -42,7 +41,6 @@ export type DataListItem = {
     DecimalPipe,
     SkeletonInlineComponent,
     ColoredChipComponent,
-    NotAvailableLabelComponent,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

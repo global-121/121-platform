@@ -1,4 +1,8 @@
-<app-page-layout [projectId]="projectId()">
+<app-page-layout
+  [projectId]="projectId()"
+  pageTitle="Monitoring"
+  i18n-pageTitle="@@page-title-project-monitoring"
+>
   <div
     class="grid gap-5 grid-areas-project-monitoring md:grid-cols-project-monitoring-wide md:grid-areas-project-monitoring-wide"
   >
@@ -74,7 +78,7 @@
             {{ projectDescription() }}
           </p>
         } @else {
-          <app-not-available-label />
+          —
         }
       </div>
       <app-data-list [data]="projectDescriptionData()" />
