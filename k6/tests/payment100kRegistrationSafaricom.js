@@ -10,7 +10,7 @@ const resetPage = new resetModel();
 const loginPage = new loginModel();
 const registrationsPage = new RegistrationsModel();
 
-const duplicateNumber = 15;
+const duplicateNumber = 17;
 const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 200;
