@@ -49,11 +49,8 @@ export class SafaricomMockService {
     const transferResponse = {
       ConversationID: 'AG_20191219_00005797af5d7d75f652',
       OriginatorConversationID: transferDto.OriginatorConversationID,
-      ResponseCode: mockScenario === MockScenario.success ? '0' : null,
-      ResponseDescription:
-        mockScenario === MockScenario.success
-          ? 'Accept the service request successfully.'
-          : 'Mock error message',
+      ResponseCode: '0',
+      ResponseDescription: 'Accept the service request successfully.',
     };
 
     this.sendStatusCallback(transferDto, transferResponse, mockScenario).catch(
@@ -122,7 +119,7 @@ export class SafaricomMockService {
         },
       },
     };
-    const otherFailureStatus = {
+    const callbackErrorResponse = {
       Result: {
         ResultType: 0,
         ResultCode: 2001,
@@ -139,20 +136,6 @@ export class SafaricomMockService {
         },
       },
     };
-    const timeoutCallbackResponse = {
-      InitiatorName: transferDto.InitiatorName,
-      SecurityCredential: transferDto.SecurityCredential,
-      CommandID: transferDto.CommandID,
-      Amount: transferDto.Amount,
-      PartyA: transferDto.PartyA,
-      PartyB: transferDto.PartyB,
-      Remarks: transferDto.Remarks,
-      QueueTimeOutURL: transferDto.QueueTimeOutURL,
-      ResultURL: transferDto.ResultURL,
-      OriginatorConversationID: transferDto.OriginatorConversationID,
-      IDType: transferDto.IDType,
-      IDNumber: transferDto.IDNumber,
-    };
 
     const httpService = new HttpService();
 
@@ -165,10 +148,10 @@ export class SafaricomMockService {
       };
     } else if (mockScenario === MockScenario.errorOnCallback) {
       response = {
-        Result: otherFailureStatus.Result,
+        Result: callbackErrorResponse.Result,
       };
     } else if (mockScenario === MockScenario.errorOnCallbackForTimeOut) {
-      response = timeoutCallbackResponse;
+      response = transferDto;
       url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`;
     }
 
