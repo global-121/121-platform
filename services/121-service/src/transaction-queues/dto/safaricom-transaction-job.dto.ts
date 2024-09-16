@@ -41,4 +41,7 @@ export class SafaricomTransactionJobDto {
 
   @IsOptional()
   public readonly idNumber?: string;
+
+  @IsOptional()
+  public readonly originatorConversationId?: string;
 }
