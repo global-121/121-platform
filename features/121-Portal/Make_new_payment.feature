@@ -245,6 +245,13 @@ Feature: Make a new payment
     When payment is requested
     Then a failed transaction appears for the PA with an error message of 'The phone number does not have M-PESA'
 
+  Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" by making a successful request, but the PA cannot be paid out due to timeout on safaricom side
+    # Trigger this in mock by using phoneNumber=254000000002
+    Given the Person Affected has been imported as registered and included
+    Given the request can be processed correctly, but the PA cannot be paid out due to timeout on safaricom
+    When payment is requested
+    Then a failed transaction appears for the PA with an error message of 'Transfer timed out'
+
   Scenario: Unsuccessfully make a duplicate payment to a Person Affected with Financial Service provider "Safaricom" because of a unintended Redis job re-attempt
     # This is not easily triggered in mock currently, but can be triggered by providing a static originatorConversationId in payments.service.ts and manually retrying a failed transaction
     Given the Person Affected has been imported as registered and included

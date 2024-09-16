@@ -13,6 +13,7 @@ enum MockScenario {
   success = 'success',
   errorOnRequest = 'error-on-request',
   errorOnCallback = 'error-on-callback',
+  errorOnCallbackForTimeOut = 'error-on-callback-for-timeout',
 }
 @Injectable()
 export class SafaricomMockService {
@@ -25,12 +26,16 @@ export class SafaricomMockService {
 
   public async transfer(
     transferDto: SafaricomTransferPayload,
-  ): Promise<Partial<SafaricomTransferResponseBodyDto>> {
+  ): Promise<
+    Partial<SafaricomTransferResponseBodyDto | SafaricomTransferPayload>
+  > {
     let mockScenario: MockScenario = MockScenario.success;
     if (transferDto.PartyB === '254000000000') {
       mockScenario = MockScenario.errorOnRequest;
     } else if (transferDto.PartyB === '254000000001') {
       mockScenario = MockScenario.errorOnCallback;
+    } else if (transferDto.PartyB === '254000000002') {
+      mockScenario = MockScenario.errorOnCallbackForTimeOut;
     }
 
     if (mockScenario === MockScenario.errorOnRequest) {
@@ -44,21 +49,19 @@ export class SafaricomMockService {
     const transferResponse = {
       ConversationID: 'AG_20191219_00005797af5d7d75f652',
       OriginatorConversationID: transferDto.OriginatorConversationID,
-      ResponseCode: mockScenario === MockScenario.success ? '0' : null,
-      ResponseDescription:
-        mockScenario === MockScenario.success
-          ? 'Accept the service request successfully.'
-          : 'Mock error message',
+      ResponseCode: '0',
+      ResponseDescription: 'Accept the service request successfully.',
     };
 
-    this.sendStatusCallback(transferResponse, mockScenario).catch((error) =>
-      console.log(error),
+    this.sendStatusCallback(transferDto, transferResponse, mockScenario).catch(
+      (error) => console.log(error),
     );
 
     return transferResponse;
   }
 
   private async sendStatusCallback(
+    transferDto: SafaricomTransferPayload,
     transferResponse: SafaricomTransferResponseBodyDto,
     mockScenario: MockScenario,
   ): Promise<void> {
@@ -116,7 +119,7 @@ export class SafaricomMockService {
         },
       },
     };
-    const otherFailureStatus = {
+    const callbackErrorResponse = {
       Result: {
         ResultType: 0,
         ResultCode: 2001,
@@ -134,19 +137,25 @@ export class SafaricomMockService {
       },
     };
 
-    // Switch between mock scenarios
-    let Status;
-    if (mockScenario === MockScenario.success) {
-      Status = successStatus;
-    } else if (mockScenario === MockScenario.errorOnCallback) {
-      Status = otherFailureStatus;
-    }
-
-    const response = {
-      Result: Status.Result,
-    };
     const httpService = new HttpService();
-    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
+
+    // Switch between mock scenarios
+    let response = {};
+    let url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
+    if (mockScenario === MockScenario.success) {
+      response = {
+        Result: successStatus.Result,
+      };
+    } else if (mockScenario === MockScenario.errorOnCallback) {
+      response = {
+        Result: callbackErrorResponse.Result,
+      };
+    } else if (mockScenario === MockScenario.errorOnCallbackForTimeOut) {
+      // Based on Job Kipngetich reponse from safaricom,
+      // The initial request payload has been returned on the QueueTimeoutURL if the transaction times out on M-PESA.
+      response = transferDto;
+      url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`;
+    }
 
     await lastValueFrom(httpService.post(url, response)).catch((error) =>
       console.log(error),
