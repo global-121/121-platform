@@ -133,7 +133,7 @@ export class ProjectTeamComponent {
       {
         label: $localize`:@@generic-edit:Edit`,
         icon: 'pi pi-pencil',
-        disabled: !this.canManageAidworkers(),
+        visible: this.canManageAidworkers(),
         command: () => {
           this.openForm('edit');
         },
@@ -141,7 +141,7 @@ export class ProjectTeamComponent {
       {
         label: $localize`:@@remove-user-button:Remove user`,
         icon: 'pi pi-times text-red-500',
-        disabled: !this.canManageAidworkers(),
+        visible: this.canManageAidworkers(),
         command: () => {
           const user = this.selectedUser();
           if (!user) {

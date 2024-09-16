@@ -17,7 +17,6 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { NotAvailableLabelComponent } from '~/components/not-available-label/not-available-label.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -42,10 +41,10 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     DecimalPipe,
     DataListComponent,
     SkeletonInlineComponent,
-    NotAvailableLabelComponent,
   ],
   templateUrl: './project-monitoring.component.html',
   styles: ``,
+  providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMonitoringComponent {
@@ -98,12 +97,12 @@ export class ProjectMonitoringComponent {
         value: projectData?.targetNrRegistrations,
         type: 'number',
       },
+      { label: $localize`Location`, value: projectData?.location },
       {
         label: $localize`Start date`,
         value: projectData?.startDate,
         type: 'date',
       },
-      { label: $localize`Location`, value: projectData?.location },
       {
         label: $localize`End date`,
         value: projectData?.endDate,
@@ -118,14 +117,14 @@ export class ProjectMonitoringComponent {
           .join(', '),
       },
       {
-        label: $localize`Payment frequency`,
-        value: projectData?.distributionFrequency,
-      },
-      {
         label: $localize`Budget`,
         value: projectData?.budget,
         type: 'currency',
         currencyCode: projectData?.currency,
+      },
+      {
+        label: $localize`Payment frequency`,
+        value: projectData?.distributionFrequency,
       },
       {
         label: $localize`Duration`,

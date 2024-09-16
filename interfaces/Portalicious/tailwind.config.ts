@@ -93,7 +93,7 @@ export default {
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@savvywombat/tailwindcss-grid-areas'),
-    plugin(function ({ matchUtilities, theme }) {
+    plugin(function ({ addUtilities, matchUtilities, theme }) {
       // heading utilities
       matchUtilities(
         {
@@ -106,9 +106,9 @@ export default {
         },
         { values: theme('headingSizes') },
       );
-      // body text utilities
       matchUtilities(
         {
+          // body text utilities
           // Use like 'txt-body-s' or 'txt-body-m'
           ['txt-body']: (value: string) => ({
             fontSize: value,
@@ -116,14 +116,9 @@ export default {
             lineHeight: value === '1rem' ? '140%' : '120%',
             letterSpacing: '0px',
           }),
-        },
-        { values: theme('typographySizes') },
-      );
-      // system text utilities
-      // This is the only one that needs a different variant for bold text
-      // because system texts don't default to 400 font weight
-      matchUtilities(
-        {
+          // system text utilities
+          // This is the only one that needs a different variant for bold text
+          // because system texts don't default to 400 font weight
           // Use like 'txt-system-s' or 'txt-system-m'
           ['txt-system']: (value: string) => ({
             fontSize: value,
@@ -132,11 +127,6 @@ export default {
             letterSpacing: '0px',
             fontWeight: '500',
           }),
-        },
-        { values: theme('typographySizes') },
-      );
-      matchUtilities(
-        {
           // Use like 'txt-system-bold-s' or 'txt-system-bold-m'
           ['txt-system-bold']: (value: string) => ({
             fontSize: value,
@@ -148,6 +138,15 @@ export default {
         },
         { values: theme('typographySizes') },
       );
+      addUtilities({
+        '.txt-metric': {
+          fontSize: '1.85rem', // ~26px
+          fontFamily: theme('fontFamily.display'),
+          lineHeight: '140%',
+          letterSpacing: '0px',
+          fontWeight: '700',
+        },
+      });
     }),
   ],
 } satisfies Config;

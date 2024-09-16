@@ -10,17 +10,17 @@
       class="ml-auto"
     />
   }
-  <dt class="mb-2 mt-auto text-grey-700 txt-body-m">
+  <dt class="mb-2 mt-auto pt-11 text-grey-700 txt-body-m">
     {{ metricLabel() }}
     @if (metricTooltip()) {
       <app-info-tooltip [message]="metricTooltip()!" />
     }
   </dt>
-  <dd class="font-bold txt-h-1">
+  <dd class="txt-metric">
     @if (pending()) {
       <app-skeleton-inline />
     } @else {
-      {{ metricValue() ?? '-' }}
+      {{ metricValue() ?? '—' }}
     }
   </dd>
 </p-card>
