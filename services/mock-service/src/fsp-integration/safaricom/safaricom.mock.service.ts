@@ -13,6 +13,7 @@ enum MockScenario {
   success = 'success',
   errorOnRequest = 'error-on-request',
   errorOnCallback = 'error-on-callback',
+  errorOnCallbackForTimeOut = 'error-on-callback-for-timeout',
 }
 @Injectable()
 export class SafaricomMockService {
@@ -25,12 +26,16 @@ export class SafaricomMockService {
 
   public async transfer(
     transferDto: SafaricomTransferPayload,
-  ): Promise<Partial<SafaricomTransferResponseBodyDto>> {
+  ): Promise<
+    Partial<SafaricomTransferResponseBodyDto | SafaricomTransferPayload>
+  > {
     let mockScenario: MockScenario = MockScenario.success;
     if (transferDto.PartyB === '254000000000') {
       mockScenario = MockScenario.errorOnRequest;
     } else if (transferDto.PartyB === '254000000001') {
       mockScenario = MockScenario.errorOnCallback;
+    } else if (transferDto.PartyB === '254000000002') {
+      mockScenario = MockScenario.errorOnCallbackForTimeOut;
     }
 
     if (mockScenario === MockScenario.errorOnRequest) {
@@ -51,14 +56,15 @@ export class SafaricomMockService {
           : 'Mock error message',
     };
 
-    this.sendStatusCallback(transferResponse, mockScenario).catch((error) =>
-      console.log(error),
+    this.sendStatusCallback(transferDto, transferResponse, mockScenario).catch(
+      (error) => console.log(error),
     );
 
     return transferResponse;
   }
 
   private async sendStatusCallback(
+    transferDto: SafaricomTransferPayload,
     transferResponse: SafaricomTransferResponseBodyDto,
     mockScenario: MockScenario,
   ): Promise<void> {
@@ -133,20 +139,38 @@ export class SafaricomMockService {
         },
       },
     };
+    const timeoutCallbackResponse = {
+      InitiatorName: transferDto.InitiatorName,
+      SecurityCredential: transferDto.SecurityCredential,
+      CommandID: transferDto.CommandID,
+      Amount: transferDto.Amount,
+      PartyA: transferDto.PartyA,
+      PartyB: transferDto.PartyB,
+      Remarks: transferDto.Remarks,
+      QueueTimeOutURL: transferDto.QueueTimeOutURL,
+      ResultURL: transferDto.ResultURL,
+      OriginatorConversationID: transferDto.OriginatorConversationID,
+      IDType: transferDto.IDType,
+      IDNumber: transferDto.IDNumber,
+    };
+
+    const httpService = new HttpService();
 
     // Switch between mock scenarios
-    let Status;
+    let response = {};
+    let url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
     if (mockScenario === MockScenario.success) {
-      Status = successStatus;
+      response = {
+        Result: successStatus.Result,
+      };
     } else if (mockScenario === MockScenario.errorOnCallback) {
-      Status = otherFailureStatus;
+      response = {
+        Result: otherFailureStatus.Result,
+      };
+    } else if (mockScenario === MockScenario.errorOnCallbackForTimeOut) {
+      response = timeoutCallbackResponse;
+      url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`;
     }
-
-    const response = {
-      Result: Status.Result,
-    };
-    const httpService = new HttpService();
-    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
 
     await lastValueFrom(httpService.post(url, response)).catch((error) =>
       console.log(error),
