@@ -310,7 +310,7 @@
         <source>No payments yet</source>
         <target state="new">No payments yet</target>
       </trans-unit>
-      <trans-unit id="form-clear-filters" datatype="html">
+      <trans-unit id="table-clear-filters" datatype="html">
         <source>Clear all filters</source>
         <target state="new">Clear all filters</target>
       </trans-unit>
@@ -346,9 +346,9 @@
         <source>Remove user</source>
         <target state="new">Remove user</target>
       </trans-unit>
-      <trans-unit id="form-quick-search" datatype="html">
-        <source>Search keyword</source>
-        <target state="new">Search keyword</target>
+      <trans-unit id="table-quick-search" datatype="html">
+        <source>Filter by keyword</source>
+        <target state="new">Filter by keyword</target>
       </trans-unit>
       <trans-unit id="4533999713544924009" datatype="html">
         <source>Remove user from team</source>

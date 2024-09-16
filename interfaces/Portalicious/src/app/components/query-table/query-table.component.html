@@ -30,20 +30,21 @@
               type="text"
               [(ngModel)]="globalFilterValue"
               (input)="table.filterGlobal(globalFilterValue(), 'contains')"
-              placeholder="Search keyword"
-              i18n-placeholder="@@form-quick-search"
+              placeholder="Filter by keyword"
+              i18n-placeholder="@@table-quick-search"
             />
           </p-iconField>
         }
-        <p-button
-          label="Clear all filters"
-          i18n-label="@@form-clear-filters"
-          [outlined]="true"
-          icon="pi pi-filter-slash"
-          (onClick)="clearAllFilters()"
-          [disabled]="!isFiltered()"
-          class="ms-auto"
-        />
+        @if (isFiltered()) {
+          <p-button
+            label="Clear all filters"
+            i18n-label="@@table-clear-filters"
+            [outlined]="true"
+            icon="pi pi-filter-slash"
+            (onClick)="clearAllFilters()"
+            class="ms-auto"
+          />
+        }
       </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -153,7 +154,7 @@
 
             <p-button
               label="Clear all filters"
-              i18n-label="@@form-clear-filters"
+              i18n-label="@@table-clear-filters"
               link
               (onClick)="clearAllFilters()"
             />
