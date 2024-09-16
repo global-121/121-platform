@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
+import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 
 @ApiTags('financial-service-providers/safaricom')
@@ -15,13 +16,35 @@ export class SafaricomController {
     summary:
       'Notification callback used by Safaricom to notify status of transfer to us.',
   })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'Notified' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Notified transfer status',
+  })
   @Post('callback')
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<any> {
     await this.safaricomService.processTransferCallback(
       safaricomTransferCallback,
+    );
+  }
+
+  @SkipThrottle()
+  @ApiOperation({
+    summary:
+      'Notification callback used by Safaricom to notify us of timeout on transfer request.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Notified of timeout',
+  })
+  @Post('timeout')
+  public async processTransferTimeoutCallback(
+    @Body()
+    safaricomTransferTimeoutCallback: SafaricomTransferTimeoutCallbackDto,
+  ): Promise<any> {
+    await this.safaricomService.processTransferTimeoutCallback(
+      safaricomTransferTimeoutCallback,
     );
   }
 }
