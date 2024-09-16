@@ -263,7 +263,7 @@
         <source>Email copied to clipboard</source>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
-        <source>Search keyword</source>
+        <source>Filter by keyword</source>
       </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>

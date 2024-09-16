@@ -347,8 +347,8 @@
         <target state="new">Remove user</target>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
-        <source>Search keyword</source>
-        <target state="new">Search keyword</target>
+        <source>Filter by keyword</source>
+        <target state="new">Filter by keyword</target>
       </trans-unit>
       <trans-unit id="4533999713544924009" datatype="html">
         <source>Remove user from team</source>
