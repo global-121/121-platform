@@ -8,6 +8,14 @@
     registration-page
     class="px-2"
   >
-    <p i18n>registration-personal-information works</p>
+    @if (registration.isSuccess() && projectAttributes.isSuccess()) {
+      <div class="grid grid-cols-2">
+        <app-data-list
+          [data]="dataList()"
+          class="col-span-2"
+        >
+        </app-data-list>
+      </div>
+    }
   </div>
 </app-page-layout>
