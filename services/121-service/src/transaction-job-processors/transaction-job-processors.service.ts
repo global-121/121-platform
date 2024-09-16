@@ -280,7 +280,7 @@ export class TransactionJobProcessorsService {
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,
         remarks: `Payment ${transactionJob.paymentNumber}`,
-        originatorConversationId: transactionJob.originatorConversationId,
+        originatorConversationId: transactionJob.originatorConversationId!,
       });
     } catch (error) {
       if (error instanceof SafaricomApiError) {
