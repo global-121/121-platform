@@ -16,6 +16,8 @@ export class SafaricomTransferPayload {
 export class SafaricomTransferResponseBodyDto {
   public ConversationID: string;
   public OriginatorConversationID: string;
-  public ResponseCode: string;
-  public ResponseDescription: string;
+  readonly ResponseCode?: string;
+  readonly ResponseDescription?: string;
+  readonly errorCode?: string;
+  readonly errorMessage?: string;
 }
