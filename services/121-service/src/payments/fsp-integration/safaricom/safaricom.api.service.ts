@@ -92,9 +92,14 @@ export class SafaricomApiService {
     payload: TransferParams,
   ): Promise<SafaricomTransferResponseBody> {
     const result = await this.transfer(payload);
+    if (result && result?.ResponseCode !== '0') {
+      if (result?.errorCode) {
+        throw new SafaricomApiError(
+          `${result.errorCode} - ${result.errorMessage}`,
+        );
+      }
 
-    if (result && result.ResponseCode !== '0') {
-      throw new SafaricomApiError(result.ResponseDescription);
+      throw new SafaricomApiError(result?.ResponseDescription);
     }
 
     return result;
@@ -107,7 +112,7 @@ export class SafaricomApiService {
       CommandID: 'BusinessPayment',
       Amount: transferData.transferAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: transferData.phoneNumber, // Set to '25400000000' to trigger mock failure
+      PartyB: transferData.phoneNumber, // Set to '254000000000' to trigger mock failure on callback and '254000000001' to trigger mock failure on request
       Remarks: transferData.remarks,
       QueueTimeOutURL: safaricomQueueTimeoutUrl,
       ResultURL: safaricomResultUrl,

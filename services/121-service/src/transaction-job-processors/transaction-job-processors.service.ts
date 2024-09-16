@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
 import {
@@ -31,7 +32,6 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
-import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 interface ProcessTransactionResultInput {
@@ -280,9 +280,7 @@ export class TransactionJobProcessorsService {
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,
         remarks: `Payment ${transactionJob.paymentNumber}`,
-        originatorConversationId: `P${transactionJob.programId}PA${registration.registrationProgramId}_${this.formatDate(
-          new Date(),
-        )}_${generateRandomString(3)}`,
+        originatorConversationId: transactionJob.originatorConversationId!,
       });
     } catch (error) {
       if (error instanceof SafaricomApiError) {
@@ -291,6 +289,18 @@ export class TransactionJobProcessorsService {
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
         );
         return;
+      }
+      if (error instanceof QueryFailedError) {
+        if (error['code'] === '23505') {
+          await this.transactionScopedRepository.update(
+            { id: transaction.id },
+            {
+              status: TransactionStatusEnum.error,
+              errorMessage: `Payout with originatorConversationId=${transactionJob.originatorConversationId} already exists & processed before.`,
+            },
+          );
+        }
+        throw error;
       } else {
         throw error;
       }
@@ -331,7 +341,7 @@ export class TransactionJobProcessorsService {
     programId,
     paymentNumber,
     userId,
-    calculatedTransferAmountInMajorUnit: calculatedTranserAmountInMajorUnit,
+    calculatedTransferAmountInMajorUnit,
     financialServiceProviderId,
     registration,
     oldRegistration,
@@ -340,7 +350,7 @@ export class TransactionJobProcessorsService {
     errorText: errorMessage,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const resultTransaction = await this.createTransaction({
-      amount: calculatedTranserAmountInMajorUnit,
+      amount: calculatedTransferAmountInMajorUnit,
       registration,
       financialServiceProviderId,
       programId,
@@ -520,17 +530,5 @@ export class TransactionJobProcessorsService {
       bulksize: bulkSize,
       userId,
     });
-  }
-
-  private padTo2Digits(num: number): string {
-    return num.toString().padStart(2, '0');
-  }
-
-  private formatDate(date: Date): string {
-    return [
-      date.getFullYear().toString().substring(2),
-      this.padTo2Digits(date.getMonth() + 1),
-      this.padTo2Digits(date.getDate()),
-    ].join('');
   }
 }
