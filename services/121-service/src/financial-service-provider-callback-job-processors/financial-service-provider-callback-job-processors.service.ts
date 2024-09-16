@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
+import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -49,6 +50,25 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
     await this.transactionScopedRepository.update(
       { id: safaricomTransfer.transaction.id },
       updatedTransactionStatus,
+    );
+  }
+
+  public async processSafaricomTimeoutCallbackJob(
+    safaricomTransferTimeoutCallbackJob: SafaricomTransferTimeoutCallbackJobDto,
+  ): Promise<void> {
+    // Find the actual safaricom transfer by originatorConversationId
+    const safaricomTransfer =
+      await this.safaricomTransferRepository.getSafaricomTransferByOriginatorConversationId(
+        safaricomTransferTimeoutCallbackJob.originatorConversationId,
+      );
+
+    // Update transaction status
+    await this.transactionScopedRepository.update(
+      { id: safaricomTransfer.transaction.id },
+      {
+        status: TransactionStatusEnum.error,
+        errorMessage: 'Transfer timed out',
+      },
     );
   }
 }

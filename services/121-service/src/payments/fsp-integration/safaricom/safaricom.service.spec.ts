@@ -73,6 +73,14 @@ describe('SafaricomService', () => {
             add: jest.fn(),
           },
         },
+        {
+          provide: getQueueToken(
+            FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
+          ),
+          useValue: {
+            add: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
