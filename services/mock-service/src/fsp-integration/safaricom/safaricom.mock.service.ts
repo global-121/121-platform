@@ -151,6 +151,8 @@ export class SafaricomMockService {
         Result: callbackErrorResponse.Result,
       };
     } else if (mockScenario === MockScenario.errorOnCallbackForTimeOut) {
+      // Based on Job Kipngetich reponse from safaricom,
+      // The initial request payload has been returned on the QueueTimeoutURL if the transaction times out on M-PESA.
       response = transferDto;
       url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`;
     }
