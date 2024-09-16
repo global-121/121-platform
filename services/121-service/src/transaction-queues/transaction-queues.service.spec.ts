@@ -38,6 +38,7 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
     bulkSize: 10,
     phoneNumber: '254708374149',
     idNumber: 'nat-123',
+    originatorConversationId: 'originator-id',
   },
 ];
 

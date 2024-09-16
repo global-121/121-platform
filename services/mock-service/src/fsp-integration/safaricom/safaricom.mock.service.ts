@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
 
@@ -11,8 +11,8 @@ import {
 
 enum MockScenario {
   success = 'success',
-  otherFailure = 'other-failure',
-  noResponse = 'no-response',
+  errorOnRequest = 'error-on-request',
+  errorOnCallback = 'error-on-callback',
 }
 @Injectable()
 export class SafaricomMockService {
@@ -25,10 +25,20 @@ export class SafaricomMockService {
 
   public async transfer(
     transferDto: SafaricomTransferPayload,
-  ): Promise<SafaricomTransferResponseBodyDto> {
+  ): Promise<Partial<SafaricomTransferResponseBodyDto>> {
     let mockScenario: MockScenario = MockScenario.success;
-    if (transferDto.PartyB === '25400000000') {
-      mockScenario = MockScenario.otherFailure;
+    if (transferDto.PartyB === '254000000000') {
+      mockScenario = MockScenario.errorOnRequest;
+    } else if (transferDto.PartyB === '254000000001') {
+      mockScenario = MockScenario.errorOnCallback;
+    }
+
+    if (mockScenario === MockScenario.errorOnRequest) {
+      return {
+        errorCode: '401.002.01',
+        errorMessage:
+          'Error Occurred - Invalid Access Token - mocked_access_token',
+      };
     }
 
     const transferResponse = {
@@ -110,7 +120,7 @@ export class SafaricomMockService {
       Result: {
         ResultType: 0,
         ResultCode: 2001,
-        ResultDesc: 'The initiator information is invalid.',
+        ResultDesc: 'The phone number does not have M-PESA.',
         OriginatorConversationID: transferResponse.OriginatorConversationID,
         ConversationID: transferResponse.ConversationID,
         TransactionID: 'NLJ0000000',
@@ -128,11 +138,8 @@ export class SafaricomMockService {
     let Status;
     if (mockScenario === MockScenario.success) {
       Status = successStatus;
-    } else if (mockScenario === MockScenario.otherFailure) {
+    } else if (mockScenario === MockScenario.errorOnCallback) {
       Status = otherFailureStatus;
-    } else if (mockScenario === MockScenario.noResponse) {
-      const errors = 'No response';
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const response = {
