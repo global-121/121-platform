@@ -9,7 +9,7 @@
       @if (item.loading) {
         <app-skeleton-inline />
       } @else {
-        <strong> {{ item.label }}:</strong>
+        <strong> {{ item.label | translatableString }}:</strong>
         @if (item.tooltip) {
           <app-info-tooltip [message]="item.tooltip" />
         }
@@ -38,7 +38,7 @@
                 {{ item.value | number }}
               }
               @default {
-                {{ item.value }}
+                {{ item.value | translatableString }}
               }
             }
           </span>

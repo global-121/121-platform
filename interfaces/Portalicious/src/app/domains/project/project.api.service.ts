@@ -3,6 +3,7 @@ import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
+  Attribute,
   Project,
   ProjectMetrics,
   ProjectUser,
@@ -67,6 +68,53 @@ export class ProjectApiService extends DomainApiService {
 
         return usersWithRolesLabel;
       },
+    });
+  }
+
+  getProjectAttributes({
+    projectId,
+    includeCustomAttributes,
+    includeProgramQuestions,
+    includeFspQuestions,
+    includeTemplateDefaultAttributes,
+    filterShowInPeopleAffectedTable,
+  }: {
+    projectId: Signal<number>;
+    includeCustomAttributes?: boolean;
+    includeProgramQuestions?: boolean;
+    includeFspQuestions?: boolean;
+    includeTemplateDefaultAttributes?: boolean;
+    filterShowInPeopleAffectedTable?: boolean;
+  }) {
+    let params = new HttpParams();
+    params = params.append(
+      'includeCustomAttributes',
+      includeCustomAttributes ?? false,
+    );
+    params = params.append(
+      'includeProgramQuestions',
+      includeProgramQuestions ?? false,
+    );
+    params = params.append('includeFspQuestions', includeFspQuestions ?? false);
+    params = params.append(
+      'includeTemplateDefaultAttributes',
+      includeTemplateDefaultAttributes ?? false,
+    );
+    params = params.append(
+      'filterShowInPeopleAffectedTable',
+      filterShowInPeopleAffectedTable ?? false,
+    );
+
+    return this.generateQueryOptions<Attribute[]>({
+      // TODO: use queryParams in requestOptions?
+      // TODO: check in old portal if this is used differently AND/OR default to false
+
+      path: [BASE_ENDPOINT, projectId, 'attributes'],
+      requestOptions: {
+        params,
+      },
+      // TODO: whether the type should be added here, but the label translation for sure
+      // processResponse
     });
   }
 

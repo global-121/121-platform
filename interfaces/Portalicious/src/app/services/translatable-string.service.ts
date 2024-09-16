@@ -1,5 +1,7 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+
 import { Locale } from '~/utils/locale';
 
 @Injectable({
@@ -9,7 +11,7 @@ export class TranslatableStringService {
   private currentLocale = inject(LOCALE_ID);
 
   translate(
-    value: null | Record<string, string> | string | undefined,
+    value: LocalizedString | null | string | undefined,
   ): string | undefined {
     if (!value) {
       return undefined;
