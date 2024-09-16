@@ -341,7 +341,7 @@ export class TransactionJobProcessorsService {
     programId,
     paymentNumber,
     userId,
-    calculatedTransferAmountInMajorUnit: calculatedTranserAmountInMajorUnit,
+    calculatedTransferAmountInMajorUnit,
     financialServiceProviderId,
     registration,
     oldRegistration,
@@ -350,7 +350,7 @@ export class TransactionJobProcessorsService {
     errorText: errorMessage,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const resultTransaction = await this.createTransaction({
-      amount: calculatedTranserAmountInMajorUnit,
+      amount: calculatedTransferAmountInMajorUnit,
       registration,
       financialServiceProviderId,
       programId,

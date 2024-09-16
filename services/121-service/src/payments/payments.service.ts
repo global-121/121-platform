@@ -793,9 +793,9 @@ export class PaymentsService {
       );
     const safaricomQuestionNames = safaricomQuestions.map((q) => q.name);
     const dataFieldNames = [
-      'fullName',
       'phoneNumber',
       'nationalId',
+      'registrationProgramId',
       ...safaricomQuestionNames,
     ];
     const referenceIds = referenceIdsTransactionAmounts.map(
