@@ -1,9 +1,5 @@
-import HomePage from '@121-e2e/pages/Home/HomePage';
-import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
-import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
-import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
-import TableModule from '@121-e2e/pages/Table/TableModule';
+import { test } from '@playwright/test';
+
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -12,7 +8,14 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationsSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
-import { test } from '@playwright/test';
+
+import HomePage from '@121-e2e/pages/Home/HomePage';
+import LoginPage from '@121-e2e/pages/Login/LoginPage';
+import NavigationModule from '@121-e2e/pages/Navigation/NavigationModule';
+import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
+import RegistrationDetails from '@121-e2e/pages/RegistrationDetails/RegistrationDetailsPage';
+import TableModule from '@121-e2e/pages/Table/TableModule';
+
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
@@ -92,7 +95,7 @@ test('[30262] Safaricom: Error because of missing National ID', async ({
 
     await registrationPage.openActivityOverviewTab(paymentFilter);
     await registrationPage.validatePaymentsTab({
-      paymentLabel: paymentLabel,
+      paymentLabel,
       paymentNumber: 1,
       statusLabel: paymentStatus,
     });
