@@ -5,13 +5,14 @@
   [registrationId]="registrationId()"
 >
   <div registration-page>
-    <p-selectButton
-      [options]="stateOptions"
-      [(ngModel)]="value"
-      optionLabel="label"
-      i18n-optionLabel
-      optionValue="value"
-      i18n-optionValue
+    <app-query-table
+      [items]="items()"
+      [isPending]="activityLog.isPending()"
+      [columns]="columns()"
+      localStorageKey="activity-log-table"
+      [expandableRowTemplate]="expandableRowTemplate"
+      [expandableRowContext]="expandableRowContext()"
+      [globalFilterFields]="['activityType', 'overview', 'author']"
     />
   </div>
 </app-page-layout>

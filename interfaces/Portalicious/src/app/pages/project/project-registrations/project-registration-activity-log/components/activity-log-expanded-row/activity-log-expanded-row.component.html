@@ -1,0 +1,8 @@
+@if (dataList()) {
+  <app-data-list
+    [data]="dataList()!"
+    [hideBottomBorder]="true"
+  ></app-data-list>
+} @else {
+  {{ message() }}
+}
