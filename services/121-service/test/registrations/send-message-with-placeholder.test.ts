@@ -40,7 +40,7 @@ describe('Send custom message with placeholders', () => {
   it('should send message with placeholder values processed', async () => {
     // Arrange
     const message =
-      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayName[registrationAh.preferredLanguage]}} and {{fullName}} and {{paymentCountRemaining}}';
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayName}} and {{fullName}} and {{paymentCountRemaining}}';
 
     // Act
     await sendMessage(
