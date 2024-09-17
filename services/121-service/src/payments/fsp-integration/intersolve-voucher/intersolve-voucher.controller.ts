@@ -213,7 +213,9 @@ export class IntersolveVoucherController {
         return;
       })
       .catch((error) => {
-        console.error('CronjobService - Error: cronCacheUnusedVouchers', error);
+        throw new Error(
+          `CronjobService - Failed: cronCacheUnusedVouchers - ${error}`,
+        );
       });
   }
 
