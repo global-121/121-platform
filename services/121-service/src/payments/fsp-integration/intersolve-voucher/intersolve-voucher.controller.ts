@@ -206,8 +206,15 @@ export class IntersolveVoucherController {
   @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
   public async cacheUnusedVouchers(): Promise<void> {
     console.info('CronjobService - Started: cronCacheUnusedVouchers');
-    await this.intersolveVoucherCronService.cacheUnusedVouchers();
-    console.info('CronjobService - Complete: cronCacheUnusedVouchers');
+    this.intersolveVoucherCronService
+      .cacheUnusedVouchers()
+      .then(() => {
+        console.info('CronjobService - Complete: cronCacheUnusedVouchers');
+        return;
+      })
+      .catch((error) => {
+        console.error('CronjobService - Error: cronCacheUnusedVouchers', error);
+      });
   }
 
   @AuthenticatedUser({ isAdmin: true })
