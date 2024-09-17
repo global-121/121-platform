@@ -334,5 +334,68 @@ describe('Do payment to 1 PA', () => {
         TransactionStatusEnum.success,
       );
     });
+
+    it('should failed to pay-out to PA due to time out', async () => {
+      // Arrange
+      const program = {
+        allowEmptyPhoneNumber: false,
+      };
+
+      // Act
+      // Call the update function
+      await patchProgram(2, program as UpdateProgramDto, accessToken);
+
+      // Arrange
+      registrationSafaricom.phoneNumber = '254000000002';
+      await importRegistrations(
+        programId,
+        [registrationSafaricom],
+        accessToken,
+      );
+
+      await awaitChangePaStatus(
+        programId,
+        [registrationSafaricom.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationSafaricom.referenceId];
+
+      // Act
+      const doPaymentResponse = await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        [TransactionStatusEnum.success, TransactionStatusEnum.error],
+      );
+
+      // Assert
+      const getTransactionsBody = await getTransactions(
+        programId,
+        payment,
+        registrationSafaricom.referenceId,
+        accessToken,
+      );
+
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.error,
+      );
+      expect(getTransactionsBody.body[0].errorMessage).toBe(
+        'Transfer timed out',
+      );
+    });
   });
 });
