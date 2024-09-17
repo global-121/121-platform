@@ -17,6 +17,7 @@ import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -211,8 +212,13 @@ export class EventsService {
   }
 
   private isCompleteRegistrationViewEntity(
-    obj: any,
+    obj: unknown,
   ): obj is RegistrationViewEntity {
+    // Ensure obj is a non-null object
+    if (typeof obj !== 'object' || obj === null) {
+      return false;
+    }
+
     // Banal check if the object is a RegistrationViewEntity
     // This is to prevent that log is called with an object that is not a RegistrationViewEntity
     // While registrationAttributes is empty
@@ -279,20 +285,21 @@ export class EventsService {
         continue;
       }
 
-      // Ensure only string values are passed to the event creation
-      if (typeof oldEntity[key] !== 'string') {
-        throw Error('something something');
-      }
-      if (typeof newEntity[key] !== 'string') {
-        throw Error('something something');
-      }
+      const oldValue =
+        typeof oldEntity[key] === 'string' || typeof oldEntity[key] === 'number'
+          ? oldEntity[key]
+          : oldEntity[key] && typeof oldEntity[key] === 'object'
+            ? (oldEntity[key] as LocalizedString)?.en ||
+              Object.values(oldEntity[key])[0]
+            : null;
 
-      const oldValue = oldEntity[key] as string;
-      const newValue = newEntity[key] as string;
-
-      if (oldValue === null || newValue === null) {
-        throw new Error(`Invalid field value for key: ${key}`);
-      }
+      const newValue =
+        typeof newEntity[key] === 'string' || typeof newEntity[key] === 'number'
+          ? newEntity[key]
+          : newEntity[key] && typeof newEntity[key] === 'object'
+            ? (newEntity[key] as LocalizedString)?.en ||
+              Object.values(newEntity[key])[0]
+            : null;
 
       const eventForChange = this.createEventForChange(
         key, // The key is now typed correctly

@@ -1,4 +1,5 @@
 import { TestBed } from '@automock/jest';
+import { HttpStatus } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
 
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
@@ -15,11 +16,6 @@ describe('RegistrationsController', () => {
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(RegistrationsController).compile();
-    const patchRegistrationsStatusResult = {
-      totalFilterCount: 1,
-      applicableCount: 1,
-      nonApplicableCount: 0,
-    };
 
     registrationController = unit;
     registrationsPaginationService = unitRef.get(
@@ -36,10 +32,6 @@ describe('RegistrationsController', () => {
     jest
       .spyOn(registrationsPaginationService, 'throwIfNoPermissionsForQuery')
       .mockResolvedValue(); // do not throw
-
-    jest
-      .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
-      .mockResolvedValue(patchRegistrationsStatusResult);
   });
 
   describe('Change registation status with right status-change permission', () => {
@@ -97,18 +89,28 @@ describe('RegistrationsController', () => {
         messageTemplateKey: undefined,
       };
 
-      const patchRegistrationsStatusResult =
-        await registrationController.patchRegistrationsStatus(
+      const patchRegistrationsStatusResult = {
+        totalFilterCount: 1,
+        applicableCount: 1,
+        nonApplicableCount: 0,
+      };
+
+      jest
+        .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
+        .mockResolvedValue(patchRegistrationsStatusResult);
+
+      await expect(
+        registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
           mockRequest,
           programId,
           dryRun,
-        );
-
-      expect(patchRegistrationsStatusResult).toBe(
-        patchRegistrationsStatusResult,
-      );
+        ),
+      ).rejects.toMatchObject({
+        status: HttpStatus.OK,
+        response: patchRegistrationsStatusResult,
+      });
     });
   });
 });

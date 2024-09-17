@@ -381,7 +381,7 @@ export class RegistrationsController {
       statusUpdateDto.messageTemplateKey,
       messageContentType,
     );
-    if (dryRun) {
+    if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
       // I did not find another way to send a different status code than with a HttpException
       throw new HttpException(result, HttpStatus.OK);
@@ -636,7 +636,7 @@ export class RegistrationsController {
       userId,
     );
 
-    if (dryRun) {
+    if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
       // I did not find another way to send a different status code than with a HttpException
       throw new HttpException(result, HttpStatus.OK);

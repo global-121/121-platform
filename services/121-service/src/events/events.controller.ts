@@ -113,7 +113,7 @@ export class EventsController {
     if (result.length === 0) {
       throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
     }
-    return result;
+    res.send(result);
   }
 
   // We can later extend these permissions to different types when we get more types of events
