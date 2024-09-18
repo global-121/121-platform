@@ -12,6 +12,7 @@ import { SafaricomTransferResponseBody } from '@121-service/src/payments/fsp-int
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -161,6 +162,31 @@ describe('SafaricomService', () => {
       );
       expect(safaricomTransferRepository.update).toHaveBeenCalled();
       expect(transferResult).toEqual(result);
+    });
+
+    it('should handler unexpected error like 404', async () => {
+      jest.spyOn(safaricomTransferRepository, 'save');
+      jest.spyOn(safaricomTransferRepository, 'update');
+      jest
+        .spyOn(safaricomApiService, 'authenticate')
+        .mockResolvedValue('mocked-access-token');
+      jest
+        .spyOn(safaricomApiService, 'createTransferPayload')
+        .mockReturnValue(mockedSafaricomTransferPayloadParams);
+
+      jest
+        .spyOn(safaricomApiService, 'sendTransfer')
+        .mockRejectedValueOnce(new SafaricomApiError('404 Not Found'));
+
+      await expect(
+        service.doTransfer(mockedSafaricomTransferParams),
+      ).rejects.toThrow(new SafaricomApiError('404 Not Found'));
+
+      expect(safaricomTransferRepository.save).toHaveBeenCalled();
+      expect(safaricomApiService.authenticate).toHaveBeenCalled();
+      expect(safaricomApiService.createTransferPayload).toHaveBeenCalledWith(
+        mockedSafaricomTransferParams,
+      );
     });
   });
 
