@@ -136,9 +136,8 @@ export class ProjectApiService extends DomainApiService {
   }): Promise<unknown> {
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'POST',
-      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/notes`,
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registrations/${registrationReferenceId()}/note`,
       body: {
-        referenceId: registrationReferenceId(),
         text: note,
       },
     });
@@ -178,6 +177,18 @@ export class ProjectApiService extends DomainApiService {
 
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(path),
+    });
+  }
+
+  getRegistrationNotes({
+    projectId,
+    registrationReferenceId,
+  }: {
+    projectId: Signal<number>;
+    registrationReferenceId: Signal<string>;
+  }) {
+    return this.generateQueryOptions<unknown[]>({
+      path: [BASE_ENDPOINT, projectId, 'registrations', registrationReferenceId, 'notes'],
     });
   }
 }
