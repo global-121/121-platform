@@ -1,12 +1,12 @@
 import { check, sleep } from 'k6';
 
-import { registrationVisa } from '../helpers/registration-default.data.js';
+import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
 const duplicateNumber = 17; // '17' leads to 131k registrations
-const resetScript = 'nlrc-multiple';
+const resetScript = 'krcs-multiple';
 const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 200;
@@ -25,7 +25,7 @@ export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
     programId,
-    registrationVisa,
+    registrationSafaricom,
     duplicateNumber,
     paymentId,
     maxTimeoutAttempts,
