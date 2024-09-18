@@ -46,7 +46,7 @@ import { ToastService } from '~/services/toast.service';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectTeamComponent {
+export class ProjectTeamPageComponent {
   private projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);

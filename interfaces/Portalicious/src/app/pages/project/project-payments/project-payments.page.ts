@@ -10,7 +10,7 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectPaymentsComponent {
+export class ProjectPaymentsPageComponent {
   // this is injected by the router
   projectId = input.required<number>();
 }

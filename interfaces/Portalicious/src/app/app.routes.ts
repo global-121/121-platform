@@ -5,14 +5,14 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { authGuard, projectPermissionsGuard } from '~/auth.guard';
 import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
 import { LoginComponent } from '~/pages/login/login.component';
-import { ProjectMonitoringComponent } from '~/pages/project/project-monitoring/project-monitoring.component';
-import { ProjectPaymentsComponent } from '~/pages/project/project-payments/project-payments.component';
+import { ProjectMonitoringPageComponent } from '~/pages/project/project-monitoring/project-monitoring.page';
+import { ProjectPaymentsPageComponent } from '~/pages/project/project-payments/project-payments.page';
 import { ProjectRegistrationActivityLogPageComponent } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
 import { ProjectRegistrationDebitCardsPageComponent } from '~/pages/project/project-registrations/project-registration-debit-cards/project-registration-debit-cards.page';
 import { ProjectRegistrationPersonalInformationPageComponent } from '~/pages/project/project-registrations/project-registration-personal-information/project-registration-personal-information.page';
-import { ProjectRegistrationsComponent } from '~/pages/project/project-registrations/project-registrations.component';
-import { ProjectTeamComponent } from '~/pages/project/project-team/project-team.component';
-import { ProjectsOverviewComponent } from '~/pages/projects-overview/projects-overview.component';
+import { ProjectRegistrationsPageComponent } from '~/pages/project/project-registrations/project-registrations.page';
+import { ProjectTeamPageComponent } from '~/pages/project/project-team/project-team.page';
+import { ProjectsOverviewPageComponent } from '~/pages/projects-overview/projects-overview.page';
 import { RolesAndPermissionsComponent } from '~/pages/roles-and-permissions/roles-and-permissions.component';
 import { UsersComponent } from '~/pages/users/users.component';
 
@@ -39,7 +39,7 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.projects,
-    component: ProjectsOverviewComponent,
+    component: ProjectsOverviewPageComponent,
     canActivate: [authGuard],
   },
   {
@@ -64,14 +64,14 @@ export const routes: Routes = [
     children: [
       {
         path: AppRoutes.projectMonitoring,
-        component: ProjectMonitoringComponent,
+        component: ProjectMonitoringPageComponent,
         canActivate: [
           projectPermissionsGuard(PermissionEnum.ProgramMetricsREAD),
         ],
       },
       {
         path: AppRoutes.projectTeam,
-        component: ProjectTeamComponent,
+        component: ProjectTeamPageComponent,
         canActivate: [
           projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
         ],
@@ -81,7 +81,7 @@ export const routes: Routes = [
         children: [
           {
             path: ``,
-            component: ProjectRegistrationsComponent,
+            component: ProjectRegistrationsPageComponent,
           },
           {
             path: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
@@ -102,7 +102,10 @@ export const routes: Routes = [
           },
         ],
       },
-      { path: AppRoutes.projectPayments, component: ProjectPaymentsComponent },
+      {
+        path: AppRoutes.projectPayments,
+        component: ProjectPaymentsPageComponent,
+      },
       {
         path: '',
         pathMatch: 'full',

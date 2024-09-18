@@ -20,7 +20,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectRegistrationsComponent {
+export class ProjectRegistrationsPageComponent {
   // this is injected by the router
   projectId = input.required<number>();
 

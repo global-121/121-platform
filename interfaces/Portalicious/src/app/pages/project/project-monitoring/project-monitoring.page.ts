@@ -47,7 +47,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMonitoringComponent {
+export class ProjectMonitoringPageComponent {
   // this is injected by the router
   projectId = input.required<number>();
 

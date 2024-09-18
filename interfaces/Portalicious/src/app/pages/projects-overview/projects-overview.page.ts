@@ -29,7 +29,7 @@ import { AuthService } from '~/services/auth.service';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectsOverviewComponent {
+export class ProjectsOverviewPageComponent {
   private authService = inject(AuthService);
 
   public canCreateProjects = this.authService.isAdmin;
