@@ -101,7 +101,7 @@ describe('TransactionJobProcessorsService', () => {
     expect(transactionJobProcessorsService).toBeDefined();
   });
 
-  it('[Idempotency] should failed to do the transaction due to same originatorConversationId', async () => {
+  it('[Idempotency] safaricom transaction job processing should fail when using same originatorConversationId', async () => {
     jest
       .spyOn(registrationScopedRepository, 'getByReferenceId')
       .mockResolvedValueOnce(mockedRegistration);
