@@ -39,7 +39,7 @@ const bhaProgramId = programIdBHA;
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.krcsMultiple);
 
-  registrationsSafaricom[0].phoneNumber = '25400000000';
+  registrationsSafaricom[0].phoneNumber = '254000000000';
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
