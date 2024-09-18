@@ -334,5 +334,60 @@ describe('Do payment to 1 PA', () => {
         TransactionStatusEnum.success,
       );
     });
+
+    it('should fail to pay-out to PA due to time out in communication from Safaricom to PA', async () => {
+      // Arrange
+      const magigPhoneNrTimeout = '254000000002';
+      registrationSafaricom.phoneNumber = magigPhoneNrTimeout;
+      await importRegistrations(
+        programId,
+        [registrationSafaricom],
+        accessToken,
+      );
+
+      await awaitChangePaStatus(
+        programId,
+        [registrationSafaricom.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationSafaricom.referenceId];
+
+      // Act
+      const doPaymentResponse = await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        3001,
+        [TransactionStatusEnum.success, TransactionStatusEnum.error],
+      );
+
+      // Assert
+      const getTransactionsBody = await getTransactions(
+        programId,
+        payment,
+        registrationSafaricom.referenceId,
+        accessToken,
+      );
+
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.error,
+      );
+      expect(getTransactionsBody.body[0].errorMessage).toBe(
+        'Transfer timed out',
+      );
+    });
   });
 });
