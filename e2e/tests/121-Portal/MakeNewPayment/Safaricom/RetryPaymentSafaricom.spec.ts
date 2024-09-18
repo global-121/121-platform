@@ -3,8 +3,8 @@ import { test } from '@playwright/test';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import {
-  bulkUpdateRegistrationsCSV,
   seedIncludedRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -22,7 +22,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-const krcsOcwProgrammeTitle = KRCSProgram.titlePortal.en;
+const krcsProgramTitle = KRCSProgram.titlePortal.en;
 const ok = englishTranslations.common.ok;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 const paymentStatus = englishTranslations.entity.payment.status.error;
@@ -80,7 +80,7 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
   }).format(defaultMaxTransferValue);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(krcsOcwProgrammeTitle);
+    await homePage.navigateToProgramme(krcsProgramTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
   });
 
@@ -111,18 +111,22 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
 
     await test.step('Retry payment', async () => {
       await page.goto('/');
-      await homePage.navigateToProgramme(krcsOcwProgrammeTitle);
+      await homePage.navigateToProgramme(krcsProgramTitle);
       await navigationModule.navigateToProgramTab(paymentLabel);
       await paymentsPage.validatePaymentStatus({});
       await paymentsPage.validateFailedPaymentStatus({ payments: 1 });
       const accessToken = await getAccessToken();
 
-      await bulkUpdateRegistrationsCSV(
+      await updateRegistration(
         bhaProgramId,
-        './test-registration-data/test-registrations-patch-safaricom.csv',
+        registrationsSafaricom[0].referenceId,
+        {
+          phoneNumber: '254708374149',
+        },
+        'automated test',
         accessToken,
-        'Bulk update for test registrations due to data validation improvements',
       );
+
       await paymentsPage.retryPayment({
         buttonName: ok,
       });

@@ -19,7 +19,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-const krcsOcwProgrammeTitle = KRCSProgram.titlePortal.en;
+const krcsProgramTitle = KRCSProgram.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 const paymentStatus = englishTranslations.entity.payment.status.error;
 const paymentFilter =
@@ -77,7 +77,7 @@ test('[30260] Safaricom: "Error because of wrong "phoneNumber"', async ({
   }).format(defaultMaxTransferValue);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(krcsOcwProgrammeTitle);
+    await homePage.navigateToProgramme(krcsProgramTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
   });
 

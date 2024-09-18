@@ -19,7 +19,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-const krcsOcwProgrammeTitle = KRCSProgram.titlePortal.en;
+const krcsProgramTitle = KRCSProgram.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 const paymentStatus = englishTranslations.entity.payment.status.error;
 const paymentFilter =
@@ -74,7 +74,7 @@ test('[30262] Safaricom: Error because of missing National ID', async ({
   }).format(defaultMaxTransferValue);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(krcsOcwProgrammeTitle);
+    await homePage.navigateToProgramme(krcsProgramTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
   });
 
