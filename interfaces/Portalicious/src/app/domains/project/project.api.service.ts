@@ -179,3 +179,4 @@ export class ProjectApiService extends DomainApiService {
       queryKey: this.pathToQueryKey(path),
     });
   }
+}
