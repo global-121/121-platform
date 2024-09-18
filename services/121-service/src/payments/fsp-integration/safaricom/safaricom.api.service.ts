@@ -84,7 +84,8 @@ export class SafaricomApiService {
     } catch (error) {
       console.log(error, 'transfer');
       console.error('Failed to make Safaricom B2C payment API call');
-      return error.response.data;
+
+      throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
 
@@ -99,7 +100,10 @@ export class SafaricomApiService {
         );
       }
 
-      throw new SafaricomApiError(result?.ResponseDescription);
+      throw new SafaricomApiError(
+        result?.ResponseDescription ||
+          `Error: ${(result as any)?.statusCode} ${(result as any)?.error}`,
+      );
     }
 
     return result;
