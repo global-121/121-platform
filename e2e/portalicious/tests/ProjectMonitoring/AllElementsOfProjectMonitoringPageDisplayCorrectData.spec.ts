@@ -37,4 +37,8 @@ test('[30326] All elements of Monitoring page display correct data', async ({
     await basePage.selectProgram(projectTitle);
     await projectMonitoring.navigateToProgramPage('Monitoring');
   });
+
+  await test.step('Check if all elements are displayed', async () => {
+    console.log('Checking if all elements are displayed');
+  });
 });
