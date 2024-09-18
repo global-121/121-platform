@@ -335,18 +335,10 @@ describe('Do payment to 1 PA', () => {
       );
     });
 
-    it('should failed to pay-out to PA due to time out', async () => {
+    it('should fail to pay-out to PA due to time out in communication from Safaricom to PA', async () => {
       // Arrange
-      const program = {
-        allowEmptyPhoneNumber: false,
-      };
-
-      // Act
-      // Call the update function
-      await patchProgram(2, program as UpdateProgramDto, accessToken);
-
-      // Arrange
-      registrationSafaricom.phoneNumber = '254000000002';
+      const magigPhoneNrTimeout = '254000000002';
+      registrationSafaricom.phoneNumber = magigPhoneNrTimeout;
       await importRegistrations(
         programId,
         [registrationSafaricom],
