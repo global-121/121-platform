@@ -16,7 +16,10 @@
       <app-info-tooltip [message]="metricTooltip()!" />
     }
   </dt>
-  <dd class="txt-system-bold-l">
+  <dd
+    class="txt-metric"
+    data-testid="metric-tile-component"
+  >
     @if (pending()) {
       <app-skeleton-inline />
     } @else {

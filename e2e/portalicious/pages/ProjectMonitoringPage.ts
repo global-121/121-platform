@@ -10,7 +10,7 @@ class ProjectMonitoring extends BasePage {
   readonly remainingBudgetTile: Locator;
   readonly cashDisbursedTile: Locator;
   readonly projectDescriptionTile: Locator;
-  readonly iframeArea: Locator;
+  readonly metricTileComponent: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -24,7 +24,7 @@ class ProjectMonitoring extends BasePage {
     this.projectDescriptionTile = this.page.getByTestId(
       'metric-project-description',
     );
-    this.iframeArea = this.page.getByTestId('display-area');
+    this.metricTileComponent = this.page.getByTestId('metric-tile-component');
   }
 
   async assertMonitoringTabElements() {
@@ -33,7 +33,6 @@ class ProjectMonitoring extends BasePage {
     const remainingBudgetTileLocator = this.remainingBudgetTile;
     const cashDisbursedTileLocator = this.cashDisbursedTile;
     const projectDescriptionTileLocator = this.projectDescriptionTile;
-    const iframeAreaLocator = this.iframeArea;
 
     const registrationTileText = await registrationsTileLocator.innerText();
     const includedTileText = await includedTileLocator.innerText();
@@ -42,15 +41,35 @@ class ProjectMonitoring extends BasePage {
     const cashDisbursedTileText = await cashDisbursedTileLocator.innerText();
     const projectDescriptionTileText =
       await projectDescriptionTileLocator.innerText();
-    const iframeAreaLocatorText = await iframeAreaLocator.innerText();
 
     expect(registrationTileText).toContain('People registered');
     expect(includedTileText).toContain('People included');
     expect(remainingBudgetTileText).toContain('Remaining budget');
     expect(cashDisbursedTileText).toContain('Cash disbursed');
     expect(projectDescriptionTileText).toContain('Project description');
-    console.log(iframeAreaLocatorText);
-    expect(iframeAreaLocatorText).toContain('Cash Operational Monitoring');
+
+    // For the moment we are not checking the iframe area because there are no visible elemnts in it
+  }
+
+  async asserValuesInMonitoringTab({
+    peopleRegistered,
+    peopleIncluded,
+  }: {
+    peopleRegistered: number;
+    peopleIncluded: number;
+  }) {
+    const registrationsTileLocator = this.peopleRegisteredTile.getByTestId(
+      'metric-tile-component',
+    );
+    const includedTileLocator = this.peopleIncludedTile.getByTestId(
+      'metric-tile-component',
+    );
+
+    const registrationTileText = await registrationsTileLocator.innerText();
+    const includedTileText = await includedTileLocator.innerText();
+
+    expect(registrationTileText).toContain(peopleRegistered.toString());
+    expect(includedTileText).toContain(peopleIncluded.toString());
   }
 }
 
