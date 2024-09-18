@@ -39,6 +39,6 @@ test('[30326] All elements of Monitoring page display correct data', async ({
   });
 
   await test.step('Check if all elements are displayed', async () => {
-    console.log('Checking if all elements are displayed');
+    await projectMonitoring.assertMonitoringTabElements();
   });
 });
