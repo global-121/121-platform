@@ -46,15 +46,17 @@ export class NoteController {
       'ReferenceId is not known - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/notes')
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Post(':programId/registrations/:referenceId/note')
   public async createNote(
     @Req() req,
     @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
     const userId = req.user.id;
     await this.noteService.createNote(
-      createNote.referenceId,
+      referenceId,
       createNote.text,
       userId,
       programId,
@@ -70,13 +72,12 @@ export class NoteController {
     type: [ResponseNoteDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true })
-  @Get(':programId/notes/:referenceId')
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Get(':programId/registrations/:referenceId/notes')
   public async retrieveNotes(
-    @Param() params,
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
   ): Promise<ResponseNoteDto[]> {
-    return await this.noteService.retrieveNotes(params.referenceId, programId);
+    return await this.noteService.retrieveNotes(referenceId, programId);
   }
 }
