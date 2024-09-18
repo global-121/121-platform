@@ -136,7 +136,7 @@ export class ProjectApiService extends DomainApiService {
   }): Promise<unknown> {
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'POST',
-      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registrations/${registrationReferenceId().toString()}/note`,
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registrations/${registrationReferenceId()}/note`,
       body: {
         text: note,
       },
