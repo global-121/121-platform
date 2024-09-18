@@ -95,6 +95,7 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
   });
 
   await test.step('Check PA payments and messages for failed payment and errors', async () => {
+    // The assertion relies on the transfer status callback being in quicker then the steps below take to get the transaction status
     await table.openFspProfile({ shouldIncludeVisa: false });
 
     await registrationPage.validateQuantityOfActivity({ quantity: 3 });

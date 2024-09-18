@@ -86,6 +86,7 @@ test('[30259] Safaricom: "Make Successful payment"', async ({ page }) => {
   });
 
   await test.step('Check PA payments and messages', async () => {
+    // The assertion relies on the transfer status callback being in quicker then the steps below take to get the transaction status
     await table.openFspProfile({ shouldIncludeVisa: false });
 
     await registrationPage.validateQuantityOfActivity({ quantity: 3 });
