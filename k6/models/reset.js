@@ -20,8 +20,8 @@ export default class ResetModel {
     return res;
   }
 
-  resetDB() {
-    const url = `${baseUrl}api/scripts/reset?mockPv=true&mockOcw=true&isApiTests=false&script=nlrc-multiple`;
+  resetDB(resetScript) {
+    const url = `${baseUrl}api/scripts/reset?isApiTests=false&script=${resetScript}`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
