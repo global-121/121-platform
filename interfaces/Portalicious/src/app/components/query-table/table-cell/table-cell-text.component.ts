@@ -1,16 +1,15 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
 
 @Component({
-  selector: 'app-table-cell-date',
+  selector: 'app-table-cell-text',
   standalone: true,
-  imports: [DatePipe],
-  templateUrl: './table-cell-date.component.html',
+  imports: [],
+  template: `{{ value() }}`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableCellDateComponent implements TableCellComponent<Date> {
-  value = input.required<Date>();
+export class TableCellTextComponent implements TableCellComponent<string> {
+  value = input.required<string>();
 }

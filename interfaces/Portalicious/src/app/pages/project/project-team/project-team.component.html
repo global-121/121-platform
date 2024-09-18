@@ -20,14 +20,17 @@
       />
     }
   </div>
-  <app-query-table
-    [columns]="columns()"
-    [query]="projectUsers"
-    localStorageKey="project-team-table"
-    [contextMenuItems]="contextMenuItems()"
-    (onUpdateContextMenuItem)="selectedUser.set($event)"
-    [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
-  />
+  <p-card>
+    <app-query-table
+      [items]="projectUsers.data() ?? []"
+      [isPending]="projectUsers.isPending()"
+      [columns]="columns()"
+      localStorageKey="project-team-table"
+      [contextMenuItems]="contextMenuItems()"
+      (onUpdateContextMenuItem)="selectedUser.set($event)"
+      [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
+    />
+  </p-card>
 </app-page-layout>
 <app-confirmation-dialog
   #confirmationDialog

@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import {
@@ -41,6 +41,7 @@ export type DataListItem = {
     DecimalPipe,
     SkeletonInlineComponent,
     ColoredChipComponent,
+    NgClass,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,
@@ -48,4 +49,5 @@ export type DataListItem = {
 })
 export class DataListComponent {
   data = input.required<DataListItem[]>();
+  hideBottomBorder = input<boolean>();
 }
