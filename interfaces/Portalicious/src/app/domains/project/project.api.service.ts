@@ -188,7 +188,13 @@ export class ProjectApiService extends DomainApiService {
     registrationReferenceId: Signal<string>;
   }) {
     return this.generateQueryOptions<unknown[]>({
-      path: [BASE_ENDPOINT, projectId, 'registrations', registrationReferenceId, 'notes'],
+      path: [
+        BASE_ENDPOINT,
+        projectId,
+        'registrations',
+        registrationReferenceId,
+        'notes',
+      ],
     });
   }
 }
