@@ -467,9 +467,9 @@ export async function postNote(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/notes`)
+    .post(`/programs/${programId}/registrations/${referenceId}/note`)
     .set('Cookie', [accessToken])
-    .send({ referenceId, text });
+    .send({ text });
 }
 
 export async function getNotes(
@@ -478,7 +478,7 @@ export async function getNotes(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/notes/${referenceId}`)
+    .get(`/programs/${programId}/registrations/${referenceId}/notes`)
     .set('Cookie', [accessToken]);
 }
 
