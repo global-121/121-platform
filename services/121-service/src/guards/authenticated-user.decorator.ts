@@ -11,9 +11,8 @@ export interface AuthenticatedUserParameters {
 
 export const AuthenticatedUser = (
   parameters?: AuthenticatedUserParameters,
-): any =>
+): ReturnType<typeof SetMetadata> =>
   SetMetadata('authenticationParameters', {
     ...parameters,
-    // TODO: Find a way to make this 'isGuarded' part more explicit
     isGuarded: true,
   });

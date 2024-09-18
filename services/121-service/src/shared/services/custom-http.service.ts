@@ -131,13 +131,13 @@ export class CustomHttpService {
     );
   }
 
-  private createHeaders(headers?: Header[]): object {
-    const returnHeaders = {
+  private createHeaders(headers?: Header[]): Record<string, string> {
+    const returnHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
     };
     if (headers) {
       for (const header of headers) {
-        returnHeaders[header.name] = header.value;
+        returnHeaders[header.name] = header.value || '';
       }
     }
     return returnHeaders;

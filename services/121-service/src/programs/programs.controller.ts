@@ -44,7 +44,9 @@ import { ProgramQuestionEntity } from '@121-service/src/programs/program-questio
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
@@ -81,13 +83,12 @@ export class ProgramController {
   public async findOne(
     @Param('programId', ParseIntPipe)
     programId: number,
-
     @Query('formatProgramReturnDto', new ParseBoolPipe({ optional: true }))
     formatProgramReturnDto: boolean,
-
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     if (formatProgramReturnDto) {
       return this.programService.getProgramReturnDto(programId, userId);
     } else {
@@ -155,9 +156,9 @@ You can also leave the body empty.`,
     @Query('koboAssetId')
     koboAssetId: string,
 
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<ProgramEntity> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
 
     if (importFromKobo) {
       if (koboToken && koboAssetId)
@@ -392,9 +393,10 @@ You can also leave the body empty.`,
       new ParseBoolPipe({ optional: true }),
     )
     filterShowInPeopleAffectedTable: boolean,
-    @Req() req: any,
+    @Req() req: ScopedUserRequest,
   ): Promise<Attribute[]> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     if (userId) {
       const hasPersonalReadAccess =
         await this.programService.hasPersonalReadAccess(

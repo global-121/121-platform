@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -27,6 +26,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/actions')
 @Controller()
@@ -78,14 +78,7 @@ export class ActionsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ActionReturnDto> {
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     return await this.actionService.postAction(
       userId,

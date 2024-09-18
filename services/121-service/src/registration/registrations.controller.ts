@@ -62,6 +62,7 @@ import {
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -88,14 +89,7 @@ export class RegistrationsController {
     programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     return await this.registrationsService.importRegistrations(
       csvFile,
@@ -122,14 +116,7 @@ export class RegistrationsController {
     @Query('validation') validation = true,
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     if (validation) {
       const validatedData =
@@ -173,14 +160,7 @@ export class RegistrationsController {
     @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
   ) {
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     const hasPersonalRead =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -219,14 +199,7 @@ export class RegistrationsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     return await this.registrationsService.patchBulk(
       csvFile,
@@ -311,14 +284,7 @@ export class RegistrationsController {
   ): Promise<BulkActionResultDto> {
     let permission: PermissionEnum | undefined;
     let messageContentType: MessageContentType | undefined;
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     const registrationStatus = statusUpdateDto.status;
     switch (registrationStatus) {
@@ -410,14 +376,7 @@ export class RegistrationsController {
     @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user?.id;
-
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    const userId = RequestHelper.getUserId(req);
 
     const hasRegistrationUpdatePermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -507,14 +466,8 @@ export class RegistrationsController {
     @Query('phonenumber') phonenumber: string,
     @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user?.id;
+    const userId = RequestHelper.getUserId(req);
 
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
         'phonenumber is not a string',
@@ -546,14 +499,8 @@ export class RegistrationsController {
     @Body() data: UpdateChosenFspDto,
     @Req() req: ScopedUserRequest,
   ) {
-    const userId = req.user?.id;
+    const userId = RequestHelper.getUserId(req);
 
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     return await this.registrationsService.updateChosenFsp({
       referenceId: params.referenceId,
       newFspName: data.newFspName,
@@ -614,14 +561,8 @@ export class RegistrationsController {
     @Param('programId') programId: number,
     @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
-    const userId = req.user?.id;
+    const userId = RequestHelper.getUserId(req);
 
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
@@ -702,14 +643,8 @@ export class RegistrationsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
-    const userId = req.user?.id;
+    const userId = RequestHelper.getUserId(req);
 
-    if (typeof userId === 'undefined') {
-      throw new HttpException(
-        'User is not authenticated',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,

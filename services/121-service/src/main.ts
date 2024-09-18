@@ -166,10 +166,13 @@ async function bootstrap(): Promise<void> {
   server.setTimeout(10 * 60 * 1000);
 
   // Set up generic error handling:
-  process.on('unhandledRejection', (reason: string, promise: Promise<any>) => {
-    console.warn('Unhandled Rejection:', reason, promise);
-    throw reason;
-  });
+  process.on(
+    'unhandledRejection',
+    (reason: string, promise: Promise<unknown>) => {
+      console.warn('Unhandled Rejection:', reason, promise);
+      throw reason;
+    },
+  );
 
   process.on('uncaughtException', (error: Error) => {
     console.warn('Uncaught Exception:', error);

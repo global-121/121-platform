@@ -452,15 +452,22 @@ export class RegistrationsService {
 
   public transformRegistrationByNamingConvention(
     nameColumns: string[],
-    registrationObject: object,
-  ): object {
+    registrationObject: Record<string, any>, // Allow dynamic key access
+  ): Record<string, any> {
     const fullnameConcat: string[] = [];
+
+    // Loop through nameColumns and access properties dynamically
     for (const nameColumn of nameColumns) {
-      fullnameConcat.push(registrationObject[nameColumn]);
-      delete registrationObject[nameColumn];
+      if (registrationObject[nameColumn]) {
+        fullnameConcat.push(registrationObject[nameColumn]);
+        delete registrationObject[nameColumn]; // Remove original properties
+      }
     }
+
+    // Concatenate the full name and assign to the 'name' property
     registrationObject['name'] = fullnameConcat.join(' ');
-    return registrationObject;
+
+    return registrationObject; // Return the modified object
   }
 
   public getDateFieldPerStatus(

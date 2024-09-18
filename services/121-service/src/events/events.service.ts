@@ -13,11 +13,11 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -285,24 +285,11 @@ export class EventsService {
         continue;
       }
 
-      const oldValue =
-        typeof oldEntity[key] === 'string' || typeof oldEntity[key] === 'number'
-          ? oldEntity[key]
-          : oldEntity[key] && typeof oldEntity[key] === 'object'
-            ? (oldEntity[key] as LocalizedString)?.en ||
-              Object.values(oldEntity[key])[0]
-            : null;
-
-      const newValue =
-        typeof newEntity[key] === 'string' || typeof newEntity[key] === 'number'
-          ? newEntity[key]
-          : newEntity[key] && typeof newEntity[key] === 'object'
-            ? (newEntity[key] as LocalizedString)?.en ||
-              Object.values(newEntity[key])[0]
-            : null;
+      const oldValue = ValueExtractor.getValue(oldEntity[key]);
+      const newValue = ValueExtractor.getValue(newEntity[key]);
 
       const eventForChange = this.createEventForChange(
-        key, // The key is now typed correctly
+        key,
         oldValue,
         newValue,
         oldEntity.id,
@@ -367,7 +354,8 @@ export class EventsService {
     const mergedArray = Array.from(new Set([...array1, ...array2]));
 
     // List of irrelevant keys
-    const irrelevantKeys: (keyof LogEntity)[] = [
+    // TODO: Explain why 'name' property is exception.
+    const irrelevantKeys: (keyof LogEntity | 'name')[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
@@ -378,8 +366,8 @@ export class EventsService {
       'registrationProgramId',
       'personAffectedSequence',
       'lastMessageStatus',
+      'name',
       'inclusionScore',
-      // Add 'name' only if it's part of LogEntity; otherwise, remove it
     ];
 
     // Filter out irrelevant keys

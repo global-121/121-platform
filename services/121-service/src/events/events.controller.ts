@@ -27,6 +27,7 @@ import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-form
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -78,14 +79,7 @@ export class EventsController {
     };
     const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {
-      const userId = req.user?.id;
-
-      if (typeof userId === 'undefined') {
-        throw new HttpException(
-          'User is not authenticated',
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
+      const userId = RequestHelper.getUserId(req);
 
       const hasPermission = await this.userService.canActivate(
         [PermissionEnum.RegistrationPersonalEXPORT],

@@ -16,7 +16,9 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { CreateNoteDto } from '@121-service/src/notes/dto/note.dto';
 import { ResponseNoteDto } from '@121-service/src/notes/dto/response-note.dto';
 import { NoteService } from '@121-service/src/notes/notes.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs')
@@ -48,11 +50,12 @@ export class NoteController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/notes')
   public async createNote(
-    @Req() req,
+    @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     await this.noteService.createNote(
       createNote.referenceId,
       createNote.text,
