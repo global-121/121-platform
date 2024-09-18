@@ -179,22 +179,3 @@ export class ProjectApiService extends DomainApiService {
       queryKey: this.pathToQueryKey(path),
     });
   }
-
-  getRegistrationNotes({
-    projectId,
-    registrationReferenceId,
-  }: {
-    projectId: Signal<number>;
-    registrationReferenceId: Signal<string>;
-  }) {
-    return this.generateQueryOptions<unknown[]>({
-      path: [
-        BASE_ENDPOINT,
-        projectId,
-        'registrations',
-        registrationReferenceId,
-        'notes',
-      ],
-    });
-  }
-}
