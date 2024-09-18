@@ -1,4 +1,5 @@
 import { check, sleep } from 'k6';
+
 import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
