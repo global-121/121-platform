@@ -25,7 +25,7 @@ import { AuthService } from '~/services/auth.service';
     ProjectSummaryCardComponent,
     CreateProjectFormComponent,
   ],
-  templateUrl: './projects-overview.component.html',
+  templateUrl: './projects-overview.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

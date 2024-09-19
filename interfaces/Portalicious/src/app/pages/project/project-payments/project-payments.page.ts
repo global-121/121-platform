@@ -6,7 +6,7 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
   selector: 'app-project-payments',
   standalone: true,
   imports: [PageLayoutComponent],
-  templateUrl: './project-payments.component.html',
+  templateUrl: './project-payments.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

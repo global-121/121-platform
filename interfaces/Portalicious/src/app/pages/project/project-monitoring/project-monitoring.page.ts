@@ -42,7 +42,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     DataListComponent,
     SkeletonInlineComponent,
   ],
-  templateUrl: './project-monitoring.component.html',
+  templateUrl: './project-monitoring.page.html',
   styles: ``,
   providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,

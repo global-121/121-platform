@@ -42,7 +42,7 @@ import { ToastService } from '~/services/toast.service';
     ConfirmationDialogComponent,
   ],
   providers: [ToastService],
-  templateUrl: './project-team.component.html',
+  templateUrl: './project-team.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
