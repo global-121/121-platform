@@ -12,7 +12,6 @@ import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/f
 import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
@@ -53,9 +52,7 @@ export class SafaricomService
     throw new Error('Method should not be called anymore.');
   }
 
-  public async doTransfer(
-    transferData: DoTransferParams,
-  ): Promise<DoTransferReturnType> {
+  public async doTransfer(transferData: DoTransferParams): Promise<void> {
     // Store initial transfer record before transfer because of callback
     const safaricomTransfer = new SafaricomTransferEntity();
     safaricomTransfer.originatorConversationId =
@@ -73,13 +70,8 @@ export class SafaricomService
     // Update transfer record with conversation ID
     await this.safaricomTransferRepository.update(
       { id: safaricomTransfer.id },
-      { mpesaConversationId: transferResult.ConversationID },
+      { mpesaConversationId: transferResult?.data?.ConversationID },
     );
-
-    return {
-      originatorConversationId: transferResult.OriginatorConversationID,
-      conversationId: transferResult.ConversationID,
-    };
   }
 
   public async processTransferCallback(

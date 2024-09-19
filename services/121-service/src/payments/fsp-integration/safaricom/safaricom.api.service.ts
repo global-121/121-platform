@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { TokenSet } from 'openid-client';
 
-import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
+import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
+import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
+import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { SafaricomAuthResponseParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-auth-response.interface';
-import {
-  SafaricomTransferResponseBody,
-  SafaricomTransferResponseParams,
-} from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -36,7 +33,7 @@ export class SafaricomApiService {
     try {
       const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
 
-      const { data } = await this.httpService.get<SafaricomAuthResponseParams>(
+      const { data } = await this.httpService.get<AuthResponseSafaricomApiDto>(
         `${accessTokenUrl}`,
         headers,
       );
@@ -60,8 +57,8 @@ export class SafaricomApiService {
   }
 
   private async transfer(
-    payload: TransferParams,
-  ): Promise<SafaricomTransferResponseBody> {
+    payload: TransferRequestSafaricomApiDto,
+  ): Promise<TransferResponseSafaricomApiDto> {
     try {
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
@@ -73,14 +70,11 @@ export class SafaricomApiService {
         },
       ];
 
-      const { data } =
-        await this.httpService.post<SafaricomTransferResponseParams>(
-          `${paymentUrl}`,
-          payload,
-          headers,
-        );
-
-      return data;
+      return await this.httpService.post<TransferResponseSafaricomApiDto>(
+        `${paymentUrl}`,
+        payload,
+        headers,
+      );
     } catch (error) {
       console.log(error, 'transfer');
       console.error('Failed to make Safaricom B2C payment API call');
@@ -90,26 +84,29 @@ export class SafaricomApiService {
   }
 
   public async sendTransfer(
-    payload: TransferParams,
-  ): Promise<SafaricomTransferResponseBody> {
-    const result = await this.transfer(payload);
-    if (result && result?.ResponseCode !== '0') {
-      if (result?.errorCode) {
+    payload: TransferRequestSafaricomApiDto,
+  ): Promise<TransferResponseSafaricomApiDto> {
+    const transferResponse = await this.transfer(payload);
+
+    if (transferResponse && transferResponse.data?.ResponseCode !== '0') {
+      if (transferResponse.data?.errorCode) {
         throw new SafaricomApiError(
-          `${result.errorCode} - ${result.errorMessage}`,
+          `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`,
         );
       }
 
       throw new SafaricomApiError(
-        result?.ResponseDescription ||
-          `Error: ${(result as any)?.statusCode} ${(result as any)?.error}`,
+        transferResponse.data?.ResponseDescription ||
+          `Error: ${(transferResponse.data as any)?.statusCode} ${(transferResponse.data as any)?.error}`,
       );
     }
 
-    return result;
+    return transferResponse;
   }
 
-  public createTransferPayload(transferData: DoTransferParams): TransferParams {
+  public createTransferPayload(
+    transferData: DoTransferParams,
+  ): TransferRequestSafaricomApiDto {
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,

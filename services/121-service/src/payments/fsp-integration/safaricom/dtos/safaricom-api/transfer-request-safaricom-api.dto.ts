@@ -1,4 +1,4 @@
-export interface TransferParams {
+export interface TransferRequestSafaricomApiDto {
   readonly InitiatorName: string;
   readonly SecurityCredential: string;
   readonly CommandID: string;
@@ -10,5 +10,5 @@ export interface TransferParams {
   readonly ResultURL: string;
   readonly OriginatorConversationID: string;
   readonly IDType: string;
-  readonly IDNumber: string | undefined;
+  readonly IDNumber: string;
 }

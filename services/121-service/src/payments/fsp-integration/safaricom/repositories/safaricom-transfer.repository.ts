@@ -16,7 +16,7 @@ export class SafaricomTransferRepository extends Repository<SafaricomTransferEnt
     );
   }
 
-  public async getSafaricomTransferByOriginatorConversationId(
+  public async getByOriginatorConversationId(
     originatorConversationId: string,
   ): Promise<SafaricomTransferEntity> {
     const safaricomTransfer = await this.baseRepository.findOne({

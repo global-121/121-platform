@@ -3,11 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
-import { TransferParams } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-params.interface';
+import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferResponseBody } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
@@ -29,7 +28,7 @@ const mockedSafaricomTransferParams: DoTransferParams = {
   transactionId: 1,
 };
 
-const mockedSafaricomTransferPayloadParams: TransferParams = {
+const mockedSafaricomTransferPayloadParams: TransferRequestSafaricomApiDto = {
   InitiatorName: 'initiator_name',
   SecurityCredential: 'security_credential',
   CommandID: 'command_id',
@@ -125,10 +124,6 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should authenticate and send payment', async () => {
-      const result: DoTransferReturnType = {
-        originatorConversationId: 'mocked_originator_conversation_id',
-        conversationId: 'mocked_conversation_id',
-      };
       const sendTransferResult: SafaricomTransferResponseBody = {
         ConversationID: 'mocked_conversation_id',
         OriginatorConversationID: 'mocked_originator_conversation_id',
@@ -161,7 +156,7 @@ describe('SafaricomService', () => {
         mockedSafaricomTransferPayloadParams,
       );
       expect(safaricomTransferRepository.update).toHaveBeenCalled();
-      expect(transferResult).toEqual(result);
+      expect(transferResult).toEqual(undefined);
     });
 
     it('should handler unexpected error like 404', async () => {

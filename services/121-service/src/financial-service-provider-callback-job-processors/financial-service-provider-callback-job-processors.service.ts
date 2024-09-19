@@ -21,7 +21,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
   ): Promise<void> {
     // Find the actual safaricom transfer by originatorConversationId
     const safaricomTransfer =
-      await this.safaricomTransferRepository.getSafaricomTransferByOriginatorConversationId(
+      await this.safaricomTransferRepository.getByOriginatorConversationId(
         safaricomTransferCallbackJob.originatorConversationId,
       );
 
@@ -58,7 +58,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
   ): Promise<void> {
     // Find the actual safaricom transfer by originatorConversationId
     const safaricomTransfer =
-      await this.safaricomTransferRepository.getSafaricomTransferByOriginatorConversationId(
+      await this.safaricomTransferRepository.getByOriginatorConversationId(
         safaricomTransferTimeoutCallbackJob.originatorConversationId,
       );
 
