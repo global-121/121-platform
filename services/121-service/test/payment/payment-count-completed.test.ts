@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -85,7 +86,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       const timeout = 80_000; // Timeout in milliseconds
       const interval = 1_000; // Interval between retries in milliseconds
       let elapsedTime = 0;
-      let getRegistration: any | null = null;
+      let getRegistration: MappedPaginatedRegistrationDto | null = null;
       while (
         (!getRegistration || getRegistration.paymentCount !== 1) &&
         elapsedTime < timeout
@@ -107,9 +108,9 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 
-      expect(getRegistration.status).toBe(RegistrationStatusEnum.completed);
-      expect(getRegistration.paymentCountRemaining).toBe(0);
-      expect(getRegistration.paymentCount).toBe(1);
+      expect(getRegistration!.status).toBe(RegistrationStatusEnum.completed);
+      expect(getRegistration!.paymentCountRemaining).toBe(0);
+      expect(getRegistration!.paymentCount).toBe(1);
     });
   });
 });

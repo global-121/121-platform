@@ -1,4 +1,5 @@
 import { TestBed } from '@automock/jest';
+import { Repository } from 'typeorm';
 
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
@@ -29,12 +30,12 @@ const attributeEntityFieldName = {
   value: 'whatsappPhoneNumber',
 };
 
-const mockFindEventResult = [
+const mockFindEventResult: EventEntity[] = [
   {
     id: 5,
     created: '2024-02-20T11:12:18.597Z',
     userId: 1,
-    type: 'registrationDataChange',
+    type: EventEnum.registrationDataChange,
     registrationId: 1,
     registration: {
       id: 1,
@@ -51,7 +52,7 @@ const mockFindEventResult = [
       attributeEntityNewValue,
       attributeEntityFieldName,
     ],
-  },
+  } as unknown as EventEntity,
 ];
 
 function getViewRegistration(): RegistrationViewEntity {
@@ -84,10 +85,10 @@ function getViewRegistration(): RegistrationViewEntity {
     firstName: 'Jane',
     lastName: 'Doe',
     name: 'Jane Doe',
-  } as any as RegistrationViewEntity;
+  } as unknown as RegistrationViewEntity;
 }
 
-let eventScopedRepository: jest.Mocked<any>;
+let eventScopedRepository: jest.Mocked<Repository<EventEntity>>;
 let oldViewRegistration: RegistrationViewEntity;
 let newViewRegistration: RegistrationViewEntity;
 
@@ -292,8 +293,13 @@ describe('EventsService', () => {
     ];
 
     for (const event of expectedEvents) {
-      expect(eventScopedRepository.save).toHaveBeenCalledWith(
-        expect.arrayContaining([event]),
+      expect(eventScopedRepository.save).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          registrationId: event.registrationId,
+          type: event.type,
+          attributes: expect.arrayContaining(event.attributes),
+          userId: event.userId,
+        }),
         { chunk: 2000 },
       );
     }

@@ -52,7 +52,7 @@ export function deleteRegistrations(
   accessToken: string,
   filter: Record<string, string> = {},
 ): Promise<request.Response> {
-  const queryParams = {};
+  const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
@@ -119,7 +119,7 @@ export function getRegistrations({
   filter?: Record<string, string>;
   sort?: { field: string; direction: 'ASC' | 'DESC' };
 }): Promise<request.Response> {
-  const queryParams = {};
+  const queryParams: Record<string, string> = {};
 
   if (attributes) {
     queryParams['select'] = attributes.join(',');
@@ -154,7 +154,7 @@ export async function awaitChangePaStatus(
   filter: Record<string, string> = {},
   includeTemplatedMessage = false,
 ): Promise<request.Response> {
-  const queryParams = {};
+  const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
@@ -222,7 +222,8 @@ export function sendMessage(
   messageTemplateKey?: string,
   additionalQueryParam?: Record<string, string>,
 ): Promise<request.Response> {
-  const queryParams = {};
+  const queryParams: Record<string, string> = {};
+
   if (additionalQueryParam) {
     for (const [key, value] of Object.entries(additionalQueryParam)) {
       queryParams[key] = value;
@@ -402,7 +403,7 @@ export async function getEvents(
 ): Promise<any> {
   const accessToken = await getAccessToken();
 
-  const queryParams = {};
+  const queryParams: Record<string, string> = {};
 
   if (fromDate) {
     queryParams['fromDate'] = fromDate;

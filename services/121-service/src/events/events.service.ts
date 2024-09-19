@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
-import { Between } from 'typeorm';
+import { Between, FindOptionsWhere } from 'typeorm';
 
 import { EventLogOptionsDto } from '@121-service/src/events/dto/event-log-options.dto';
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
@@ -13,6 +13,7 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -69,24 +70,34 @@ export class EventsService {
   private createWhereClause(
     programId: number,
     searchOptions: EventSearchOptionsDto,
-  ): object {
+  ): FindOptionsWhere<EventEntity> {
     const { registrationId, queryParams } = searchOptions;
-    const whereStatement = {
+
+    const whereStatement: FindOptionsWhere<EventEntity> & {
+      registration: {
+        programId: number;
+        id?: number;
+        referenceId?: string;
+      };
+    } = {
       registration: {
         programId,
       },
     };
+
     if (registrationId) {
-      whereStatement['registration']['id'] = registrationId;
+      whereStatement.registration.id = registrationId;
     }
     if (queryParams) {
       if (queryParams['referenceId']) {
-        whereStatement['registration']['referenceId'] =
-          queryParams['referenceId'];
+        whereStatement.registration.referenceId = queryParams['referenceId'];
       }
-      whereStatement['created'] = Between(
-        queryParams['fromDate'] || new Date(2000, 1, 1),
-        queryParams['toDate'] || new Date(),
+
+      whereStatement.created = Between(
+        queryParams['fromDate']
+          ? new Date(queryParams['fromDate'])
+          : new Date(2000, 1, 1),
+        queryParams['toDate'] ? new Date(queryParams['toDate']) : new Date(),
       );
     }
     return whereStatement;
@@ -201,8 +212,13 @@ export class EventsService {
   }
 
   private isCompleteRegistrationViewEntity(
-    obj: any,
+    obj: unknown,
   ): obj is RegistrationViewEntity {
+    // Ensure obj is a non-null object
+    if (typeof obj !== 'object' || obj === null) {
+      return false;
+    }
+
     // Banal check if the object is a RegistrationViewEntity
     // This is to prevent that log is called with an object that is not a RegistrationViewEntity
     // While registrationAttributes is empty
@@ -254,25 +270,28 @@ export class EventsService {
     // Filter out the keys that are not in the registeredAttributes
     if (registeredAttributes) {
       fieldNames = fieldNames.filter((key) =>
-        registeredAttributes.includes(key),
+        registeredAttributes.includes(key as string),
       );
     }
 
     const events: EventEntity[] = [];
-    for (const fieldName of fieldNames) {
+    for (const key of fieldNames) {
       if (
-        oldEntity[fieldName] === newEntity[fieldName] ||
-        (isObject(oldEntity[fieldName]) &&
-          isObject(newEntity[fieldName]) &&
-          isMatch(oldEntity[fieldName], newEntity[fieldName]))
+        oldEntity[key] === newEntity[key] ||
+        (isObject(oldEntity[key]) &&
+          isObject(newEntity[key]) &&
+          isMatch(oldEntity[key], newEntity[key]))
       ) {
         continue;
       }
 
+      const oldValue = ValueExtractor.getValue(oldEntity[key]);
+      const newValue = ValueExtractor.getValue(newEntity[key]);
+
       const eventForChange = this.createEventForChange(
-        fieldName,
-        oldEntity[fieldName],
-        newEntity[fieldName],
+        key,
+        oldValue,
+        newValue,
         oldEntity.id,
       );
       eventForChange.userId = userId ?? null;
@@ -286,13 +305,14 @@ export class EventsService {
     fieldName: string,
     oldValue: EventAttributeEntity['value'],
     newValue: EventAttributeEntity['value'],
-    registrationdId: number,
+    registrationId: number,
   ): EventEntity {
     const event = new EventEntity();
     event.type = this.getEventType(fieldName);
-    event.registrationId = registrationdId;
+    event.registrationId = registrationId;
 
-    const attributesData = {
+    // Explicitly declare attributesData as Record<string, unknown> to allow dynamic keys
+    const attributesData: Record<string, unknown> = {
       [EventAttributeKeyEnum.oldValue]: oldValue,
       [EventAttributeKeyEnum.newValue]: newValue,
     };
@@ -326,13 +346,16 @@ export class EventsService {
   private getRelevantRegistrationViewKeys(
     oldEntity: LogEntity,
     newEntity: LogEntity,
-  ): string[] {
-    const array1 = Object.keys(newEntity);
-    const array2 = Object.keys(oldEntity);
-    const mergedArray = [
-      ...new Set([...array1, ...array2]),
-    ] as (keyof RegistrationViewEntity)[];
-    const irrelevantKeys: (keyof RegistrationViewEntity | 'name')[] = [
+  ): (keyof LogEntity)[] {
+    const array1 = Object.keys(newEntity) as (keyof LogEntity)[];
+    const array2 = Object.keys(oldEntity) as (keyof LogEntity)[];
+
+    // Merge and remove duplicates by creating a Set and converting it back to an array
+    const mergedArray = Array.from(new Set([...array1, ...array2]));
+
+    // List of irrelevant keys
+    // TODO: Explain why 'name' property is exception.
+    const irrelevantKeys: (keyof LogEntity | 'name')[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
@@ -346,6 +369,8 @@ export class EventsService {
       'name',
       'inclusionScore',
     ];
+
+    // Filter out irrelevant keys
     return mergedArray.filter((key) => !irrelevantKeys.includes(key));
   }
 

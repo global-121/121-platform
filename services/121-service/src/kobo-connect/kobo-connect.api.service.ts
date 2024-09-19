@@ -2,6 +2,21 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+interface KoboApiResponse<T = unknown> {
+  data?: T | { detail: string };
+  status: number;
+  statusText: string;
+  detail?: string;
+}
+
+function isErrorResponse(data: unknown): data is { detail: string } {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'detail' in data &&
+    typeof (data as { detail?: unknown }).detail === 'string'
+  );
+}
 
 @Injectable()
 export class KoboConnectApiService {
@@ -19,10 +34,9 @@ export class KoboConnectApiService {
   public async create121Program(
     koboToken: string,
     koboAssetId: string,
-  ): Promise<CreateProgramDto | any> {
-    // See: https://kobo-connect.azurewebsites.net/docs#/default/create_121_program_from_kobo_121_program_get
+  ): Promise<CreateProgramDto | Partial<KoboApiResponse>> {
     return await this.httpService
-      .get(`${this.apiUrl}/121-program`, [
+      .get<KoboApiResponse<CreateProgramDto>>(`${this.apiUrl}/121-program`, [
         {
           name: 'kobotoken',
           value: koboToken,
@@ -32,19 +46,19 @@ export class KoboConnectApiService {
           value: koboAssetId,
         },
       ])
-      .then((response: any) => {
+      .then((response) => {
         if (
           response &&
           response.status === HttpStatus.OK &&
           response.data &&
-          !response.data.detail
+          !isErrorResponse(response.data)
         ) {
           return response.data;
         }
 
-        const errors: unknown[] = [];
+        const errors: string[] = [];
 
-        if (response && response.data && response.data.detail) {
+        if (response && response.data && isErrorResponse(response.data)) {
           errors.push(response.data.detail);
         } else {
           errors.push(response.statusText);

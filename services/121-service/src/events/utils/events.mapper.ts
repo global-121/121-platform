@@ -41,10 +41,12 @@ export class EventsMapper {
 
   private static createAttributesObject(
     attributes: EventAttributeEntity[],
-  ): Record<string, any> {
+  ): Record<string, EventAttributeEntity['value']> {
     const attributesObject: Record<string, EventAttributeEntity['value']> = {};
     for (const attribute of attributes) {
-      attributesObject[attribute.key] = attribute.value;
+      if (attribute.value !== null) {
+        attributesObject[attribute.key] = attribute.value;
+      }
     }
     return attributesObject;
   }

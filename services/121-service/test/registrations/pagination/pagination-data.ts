@@ -1,11 +1,14 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+interface RegistrationWithFspName extends RegistrationEntity {
+  fspName?: string;
+}
 
 export function createExpectedValueObject(
-  registration: Partial<RegistrationEntity> | any,
+  registration: Partial<RegistrationWithFspName>,
   sequenceNumber: number,
-): RegistrationEntity {
+): Partial<RegistrationEntity> {
   const expectedValueObject = {
     ...registration,
     financialServiceProvider: registration.fspName,

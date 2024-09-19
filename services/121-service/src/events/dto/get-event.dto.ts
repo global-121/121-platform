@@ -4,7 +4,7 @@ import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 class AttributesDto {
-  [key: string]: string;
+  [key: string]: string | null;
 }
 
 export class GetEventDto {

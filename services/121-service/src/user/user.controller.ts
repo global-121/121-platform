@@ -29,6 +29,7 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import {
   CreateProgramAssignmentDto,
   DeleteProgramAssignmentDto,
@@ -55,6 +56,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRO } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -74,8 +76,11 @@ export class UserController {
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(@Req() req): Promise<UserRoleResponseDTO[]> {
-    const userId = req.user.id;
+  public async getUserRoles(
+    @Req() req: ScopedUserRequest,
+  ): Promise<UserRoleResponseDTO[]> {
+    const userId = RequestHelper.getUserId(req);
+
     return await this.userService.getUserRoles(userId);
   }
 

@@ -19,7 +19,7 @@ export enum FinancialServiceProviderConfigurationEnum {
 }
 
 export const FinancialServiceProviderConfigurationMapping: {
-  [key in FinancialServiceProviderName]?: any;
+  [key in FinancialServiceProviderName]?: FinancialServiceProviderConfigurationEnum[];
 } = {
   [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
     FinancialServiceProviderConfigurationEnum.password,

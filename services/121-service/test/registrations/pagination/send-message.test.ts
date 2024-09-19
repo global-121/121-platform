@@ -1,3 +1,4 @@
+import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
@@ -56,7 +57,7 @@ describe('send arbitrary messages to set of registrations', () => {
       minimumNumberOfMessages: 2,
     });
 
-    const messageHistories: any[] = [];
+    const messageHistories: MessageHistoryDto[][] = [];
     for (const referenceId of referenceIds) {
       const response = await getMessageHistory(
         programIdOCW,
