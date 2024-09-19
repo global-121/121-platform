@@ -43,6 +43,12 @@ export class SafaricomController {
     @Body()
     safaricomTransferTimeoutCallback: SafaricomTransferTimeoutCallbackDto,
   ): Promise<any> {
+    // Added a logging here just to monitor safaricom callback for payout timeout notification
+    console.log(
+      'safaricomTransferTimeoutCallback: ',
+      JSON.stringify(safaricomTransferTimeoutCallback, null, 2),
+    );
+
     await this.safaricomService.processTransferTimeoutCallback(
       safaricomTransferTimeoutCallback,
     );
