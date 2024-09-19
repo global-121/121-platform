@@ -709,7 +709,7 @@ export class RegistrationsController {
   @Get('programs/:programId/registrations/referenceid/:paId')
   public async getReferenceId(
     @Param() params: { programId: number; paId: number },
-  ): Promise<any> {
+  ): Promise<RegistrationEntity | null> {
     if (isNaN(params.paId)) {
       throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
     }

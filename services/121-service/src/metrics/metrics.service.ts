@@ -521,13 +521,13 @@ export class MetricsService {
   }
 
   private async replaceValueWithDropdownLabel(
-    rows: Record<string, unknown>[], // Typing rows as an array of objects with string keys
+    rows: Record<string, unknown>[],
     relationOptions: RegistrationDataOptions[],
   ): Promise<void> {
     // Creates mapping list of questions with a dropdown
     const valueOptionMappings: {
       questionName: string;
-      options?: { option: string; label: Record<string, string> }[]; // Added options typing
+      options?: { option: string; label: Record<string, string> }[];
     }[] = [];
 
     for (const option of relationOptions) {
@@ -583,16 +583,15 @@ export class MetricsService {
     columnDetails: Record<string, unknown>[],
   ): Record<string, unknown>[] {
     return columnDetails.map((row) => {
-      const filteredRow: Record<string, unknown> = {}; // Define filteredRow explicitly
+      const filteredRow: Record<string, unknown> = {};
 
       for (const key in row) {
         if (row[key] != null) {
-          // Check if the value is not null
           filteredRow[key] = row[key];
         }
       }
 
-      return filteredRow; // Return the filtered row
+      return filteredRow;
     });
   }
 
@@ -821,7 +820,7 @@ export class MetricsService {
             ? relationOptionsPerFsp[fspId]
             : relationOptionNoFsp,
           registrationIds.map((r) => r.registrationProgramId),
-        )) as RegistrationType[]; // Use type assertion here if necessary
+        )) as RegistrationType[];
 
       allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
     }
@@ -834,18 +833,18 @@ export class MetricsService {
       registration =
         this.registrationsService.transformRegistrationByNamingConvention(
           JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
-          registration as RegistrationType, // Cast the input to RegistrationType
-        ) as RegistrationType; // Ensure the return type is RegistrationType
+          registration as RegistrationType,
+        ) as RegistrationType;
 
       // If a mapping exists, get the display name for the preferred language else use the FSP name
       const fspDisplayNameForRegistrationFsp =
         fspDisplayNameMapping[
-          registration['fsp'] as keyof typeof fspDisplayNameMapping // Cast to keyof typeof fspDisplayNameMapping
+          registration['fsp'] as keyof typeof fspDisplayNameMapping
         ];
 
       registration['fsp'] = fspDisplayNameForRegistrationFsp
         ? fspDisplayNameForRegistrationFsp[preferredLanguage]
-        : (registration['fsp'] as string); // Cast registration['fsp'] to string
+        : (registration['fsp'] as string);
 
       return {
         ...registration,
@@ -864,7 +863,6 @@ export class MetricsService {
     program: ProgramEntity,
     fspQuestions: FspQuestionEntity[],
   ): Record<number, RegistrationDataOptions[]> {
-    // Explicitly type relationOptionsPerFsp as a Record with number keys
     const relationOptionsPerFsp: Record<number, RegistrationDataOptions[]> = {};
 
     // Filter relation options for specific FSP
@@ -993,7 +991,7 @@ export class MetricsService {
     const result: object[] = [];
 
     for (const row of rows) {
-      const resultRow: Record<string, unknown> = {}; // Define resultRow as Record<string, any>
+      const resultRow: Record<string, unknown> = {};
 
       for (const [key, value] of Object.entries(row)) {
         if (generatedUniqueIds.includes(key)) {

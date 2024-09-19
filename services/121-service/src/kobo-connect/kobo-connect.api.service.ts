@@ -34,8 +34,7 @@ export class KoboConnectApiService {
   public async create121Program(
     koboToken: string,
     koboAssetId: string,
-  ): Promise<CreateProgramDto | unknown> {
-    // Specify the response type with KoboApiResponse<CreateProgramDto>
+  ): Promise<CreateProgramDto | Partial<KoboApiResponse>> {
     return await this.httpService
       .get<KoboApiResponse<CreateProgramDto>>(`${this.apiUrl}/121-program`, [
         {
@@ -54,7 +53,7 @@ export class KoboConnectApiService {
           response.data &&
           !isErrorResponse(response.data)
         ) {
-          return response.data as CreateProgramDto;
+          return response.data;
         }
 
         const errors: string[] = [];
