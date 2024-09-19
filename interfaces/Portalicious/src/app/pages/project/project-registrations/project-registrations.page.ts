@@ -16,11 +16,11 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
   selector: 'app-project-registrations',
   standalone: true,
   imports: [PageLayoutComponent, RouterLink],
-  templateUrl: './project-registrations.component.html',
+  templateUrl: './project-registrations.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectRegistrationsComponent {
+export class ProjectRegistrationsPageComponent {
   // this is injected by the router
   projectId = input.required<number>();
 

@@ -25,11 +25,11 @@ import { AuthService } from '~/services/auth.service';
     ProjectSummaryCardComponent,
     CreateProjectFormComponent,
   ],
-  templateUrl: './projects-overview.component.html',
+  templateUrl: './projects-overview.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectsOverviewComponent {
+export class ProjectsOverviewPageComponent {
   private authService = inject(AuthService);
 
   public canCreateProjects = this.authService.isAdmin;
