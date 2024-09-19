@@ -1,6 +1,6 @@
 import { ContactInfo } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/contact-info';
 
-export interface CreateCustomerRequestDto {
+export interface CreateCustomerRequestIntersolveApiDto {
   readonly externalReference: string;
   readonly individual: {
     readonly firstName?: string;

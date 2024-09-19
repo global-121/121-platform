@@ -2,22 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { v4 as uuid, v5 as uuidv5 } from 'uuid';
 
-import { CreateCustomerRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-request.dto';
-import { CreateCustomerResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-response.dto';
-import { CreatePhysicalCardRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-physical-card-request.dto';
-import { GetPhysicalCardResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-physical-card-response.dto';
-import { GetTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-token-response.dto';
-import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request.dto';
-import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response.dto';
+import { CreateCustomerRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-request-intersolve-api.dto';
+import { CreateCustomerResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-response-intersolve-api.dto';
+import { CreatePhysicalCardRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-physical-card-request-intersolve-api.dto';
+import { GetPhysicalCardResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-physical-card-response-intersolve-api.dto';
+import { GetTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-token-response-intersolve-api.dto';
+import { GetTransactionsResponseIntersolveVisaDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-transactions-response-intersolve-api.dto';
+import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
+import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
 import { BaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse.dto';
 import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
-import { SubstituteTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request.dto';
-import { TransferRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-request.dto';
-import { TransferResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-response.dto';
-import {
-  GetTransactionsResponseDto,
-  IntersolveGetTransactionsResponseDataDto,
-} from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-get-wallet-transactions.dto';
+import { SubstituteTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request-intersolve-api.dto';
+import { TransactionsIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transactions-intersolve-api.dto';
+import { TransferRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-request-intersolve-api.dto';
+import { TransferResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-response-intersolve-api.dto';
 import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { CreateCustomerReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-customer-return-type.interface';
@@ -104,7 +102,7 @@ export class IntersolveVisaApiService {
     estimatedAnnualPaymentVolumeMajorUnit: number;
   }): Promise<CreateCustomerReturnType> {
     // Create the request body to send
-    const createCustomerRequestDto: CreateCustomerRequestDto = {
+    const createCustomerRequestDto: CreateCustomerRequestIntersolveApiDto = {
       externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
       individual: {
         firstName: '', // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name, so just give an empty string
@@ -132,7 +130,7 @@ export class IntersolveVisaApiService {
 
     // Send the request
     const createCustomerResponseDto =
-      await this.intersolveApiRequest<CreateCustomerResponseDto>({
+      await this.intersolveApiRequest<CreateCustomerResponseIntersolveApiDto>({
         errorPrefix: IntersolveVisa121ErrorText.createCustomerError,
         method: 'POST',
         payload: createCustomerRequestDto,
@@ -158,13 +156,13 @@ export class IntersolveVisaApiService {
     reference?: string;
   }): Promise<IssueTokenReturnType> {
     // Create the request body to send
-    const issueTokenRequestDto: IssueTokenRequestDto = {
+    const issueTokenRequestDto: IssueTokenRequestIntersolveApiDto = {
       reference: reference ?? uuid(), // A UUID reference which can be used for "technical cancellation in case of time-out", which in accordance with Intersolve we do not implement.
       activate,
     };
     // Send the request: https://service-integration.intersolve.nl/pointofsale/swagger/index.html
     const issueTokenResponseDto =
-      await this.intersolveApiRequest<IssueTokenResponseDto>({
+      await this.intersolveApiRequest<IssueTokenResponseIntersolveApiDto>({
         errorPrefix: IntersolveVisa121ErrorText.issueTokenError,
         method: 'POST',
         payload: issueTokenRequestDto,
@@ -186,7 +184,7 @@ export class IntersolveVisaApiService {
   public async getToken(tokenCode: string): Promise<GetTokenReturnType> {
     // Send the request
     const getTokenResponseDto =
-      await this.intersolveApiRequest<GetTokenResponseDto>({
+      await this.intersolveApiRequest<GetTokenResponseIntersolveApiDto>({
         errorPrefix: IntersolveVisa121ErrorText.getTokenError,
         method: 'GET',
         apiPath: 'pointofsale',
@@ -226,7 +224,7 @@ export class IntersolveVisaApiService {
   ): Promise<GetPhysicalCardReturnType> {
     // Send the request
     const getPhysicalCardResponseDto =
-      await this.intersolveApiRequest<GetPhysicalCardResponseDto>({
+      await this.intersolveApiRequest<GetPhysicalCardResponseIntersolveApiDto>({
         errorPrefix: IntersolveVisa121ErrorText.getPhysicalCardError,
         method: 'GET',
         apiPath: 'payment-instrument-payment',
@@ -251,9 +249,8 @@ export class IntersolveVisaApiService {
 
     // Seperate out the reservation and expired reservation transactions.
     const transactions = getTransactionsResponseDto.data.data;
-    let reservationTransactions: IntersolveGetTransactionsResponseDataDto[] =
-      [];
-    let expiredTransactions: IntersolveGetTransactionsResponseDataDto[] = [];
+    let reservationTransactions: TransactionsIntersolveApiDto[] = [];
+    let expiredTransactions: TransactionsIntersolveApiDto[] = [];
     if (transactions && transactions.length > 0) {
       reservationTransactions = transactions.filter(
         (t) => t.type === 'RESERVATION',
@@ -289,23 +286,25 @@ export class IntersolveVisaApiService {
   }: {
     tokenCode: string;
     fromDate?: Date;
-  }): Promise<GetTransactionsResponseDto> {
+  }): Promise<GetTransactionsResponseIntersolveVisaDto> {
     // Send the request
     const getTransactionsResponseDto =
-      await this.intersolveApiRequest<GetTransactionsResponseDto>({
-        errorPrefix: IntersolveVisa121ErrorText.getTransactionError,
-        method: 'GET',
-        apiPath: 'wallet',
-        endpoint: `tokens/${tokenCode}/transactions${
-          fromDate ? `?dateFrom=${fromDate.toISOString()}` : ''
-        }`,
-      });
+      await this.intersolveApiRequest<GetTransactionsResponseIntersolveVisaDto>(
+        {
+          errorPrefix: IntersolveVisa121ErrorText.getTransactionError,
+          method: 'GET',
+          apiPath: 'wallet',
+          endpoint: `tokens/${tokenCode}/transactions${
+            fromDate ? `?dateFrom=${fromDate.toISOString()}` : ''
+          }`,
+        },
+      );
 
     return getTransactionsResponseDto;
   }
 
   private getLastTransactionDate(
-    walletTransactions: IntersolveGetTransactionsResponseDataDto[],
+    walletTransactions: TransactionsIntersolveApiDto[],
   ): null | Date {
     if (walletTransactions && walletTransactions.length > 0) {
       const sortedByDate = walletTransactions.sort((a, b) =>
@@ -323,8 +322,8 @@ export class IntersolveVisaApiService {
     walletTransactions,
     expiredReserveTransactions,
   }: {
-    walletTransactions: IntersolveGetTransactionsResponseDataDto[];
-    expiredReserveTransactions: IntersolveGetTransactionsResponseDataDto[];
+    walletTransactions: TransactionsIntersolveApiDto[];
+    expiredReserveTransactions: TransactionsIntersolveApiDto[];
   }): number {
     const now = new Date();
     const thisMonth = now.getMonth();
@@ -405,7 +404,7 @@ export class IntersolveVisaApiService {
     coverLetterCode: string;
   }): Promise<void> {
     // Create the request body to send
-    const request: CreatePhysicalCardRequestDto = {
+    const request: CreatePhysicalCardRequestIntersolveApiDto = {
       brand: 'VISA_CARD',
       firstName: '',
       lastName: name,
@@ -450,7 +449,7 @@ export class IntersolveVisaApiService {
     const uuid = generateUUIDFromSeed(reference);
     const amountInCent = amountInMajorUnit * 100;
 
-    const transferRequestDto: TransferRequestDto = {
+    const transferRequestDto: TransferRequestIntersolveApiDto = {
       quantity: {
         value: amountInCent,
         assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
@@ -463,7 +462,7 @@ export class IntersolveVisaApiService {
     };
 
     // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
-    await this.intersolveApiRequest<TransferResponseDto>({
+    await this.intersolveApiRequest<TransferResponseIntersolveApiDto>({
       errorPrefix: IntersolveVisa121ErrorText.transferError,
       method: 'POST',
       payload: transferRequestDto,
@@ -481,12 +480,12 @@ export class IntersolveVisaApiService {
   }): Promise<void> {
     // Create the request body to send
 
-    const substituteTokenRequestDto: SubstituteTokenRequestDto = {
+    const substituteTokenRequestDto: SubstituteTokenRequestIntersolveApiDto = {
       tokenCode: newTokenCode,
     };
 
     // Send the request: https://service-integration.intersolve.nl/wallet/swagger/index.html
-    await this.intersolveApiRequest<TransferResponseDto>({
+    await this.intersolveApiRequest<TransferResponseIntersolveApiDto>({
       errorPrefix: IntersolveVisa121ErrorText.substituteTokenError,
       method: 'POST',
       payload: substituteTokenRequestDto,

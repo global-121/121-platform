@@ -1,7 +1,7 @@
 import { ContactInfo } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/contact-info';
 import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
 
-export interface CreateCustomerResponseDto {
+export interface CreateCustomerResponseIntersolveApiDto {
   readonly data: {
     readonly success: boolean;
     readonly errors: ErrorsInResponse[];

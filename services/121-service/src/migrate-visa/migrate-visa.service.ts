@@ -7,8 +7,8 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { IssueTokenRequestDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request.dto';
-import { IssueTokenResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response.dto';
+import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
+import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
 import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
@@ -462,9 +462,9 @@ export class MigrateVisaService {
   }
 
   public async postCreateActiveWallet(
-    payload: IssueTokenRequestDto,
+    payload: IssueTokenRequestIntersolveApiDto,
     brandCode: string,
-  ): Promise<IssueTokenResponseDto> {
+  ): Promise<IssueTokenResponseIntersolveApiDto> {
     const authToken = await this.getAuthenticationToken();
 
     const apiPath = process.env.INTERSOLVE_VISA_PROD
@@ -475,7 +475,7 @@ export class MigrateVisaService {
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
-    return await this.httpService.post<IssueTokenResponseDto>(
+    return await this.httpService.post<IssueTokenResponseIntersolveApiDto>(
       url,
       payload,
       headers,

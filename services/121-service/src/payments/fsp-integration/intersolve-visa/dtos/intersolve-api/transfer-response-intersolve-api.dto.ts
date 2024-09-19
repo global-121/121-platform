@@ -1,6 +1,6 @@
 import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
 
-export interface TransferResponseDto {
+export interface TransferResponseIntersolveApiDto {
   readonly status: number;
   readonly statusText?: string;
   readonly data: {
