@@ -235,9 +235,8 @@ export class ProgramsServiceApiService {
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/notes`,
+      `/programs/${programId}/registrations/${referenceId}/note`,
       {
-        referenceId,
         text: note,
       },
     );
@@ -246,7 +245,7 @@ export class ProgramsServiceApiService {
   getNotes(programId: number, referenceId: string): Promise<Note[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/notes/${referenceId}`,
+      `/programs/${programId}/registrations/${referenceId}/notes`,
       null,
       false,
     );
