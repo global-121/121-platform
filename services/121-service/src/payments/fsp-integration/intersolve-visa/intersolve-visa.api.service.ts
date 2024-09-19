@@ -10,8 +10,8 @@ import { GetTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-
 import { GetTransactionsResponseIntersolveVisaDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-transactions-response-intersolve-api.dto';
 import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
 import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
-import { BaseResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse.dto';
-import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
+import { BaseResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse-intersolve-api.dto';
+import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response-intersolve-api';
 import { SubstituteTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request-intersolve-api.dto';
 import { TransactionsIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transactions-intersolve-api.dto';
 import { TransferRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transfer-request-intersolve-api.dto';
@@ -575,7 +575,7 @@ export class IntersolveVisaApiService {
 
   // Helper function to convert errors in an Intersolve API Response into a message string.
   private convertResponseErrorsToMessage(
-    errorsInResponseDto: ErrorsInResponse[] | undefined,
+    errorsInResponseDto: ErrorsInResponseIntersolveApi[] | undefined,
   ): string | undefined {
     if (
       !errorsInResponseDto ||
@@ -597,7 +597,7 @@ export class IntersolveVisaApiService {
   }
 
   private async intersolveApiRequest<
-    ResponseDtoType extends BaseResponseDto | void,
+    ResponseDtoType extends BaseResponseIntersolveApiDto | void,
   >({
     errorPrefix,
     method,
@@ -655,7 +655,7 @@ export class IntersolveVisaApiService {
   }
 
   private createErrorMessageIfRequestFailed<
-    ResponseDtoType extends BaseResponseDto | void,
+    ResponseDtoType extends BaseResponseIntersolveApiDto | void,
   >(response: ResponseDtoType): string | undefined {
     if (!response) {
       return 'Intersolve URL could not be reached.';

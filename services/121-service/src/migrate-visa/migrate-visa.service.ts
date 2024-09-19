@@ -9,7 +9,7 @@ import {
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
 import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
-import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
+import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response-intersolve-api';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
@@ -490,7 +490,7 @@ export class MigrateVisaService {
   ): Promise<{
     data: {
       success?: boolean;
-      errors?: ErrorsInResponse[];
+      errors?: ErrorsInResponseIntersolveApi[];
       code?: string;
       correlationId?: string;
     };
@@ -523,7 +523,7 @@ export class MigrateVisaService {
   ): Promise<{
     data: {
       success?: boolean;
-      errors?: ErrorsInResponse[];
+      errors?: ErrorsInResponseIntersolveApi[];
       code?: string;
       correlationId?: string;
     };
@@ -556,7 +556,7 @@ export class MigrateVisaService {
   ): Promise<{
     data: {
       success?: boolean;
-      errors?: ErrorsInResponse[];
+      errors?: ErrorsInResponseIntersolveApi[];
       code?: string;
       correlationId?: string;
     };

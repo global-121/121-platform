@@ -1,4 +1,4 @@
-import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
+import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response-intersolve-api';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 
 export interface GetPhysicalCardResponseIntersolveApiDto {
@@ -10,7 +10,7 @@ export interface GetPhysicalCardResponseIntersolveApiDto {
       readonly status: IntersolveVisaCardStatus;
     };
     readonly success: boolean;
-    readonly errors?: ErrorsInResponse[];
+    readonly errors?: ErrorsInResponseIntersolveApi[];
     readonly code?: string;
     readonly correlationId: string;
   };
