@@ -1,11 +1,3 @@
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
-import { NameConstraintQuestions } from '@121-service/src/shared/const';
-import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { ApiProperty } from '@nestjs/swagger';
 import {
   BeforeRemove,
   Check,
@@ -18,19 +10,27 @@ import {
   Unique,
 } from 'typeorm';
 
+import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { NameConstraintQuestions } from '@121-service/src/shared/const';
+import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+
 @Unique('programAttributeUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
 @Entity('program_registration_attribute')
 export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
   @Column()
-  @ApiProperty({ example: 'question1' })
   public name: string;
 
   @Column('json')
   public label: LocalizedString;
 
-  @Column()
-  public type: string;
+  @Column({ type: 'character varying' })
+  public type: RegistrationAttributeTypes;
 
   @Column()
   public isRequired: boolean;
@@ -44,7 +44,10 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
   @Column('json', { default: {} })
   public scoring: Record<string, unknown>;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.programQuestions)
+  @ManyToOne(
+    (_type) => ProgramEntity,
+    (program) => program.programRegistrationAttributes,
+  )
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
   @Column()
@@ -65,10 +68,10 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
   public showInPeopleAffectedTable: boolean;
 
   @OneToMany(
-    () => RegistrationDataEntity,
-    (registrationData) => registrationData.programQuestion,
+    () => RegistrationAttributeDataEntity,
+    (registrationData) => registrationData.programRegistrationAttribute,
   )
-  public registrationData: Relation<RegistrationDataEntity[]>;
+  public registrationData: Relation<RegistrationAttributeDataEntity[]>;
 
   @Column({ default: false })
   public editableInPortal: boolean;
@@ -77,7 +80,7 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
       {
-        entityClass: RegistrationDataEntity,
+        entityClass: RegistrationAttributeDataEntity,
         columnName: 'programRegistrationAttributeId',
       },
     ]);

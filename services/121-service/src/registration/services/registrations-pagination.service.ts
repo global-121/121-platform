@@ -22,10 +22,6 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
-  getFspDisplayNameMapping,
-  overwriteFspDisplayName,
-} from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
-import {
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
@@ -35,10 +31,10 @@ import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
@@ -115,7 +111,7 @@ export class RegistrationsPaginationService {
       await this.programService.getAllRelationProgram(programId);
     const registrationDataNamesProgram = registrationDataRelations
       .map((r) => r.name)
-      .filter((r) => r !== CustomDataAttributes.phoneNumber); // Phonenumber is already in the registration table so we do not need to filter on it twice
+      .filter((r) => r !== DefaultRegistrationDataAttributeNames.phoneNumber); // Phonenumber is already in the registration table so we do not need to filter on it twice
 
     // Check if the filter contains at least one registration data name
     if (query.filter) {
@@ -212,16 +208,16 @@ export class RegistrationsPaginationService {
     >['data'] = [];
 
     for (let i = 0; i < totalPages; i++) {
-      const registrations = await this.getPaginate(
+      const paginateResult = await this.getPaginate(
         paginateQuery,
         programId,
         true,
         false,
         baseQuery ? baseQuery.clone() : undefined, // We need to create a seperate querybuilder object twice or it will be modified twice
       );
-      totalPages = registrations.meta.totalPages;
+      totalPages = paginateResult.meta.totalPages;
       paginateQuery.page = paginateQuery.page + 1;
-      allRegistrations = allRegistrations.concat(...registrations.data);
+      allRegistrations = allRegistrations.concat(...paginateResult.data);
     }
     return allRegistrations;
   }
@@ -296,7 +292,9 @@ export class RegistrationsPaginationService {
       const registrationDataNamesProgram = registrationDataRelations.map(
         (r) => r.name,
       );
-      registrationDataNamesProgram.push(CustomDataAttributes.phoneNumber);
+      registrationDataNamesProgram.push(
+        DefaultRegistrationDataAttributeNames.phoneNumber,
+      );
 
       // Check if the filter contains at least one registration data name
       for (const registrationDataName of registrationDataNamesProgram) {
@@ -491,7 +489,6 @@ export class RegistrationsPaginationService {
     orignalSelect,
     fullnameNamingConvention,
     hasPersonalReadPermission,
-    programId,
   }: {
     paginatedResult: Paginated<RegistrationViewEntity>;
     registrationDataRelations: RegistrationDataInfo[];
@@ -501,12 +498,6 @@ export class RegistrationsPaginationService {
     hasPersonalReadPermission: boolean;
     programId: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['financialServiceProviders', 'programFspConfiguration'],
-    });
-    const fspDisplayNameMapping = getFspDisplayNameMapping(program);
-
     return paginatedResult.data.map((registration) => {
       const mappedRootRegistration = this.mapRootRegistration(
         registration,
@@ -519,18 +510,6 @@ export class RegistrationsPaginationService {
         mappedRootRegistration,
         registrationDataRelations,
       );
-      if (orignalSelect.includes('fspDisplayName')) {
-        const overriddenFspDisplayName = overwriteFspDisplayName(
-          mappedRegistration.financialServiceProvider,
-          fspDisplayNameMapping,
-        );
-        if (overriddenFspDisplayName) {
-          mappedRegistration.fspDisplayName = overriddenFspDisplayName;
-        }
-        if (!orignalSelect.includes('financialServiceProvider')) {
-          delete mappedRegistration.financialServiceProvider;
-        }
-      }
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
         return this.mapRegistrationName({
@@ -569,7 +548,7 @@ export class RegistrationsPaginationService {
   }
 
   private mapRegistrationData(
-    registrationDataArray: RegistrationDataEntity[],
+    registrationDataArray: RegistrationAttributeDataEntity[],
     mappedRegistration: ReturnType<
       RegistrationsPaginationService['mapRootRegistration']
     >,
@@ -580,13 +559,9 @@ export class RegistrationsPaginationService {
     }
     const findRelation = (
       dataRelation: RegistrationDataRelation,
-      data: RegistrationDataEntity,
+      data: RegistrationAttributeDataEntity,
     ): boolean => {
-      const propertiesToCheck = [
-        'programQuestionId',
-        'fspQuestionId',
-        'programCustomAttributeId',
-      ];
+      const propertiesToCheck = ['programRegistrationAttributeId'];
       for (const property of propertiesToCheck) {
         if (
           dataRelation[property] === data[property] &&

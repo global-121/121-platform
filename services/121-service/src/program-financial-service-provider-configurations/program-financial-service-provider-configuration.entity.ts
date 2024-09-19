@@ -1,63 +1,56 @@
-import { isObject } from 'lodash';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   Relation,
   Unique,
 } from 'typeorm';
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration-property.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-@Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
-@Entity('program_fsp_configuration')
+@Unique('programFinancialServiceProviderConfigurationUnique', [
+  'programId',
+  'name',
+])
+@Entity('program_financial_service_provider_configuration')
 export class ProgramFinancialServiceProviderConfigurationEntity extends CascadeDeleteEntity {
   @ManyToOne(
     (_type) => ProgramEntity,
-    (program) => program.programFspConfiguration,
+    (program) => program.programFinancialServiceProviderConfigurations,
   )
   @JoinColumn({ name: 'programId' })
   @Column()
   public programId: number;
 
-  @ManyToOne(
-    (_type) => FinancialServiceProviderEntity,
-    (fsp) => fsp.configuration,
-  )
-  @JoinColumn({ name: 'fspId' })
-  public fsp: Relation<FinancialServiceProviderEntity>;
-  @Column()
-  public fspId: number;
+  @Column({ type: 'character varying' })
+  public financialServiceProviderName: FinancialServiceProviderName;
 
-  @Column()
+  @Column({ type: 'character varying' })
   public name: string;
 
-  @Column({
-    type: 'varchar',
-    transformer: {
-      to: (value: any) => {
-        if (Array.isArray(value) || isObject(value)) {
-          return JSON.stringify(value);
-        }
+  @Column('json')
+  public label: LocalizedString;
 
-        return value;
-      },
-      from: (value: any) => {
-        try {
-          const parsedValue = JSON.parse(value);
-          if (Array.isArray(parsedValue) || isObject(parsedValue)) {
-            return parsedValue;
-          }
+  @OneToMany(
+    (_type) => ProgramFinancialServiceProviderConfigurationPropertyEntity,
+    (programFinancialServiceProviderConfigurationProperty) =>
+      programFinancialServiceProviderConfigurationProperty.programFinancialServiceProviderConfiguration,
+    { cascade: true },
+  )
+  public properties: Relation<
+    ProgramFinancialServiceProviderConfigurationPropertyEntity[]
+  >;
 
-          return value;
-        } catch (error) {
-          return value;
-        }
-      },
-    },
-  })
-  public value: string | string[] | Record<string, string>;
+  @OneToMany(
+    (_type) => TransactionEntity,
+    (transactions) => transactions.programFinancialServiceProviderConfiguration,
+  )
+  public transactions: Relation<TransactionEntity[]>;
 }

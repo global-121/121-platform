@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventsModule } from '@121-service/src/events/events.module';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
@@ -25,7 +24,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([
       ProgramEntity,
       LatestTransactionEntity,
-      FinancialServiceProviderEntity,
       TwilioMessageEntity,
     ]),
     UserModule,

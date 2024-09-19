@@ -11,6 +11,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import {
   ExcelFspInstructions,
   ExcelReconciliationDto,
@@ -42,27 +43,44 @@ export class ExcelService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.excel;
+    const transactionResultObjectList: {
+      paTransactionResultDto: PaTransactionResultDto;
+      transactionRelationDetailsDto: TransactionRelationDetailsDto;
+    }[] = [];
+
     for (const paPayment of paPaymentList) {
-      const transactionResult = new PaTransactionResultDto();
-      transactionResult.calculatedAmount = paPayment.transactionAmount;
-      transactionResult.fspName = FinancialServiceProviderName.excel;
-      transactionResult.referenceId = paPayment.referenceId;
-      transactionResult.status = StatusEnum.waiting;
-      fspTransactionResult.paList.push(transactionResult);
+      const paTransactionResultDto = new PaTransactionResultDto();
+      paTransactionResultDto.calculatedAmount = paPayment.transactionAmount;
+      paTransactionResultDto.fspName = FinancialServiceProviderName.excel;
+      paTransactionResultDto.referenceId = paPayment.referenceId;
+      paTransactionResultDto.status = StatusEnum.waiting;
+
+      const transactionRelationDetailsDto = {
+        programId,
+        paymentNr,
+        userId: paPaymentList[0].userId,
+        programFinancialServiceProviderConfigurationId:
+          paPayment.programFinancialServiceProviderConfigurationId,
+      };
+
+      const transactionResultObject = {
+        paTransactionResultDto,
+        transactionRelationDetailsDto,
+      };
+
+      transactionResultObjectList.push(transactionResultObject);
     }
-    const transactionRelationDetails = {
-      programId,
-      paymentNr,
-      userId: paPaymentList[0].userId,
-    };
+
     await this.transactionsService.storeAllTransactions(
-      fspTransactionResult,
-      transactionRelationDetails,
+      transactionResultObjectList,
     );
 
+    const fspTransactionResult = new FspTransactionResultDto();
+    fspTransactionResult.fspName = FinancialServiceProviderName.excel;
+    fspTransactionResult.paList = transactionResultObjectList.map(
+      (transactionResultObject) =>
+        transactionResultObject.paTransactionResultDto,
+    );
     return fspTransactionResult;
   }
 
@@ -103,10 +121,9 @@ export class ExcelService
   ): Promise<string[]> {
     const programWithConfig = await this.programRepository
       .createQueryBuilder('program')
-      .leftJoinAndSelect('program.programQuestions', 'programQuestions')
       .leftJoinAndSelect(
-        'program.programCustomAttributes',
-        'programCustomAttributes',
+        'program.programRegistrationAttributes',
+        'programRegistrationAttributes',
       )
       .leftJoinAndSelect(
         'program.programFspConfiguration',
@@ -123,15 +140,15 @@ export class ExcelService
 
     let exportColumns: string[];
     const columnsToExportConfig =
-      programWithConfig.programFspConfiguration[0]?.value;
+      programWithConfig.programFinancialServiceProviderConfigurations[0]?.value;
     if (columnsToExportConfig) {
       exportColumns = columnsToExportConfig as string[];
     } else {
       // Default to using all program questions & attributes names if columnsToExport is not specified
       // So generic fields must be specified in the programFspConfiguration
-      exportColumns = programWithConfig.programQuestions
-        .map((q) => q.name)
-        .concat(programWithConfig.programCustomAttributes.map((q) => q.name));
+      exportColumns = programWithConfig.programRegistrationAttributes.map(
+        (q) => q.name,
+      );
     }
     return exportColumns;
   }

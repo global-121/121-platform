@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/custom-data-attributes';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -25,20 +25,21 @@ describe('/ Registrations - by phone-number', () => {
   const registrationOnlyPhoneNumber = {
     ...registrationNotScopedPv,
     referenceId: 'test-pa-1',
-    [CustomDataAttributes.phoneNumber]: '15005550010',
-    [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+    [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550010',
+    [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]: undefined,
   };
   const registrationOnlyPhoneNumberUnique = {
     ...registrationNotScopedPv,
     referenceId: 'test-pa-with-different-phone-number',
-    [CustomDataAttributes.phoneNumber]: '15005550020',
-    [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+    [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550020',
+    [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]: undefined,
   };
   const registrationOnlyPhoneNumberSame = {
     ...registrationNotScopedPv,
     referenceId: 'test-pa-with-same-phone-number',
-    [CustomDataAttributes.phoneNumber]: registrationOnlyPhoneNumber.phoneNumber,
-    [CustomDataAttributes.whatsappPhoneNumber]: undefined,
+    [DefaultRegistrationDataAttributeNames.phoneNumber]:
+      registrationOnlyPhoneNumber.phoneNumber,
+    [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]: undefined,
   };
 
   beforeEach(async () => {
@@ -74,7 +75,9 @@ describe('/ Registrations - by phone-number', () => {
   it('should return the correct registration', async () => {
     // Arrange
     const testPhoneNumber =
-      registrationOnlyPhoneNumberUnique[CustomDataAttributes.phoneNumber];
+      registrationOnlyPhoneNumberUnique[
+        DefaultRegistrationDataAttributeNames.phoneNumber
+      ];
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
@@ -85,15 +88,17 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(1);
-    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
+    expect(
+      response.body[0][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
   });
 
   it('should return all matching registrations', async () => {
     // Arrange
     const testPhoneNumber =
-      registrationOnlyPhoneNumber[CustomDataAttributes.phoneNumber];
+      registrationOnlyPhoneNumber[
+        DefaultRegistrationDataAttributeNames.phoneNumber
+      ];
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
@@ -104,18 +109,20 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(2);
-    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
-    expect(response.body[1][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
+    expect(
+      response.body[0][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
+    expect(
+      response.body[1][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
   });
 
   it('should find registration(s) with phonenumber "+"-notation', async () => {
     // Arrange
     const testPhoneNumber =
-      registrationOnlyPhoneNumberUnique[CustomDataAttributes.phoneNumber];
+      registrationOnlyPhoneNumberUnique[
+        DefaultRegistrationDataAttributeNames.phoneNumber
+      ];
 
     // Act
     const response = await searchRegistrationByPhoneNumber(
@@ -126,9 +133,9 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(1);
-    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
+    expect(
+      response.body[0][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
   });
 
   it('should find registration with matching WhatsApp-phonenumber', async () => {
@@ -137,8 +144,9 @@ describe('/ Registrations - by phone-number', () => {
     const registrationWithWhatsApp = {
       ...registrationVisa,
       referenceId: 'test-pa-with-same-whatsapp-number',
-      [CustomDataAttributes.phoneNumber]: '15005550050',
-      [CustomDataAttributes.whatsappPhoneNumber]: testPhoneNumber,
+      [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550050',
+      [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
+        testPhoneNumber,
     };
     await importRegistrations(
       programIdOCW,
@@ -155,9 +163,11 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(1);
-    expect(response.body[0][CustomDataAttributes.whatsappPhoneNumber]).toBe(
-      testPhoneNumber,
-    );
+    expect(
+      response.body[0][
+        DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
+      ],
+    ).toBe(testPhoneNumber);
   });
 
   it('should find all registrations with matching WhatsApp/regular-phonenumber(s)', async () => {
@@ -166,8 +176,9 @@ describe('/ Registrations - by phone-number', () => {
     const registrationWithSameWhatsApp = {
       ...registrationVisa,
       referenceId: 'test-pa-with-same-whatsapp-number',
-      [CustomDataAttributes.phoneNumber]: '15005550050',
-      [CustomDataAttributes.whatsappPhoneNumber]: testPhoneNumber,
+      [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550050',
+      [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
+        testPhoneNumber,
     };
     await importRegistrations(
       programIdOCW,
@@ -186,14 +197,18 @@ describe('/ Registrations - by phone-number', () => {
     expect(response.body.length).toBe(2);
     expect(
       [
-        response.body[0][CustomDataAttributes.whatsappPhoneNumber],
-        response.body[0][CustomDataAttributes.phoneNumber],
+        response.body[0][
+          DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
+        ],
+        response.body[0][DefaultRegistrationDataAttributeNames.phoneNumber],
       ].includes(testPhoneNumber),
     ).toBe(true);
     expect(
       [
-        response.body[1][CustomDataAttributes.whatsappPhoneNumber],
-        response.body[1][CustomDataAttributes.phoneNumber],
+        response.body[1][
+          DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
+        ],
+        response.body[1][DefaultRegistrationDataAttributeNames.phoneNumber],
       ].includes(testPhoneNumber),
     ).toBe(true);
   });
@@ -204,8 +219,9 @@ describe('/ Registrations - by phone-number', () => {
     const registrationInOtherProgram = {
       ...registrationVisa,
       referenceId: 'test-pa-with-same-phone-number-in-other-program',
-      [CustomDataAttributes.phoneNumber]: testPhoneNumber,
-      [CustomDataAttributes.whatsappPhoneNumber]: '15005550300',
+      [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
+      [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
+        '15005550300',
     };
     await importRegistrations(
       programIdOCW,
@@ -222,24 +238,27 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(2);
-    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
-    expect(response.body[1][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
+    expect(
+      response.body[0][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
+    expect(
+      response.body[1][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
   });
 
   it('should only find registrations with matching scope', async () => {
     //Arrange
     const testPhoneNumber =
-      registrationOnlyPhoneNumberUnique[CustomDataAttributes.phoneNumber];
+      registrationOnlyPhoneNumberUnique[
+        DefaultRegistrationDataAttributeNames.phoneNumber
+      ];
     const registrationInOtherProgramZeelandMiddelburg = {
       ...registrationVisa,
       referenceId:
         'test-pa-with-same-phone-number-in-other-program-zeeland-middelburg',
-      [CustomDataAttributes.phoneNumber]: testPhoneNumber,
-      [CustomDataAttributes.whatsappPhoneNumber]: '15005550201',
+      [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
+      [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
+        '15005550201',
       scope: DebugScope.ZeelandMiddelburg,
     };
 
@@ -247,8 +266,9 @@ describe('/ Registrations - by phone-number', () => {
       ...registrationVisa,
       referenceId:
         'test-pa-with-same-phone-number-in-other-program-utrecht-houten',
-      [CustomDataAttributes.phoneNumber]: testPhoneNumber,
-      [CustomDataAttributes.whatsappPhoneNumber]: '15005550202',
+      [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
+      [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
+        '15005550202',
       scope: DebugScope.UtrechtHouten,
     };
 
@@ -273,8 +293,8 @@ describe('/ Registrations - by phone-number', () => {
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.length).toBe(1);
-    expect(response.body[0][CustomDataAttributes.phoneNumber]).toBe(
-      testPhoneNumber,
-    );
+    expect(
+      response.body[0][DefaultRegistrationDataAttributeNames.phoneNumber],
+    ).toBe(testPhoneNumber);
   });
 });

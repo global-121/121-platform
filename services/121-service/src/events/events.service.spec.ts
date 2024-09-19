@@ -66,7 +66,8 @@ function getViewRegistration(): RegistrationViewEntity {
     preferredLanguage: LanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
-    financialServiceProvider: FinancialServiceProviderName.intersolveVisa,
+    financialServiceProviderName: FinancialServiceProviderName.intersolveVisa,
+    programFinancialServiceProviderConfigurationName: 'Intersolve-Visa',
     fspDisplayName: { en: 'Visa debit card' },
     registrationProgramId: 2,
     personAffectedSequence: 'PA #2',
@@ -207,7 +208,7 @@ describe('EventsService', () => {
     delete newViewRegistration['addressStreet'];
 
     // Changes that should not be logged
-    newViewRegistration.financialServiceProvider =
+    newViewRegistration.programFinancialServiceProviderConfigurationName =
       FinancialServiceProviderName.intersolveVoucherWhatsapp;
 
     // Act

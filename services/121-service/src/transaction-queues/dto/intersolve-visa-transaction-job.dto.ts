@@ -35,6 +35,10 @@ export class IntersolveVisaTransactionJobDto {
   @IsNumber()
   public readonly bulkSize: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  public readonly programFinancialServiceProviderConfigurationId: number;
+
   @IsOptional()
   public readonly name?: string;
 

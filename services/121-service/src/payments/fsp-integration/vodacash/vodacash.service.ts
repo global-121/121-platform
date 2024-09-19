@@ -56,6 +56,8 @@ export class VodacashService
         programId,
         paymentNr,
         userId: payment.userId,
+        programFinancialServiceProviderConfigurationId:
+          payment.programFinancialServiceProviderConfigurationId,
       };
 
       // Storing the per payment so you can continiously seed updates of transactions in Portal

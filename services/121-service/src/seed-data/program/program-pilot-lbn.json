@@ -1888,7 +1888,7 @@
   "fullnameNamingConvention": ["nameFirst", "nameLast"],
   "languages": ["en", "ar"],
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "BoB-finance"
     }

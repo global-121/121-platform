@@ -20,7 +20,8 @@ describe('Export CBE validation report', () => {
     phoneNumber: '14155238886',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
-    fspName: FinancialServiceProviderName.commercialBankEthiopia,
+    programFinancialServiceProviderConfigurationName:
+      FinancialServiceProviderName.commercialBankEthiopia,
     maxPayments: 3,
     fullName: 'ANDUALEM MOHAMMED YIMER',
     idNumber: '39231855170',

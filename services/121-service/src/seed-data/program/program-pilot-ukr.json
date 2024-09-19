@@ -449,7 +449,7 @@
   "fullnameNamingConvention": ["lastName", "firstName", "fathersName"],
   "languages": ["en", "uk", "ru"],
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "UkrPoshta"
     }

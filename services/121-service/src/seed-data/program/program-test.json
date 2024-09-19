@@ -72,6 +72,7 @@
       },
       "type": "dropdown",
       "questionType": "standard",
+      "isRequired": true,
       "options": [
         {
           "option": "lannister",
@@ -288,10 +289,10 @@
   "enableMaxPayments": false,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "Intersolve-voucher-whatsapp",
-      "attributes": [
+      "properties": [
         {
           "name": "username",
           "value": "INTERSOLVE_USERNAME"
@@ -316,7 +317,7 @@
     },
     {
       "financialServiceProvider": "Excel",
-      "attributes": [
+      "properties": [
         {
           "name": "columnsToExport",
           "value": ["name", "dob", "house", "phoneNumber"]

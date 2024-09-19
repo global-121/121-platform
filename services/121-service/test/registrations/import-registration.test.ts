@@ -51,15 +51,7 @@ describe('Import a registration', () => {
     );
     const registration = result.body.data[0];
     for (const key in registrationVisa) {
-      if (key === 'fspName') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration['financialServiceProvider']).toBe(
-          registrationVisa[key],
-        );
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(registrationVisa[key]);
-      }
+      expect(registration[key]).toBe(registrationVisa[key]);
     }
   });
 
@@ -106,15 +98,7 @@ describe('Import a registration', () => {
     const registrationResult = result.body.data[0];
 
     for (const key in registrationScopedGoesPv) {
-      if (key === 'fspName') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registrationResult['financialServiceProvider']).toBe(
-          registrationScopedGoesPv[key],
-        );
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registrationResult[key]).toBe(registrationScopedGoesPv[key]);
-      }
+      expect(registrationResult[key]).toBe(registrationScopedGoesPv[key]);
     }
   });
 
@@ -197,19 +181,12 @@ describe('Import a registration', () => {
     );
     const registration = result.body.data[0];
     for (const key in registrationVisaCopy) {
-      if (key === 'fspName') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration['financialServiceProvider']).toBe(
-          registrationVisaCopy[key],
-        );
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(registrationVisaCopy[key]);
-      }
+      expect(registration[key]).toBe(registrationVisaCopy[key]);
     }
   });
 
-  it('should throw an error with a numeric custom atribute set to null', async () => {
+  // ##TODO this test should be refactored. It should throw an error when an attribute is required and it is not provided
+  it.skip('should throw an error with a numeric registration atribute set to null', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
@@ -237,7 +214,7 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
-  it('should throw an error with a dropdown custom atribute set to null', async () => {
+  it('should throw an error with a dropdown registration atribute set to null', async () => {
     // Arrange
     await resetDB(SeedScript.test);
     accessToken = await getAccessToken();

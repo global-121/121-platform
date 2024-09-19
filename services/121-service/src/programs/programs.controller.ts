@@ -31,18 +31,16 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
-import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import {
-  CreateProgramQuestionDto,
-  UpdateProgramQuestionDto,
-} from '@121-service/src/programs/dto/program-question.dto';
+  ProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributeDto,
+} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
-import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
+import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -236,17 +234,18 @@ You can also leave the body empty.`,
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
-  @ApiOperation({ summary: 'Create program question' })
+  @ApiOperation({ summary: 'Create registration attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/program-questions')
+  @Post(':programId/program-registration-attributes')
   public async createProgramQuestion(
-    @Body() updateProgramQuestionDto: CreateProgramQuestionDto,
+    @Body() programRegistrationAttribute: ProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramQuestionEntity | undefined> {
-    return await this.programService.createProgramQuestion(
+  ): Promise<ProgramRegistrationAttributeEntity | undefined> {
+    // ##TODO: Return a dto in instead of entity
+    return await this.programService.createProgramRegistrationAttribute(
       programId,
-      updateProgramQuestionDto,
+      programRegistrationAttribute,
     );
   }
 
@@ -255,21 +254,25 @@ You can also leave the body empty.`,
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return program question',
-    type: ProgramQuestionEntity,
+    type: ProgramRegistrationAttributeEntity,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'programQuestionId', required: true, type: 'integer' })
-  @Patch(':programId/program-questions/:programQuestionId')
+  @ApiParam({
+    name: 'programRegistrationAttributeId',
+    required: true,
+    type: 'integer',
+  })
+  @Patch(':programId/registration-attributes/:programRegistrationAttributeId')
   public async updateProgramQuestion(
-    @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
+    @Body() updateProgramQuestionDto: UpdateProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('programQuestionId', ParseIntPipe)
-    programQuestionId: number,
-  ): Promise<ProgramQuestionEntity> {
-    return await this.programService.updateProgramQuestion(
+    @Param('programRegistrationAttributeId', ParseIntPipe)
+    programRegistrationAttributeId: number,
+  ): Promise<ProgramRegistrationAttributeEntity> {
+    return await this.programService.updateProgramRegistrationAttribute(
       programId,
-      programQuestionId,
+      programRegistrationAttributeId,
       updateProgramQuestionDto,
     );
   }
@@ -278,65 +281,20 @@ You can also leave the body empty.`,
   @ApiOperation({ summary: 'Delete program question AND related answers' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
-    name: 'programQuestionId',
+    name: 'programRegistrationAttributeId',
     required: true,
     type: 'integer',
   })
-  @Delete(':programId/program-questions/:programQuestionId')
+  @Delete(':programId/program-questions/:programRegistrationAttributeId')
   public async deleteProgramQuestion(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('programQuestionId', ParseIntPipe)
-    programQuestionId: number,
-  ): Promise<ProgramQuestionEntity> {
-    return await this.programService.deleteProgramQuestion(
+    @Param('programRegistrationAttributeId', ParseIntPipe)
+    programRegistrationAttributeId: number,
+  ): Promise<ProgramRegistrationAttributeEntity> {
+    return await this.programService.deleteProgramRegistrationAttribute(
       programId,
-      programQuestionId,
-    );
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
-  @ApiOperation({ summary: 'Create program custom attribute' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/custom-attributes')
-  public async createProgramCustomAttribute(
-    @Body() createProgramQuestionDto: CreateProgramCustomAttributeDto,
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<ProgramCustomAttributeEntity | undefined> {
-    return await this.programService.createProgramCustomAttribute(
-      programId,
-      createProgramQuestionDto,
-    );
-  }
-
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramCustomAttributeUPDATE],
-  })
-  @ApiOperation({ summary: 'Update program custom attributes' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Return program custom attributes',
-    type: ProgramCustomAttributeEntity,
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'No attribute found for given program and custom attribute id',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'customAttributeId', required: true, type: 'integer' })
-  @Patch(':programId/custom-attributes/:customAttributeId')
-  public async updateProgramCustomAttributes(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-    @Param('customAttributeId', ParseIntPipe)
-    customAttributeId: number,
-    @Body() createProgramCustomAttributeDto: CreateProgramCustomAttributeDto,
-  ): Promise<ProgramCustomAttributeEntity> {
-    return await this.programService.updateProgramCustomAttributes(
-      programId,
-      customAttributeId,
-      createProgramCustomAttributeDto,
+      programRegistrationAttributeId,
     );
   }
 
@@ -353,17 +311,7 @@ You can also leave the body empty.`,
     type: 'boolean',
   })
   @ApiQuery({
-    name: 'includeProgramQuestions',
-    required: false,
-    type: 'boolean',
-  })
-  @ApiQuery({
-    name: 'includeCustomAttributes',
-    required: false,
-    type: 'boolean',
-  })
-  @ApiQuery({
-    name: 'includeFspQuestions',
+    name: 'includeProgramRegistrationAttributes',
     required: false,
     type: 'boolean',
   })
@@ -376,12 +324,11 @@ You can also leave the body empty.`,
   public async getAttributes(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query('includeCustomAttributes', new ParseBoolPipe({ optional: true }))
-    includeCustomAttributes: boolean,
-    @Query('includeProgramQuestions', new ParseBoolPipe({ optional: true }))
-    includeProgramQuestions: boolean,
-    @Query('includeFspQuestions', new ParseBoolPipe({ optional: true }))
-    includeFspQuestions: boolean,
+    @Query(
+      'includeProgramRegistrationAttributes',
+      new ParseBoolPipe({ optional: true }),
+    )
+    includeProgramRegistrationAttributes: boolean,
     @Query(
       'includeTemplateDefaultAttributes',
       new ParseBoolPipe({ optional: true }),
@@ -407,14 +354,13 @@ You can also leave the body empty.`,
         return [];
       }
     }
-    return await this.programAttributesService.getAttributes(
+    const attr = await this.programAttributesService.getAttributes(
       programId,
-      includeCustomAttributes,
-      includeProgramQuestions,
-      includeFspQuestions,
+      includeProgramRegistrationAttributes,
       includeTemplateDefaultAttributes,
       filterShowInPeopleAffectedTable,
     );
+    return attr;
   }
 
   // TODO: REFACTOR: This endpoint's return is not typed as a DTO, so it is not clear what the response structure is in Swagger UI. See guidelines.

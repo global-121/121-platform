@@ -16,11 +16,7 @@ import {
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import {
-  CreateProgramCustomAttributeDto,
-  CustomAttributeType,
-} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -116,7 +112,7 @@ export class CreateProgramDto {
   @ValidateNested()
   @IsDefined()
   @Type(() => ProgramFinancialServiceProviderDto)
-  public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
+  public readonly programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderDto[];
 
   @ApiProperty({ example: 250 })
   @IsNumber()
@@ -125,38 +121,6 @@ export class CreateProgramDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   public readonly tryWhatsAppFirst: boolean;
-
-  @ApiProperty({
-    example: [
-      {
-        name: 'nameParterOrganization',
-        type: CustomAttributeType.text,
-        label: { en: 'Name partner organization' },
-        export: [
-          ExportType.allPeopleAffected,
-          ExportType.included,
-          ExportType.payment,
-        ],
-        showInPeopleAffectedTable: true,
-      },
-      {
-        name: 'exampleBoolean',
-        type: CustomAttributeType.boolean,
-        label: { en: 'Example boolean' },
-        export: [
-          ExportType.allPeopleAffected,
-          ExportType.included,
-          ExportType.payment,
-        ],
-        showInPeopleAffectedTable: true,
-      },
-    ],
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => CreateProgramCustomAttributeDto)
-  public readonly programCustomAttributes: CreateProgramCustomAttributeDto[];
 
   @ApiProperty({
     example: [
@@ -239,8 +203,8 @@ export class CreateProgramDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => CreateProgramQuestionDto)
-  public readonly programQuestions: CreateProgramQuestionDto[];
+  @Type(() => ProgramRegistrationAttributeDto)
+  public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()

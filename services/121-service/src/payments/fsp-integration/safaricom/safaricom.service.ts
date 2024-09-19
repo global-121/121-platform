@@ -97,6 +97,8 @@ export class SafaricomService
       programId: jobData.programId,
       paymentNr: jobData.paymentNr,
       userId: jobData.userId,
+      programFinancialServiceProviderConfigurationId:
+        jobData.paPaymentData.programFinancialServiceProviderConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     const transaction =
@@ -127,11 +129,14 @@ export class SafaricomService
       .where('registration.referenceId = :referenceId', {
         referenceId,
       })
-      .andWhere('programQuestion.name IN (:...names)', {
+      .andWhere('programRegistrationAttribute.name IN (:...names)', {
         names: ['nationalId'],
       })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.programQuestion', 'programQuestion')
+      .leftJoin(
+        'data.programRegistrationAttribute',
+        'programRegistrationAttribute',
+      )
       .getRawOne();
   }
 

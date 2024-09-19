@@ -140,10 +140,10 @@
   "enableMaxPayments": true,
   "enableScope": true,
   "allowEmptyPhoneNumber": true,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "Intersolve-voucher-whatsapp",
-      "attributes": [
+      "properties": [
         {
           "name": "username",
           "value": "INTERSOLVE_USERNAME"
@@ -156,7 +156,7 @@
     },
     {
       "financialServiceProvider": "Intersolve-voucher-paper",
-      "attributes": [
+      "properties": [
         {
           "name": "username",
           "value": "INTERSOLVE_USERNAME"
@@ -169,7 +169,7 @@
     },
     {
       "financialServiceProvider": "Intersolve-visa",
-      "attributes": [
+      "properties": [
         {
           "name": "brandCode",
           "value": "INTERSOLVE_VISA_BRAND_CODE"
@@ -177,12 +177,16 @@
         {
           "name": "coverLetterCode",
           "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
+        },
+        {
+          "name": "fundingTokenCode",
+          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
         }
       ]
     },
     {
       "financialServiceProvider": "Excel",
-      "attributes": [
+      "properties": [
         {
           "name": "displayName",
           "value": {

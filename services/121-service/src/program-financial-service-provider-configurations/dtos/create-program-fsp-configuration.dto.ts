@@ -1,13 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 export class CreateProgramFspConfigurationDto {
   @ApiProperty({ example: 1 })
-  @IsNumber()
   @IsNotEmpty()
-  fspId: number;
+  financialServiceProviderName: string;
 
   @ApiProperty({ example: FinancialServiceProviderConfigurationEnum.username })
   @IsNotEmpty()

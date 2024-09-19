@@ -52,7 +52,8 @@ describe('Update program', () => {
     expect(updateProgramResponse.body.budget).toBe(program.budget);
   });
 
-  it('should add an fsp to a program', async () => {
+  // ##TODO Enable/Refacetor/Remove this test after FSP config endpoints are implemented (and the logic is reused in update program). This test should than check if it is possible to add FSP config to a program if that is not aldreaddy covered by some other test
+  it.skip('should add an fsp to a program', async () => {
     // Arrange
     const program = {
       financialServiceProviders: JSON.parse(

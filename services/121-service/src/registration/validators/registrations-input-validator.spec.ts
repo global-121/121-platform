@@ -6,10 +6,7 @@ import { Repository } from 'typeorm';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import {
-  AttributeWithOptionalLabel,
-  QuestionType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+import { AttributeWithOptionalLabel } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -23,35 +20,35 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
     name: 'addressStreet',
     type: 'text',
     fspNames: [FinancialServiceProviderName.intersolveVisa],
-    questionTypes: [QuestionType.fspQuestion],
+    isRequired: false,
   },
   {
     id: 9,
     name: 'addressHouseNumber',
     type: 'numeric',
     fspNames: [FinancialServiceProviderName.intersolveVisa],
-    questionTypes: [QuestionType.fspQuestion],
+    isRequired: false,
   },
   {
     id: 10,
     name: 'addressHouseNumberAddition',
     type: 'text',
     fspNames: [FinancialServiceProviderName.intersolveVisa],
-    questionTypes: [QuestionType.fspQuestion],
+    isRequired: false,
   },
   {
     id: 11,
     name: 'addressPostalCode',
     type: 'text',
     fspNames: [FinancialServiceProviderName.intersolveVisa],
-    questionTypes: [QuestionType.fspQuestion],
+    isRequired: false,
   },
   {
     id: 12,
     name: 'addressCity',
     type: 'text',
     fspNames: [FinancialServiceProviderName.intersolveVisa],
-    questionTypes: [QuestionType.fspQuestion],
+    isRequired: false,
   },
   {
     id: 13,
@@ -61,7 +58,7 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
       FinancialServiceProviderName.intersolveVisa,
       FinancialServiceProviderName.intersolveVoucherWhatsapp,
     ],
-    questionTypes: [QuestionType.fspQuestion],
+    isRequired: false,
   },
   {
     id: 3,
@@ -69,7 +66,7 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
     type: 'text',
     options: null,
     fspNames: [],
-    questionTypes: [QuestionType.programQuestion],
+    isRequired: false,
   },
   {
     id: 4,
@@ -77,7 +74,7 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
     type: 'tel',
     options: null,
     fspNames: [],
-    questionTypes: [QuestionType.programQuestion],
+    isRequired: false,
   },
   {
     id: 5,
@@ -89,7 +86,7 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
       { option: 'greyjoy', label: { en: 'Greyjoy' } },
     ],
     fspNames: [],
-    questionTypes: [QuestionType.programQuestion],
+    isRequired: false,
   },
 ];
 
@@ -133,10 +130,17 @@ describe('RegistrationsInputValidator', () => {
     );
 
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
-    mockProgramRepository.findOneByOrFail = jest.fn().mockResolvedValue({
+    mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue({
       id: 1,
       name: 'Test Program',
       languages: ['en'],
+      programFinancialServiceProviderConfigurations: [
+        {
+          financialServiceProviderName:
+            FinancialServiceProviderName.intersolveVoucherWhatsapp,
+          name: 'Intersolve-voucher-whatsapp',
+        },
+      ],
     });
   });
 
@@ -152,7 +156,8 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        programFinancialServiceProviderConfigurationName:
+          FinancialServiceProviderName.intersolveVoucherWhatsapp,
         scope: 'country',
         house: 'stark',
       },
@@ -173,7 +178,7 @@ describe('RegistrationsInputValidator', () => {
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',
     );
     expect(result[0]).toHaveProperty(
-      'fspName',
+      'programFinancialServiceProviderConfigurationName',
       FinancialServiceProviderName.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
@@ -192,7 +197,8 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        programFinancialServiceProviderConfigurationName:
+          FinancialServiceProviderName.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -211,7 +217,8 @@ describe('RegistrationsInputValidator', () => {
   it('should report errors for rows missing mandatory fields on import', async () => {
     const csvArray = [
       {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        programFinancialServiceProviderConfigurationName:
+          FinancialServiceProviderName.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -233,7 +240,8 @@ describe('RegistrationsInputValidator', () => {
   it('should not report errors for rows missing mandatory fields on bulk update', async () => {
     const csvArray = [
       {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        programFinancialServiceProviderConfigurationName:
+          FinancialServiceProviderName.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];

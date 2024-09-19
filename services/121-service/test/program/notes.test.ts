@@ -21,7 +21,8 @@ describe('Notes', () => {
     firstName: 'John',
     lastName: 'Smith',
     phoneNumber: '14155238886',
-    fspName: FinancialServiceProviderName.safaricom,
+    programFinancialServiceProviderConfigurationName:
+      FinancialServiceProviderName.intersolveVisa,
     whatsappPhoneNumber: '14155238886',
     addressStreet: 'Teststraat',
     addressHouseNumber: '1',

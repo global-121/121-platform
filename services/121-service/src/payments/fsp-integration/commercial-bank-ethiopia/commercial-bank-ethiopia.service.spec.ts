@@ -25,7 +25,9 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: FinancialServiceProviderName.commercialBankEthiopia,
+    programFinancialServiceProviderConfigurationId: 1,
+    financialServiceProviderName:
+      FinancialServiceProviderName.commercialBankEthiopia,
     bulkSize: 1,
     userId,
   },
@@ -48,7 +50,6 @@ const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
   paymentNr,
   programId,
   payload: payload[0],
-  credentials: mockCredentials,
   userId: sendPaymentData[0].userId,
 };
 

@@ -1,11 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
+import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -33,7 +29,7 @@ interface ProcessTransactionResultInput {
   paymentNumber: number;
   userId: number;
   calculatedTranserAmountInMajorUnit: number;
-  financialServiceProviderId: number;
+  programFinancialServiceProviderConfigurationId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
   isRetry: boolean;
@@ -51,7 +47,6 @@ export class TransactionJobProcessorsService {
     private readonly queueMessageService: MessageQueuesService,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    private readonly financialServiceProviderRepository: FinancialServiceProviderRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
@@ -70,13 +65,6 @@ export class TransactionJobProcessorsService {
       );
     }
     const oldRegistration = structuredClone(registration);
-    const financialServiceProvider =
-      await this.financialServiceProviderRepository.getByName(
-        FinancialServiceProviderName.intersolveVisa,
-      );
-    if (!financialServiceProvider) {
-      throw new Error('Financial Service Provider not found');
-    }
 
     let transferAmountInMajorUnit: number;
     try {
@@ -95,7 +83,8 @@ export class TransactionJobProcessorsService {
           userId: input.userId,
           calculatedTranserAmountInMajorUnit:
             input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-          financialServiceProviderId: financialServiceProvider.id,
+          programFinancialServiceProviderConfigurationId:
+            input.programFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -120,7 +109,8 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           calculatedTranserAmountInMajorUnit: transferAmountInMajorUnit,
-          financialServiceProviderId: financialServiceProvider.id,
+          programFinancialServiceProviderConfigurationId:
+            input.programFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -134,11 +124,10 @@ export class TransactionJobProcessorsService {
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
     try {
       const intersolveVisaConfig =
-        await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+        await this.programFinancialServiceProviderConfigurationRepository.getPropertyValuesByNamesOrThrow(
           {
-            programId: input.programId,
-            financialServiceProviderName:
-              FinancialServiceProviderName.intersolveVisa,
+            programFinancialServiceProviderConfigurationId:
+              input.programFinancialServiceProviderConfigurationId,
             names: [
               FinancialServiceProviderConfigurationEnum.brandCode,
               FinancialServiceProviderConfigurationEnum.coverLetterCode,
@@ -183,7 +172,8 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           calculatedTranserAmountInMajorUnit: transferAmountInMajorUnit,
-          financialServiceProviderId: financialServiceProvider.id,
+          programFinancialServiceProviderConfigurationId:
+            input.programFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -219,7 +209,8 @@ export class TransactionJobProcessorsService {
       userId: input.userId,
       calculatedTranserAmountInMajorUnit:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-      financialServiceProviderId: financialServiceProvider.id,
+      programFinancialServiceProviderConfigurationId:
+        input.programFinancialServiceProviderConfigurationId,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
@@ -232,7 +223,7 @@ export class TransactionJobProcessorsService {
     paymentNumber,
     userId,
     calculatedTranserAmountInMajorUnit,
-    financialServiceProviderId,
+    programFinancialServiceProviderConfigurationId,
     registration,
     oldRegistration,
     isRetry,
@@ -242,7 +233,7 @@ export class TransactionJobProcessorsService {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTranserAmountInMajorUnit,
       registration,
-      financialServiceProviderId,
+      programFinancialServiceProviderConfigurationId,
       programId,
       paymentNumber,
       userId,
@@ -305,7 +296,7 @@ export class TransactionJobProcessorsService {
   private async createTransaction({
     amount, // transaction entity are always in major unit
     registration,
-    financialServiceProviderId,
+    programFinancialServiceProviderConfigurationId,
     programId,
     paymentNumber,
     userId,
@@ -314,7 +305,7 @@ export class TransactionJobProcessorsService {
   }: {
     amount: number;
     registration: RegistrationEntity;
-    financialServiceProviderId: number;
+    programFinancialServiceProviderConfigurationId: number;
     programId: number;
     paymentNumber: number;
     userId: number;
@@ -325,7 +316,8 @@ export class TransactionJobProcessorsService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.financialServiceProviderId = financialServiceProviderId;
+    transaction.programFinancialServiceProviderConfigurationId =
+      programFinancialServiceProviderConfigurationId;
     transaction.programId = programId;
     transaction.payment = paymentNumber;
     transaction.userId = userId;

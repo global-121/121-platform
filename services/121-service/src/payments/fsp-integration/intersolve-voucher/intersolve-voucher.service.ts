@@ -41,7 +41,7 @@ import {
 } from '@121-service/src/payments/redis/redis-client';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -67,8 +67,6 @@ export class IntersolveVoucherService
   public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -83,6 +81,7 @@ export class IntersolveVoucherService
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
+    public readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
     @Inject(REDIS_CLIENT)
@@ -95,24 +94,48 @@ export class IntersolveVoucherService
     payment: number,
     useWhatsapp: boolean,
   ): Promise<void> {
-    const config = await this.programFspConfigurationRepository
-      .createQueryBuilder('fspConfig')
-      .select('name')
-      .addSelect('value')
-      .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.fsp = :fspName', { fspName: paPaymentList[0].fspName })
-      .leftJoin('fspConfig.fsp', 'fsp')
-      .getRawMany();
+    // ##TODO This method assumes that there is only one Intersolve Voucher FSP in this program, this may not be the case. This should be refactored
+    const config =
+      await this.programFspConfigurationRepository.getPropertyValuesByNamesOrThrow(
+        {
+          programFinancialServiceProviderConfigurationId:
+            paPaymentList[0].programFinancialServiceProviderConfigurationId,
+          names: [
+            FinancialServiceProviderConfigurationEnum.username,
+            FinancialServiceProviderConfigurationEnum.password,
+          ],
+        },
+      );
 
-    const credentials: { username: string; password: string } = {
-      username: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
-      )?.value,
-      password: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
-      )?.value,
-    };
+    const usernameConfig = config.find(
+      (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+    )?.value;
+    const passwordConfig = config.find(
+      (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+    )?.value;
 
+    if (
+      !usernameConfig ||
+      !passwordConfig ||
+      typeof usernameConfig !== 'string' ||
+      typeof passwordConfig !== 'string'
+    ) {
+      throw new HttpException(
+        `Username or password configuration not found or properly set for this programFinancialServiceProviderConfigurationId: ${paPaymentList[0].programFinancialServiceProviderConfigurationId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const credentials =
+      await this.programFspConfigurationRepository.getUserNamePasswordProperties(
+        paPaymentList[0].programFinancialServiceProviderConfigurationId,
+      );
+    if (!credentials.username || !credentials.password) {
+      throw new HttpException(
+        'Intersolve credentials not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     for (const paymentInfo of paPaymentList) {
       const job = await this.paymentIntersolveVoucherQueue.add(
         ProcessNamePayment.sendPayment,
@@ -160,6 +183,8 @@ export class IntersolveVoucherService
       paResult.message,
       registration.programId,
       {
+        programFinancialServiceProviderConfigurationId:
+          jobData.paymentInfo.programFinancialServiceProviderConfigurationId,
         userId: jobData.paymentInfo.userId,
       },
     );
@@ -754,13 +779,20 @@ export class IntersolveVoucherService
       options.messageSid,
     );
 
-    let userId: number | undefined;
+    let userId = options.userId;
+    let programFinancialServiceProviderConfigurationId =
+      options.programFinancialServiceProviderConfigurationId;
     if (transactionStep === 2) {
-      userId =
-        (await this.getUserIdForTransactionStep2(registrationId, payment)) ??
-        undefined;
-    } else {
-      userId = options.userId;
+      const userFspConfigIdObject =
+        await this.getUserFspConfigIdForTransactionStep2(
+          registrationId,
+          payment,
+        );
+      if (userFspConfigIdObject) {
+        userId = userFspConfigIdObject.userId;
+        programFinancialServiceProviderConfigurationId =
+          userFspConfigIdObject.programFinancialServiceProviderConfigurationId;
+      }
     }
 
     if (userId === undefined) {
@@ -768,11 +800,17 @@ export class IntersolveVoucherService
         'Could not find userId for transaction in storeTransactionResult.',
       );
     }
+    if (programFinancialServiceProviderConfigurationId === undefined) {
+      throw new Error(
+        'Could not find programFinancialServiceProviderConfigurationId for transaction in storeTransactionResult.',
+      );
+    }
 
     const transactionRelationDetails = {
       programId,
       paymentNr: payment,
       userId,
+      programFinancialServiceProviderConfigurationId,
     };
 
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -781,19 +819,22 @@ export class IntersolveVoucherService
     );
   }
 
-  private async getUserIdForTransactionStep2(
+  private async getUserFspConfigIdForTransactionStep2(
     registrationId: number,
     payment: number,
   ) {
-    const transaction = await this.transactionRepository.findOne({
+    const transaction: null | {
+      userId: number;
+      programFinancialServiceProviderConfigurationId: number;
+    } = await this.transactionRepository.findOne({
       where: {
         registrationId: Equal(registrationId),
         payment: Equal(payment),
       },
       order: { created: 'DESC' },
-      select: ['userId'],
+      select: ['userId', 'programFinancialServiceProviderConfigurationId'],
     });
-    return transaction?.userId;
+    return transaction;
   }
 
   public async createTransactionResult(
@@ -806,7 +847,7 @@ export class IntersolveVoucherService
   ): Promise<PaTransactionResultDto> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { id: Equal(registrationId) },
-      relations: ['fsp', 'program'],
+      relations: ['programFinancialServiceProviderConfiguration', 'program'],
     });
 
     const transactionResult = new PaTransactionResultDto();
@@ -819,8 +860,12 @@ export class IntersolveVoucherService
     if (messageSid) {
       transactionResult.messageSid = messageSid;
     }
+
+    const fspNameOfRegistration =
+      registration.programFinancialServiceProviderConfiguration
+        .financialServiceProviderName;
     if (
-      registration.fsp.fsp ===
+      fspNameOfRegistration ===
       FinancialServiceProviderName.intersolveVoucherWhatsapp
     ) {
       transactionResult.customData['IntersolvePayoutStatus'] =
@@ -832,14 +877,14 @@ export class IntersolveVoucherService
     transactionResult.status = status;
 
     if (
-      registration.fsp.fsp ===
+      fspNameOfRegistration ===
       FinancialServiceProviderName.intersolveVoucherWhatsapp
     ) {
       transactionResult.fspName =
         FinancialServiceProviderName.intersolveVoucherWhatsapp;
     }
     if (
-      registration.fsp.fsp ===
+      fspNameOfRegistration ===
       FinancialServiceProviderName.intersolveVoucherPaper
     ) {
       transactionResult.fspName =

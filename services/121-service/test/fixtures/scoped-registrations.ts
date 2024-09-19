@@ -1,5 +1,5 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
@@ -10,36 +10,40 @@ export const registrationScopedGoesPv = {
   referenceId: 'reference-id-scoped-goes-pv',
   scope: DebugScope.ZeelandGoes,
   preferredLanguage: LanguageEnum.en,
-  [CustomDataAttributes.phoneNumber]: '15005550111',
+  [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550111',
   fullName: 'Jane Doe',
-  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgPv = {
   referenceId: 'reference-id-scoped-middelburg-pv',
   scope: DebugScope.ZeelandMiddelburg,
   preferredLanguage: LanguageEnum.en,
-  [CustomDataAttributes.phoneNumber]: '15005550112',
+  [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550112',
   fullName: 'Juliet Marsh',
-  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtPv = {
   referenceId: 'reference-id-scoped-utrecht-pv',
   preferredLanguage: LanguageEnum.nl,
   scope: DebugScope.UtrechtHouten,
-  [CustomDataAttributes.phoneNumber]: '15005550121',
+  [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550121',
   fullName: 'Sam Winters',
-  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedPv = {
   referenceId: 'reference-id-not-scoped-pv',
   scope: '',
   preferredLanguage: LanguageEnum.en,
-  [CustomDataAttributes.phoneNumber]: '15005550200',
+  [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550200',
   fullName: 'Nick Brouwers',
-  fspName: FinancialServiceProviderName.intersolveVoucherPaper,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviderName.intersolveVoucherPaper,
 };
 
 export const registrationsPV = [

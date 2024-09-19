@@ -106,10 +106,10 @@
   },
   "fullnameNamingConvention": ["nameFirst", "nameLast"],
   "languages": ["ar", "en", "es", "fr", "nl"],
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "Intersolve-voucher-whatsapp",
-      "attributes": [
+      "properties": [
         {
           "name": "username",
           "value": "INTERSOLVE_USERNAME"
@@ -122,7 +122,7 @@
     },
     {
       "financialServiceProvider": "Intersolve-voucher-paper",
-      "attributes": [
+      "properties": [
         {
           "name": "username",
           "value": "INTERSOLVE_USERNAME"

@@ -85,7 +85,7 @@
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "Commercial-bank-ethiopia"
     }

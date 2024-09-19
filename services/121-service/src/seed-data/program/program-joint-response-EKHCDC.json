@@ -345,9 +345,19 @@
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
-      "financialServiceProvider": "Commercial-bank-ethiopia"
+      "financialServiceProvider": "Commercial-bank-ethiopia",
+      "properties": [
+        {
+          "name": "username",
+          "value": "COMMERCIAL_BANK_ETHIOPIA_PASSWORD"
+        },
+        {
+          "name": "password",
+          "value": "COMMERCIAL_BANK_ETHIOPIA_USERNAME"
+        }
+      ]
     }
   ]
 }

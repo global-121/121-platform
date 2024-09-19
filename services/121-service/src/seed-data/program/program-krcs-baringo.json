@@ -2583,7 +2583,7 @@
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "Safaricom"
     }

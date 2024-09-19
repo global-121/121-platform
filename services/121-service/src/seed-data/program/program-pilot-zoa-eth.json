@@ -768,7 +768,7 @@
   "fullnameNamingConvention": ["name"],
   "languages": ["en", "am_ET"],
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "BelCash"
     }

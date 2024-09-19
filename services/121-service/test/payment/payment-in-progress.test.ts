@@ -29,7 +29,9 @@ describe('Payment in progress', () => {
   );
 
   const registrationsVisaOcw = registrationsOCW.filter(
-    (r) => r.fspName === FinancialServiceProviderName.intersolveVisa,
+    (r) =>
+      r.programFinancialServiceProviderConfigurationName ===
+      FinancialServiceProviderName.intersolveVisa,
   );
   // Create a registration with a different referenceId from OCW registrations as the default ones from PV have no VISA
   const registrationsVisaPV = [

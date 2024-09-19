@@ -99,7 +99,7 @@
   "enableMaxPayments": false,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfiguration": [
+  "programFinancialServiceProviderConfigurations": [
     {
       "financialServiceProvider": "VodaCash"
     }

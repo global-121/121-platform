@@ -19,7 +19,7 @@ import {
 } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -85,7 +85,7 @@ export class MessageQueuesService {
       whatsappPhoneNumber =
         await this.registrationDataService.getRegistrationDataValueByName(
           registration,
-          CustomDataAttributes.whatsappPhoneNumber,
+          DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
         );
     }
 
@@ -144,8 +144,6 @@ export class MessageQueuesService {
     const placeholders = await this.programAttributesService.getAttributes(
       programId,
       true,
-      true,
-      false,
       true,
     );
     const usedPlaceholders: string[] = [];
