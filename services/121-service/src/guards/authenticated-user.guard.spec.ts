@@ -53,7 +53,7 @@ describe('AuthenticatedUserGuard', () => {
     } as unknown as ExecutionContext;
 
     const canActivateSpy = jest
-      .spyOn(AuthenticatedUserGuard.prototype as any, 'canActivate')
+      .spyOn(AuthenticatedUserGuard.prototype, 'canActivate')
       .mockReturnValue(true);
 
     expect(await guard.canActivate(context)).toBe(true);

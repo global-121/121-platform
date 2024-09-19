@@ -1,6 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+interface ExchangeRateApiResponse {
+  data: {
+    response: {
+      average_bid: string;
+      close_time: string;
+    }[];
+  };
+}
 
 @Injectable()
 export class ExchangeRateApiService {
@@ -14,21 +22,19 @@ export class ExchangeRateApiService {
     now.setDate(now.getDate() - 1);
     const yesterday = now.toISOString().split('T')[0];
 
-    const dataKey = 'data';
-    const responseKey = 'response';
-    const averageBidKey = 'average_bid';
-    const closeTimeKey = 'close_time';
-
     try {
       const exchangeRateUrl = `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`;
-      const data = ((await this.httpService.get(exchangeRateUrl)) as any)[
-        dataKey
-      ][responseKey][0];
+      const response: ExchangeRateApiResponse =
+        await this.httpService.get(exchangeRateUrl);
 
-      return { rate: data[averageBidKey], closeTime: data[closeTimeKey] };
+      // Extract the first response
+      const data = response.data.response[0];
+
+      // Return rate and closeTime directly
+      return { rate: data.average_bid, closeTime: data.close_time };
     } catch (error) {
       throw new HttpException(
-        `Failed to make ExchangeRate API call: ${error}`,
+        `Failed to retrieve exchange rate for ${currency}: ${error}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

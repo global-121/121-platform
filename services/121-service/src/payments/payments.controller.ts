@@ -45,7 +45,9 @@ import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto'
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')
@@ -163,10 +165,11 @@ export class PaymentsController {
     @Body() data: CreatePaymentDto,
     @Paginate() query: PaginateQuery,
     @Param('programId', ParseIntPipe) programId: number,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
     @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
       userId,
       programId,
@@ -208,9 +211,10 @@ export class PaymentsController {
   public async retryPayment(
     @Body() data: RetryPaymentDto,
     @Param('programId', ParseIntPipe) programId: number,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<BulkActionResultDto> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     return await this.paymentsService.retryPayment(
       userId,
       programId,
@@ -239,9 +243,10 @@ export class PaymentsController {
     programId: number,
     @Param('payment', ParseIntPipe)
     payment: number,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<FspInstructions> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     return await this.paymentsService.getFspInstructions(
       programId,
       payment,
@@ -291,9 +296,10 @@ export class PaymentsController {
     programId: number,
     @Param('payment', ParseIntPipe)
     payment: number,
-    @Req() req,
+    @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     return await this.paymentsService.importFspReconciliationData(
       file,
       programId,

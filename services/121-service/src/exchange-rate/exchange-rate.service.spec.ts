@@ -6,7 +6,6 @@ import { ExchangeRateApiService } from '@121-service/src/exchange-rate/exchange-
 import { ExchangeRateEntity } from '@121-service/src/exchange-rate/exchange-rate.entity';
 import { ExchangeRateService } from '@121-service/src/exchange-rate/exchange-rate.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 
 // Mock for ExchangeRateApiService
 const mockExchangeRateApiService = {
@@ -30,12 +29,17 @@ describe('ExchangeRateService', () => {
         {
           provide: getRepositoryToken(ProgramEntity),
           useValue: {
-            createQueryBuilder: jest.fn(() =>
-              generateMockCreateQueryBuilder([
-                { program_currency: 'GBP' },
-                { program_currency: 'USD' },
-              ]),
-            ),
+            createQueryBuilder: jest.fn(() => ({
+              select: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              distinct: jest.fn().mockReturnThis(),
+              getRawMany: jest
+                .fn()
+                .mockResolvedValue([
+                  { program_currency: 'USD' },
+                  { program_currency: 'GBP' },
+                ]),
+            })),
           },
         },
         {
@@ -47,9 +51,9 @@ describe('ExchangeRateService', () => {
 
     exchangeRateService =
       moduleRef.get<ExchangeRateService>(ExchangeRateService);
-    mockExchangeRateRepository = moduleRef.get(
-      getRepositoryToken(ExchangeRateEntity),
-    );
+    mockExchangeRateRepository = moduleRef.get<
+      jest.Mocked<Repository<ExchangeRateEntity>>
+    >(getRepositoryToken(ExchangeRateEntity));
   });
 
   it('should call retrieveExchangeRate and save ExchangeRateEntity', async () => {
@@ -60,23 +64,19 @@ describe('ExchangeRateService', () => {
     const USD_closeTime = '2024-01-31';
     const GBP_closeTime = '2024-01-30';
 
-    // This assumes that the query in getAllProgramCurrencies is correct.
-    // To test the actual query we should write an API test
-    jest
-      .spyOn(exchangeRateService, 'getAllProgramCurrencies' as any)
-      .mockResolvedValue([USD_currency, GBP_currency]);
-
-    mockExchangeRateApiService.retrieveExchangeRate.mockResolvedValueOnce({
+    // Mocking API responses for retrieveExchangeRate
+    mockExchangeRateApiService.retrieveExchangeRate!.mockResolvedValueOnce({
       rate: USD_euroExchangeRate.toString(),
       closeTime: USD_closeTime,
     });
-    mockExchangeRateApiService.retrieveExchangeRate.mockResolvedValue({
+    mockExchangeRateApiService.retrieveExchangeRate!.mockResolvedValue({
       rate: GBP_euroExchangeRate.toString(),
       closeTime: GBP_closeTime,
     });
 
     await exchangeRateService.getAndStoreProgramsExchangeRates();
 
+    // Expectations for repository save calls
     expect(mockExchangeRateRepository.save).toHaveBeenCalledWith(
       expect.objectContaining({
         currency: USD_currency,

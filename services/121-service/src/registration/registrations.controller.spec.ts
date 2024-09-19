@@ -1,4 +1,5 @@
 import { TestBed } from '@automock/jest';
+import { HttpStatus } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
 
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
@@ -6,6 +7,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 describe('RegistrationsController', () => {
   let registrationController: RegistrationsController;
@@ -14,11 +16,6 @@ describe('RegistrationsController', () => {
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(RegistrationsController).compile();
-    const patchRegistrationsStatusResult = {
-      totalFilterCount: 1,
-      applicableCount: 1,
-      nonApplicableCount: 0,
-    };
 
     registrationController = unit;
     registrationsPaginationService = unitRef.get(
@@ -35,21 +32,19 @@ describe('RegistrationsController', () => {
     jest
       .spyOn(registrationsPaginationService, 'throwIfNoPermissionsForQuery')
       .mockResolvedValue(); // do not throw
-
-    jest
-      .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
-      .mockResolvedValue(patchRegistrationsStatusResult);
   });
 
   describe('Change registation status with right status-change permission', () => {
     const paginateQuery: PaginateQuery = {
       path: '',
     };
-    const userId = 1;
+    const mockRequest: ScopedUserRequest = {
+      user: {
+        id: 1,
+      },
+    } as unknown as ScopedUserRequest;
     const programId = 1;
-    const queryParams = {
-      dryRun: true,
-    };
+    const dryRun = 'true';
 
     it('should throw exception when user includes a message, but does not have permission for that', async () => {
       const statusUpdateDto: RegistrationStatusPatchDto = {
@@ -62,9 +57,9 @@ describe('RegistrationsController', () => {
         registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          { user: { id: userId } },
+          mockRequest,
           programId,
-          queryParams,
+          dryRun,
         ),
       ).rejects.toHaveProperty('status', 403); // Forbidden
     });
@@ -80,9 +75,9 @@ describe('RegistrationsController', () => {
         registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          { user: { id: userId } },
+          mockRequest,
           programId,
-          queryParams,
+          dryRun,
         ),
       ).rejects.toHaveProperty('status', 403); // Forbidden
     });
@@ -94,18 +89,28 @@ describe('RegistrationsController', () => {
         messageTemplateKey: undefined,
       };
 
-      const patchRegistrationsStatusResult =
-        await registrationController.patchRegistrationsStatus(
+      const patchRegistrationsStatusResult = {
+        totalFilterCount: 1,
+        applicableCount: 1,
+        nonApplicableCount: 0,
+      };
+
+      jest
+        .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
+        .mockResolvedValue(patchRegistrationsStatusResult);
+
+      await expect(
+        registrationController.patchRegistrationsStatus(
           paginateQuery,
           statusUpdateDto,
-          { user: { id: userId } },
+          mockRequest,
           programId,
-          queryParams,
-        );
-
-      expect(patchRegistrationsStatusResult).toBe(
-        patchRegistrationsStatusResult,
-      );
+          dryRun,
+        ),
+      ).rejects.toMatchObject({
+        status: HttpStatus.OK,
+        response: patchRegistrationsStatusResult,
+      });
     });
   });
 });

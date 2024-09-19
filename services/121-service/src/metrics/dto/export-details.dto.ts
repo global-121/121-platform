@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsOptional } from 'class-validator';
+import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export enum ExportType {
   allPeopleAffected = 'all-people-affected',
@@ -37,4 +37,8 @@ export class ExportDetailsQueryParamsDto {
   @Type(() => Date)
   @IsOptional()
   public readonly toDate?: Date;
+
+  @IsString() // Validate that 'search' is a string
+  @IsOptional()
+  public readonly search?: string; // Add 'search' parameter
 }

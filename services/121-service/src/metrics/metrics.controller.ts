@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
@@ -25,13 +26,17 @@ import {
   ExportDetailsQueryParamsDto,
   ExportType,
 } from '@121-service/src/metrics/dto/export-details.dto';
+import { FileDto } from '@121-service/src/metrics/dto/file.dto';
+import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -99,10 +104,11 @@ export class MetricsController {
     @Query() queryParams: WrapperType<ExportDetailsQueryParamsDto>,
     @Paginate() paginationQuery: PaginateQuery,
     @Query('format') format = 'json',
-    @Req() req,
-    @Res() res,
-  ): Promise<any> {
-    const userId = req.user.id;
+    @Req() req: ScopedUserRequest,
+    @Res() res: Response,
+  ): Promise<Response | void> {
+    const userId = RequestHelper.getUserId(req);
+
     if (
       queryParams.toDate &&
       queryParams.fromDate &&
@@ -122,7 +128,7 @@ export class MetricsController {
       maxPayment: queryParams.maxPayment ?? null,
       paginationQuery,
     });
-    if (!result || result?.data.length === 0) {
+    if (!result || !Array.isArray(result.data) || result.data.length === 0) {
       const errors = 'There is currently no data to export';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
@@ -143,7 +149,7 @@ export class MetricsController {
   })
   // TODO: move to intersolve-voucher.controller and rename to /financial-servicer-providers/intersolve-voucher/vouchers?status=toCancel&responseType=csv
   @Get('metrics/to-cancel-vouchers')
-  public async getToCancelVouchers(): Promise<any> {
+  public async getToCancelVouchers(): Promise<FileDto> {
     return await this.metricsService.getToCancelVouchers();
   }
 
@@ -165,7 +171,7 @@ export class MetricsController {
   public async getPaymentsWithStateSums(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<any> {
+  ): Promise<PaymentStateSumDto[]> {
     return await this.metricsService.getPaymentsWithStateSums(programId);
   }
 

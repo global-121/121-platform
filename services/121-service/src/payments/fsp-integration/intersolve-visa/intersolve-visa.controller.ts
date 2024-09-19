@@ -24,7 +24,9 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { IntersolveBlockWalletResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-block.dto';
 import { GetWalletsResponseDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-visa')
@@ -76,12 +78,13 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/block',
   )
   public async blockWallet(
-    @Req() req: any,
+    @Req() req: ScopedUserRequest,
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       true,
@@ -106,12 +109,13 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/wallets/:tokenCode/unblock',
   )
   public async unblockWallet(
-    @Req() req: any,
+    @Req() req: ScopedUserRequest,
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       false,
@@ -162,12 +166,13 @@ export class IntersolveVisaController {
     'programs/:programId/financial-service-providers/intersolve-visa/customers/:referenceId/wallets',
   )
   public async reissueWalletAndCard(
-    @Req() req: any,
+    @Req() req: ScopedUserRequest,
     @Param() params,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    const userId = req.user.id;
+    const userId = RequestHelper.getUserId(req);
+
     return await this.intersolveVisaService.reissueWalletAndCard(
       params.referenceId,
       programId,
