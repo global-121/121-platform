@@ -139,7 +139,8 @@ export class ProgramAttributesService {
         label: null,
       },
       {
-        name: 'fspDisplayName',
+        // ##TODO: refactor this naming to something like programFinancialServiceProviderConfigurationName
+        name: 'programFinancialServiceProviderConfigurationLabel',
         type: 'text',
         label: null,
       },

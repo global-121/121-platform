@@ -253,8 +253,12 @@ export class MetricsService {
       row['id'] = row['registrationProgramId'];
 
       const preferredLanguage = 'en';
-      row['fspDisplayName'] = row['fspDisplayName']?.[preferredLanguage]
-        ? row['fspDisplayName'][preferredLanguage]
+      row['programFinancialServiceProviderConfigurationLabel'] = row[
+        'programFinancialServiceProviderConfigurationLabel'
+      ]?.[preferredLanguage]
+        ? row['programFinancialServiceProviderConfigurationLabel'][
+            preferredLanguage
+          ]
         : '';
 
       delete row['registrationProgramId'];
@@ -387,7 +391,7 @@ export class MetricsService {
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
       GenericRegistrationAttributes.registrationCreatedDate,
-      GenericRegistrationAttributes.fspDisplayName,
+      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
       GenericRegistrationAttributes.paymentCount,
     ] as string[];
 

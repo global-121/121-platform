@@ -34,7 +34,23 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     });
   }
 
-  public async getUserNamePasswordProperties(
+  public async getUsernamePasswordPropertiesForIds(
+    programFinancialServiceProviderConfigurationId: number[],
+  ): Promise<
+    {
+      programFinancialServiceProviderConfigurationId: number;
+      credentials: UsernamePasswordInterface;
+    }[]
+  > {
+    return await Promise.all(
+      programFinancialServiceProviderConfigurationId.map(async (id) => ({
+        programFinancialServiceProviderConfigurationId: id,
+        credentials: await this.getUsernamePasswordProperties(id),
+      })),
+    );
+  }
+
+  public async getUsernamePasswordProperties(
     programFinancialServiceProviderConfigurationId: number,
   ): Promise<UsernamePasswordInterface> {
     const properties = await this.getConfigurationProperties(

@@ -236,7 +236,7 @@ You can also leave the body empty.`,
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({ summary: 'Create registration attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/program-registration-attributes')
+  @Post(':programId/registration-attributes')
   public async createProgramQuestion(
     @Body() programRegistrationAttribute: ProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)

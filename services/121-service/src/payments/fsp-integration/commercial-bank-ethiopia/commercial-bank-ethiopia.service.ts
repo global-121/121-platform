@@ -39,6 +39,7 @@ import {
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 
 @Injectable()
 export class CommercialBankEthiopiaService
@@ -64,7 +65,7 @@ export class CommercialBankEthiopiaService
     private readonly transactionsService: TransactionsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    public readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
 
   public async sendPayment(
@@ -118,9 +119,11 @@ export class CommercialBankEthiopiaService
   async processQueuedPayment(
     data: CommercialBankEthiopiaJobDto,
   ): Promise<void> {
-    const credentials = await this.getCommercialBankEthiopiaCredentials(
-      data.paPaymentData.programFinancialServiceProviderConfigurationId,
-    );
+    const credentials =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        data.paPaymentData.programFinancialServiceProviderConfigurationId,
+      );
+
     const paymentRequestResultPerPa = await this.sendPaymentPerPa(
       data.payload,
       data.paPaymentData.referenceId,
@@ -259,7 +262,7 @@ export class CommercialBankEthiopiaService
   public async sendPaymentPerPa(
     payload: CommercialBankEthiopiaTransferPayload,
     referenceId: string,
-    credentials: RequiredUsernamePasswordInterface,
+    credentials: UsernamePasswordInterface,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName =
@@ -268,42 +271,56 @@ export class CommercialBankEthiopiaService
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
 
-    let result = await this.commercialBankEthiopiaApiService.creditTransfer(
-      payload,
-      credentials,
-    );
-
-    if (result && result.resultDescription === 'Transaction is DUPLICATED') {
-      result = await this.commercialBankEthiopiaApiService.getTransactionStatus(
-        payload,
-        credentials,
-      );
-    }
-
-    if (
-      result &&
-      result.Status &&
-      result.Status.successIndicator &&
-      result.Status.successIndicator._text === 'Success'
-    ) {
-      paTransactionResult.status = StatusEnum.success;
-      payload.status = StatusEnum.success;
-    } else {
+    let requiredCredentials: RequiredUsernamePasswordInterface;
+    if (credentials.password == null || credentials.username == null) {
       paTransactionResult.status = StatusEnum.error;
       paTransactionResult.message =
-        result.resultDescription ||
-        (result.Status &&
-          result.Status.messages &&
-          (result.Status.messages.length > 0
-            ? result.Status.messages[0]._text
-            : result.Status.messages._text));
-    }
+        'Missing username or password for program financial service provider configuration of the registration';
+      return paTransactionResult;
+    } else {
+      requiredCredentials = {
+        username: credentials.username,
+        password: credentials.password,
+      };
 
-    paTransactionResult.customData = {
-      requestResult: payload,
-      paymentResult: result,
-    };
-    return paTransactionResult;
+      let result = await this.commercialBankEthiopiaApiService.creditTransfer(
+        payload,
+        requiredCredentials,
+      );
+
+      if (result && result.resultDescription === 'Transaction is DUPLICATED') {
+        result =
+          await this.commercialBankEthiopiaApiService.getTransactionStatus(
+            payload,
+            requiredCredentials,
+          );
+      }
+
+      if (
+        result &&
+        result.Status &&
+        result.Status.successIndicator &&
+        result.Status.successIndicator._text === 'Success'
+      ) {
+        paTransactionResult.status = StatusEnum.success;
+        payload.status = StatusEnum.success;
+      } else {
+        paTransactionResult.status = StatusEnum.error;
+        paTransactionResult.message =
+          result.resultDescription ||
+          (result.Status &&
+            result.Status.messages &&
+            (result.Status.messages.length > 0
+              ? result.Status.messages[0]._text
+              : result.Status.messages._text));
+      }
+
+      paTransactionResult.customData = {
+        requestResult: payload,
+        paymentResult: result,
+      };
+      return paTransactionResult;
+    }
   }
 
   public async validateAllPas(): Promise<void> {
@@ -315,7 +332,7 @@ export class CommercialBankEthiopiaService
 
   public async validatePasForProgram(programId: number): Promise<void> {
     const credentials =
-      await this.getCommercialBankEthiopiaCredentials(programId);
+      await this.getCommercialBankEthiopiaCredentialsOrThrow(programId);
 
     const getAllPersonsAffectedData =
       await this.getAllPersonsAffectedData(programId);
@@ -430,21 +447,21 @@ export class CommercialBankEthiopiaService
     return formattedData;
   }
 
-  public async getCommercialBankEthiopiaCredentials(
+  public async getCommercialBankEthiopiaCredentialsOrThrow(
     programFinancialServiceProviderConfigurationId: number,
   ): Promise<RequiredUsernamePasswordInterface> {
     const credentials =
-      await this.programFspConfigurationRepository.getUserNamePasswordProperties(
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
         programFinancialServiceProviderConfigurationId,
       );
 
-    // throw error if username of password not found
-    if (!credentials.username || !credentials.password) {
+    if (credentials.password == null || credentials.username == null) {
       throw new HttpException(
-        `Commercial Bank Ethiopia credentials not found for program financial service provider configuration id : ${programFinancialServiceProviderConfigurationId}`,
+        'Missing username or password for program financial service provider configuration of the registration',
         HttpStatus.NOT_FOUND,
       );
     }
+
     // added this to prevent a typeerror as: return credentials gives a type error
     const requiredCredentials: RequiredUsernamePasswordInterface = {
       username: credentials.username,

@@ -54,6 +54,7 @@ import {
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 
 @Injectable()
 export class IntersolveVoucherService
@@ -94,48 +95,6 @@ export class IntersolveVoucherService
     payment: number,
     useWhatsapp: boolean,
   ): Promise<void> {
-    // ##TODO This method assumes that there is only one Intersolve Voucher FSP in this program, this may not be the case. This should be refactored
-    const config =
-      await this.programFspConfigurationRepository.getPropertyValuesByNamesOrThrow(
-        {
-          programFinancialServiceProviderConfigurationId:
-            paPaymentList[0].programFinancialServiceProviderConfigurationId,
-          names: [
-            FinancialServiceProviderConfigurationEnum.username,
-            FinancialServiceProviderConfigurationEnum.password,
-          ],
-        },
-      );
-
-    const usernameConfig = config.find(
-      (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
-    )?.value;
-    const passwordConfig = config.find(
-      (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
-    )?.value;
-
-    if (
-      !usernameConfig ||
-      !passwordConfig ||
-      typeof usernameConfig !== 'string' ||
-      typeof passwordConfig !== 'string'
-    ) {
-      throw new HttpException(
-        `Username or password configuration not found or properly set for this programFinancialServiceProviderConfigurationId: ${paPaymentList[0].programFinancialServiceProviderConfigurationId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const credentials =
-      await this.programFspConfigurationRepository.getUserNamePasswordProperties(
-        paPaymentList[0].programFinancialServiceProviderConfigurationId,
-      );
-    if (!credentials.username || !credentials.password) {
-      throw new HttpException(
-        'Intersolve credentials not found for this program',
-        HttpStatus.NOT_FOUND,
-      );
-    }
     for (const paymentInfo of paPaymentList) {
       const job = await this.paymentIntersolveVoucherQueue.add(
         ProcessNamePayment.sendPayment,
@@ -143,7 +102,6 @@ export class IntersolveVoucherService
           paymentInfo,
           useWhatsapp,
           payment,
-          credentials,
           programId,
         },
       );
@@ -154,26 +112,24 @@ export class IntersolveVoucherService
   public async processQueuedPayment(
     jobData: IntersolveVoucherJobDto,
   ): Promise<void> {
+    const credentials =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        jobData.paymentInfo.programFinancialServiceProviderConfigurationId,
+      );
     const paResult = await this.sendIndividualPayment(
       jobData.paymentInfo,
       jobData.useWhatsapp,
       jobData.paymentInfo.transactionAmount,
       jobData.payment,
-      jobData.credentials,
+      credentials,
     );
     if (!paResult) {
       return;
     }
 
-    const registration = await this.registrationScopedRepository.findOne({
+    const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(paResult.referenceId) },
     });
-    if (!registration) {
-      throw new HttpException(
-        'PA with this referenceId not found (within your scope)',
-        HttpStatus.NOT_FOUND,
-      );
-    }
     await this.storeTransactionResult(
       jobData.payment,
       jobData.paymentInfo.transactionAmount,
@@ -195,7 +151,7 @@ export class IntersolveVoucherService
     useWhatsapp: boolean,
     calculatedAmount: number,
     payment: number,
-    credentials: { username: string; password: string },
+    credentials: UsernamePasswordInterface,
   ) {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;

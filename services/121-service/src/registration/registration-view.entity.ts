@@ -56,7 +56,10 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
         'fspconfig."financialServiceProviderName"',
         'financialServiceProviderName',
       )
-      .addSelect('fspconfig.label', 'fspDisplayName')
+      .addSelect(
+        'fspconfig.label',
+        'programFinancialServiceProviderConfigurationLabel',
+      )
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
         'registration.maxPayments - registration.paymentCount',
@@ -125,7 +128,7 @@ export class RegistrationViewEntity {
   public programFinancialServiceProviderConfigurationName: string;
 
   @ViewColumn()
-  public fspDisplayName: LocalizedString;
+  public programFinancialServiceProviderConfigurationLabel: LocalizedString;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()

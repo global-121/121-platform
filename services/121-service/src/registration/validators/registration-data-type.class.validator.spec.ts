@@ -53,7 +53,7 @@ describe('RegistrationDataTypeClassValidator', () => {
 
   it('should return true for valid attribute type', async () => {
     const mockProgram = {
-      getValidationInfoForQuestionName: jest
+      getValidationInfoForAttributeName: jest
         .fn()
         .mockResolvedValue({ type: 'text', options: [] }),
     };

@@ -6,35 +6,23 @@ import { Repository } from 'typeorm';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 
 describe('ProgramAttributesService', () => {
+  let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
   let programAttributesService: ProgramAttributesService;
-  let programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-
-  const programCustomAttributeRepositoryToken: string | Function =
-    getRepositoryToken(ProgramCustomAttributeEntity);
   const programRepositoryToken: string | Function =
     getRepositoryToken(ProgramEntity);
-  const programQuestionToken: string | Function = getRepositoryToken(
-    ProgramQuestionEntity,
-  );
-  const fspQuestionToken: string | Function =
-    getRepositoryToken(FspQuestionEntity);
+  const programRegistrationAttributeToken: string | Function =
+    getRepositoryToken(ProgramRegistrationAttributeEntity);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProgramAttributesService,
         {
-          provide: programCustomAttributeRepositoryToken,
-          useClass: Repository,
-        },
-        {
-          provide: fspQuestionToken,
-          useClass: Repository,
-        },
-        {
-          provide: programQuestionToken,
+          provide: programRegistrationAttributeToken,
           useClass: Repository,
         },
         {
@@ -47,14 +35,13 @@ describe('ProgramAttributesService', () => {
     programAttributesService = module.get<ProgramAttributesService>(
       ProgramAttributesService,
     );
-
-    programCustomAttributeRepository = module.get<
-      Repository<ProgramCustomAttributeEntity>
-    >(programCustomAttributeRepositoryToken);
+    programRegistrationAttributeRepository = module.get<
+      Repository<ProgramRegistrationAttributeEntity>
+    >(programRegistrationAttributeToken);
   });
 
   describe('getAttributes', () => {
-    it('should return only custom attributes if includeCustomAttributes === true', async () => {
+    it('should return only program registration attributes if includeProgramRegistrationAttributes === true and includeTemplateDefaultAttributes === false', async () => {
       const dbQueryResult = [
         {
           name: 'test name #1',
@@ -70,27 +57,34 @@ describe('ProgramAttributesService', () => {
       );
 
       jest
-        .spyOn(programCustomAttributeRepository, 'createQueryBuilder')
+        .spyOn(programRegistrationAttributeRepository, 'createQueryBuilder')
         .mockImplementation(() => createQueryBuilder) as any;
 
       const result = await programAttributesService.getAttributes(
         1,
         true,
         false,
-        false,
-        false,
       );
 
-      const resultTypeMapping = result.map((r) => r.questionType);
+      const includeTemplateDefaultAttributes: (keyof RegistrationViewEntity)[] =
+        [
+          'paymentAmountMultiplier',
+          'programFinancialServiceProviderConfigurationLabel',
+          'programFinancialServiceProviderConfigurationLabel',
+          'paymentCountRemaining',
+        ];
+
+      const resultPropertyNames = result.map((r) => r.name);
 
       expect(result).toBeDefined();
       // Test the mapping
       expect(result[0].label).toBe(dbQueryResult[0].label);
-      // Test the type assignment
-      expect(result[0].questionType).toBe(QuestionType.programCustomAttribute);
-      // Test no other types are included
-      expect(resultTypeMapping).not.toContain(QuestionType.programQuestion);
-      expect(resultTypeMapping).not.toContain(QuestionType.fspQuestion);
+      expect(
+        resultPropertyNames.every(
+          (name) =>
+            !includeTemplateDefaultAttributes.map(String).includes(name),
+        ),
+      ).toBe(true);
     });
   });
 });

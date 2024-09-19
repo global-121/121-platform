@@ -88,8 +88,11 @@ export class RegistrationsPaginationService {
       }
     }
 
-    // If you want to select fspDisplayName, you also need to get financialServiceProvider because we need this to find the correct fspDisplayName
-    if (query.select && query.select.includes('fspDisplayName')) {
+    // If you want to select programFinancialServiceProviderConfigurationLabel, you also need to get financialServiceProvider because we need this to find the correct programFinancialServiceProviderConfigurationLabel
+    if (
+      query.select &&
+      query.select.includes('programFinancialServiceProviderConfigurationLabel')
+    ) {
       if (fullnameNamingConvention) {
         query.select.push('financialServiceProvider');
       }

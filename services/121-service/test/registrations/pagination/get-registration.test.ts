@@ -23,7 +23,8 @@ describe('Load PA table', () => {
     const attribute3 = 'referenceId';
     const attributeName = 'name';
     const attributeFullName = 'fullName';
-    const attributeFspDisplayName = 'fspDisplayName';
+    const attributeprogramFinancialServiceProviderConfigurationLabel =
+      'programFinancialServiceProviderConfigurationLabel';
     const attributeProgramFinancialServiceProviderConfigurationName =
       'programFinancialServiceProviderConfigurationName';
 
@@ -110,9 +111,11 @@ describe('Load PA table', () => {
       expect(data[0]).not.toHaveProperty(attributeFullName);
     });
 
-    it('should only return fspDisplayName', async () => {
+    it('should only return programFinancialServiceProviderConfigurationLabel', async () => {
       // Arrange
-      const requestedDynamicAttributes = [attributeFspDisplayName];
+      const requestedDynamicAttributes = [
+        attributeprogramFinancialServiceProviderConfigurationLabel,
+      ];
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
@@ -123,7 +126,9 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
 
       // Assert
-      expect(data[0]).toHaveProperty(attributeFspDisplayName);
+      expect(data[0]).toHaveProperty(
+        attributeprogramFinancialServiceProviderConfigurationLabel,
+      );
       expect(data[0]).not.toHaveProperty(
         attributeProgramFinancialServiceProviderConfigurationName,
       );

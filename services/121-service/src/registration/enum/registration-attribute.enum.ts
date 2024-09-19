@@ -41,7 +41,7 @@ export enum GenericRegistrationAttributes {
   scope = 'scope',
   status = 'status',
   registrationProgramId = 'registrationProgramId',
-  fspDisplayName = 'fspDisplayName',
+  programFinancialServiceProviderConfigurationLabel = 'programFinancialServiceProviderConfigurationLabel',
   registrationCreatedDate = 'registrationCreatedDate',
 }
 

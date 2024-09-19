@@ -1,10 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -12,12 +9,13 @@ import {
   ProcessNamePayment,
   QueueNamePayment,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
-import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
 const programId = 3;
 const paymentNr = 5;
-const mockCredentials = { username: '1234', password: '1234' };
+const usernameValue = '1234';
+const passwordValue = '4567';
+const mockCredentials = { username: usernameValue, password: passwordValue };
 const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,
@@ -35,7 +33,6 @@ const paymentDetailsResult: IntersolveVoucherJobDto = {
   paymentInfo: sendPaymentData[0],
   useWhatsapp: true,
   payment: paymentNr,
-  credentials: mockCredentials,
   programId,
 };
 
@@ -64,23 +61,20 @@ describe('IntersolveVoucherService', () => {
 
     const dbQueryResult = [
       {
-        name: FinancialServiceProviderConfigurationEnum.password,
-        value: '1234',
-      },
-      {
-        name: FinancialServiceProviderConfigurationEnum.username,
-        value: '1234',
+        credentials: {
+          username: usernameValue,
+          password: passwordValue,
+        },
+        programFinancialServiceProviderConfigurationId: 1,
       },
     ];
-    const createQueryBuilder: any =
-      generateMockCreateQueryBuilder(dbQueryResult);
 
     jest
       .spyOn(
         intersolveVoucherService.programFspConfigurationRepository,
-        'createQueryBuilder',
+        'getUsernamePasswordPropertiesForIds',
       )
-      .mockImplementation(() => createQueryBuilder) as any;
+      .mockImplementation(() => Promise.resolve(dbQueryResult));
 
     jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
       data: {

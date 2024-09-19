@@ -353,7 +353,7 @@ export class EventsService {
 
   private getEventType(key: string): EventEnum {
     const financialServiceProviderKey: keyof RegistrationViewEntity =
-      'fspDisplayName';
+      'programFinancialServiceProviderConfigurationLabel';
     if (key === financialServiceProviderKey) {
       return EventEnum.financialServiceProviderChange;
     }
