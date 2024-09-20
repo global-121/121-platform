@@ -134,7 +134,7 @@ describe('TransactionJobProcessorsService', () => {
     (queryFailedError as any).code = '23505';
 
     jest
-      .spyOn(safaricomService, 'doTransfer')
+      .spyOn(safaricomService, 'saveAndDoTransfer')
       .mockRejectedValueOnce(queryFailedError);
 
     jest
@@ -154,7 +154,7 @@ describe('TransactionJobProcessorsService', () => {
     expect(financialServiceProviderRepository.getByName).toHaveBeenCalledWith(
       FinancialServiceProviderName.safaricom,
     );
-    expect(safaricomService.doTransfer).toHaveBeenCalledWith(
+    expect(safaricomService.saveAndDoTransfer).toHaveBeenCalledWith(
       expect.objectContaining({
         transferAmount: mockedTransactionJob.transactionAmount,
         phoneNumber: mockedTransactionJob.phoneNumber,

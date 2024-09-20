@@ -4,11 +4,11 @@ import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
+import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
-import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
+import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import {
@@ -29,11 +29,11 @@ const mockedSafaricomTransferParams: DoTransferParams = {
 describe('SafaricomService', () => {
   let service: SafaricomService;
   let safaricomApiService: SafaricomApiService;
-  let safaricomTransferRepository: SafaricomTransferRepository;
+  let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
 
   let redisClient: Redis;
   let safaricomTransferCallbackQueue: Queue;
-  let safaricomTransferTimeoutCallbackQueue: Queue;
+  let safaricomTimeoutCallbackQueue: Queue;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -46,7 +46,7 @@ describe('SafaricomService', () => {
           },
         },
         {
-          provide: SafaricomTransferRepository,
+          provide: SafaricomTransferScopedRepository,
           useValue: {
             save: jest.fn(),
             update: jest.fn(),
@@ -75,13 +75,14 @@ describe('SafaricomService', () => {
 
     service = module.get<SafaricomService>(SafaricomService);
     safaricomApiService = module.get<SafaricomApiService>(SafaricomApiService);
-    safaricomTransferRepository = module.get<SafaricomTransferRepository>(
-      SafaricomTransferRepository,
-    );
+    safaricomTransferScopedRepository =
+      module.get<SafaricomTransferScopedRepository>(
+        SafaricomTransferScopedRepository,
+      );
     safaricomTransferCallbackQueue = module.get(
       getQueueToken(SafaricomCallbackQueueNames.transfer),
     );
-    safaricomTransferTimeoutCallbackQueue = module.get(
+    safaricomTimeoutCallbackQueue = module.get(
       getQueueToken(SafaricomCallbackQueueNames.timeout),
     );
     redisClient = module.get(REDIS_CLIENT);
@@ -106,21 +107,21 @@ describe('SafaricomService', () => {
         },
       };
 
-      jest.spyOn(safaricomTransferRepository, 'save');
-      jest.spyOn(safaricomTransferRepository, 'update');
+      jest.spyOn(safaricomTransferScopedRepository, 'save');
+      jest.spyOn(safaricomTransferScopedRepository, 'update');
       jest
         .spyOn(safaricomApiService, 'sendTransferAndHandleResponse')
         .mockResolvedValue(sendTransferResult);
 
-      const transferResult = await service.doTransfer(
+      const transferResult = await service.saveAndDoTransfer(
         mockedSafaricomTransferParams,
       );
 
-      expect(safaricomTransferRepository.save).toHaveBeenCalled();
+      expect(safaricomTransferScopedRepository.save).toHaveBeenCalled();
       expect(
         safaricomApiService.sendTransferAndHandleResponse,
       ).toHaveBeenCalledWith(mockedSafaricomTransferParams);
-      expect(safaricomTransferRepository.update).toHaveBeenCalled();
+      expect(safaricomTransferScopedRepository.update).toHaveBeenCalled();
       expect(transferResult).toEqual(undefined);
     });
   });
@@ -168,9 +169,9 @@ describe('SafaricomService', () => {
     });
   });
 
-  describe('processTransferTimeoutCallback', () => {
-    it('should add job to safaricomTransferTimeoutCallbackQueue and update Redis', async () => {
-      const mockTimeoutCallback: SafaricomTransferTimeoutCallbackDto = {
+  describe('processTimeoutCallback', () => {
+    it('should add job to safaricomTimeoutCallbackQueue and update Redis', async () => {
+      const mockTimeoutCallback: SafaricomTimeoutCallbackDto = {
         OriginatorConversationID: 'originator-conversation-id',
         InitiatorName: 'initiator-name',
         SecurityCredential: 'security-credential',
@@ -192,12 +193,12 @@ describe('SafaricomService', () => {
 
       jest.spyOn(redisClient, 'sadd').mockResolvedValue(1);
       jest
-        .spyOn(safaricomTransferTimeoutCallbackQueue, 'add')
+        .spyOn(safaricomTimeoutCallbackQueue, 'add')
         .mockResolvedValue(mockJob as any);
 
-      await service.processTransferTimeoutCallback(mockTimeoutCallback);
+      await service.processTimeoutCallback(mockTimeoutCallback);
 
-      expect(safaricomTransferTimeoutCallbackQueue.add).toHaveBeenCalledWith(
+      expect(safaricomTimeoutCallbackQueue.add).toHaveBeenCalledWith(
         JobNames.default,
         {
           originatorConversationId:

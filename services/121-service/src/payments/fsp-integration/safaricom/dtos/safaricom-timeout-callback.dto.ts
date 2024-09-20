@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class SafaricomTransferTimeoutCallbackDto {
+export class SafaricomTimeoutCallbackDto {
   @ApiProperty()
   readonly InitiatorName: string;
   @ApiProperty()

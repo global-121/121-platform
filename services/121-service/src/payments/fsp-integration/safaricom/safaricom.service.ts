@@ -6,14 +6,14 @@ import { Redis } from 'ioredis';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
+import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
-import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
-import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
+import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
   getRedisSetName,
@@ -27,13 +27,13 @@ export class SafaricomService
 {
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
-    private readonly safaricomTransferRepository: SafaricomTransferRepository,
+    private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
     @InjectQueue(SafaricomCallbackQueueNames.transfer)
     private readonly safaricomTransferCallbackQueue: Queue,
     @InjectQueue(SafaricomCallbackQueueNames.timeout)
-    private readonly safaricomTransferTimeoutCallbackQueue: Queue,
+    private readonly safaricomTimeoutCallbackQueue: Queue,
   ) {}
 
   /**
@@ -48,22 +48,33 @@ export class SafaricomService
     throw new Error('Method should not be called anymore.');
   }
 
-  public async doTransfer(transferData: DoTransferParams): Promise<void> {
+  public async saveAndDoTransfer({
+    transactionId,
+    transferAmount,
+    phoneNumber,
+    idNumber,
+    remarks,
+    originatorConversationId,
+  }: DoTransferParams): Promise<void> {
     // Store initial transfer record before transfer because of callback
     const safaricomTransfer = new SafaricomTransferEntity();
-    safaricomTransfer.originatorConversationId =
-      transferData.originatorConversationId;
-    safaricomTransfer.transactionId = transferData.transactionId;
-    await this.safaricomTransferRepository.save(safaricomTransfer);
+    safaricomTransfer.originatorConversationId = originatorConversationId;
+    safaricomTransfer.transactionId = transactionId;
+    await this.safaricomTransferScopedRepository.save(safaricomTransfer);
 
     // Prepare the transfer payload and send the request to safaricom
     const transferResult =
-      await this.safaricomApiService.sendTransferAndHandleResponse(
-        transferData,
-      );
+      await this.safaricomApiService.sendTransferAndHandleResponse({
+        transactionId,
+        transferAmount,
+        phoneNumber,
+        idNumber,
+        remarks,
+        originatorConversationId,
+      });
 
     // Update transfer record with conversation ID
-    await this.safaricomTransferRepository.update(
+    await this.safaricomTransferScopedRepository.update(
       { id: safaricomTransfer.id },
       { mpesaConversationId: transferResult?.data?.ConversationID },
     );
@@ -89,18 +100,17 @@ export class SafaricomService
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
   }
 
-  public async processTransferTimeoutCallback(
-    safaricomTransferTimeoutCallback: SafaricomTransferTimeoutCallbackDto,
+  public async processTimeoutCallback(
+    safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
   ): Promise<void> {
-    const safaricomTransferTimeoutCallbackJob: SafaricomTransferTimeoutCallbackJobDto =
-      {
-        originatorConversationId:
-          safaricomTransferTimeoutCallback.OriginatorConversationID,
-      };
+    const safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto = {
+      originatorConversationId:
+        safaricomTimeoutCallback.OriginatorConversationID,
+    };
 
-    const job = await this.safaricomTransferTimeoutCallbackQueue.add(
+    const job = await this.safaricomTimeoutCallbackQueue.add(
       JobNames.default,
-      safaricomTransferTimeoutCallbackJob,
+      safaricomTimeoutCallbackJob,
     );
 
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
