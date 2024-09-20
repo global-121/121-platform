@@ -8,6 +8,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 
 @Processor(TransactionJobQueueNames.commercialBankEthiopia)
@@ -18,7 +19,7 @@ export class PaymentProcessorCommercialBankEthiopia {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(TransactionJobQueueNames.commercialBankEthiopia)
+  @Process(JobNames.default)
   async handleSendPayment(job: Job): Promise<void> {
     await this.commercialBankEthiopiaService.processQueuedPayment(job.data);
     await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);

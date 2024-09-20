@@ -48,6 +48,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -112,7 +113,7 @@ export class IntersolveVoucherService
 
     for (const paymentInfo of paPaymentList) {
       const job = await this.paymentIntersolveVoucherQueue.add(
-        TransactionJobQueueNames.intersolveVoucher,
+        JobNames.default,
         {
           paymentInfo,
           useWhatsapp,

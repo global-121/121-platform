@@ -19,6 +19,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
 export class SafaricomService
@@ -85,7 +86,7 @@ export class SafaricomService
     };
 
     const job = await this.safaricomTransferCallbackQueue.add(
-      FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
+      JobNames.default,
       safaricomTransferCallbackJob,
     );
 
@@ -102,7 +103,7 @@ export class SafaricomService
       };
 
     const job = await this.safaricomTransferTimeoutCallbackQueue.add(
-      FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
+      JobNames.default,
       safaricomTransferTimeoutCallbackJob,
     );
 

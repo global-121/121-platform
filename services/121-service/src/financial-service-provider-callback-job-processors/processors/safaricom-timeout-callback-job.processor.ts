@@ -9,6 +9,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Processor(FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback)
 export class TimeoutCallbackJobProcessorSafaricom {
@@ -18,7 +19,7 @@ export class TimeoutCallbackJobProcessorSafaricom {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback)
+  @Process(JobNames.default)
   async handleSafaricomTimeoutCallbackJob(job: Job): Promise<void> {
     try {
       await this.financialServiceProviderCallbackJobProcessorsService.processSafaricomTimeoutCallbackJob(

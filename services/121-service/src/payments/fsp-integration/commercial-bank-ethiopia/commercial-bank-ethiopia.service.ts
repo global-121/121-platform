@@ -36,6 +36,7 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -111,7 +112,7 @@ export class CommercialBankEthiopiaService
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
-        TransactionJobQueueNames.commercialBankEthiopia,
+        JobNames.default,
         jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
