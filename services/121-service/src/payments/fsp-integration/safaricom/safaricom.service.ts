@@ -8,10 +8,10 @@ import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/fin
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
+import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
-import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
-import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
@@ -37,7 +37,7 @@ export class SafaricomService
     @InjectQueue(
       FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
     )
-    private readonly safaricomTransferTimeoutCallbackQueue: Queue,
+    private readonly safaricomTimeoutCallbackQueue: Queue,
   ) {}
 
   /**
@@ -104,18 +104,17 @@ export class SafaricomService
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
   }
 
-  public async processTransferTimeoutCallback(
-    safaricomTransferTimeoutCallback: SafaricomTransferTimeoutCallbackDto,
+  public async processTimeoutCallback(
+    safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
   ): Promise<void> {
-    const safaricomTransferTimeoutCallbackJob: SafaricomTransferTimeoutCallbackJobDto =
-      {
-        originatorConversationId:
-          safaricomTransferTimeoutCallback.OriginatorConversationID,
-      };
+    const safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto = {
+      originatorConversationId:
+        safaricomTimeoutCallback.OriginatorConversationID,
+    };
 
-    const job = await this.safaricomTransferTimeoutCallbackQueue.add(
+    const job = await this.safaricomTimeoutCallbackQueue.add(
       PaymentQueueNames.financialServiceProviderTimeoutCallback,
-      safaricomTransferTimeoutCallbackJob,
+      safaricomTimeoutCallbackJob,
     );
 
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);

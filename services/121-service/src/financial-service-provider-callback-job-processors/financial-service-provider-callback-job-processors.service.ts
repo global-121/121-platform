@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
-import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -54,12 +54,12 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
   }
 
   public async processSafaricomTimeoutCallbackJob(
-    safaricomTransferTimeoutCallbackJob: SafaricomTransferTimeoutCallbackJobDto,
+    safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto,
   ): Promise<void> {
     // Find the actual safaricom transfer by originatorConversationId
     const safaricomTransfer =
       await this.safaricomTransferScopedRepository.getByOriginatorConversationId(
-        safaricomTransferTimeoutCallbackJob.originatorConversationId,
+        safaricomTimeoutCallbackJob.originatorConversationId,
       );
 
     // Update transaction status
