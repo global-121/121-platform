@@ -15,6 +15,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 const mockedSafaricomTransferParams: DoTransferParams = {
   transferAmount: 100,
@@ -149,7 +150,7 @@ describe('SafaricomService', () => {
       await service.processTransferCallback(mockCallback);
 
       expect(safaricomTransferCallbackQueue.add).toHaveBeenCalledWith(
-        SafaricomCallbackQueueNames.transfer,
+        JobNames.default,
         {
           originatorConversationId:
             mockCallback.Result.OriginatorConversationID,
@@ -197,7 +198,7 @@ describe('SafaricomService', () => {
       await service.processTransferTimeoutCallback(mockTimeoutCallback);
 
       expect(safaricomTransferTimeoutCallbackQueue.add).toHaveBeenCalledWith(
-        SafaricomCallbackQueueNames.timeout,
+        JobNames.default,
         {
           originatorConversationId:
             mockTimeoutCallback.OriginatorConversationID,

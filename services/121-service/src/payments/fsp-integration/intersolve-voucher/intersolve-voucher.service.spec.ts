@@ -8,6 +8,7 @@ import {
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
@@ -95,7 +96,7 @@ describe('IntersolveVoucherService', () => {
     // Assert
     expect(paymentQueue.add).toHaveBeenCalledTimes(1);
     expect(paymentQueue.add).toHaveBeenCalledWith(
-      TransactionJobQueueNames.intersolveVoucher,
+      JobNames.default,
       paymentDetailsResult,
     );
   });
