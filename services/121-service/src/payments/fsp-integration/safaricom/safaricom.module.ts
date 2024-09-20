@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
+import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
@@ -47,10 +47,10 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     SafaricomService,
     SafaricomApiService,
     CustomHttpService,
-    SafaricomTransferRepository,
+    SafaricomTransferScopedRepository,
   ],
   controllers: [SafaricomController],
-  exports: [SafaricomService, SafaricomTransferRepository],
+  exports: [SafaricomService, SafaricomTransferScopedRepository],
 })
 export class SafaricomModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

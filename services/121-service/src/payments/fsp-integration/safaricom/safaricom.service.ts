@@ -14,7 +14,7 @@ import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/f
 import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
+import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
   getRedisSetName,
@@ -27,7 +27,7 @@ export class SafaricomService
 {
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
-    private readonly safaricomTransferRepository: SafaricomTransferRepository,
+    private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
     @InjectQueue(
@@ -64,7 +64,7 @@ export class SafaricomService
     const safaricomTransfer = new SafaricomTransferEntity();
     safaricomTransfer.originatorConversationId = originatorConversationId;
     safaricomTransfer.transactionId = transactionId;
-    await this.safaricomTransferRepository.save(safaricomTransfer);
+    await this.safaricomTransferScopedRepository.save(safaricomTransfer);
 
     // Prepare the transfer payload and send the request to safaricom
     const transferResult =
@@ -78,7 +78,7 @@ export class SafaricomService
       });
 
     // Update transfer record with conversation ID
-    await this.safaricomTransferRepository.update(
+    await this.safaricomTransferScopedRepository.update(
       { id: safaricomTransfer.id },
       { mpesaConversationId: transferResult?.data?.ConversationID },
     );
