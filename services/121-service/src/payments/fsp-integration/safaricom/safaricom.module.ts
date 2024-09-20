@@ -3,13 +3,13 @@ import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -19,7 +19,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     TypeOrmModule.forFeature([SafaricomTransferEntity]),
     RedisModule,
     BullModule.registerQueue({
-      name: FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+      name: FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
       processors: [
         {
           path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-callback-job.processor.ts',
@@ -31,7 +31,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
       },
     }),
     BullModule.registerQueue({
-      name: FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
+      name: FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
       processors: [
         {
           path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-timeout-callback-job.processor.ts',

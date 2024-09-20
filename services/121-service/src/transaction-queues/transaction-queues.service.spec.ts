@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
+import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';

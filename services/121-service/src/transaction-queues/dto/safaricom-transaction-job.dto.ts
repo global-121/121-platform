@@ -36,12 +36,13 @@ export class SafaricomTransactionJobDto {
   @IsNumber()
   public readonly bulkSize: number;
 
+  @IsNotEmpty()
+  @IsString()
+  public readonly originatorConversationId: string;
+
   @IsOptional()
   public readonly phoneNumber?: string;
 
   @IsOptional()
   public readonly idNumber?: string;
-
-  @IsOptional()
-  public readonly originatorConversationId?: string;
 }

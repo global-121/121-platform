@@ -4,7 +4,9 @@ import { Inject } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
+import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
@@ -18,8 +20,6 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
 
 @Injectable()
 export class SafaricomService
@@ -31,11 +31,11 @@ export class SafaricomService
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
     @InjectQueue(
-      FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+      FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
     )
     private readonly safaricomTransferCallbackQueue: Queue,
     @InjectQueue(
-      FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
+      FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
     )
     private readonly safaricomTransferTimeoutCallbackQueue: Queue,
   ) {}

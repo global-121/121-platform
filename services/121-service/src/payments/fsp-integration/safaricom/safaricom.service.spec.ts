@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
+import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
+import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
@@ -14,8 +16,6 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
 
 const mockedSafaricomTransferParams: DoTransferParams = {
   transferAmount: 100,
@@ -62,7 +62,7 @@ describe('SafaricomService', () => {
         },
         {
           provide: getQueueToken(
-            FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+            FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
           ),
           useValue: {
             add: jest.fn(),
@@ -70,7 +70,7 @@ describe('SafaricomService', () => {
         },
         {
           provide: getQueueToken(
-            FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
+            FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
           ),
           useValue: {
             add: jest.fn(),
@@ -86,12 +86,12 @@ describe('SafaricomService', () => {
     );
     safaricomTransferCallbackQueue = module.get(
       getQueueToken(
-        FinancialServiceProviderCallbackQueuesNames.safaricomTransferCallback,
+        FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
       ),
     );
     safaricomTransferTimeoutCallbackQueue = module.get(
       getQueueToken(
-        FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
+        FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
       ),
     );
     redisClient = module.get(REDIS_CLIENT);
