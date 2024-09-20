@@ -5,7 +5,6 @@ import Redis from 'ioredis';
 
 import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { FinancialServiceProviderCallbackJobProcessorsService } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.service';
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -19,7 +18,7 @@ export class TransferCallbackJobProcessorSafaricom {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(PaymentQueueNames.financialServiceProviderCallback)
+  @Process(FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback)
   async handleSafaricomTransferCallbackJob(job: Job): Promise<void> {
     try {
       await this.financialServiceProviderCallbackJobProcessorsService.processSafaricomTransferCallbackJob(

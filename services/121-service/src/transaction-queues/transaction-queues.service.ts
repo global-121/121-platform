@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -28,7 +27,7 @@ export class TransactionQueuesService {
   ): Promise<void> {
     for (const transferJob of transferJobs) {
       const job = await this.paymentIntersolveVisaQueue.add(
-        PaymentQueueNames.sendPayment,
+        TransactionJobQueueNames.intersolveVisa,
         transferJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
@@ -40,7 +39,7 @@ export class TransactionQueuesService {
   ): Promise<void> {
     for (const safaricomTransactionJob of safaricomTransactionJobs) {
       const job = await this.paymentSafaricomQueue.add(
-        PaymentQueueNames.sendPayment,
+        TransactionJobQueueNames.safaricom,
         safaricomTransactionJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
