@@ -45,6 +45,7 @@ export class CommercialBankEthiopiaApiService {
 
       return responseBody;
     } catch (error) {
+      console.log('CBE API Service - creditTransfer:', error);
       // Handle errors here
       let resultDescription: string | undefined;
 
@@ -160,6 +161,7 @@ export class CommercialBankEthiopiaApiService {
 
       return responseBody;
     } catch (error) {
+      console.log('CBE API Service - getTransactionStatus:', error);
       // Handle errors here
       const result: any = {
         resultDescription: 'Unknown error occurred.',
@@ -258,6 +260,7 @@ export class CommercialBankEthiopiaApiService {
 
       return responseBody;
     } catch (error) {
+      console.log('CBE API Service - getValidationStatus:', error);
       // Handle errors here
       const result: any = {
         resultDescription: 'Unknown error occurred.',

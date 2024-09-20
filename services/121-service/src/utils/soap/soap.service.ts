@@ -147,6 +147,15 @@ export class SoapService {
   }
 
   async postCBERequest(payload: any, soapAction: string): Promise<any> {
+    if (
+      !process.env.COMMERCIAL_BANK_ETHIOPIA_URL ||
+      !process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH
+    ) {
+      throw new Error(
+        'SoapService: Required variables COMMERCIAL_BANK_ETHIOPIA_URL and/or COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH not set!',
+      );
+    }
+
     const soapRequestXml = convert.js2xml(payload, {
       compact: false,
       spaces: 4,
@@ -159,9 +168,14 @@ export class SoapService {
       soapAction,
     };
 
-    let agent;
+    // Debugging headers and request data
+    console.log('SoapService: SOAP Action Header:', soapAction);
+    console.log('SoapService: Request Headers:', headers);
+    console.log('SoapService: SOAP Request XML:', soapRequestXml);
+
+    let agent: https.Agent;
     try {
-      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH!;
+      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH;
       const cert = fs.readFileSync(certPath);
       agent = new https.Agent({
         ca: cert,
@@ -180,6 +194,8 @@ export class SoapService {
       },
     })
       .then((rawResponse: any) => {
+        console.log('SoapService: Raw response:', rawResponse);
+
         const response = rawResponse.response;
         this.httpService.logMessageRequest(
           { url: soapUrl, payload: soapRequestXml },
