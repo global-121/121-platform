@@ -1,7 +1,7 @@
 // Queues for transaction
-export enum TransactionQueueNames {
-  paymentIntersolveVisa = 'paymentIntersolveVisa',
-  paymentIntersolveVoucher = 'paymentIntersolveVoucher',
-  paymentCommercialBankEthiopia = 'paymentCommercialBankEthiopia',
-  paymentSafaricom = 'paymentSafaricom',
+export enum TransactionJobQueueNames {
+  intersolveVisa = 'intersolveVisa',
+  intersolveVoucher = 'intersolveVoucher',
+  commercialBankEthiopia = 'commercialBankEthiopia',
+  safaricom = 'safaricom',
 }

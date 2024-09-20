@@ -8,10 +8,10 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 
-@Processor(TransactionQueueNames.paymentSafaricom)
+@Processor(TransactionJobQueueNames.safaricom)
 export class TransactionJobProcessorSafaricom {
   constructor(
     private readonly transactionJobProcessorsService: TransactionJobProcessorsService,

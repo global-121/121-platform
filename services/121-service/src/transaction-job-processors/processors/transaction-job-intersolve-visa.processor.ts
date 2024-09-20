@@ -8,11 +8,11 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 
 // TODO: REFACTOR: Rename TransactionQueueNames to transferQueueNames or something, and move the enum to the TransferQueues Module. Also rename the paymentIntersolveVisa to IntersolveVisa probably.
-@Processor(TransactionQueueNames.paymentIntersolveVisa)
+@Processor(TransactionJobQueueNames.intersolveVisa)
 export class TransactionJobProcessorIntersolveVisa {
   constructor(
     private readonly transactionJobProcessorsService: TransactionJobProcessorsService,

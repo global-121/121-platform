@@ -9,9 +9,9 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 
-@Processor(TransactionQueueNames.paymentIntersolveVoucher)
+@Processor(TransactionJobQueueNames.intersolveVoucher)
 export class PaymentProcessorIntersolveVoucher {
   constructor(
     private readonly intersolveVoucherService: IntersolveVoucherService,

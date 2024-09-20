@@ -50,7 +50,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -81,7 +81,7 @@ export class IntersolveVoucherService
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    @InjectQueue(TransactionQueueNames.paymentIntersolveVoucher)
+    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,

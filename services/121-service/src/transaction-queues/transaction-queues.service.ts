@@ -8,7 +8,7 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 
@@ -17,9 +17,9 @@ export class TransactionQueuesService {
   public constructor(
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(TransactionQueueNames.paymentIntersolveVisa)
+    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
     private readonly paymentIntersolveVisaQueue: Queue,
-    @InjectQueue(TransactionQueueNames.paymentSafaricom)
+    @InjectQueue(TransactionJobQueueNames.safaricom)
     private readonly paymentSafaricomQueue: Queue,
   ) {}
 
