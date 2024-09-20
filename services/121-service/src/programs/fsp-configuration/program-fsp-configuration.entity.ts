@@ -9,8 +9,10 @@ import {
 } from 'typeorm';
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
 @Entity('program_fsp_configuration')
@@ -32,8 +34,8 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
   @Column()
   public fspId: number;
 
-  @Column()
-  public name: string;
+  @Column({ type: 'character varying' })
+  public name: WrapperType<FinancialServiceProviderConfigurationEnum>;
 
   @Column({
     type: 'varchar',

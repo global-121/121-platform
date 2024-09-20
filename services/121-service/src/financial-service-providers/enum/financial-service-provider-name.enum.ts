@@ -18,9 +18,10 @@ export enum FinancialServiceProviderConfigurationEnum {
   coverLetterCode = 'coverLetterCode',
 }
 
-export const FinancialServiceProviderConfigurationMapping: {
-  [key in FinancialServiceProviderName]?: FinancialServiceProviderConfigurationEnum[];
-} = {
+export const FinancialServiceProviderConfigurationMapping: Record<
+  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationEnum[]
+> = {
   [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
     FinancialServiceProviderConfigurationEnum.password,
     FinancialServiceProviderConfigurationEnum.username,

@@ -14,7 +14,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderName,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import {
   CreateProgramCustomAttributeDto,
@@ -34,7 +37,7 @@ export class ProgramFinancialServiceProviderDto {
   @IsArray()
   @IsOptional()
   configuration?: {
-    name: string;
+    name: WrapperType<FinancialServiceProviderConfigurationEnum>;
     value: string | string[] | Record<string, string>;
   }[];
 }

@@ -1,5 +1,6 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class MessageJobDto {
   messageProcessType: MessageProcessType;
@@ -23,7 +24,7 @@ export class MessageJobCustomDataDto {
   intersolveVoucherId?: number;
   pendingMessageId?: number;
   existingMessageSid?: string;
-  placeholderData?: object;
+  placeholderData?: Record<string, string | null | LocalizedString>;
 }
 
 export enum MessageProcessType {

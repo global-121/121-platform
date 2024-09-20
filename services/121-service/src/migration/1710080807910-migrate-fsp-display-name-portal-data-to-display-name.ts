@@ -1,6 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+interface FinancialServiceProvider {
+  id: number;
+  fspDisplayNamePortal?: string;
+  displayName?: Record<string, string>;
+}
 
 export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
   implements MigrationInterface
@@ -27,12 +32,12 @@ export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
       FinancialServiceProviderEntity,
     );
 
-    const existingData = await queryRunner.query(
+    const existingData: FinancialServiceProvider[] = await queryRunner.query(
       `SELECT * FROM "121-service"."financial_service_provider" ORDER BY "id" ASC`,
     );
 
     const financialServiceProviders = existingData.map(
-      (financialServiceProvider: any) => {
+      (financialServiceProvider) => {
         if (
           financialServiceProvider?.fspDisplayNamePortal &&
           typeof financialServiceProvider?.fspDisplayNamePortal === 'string'

@@ -8,5 +8,5 @@ export class ImageCodeEntity extends Base121Entity {
   public secret: string;
 
   @Column({ type: 'bytea' })
-  public image: any;
+  public image: unknown;
 }

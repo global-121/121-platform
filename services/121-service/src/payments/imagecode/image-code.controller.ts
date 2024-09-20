@@ -26,8 +26,11 @@ export class ImageCodeController {
   @ApiParam({ name: 'secret' })
   // TODO: rename to /financial-service-providers/intersolve-voucher/vouchers/:secret
   @Get(':secret')
-  public async get(@Param() params, @Res() response: Response): Promise<void> {
-    const blob = await this.imageCodeService.get(params.secret);
+  public async get(
+    @Param('secret') secret: string,
+    @Res() response: Response,
+  ): Promise<void> {
+    const blob = (await this.imageCodeService.get(secret)) as string;
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {

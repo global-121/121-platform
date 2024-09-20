@@ -10,7 +10,7 @@ import {
   SaveOptions,
   UpdateResult,
 } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
@@ -21,7 +21,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   constructor(
     dataSource: DataSource,
     // TODO check if this can be set on ScopedRepository so it can be reused
-    @Inject(REQUEST) public request: ScopedUserRequest,
+    @Inject(REQUEST) public override request: ScopedUserRequest,
   ) {
     super(RegistrationEntity, dataSource);
   }

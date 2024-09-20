@@ -1,19 +1,28 @@
-export class SafaricomTransferResponseDto {
-  public data: SafaricomTransferResponseBodyDto;
+export interface SafaricomTransferResponseDto {
+  data: SafaricomTransferResponseBodyDto;
 }
 
-class SafaricomTransferResponseBodyDto {
-  public ConversationID: string;
-  public OriginatorConversationID: string;
-  public ResponseCode: string;
-  public ResponseDescription: string;
+export interface SafaricomTransferResponseBodyDto {
+  ConversationID: string;
+  OriginatorConversationID: string;
+  ResponseCode: string;
+  ResponseDescription: string;
+  errorMessage?: string;
 }
 
-export class SafaricomAuthResponseDto {
-  public data: SafaricomAuthDataResponseDto;
+export interface SafaricomAuthResponseDto {
+  data: SafaricomAuthDataResponseDto;
 }
 
-class SafaricomAuthDataResponseDto {
-  public access_token: string;
-  public expires_in: number;
+interface SafaricomAuthDataResponseDto {
+  access_token: string;
+  expires_in: number;
+}
+
+export interface SafaricomPaymentResult {
+  Result?: {
+    OriginatorConversationID: string;
+    ResultCode: number;
+    ResultDesc?: string;
+  };
 }

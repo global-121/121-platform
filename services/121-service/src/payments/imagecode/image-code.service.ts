@@ -66,7 +66,7 @@ export class ImageCodeService {
     });
   }
 
-  public async get(secret: string): Promise<any> {
+  public async get(secret: string): Promise<unknown> {
     const imageCode = await this.imageRepository.findOneBy({
       secret,
     });

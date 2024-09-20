@@ -6,7 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { SafaricomPaymentResult } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('safaricom_request')
 export class SafaricomRequestEntity {
@@ -60,7 +62,7 @@ export class SafaricomRequestEntity {
   @Column('json', {
     default: {},
   })
-  public paymentResult?: Record<string, unknown>;
+  public paymentResult?: WrapperType<SafaricomPaymentResult>;
 
   @OneToOne(() => TransactionEntity)
   @JoinColumn({ name: 'transactionId' })

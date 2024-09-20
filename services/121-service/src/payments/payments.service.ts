@@ -490,7 +490,7 @@ export class PaymentsService {
   }
 
   private async checkFspQueueProgress(
-    fsp: string,
+    fsp: FinancialServiceProviderName,
     programId: number,
   ): Promise<boolean> {
     const service = this.fspWithQueueServiceMapping[fsp];
@@ -507,7 +507,7 @@ export class PaymentsService {
       },
     });
     const nrPending = await service.getQueueProgress(
-      programsWithFsp.length > 0 ? programId : null,
+      programsWithFsp.length > 0 ? programId : undefined,
     );
     return nrPending > 0;
   }
@@ -515,13 +515,16 @@ export class PaymentsService {
   private splitPaListByFsp(
     paPaymentDataList: PaPaymentDataDto[],
   ): SplitPaymentListDto {
-    return paPaymentDataList.reduce((acc, paPaymentData) => {
-      if (!acc[paPaymentData.fspName]) {
-        acc[paPaymentData.fspName] = [];
-      }
-      acc[paPaymentData.fspName].push(paPaymentData);
-      return acc;
-    }, {});
+    return paPaymentDataList.reduce(
+      (acc: SplitPaymentListDto, paPaymentData) => {
+        if (!acc[paPaymentData.fspName]) {
+          acc[paPaymentData.fspName] = [];
+        }
+        acc[paPaymentData.fspName]!.push(paPaymentData);
+        return acc;
+      },
+      {},
+    );
   }
 
   private async makePaymentRequest(
@@ -789,7 +792,7 @@ export class PaymentsService {
   }
 
   public async importFspReconciliationData(
-    file,
+    file: Blob,
     programId: number,
     payment: number,
     userId: number,
