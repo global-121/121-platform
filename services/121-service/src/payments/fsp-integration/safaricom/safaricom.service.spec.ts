@@ -106,7 +106,7 @@ describe('SafaricomService', () => {
   });
 
   describe('doTransfer', () => {
-    it('should authenticate and send payment', async () => {
+    it('should send payment', async () => {
       const sendTransferResult: TransferResponseSafaricomApiDto = {
         data: {
           ConversationID: 'mocked_conversation_id',
@@ -116,11 +116,8 @@ describe('SafaricomService', () => {
         },
       };
 
-      jest.spyOn(safaricomTransferRepository, 'save'); //.mockResolvedValue();
-      jest.spyOn(safaricomTransferRepository, 'update'); //.mockResolvedValue();
-      jest
-        .spyOn(safaricomApiService, 'authenticate')
-        .mockResolvedValue('mocked-access-token');
+      jest.spyOn(safaricomTransferRepository, 'save');
+      jest.spyOn(safaricomTransferRepository, 'update');
       jest
         .spyOn(safaricomApiService, 'sendTransfer')
         .mockResolvedValue(sendTransferResult);
@@ -130,7 +127,6 @@ describe('SafaricomService', () => {
       );
 
       expect(safaricomTransferRepository.save).toHaveBeenCalled();
-      expect(safaricomApiService.authenticate).toHaveBeenCalled();
       expect(safaricomApiService.sendTransfer).toHaveBeenCalledWith(
         mockedSafaricomTransferParams,
       );

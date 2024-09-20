@@ -61,7 +61,6 @@ export class SafaricomService
     await this.safaricomTransferRepository.save(safaricomTransfer);
 
     // Prepare the transfer payload and send the request to safaricom
-    await this.safaricomApiService.authenticate();
     const transferResult =
       await this.safaricomApiService.sendTransfer(transferData);
 
