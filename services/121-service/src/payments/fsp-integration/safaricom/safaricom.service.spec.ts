@@ -4,7 +4,6 @@ import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
 import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
@@ -159,7 +158,7 @@ describe('SafaricomService', () => {
       await service.processTransferCallback(mockCallback);
 
       expect(safaricomTransferCallbackQueue.add).toHaveBeenCalledWith(
-        PaymentQueueNames.financialServiceProviderCallback,
+        FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
         {
           originatorConversationId:
             mockCallback.Result.OriginatorConversationID,
@@ -207,7 +206,7 @@ describe('SafaricomService', () => {
       await service.processTimeoutCallback(mockTimeoutCallback);
 
       expect(safaricomTimeoutCallbackQueue.add).toHaveBeenCalledWith(
-        PaymentQueueNames.financialServiceProviderTimeoutCallback,
+        FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
         {
           originatorConversationId:
             mockTimeoutCallback.OriginatorConversationID,

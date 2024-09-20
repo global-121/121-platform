@@ -6,7 +6,6 @@ import { Redis } from 'ioredis';
 
 import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
@@ -97,7 +96,7 @@ export class SafaricomService
     };
 
     const job = await this.safaricomTransferCallbackQueue.add(
-      PaymentQueueNames.financialServiceProviderCallback,
+      FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
       safaricomTransferCallbackJob,
     );
 
@@ -113,7 +112,7 @@ export class SafaricomService
     };
 
     const job = await this.safaricomTimeoutCallbackQueue.add(
-      PaymentQueueNames.financialServiceProviderTimeoutCallback,
+      FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
       safaricomTimeoutCallbackJob,
     );
 

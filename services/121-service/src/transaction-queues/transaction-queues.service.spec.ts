@@ -1,7 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -82,7 +81,7 @@ describe('TransactionQueuesService', () => {
     // Assert
     expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
     expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
-      PaymentQueueNames.sendPayment,
+      TransactionJobQueueNames.intersolveVisa,
       mockIntersolveVisaTransactionJobDto[0],
     );
   });
@@ -103,7 +102,7 @@ describe('TransactionQueuesService', () => {
     // Assert
     expect(safaricomQueue.add).toHaveBeenCalledTimes(1);
     expect(safaricomQueue.add).toHaveBeenCalledWith(
-      PaymentQueueNames.sendPayment,
+      TransactionJobQueueNames.safaricom,
       mockSafaricomTransactionJobDto[0],
     );
   });
