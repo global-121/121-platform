@@ -9,7 +9,7 @@ import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/saf
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
-const safaricomQueueTimeoutUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout`;
+const safaricomQueueTimeoutUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout-callback`;
 const safaricomResultUrl = `${callbackBaseUrl}financial-service-providers/safaricom/callback`;
 
 @Injectable()

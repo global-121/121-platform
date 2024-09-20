@@ -38,7 +38,7 @@ export class SafaricomController {
     status: HttpStatus.CREATED,
     description: 'Notified of timeout',
   })
-  @Post('timeout')
+  @Post('timeout-callback')
   public async processTransferTimeoutCallback(
     @Body()
     safaricomTransferTimeoutCallback: SafaricomTransferTimeoutCallbackDto,
