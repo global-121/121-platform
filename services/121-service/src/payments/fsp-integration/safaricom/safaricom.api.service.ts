@@ -9,8 +9,8 @@ import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/saf
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
-const safaricomQueueTimeoutUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout-callback`;
-const safaricomResultUrl = `${callbackBaseUrl}financial-service-providers/safaricom/callback`;
+const safaricomTimeoutCallbackUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout-callback`;
+const safaricomTransferCallbacktUrl = `${callbackBaseUrl}financial-service-providers/safaricom/transfer-callback`;
 
 @Injectable()
 export class SafaricomApiService {
@@ -115,8 +115,8 @@ export class SafaricomApiService {
       PartyA: process.env.SAFARICOM_PARTY_A!,
       PartyB: transferData.phoneNumber, // Set to '254000000000' to trigger mock failure on callback and '254000000001' to trigger mock failure on request
       Remarks: transferData.remarks,
-      QueueTimeOutURL: safaricomQueueTimeoutUrl,
-      ResultURL: safaricomResultUrl,
+      QueueTimeOutURL: safaricomTimeoutCallbackUrl,
+      ResultURL: safaricomTransferCallbacktUrl,
       OriginatorConversationID: transferData.originatorConversationId,
       IDType: process.env.SAFARICOM_IDTYPE!,
       IDNumber: transferData.idNumber,

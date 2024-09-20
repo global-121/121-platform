@@ -20,7 +20,7 @@ export class SafaricomController {
     status: HttpStatus.CREATED,
     description: 'Notified transfer status',
   })
-  @Post('callback')
+  @Post('transfer-callback')
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<any> {
