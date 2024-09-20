@@ -3,6 +3,7 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
+import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import {
   getRedisSetName,
