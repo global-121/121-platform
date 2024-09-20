@@ -42,9 +42,7 @@ describe('SafaricomService', () => {
         {
           provide: SafaricomApiService,
           useValue: {
-            authenticate: jest.fn(),
-            sendTransfer: jest.fn(),
-            createTransferPayload: jest.fn(),
+            sendTransferAndHandleResponse: jest.fn(),
           },
         },
         {
@@ -106,7 +104,7 @@ describe('SafaricomService', () => {
   });
 
   describe('doTransfer', () => {
-    it('should send payment', async () => {
+    it('should do transfer', async () => {
       const sendTransferResult: TransferResponseSafaricomApiDto = {
         data: {
           ConversationID: 'mocked_conversation_id',
@@ -119,7 +117,7 @@ describe('SafaricomService', () => {
       jest.spyOn(safaricomTransferRepository, 'save');
       jest.spyOn(safaricomTransferRepository, 'update');
       jest
-        .spyOn(safaricomApiService, 'sendTransfer')
+        .spyOn(safaricomApiService, 'sendTransferAndHandleResponse')
         .mockResolvedValue(sendTransferResult);
 
       const transferResult = await service.doTransfer(
@@ -127,9 +125,9 @@ describe('SafaricomService', () => {
       );
 
       expect(safaricomTransferRepository.save).toHaveBeenCalled();
-      expect(safaricomApiService.sendTransfer).toHaveBeenCalledWith(
-        mockedSafaricomTransferParams,
-      );
+      expect(
+        safaricomApiService.sendTransferAndHandleResponse,
+      ).toHaveBeenCalledWith(mockedSafaricomTransferParams);
       expect(safaricomTransferRepository.update).toHaveBeenCalled();
       expect(transferResult).toEqual(undefined);
     });

@@ -18,26 +18,36 @@ export class SafaricomApiService {
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async sendTransfer(
+  public async sendTransferAndHandleResponse(
     transferData: DoTransferParams,
   ): Promise<TransferResponseSafaricomApiDto> {
     await this.authenticate();
     const payload = this.createTransferPayload(transferData);
     const transferResponse = await this.transfer(payload);
 
-    if (transferResponse && transferResponse.data?.ResponseCode !== '0') {
-      if (transferResponse.data?.errorCode) {
-        throw new SafaricomApiError(
-          `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`,
-        );
-      }
+    let errorMessage: string | undefined;
 
-      throw new SafaricomApiError(
-        transferResponse.data?.ResponseDescription ||
-          `Error: ${(transferResponse.data as any)?.statusCode} ${(transferResponse.data as any)?.error}`,
-      );
+    if (!transferResponse || !transferResponse.data) {
+      errorMessage = `Error: No response data from Safaricom API`;
     }
 
+    if (transferResponse.data.errorCode) {
+      errorMessage = `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`;
+    }
+
+    if (!transferResponse.data.ResponseCode) {
+      errorMessage = `Error: ${(transferResponse.data as any)?.statusCode} ${(transferResponse.data as any)?.error}`;
+    }
+
+    if (transferResponse.data.ResponseCode !== '0') {
+      errorMessage = transferResponse.data?.ResponseDescription;
+    }
+
+    if (errorMessage) {
+      throw new SafaricomApiError(errorMessage);
+    }
+
+    // All the checks above mean that at this stage transferResponse.data.ResponseCode === '0'
     return transferResponse;
   }
 

@@ -62,7 +62,9 @@ export class SafaricomService
 
     // Prepare the transfer payload and send the request to safaricom
     const transferResult =
-      await this.safaricomApiService.sendTransfer(transferData);
+      await this.safaricomApiService.sendTransferAndHandleResponse(
+        transferData,
+      );
 
     // Update transfer record with conversation ID
     await this.safaricomTransferRepository.update(
