@@ -1,5 +1,16 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+interface AdminUser {
+  id: number;
+  username: string;
+  admin: boolean;
+}
+
+interface Registration {
+  id: number;
+  registrationStatus: string;
+}
+
 export class MigrateStatusesToDeclined1713422095087
   implements MigrationInterface
 {
@@ -21,26 +32,27 @@ export class MigrateStatusesToDeclined1713422095087
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async down(_queryRunner: QueryRunner): Promise<void> {}
 
-  // Function to save event for each registration status chnage
+  // Function to save event for each registration status change
   private async migrateRegistrationsStatus(
     queryRunner: QueryRunner,
   ): Promise<void> {
-    const adminUser = await queryRunner.query(
+    const adminUsers: AdminUser[] = await queryRunner.query(
       `SELECT * FROM "121-service"."user" WHERE admin = true AND username LIKE '%admin%' ORDER BY id LIMIT 1`,
     );
 
-    const registrationsToChange = await queryRunner.query(
+    const registrationsToChange: Registration[] = await queryRunner.query(
       `SELECT * FROM "121-service"."registration" WHERE "registrationStatus" IN ('inclusionEnded', 'rejected', 'noLongerEligible')`,
     );
 
-    const adminUserId = adminUser[0]?.id ? adminUser[0].id : 1;
+    const adminUserId = adminUsers[0]?.id || 1;
+
     await Promise.all(
-      registrationsToChange.map(async (registration: any) => {
+      registrationsToChange.map(async (registration: Registration) => {
         const insertedId = await queryRunner.query(
           `INSERT INTO "121-service".event(created, updated, "userId", type, "registrationId") VALUES ($1, $2, $3, $4, $5) RETURNING id`,
           [
-            'NOW()',
-            'NOW()',
+            new Date().toISOString(), // Use the current timestamp in ISO format
+            new Date().toISOString(),
             adminUserId,
             'registrationStatusChange',
             registration.id,
@@ -49,14 +61,20 @@ export class MigrateStatusesToDeclined1713422095087
 
         await queryRunner.query(
           `INSERT INTO "121-service".event_attribute(created, updated, "eventId", key, value) VALUES ($1, $2, $3, $4, $5)`,
-          ['NOW()', 'NOW()', insertedId[0].id, 'newValue', 'declined'],
+          [
+            new Date().toISOString(),
+            new Date().toISOString(),
+            insertedId[0].id,
+            'newValue',
+            'declined',
+          ],
         );
 
         await queryRunner.query(
           `INSERT INTO "121-service".event_attribute(created, updated, "eventId", key, value) VALUES ($1, $2, $3, $4, $5)`,
           [
-            'NOW()',
-            'NOW()',
+            new Date().toISOString(),
+            new Date().toISOString(),
             insertedId[0].id,
             'oldValue',
             registration.registrationStatus,

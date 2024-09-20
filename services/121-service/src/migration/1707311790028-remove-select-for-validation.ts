@@ -83,7 +83,7 @@ export class RemoveSelectForValidation1707311790028
 
     // Remove permission from roles and permission itself
     const oldPermissionName =
-      'registration:status:selectedForValidation.update' as any;
+      'registration:status:selectedForValidation.update' as PermissionEnum;
     const oldPermission = await permissionsRepository.findOne({
       where: { name: Equal(oldPermissionName) },
       relations: ['roles'],

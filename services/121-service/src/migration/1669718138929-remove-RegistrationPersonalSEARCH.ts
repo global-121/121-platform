@@ -1,4 +1,10 @@
-import { EntityManager, Equal, MigrationInterface, QueryRunner } from 'typeorm';
+import {
+  EntityManager,
+  Equal,
+  MigrationInterface,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
@@ -53,13 +59,19 @@ export class removeRegistrationPersonalSEARCH1669718138929
         await userRoleRepo.save(userRole);
       }
     }
-    await this.removePermission('registration:personal.search', permRepo);
-    await this.removePermission('registration:reference-id.search', permRepo);
+    await this.removePermission(
+      'registration:personal.search' as PermissionEnum,
+      permRepo,
+    );
+    await this.removePermission(
+      'registration:reference-id.search' as PermissionEnum,
+      permRepo,
+    );
   }
 
   private async removePermission(
-    perminssionName,
-    permissionRepo: any,
+    perminssionName: PermissionEnum,
+    permissionRepo: Repository<PermissionEntity>,
   ): Promise<void> {
     const permission = await permissionRepo.findOne({
       where: { name: Equal(perminssionName) },

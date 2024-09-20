@@ -171,7 +171,7 @@ export class MessageService {
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string | undefined;
-    let errorMessage: any;
+    let errorMessage: string | undefined;
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,
@@ -210,7 +210,7 @@ export class MessageService {
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string | undefined;
-    let errorMessage: any;
+    let errorMessage: string | null;
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,

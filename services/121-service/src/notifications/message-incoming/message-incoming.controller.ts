@@ -54,7 +54,7 @@ export class MessageIncomingController {
   // TODO: can this endpoint+method be combind with whatsapp/status, as adding to the queue has the same logic for both?
   @Post('sms/status')
   public async addSmsStatusCallbackToQueue(
-    @Body() callbackData: any,
+    @Body() callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     return await this.messageIncomingService.addSmsStatusCallbackToQueue(
       callbackData,
