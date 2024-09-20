@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
