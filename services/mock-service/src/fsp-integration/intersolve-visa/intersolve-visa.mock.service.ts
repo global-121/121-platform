@@ -545,7 +545,24 @@ export class IntersolveVisaMockService {
     return response;
   }
 
-  public toggleBlockWalletMock(): IntersolveVisaMockResponseDto {
+  public toggleBlockWalletMock(tokenCode: string): IntersolveVisaMockResponseDto {
+    if (tokenCode.includes('mock-fail-pause')) {
+      // We assume this is the correct response for a failed substitution
+      // However, the exact failure scenario depends on your application's requirements
+      return {
+        status: HttpStatus.METHOD_NOT_ALLOWED,
+        statusText: 'Not allowed',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'TOKEN_ALREADY_BLOCKED',
+              description: 'We mocked that token is already blocked',
+            },
+          ],
+        },
+      };
+    }
     // for the response it does not matter if it's blocked or unblocked
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.NO_CONTENT,
@@ -676,18 +693,18 @@ export class IntersolveVisaMockService {
   }
 
   public substituteToken(token: string): IntersolveVisaMockResponseDto {
-    // TODO create API for this and add to import ocw registration .csv
+    // TODO: create API for this and add to import ocw registration .csv
     if (token.includes('mock-fail-substitute')) {
       // We assume this is the correct response for a failed substitution
       // However, the exact failure scenario depends on your application's requirements
       return {
-        status: HttpStatus.NOT_FOUND,
-        statusText: 'Not Found',
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Bad Request',
         data: {
           success: false,
           errors: [
             {
-              code: 'NOT_FOUND',
+              code: 'MISSING_FIELD',
               description: 'We mocked that token substitution failed',
             },
           ],

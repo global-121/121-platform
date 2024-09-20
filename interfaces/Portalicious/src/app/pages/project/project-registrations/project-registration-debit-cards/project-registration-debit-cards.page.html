@@ -100,3 +100,11 @@
     <p class="whitespace-pre-line">{{ dialogContentText }}</p>
   }
 </app-confirmation-dialog>
+<app-confirmation-dialog
+  #confirmationDialog1
+  class="[&_.p-dialog-content]:max-w-[632px]"
+>
+  @if (dialogContentText) {
+    <p class="whitespace-pre-line">{{ dialogContentText }}</p>
+  }
+</app-confirmation-dialog>

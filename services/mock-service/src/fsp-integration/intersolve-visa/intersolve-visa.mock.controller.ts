@@ -104,18 +104,18 @@ export class IntersolveVisaMockController {
   @Post('/pointofsale/v1/tokens/:tokenCode/block')
   public blockWallet(
     @Body() _payload: Record<string, unknown>,
-    @Param('tokenCode') _tokenCode: string,
+    @Param('tokenCode') tokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.toggleBlockWalletMock();
+    return this.intersolveVisaMockService.toggleBlockWalletMock(tokenCode);
   }
 
   @ApiOperation({ summary: 'Unblock wallet' })
   @Post('/pointofsale/v1/tokens/:tokenCode/unblock')
   public unblockWallet(
     @Body() _payload: Record<string, unknown>,
-    @Param('tokenCode') _tokenCode: string,
+    @Param('tokenCode') tokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.toggleBlockWalletMock();
+    return this.intersolveVisaMockService.toggleBlockWalletMock(tokenCode);
   }
 
   @ApiOperation({ summary: 'Update customer phonenumber' })

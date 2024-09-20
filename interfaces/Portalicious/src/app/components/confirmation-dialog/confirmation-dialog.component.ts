@@ -24,7 +24,7 @@ export class ConfirmationDialogComponent {
     acceptIcon = 'none',
     rejectIcon = 'none',
   }: {
-    accept: () => void;
+    accept?: () => void;
     reject?: () => void;
     header?: string;
     acceptLabel?: string;
@@ -43,5 +43,9 @@ export class ConfirmationDialogComponent {
       rejectButtonStyleClass: 'p-button-rounded p-button-outlined',
       acceptButtonStyleClass: 'p-button-rounded',
     });
+  }
+
+  close() {
+    this.confirmationService.close();
   }
 }

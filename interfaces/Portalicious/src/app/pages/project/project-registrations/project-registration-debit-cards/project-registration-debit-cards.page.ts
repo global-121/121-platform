@@ -59,6 +59,8 @@ export class ProjectRegistrationDebitCardsPageComponent {
   private readonly queryClient = injectQueryClient();
   @ViewChild('confirmationDialog')
   private confirmationDialog: ConfirmationDialogComponent;
+  @ViewChild('confirmationDialog1')
+  private confirmationDialog1: ConfirmationDialogComponent;
   projectId = input.required<number>();
   registrationId = input.required<number>();
   dialogContentText: string;
@@ -167,9 +169,14 @@ export class ProjectRegistrationDebitCardsPageComponent {
       });
       this.invalidateWalletQuery();
     },
-    onError: () => {
-      // TODO: Show a more specific error message.
-      this.toastService.showGenericError();
+    onError: (error) => {
+      this.dialogContentText = $localize`An error occurred while pausing the card. Error: ${error}`;
+      this.confirmationDialog.close();
+      this.confirmationDialog1.confirm({
+        header: $localize`Pause card - Error`,
+        acceptLabel: $localize`Close`,
+        rejectLabel: undefined,
+      });
     },
   }));
   unpauseCardMutation = injectMutation(() => ({
@@ -187,9 +194,13 @@ export class ProjectRegistrationDebitCardsPageComponent {
       });
       this.invalidateWalletQuery();
     },
-    onError: () => {
-      // TODO: Show a more specific error message.
-      this.toastService.showGenericError();
+    onError: (error) => {
+      this.dialogContentText = $localize`An error occurred while unpausing the card. Error: ${error}`;
+      this.confirmationDialog1.confirm({
+        header: $localize`Unpause card - Error`,
+        acceptLabel: $localize`Close`,
+        rejectLabel: undefined,
+      });
     },
   }));
   reissueCardMutation = injectMutation(() => ({
@@ -204,9 +215,13 @@ export class ProjectRegistrationDebitCardsPageComponent {
       });
       this.invalidateWalletQuery();
     },
-    onError: () => {
-      // TODO: Show a more specific error message.
-      this.toastService.showGenericError();
+    onError: (error) => {
+      this.dialogContentText = $localize`An error occurred while replacing the card. Error: ${error}`;
+      this.confirmationDialog1.confirm({
+        header: $localize`Replace card - Error`,
+        acceptLabel: $localize`Close`,
+        rejectLabel: undefined,
+      });
     },
   }));
 
