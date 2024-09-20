@@ -3,10 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
-import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
+import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
@@ -58,17 +58,13 @@ describe('SafaricomService', () => {
           },
         },
         {
-          provide: getQueueToken(
-            FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
-          ),
+          provide: getQueueToken(SafaricomCallbackQueueNames.transfer),
           useValue: {
             add: jest.fn(),
           },
         },
         {
-          provide: getQueueToken(
-            FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
-          ),
+          provide: getQueueToken(SafaricomCallbackQueueNames.timeout),
           useValue: {
             add: jest.fn(),
           },
@@ -82,14 +78,10 @@ describe('SafaricomService', () => {
       SafaricomTransferRepository,
     );
     safaricomTransferCallbackQueue = module.get(
-      getQueueToken(
-        FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
-      ),
+      getQueueToken(SafaricomCallbackQueueNames.transfer),
     );
     safaricomTransferTimeoutCallbackQueue = module.get(
-      getQueueToken(
-        FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
-      ),
+      getQueueToken(SafaricomCallbackQueueNames.timeout),
     );
     redisClient = module.get(REDIS_CLIENT);
   });
@@ -157,7 +149,7 @@ describe('SafaricomService', () => {
       await service.processTransferCallback(mockCallback);
 
       expect(safaricomTransferCallbackQueue.add).toHaveBeenCalledWith(
-        FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
+        SafaricomCallbackQueueNames.transfer,
         {
           originatorConversationId:
             mockCallback.Result.OriginatorConversationID,
@@ -205,7 +197,7 @@ describe('SafaricomService', () => {
       await service.processTransferTimeoutCallback(mockTimeoutCallback);
 
       expect(safaricomTransferTimeoutCallbackQueue.add).toHaveBeenCalledWith(
-        FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
+        SafaricomCallbackQueueNames.timeout,
         {
           originatorConversationId:
             mockTimeoutCallback.OriginatorConversationID,

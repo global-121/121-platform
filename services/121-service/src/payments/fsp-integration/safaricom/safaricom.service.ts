@@ -4,7 +4,6 @@ import { Inject } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
-import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
@@ -12,6 +11,7 @@ import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-i
 import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
 import { SafaricomTransferTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
@@ -30,13 +30,9 @@ export class SafaricomService
     private readonly safaricomTransferRepository: SafaricomTransferRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(
-      FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
-    )
+    @InjectQueue(SafaricomCallbackQueueNames.transfer)
     private readonly safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(
-      FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
-    )
+    @InjectQueue(SafaricomCallbackQueueNames.timeout)
     private readonly safaricomTransferTimeoutCallbackQueue: Queue,
   ) {}
 
