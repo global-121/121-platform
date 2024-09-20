@@ -120,7 +120,7 @@ describe('SafaricomService', () => {
         .spyOn(safaricomApiService, 'sendTransferAndHandleResponse')
         .mockResolvedValue(sendTransferResult);
 
-      const transferResult = await service.doTransfer(
+      const transferResult = await service.saveAndDoTransfer(
         mockedSafaricomTransferParams,
       );
 

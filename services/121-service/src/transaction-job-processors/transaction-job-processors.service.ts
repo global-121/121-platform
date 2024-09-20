@@ -272,7 +272,7 @@ export class TransactionJobProcessorsService {
 
     // 4. Start the transfer, if failure update to error transaction and return early
     try {
-      await this.safaricomService.doTransfer({
+      await this.safaricomService.saveAndDoTransfer({
         transactionId: transaction.id,
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber!,

@@ -52,19 +52,30 @@ export class SafaricomService
     throw new Error('Method should not be called anymore.');
   }
 
-  public async doTransfer(transferData: DoTransferParams): Promise<void> {
+  public async saveAndDoTransfer({
+    transactionId,
+    transferAmount,
+    phoneNumber,
+    idNumber,
+    remarks,
+    originatorConversationId,
+  }: DoTransferParams): Promise<void> {
     // Store initial transfer record before transfer because of callback
     const safaricomTransfer = new SafaricomTransferEntity();
-    safaricomTransfer.originatorConversationId =
-      transferData.originatorConversationId;
-    safaricomTransfer.transactionId = transferData.transactionId;
+    safaricomTransfer.originatorConversationId = originatorConversationId;
+    safaricomTransfer.transactionId = transactionId;
     await this.safaricomTransferRepository.save(safaricomTransfer);
 
     // Prepare the transfer payload and send the request to safaricom
     const transferResult =
-      await this.safaricomApiService.sendTransferAndHandleResponse(
-        transferData,
-      );
+      await this.safaricomApiService.sendTransferAndHandleResponse({
+        transactionId,
+        transferAmount,
+        phoneNumber,
+        idNumber,
+        remarks,
+        originatorConversationId,
+      });
 
     // Update transfer record with conversation ID
     await this.safaricomTransferRepository.update(
