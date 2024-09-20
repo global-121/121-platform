@@ -3,15 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
-import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
+import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
-import { SafaricomTransferResponseBody } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/safaricom-transfer-response.interface';
 import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -26,21 +24,6 @@ const mockedSafaricomTransferParams: DoTransferParams = {
   originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
   transactionId: 1,
-};
-
-const mockedSafaricomTransferPayloadParams: TransferRequestSafaricomApiDto = {
-  InitiatorName: 'initiator_name',
-  SecurityCredential: 'security_credential',
-  CommandID: 'command_id',
-  Amount: 100,
-  PartyA: 'party_A',
-  PartyB: '254708374149',
-  Remarks: 'Payment#1',
-  QueueTimeOutURL: 'https://mocked-url.com/timeout',
-  ResultURL: 'https://mocked-url.com/callback',
-  OriginatorConversationID: 'originator_conversation_id',
-  IDType: 'mocked_id_type',
-  IDNumber: 'mocked_id_number',
 };
 
 describe('SafaricomService', () => {
@@ -124,11 +107,13 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should authenticate and send payment', async () => {
-      const sendTransferResult: SafaricomTransferResponseBody = {
-        ConversationID: 'mocked_conversation_id',
-        OriginatorConversationID: 'mocked_originator_conversation_id',
-        ResponseCode: '0',
-        ResponseDescription: 'Success',
+      const sendTransferResult: TransferResponseSafaricomApiDto = {
+        data: {
+          ConversationID: 'mocked_conversation_id',
+          OriginatorConversationID: 'mocked_originator_conversation_id',
+          ResponseCode: '0',
+          ResponseDescription: 'Success',
+        },
       };
 
       jest.spyOn(safaricomTransferRepository, 'save'); //.mockResolvedValue();
@@ -136,9 +121,6 @@ describe('SafaricomService', () => {
       jest
         .spyOn(safaricomApiService, 'authenticate')
         .mockResolvedValue('mocked-access-token');
-      jest
-        .spyOn(safaricomApiService, 'createTransferPayload')
-        .mockReturnValue(mockedSafaricomTransferPayloadParams);
       jest
         .spyOn(safaricomApiService, 'sendTransfer')
         .mockResolvedValue(sendTransferResult);
@@ -149,39 +131,11 @@ describe('SafaricomService', () => {
 
       expect(safaricomTransferRepository.save).toHaveBeenCalled();
       expect(safaricomApiService.authenticate).toHaveBeenCalled();
-      expect(safaricomApiService.createTransferPayload).toHaveBeenCalledWith(
-        mockedSafaricomTransferParams,
-      );
       expect(safaricomApiService.sendTransfer).toHaveBeenCalledWith(
-        mockedSafaricomTransferPayloadParams,
+        mockedSafaricomTransferParams,
       );
       expect(safaricomTransferRepository.update).toHaveBeenCalled();
       expect(transferResult).toEqual(undefined);
-    });
-
-    it('should handler unexpected error like 404', async () => {
-      jest.spyOn(safaricomTransferRepository, 'save');
-      jest.spyOn(safaricomTransferRepository, 'update');
-      jest
-        .spyOn(safaricomApiService, 'authenticate')
-        .mockResolvedValue('mocked-access-token');
-      jest
-        .spyOn(safaricomApiService, 'createTransferPayload')
-        .mockReturnValue(mockedSafaricomTransferPayloadParams);
-
-      jest
-        .spyOn(safaricomApiService, 'sendTransfer')
-        .mockRejectedValueOnce(new SafaricomApiError('404 Not Found'));
-
-      await expect(
-        service.doTransfer(mockedSafaricomTransferParams),
-      ).rejects.toThrow(new SafaricomApiError('404 Not Found'));
-
-      expect(safaricomTransferRepository.save).toHaveBeenCalled();
-      expect(safaricomApiService.authenticate).toHaveBeenCalled();
-      expect(safaricomApiService.createTransferPayload).toHaveBeenCalledWith(
-        mockedSafaricomTransferParams,
-      );
     });
   });
 

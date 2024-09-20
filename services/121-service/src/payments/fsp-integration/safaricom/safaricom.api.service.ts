@@ -84,8 +84,9 @@ export class SafaricomApiService {
   }
 
   public async sendTransfer(
-    payload: TransferRequestSafaricomApiDto,
+    transferData: DoTransferParams,
   ): Promise<TransferResponseSafaricomApiDto> {
+    const payload = this.createTransferPayload(transferData);
     const transferResponse = await this.transfer(payload);
 
     if (transferResponse && transferResponse.data?.ResponseCode !== '0') {
@@ -104,7 +105,7 @@ export class SafaricomApiService {
     return transferResponse;
   }
 
-  public createTransferPayload(
+  private createTransferPayload(
     transferData: DoTransferParams,
   ): TransferRequestSafaricomApiDto {
     return {
