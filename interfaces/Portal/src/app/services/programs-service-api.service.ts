@@ -235,7 +235,7 @@ export class ProgramsServiceApiService {
   ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${referenceId}/note`,
+      `/programs/${programId}/registrations/${referenceId}/notes`,
       {
         text: note,
       },
