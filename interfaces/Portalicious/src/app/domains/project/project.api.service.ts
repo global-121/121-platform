@@ -106,15 +106,16 @@ export class ProjectApiService extends DomainApiService {
     );
 
     return this.generateQueryOptions<Attribute[]>({
-      // TODO: use queryParams in requestOptions?
-      // TODO: check in old portal if this is used differently AND/OR default to false
-
       path: [BASE_ENDPOINT, projectId, 'attributes'],
       requestOptions: {
         params,
       },
-      // TODO: whether the type should be added here, but the label translation for sure
-      // processResponse
+      processResponse: (attributes) => {
+        return attributes.filter(
+          (attribute, index, self) =>
+            index === self.findIndex((t) => t.name === attribute.name),
+        );
+      },
     });
   }
 
