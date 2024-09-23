@@ -1,15 +1,15 @@
-export interface CreatePhysicalCardRequestDto {
+export interface CreatePhysicalCardRequestIntersolveApiDto {
   readonly brand: string;
   readonly firstName: string;
   readonly lastName: string;
   readonly mobileNumber: string;
-  readonly cardAddress: Address;
-  readonly pinAddress: Address;
+  readonly cardAddress: AddressIntersolveApi;
+  readonly pinAddress: AddressIntersolveApi;
   readonly pinStatus: string;
   readonly coverLetterCode: string;
 }
 
-interface Address {
+interface AddressIntersolveApi {
   readonly address1: string;
   readonly city: string;
   readonly country: string;

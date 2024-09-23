@@ -1,4 +1,4 @@
-export interface TokenBalance {
+export interface TokenBalanceIntersolveApi {
   readonly quantity: {
     readonly assetCode: string;
     readonly value: number;
