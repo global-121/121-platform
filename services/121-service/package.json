@@ -93,6 +93,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.7",
+    "@types/multer": "^1.4.12",
     "@types/node": "^18.19.50",
     "@types/passport-azure-ad": "^4.3.6",
     "@types/passport-jwt": "^4.0.1",

@@ -444,9 +444,9 @@ export class RegistrationsInputValidator {
     if (row.referenceId && row.referenceId.includes('$')) {
       return {
         lineNumber: i + 1,
-        column: GenericAttributes.referenceId,
+        column: AdditionalAttributes.referenceId,
         value: row.referenceId,
-        error: 'referenceId contains a $ character',
+        error: `${AdditionalAttributes.referenceId} contains a $ character`,
       };
     }
     if (validationConfig.validateExistingReferenceId && row.referenceId) {

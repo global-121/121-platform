@@ -187,7 +187,7 @@ export const registrationWesteros1 = {
   dragon: 1,
   knowsNothing: true,
   phoneNumber: '14155235554',
-  programFinancialServiceProviderConfigurationName: 'Excel',
+  programFinancialServiceProviderConfigurationName: 'ironBank',
   whatsappPhoneNumber: '14155235554',
   motto: 'Winter is coming',
 };
@@ -201,9 +201,23 @@ export const registrationWesteros2 = {
   dragon: 0,
   knowsNothing: false,
   phoneNumber: '14155235555',
-  programFinancialServiceProviderConfigurationName: 'Excel',
+  programFinancialServiceProviderConfigurationName: 'ironBank',
   whatsappPhoneNumber: '14155235555',
   motto: 'A girl has no name',
+};
+
+export const registrationWesteros3 = {
+  referenceId: 'westeros987654322',
+  preferredLanguage: 'en',
+  name: 'Jaime Lannister',
+  dob: '287-12-31',
+  house: 'lannister',
+  dragon: 0,
+  knowsNothing: false,
+  phoneNumber: '14155235556',
+  programFinancialServiceProviderConfigurationName: 'gringotts',
+  whatsappPhoneNumber: '14155235555',
+  motto: 'A lanister always pays his debts',
 };
 
 export const registrationSafaricom = {
