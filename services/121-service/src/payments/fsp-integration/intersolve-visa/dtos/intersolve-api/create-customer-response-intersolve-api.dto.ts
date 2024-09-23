@@ -1,10 +1,10 @@
-import { ContactInfo } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/contact-info';
-import { ErrorsInResponse } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response';
+import { ContactInfoIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/contact-info-intersolve-api';
+import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response-intersolve-api';
 
-export interface CreateCustomerResponseDto {
+export interface CreateCustomerResponseIntersolveApiDto {
   readonly data: {
     readonly success: boolean;
-    readonly errors: ErrorsInResponse[];
+    readonly errors: ErrorsInResponseIntersolveApi[];
     readonly code: string;
     readonly correlationId: string;
     readonly data: {
@@ -32,7 +32,7 @@ export interface CreateCustomerResponseDto {
         readonly middleName: string;
         readonly initials: string;
       };
-      readonly contactInfo?: ContactInfo;
+      readonly contactInfo?: ContactInfoIntersolveApi;
     };
   };
   readonly status: number;
