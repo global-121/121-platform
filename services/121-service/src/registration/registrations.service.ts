@@ -381,7 +381,7 @@ export class RegistrationsService {
   }
 
   public async importRegistrations(
-    csvFile,
+    csvFile: Express.Multer.File,
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
@@ -781,11 +781,9 @@ export class RegistrationsService {
   public async updateChosenFspConfiguration({
     referenceId,
     newFspConfigurationName: newFspConfigurationName,
-    userId,
   }: {
     referenceId: string;
     newFspConfigurationName: string;
-    userId: number;
   }) {
     //Identify new FSP
     const newFspConfig =
@@ -995,7 +993,7 @@ export class RegistrationsService {
     }
 
     const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValuesByNamesOrThrow(
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
           programFinancialServiceProviderConfigurationId:
             registration.programFinancialServiceProviderConfigurationId,

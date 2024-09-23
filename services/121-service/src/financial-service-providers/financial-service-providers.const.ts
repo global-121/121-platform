@@ -6,7 +6,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.excel,
     integrationType: FinancialServiceProviderIntegrationType.csv,
-    hasReconciliation: false,
+    hasReconciliation: true,
     defaultLabel: {
       en: 'Excel Payment Instructions',
     },
@@ -52,25 +52,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
       },
       {
         name: 'nationalId',
-        isRequired: true,
-      },
-    ],
-  },
-  {
-    name: FinancialServiceProviders.vodacash,
-    integrationType: FinancialServiceProviderIntegrationType.xml,
-    hasReconciliation: false,
-    defaultLabel: {
-      en: 'Vodacash',
-    },
-    notifyOnTransaction: false,
-    attributes: [
-      {
-        name: 'phoneNumber',
-        isRequired: true,
-      },
-      {
-        name: 'healthArea',
         isRequired: true,
       },
     ],

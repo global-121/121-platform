@@ -23,9 +23,6 @@ export const FinancialServiceProviderConfigurationMapping: {
     FinancialServiceProviderConfigurationProperties.displayName,
     FinancialServiceProviderConfigurationProperties.fundingTokenCode,
   ],
-  [FinancialServiceProviders.vodacash]: [
-    FinancialServiceProviderConfigurationProperties.displayName,
-  ],
   [FinancialServiceProviders.safaricom]: [
     FinancialServiceProviderConfigurationProperties.displayName,
   ],
