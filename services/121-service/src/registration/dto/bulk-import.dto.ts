@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
-  IsIn,
   IsInt,
   IsNumber,
   IsOptional,
@@ -11,7 +10,7 @@ import {
 } from 'class-validator';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ImportFspReconciliationArrayDto } from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
+import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -65,17 +64,13 @@ export class BulkImportResult extends BulkImportDto {
   public registrationStatus: RegistrationStatusEnum | string;
 }
 
-class ImportFspReconciliationResult extends ImportFspReconciliationArrayDto {
-  public importStatus: ImportStatus;
-}
-
 export class ImportResult {
-  public aggregateImportResult: AggregateImportResult;
+  public aggregateImportResult: AggregateImportResultDto;
   public importResult?: BulkImportResult[];
-  public uploadFspReconciliationResult?: ImportFspReconciliationResult[];
+  public uploadFspReconciliationResult?: ReconciliationFeedbackDto[];
 }
 
-class AggregateImportResult {
+export class AggregateImportResultDto {
   public countImported?: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
@@ -85,10 +80,9 @@ class AggregateImportResult {
 }
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({
-    enum: fspArray,
     example: fspArray.join(' | '),
   })
-  @IsIn(fspArray)
+  @IsString()
   // Should we change this to a more specific name?
   // It could also be programFinancialServiceProviderConfigurationName (which is a good name for us programmers)
   // However this name is also used by users in the csv file, so it should be a name that is understandable for them

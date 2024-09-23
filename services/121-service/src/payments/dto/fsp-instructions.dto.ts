@@ -3,8 +3,9 @@ import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/
 export type CsvInstructions = ExcelFspInstructions[];
 
 export class FspInstructions {
-  public data?: CsvInstructions | string;
-  public fileType?: ExportFileType;
+  public data: CsvInstructions | string;
+  public fileType: ExportFileType;
+  public fileNamePrefix: string;
 }
 
 export enum ExportFileType {

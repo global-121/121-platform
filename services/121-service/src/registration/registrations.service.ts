@@ -997,7 +997,7 @@ export class RegistrationsService {
     }
 
     const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValuesByNamesOrThrow(
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
           programFinancialServiceProviderConfigurationId:
             registration.programFinancialServiceProviderConfigurationId,
