@@ -14,6 +14,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TabMenuModule } from 'primeng/tabmenu';
 
+import { QuestionType } from '@121-service/src/registration/enum/custom-data-attributes';
+
 import {
   DataListComponent,
   DataListItem,
@@ -21,6 +23,7 @@ import {
 import { FormDefaultComponent } from '~/components/form/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { financialServiceProviderApiService } from '~/domains/financial-service-provider/financial-service-provider.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ATTRIBUTE_LABELS } from '~/domains/project/project.helper';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -47,6 +50,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 export class ProjectRegistrationPersonalInformationPageComponent {
   readonly registrationApiService = inject(RegistrationApiService);
   readonly projectApiService = inject(ProjectApiService);
+  readonly fspApiService = inject(financialServiceProviderApiService);
 
   projectId = input.required<number>();
   registrationId = input.required<number>();
@@ -68,16 +72,32 @@ export class ProjectRegistrationPersonalInformationPageComponent {
     ),
   );
 
-  dataList = computed<DataListItem[]>(() => {
+  selectedFspQuestionList = injectQuery(() => ({
+    ...this.fspApiService.getFinancialServiceProviderQuestions(
+      this.registration.data()?.financialServiceProvider,
+    )(),
+    enabled:
+      this.registration.isSuccess() && this.projectAttributes.isSuccess(),
+  }));
+
+  attributeList = computed<DataListItem[]>(() => {
     const list: DataListItem[] = [];
     if (!this.projectAttributes.isSuccess() || !this.registration.isSuccess()) {
       return list;
     }
 
     for (const attribute of this.projectAttributes.data()) {
+      if (
+        attribute.questionType === QuestionType.fspQuestion &&
+        !this.selectedFspQuestionList.data()?.includes(attribute.name)
+      ) {
+        continue;
+      }
+
+      const label =
+        attribute.label ?? ATTRIBUTE_LABELS[attribute.name] ?? attribute.name;
       list.push({
-        label:
-          attribute.label ?? ATTRIBUTE_LABELS[attribute.name] ?? attribute.name,
+        label,
         value: this.registration.data()[attribute.name],
       });
     }
