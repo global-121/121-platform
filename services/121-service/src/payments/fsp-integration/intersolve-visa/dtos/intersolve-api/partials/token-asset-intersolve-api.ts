@@ -1,4 +1,4 @@
-export interface TokenAsset {
+export interface TokenAssetIntersolveApi {
   readonly identity: {
     readonly type: string;
     readonly subType: string;

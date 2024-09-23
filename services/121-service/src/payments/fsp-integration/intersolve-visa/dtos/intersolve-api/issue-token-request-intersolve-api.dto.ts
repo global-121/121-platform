@@ -1,4 +1,4 @@
-export interface IssueTokenRequestDto {
+export interface IssueTokenRequestIntersolveApiDto {
   readonly reference: string;
   readonly activate: boolean;
 }
