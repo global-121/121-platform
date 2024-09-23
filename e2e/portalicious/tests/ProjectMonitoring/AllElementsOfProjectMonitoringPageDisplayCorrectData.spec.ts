@@ -40,7 +40,7 @@ test('[30326] All elements of Monitoring page display correct data', async ({
 
   await test.step('Check if all elements are displayed', async () => {
     await projectMonitoring.assertMonitoringTabElements();
-    await projectMonitoring.asserValuesInMonitoringTab({
+    await projectMonitoring.assertValuesInMonitoringTab({
       peopleIncluded: 4,
       peopleRegistered: 4,
     });

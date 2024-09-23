@@ -51,7 +51,7 @@ class ProjectMonitoring extends BasePage {
     // For the moment we are not checking the iframe area because there are no visible elemnts in it
   }
 
-  async asserValuesInMonitoringTab({
+  async assertValuesInMonitoringTab({
     peopleRegistered,
     peopleIncluded,
   }: {
