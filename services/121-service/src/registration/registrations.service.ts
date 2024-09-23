@@ -7,8 +7,8 @@ import { Equal, Repository } from 'typeorm';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -985,7 +985,7 @@ export class RegistrationsService {
       !registration.programFinancialServiceProviderConfigurationId ||
       registration.programFinancialServiceProviderConfiguration
         ?.financialServiceProviderName !==
-        FinancialServiceProviderName.intersolveVisa
+        FinancialServiceProviders.intersolveVisa
     ) {
       throw new HttpException(
         `This registration is not associated with the Intersolve Visa financial service provider.`,
@@ -999,15 +999,15 @@ export class RegistrationsService {
           programFinancialServiceProviderConfigurationId:
             registration.programFinancialServiceProviderConfigurationId,
           names: [
-            FinancialServiceProviderConfigurationEnum.brandCode,
-            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+            FinancialServiceProviderConfigurationProperties.brandCode,
+            FinancialServiceProviderConfigurationProperties.coverLetterCode,
           ],
         },
       );
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
-      FinancialServiceProviderName.intersolveVisa,
+      FinancialServiceProviders.intersolveVisa,
     ).attributes;
 
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
@@ -1070,11 +1070,13 @@ export class RegistrationsService {
         phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
       },
       brandCode: intersolveVisaConfig.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+        (c) =>
+          c.name === FinancialServiceProviderConfigurationProperties.brandCode,
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       coverLetterCode: intersolveVisaConfig.find(
         (c) =>
-          c.name === FinancialServiceProviderConfigurationEnum.coverLetterCode,
+          c.name ===
+          FinancialServiceProviderConfigurationProperties.coverLetterCode,
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
     });
 

@@ -125,7 +125,11 @@ export class MessageTemplateService {
     message: string,
   ): Promise<void> {
     const availableAttributes =
-      await this.programAttributesService.getAttributes(programId, true, true);
+      await this.programAttributesService.getAttributes({
+        programId: programId,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: true,
+      });
     const availablePlaceholders = availableAttributes.map(
       (a) => `{{${a.name}}}`,
     );

@@ -2,8 +2,8 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -200,7 +200,8 @@ describe('Do payment with Excel FSP', () => {
       );
       const columnsToExportFspConfigRecord = fspConfig.body.find(
         (c) =>
-          c.name === FinancialServiceProviderConfigurationEnum.columnsToExport,
+          c.name ===
+          FinancialServiceProviderConfigurationProperties.columnsToExport,
       );
       await deleteFspConfiguration(
         programIdWesteros,

@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -52,7 +52,7 @@ export class Attribute {
   public isRequired?: boolean;
   public label: LocalizedString | null;
   public options?: QuestionOption[] | null;
-  public fspNames?: FinancialServiceProviderName[];
+  public fspNames?: FinancialServiceProviders[];
   public pattern?: string | null;
 }
 

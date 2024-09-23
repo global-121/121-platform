@@ -6,19 +6,19 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class FinancialServiceProviderDto {
   @ApiProperty({ example: 'fspName' })
-  name: string;
+  readonly name: string;
 
   @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })
-  integrationType: WrapperType<FinancialServiceProviderIntegrationType>;
+  readonly integrationType: WrapperType<FinancialServiceProviderIntegrationType>;
 
   @ApiProperty({ example: true })
-  hasReconciliation: boolean;
+  readonly hasReconciliation: boolean;
 
   @ApiProperty({ example: { en: 'default label' } })
-  defaultLabel: LocalizedString;
+  readonly defaultLabel: LocalizedString;
 
   @ApiProperty({ example: true })
-  notifyOnTransaction: boolean;
+  readonly notifyOnTransaction: boolean;
 
   @ApiProperty({
     example: [
@@ -26,5 +26,5 @@ export class FinancialServiceProviderDto {
       { name: 'houseNumberAddition', isRequired: false },
     ],
   })
-  attributes: { name: string; isRequired: boolean }[];
+  readonly attributes: { name: string; isRequired: boolean }[];
 }

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -129,9 +129,9 @@ export class TransactionJobProcessorsService {
             programFinancialServiceProviderConfigurationId:
               input.programFinancialServiceProviderConfigurationId,
             names: [
-              FinancialServiceProviderConfigurationEnum.brandCode,
-              FinancialServiceProviderConfigurationEnum.coverLetterCode,
-              FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+              FinancialServiceProviderConfigurationProperties.brandCode,
+              FinancialServiceProviderConfigurationProperties.coverLetterCode,
+              FinancialServiceProviderConfigurationProperties.fundingTokenCode,
             ],
           },
         );
@@ -152,17 +152,18 @@ export class TransactionJobProcessorsService {
           transferAmountInMajorUnit,
           brandCode: intersolveVisaConfig.find(
             (c) =>
-              c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+              c.name ===
+              FinancialServiceProviderConfigurationProperties.brandCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
           coverLetterCode: intersolveVisaConfig.find(
             (c) =>
               c.name ===
-              FinancialServiceProviderConfigurationEnum.coverLetterCode,
+              FinancialServiceProviderConfigurationProperties.coverLetterCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
           fundingTokenCode: intersolveVisaConfig.find(
             (c) =>
               c.name ===
-              FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+              FinancialServiceProviderConfigurationProperties.fundingTokenCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {

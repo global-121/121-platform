@@ -3,7 +3,7 @@ import { TestBed } from '@automock/jest';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -66,7 +66,7 @@ function getViewRegistration(): RegistrationViewEntity {
     preferredLanguage: LanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
-    financialServiceProviderName: FinancialServiceProviderName.intersolveVisa,
+    financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
     programFinancialServiceProviderConfigurationName: 'Intersolve-Visa',
     programFinancialServiceProviderConfigurationLabel: {
       en: 'Visa debit card',
@@ -211,7 +211,7 @@ describe('EventsService', () => {
 
     // Changes that should not be logged
     newViewRegistration.programFinancialServiceProviderConfigurationName =
-      FinancialServiceProviderName.intersolveVoucherWhatsapp;
+      FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     // Act
     await eventsService.log(oldViewRegistration, newViewRegistration);

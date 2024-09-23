@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   ImportFspReconciliationArrayDto,
   ImportFspReconciliationDto,
@@ -39,11 +39,11 @@ export class VodacashService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.vodacash;
+    fspTransactionResult.fspName = FinancialServiceProviders.vodacash;
 
     for (const payment of paymentList) {
       const paTransactionResult = {
-        fspName: FinancialServiceProviderName.vodacash,
+        fspName: FinancialServiceProviders.vodacash,
         referenceId: payment.referenceId,
         date: new Date(),
         calculatedAmount: payment.transactionAmount,
@@ -160,7 +160,7 @@ export class VodacashService
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
-      FinancialServiceProviderName.vodacash,
+      FinancialServiceProviders.vodacash,
     );
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
@@ -197,7 +197,7 @@ export class VodacashService
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.registrationId = registrationdId;
     paTransactionResult.referenceId = referenceId;
-    paTransactionResult.fspName = FinancialServiceProviderName.vodacash;
+    paTransactionResult.fspName = FinancialServiceProviders.vodacash;
     paTransactionResult.status = StatusEnum.error;
     paTransactionResult.calculatedAmount = (
       await this.transactionsService.getLastTransactions(

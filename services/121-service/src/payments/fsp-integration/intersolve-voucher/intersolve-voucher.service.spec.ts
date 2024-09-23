@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -22,7 +22,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
     financialServiceProviderName:
-      FinancialServiceProviderName.intersolveVoucherWhatsapp,
+      FinancialServiceProviders.intersolveVoucherWhatsapp,
     programFinancialServiceProviderConfigurationId: 1,
     bulkSize: 1,
     userId: 1,
@@ -72,7 +72,7 @@ describe('IntersolveVoucherService', () => {
     jest
       .spyOn(
         intersolveVoucherService.programFspConfigurationRepository,
-        'getUsernamePasswordPropertiesForIds',
+        'findUsernamePasswordPropertiesForIds',
       )
       .mockImplementation(() => Promise.resolve(dbQueryResult));
 

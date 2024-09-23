@@ -1,68 +1,68 @@
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 // ##TODO: Merge this mapping with the one in financial-service-providers.const.ts??? To be decide when implementing the FSP config api
 export const FinancialServiceProviderConfigurationMapping: {
-  [key in FinancialServiceProviderName]?: any;
+  [key in FinancialServiceProviders]?: any;
 } = {
-  [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
-    FinancialServiceProviderConfigurationEnum.displayName,
+  [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
+    FinancialServiceProviderConfigurationProperties.password,
+    FinancialServiceProviderConfigurationProperties.username,
+    FinancialServiceProviderConfigurationProperties.displayName,
   ],
-  [FinancialServiceProviderName.intersolveVoucherPaper]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
-    FinancialServiceProviderConfigurationEnum.displayName,
+  [FinancialServiceProviders.intersolveVoucherPaper]: [
+    FinancialServiceProviderConfigurationProperties.password,
+    FinancialServiceProviderConfigurationProperties.username,
+    FinancialServiceProviderConfigurationProperties.displayName,
   ],
-  [FinancialServiceProviderName.intersolveVisa]: [
-    FinancialServiceProviderConfigurationEnum.brandCode,
-    FinancialServiceProviderConfigurationEnum.coverLetterCode,
-    FinancialServiceProviderConfigurationEnum.displayName,
-    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+  [FinancialServiceProviders.intersolveVisa]: [
+    FinancialServiceProviderConfigurationProperties.brandCode,
+    FinancialServiceProviderConfigurationProperties.coverLetterCode,
+    FinancialServiceProviderConfigurationProperties.displayName,
+    FinancialServiceProviderConfigurationProperties.fundingTokenCode,
   ],
-  [FinancialServiceProviderName.vodacash]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
+  [FinancialServiceProviders.vodacash]: [
+    FinancialServiceProviderConfigurationProperties.displayName,
   ],
-  [FinancialServiceProviderName.safaricom]: [
-    FinancialServiceProviderConfigurationEnum.displayName,
+  [FinancialServiceProviders.safaricom]: [
+    FinancialServiceProviderConfigurationProperties.displayName,
   ],
-  [FinancialServiceProviderName.commercialBankEthiopia]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
-    FinancialServiceProviderConfigurationEnum.displayName,
+  [FinancialServiceProviders.commercialBankEthiopia]: [
+    FinancialServiceProviderConfigurationProperties.password,
+    FinancialServiceProviderConfigurationProperties.username,
+    FinancialServiceProviderConfigurationProperties.displayName,
   ],
-  [FinancialServiceProviderName.excel]: [
-    FinancialServiceProviderConfigurationEnum.columnsToExport,
-    FinancialServiceProviderConfigurationEnum.columnToMatch,
-    FinancialServiceProviderConfigurationEnum.displayName,
+  [FinancialServiceProviders.excel]: [
+    FinancialServiceProviderConfigurationProperties.columnsToExport,
+    FinancialServiceProviderConfigurationProperties.columnToMatch,
+    FinancialServiceProviderConfigurationProperties.displayName,
   ],
 };
 
 export const RequiredFinancialServiceProviderConfigurations: {
-  [key in FinancialServiceProviderName]?: any;
+  [key in FinancialServiceProviders]?: any;
 } = {
-  [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
+  [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
+    FinancialServiceProviderConfigurationProperties.password,
+    FinancialServiceProviderConfigurationProperties.username,
   ],
-  [FinancialServiceProviderName.intersolveVoucherPaper]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
+  [FinancialServiceProviders.intersolveVoucherPaper]: [
+    FinancialServiceProviderConfigurationProperties.password,
+    FinancialServiceProviderConfigurationProperties.username,
   ],
-  [FinancialServiceProviderName.intersolveVisa]: [
-    FinancialServiceProviderConfigurationEnum.brandCode,
-    FinancialServiceProviderConfigurationEnum.coverLetterCode,
-    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+  [FinancialServiceProviders.intersolveVisa]: [
+    FinancialServiceProviderConfigurationProperties.brandCode,
+    FinancialServiceProviderConfigurationProperties.coverLetterCode,
+    FinancialServiceProviderConfigurationProperties.fundingTokenCode,
   ],
-  [FinancialServiceProviderName.commercialBankEthiopia]: [
-    FinancialServiceProviderConfigurationEnum.password,
-    FinancialServiceProviderConfigurationEnum.username,
+  [FinancialServiceProviders.commercialBankEthiopia]: [
+    FinancialServiceProviderConfigurationProperties.password,
+    FinancialServiceProviderConfigurationProperties.username,
   ],
-  [FinancialServiceProviderName.excel]: [
-    FinancialServiceProviderConfigurationEnum.columnsToExport,
-    FinancialServiceProviderConfigurationEnum.columnToMatch,
+  [FinancialServiceProviders.excel]: [
+    FinancialServiceProviderConfigurationProperties.columnsToExport,
+    FinancialServiceProviderConfigurationProperties.columnToMatch,
   ],
 };

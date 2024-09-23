@@ -2,7 +2,7 @@ import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -25,7 +25,7 @@ describe('RegistrationsImportService', () => {
       nameLast: 'Test',
       phoneNumber: '31600000000',
       programFinancialServiceProviderConfigurationName:
-        FinancialServiceProviderName.intersolveVoucherPaper,
+        FinancialServiceProviders.intersolveVoucherPaper,
       whatsappPhoneNumber: '',
     },
   ];

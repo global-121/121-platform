@@ -4,7 +4,7 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -86,7 +86,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
-    fspName?: FinancialServiceProviderName,
+    fspName?: FinancialServiceProviders,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
@@ -102,7 +102,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: StatusEnum,
-    fspName?: FinancialServiceProviderName,
+    fspName?: FinancialServiceProviders,
   ): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
@@ -115,7 +115,6 @@ export class TransactionsService {
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
         'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
-        'fspconfig.financialServiceProviderName as "financialServiceProviderName"',
         'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
       ])
       .leftJoin(

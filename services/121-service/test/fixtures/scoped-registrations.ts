@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -13,7 +13,7 @@ export const registrationScopedGoesPv = {
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550111',
   fullName: 'Jane Doe',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherPaper,
+    FinancialServiceProviders.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgPv = {
@@ -23,7 +23,7 @@ export const registrationScopedMiddelburgPv = {
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550112',
   fullName: 'Juliet Marsh',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherPaper,
+    FinancialServiceProviders.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtPv = {
@@ -33,7 +33,7 @@ export const registrationScopedUtrechtPv = {
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550121',
   fullName: 'Sam Winters',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherPaper,
+    FinancialServiceProviders.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedPv = {
@@ -43,7 +43,7 @@ export const registrationNotScopedPv = {
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550200',
   fullName: 'Nick Brouwers',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherPaper,
+    FinancialServiceProviders.intersolveVoucherPaper,
 };
 
 export const registrationsPV = [

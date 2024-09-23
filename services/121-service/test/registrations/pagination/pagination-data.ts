@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
@@ -30,7 +30,7 @@ export const registrationOCW1 = {
   fullName: 'John Smith',
   phoneNumber: '14155236666',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVisa,
+    FinancialServiceProviders.intersolveVisa,
   whatsappPhoneNumber: '14155238886',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -46,7 +46,7 @@ export const registrationOCW2 = {
   fullName: 'Anna Hello',
   phoneNumber: '14155237775',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVisa,
+    FinancialServiceProviders.intersolveVisa,
   whatsappPhoneNumber: '14155237775',
   addressStreet: 'Teststeeg',
   addressHouseNumber: '2',
@@ -62,7 +62,7 @@ export const registrationOCW3 = {
   fullName: 'Sophia Johnson',
   phoneNumber: '14155236666',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVisa,
+    FinancialServiceProviders.intersolveVisa,
   whatsappPhoneNumber: '14155236666',
   addressStreet: 'DifferentStreet',
   addressHouseNumber: '3',
@@ -78,7 +78,7 @@ export const registrationOCW4 = {
   fullName: 'Luiz Garcia',
   phoneNumber: '14155235555',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVisa,
+    FinancialServiceProviders.intersolveVisa,
   whatsappPhoneNumber: '14155235555',
   addressStreet: 'AnotherStreet',
   addressHouseNumber: '4',
@@ -94,7 +94,7 @@ export const registrationOCW5 = {
   fullName: 'Lars Larsson',
   phoneNumber: '14155235556',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    FinancialServiceProviders.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235556',
 };
 
@@ -113,7 +113,7 @@ export const registrationPV5 = {
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235556',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    FinancialServiceProviders.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
 };
 
@@ -124,7 +124,7 @@ export const registrationPV6 = {
   fullName: 'Jan Janssen',
   phoneNumber: '14155235551',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    FinancialServiceProviders.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235551',
 };
 
@@ -135,7 +135,7 @@ export const registrationPV7 = {
   fullName: 'Joost Herlembach',
   phoneNumber: '14155235551',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVisa,
+    FinancialServiceProviders.intersolveVisa,
   whatsappPhoneNumber: '14155235551',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -157,7 +157,7 @@ export const registrationPvScoped = {
   fullName: 'Freya Midgard',
   phoneNumber: '14155235554',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    FinancialServiceProviders.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235554',
   scope: 'utrecht',
 };

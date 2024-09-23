@@ -60,11 +60,11 @@ describe('ProgramAttributesService', () => {
         .spyOn(programRegistrationAttributeRepository, 'createQueryBuilder')
         .mockImplementation(() => createQueryBuilder) as any;
 
-      const result = await programAttributesService.getAttributes(
-        1,
-        true,
-        false,
-      );
+      const result = await programAttributesService.getAttributes({
+        programId: 1,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: false,
+      });
 
       const includeTemplateDefaultAttributes: (keyof RegistrationViewEntity)[] =
         [

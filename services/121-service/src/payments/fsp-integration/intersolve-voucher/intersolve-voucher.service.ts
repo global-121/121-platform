@@ -7,8 +7,8 @@ import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -576,8 +576,8 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<number> {
     const fspName = intersolveVoucher.whatsappPhoneNumber
-      ? FinancialServiceProviderName.intersolveVoucherWhatsapp
-      : FinancialServiceProviderName.intersolveVoucherPaper;
+      ? FinancialServiceProviders.intersolveVoucherWhatsapp
+      : FinancialServiceProviders.intersolveVoucherPaper;
 
     const configQuery = await this.programFspConfigurationRepository
       .createQueryBuilder('fspConfig')
@@ -592,10 +592,12 @@ export class IntersolveVoucherService
     try {
       credentials = {
         username: config.find(
-          (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+          (c) =>
+            c.name === FinancialServiceProviderConfigurationProperties.username,
         ).value,
         password: config.find(
-          (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+          (c) =>
+            c.name === FinancialServiceProviderConfigurationProperties.password,
         ).value,
       };
     } catch (error) {
@@ -822,7 +824,7 @@ export class IntersolveVoucherService
         .financialServiceProviderName;
     if (
       fspNameOfRegistration ===
-      FinancialServiceProviderName.intersolveVoucherWhatsapp
+      FinancialServiceProviders.intersolveVoucherWhatsapp
     ) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
@@ -834,17 +836,16 @@ export class IntersolveVoucherService
 
     if (
       fspNameOfRegistration ===
-      FinancialServiceProviderName.intersolveVoucherWhatsapp
+      FinancialServiceProviders.intersolveVoucherWhatsapp
     ) {
       transactionResult.fspName =
-        FinancialServiceProviderName.intersolveVoucherWhatsapp;
+        FinancialServiceProviders.intersolveVoucherWhatsapp;
     }
     if (
-      fspNameOfRegistration ===
-      FinancialServiceProviderName.intersolveVoucherPaper
+      fspNameOfRegistration === FinancialServiceProviders.intersolveVoucherPaper
     ) {
       transactionResult.fspName =
-        FinancialServiceProviderName.intersolveVoucherPaper;
+        FinancialServiceProviders.intersolveVoucherPaper;
     }
     return transactionResult;
   }

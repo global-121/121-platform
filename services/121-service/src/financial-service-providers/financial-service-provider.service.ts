@@ -15,7 +15,7 @@ export class FinancialServiceProvidersService {
       ).join(', ');
       throw new HttpException(
         `Financial Service Provider not found. Available FSPs: ${availableFsps}`,
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
     return fsp;

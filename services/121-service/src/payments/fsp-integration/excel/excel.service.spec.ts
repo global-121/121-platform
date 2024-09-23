@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -91,7 +91,7 @@ describe('ExcelService', () => {
       {
         paTransactionResult: {
           calculatedAmount: transactionAmount,
-          fspName: FinancialServiceProviderName.excel,
+          fspName: FinancialServiceProviders.excel,
           referenceId: referenceid,
           registrationId,
           status: transactionStatus,

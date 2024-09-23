@@ -14,7 +14,7 @@ import {
 } from 'class-validator';
 
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import { ProgramFinancialServiceProviderConfigurationReturnDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-return.dto';
+import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
@@ -218,7 +218,7 @@ export class ProgramReturnDto {
   // ##TODO add proper API documentation
   @ApiProperty()
   @IsArray()
-  public readonly financialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationReturnDto[];
+  public readonly financialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationResponseDto[];
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()

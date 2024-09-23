@@ -2,8 +2,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
@@ -22,7 +22,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
 
   public async findByProgramIdAndFinancialServiceProviderName(
     programId: number,
-    financialServiceProviderName: FinancialServiceProviderName,
+    financialServiceProviderName: FinancialServiceProviders,
     relations: string[] = [],
   ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
     return await this.baseRepository.find({
@@ -34,7 +34,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     });
   }
 
-  public async getUsernamePasswordPropertiesForIds(
+  public async findUsernamePasswordPropertiesForIds(
     programFinancialServiceProviderConfigurationId: number[],
   ): Promise<
     {
@@ -57,10 +57,12 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
       programFinancialServiceProviderConfigurationId,
     );
     const propertyUsername = properties.find(
-      (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
+      (c) =>
+        c.name === FinancialServiceProviderConfigurationProperties.username,
     );
     const propertyPassword = properties.find(
-      (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
+      (c) =>
+        c.name === FinancialServiceProviderConfigurationProperties.password,
     );
 
     const response: UsernamePasswordInterface = {

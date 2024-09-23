@@ -10,7 +10,7 @@ import {
   Length,
 } from 'class-validator';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ImportFspReconciliationArrayDto } from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -23,7 +23,7 @@ export enum ImportStatus {
   paymentFailed = 'paymentFailed',
 }
 
-const fspArray = Object.values(FinancialServiceProviderName).map((item) =>
+const fspArray = Object.values(FinancialServiceProviders).map((item) =>
   String(item),
 );
 const languageArray = Object.values(LanguageEnum).map((item) => String(item));

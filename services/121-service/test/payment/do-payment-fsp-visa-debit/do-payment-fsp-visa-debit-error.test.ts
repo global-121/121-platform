@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -307,7 +307,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const coverLetterCodeForFspConfigRecord = fspConfig.body.find(
       (fspConfig) =>
         fspConfig.name ===
-        FinancialServiceProviderConfigurationEnum.coverLetterCode,
+        FinancialServiceProviderConfigurationProperties.coverLetterCode,
     );
     await deleteFspConfiguration(
       programIdVisa,

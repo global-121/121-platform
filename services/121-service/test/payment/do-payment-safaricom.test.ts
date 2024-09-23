@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -28,7 +28,7 @@ describe('Do payment to 1 PA', () => {
   const registrationSafaricom = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviderName.safaricom,
+      FinancialServiceProviders.safaricom,
     phoneNumber: '254708374149',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,

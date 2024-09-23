@@ -6,7 +6,7 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
@@ -847,7 +847,7 @@ export class MetricsService {
     for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
       if (
         fspConfig.financialServiceProviderName ===
-        FinancialServiceProviderName.safaricom
+        FinancialServiceProviders.safaricom
       ) {
         fields = [...fields, ...['requestResult.OriginatorConversationID']];
       }

@@ -8,7 +8,7 @@ import { DataSource, Equal, Repository } from 'typeorm';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RequiredFinancialServiceProviderConfigurations } from '@121-service/src/financial-service-providers/financial-service-provider-configuration.mapping';
 import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import {
@@ -71,7 +71,7 @@ export class PaymentsService {
 
   private fspWithQueueServiceMapping: Partial<
     Record<
-      FinancialServiceProviderName,
+      FinancialServiceProviders,
       | IntersolveVoucherService
       | IntersolveVisaService
       | SafaricomService
@@ -80,7 +80,7 @@ export class PaymentsService {
   >;
 
   private financialServiceProviderNameToServiceMap: Record<
-    FinancialServiceProviderName,
+    FinancialServiceProviders,
     [FinancialServiceProviderIntegrationInterface, useWhatsapp?: boolean]
   >;
 
@@ -106,36 +106,34 @@ export class PaymentsService {
     private readonly redisClient: Redis,
   ) {
     this.fspWithQueueServiceMapping = {
-      [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-      [FinancialServiceProviderName.intersolveVoucherPaper]:
+      [FinancialServiceProviders.intersolveVisa]: this.intersolveVisaService,
+      [FinancialServiceProviders.intersolveVoucherPaper]:
         this.intersolveVoucherService,
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
+      [FinancialServiceProviders.intersolveVoucherWhatsapp]:
         this.intersolveVoucherService,
-      [FinancialServiceProviderName.safaricom]: this.safaricomService,
-      [FinancialServiceProviderName.commercialBankEthiopia]:
+      [FinancialServiceProviders.safaricom]: this.safaricomService,
+      [FinancialServiceProviders.commercialBankEthiopia]:
         this.commercialBankEthiopiaService,
       // Add more FSP mappings if they work queue-based
     };
 
     this.financialServiceProviderNameToServiceMap = {
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+      [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
         this.intersolveVoucherService,
         true,
       ],
-      [FinancialServiceProviderName.intersolveVoucherPaper]: [
+      [FinancialServiceProviders.intersolveVoucherPaper]: [
         this.intersolveVoucherService,
         false,
       ],
       // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
-      [FinancialServiceProviderName.intersolveVisa]: [
-        this.intersolveVisaService,
-      ],
-      [FinancialServiceProviderName.vodacash]: [this.vodacashService],
-      [FinancialServiceProviderName.safaricom]: [this.safaricomService],
-      [FinancialServiceProviderName.commercialBankEthiopia]: [
+      [FinancialServiceProviders.intersolveVisa]: [this.intersolveVisaService],
+      [FinancialServiceProviders.vodacash]: [this.vodacashService],
+      [FinancialServiceProviders.safaricom]: [this.safaricomService],
+      [FinancialServiceProviders.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
       ],
-      [FinancialServiceProviderName.excel]: [this.excelService],
+      [FinancialServiceProviders.excel]: [this.excelService],
     };
   }
 
@@ -254,7 +252,7 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspsInPayment: FinancialServiceProviderName[] = [];
+    const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
@@ -314,12 +312,12 @@ export class PaymentsService {
   }
 
   async validateRequiredFinancialServiceProviderConfigurations(
-    fsp: FinancialServiceProviderName,
+    fsp: FinancialServiceProviders,
     programId: number,
   ) {
     const requiredConfigurations =
       RequiredFinancialServiceProviderConfigurations[
-        fsp as FinancialServiceProviderName
+        fsp as FinancialServiceProviders
       ];
     // Early return for FSP that don't have required configurarions
     if (!requiredConfigurations) {
@@ -328,7 +326,7 @@ export class PaymentsService {
     const config =
       await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
         programId,
-        fsp as FinancialServiceProviderName,
+        fsp as FinancialServiceProviders,
       );
     for (const requiredConfiguration of requiredConfigurations) {
       const foundConfig = config.find((c) => c.name === requiredConfiguration);
@@ -457,7 +455,7 @@ export class PaymentsService {
         );
       });
 
-    const fspsInPayment: FinancialServiceProviderName[] = [];
+    const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
       if (!fspsInPayment.includes(registration.financialServiceProviderName)) {
@@ -608,7 +606,7 @@ export class PaymentsService {
   }): Promise<void> {
     await Promise.all(
       Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
-        if (fsp === FinancialServiceProviderName.intersolveVisa) {
+        if (fsp === FinancialServiceProviders.intersolveVisa) {
           /*
             TODO: REFACTOR: We need to refactor the Payments Service during segregation of duties implementation, so that the Payments Service calls a private function per FSP with a list of ReferenceIds (or RegistrationIds ?!)
             which then gathers the necessary data to create transaction jobs for the FSP.
@@ -675,7 +673,7 @@ export class PaymentsService {
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
-      FinancialServiceProviderName.intersolveVisa,
+      FinancialServiceProviders.intersolveVisa,
     ).attributes;
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
@@ -900,9 +898,7 @@ export class PaymentsService {
       where: {
         id: Equal(programId),
         programFinancialServiceProviderConfigurations: {
-          financialServiceProviderName: Equal(
-            FinancialServiceProviderName.excel,
-          ),
+          financialServiceProviderName: Equal(FinancialServiceProviders.excel),
         },
       },
       relations: ['programFinancialServiceProviderConfigurations'],
@@ -943,8 +939,7 @@ export class PaymentsService {
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
-      (t) =>
-        t.financialServiceProviderName !== FinancialServiceProviderName.excel,
+      (t) => t.financialServiceProviderName !== FinancialServiceProviders.excel,
     )) {
       const registration =
         await this.registrationScopedRepository.findOneOrFail({
@@ -965,7 +960,7 @@ export class PaymentsService {
         continue;
       }
 
-      if (fsp.name === FinancialServiceProviderName.vodacash) {
+      if (fsp.name === FinancialServiceProviders.vodacash) {
         xmlInstructions = await this.vodacashService.getFspInstructions(
           registration,
           transaction,
@@ -980,7 +975,7 @@ export class PaymentsService {
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
       (t) =>
-        t.financialServiceProviderName === FinancialServiceProviderName.excel &&
+        t.financialServiceProviderName === FinancialServiceProviders.excel &&
         t.status === StatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
@@ -1038,7 +1033,7 @@ export class PaymentsService {
     for await (const fspConfig of fspConfigsWithReconciliation) {
       if (
         fspConfig.financialServiceProviderName ===
-        FinancialServiceProviderName.vodacash
+        FinancialServiceProviders.vodacash
       ) {
         const vodacashRegistrations =
           await this.vodacashService.getRegistrationsForReconciliation(
@@ -1072,7 +1067,7 @@ export class PaymentsService {
 
       if (
         fspConfig.financialServiceProviderName ===
-        FinancialServiceProviderName.excel
+        FinancialServiceProviders.excel
       ) {
         const maxRecords = 10000;
         const matchColumn =
@@ -1095,7 +1090,7 @@ export class PaymentsService {
           payment,
           undefined,
           undefined,
-          FinancialServiceProviderName.excel,
+          FinancialServiceProviders.excel,
         );
         importResponseRecords =
           this.excelService.joinRegistrationsAndImportRecords(

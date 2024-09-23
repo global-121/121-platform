@@ -354,12 +354,13 @@ You can also leave the body empty.`,
         return [];
       }
     }
-    const attr = await this.programAttributesService.getAttributes(
-      programId,
-      includeProgramRegistrationAttributes,
-      includeTemplateDefaultAttributes,
-      filterShowInPeopleAffectedTable,
-    );
+    const attr = await this.programAttributesService.getAttributes({
+      programId: programId,
+      includeProgramRegistrationAttributes:
+        includeProgramRegistrationAttributes,
+      includeTemplateDefaultAttributes: includeTemplateDefaultAttributes,
+      filterShowInPeopleAffectedTable: filterShowInPeopleAffectedTable,
+    });
     return attr;
   }
 

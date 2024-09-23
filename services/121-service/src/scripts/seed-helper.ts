@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
@@ -306,7 +306,7 @@ export class SeedHelper {
 
   private createProggramFspConfiguration(
     fspConfigFromJson: {
-      financialServiceProvider: FinancialServiceProviderName;
+      financialServiceProvider: FinancialServiceProviders;
       properties: { name: string; value: string }[] | undefined;
     },
     financialServicePeoviderObject: FinancialServiceProviderDto,

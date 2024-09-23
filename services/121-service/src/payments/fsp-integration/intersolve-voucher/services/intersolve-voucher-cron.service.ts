@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Equal, Repository } from 'typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -72,7 +72,7 @@ export class IntersolveVoucherCronService {
     const configId = await this.programFspConfigurationRepository.findOne({
       where: {
         financialServiceProviderName: Equal(
-          FinancialServiceProviderName.intersolveVoucherWhatsapp,
+          FinancialServiceProviders.intersolveVoucherWhatsapp,
         ),
       },
       select: ['id'],

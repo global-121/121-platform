@@ -1,4 +1,4 @@
-export enum FinancialServiceProviderName {
+export enum FinancialServiceProviders {
   intersolveVoucherWhatsapp = 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
@@ -8,7 +8,7 @@ export enum FinancialServiceProviderName {
   excel = 'Excel',
 }
 
-export enum FinancialServiceProviderConfigurationEnum {
+export enum FinancialServiceProviderConfigurationProperties {
   password = 'password',
   username = 'username',
   columnsToExport = 'columnsToExport',

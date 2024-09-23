@@ -141,11 +141,11 @@ export class MessageQueuesService {
       });
       messageText = messageTemplate?.message;
     }
-    const placeholders = await this.programAttributesService.getAttributes(
-      programId,
-      true,
-      true,
-    );
+    const placeholders = await this.programAttributesService.getAttributes({
+      programId: programId,
+      includeProgramRegistrationAttributes: true,
+      includeTemplateDefaultAttributes: true,
+    });
     const usedPlaceholders: string[] = [];
     for (const placeholder of placeholders) {
       const regex = new RegExp(`{{${placeholder.name}}}`, 'g');

@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getNotes, postNote } from '@121-service/test/helpers/program.helper';
@@ -22,7 +22,7 @@ describe('Notes', () => {
     lastName: 'Smith',
     phoneNumber: '14155238886',
     programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviderName.intersolveVisa,
+      FinancialServiceProviders.intersolveVisa,
     whatsappPhoneNumber: '14155238886',
     addressStreet: 'Teststraat',
     addressHouseNumber: '1',

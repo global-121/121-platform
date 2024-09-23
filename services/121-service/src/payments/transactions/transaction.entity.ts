@@ -57,7 +57,7 @@ export class TransactionEntity extends Base121AuditedEntity {
       programFinancialServiceProviderConfiguration.transactions,
   )
   @JoinColumn({
-    name: 'programFinancialServiceProviderConfigurationConfigurationId',
+    name: 'programFinancialServiceProviderConfigurationId',
   })
   public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
   @Index()

@@ -41,7 +41,7 @@ export class FinancialServiceProvidersController {
   public async getFspByName(
     @Param('financialServiceProviderName')
     financialServiceProviderName: string,
-  ): Promise<FinancialServiceProviderDto | undefined> {
+  ): Promise<FinancialServiceProviderDto> {
     return await this.fspService.getFspByName(financialServiceProviderName);
   }
 }

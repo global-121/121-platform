@@ -4,8 +4,8 @@ import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -82,11 +82,11 @@ export class ProgramService {
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
     program['paTableAttributes'] =
-      await this.programAttributesService.getAttributes(
-        program.id,
-        true,
-        false,
-      );
+      await this.programAttributesService.getAttributes({
+        programId: program.id,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: false,
+      });
 
     // TODO: Get these attributes from some enum or something
     program['filterableAttributes'] =
@@ -344,7 +344,11 @@ export class ProgramService {
     name: string,
   ): Promise<void> {
     const existingAttributes =
-      await this.programAttributesService.getAttributes(programId, true, false);
+      await this.programAttributesService.getAttributes({
+        programId,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: false,
+      });
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;
     });
@@ -510,7 +514,7 @@ export class ProgramService {
     const programFspConfigurations =
       await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
         programId,
-        FinancialServiceProviderName.intersolveVisa,
+        FinancialServiceProviders.intersolveVisa,
         ['properties'],
       );
     if (!programFspConfigurations) {
@@ -530,7 +534,7 @@ export class ProgramService {
     const fundingTokenConfigurationProperties = properties.filter(
       (config) =>
         config.name ===
-        FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode,
     );
     if (
       !fundingTokenConfigurationProperties ||

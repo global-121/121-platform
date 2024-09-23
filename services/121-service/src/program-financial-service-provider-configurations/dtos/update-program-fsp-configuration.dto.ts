@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 // ##TODO: This class is not used anywhere but should be used when we implement the  program financial service provider configuration property endpoint
 
 export class UpdateProgramFspConfigurationDto {
   @ApiProperty({
-    example: FinancialServiceProviderConfigurationEnum.displayName,
+    example: FinancialServiceProviderConfigurationProperties.displayName,
   })
   @IsNotEmpty()
   @IsString()

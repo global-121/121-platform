@@ -1,10 +1,10 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 
 export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
-    name: FinancialServiceProviderName.excel,
+    name: FinancialServiceProviders.excel,
     integrationType: FinancialServiceProviderIntegrationType.csv,
     hasReconciliation: false,
     defaultLabel: {
@@ -28,7 +28,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     attributes: [],
   },
   {
-    name: FinancialServiceProviderName.intersolveVoucherPaper,
+    name: FinancialServiceProviders.intersolveVoucherPaper,
     integrationType: FinancialServiceProviderIntegrationType.api,
     hasReconciliation: false,
     defaultLabel: {
@@ -38,7 +38,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     attributes: [],
   },
   {
-    name: FinancialServiceProviderName.safaricom,
+    name: FinancialServiceProviders.safaricom,
     integrationType: FinancialServiceProviderIntegrationType.api,
     hasReconciliation: false,
     defaultLabel: {
@@ -53,7 +53,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
-    name: FinancialServiceProviderName.vodacash,
+    name: FinancialServiceProviders.vodacash,
     integrationType: FinancialServiceProviderIntegrationType.xml,
     hasReconciliation: false,
     defaultLabel: {
@@ -91,7 +91,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
-    name: FinancialServiceProviderName.intersolveVisa,
+    name: FinancialServiceProviders.intersolveVisa,
     integrationType: FinancialServiceProviderIntegrationType.api,
     hasReconciliation: false,
     defaultLabel: {
@@ -99,6 +99,10 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     },
     notifyOnTransaction: true,
     attributes: [
+      {
+        name: 'fullName',
+        isRequired: true,
+      },
       {
         name: 'addressStreet',
         isRequired: true,
@@ -109,7 +113,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
       },
       {
         name: 'addressHouseNumberAddition',
-        isRequired: true,
+        isRequired: false,
       },
       {
         name: 'addressPostalCode',
@@ -120,7 +124,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
         isRequired: true,
       },
       {
-        name: 'whatsappPhoneNumber',
+        name: 'phoneNumber',
         isRequired: true,
       },
     ],
@@ -162,7 +166,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
-    name: FinancialServiceProviderName.commercialBankEthiopia,
+    name: FinancialServiceProviders.commercialBankEthiopia,
     integrationType: FinancialServiceProviderIntegrationType.api,
     hasReconciliation: false,
     defaultLabel: {
@@ -177,7 +181,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
-    name: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    name: FinancialServiceProviders.intersolveVoucherWhatsapp,
     integrationType: FinancialServiceProviderIntegrationType.api,
     hasReconciliation: false,
     defaultLabel: {

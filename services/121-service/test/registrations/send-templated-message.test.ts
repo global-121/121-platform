@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -34,7 +34,7 @@ describe('Sending templated message', () => {
     nameLast: 'Smith',
     phoneNumber: '14155238886',
     programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+      FinancialServiceProviders.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
   };
 

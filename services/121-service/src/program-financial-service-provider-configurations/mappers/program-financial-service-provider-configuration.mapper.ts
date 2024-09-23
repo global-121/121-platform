@@ -1,11 +1,11 @@
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
-import { ProgramFinancialServiceProviderConfigurationReturnDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-return.dto';
+import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 
 export class ProgramFinancialServiceProviderConfigurationMapper {
   public static mapEntitiesToDtos(
     entities: ProgramFinancialServiceProviderConfigurationEntity[],
-  ): ProgramFinancialServiceProviderConfigurationReturnDto[] {
+  ): ProgramFinancialServiceProviderConfigurationResponseDto[] {
     return entities.map((entity) =>
       ProgramFinancialServiceProviderConfigurationMapper.mapEntitytoDto(entity),
     );
@@ -13,8 +13,8 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
 
   public static mapEntitytoDto(
     entity: ProgramFinancialServiceProviderConfigurationEntity,
-  ): ProgramFinancialServiceProviderConfigurationReturnDto {
-    const dto = new ProgramFinancialServiceProviderConfigurationReturnDto();
+  ): ProgramFinancialServiceProviderConfigurationResponseDto {
+    const dto = new ProgramFinancialServiceProviderConfigurationResponseDto();
 
     dto.programId = entity.programId;
     dto.financialServiceProviderName = entity.financialServiceProviderName;

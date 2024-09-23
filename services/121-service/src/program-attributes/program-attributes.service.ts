@@ -102,12 +102,17 @@ export class ProgramAttributesService {
     return filterableAttributes;
   }
 
-  public async getAttributes(
-    programId: number,
-    includeProgramRegistrationAttributes: boolean,
-    includeTemplateDefaultAttributes: boolean,
-    filterShowInPeopleAffectedTable?: boolean,
-  ): Promise<Attribute[]> {
+  public async getAttributes({
+    programId,
+    includeProgramRegistrationAttributes,
+    includeTemplateDefaultAttributes,
+    filterShowInPeopleAffectedTable,
+  }: {
+    programId: number;
+    includeProgramRegistrationAttributes: boolean;
+    includeTemplateDefaultAttributes: boolean;
+    filterShowInPeopleAffectedTable?: boolean;
+  }): Promise<Attribute[]> {
     let programAttributes: Attribute[] = [];
     if (includeProgramRegistrationAttributes) {
       programAttributes = await this.getAndMapProgramRegistrationAttributes(
