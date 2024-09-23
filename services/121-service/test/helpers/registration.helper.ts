@@ -336,7 +336,7 @@ export function getMessageHistory(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .get(`/programs/${programId}/registrations/message-history/${referenceId}`)
+    .get(`/programs/${programId}/registrations/${referenceId}/messages`)
     .set('Cookie', [accessToken])
     .send();
 }

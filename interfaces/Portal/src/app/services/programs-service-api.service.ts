@@ -257,7 +257,7 @@ export class ProgramsServiceApiService {
   ): Promise<Message[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/message-history/${referenceId}`,
+      `/programs/${programId}/registrations/${referenceId}/messages`,
     );
   }
 

@@ -687,7 +687,7 @@ export class RegistrationsController {
     description:
       'Message history retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/registrations/message-history/:referenceId')
+  @Get('programs/:programId/registrations/:referenceId/messages')
   public async getMessageHistoryRegistration(
     @Param() params: ReferenceIdDto,
   ): Promise<MessageHistoryDto[]> {
