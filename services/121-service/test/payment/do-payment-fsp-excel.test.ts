@@ -1,11 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -34,6 +31,7 @@ import {
   registrationPV5,
   registrationWesteros1,
   registrationWesteros2,
+  registrationWesteros3,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 // ##TODO: Re-enable these tests when the new flow with fsp configuration is implemented for the excel fsp
@@ -44,7 +42,11 @@ describe('Do payment with Excel FSP', () => {
   const paymentNr = 1;
 
   // Registrations
-  const registrationsWesteros = [registrationWesteros1, registrationWesteros2];
+  const registrationsWesteros = [
+    registrationWesteros1,
+    registrationWesteros2,
+    registrationWesteros3,
+  ];
   const referenceIdsWesteros = registrationsWesteros.map(
     (registration) => registration.referenceId,
   );
@@ -246,7 +248,7 @@ describe('Do payment with Excel FSP', () => {
   });
 
   describe('Import FSP reconciliation data', () => {
-    it.skip('Should update transaction status based on imported reconciliation data', async () => {
+    it('Should update transaction status based on imported reconciliation data', async () => {
       // Arrange
       const matchColumn = 'phoneNumber';
       // construct reconciliation-file here
@@ -258,6 +260,10 @@ describe('Do payment with Excel FSP', () => {
         {
           [matchColumn]: registrationWesteros2.phoneNumber,
           status: TransactionStatusEnum.error,
+        },
+        {
+          [matchColumn]: registrationWesteros3.phoneNumber,
+          status: TransactionStatusEnum.success,
         },
         { [matchColumn]: '123456789', status: TransactionStatusEnum.error },
       ];

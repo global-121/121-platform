@@ -156,12 +156,14 @@ export class VodacashService
   public async getRegistrationsForReconciliation(
     programId: number,
     payment: number,
+    programFinancialServiceProviderConfigurationId: number,
   ) {
-    const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
-      programId,
-      payment,
-      FinancialServiceProviders.vodacash,
-    );
+    const qb =
+      this.registrationsPaginationService.getQueryBuilderForFspInstructions({
+        programId,
+        payment,
+        programFinancialServiceProviderConfigurationId,
+      });
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
       programId,

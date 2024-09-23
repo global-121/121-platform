@@ -83,7 +83,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     return response;
   }
 
-  public async getPropertyValuesByNamesOrThrow({
+  public async getPropertiesByNamesOrThrow({
     programFinancialServiceProviderConfigurationId,
     names,
   }: {
@@ -106,6 +106,21 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
       name: property.name,
       value: property.value,
     }));
+  }
+
+  public async getPropertyValueByNameOrThrow({
+    programFinancialServiceProviderConfigurationId,
+    name,
+  }: {
+    programFinancialServiceProviderConfigurationId: number;
+    name: string;
+  }): Promise<string | string[] | Record<string, string> | undefined> {
+    const properties = await this.getConfigurationProperties(
+      programFinancialServiceProviderConfigurationId,
+    );
+
+    const property = properties.find((property) => property.name === name);
+    return property?.value;
   }
 
   private async getConfigurationProperties(
