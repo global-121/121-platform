@@ -26,5 +26,5 @@ export type ProjectUserWithRolesLabel = {
 } & Omit<ProjectUser, 'lastLogin'>;
 
 export type Attribute = ArrayElement<
-  Dto121Service<ProgramController['getAttributes']>
+  Awaited<ReturnType<ProgramController['getAttributes']>>
 >;
