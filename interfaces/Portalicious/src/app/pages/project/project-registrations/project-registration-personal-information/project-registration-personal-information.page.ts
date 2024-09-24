@@ -25,7 +25,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { financialServiceProviderApiService } from '~/domains/financial-service-provider/financial-service-provider.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { ATTRIBUTE_LABELS } from '~/domains/project/project.helper';
+import { attributeToDataListItem } from '~/domains/project/project.helper';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 @Component({
@@ -94,12 +94,12 @@ export class ProjectRegistrationPersonalInformationPageComponent {
         continue;
       }
 
-      const label =
-        attribute.label ?? ATTRIBUTE_LABELS[attribute.name] ?? attribute.name;
-      list.push({
-        label,
-        value: this.registration.data()[attribute.name],
-      });
+      // XXX: where do we get the value for custom attributes? eg. Westeros -> house
+      const value = this.registration.data()[attribute.name] as unknown;
+      const dataListItem = attributeToDataListItem(attribute, value);
+      if (dataListItem) {
+        list.push(dataListItem);
+      }
     }
 
     return list;

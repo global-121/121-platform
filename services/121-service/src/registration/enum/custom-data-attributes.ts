@@ -48,6 +48,8 @@ export class Attribute {
   public id?: number;
   public name: string;
   public type: string;
+  // XXX: can we force this to AnswerTypes? Relevant for Ruben's refactoring?
+  // public type: AnswerTypes;
   public label: LocalizedString | null;
   public options?: QuestionOption[] | null;
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
