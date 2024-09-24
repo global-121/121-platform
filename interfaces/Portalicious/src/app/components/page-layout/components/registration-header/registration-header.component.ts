@@ -110,7 +110,7 @@ export class RegistrationHeaderComponent {
       return paymentCount.toString();
     }
 
-    return $localize`${paymentCount.toString()} (out of ${maxPayments.toString()})`;
+    return $localize`${paymentCount.toString()}:count: (out of ${maxPayments.toString()}:totalCount:)`;
   }
 
   canUpdatePersonalData = computed(() =>

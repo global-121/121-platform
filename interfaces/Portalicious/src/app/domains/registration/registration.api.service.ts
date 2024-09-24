@@ -229,7 +229,7 @@ export class RegistrationApiService extends DomainApiService {
                 case ActivityLogItemType.Transfer:
                   return {
                     ...item,
-                    overview: $localize`${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]} ${item.contents.transferNumber} of ${item.contents.totalTransfers}`,
+                    overview: $localize`${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]}:activityType: ${item.contents.transferNumber}:count: of ${item.contents.totalTransfers}:totalCount:`,
                   };
               }
             })
