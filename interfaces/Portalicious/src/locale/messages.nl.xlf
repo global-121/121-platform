@@ -689,7 +689,7 @@
       </trans-unit>
       <trans-unit id="412801067474625773" datatype="html">
         <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
-        <target state="new"><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="PH"/> <x equiv-text="item.contents.transferNumber" id="PH_1"/> van <x equiv-text="item.contents.totalTransfers" id="PH_2"/></target>
+        <target state="new"><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> van <x equiv-text="item.contents.totalTransfers" id="totalCount"/></target>
       </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
         <source>Current balance</source>
