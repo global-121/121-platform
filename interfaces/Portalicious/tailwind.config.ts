@@ -94,7 +94,7 @@ export default {
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@savvywombat/tailwindcss-grid-areas'),
-    plugin(function ({ addUtilities, matchUtilities, theme }) {
+    plugin(function ({ matchUtilities, theme }) {
       // heading utilities
       matchUtilities(
         {
