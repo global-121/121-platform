@@ -32,6 +32,10 @@ jobs:
 
       - name: Lint
         working-directory: ${{ env.interfacePath }}
+        run: 'npm run typecheck'
+
+      - name: Lint
+        working-directory: ${{ env.interfacePath }}
         run: 'npm run lint'
 
       - name: Test
