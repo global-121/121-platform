@@ -1,5 +1,6 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { Locale } from '~/utils/locale';
@@ -21,7 +22,7 @@ export class TranslatableStringService {
       return value;
     }
 
-    const locale = this.currentLocale;
+    const locale = this.currentLocale as LanguageEnum;
 
     if (value[locale]) {
       return value[locale];
@@ -35,7 +36,7 @@ export class TranslatableStringService {
 
     // If even the fallback-language is not available, return any other language's value
     if (typeof value === 'object' && Object.keys(value).length > 0) {
-      return value[Object.keys(value)[0]];
+      return value[Object.keys(value)[0] as LanguageEnum];
     }
 
     return undefined;
