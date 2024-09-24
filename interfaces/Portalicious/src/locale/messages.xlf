@@ -224,7 +224,7 @@
         <source>Token expired</source>
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
-        <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
+        <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
       </trans-unit>
       <trans-unit id="5901643806193916083" datatype="html">
         <source>About 121 Portal</source>
@@ -365,8 +365,8 @@
       <trans-unit id="7410432243549869948" datatype="html">
         <source>Duration</source>
       </trans-unit>
-      <trans-unit id="7549920543899608806" datatype="html">
-        <source><x equiv-text="projectData.distributionDuration" id="PH"/> disbursements</source>
+      <trans-unit id="3382782841789683257" datatype="html">
+        <source><x equiv-text="projectData.distributionDuration" id="count"/> disbursements</source>
       </trans-unit>
       <trans-unit id="7687442073351590218" datatype="html">
         <source>Total registrations excluding rejected and deleted registrations.</source>
@@ -386,14 +386,11 @@
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
       </trans-unit>
-      <trans-unit id="1533306147940335597" datatype="html">
-        <source>registration-personal-information works</source>
-      </trans-unit>
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
       </trans-unit>
-      <trans-unit id="7786605624712277167" datatype="html">
-        <source><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</source>
+      <trans-unit id="4309697217076303455" datatype="html">
+        <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
       </trans-unit>
       <trans-unit id="8285202625820348519" datatype="html">
         <source>registration-debit-cards works</source>
@@ -521,14 +518,20 @@
       <trans-unit id="generic-pending" datatype="html">
         <source>Pending</source>
       </trans-unit>
-      <trans-unit id="3791822671319116066" datatype="html">
-        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="PH"/> <x equiv-text="item.contents.transferNumber" id="PH_1"/> of <x equiv-text="item.contents.totalTransfers" id="PH_2"/></source>
+      <trans-unit id="412801067474625773" datatype="html">
+        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
       </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
         <source>Current balance</source>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-fspDisplayName" datatype="html">
+        <source>FSP Display Name</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
+        <source>Transfer value multiplier</source>
       </trans-unit>
     </body>
   </file>
