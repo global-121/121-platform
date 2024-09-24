@@ -136,7 +136,7 @@ export class InclusionScoreService {
     programRegistrationAttribute: ProgramRegistrationAttributeEntity,
     answerPA: object,
   ): number {
-    // If questions has no scoring system return 0;
+    // If attribute has no scoring system return 0;
     if (Object.keys(programRegistrationAttribute.scoring).length === 0) {
       return 0;
     }
@@ -159,7 +159,7 @@ export class InclusionScoreService {
     programRegistrationAttribute: ProgramRegistrationAttributeEntity,
     answerPA: object[],
   ): number {
-    // If questions has no scoring system return 0;
+    // If attribute has no scoring system return 0;
     if (Object.keys(programRegistrationAttribute.scoring).length === 0) {
       return 0;
     }

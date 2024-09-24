@@ -20,12 +20,14 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 
 @Injectable()
 export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
+    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
   public async addDefaultUsers(
     program: ProgramEntity,
@@ -232,9 +234,6 @@ export class SeedHelper {
     isApiTests: boolean,
   ): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);
-    const programFspConfigRepository = this.dataSource.getRepository(
-      ProgramFinancialServiceProviderConfigurationEntity,
-    );
 
     const programRegistrationAttributeRepo = this.dataSource.getRepository(
       ProgramRegistrationAttributeEntity,
@@ -293,18 +292,18 @@ export class SeedHelper {
         );
       }
 
-      const programFspConfig = this.createProggramFspConfiguration(
+      const programFspConfig = this.createProgramFspConfiguration(
         fspConfigFromJson,
         financialServiceProviderObject,
         foundProgram.id,
       );
-      await programFspConfigRepository.save(programFspConfig);
+      await this.programFspConfigurationRepository.save(programFspConfig);
     }
 
     return programRepository.findOneByOrFail({ id: Equal(foundProgram.id) });
   }
 
-  private createProggramFspConfiguration(
+  private createProgramFspConfiguration(
     fspConfigFromJson: {
       financialServiceProvider: FinancialServiceProviders;
       properties: { name: string; value: string }[] | undefined;
