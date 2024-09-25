@@ -53,7 +53,6 @@ export class SafaricomService
     transferAmount,
     phoneNumber,
     idNumber,
-    remarks,
     originatorConversationId,
   }: DoTransferParams): Promise<void> {
     // Store initial transfer record before transfer because of callback
@@ -69,7 +68,6 @@ export class SafaricomService
         transferAmount,
         phoneNumber,
         idNumber,
-        remarks,
         originatorConversationId,
       });
 

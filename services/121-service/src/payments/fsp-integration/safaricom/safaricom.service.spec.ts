@@ -20,7 +20,6 @@ import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 const mockedSafaricomTransferParams: DoTransferParams = {
   transferAmount: 100,
   phoneNumber: '254708374149',
-  remarks: 'Payment 1',
   originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
   transactionId: 1,
