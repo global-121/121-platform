@@ -114,6 +114,7 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
+        'transaction.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
         'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
         'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
       ])
@@ -145,9 +146,12 @@ export class TransactionsService {
       );
     }
     if (fspName) {
-      transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
-        fspName,
-      });
+      transactionQuery = transactionQuery.andWhere(
+        'fspconfig.financialServiceProviderName = :fspName',
+        {
+          fspName,
+        },
+      );
     }
     return transactionQuery;
   }
@@ -363,7 +367,7 @@ export class TransactionsService {
     transactionStep?: number,
   ): Promise<void> {
     // NOTE: this method is currently only used for the import-fsp-reconciliation use case and assumes:
-    // 1: only 1 FSP
+    // 1: only 1 program financial service provider id
     // 2: no notifications to send
     // 3: no payment count to update (as it is reconciliation of existing payment)
     // 4: no twilio message to relate to

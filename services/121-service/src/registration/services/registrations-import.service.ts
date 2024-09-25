@@ -210,6 +210,7 @@ export class RegistrationsImportService {
               name: Equal(
                 record.programFinancialServiceProviderConfigurationName,
               ),
+              programId: Equal(program.id),
             },
           },
         );

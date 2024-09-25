@@ -1,11 +1,11 @@
-export class ExcelFspInstructions {
-  public amount: number;
-  // Other fields are added dynamically based on program fsp configuration
+interface KnownProperties {
+  amount: number;
+  id: number;
+  referenceId: string;
 }
 
-export class ExcelReconciliationDto {
-  public id: number;
-  public referenceId: string;
-  public amount: number;
-  // columnToMatch field is added dynamically based on program fsp configuration
-}
+type UnknownProperties = Record<string, string | undefined | number | null>;
+
+interface ExcelFspInstructions extends KnownProperties, UnknownProperties {}
+
+export { ExcelFspInstructions };
