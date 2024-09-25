@@ -715,6 +715,14 @@
         <source>No</source>
         <target state="new">No</target>
       </trans-unit>
+      <trans-unit id="attribute-label-maxPayments" datatype="html">
+        <source>Max. payments</source>
+        <target state="new">Max. payments</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
+        <source>Remaining payments</source>
+        <target state="new">Remaining payments</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

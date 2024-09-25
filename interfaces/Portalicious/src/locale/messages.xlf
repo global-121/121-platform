@@ -539,6 +539,12 @@
       <trans-unit id="generic-boolean-true" datatype="html">
         <source>Yes</source>
       </trans-unit>
+      <trans-unit id="attribute-label-maxPayments" datatype="html">
+        <source>Max. payments</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
+        <source>Remaining payments</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
