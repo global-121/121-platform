@@ -6,7 +6,7 @@ const { baseUrl } = config;
 export default class ResetModel {
   constructor() {}
   resetDBMockRegistrations(powerNumberRegistrations, timeout = '180s') {
-    const url = `${baseUrl}api/scripts/reset?mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true&isApiTests=false&script=nlrc-multiple-mock-data`;
+    const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=nlrc-multiple-mock-data&mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
@@ -31,7 +31,6 @@ export default class ResetModel {
       },
     };
     const res = http.post(url, payload, params);
-    console.log('res: ', res);
     return res;
   }
 
