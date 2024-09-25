@@ -1,6 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
+import { uniqBy } from 'lodash';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
   Attribute,
@@ -111,10 +113,7 @@ export class ProjectApiService extends DomainApiService {
         params,
       },
       processResponse: (attributes) => {
-        return attributes.filter(
-          (attribute, index, self) =>
-            index === self.findIndex((t) => t.name === attribute.name),
-        );
+        return uniqBy(attributes, 'name');
       },
     });
   }
