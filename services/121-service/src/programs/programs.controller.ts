@@ -237,7 +237,7 @@ You can also leave the body empty.`,
   @ApiOperation({ summary: 'Create registration attribute' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/registration-attributes')
-  public async createProgramQuestion(
+  public async createProgramRegistrationAttribute(
     @Body() programRegistrationAttribute: ProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -250,10 +250,10 @@ You can also leave the body empty.`,
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })
-  @ApiOperation({ summary: 'Update program question' })
+  @ApiOperation({ summary: 'Update program registration attribute' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Return program question',
+    description: 'Return program registration attribute',
     type: ProgramRegistrationAttributeEntity,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -263,8 +263,9 @@ You can also leave the body empty.`,
     type: 'integer',
   })
   @Patch(':programId/registration-attributes/:programRegistrationAttributeId')
-  public async updateProgramQuestion(
-    @Body() updateProgramQuestionDto: UpdateProgramRegistrationAttributeDto,
+  public async updateProgramRegistrationAttribute(
+    @Body()
+    updateProgramRegistrationAttributeDto: UpdateProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('programRegistrationAttributeId', ParseIntPipe)
@@ -273,20 +274,25 @@ You can also leave the body empty.`,
     return await this.programService.updateProgramRegistrationAttribute(
       programId,
       programRegistrationAttributeId,
-      updateProgramQuestionDto,
+      updateProgramRegistrationAttributeDto,
     );
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionDELETE] })
-  @ApiOperation({ summary: 'Delete program question AND related answers' })
+  @ApiOperation({
+    summary:
+      'Delete Registration Attribute for a Program. Also deletes the data of this Attribute for the Registrations in this Program.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
     name: 'programRegistrationAttributeId',
     required: true,
     type: 'integer',
   })
-  @Delete(':programId/program-questions/:programRegistrationAttributeId')
-  public async deleteProgramQuestion(
+  @Delete(
+    ':programId/program-registration-attributes/:programRegistrationAttributeId',
+  )
+  public async deleteProgramRegistrationAttribute(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('programRegistrationAttributeId', ParseIntPipe)

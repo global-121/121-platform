@@ -30,12 +30,12 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
   @ManyToOne(
     (_type) => ProgramRegistrationAttributeEntity,
     (programRegistrationAttribute) =>
-      programRegistrationAttribute.registrationData,
+      programRegistrationAttribute.registrationAttributeData,
   )
   @JoinColumn({ name: 'programRegistrationAttributeId' })
   public programRegistrationAttribute: Relation<ProgramRegistrationAttributeEntity>;
-  @Column({ type: 'integer', nullable: true })
-  public programRegistrationAttributeId: number | null;
+  @Column({ type: 'integer' })
+  public programRegistrationAttributeId: number;
 
   @Index()
   @Column()

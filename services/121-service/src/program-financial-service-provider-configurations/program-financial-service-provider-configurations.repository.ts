@@ -20,17 +20,21 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     );
   }
 
-  public async findByProgramIdAndFinancialServiceProviderName(
-    programId: number,
-    financialServiceProviderName: FinancialServiceProviders,
-    relations: string[] = [],
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
+  public async findByProgramIdAndFinancialServiceProviderName({
+    programId,
+    financialServiceProviderName,
+    includeProperties,
+  }: {
+    programId: number;
+    financialServiceProviderName: FinancialServiceProviders;
+    includeProperties: boolean;
+  }): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
     return await this.baseRepository.find({
       where: {
         programId: Equal(programId),
         financialServiceProviderName: Equal(financialServiceProviderName),
       },
-      relations,
+      relations: includeProperties ? ['properties'] : [],
     });
   }
 

@@ -18,7 +18,6 @@ import {
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -61,6 +60,7 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
+import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -252,33 +252,43 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
+    const fspConfigIdsInPayment: number[] = [];
     const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
-    for (const registration of registrationsForPayment) {
-      totalMultiplierSum =
-        totalMultiplierSum + registration.paymentAmountMultiplier;
-      if (
-        !dryRun && // This is only needed in actual doPayment call
-        registration.financialServiceProviderName &&
-        !fspsInPayment.includes(registration.financialServiceProviderName)
-      ) {
-        fspsInPayment.push(registration.financialServiceProviderName);
+    if (!dryRun) {
+      // This is only needed in actual doPayment call
+      for (const registration of registrationsForPayment) {
+        totalMultiplierSum =
+          totalMultiplierSum + registration.paymentAmountMultiplier;
+        if (
+          registration.programFinancialServiceProviderConfigurationId &&
+          !fspConfigIdsInPayment.includes(
+            registration.programFinancialServiceProviderConfigurationId,
+          )
+        ) {
+          fspConfigIdsInPayment.push(
+            registration.programFinancialServiceProviderConfigurationId,
+          );
+        }
+        if (
+          registration.financialServiceProviderName &&
+          !fspsInPayment.includes(registration.financialServiceProviderName)
+        ) {
+          fspsInPayment.push(registration.financialServiceProviderName);
+        }
       }
     }
 
     // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
-    for (const fsp of fspsInPayment) {
-      await this.validateRequiredFinancialServiceProviderConfigurations(
-        fsp,
-        programId,
-      );
+    for (const id of fspConfigIdsInPayment) {
+      await this.validateRequiredFinancialServiceProviderConfigurations(id);
     }
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
-      fspsInPayment,
+      fspsInPayment: fspsInPayment,
     };
 
     // Create an array of referenceIds to be paid
@@ -311,29 +321,35 @@ export class PaymentsService {
     return bulkActionResultPaymentDto;
   }
 
+  // ##TODO needs to be refactored to work with programFspConfigProperties
   async validateRequiredFinancialServiceProviderConfigurations(
-    fsp: FinancialServiceProviders,
-    programId: number,
+    programFinancialServiceProviderConfigurationId: number,
   ) {
+    const config =
+      await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+        {
+          where: {
+            id: programFinancialServiceProviderConfigurationId,
+          },
+        },
+      );
+
     const requiredConfigurations =
       RequiredFinancialServiceProviderConfigurations[
-        fsp as FinancialServiceProviders
+        config.financialServiceProviderName
       ];
     // Early return for FSP that don't have required configurarions
     if (!requiredConfigurations) {
       return;
     }
-    const config =
-      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
-        programId,
-        fsp as FinancialServiceProviders,
-      );
     for (const requiredConfiguration of requiredConfigurations) {
-      const foundConfig = config.find((c) => c.name === requiredConfiguration);
+      const foundConfig = config.properties.find(
+        (c) => c.name === requiredConfiguration,
+      );
       if (!foundConfig) {
         throw new HttpException(
           {
-            errors: `Missing required configuration ${requiredConfiguration} for FSP ${fsp}`,
+            errors: `Missing required configuration ${requiredConfiguration} for FSP ${config.financialServiceProviderName}`,
           },
           HttpStatus.BAD_REQUEST,
         );

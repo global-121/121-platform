@@ -69,9 +69,10 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => RegistrationAttributeDataEntity,
-    (registrationData) => registrationData.programRegistrationAttribute,
+    (registrationAttributeData) =>
+      registrationAttributeData.programRegistrationAttribute,
   )
-  public registrationData: Relation<RegistrationAttributeDataEntity[]>;
+  public registrationAttributeData: Relation<RegistrationAttributeDataEntity[]>;
 
   @Column({ default: false })
   public editableInPortal: boolean;

@@ -513,9 +513,12 @@ export class ProgramService {
     // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =
       await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
-        programId,
-        FinancialServiceProviders.intersolveVisa,
-        ['properties'],
+        {
+          programId,
+          financialServiceProviderName:
+            FinancialServiceProviders.intersolveVisa,
+          includeProperties: true,
+        },
       );
     if (!programFspConfigurations) {
       throw new HttpException(

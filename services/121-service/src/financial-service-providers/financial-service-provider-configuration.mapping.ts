@@ -42,7 +42,7 @@ export const FinancialServiceProviderConfigurationMapping: {
 };
 
 export const RequiredFinancialServiceProviderConfigurations: {
-  [key in FinancialServiceProviders]?: any;
+  [key in FinancialServiceProviders]?: FinancialServiceProviderConfigurationProperties[];
 } = {
   [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
     FinancialServiceProviderConfigurationProperties.password,

@@ -48,7 +48,7 @@ export enum GenericRegistrationAttributes {
 export class Attribute {
   public id?: number;
   public name: string;
-  public type: string;
+  public type: RegistrationAttributeTypes;
   public isRequired?: boolean;
   public label: LocalizedString | null;
   public options?: QuestionOption[] | null;
