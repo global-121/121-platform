@@ -6,7 +6,6 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
@@ -937,21 +936,6 @@ export class MetricsService {
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('transaction.financialServiceProvider', 'fsp');
 
-    const additionalFspExportFields =
-      await this.getAdditionalFspExportFields(programId);
-
-    for (const field of additionalFspExportFields) {
-      const nestedParts = field.split('.');
-      let variabeleSelectQuery = 'transaction."customData"';
-      for (const part of nestedParts) {
-        variabeleSelectQuery += `->'${part}'`;
-      }
-      transactionQuery.addSelect(
-        variabeleSelectQuery,
-        nestedParts[nestedParts.length - 1],
-      );
-    }
-
     const duplicateNames = registrationDataOptions
       .map((r) => r.name)
       .filter((value, index, self) => self.indexOf(value) !== index);
@@ -1015,22 +999,6 @@ export class MetricsService {
     }
 
     return result;
-  }
-
-  private async getAdditionalFspExportFields(
-    programId: number,
-  ): Promise<string[]> {
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['financialServiceProviders'],
-    });
-    let fields: string[] = [];
-    for (const fsp of program.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.safaricom) {
-        fields = [...fields, ...['requestResult.OriginatorConversationID']];
-      }
-    }
-    return fields;
   }
 
   public async getPaymentsWithStateSums(
