@@ -93,7 +93,7 @@ export class SafaricomApiService {
       Amount: transferData.transferAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
       PartyB: transferData.phoneNumber, // Set to '254000000000' to trigger mock failure on callback and '254000000001' to trigger mock failure on request
-      Remarks: transferData.remarks,
+      Remarks: 'No remarks', // Not used for reconciliation by clients. Required to be non-empty, so filled with default value.
       QueueTimeOutURL: safaricomTimeoutCallbackUrl,
       ResultURL: safaricomTransferCallbacktUrl,
       OriginatorConversationID: transferData.originatorConversationId,
