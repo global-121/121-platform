@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, Length } from 'class-validator';
 
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { IsRegistrationDataValidType } from '@121-service/src/registration/validators/registration-data-type.class.validator';
 
 export enum AdditionalAttributes {
@@ -11,8 +11,13 @@ export enum AdditionalAttributes {
   referenceId = 'referenceId',
   scope = 'scope',
 }
-export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };
-export type Attributes = AdditionalAttributes | CustomDataAttributes;
+export const Attributes = {
+  ...AdditionalAttributes,
+  ...DefaultRegistrationDataAttributeNames,
+};
+export type Attributes =
+  | AdditionalAttributes
+  | DefaultRegistrationDataAttributeNames;
 
 const attributesArray = Object.values(Attributes).map((item) => String(item));
 

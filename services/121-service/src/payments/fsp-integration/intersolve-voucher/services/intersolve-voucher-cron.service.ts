@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Equal, Repository } from 'typeorm';
 
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -15,9 +12,9 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
@@ -33,8 +30,6 @@ export class IntersolveVoucherCronService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -43,6 +38,7 @@ export class IntersolveVoucherCronService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly registrationDataService: RegistrationDataService,
+    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
 
   public async cacheUnusedVouchers(): Promise<void> {
@@ -66,36 +62,40 @@ export class IntersolveVoucherCronService {
           toCancel: Equal(true),
         },
       });
-
-    const config = await this.programFspConfigurationRepository
-      .createQueryBuilder('fspConfig')
-      .select('name')
-      .addSelect('value')
-      .andWhere('fsp.fsp = :fspName', {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
-      })
-      .leftJoin('fspConfig.fsp', 'fsp')
-      .getRawMany();
-
-    // Instance has no intersolve voucher configuration
-    if (config.length === 0) {
+    if (failedIntersolveRquests.length === 0) {
       return;
     }
 
-    const credentials: { username: string; password: string } = {
-      username: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
-      )?.value,
-      password: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
-      )?.value,
-    };
+    // Get the first intersolve programFinancialServiceProviderConfigurationId that has intersolveVoucherWhatsapp as FSP
+    // ##TODO: store the programFspConfigurationId or the usename and password in the intersolveRequest table so we know which credentials to use for the cancelation
+    // Before the registration data/programFinancialServiceProviderConfiguration this problem already existed...
+    const configId = await this.programFspConfigurationRepository.findOne({
+      where: {
+        financialServiceProviderName: Equal(
+          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        ),
+      },
+      select: ['id'],
+    });
 
+    if (!configId) {
+      return;
+    }
+
+    const usernamePassword =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        configId.id,
+      );
+    if (!usernamePassword.username || !usernamePassword.password) {
+      throw new Error(
+        'No username or password found for intersolveVoucherWhatsapp in this instance while trying to cancel by refpos',
+      );
+    }
     for (const intersolveRequest of failedIntersolveRquests) {
       await this.cancelRequestRefpos(
         intersolveRequest,
-        credentials.username,
-        credentials.password,
+        usernamePassword.username,
+        usernamePassword.password,
       );
     }
   }
@@ -171,7 +171,7 @@ export class IntersolveVoucherCronService {
         const fromNumber =
           await this.registrationDataService.getRegistrationDataValueByName(
             registration,
-            CustomDataAttributes.whatsappPhoneNumber,
+            DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
           );
         if (!fromNumber) {
           // This can represent the case where a PA was switched from AH-voucher-whatsapp to AH-voucher-paper. But also otherwise it makes no sense to continue.

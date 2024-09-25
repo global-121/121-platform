@@ -16,21 +16,15 @@
   "distributionDuration": 6,
   "fixedTransferValue": 12327,
   "paymentAmountMultiplierFormula": null,
-  "financialServiceProviders": [
-    {
-      "fsp": "Safaricom"
-    }
-  ],
   "targetNrRegistrations": 4000,
   "tryWhatsAppFirst": false,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "fullName",
       "label": {
         "en": "First Name"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -44,7 +38,7 @@
       "label": {
         "en": "Gender"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -74,7 +68,7 @@
       "label": {
         "en": "Age"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -91,7 +85,7 @@
       "label": {
         "en": "Marital status of beneficiary"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -133,7 +127,7 @@
       "label": {
         "en": "Registration Type"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -163,7 +157,7 @@
       "label": {
         "en": "ID number (MPESA)"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -180,7 +174,7 @@
       "label": {
         "en": "Name of Alternate"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -197,7 +191,7 @@
       "label": {
         "en": "Total household size"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -214,7 +208,7 @@
       "label": {
         "en": "Total household <5"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -231,7 +225,7 @@
       "label": {
         "en": "Total household >60"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -248,7 +242,7 @@
       "label": {
         "en": "Receiving other Social Assistance?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -278,7 +272,7 @@
       "label": {
         "en": "County"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -295,7 +289,7 @@
       "label": {
         "en": "Sub County"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -312,7 +306,7 @@
       "label": {
         "en": "Ward"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -329,7 +323,7 @@
       "label": {
         "en": "Location"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -346,7 +340,7 @@
       "label": {
         "en": "Sub location"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -363,7 +357,7 @@
       "label": {
         "en": "Village"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -380,7 +374,7 @@
       "label": {
         "en": "Nearest school"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -397,7 +391,7 @@
       "label": {
         "en": "Area type"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -427,7 +421,7 @@
       "label": {
         "en": "What are the main livelihood sources for the household?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -481,7 +475,7 @@
       "label": {
         "en": "If other, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -498,7 +492,7 @@
       "label": {
         "en": "How many males 0 - 5 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -515,7 +509,7 @@
       "label": {
         "en": "How many females 0 - 5 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -532,7 +526,7 @@
       "label": {
         "en": "How many males 6 - 12 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -549,7 +543,7 @@
       "label": {
         "en": "How many females 6 - 12 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -566,7 +560,7 @@
       "label": {
         "en": "How many males 13 - 24 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -583,7 +577,7 @@
       "label": {
         "en": "How many females 13 - 24 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -600,7 +594,7 @@
       "label": {
         "en": "How many males 25 - 59 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -617,7 +611,7 @@
       "label": {
         "en": "How many females 25 - 59 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -634,7 +628,7 @@
       "label": {
         "en": "How many males over 60 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -651,7 +645,7 @@
       "label": {
         "en": "How many females over 60 years?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -668,7 +662,7 @@
       "label": {
         "en": "Total males in household"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -685,7 +679,7 @@
       "label": {
         "en": "Total females in household"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -702,7 +696,7 @@
       "label": {
         "en": "Do you have household members living with disability?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -732,7 +726,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -749,7 +743,7 @@
       "label": {
         "en": "Do you have household members living with chronic illness?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -779,7 +773,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -796,7 +790,7 @@
       "label": {
         "en": "Do you have any pregnant or lactating woman in your household?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -826,7 +820,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -843,7 +837,7 @@
       "label": {
         "en": "How many habitable ROOMS does this dwelling unit contain?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -860,7 +854,7 @@
       "label": {
         "en": "What is the TENURE status of the dwelling unit and/or surrounding terrain/land?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -890,7 +884,7 @@
       "label": {
         "en": "If owner occupied, state whether:"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -932,7 +926,7 @@
       "label": {
         "en": "If other, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -949,7 +943,7 @@
       "label": {
         "en": "If rented or provided, stated whether:"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1009,7 +1003,7 @@
       "label": {
         "en": "If other, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1026,7 +1020,7 @@
       "label": {
         "en": "What is the main construction material used for the ROOF?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1098,7 +1092,7 @@
       "label": {
         "en": "If other ROOFING material state"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1115,7 +1109,7 @@
       "label": {
         "en": "What is the main construction material used for the WALL?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1193,7 +1187,7 @@
       "label": {
         "en": "If other type of WALL state"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1210,7 +1204,7 @@
       "label": {
         "en": "What is the main construction material used for the FLOOR?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1258,7 +1252,7 @@
       "label": {
         "en": "If other type of FLOOR state"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1275,7 +1269,7 @@
       "label": {
         "en": "The dwelling unit is at RISK of:"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1323,7 +1317,7 @@
       "label": {
         "en": "If other type of RISK, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1340,7 +1334,7 @@
       "label": {
         "en": "What is the main source of WATER?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1448,7 +1442,7 @@
       "label": {
         "en": "Any other source of WATER, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1465,7 +1459,7 @@
       "label": {
         "en": "Does your household own pigs?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1495,7 +1489,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1512,7 +1506,7 @@
       "label": {
         "en": "Does your household own chicken?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1542,7 +1536,7 @@
       "label": {
         "en": "What is the MAIN mode of HUMAN WASTE Disposal?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1614,7 +1608,7 @@
       "label": {
         "en": "If any other HUMAN WASTER Disposal mode, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1631,7 +1625,7 @@
       "label": {
         "en": "What is the MAIN type of COOKING Fuel?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1697,7 +1691,7 @@
       "label": {
         "en": "Specify other type of COOKING Fuel"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1714,7 +1708,7 @@
       "label": {
         "en": "What is the MAIN type of LIGHTING?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1780,7 +1774,7 @@
       "label": {
         "en": "Specify other type of LIGHTING"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1797,7 +1791,7 @@
       "label": {
         "en": "Does your household OWN any of the following ITEMS?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1863,7 +1857,7 @@
       "label": {
         "en": "Does your household own exotic cattle?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1893,7 +1887,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1910,7 +1904,7 @@
       "label": {
         "en": "Does your household own indigenous cattle?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1940,7 +1934,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -1957,7 +1951,7 @@
       "label": {
         "en": "Does your household own sheep?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -1987,7 +1981,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2004,7 +1998,7 @@
       "label": {
         "en": "Does your household own goats?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2034,7 +2028,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2051,7 +2045,7 @@
       "label": {
         "en": "Does your household own camels?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2081,7 +2075,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2098,7 +2092,7 @@
       "label": {
         "en": "Does your household own donkeys?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2128,7 +2122,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2145,7 +2139,7 @@
       "label": {
         "en": "If yes, how many?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2162,7 +2156,7 @@
       "label": {
         "en": "How many LIVE BIRTHS have occured in this household in the last 12 months (1 year)?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2179,7 +2173,7 @@
       "label": {
         "en": "How many DEATHS have occured in this household in the last 12 months (1 year)?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2196,7 +2190,7 @@
       "label": {
         "en": "Currently, the CONDITIONS of your household are?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2238,7 +2232,7 @@
       "label": {
         "en": "Did anyone reduce or skip meals?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2268,7 +2262,7 @@
       "label": {
         "en": "Receiving benefits from any National Safety Net Programmes?"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2285,7 +2279,7 @@
       "label": {
         "en": "If Yes, Name the PROGRAMME and AGENCY"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2302,7 +2296,7 @@
       "label": {
         "en": "What type of BENEFIT do you receive?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2338,7 +2332,7 @@
       "label": {
         "en": "If other, specify"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2355,7 +2349,7 @@
       "label": {
         "en": "If Cash, how much (in Ksh) was the benefit in the last receipt?"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2372,7 +2366,7 @@
       "label": {
         "en": "If in-kind specify the kind of benefit"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2389,7 +2383,7 @@
       "label": {
         "en": "Do you have any feedback on response we are currently carrying out?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2419,7 +2413,7 @@
       "label": {
         "en": "If yes, share your feedback on response process"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2436,7 +2430,7 @@
       "label": {
         "en": "Who in your family decides on how to spend the money?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2478,7 +2472,7 @@
       "label": {
         "en": "Are there posibility of conflicts in the households over who receives Cash?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2508,7 +2502,7 @@
       "label": {
         "en": "Do you have a gendered division of labour/roles, work, activities, responsibilities of women and men in this household?"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
       "options": [
         {
@@ -2538,7 +2532,7 @@
       "label": {
         "en": "Kindly elaborate"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2555,7 +2549,7 @@
       "label": {
         "en": "GPS location"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "scoring": {},
@@ -2566,6 +2560,19 @@
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Phone Number"
+      },
+      "placeholder": {
+        "en": "+243000000000"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {
@@ -2575,5 +2582,10 @@
   "languages": ["en"],
   "enableMaxPayments": true,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Safaricom"
+    }
+  ]
 }

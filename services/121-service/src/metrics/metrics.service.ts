@@ -6,13 +6,11 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
-import { RegistrationType } from '@121-service/src/metrics/dto/registration-type.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { RowType } from '@121-service/src/metrics/dto/rolo-type.dto';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
@@ -21,19 +19,18 @@ import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integr
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { getFspDisplayNameMapping } from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
   RegistrationDataOptions,
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import {
-  AnswerTypes,
-  CustomDataAttributes,
-  GenericAttributes,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
@@ -62,12 +59,8 @@ const userPermissionMapByExportType = {
 export class MetricsService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramQuestionEntity)
-  private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(ProgramRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -265,13 +258,13 @@ export class MetricsService {
       row['id'] = row['registrationProgramId'] ?? null;
 
       const preferredLanguage = 'en';
-      row['fspDisplayName'] =
-        typeof row['fspDisplayName'] === 'object'
-          ? ((row['fspDisplayName']?.[preferredLanguage] as
-              | string
-              | undefined) ?? '')
-          : (row['fspDisplayName'] ?? '');
-
+      row['programFinancialServiceProviderConfigurationLabel'] =
+        typeof row['programFinancialServiceProviderConfigurationLabel'] ===
+        'object'
+          ? ((row['programFinancialServiceProviderConfigurationLabel']?.[
+              preferredLanguage
+            ] as string | undefined) ?? '')
+          : (row['programFinancialServiceProviderConfigurationLabel'] ?? '');
       delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
@@ -304,46 +297,21 @@ export class MetricsService {
     const relationOptions: RegistrationDataOptions[] = [];
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: [
-        'programQuestions',
-        'programCustomAttributes',
-        'financialServiceProviders',
-        'financialServiceProviders.questions',
-      ],
+      relations: ['programRegistrationAttributes'],
     });
 
-    for (const programCustomAttr of program.programCustomAttributes) {
-      const name = programCustomAttr.name;
-      const relation = {
-        programCustomAttributeId: programCustomAttr.id,
-      };
-      relationOptions.push({ name, relation });
-    }
-    for (const programQuestion of program.programQuestions) {
+    for (const programRegistrationAttribute of program.programRegistrationAttributes) {
       if (
-        JSON.parse(JSON.stringify(programQuestion.export)).includes(
-          exportType,
-        ) &&
-        programQuestion.name !== CustomDataAttributes.phoneNumber // Phonenumber is exclude because it is already a registration entity attribute
+        JSON.parse(
+          JSON.stringify(programRegistrationAttribute.export),
+        ).includes(exportType) &&
+        programRegistrationAttribute.name !==
+          DefaultRegistrationDataAttributeNames.phoneNumber // Phonenumber is exclude because it is already a registration entity attribute
       ) {
-        const name = programQuestion.name;
+        const name = programRegistrationAttribute.name;
         const relation = {
-          programQuestionId: programQuestion.id,
+          programRegistrationAttributeId: programRegistrationAttribute.id,
         };
-        relationOptions.push({ name, relation });
-      }
-    }
-    let fspQuestions: FspQuestionEntity[] = [];
-    for (const fsp of program.financialServiceProviders) {
-      fspQuestions = fspQuestions.concat(fsp.questions);
-    }
-    for (const fspQuestion of fspQuestions) {
-      if (
-        JSON.parse(JSON.stringify(fspQuestion.export)).includes(exportType) &&
-        fspQuestion.name !== CustomDataAttributes.phoneNumber // Phonenumber is exclude because it is already a registration entity attribute
-      ) {
-        const name = fspQuestion.name;
-        const relation = { fspQuestionId: fspQuestion.id };
         relationOptions.push({ name, relation });
       }
     }
@@ -351,28 +319,14 @@ export class MetricsService {
   }
 
   private getRelationOptionsForDuplicates(
-    programQuestions: ProgramQuestionEntity[],
-    programCustomAttributes: ProgramCustomAttributeEntity[],
-    fspQuestions: FspQuestionEntity[],
+    programRegistrationAttributes: ProgramRegistrationAttributeEntity[],
   ): RegistrationDataOptions[] {
     const relationOptions: RegistrationDataOptions[] = [];
-    for (const programQuestion of programQuestions) {
-      const name = programQuestion.name;
-      const relation = { programQuestionId: programQuestion.id };
-      relationOptions.push({ name, relation });
-    }
-
-    for (const programCustomAttribute of programCustomAttributes) {
-      const name = programCustomAttribute.name;
+    for (const programRegistrationAttribute of programRegistrationAttributes) {
+      const name = programRegistrationAttribute.name;
       const relation = {
-        programCustomAttributeId: programCustomAttribute.id,
+        programRegistrationAttributeId: programRegistrationAttribute.id,
       };
-      relationOptions.push({ name, relation });
-    }
-
-    for (const fspQuestion of fspQuestions) {
-      const name = fspQuestion.name;
-      const relation = { fspQuestionId: fspQuestion.id };
       relationOptions.push({ name, relation });
     }
     return relationOptions;
@@ -434,15 +388,15 @@ export class MetricsService {
     }
 
     const defaultSelect = [
-      GenericAttributes.referenceId,
-      GenericAttributes.registrationProgramId,
-      GenericAttributes.status,
-      GenericAttributes.phoneNumber,
-      GenericAttributes.preferredLanguage,
-      GenericAttributes.paymentAmountMultiplier,
-      GenericAttributes.registrationCreatedDate,
-      GenericAttributes.fspDisplayName,
-      GenericAttributes.paymentCount,
+      GenericRegistrationAttributes.referenceId,
+      GenericRegistrationAttributes.registrationProgramId,
+      GenericRegistrationAttributes.status,
+      GenericRegistrationAttributes.phoneNumber,
+      GenericRegistrationAttributes.preferredLanguage,
+      GenericRegistrationAttributes.paymentAmountMultiplier,
+      GenericRegistrationAttributes.registrationCreatedDate,
+      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+      GenericRegistrationAttributes.paymentCount,
     ] as string[];
 
     const program = await this.programRepository.findOneByOrFail({
@@ -450,18 +404,19 @@ export class MetricsService {
     });
 
     if (program.enableMaxPayments) {
-      defaultSelect.push(GenericAttributes.maxPayments);
+      defaultSelect.push(GenericRegistrationAttributes.maxPayments);
     }
 
     if (program.enableScope) {
-      defaultSelect.push(GenericAttributes.scope);
+      defaultSelect.push(GenericRegistrationAttributes.scope);
     }
 
     const registrationDataNamesProgram = relationOptions
       .map((r) => r.name)
       .filter(
         (r): r is string =>
-          r !== undefined && r !== CustomDataAttributes.phoneNumber,
+          r !== undefined &&
+          r !== DefaultRegistrationDataAttributeNames.phoneNumber,
       );
 
     const chunkSize = 10000;
@@ -488,17 +443,21 @@ export class MetricsService {
     programId: number,
     relationOptions: RegistrationDataOptions[],
     registrationIds: number[],
-  ): Promise<object[]> {
+  ): Promise<MappedPaginatedRegistrationDto[]> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .leftJoin('registration.fsp', 'fsp')
+      .leftJoin(
+        'registration.programFinancialServiceProviderConfiguration',
+        'fspconfig',
+      )
       .select([
         `registration."referenceId" AS "referenceId"`,
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
-        `fsp."fsp" AS fsp`,
+        `fspconfig."financialServiceProviderName" AS "financialServiceProviderName"`,
+        `fspconfig."label" AS "programFinancialServiceProviderLabel"`,
         'registration."scope" AS scope',
-        `registration."${GenericAttributes.phoneNumber}"`,
+        `registration."${GenericRegistrationAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId })
       .andWhere(
@@ -531,32 +490,18 @@ export class MetricsService {
     }[] = [];
 
     for (const option of relationOptions) {
-      if (option.relation?.programQuestionId) {
-        const dropdownProgramQuestion =
-          await this.programQuestionRepository.findOne({
+      if (option.relation?.programRegistrationAttributeId) {
+        const dropdownProgramRegistrationAttribute =
+          await this.programRegistrationAttributeRepository.findOne({
             where: {
-              id: Equal(option.relation.programQuestionId),
-              answerType: Equal(AnswerTypes.dropdown),
+              id: Equal(option.relation.programRegistrationAttributeId),
+              type: Equal(RegistrationAttributeTypes.dropdown),
             },
           });
-        if (dropdownProgramQuestion) {
+        if (dropdownProgramRegistrationAttribute) {
           valueOptionMappings.push({
-            questionName: dropdownProgramQuestion.name,
-            options: dropdownProgramQuestion.options ?? undefined,
-          });
-        }
-      }
-      if (option.relation?.fspQuestionId) {
-        const dropdownFspQuestion = await this.fspQuestionRepository.findOne({
-          where: {
-            id: Equal(option.relation.fspQuestionId),
-            answerType: Equal(AnswerTypes.dropdown),
-          },
-        });
-        if (dropdownFspQuestion) {
-          valueOptionMappings.push({
-            questionName: dropdownFspQuestion.name,
-            options: dropdownFspQuestion.options ?? undefined,
+            questionName: dropdownProgramRegistrationAttribute.name,
+            options: dropdownProgramRegistrationAttribute.options ?? undefined,
           });
         }
       }
@@ -599,34 +544,23 @@ export class MetricsService {
     programId: number,
   ): Promise<RegistrationDataOptions[]> {
     const program = await this.programRepository.findOneOrFail({
-      relations: ['programQuestions', 'programCustomAttributes'],
+      relations: ['programRegistrationAttributes'],
       where: {
         id: Equal(programId),
       },
     });
     const relationOptions: RegistrationDataOptions[] = [];
-    const combinedArray = [
-      ...program.programQuestions,
-      ...program.programCustomAttributes,
-    ];
-    for (const entry of combinedArray) {
+    for (const entry of program.programRegistrationAttributes) {
       if (
         JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
           entry.name,
         )
       ) {
         const name = entry.name;
-        let relation: RegistrationDataRelation | undefined;
-        if (entry instanceof ProgramCustomAttributeEntity) {
-          relation = {
-            programCustomAttributeId: entry.id,
-          };
-        }
-        if (entry instanceof ProgramQuestionEntity) {
-          relation = {
-            programQuestionId: entry.id,
-          };
-        }
+        const relation: RegistrationDataRelation = {
+          programRegistrationAttributeId: entry.id,
+        };
+
         relationOptions.push({ name, relation });
       }
     }
@@ -637,22 +571,12 @@ export class MetricsService {
     fileName: ExportType;
     data: unknown[];
   }> {
+    // ##TODO retest this function after this refactoring
     const duplicatesMap = new Map<number, number[]>();
     const uniqueRegistrationIds = new Set<number>();
 
-    const programQuestions = await this.programQuestionRepository.find({
-      where: {
-        program: {
-          id: Equal(programId),
-        },
-        duplicateCheck: Equal(true),
-      },
-    });
-    const programQuestionIds = programQuestions.map((question) => {
-      return question.id;
-    });
-    const programCustomAttributes =
-      await this.programCustomAttributeRepository.find({
+    const programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
         where: {
           program: {
             id: Equal(programId),
@@ -660,45 +584,28 @@ export class MetricsService {
           duplicateCheck: Equal(true),
         },
       });
-    const programCustomAttributeIds = programCustomAttributes.map((att) => {
-      return att.id;
-    });
-    const fspQuestions = await this.fspQuestionRepository.find({
-      relations: ['fsp', 'fsp.program'],
-      where: {
-        duplicateCheck: Equal(true),
-        fsp: { program: { id: Equal(programId) } },
+    const programRegistrationAttributeIds = programRegistrationAttributes.map(
+      (question) => {
+        return question.id;
       },
-    });
-
-    const fspQuestionIds = fspQuestions.map((fspQuestion) => {
-      return fspQuestion.id;
-    });
+    );
 
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['financialServiceProviders', 'programFspConfiguration'],
+      relations: ['programFinancialServiceProviderConfigurations'],
     });
 
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
-      programQuestions,
-      programCustomAttributes,
-      fspQuestions,
+      programRegistrationAttributes,
     );
     const relationOptions = [...nameRelations, ...duplicateRelationOptions];
 
     const whereOptions: Record<string, FindOperator<unknown>>[] = [];
-    if (programQuestionIds.length > 0) {
-      whereOptions.push({ programQuestionId: In(programQuestionIds) });
-    }
-    if (programCustomAttributeIds.length > 0) {
+    if (programRegistrationAttributeIds.length > 0) {
       whereOptions.push({
-        programCustomAttributeId: In(programCustomAttributeIds),
+        programRegistrationAttributeId: In(programRegistrationAttributeIds),
       });
-    }
-    if (fspQuestionIds.length > 0) {
-      whereOptions.push({ fspQuestionId: In(fspQuestionIds) });
     }
 
     const query = this.registrationDataScopedRepository
@@ -754,7 +661,6 @@ export class MetricsService {
     return this.getRegisrationsForDuplicates(
       duplicatesMap,
       uniqueRegistrationIds,
-      fspQuestions,
       relationOptions,
       program,
     );
@@ -763,7 +669,6 @@ export class MetricsService {
   private async getRegisrationsForDuplicates(
     duplicatesMap: Map<number, number[]>,
     uniqueRegistrationProgramIds: Set<number>,
-    fspQuestions: FspQuestionEntity[],
     relationOptions: RegistrationDataOptions[],
     program: ProgramEntity,
   ): Promise<{
@@ -777,118 +682,55 @@ export class MetricsService {
         ]),
         programId: Equal(program.id),
       },
-      select: ['registrationProgramId', 'fspId'],
+      select: [
+        'registrationProgramId',
+        'programFinancialServiceProviderConfigurationId',
+      ],
     });
-
-    // Create an object to group registrations by fspId
-    const groupedRegistrations: Record<
-      string, // Keeping fspId as a string
-      { registrationProgramId: number; fspId: number }[]
-    > = {};
-    registrationAndFspId.forEach((registration) => {
-      if (!registration.fspId) {
-        return;
-      }
-      const { registrationProgramId, fspId } = registration;
-      const fspIdStr = fspId.toString(); // Convert fspId to string for indexing
-      if (!groupedRegistrations[fspIdStr]) {
-        groupedRegistrations[fspIdStr] = [];
-      }
-      groupedRegistrations[fspIdStr].push({ registrationProgramId, fspId });
-    });
-
-    // Create an object to group relation options per FSP
-    const relationOptionsPerFsp = this.getRelationOptionsPerFsp(
-      relationOptions,
-      program,
-      fspQuestions,
-    );
-
-    const relationOptionNoFsp = relationOptions.filter(
-      (o) => !o.relation?.fspQuestionId,
-    );
-
-    let allRegistrations: RegistrationType[] = [];
-    for (const [fspIdStr, registrationIds] of Object.entries(
-      groupedRegistrations,
-    )) {
-      const fspId = Number(fspIdStr); // Convert fspIdStr back to number for processing
-      const registrationsWithSameFspId =
-        (await this.getRegistrationsFieldsForDuplicates(
-          program.id,
-          relationOptionsPerFsp[fspId]
-            ? relationOptionsPerFsp[fspId]
-            : relationOptionNoFsp,
-          registrationIds.map((r) => r.registrationProgramId),
-        )) as RegistrationType[];
-
-      allRegistrations = allRegistrations.concat(registrationsWithSameFspId);
-    }
-
-    const fspDisplayNameMapping = getFspDisplayNameMapping(program);
-    const preferredLanguage = 'en';
-
-    const result = allRegistrations.map((registration: RegistrationType) => {
-      // Ensure registration is of type RegistrationType
-      registration =
-        this.registrationsService.transformRegistrationByNamingConvention(
-          JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
-          registration as RegistrationType,
-        ) as RegistrationType;
-
-      // If a mapping exists, get the display name for the preferred language else use the FSP name
-      const fspDisplayNameForRegistrationFsp =
-        fspDisplayNameMapping[
-          registration['fsp'] as keyof typeof fspDisplayNameMapping
-        ];
-
-      registration['fsp'] = fspDisplayNameForRegistrationFsp
-        ? fspDisplayNameForRegistrationFsp[preferredLanguage]
-        : (registration['fsp'] as string);
-
+    const registrationIds = registrationAndFspId.map((r) => {
       return {
-        ...registration,
-        duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(','),
+        registrationProgramId: r.registrationProgramId,
+        fspId: r.programFinancialServiceProviderConfigurationId,
       };
     });
+
+    const allRegistrations: MappedPaginatedRegistrationDto[] =
+      await this.getRegistrationsFieldsForDuplicates(
+        program.id,
+        relationOptions,
+        registrationIds.map((r) => r.registrationProgramId),
+      );
+
+    const preferredLanguage = 'en';
+
+    const result = allRegistrations.map(
+      (registration: MappedPaginatedRegistrationDto) => {
+        // Ensure registration is of type RegistrationType
+        registration =
+          this.registrationsService.transformRegistrationByNamingConvention(
+            JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
+            registration,
+          );
+
+        // If a mapping exists, get the display name for the preferred language else use the FSP name
+        registration['programFinancialServiceProviderLabel'] =
+          registration['programFinancialServiceProviderLabel'][
+            preferredLanguage
+          ];
+
+        return {
+          ...registration,
+          duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(
+            ',',
+          ),
+        };
+      },
+    );
 
     return {
       fileName: ExportType.duplicates,
       data: result,
     };
-  }
-
-  private getRelationOptionsPerFsp(
-    relationOptions: RegistrationDataOptions[],
-    program: ProgramEntity,
-    fspQuestions: FspQuestionEntity[],
-  ): Record<number, RegistrationDataOptions[]> {
-    const relationOptionsPerFsp: Record<number, RegistrationDataOptions[]> = {};
-
-    // Filter relation options for specific FSP
-    for (const fsp of program.financialServiceProviders) {
-      relationOptionsPerFsp[fsp.id] = relationOptions.filter(
-        (o) => !o.relation?.fspQuestionId,
-      );
-
-      // Get all questions for specific FSP
-      const fspQuestionsPerFsp = fspQuestions.filter(
-        (question) => question.fsp.id === fsp.id,
-      );
-
-      for (const question of fspQuestionsPerFsp) {
-        const fspQuestionRelation = relationOptions.find(
-          (o) => o.relation?.fspQuestionId === question.id,
-        );
-
-        // Make sure to handle the case where fspQuestionRelation could be undefined
-        if (fspQuestionRelation) {
-          relationOptionsPerFsp[fsp.id].push(fspQuestionRelation);
-        }
-      }
-    }
-
-    return relationOptionsPerFsp;
   }
 
   private async getPaymentDetailsPayment(
@@ -1022,11 +864,14 @@ export class MetricsService {
   ): Promise<string[]> {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['financialServiceProviders'],
+      relations: ['programFinancialServiceProviderConfigurations'],
     });
     let fields: string[] = [];
-    for (const fsp of program.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.safaricom) {
+    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviders.safaricom
+      ) {
         fields = [...fields, ...['requestResult.OriginatorConversationID']];
       }
     }

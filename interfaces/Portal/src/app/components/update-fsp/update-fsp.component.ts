@@ -4,7 +4,10 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import FspName from 'src/app/enums/fsp-name.enum';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { AnswerType, Fsp } from '../../models/fsp.model';
+import {
+  AnswerType,
+  FinancialServiceProviderConfiguration,
+} from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -41,7 +44,7 @@ export class UpdateFspComponent implements OnInit {
   public inProgress: boolean;
 
   @Input()
-  public fspList: Fsp[];
+  public fspConfigList: FinancialServiceProviderConfiguration[];
 
   @Input()
   public referenceId: string;
@@ -66,8 +69,8 @@ export class UpdateFspComponent implements OnInit {
   public startingAttributes: any[] = [];
   public selectedFspAttributes: any[] = [];
   public attributeDifference: any[] = [];
-  public startingFspName: FspName;
-  public selectedFspName: FspName;
+  public startingFspName: string;
+  public selectedFspName: string;
   public attributesToSave: object = {};
   public enableUpdateBtn = true;
 
@@ -121,18 +124,18 @@ export class UpdateFspComponent implements OnInit {
   public getFspAttributes(fspString: FspName) {
     this.selectedFspAttributes = [];
     this.attributesToSave = {};
-    if (this.fspList) {
-      this.fspList = this.fspList.map((fspItem) => ({
+    if (this.fspConfigList) {
+      this.fspConfigList = this.fspConfigList.map((fspItem) => ({
         ...fspItem,
         displayName: this.translatableString.get(fspItem.displayName),
       }));
 
-      const selectedFsp = this.fspList.find(
-        (fspItem) => fspItem.fsp === fspString,
+      const selectedFsp = this.fspConfigList.find(
+        (fspItem) => fspItem.name === fspString,
       );
 
       if (selectedFsp) {
-        this.selectedFspName = selectedFsp.fsp;
+        this.selectedFspName = selectedFsp.name;
         this.selectedFspAttributes = selectedFsp.editableAttributes.map(
           (attr) => ({
             ...attr,

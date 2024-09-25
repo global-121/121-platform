@@ -1,8 +1,8 @@
-import { FinancialServiceProviderName as FinancialServiceProviderNameEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 /**
  * Note: Names-definition explicitly used from back-end, to prevent repetition.
  */
-const FspName = FinancialServiceProviderNameEnum;
-type FspName = FinancialServiceProviderNameEnum;
+const FspName = FinancialServiceProviders;
+type FspName = FinancialServiceProviders;
 export default FspName;

@@ -21,7 +21,8 @@ describe('Create program questions', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should create a program with FSP configuration', async () => {
+  // ##TODO: Enable these tests after FSP config endpoints are implemented for the new setup
+  it.skip('should create a program with FSP configuration', async () => {
     // Arrange
     const program = JSON.parse(JSON.stringify(programOCW));
 

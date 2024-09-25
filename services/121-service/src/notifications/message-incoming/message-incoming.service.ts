@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   MessageContentType,
   TemplatedMessages,
@@ -27,7 +27,7 @@ import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integrat
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -306,15 +306,15 @@ export class MessageIncomingService {
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
         where: { id: Equal(tryWhatsapp.registration.programId) },
-        relations: ['financialServiceProviders'],
+        relations: ['programFinancialServiceProviderConfigurations'],
       });
-      const fspIntersolveWhatsapp = program.financialServiceProviders.find(
-        (fsp) => {
-          return (fsp.fsp =
-            FinancialServiceProviderName.intersolveVoucherWhatsapp);
-        },
-      )!;
-      tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;
+      const fspConfigWithFspIntersolveWhatsapp =
+        program.programFinancialServiceProviderConfigurations.find((config) => {
+          return (config.financialServiceProviderName =
+            FinancialServiceProviders.intersolveVoucherWhatsapp);
+        })!;
+      tryWhatsapp.registration.programFinancialServiceProviderConfigurationId =
+        fspConfigWithFspIntersolveWhatsapp.id;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
       );
@@ -322,7 +322,7 @@ export class MessageIncomingService {
         savedRegistration,
         tryWhatsapp.registration.phoneNumber,
         {
-          name: CustomDataAttributes.whatsappPhoneNumber,
+          name: DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
         },
       );
       await this.tryWhatsappRepository.remove(tryWhatsapp);
@@ -341,12 +341,12 @@ export class MessageIncomingService {
         'whatsappPendingMessages',
       )
       .leftJoinAndSelect('registration.program', 'program')
-      .leftJoin('registration_data.fspQuestion', 'fspQuestion')
+      .leftJoin('registration_data.programRegistrationAttribute', 'attribute')
       .where('registration_data.value = :whatsappPhoneNumber', {
         whatsappPhoneNumber: phoneNumber,
       })
-      .andWhere('fspQuestion.name = :name', {
-        name: CustomDataAttributes.whatsappPhoneNumber,
+      .andWhere('attribute.name = :name', {
+        name: DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
       })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
