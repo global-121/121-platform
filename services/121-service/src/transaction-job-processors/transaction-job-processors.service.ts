@@ -277,7 +277,6 @@ export class TransactionJobProcessorsService {
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,
-        remarks: `Payment ${transactionJob.paymentNumber}`,
         originatorConversationId: transactionJob.originatorConversationId!,
       });
     } catch (error) {

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Equal, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
@@ -64,8 +65,6 @@ import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
-import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 
 @Injectable()
 export class PaymentsService {
@@ -73,16 +72,6 @@ export class PaymentsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-
-  private fspWithQueueServiceMapping: Partial<
-    Record<
-      FinancialServiceProviderName,
-      | IntersolveVoucherService
-      | IntersolveVisaService
-      | SafaricomService
-      | CommercialBankEthiopiaService
-    >
-  >;
 
   private financialServiceProviderNameToServiceMap: Record<
     FinancialServiceProviderName,
@@ -111,18 +100,6 @@ export class PaymentsService {
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {
-    this.fspWithQueueServiceMapping = {
-      [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-      [FinancialServiceProviderName.intersolveVoucherPaper]:
-        this.intersolveVoucherService,
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
-        this.intersolveVoucherService,
-      [FinancialServiceProviderName.safaricom]: this.safaricomService,
-      [FinancialServiceProviderName.commercialBankEthiopia]:
-        this.commercialBankEthiopiaService,
-      // Add more FSP mappings if they work queue-based
-    };
-
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
         this.intersolveVoucherService,
@@ -782,11 +759,7 @@ export class PaymentsService {
       await this.getFinancialServiceProviderQuestionNames(
         FinancialServiceProviderName.safaricom,
       );
-    const dataFieldNames = [
-      'nationalId',
-      'registrationProgramId',
-      ...safaricomQuestionNames,
-    ];
+    const dataFieldNames = ['nationalId', ...safaricomQuestionNames];
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       dataFieldNames,
@@ -815,7 +788,7 @@ export class PaymentsService {
           bulkSize: referenceIdsTransactionAmounts.length,
           phoneNumber: registrationView.phoneNumber,
           idNumber: registrationView['nationalId'],
-          originatorConversationId: `P${programId}PA${registrationView.registrationProgramId}_${formatDateYYMMDD(new Date())}_${generateRandomString(3)}`,
+          originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(

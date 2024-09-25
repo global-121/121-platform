@@ -159,7 +159,6 @@ describe('TransactionJobProcessorsService', () => {
         transferAmount: mockedTransactionJob.transactionAmount,
         phoneNumber: mockedTransactionJob.phoneNumber,
         idNumber: mockedTransactionJob.idNumber,
-        remarks: `Payment ${mockedTransactionJob.paymentNumber}`,
         originatorConversationId: mockedTransactionJob.originatorConversationId,
       }),
     );
