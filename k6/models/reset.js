@@ -31,6 +31,7 @@ export default class ResetModel {
       },
     };
     const res = http.post(url, payload, params);
+    console.log('res: ', res);
     return res;
   }
 
