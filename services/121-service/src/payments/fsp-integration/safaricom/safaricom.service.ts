@@ -6,7 +6,7 @@ import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -97,6 +97,8 @@ export class SafaricomService
       programId: jobData.programId,
       paymentNr: jobData.paymentNr,
       userId: jobData.userId,
+      programFinancialServiceProviderConfigurationId:
+        jobData.paPaymentData.programFinancialServiceProviderConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     const transaction =
@@ -127,11 +129,14 @@ export class SafaricomService
       .where('registration.referenceId = :referenceId', {
         referenceId,
       })
-      .andWhere('programQuestion.name IN (:...names)', {
+      .andWhere('programRegistrationAttribute.name IN (:...names)', {
         names: ['nationalId'],
       })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.programQuestion', 'programQuestion')
+      .leftJoin(
+        'data.programRegistrationAttribute',
+        'programRegistrationAttribute',
+      )
       .getRawOne();
   }
 
@@ -178,7 +183,7 @@ export class SafaricomService
     referenceId: string,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FinancialServiceProviderName.safaricom;
+    paTransactionResult.fspName = FinancialServiceProviders.safaricom;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.Amount;

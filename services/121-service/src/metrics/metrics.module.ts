@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventsModule } from '@121-service/src/events/events.module';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { MetricsController } from '@121-service/src/metrics/metrics.controller';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
@@ -11,8 +10,7 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -24,9 +22,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      ProgramQuestionEntity,
-      ProgramCustomAttributeEntity,
-      FspQuestionEntity,
+      ProgramRegistrationAttributeEntity,
       ProgramEntity,
     ]),
     UserModule,

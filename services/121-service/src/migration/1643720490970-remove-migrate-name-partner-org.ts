@@ -1,9 +1,4 @@
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-
-import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class removeMigrateNamePartnerOrg1643720490970
   implements MigrationInterface
@@ -11,7 +6,6 @@ export class removeMigrateNamePartnerOrg1643720490970
   name = 'removeMigrateNamePartnerOrg1643720490970';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await this.migrateData(queryRunner.manager);
     await queryRunner.commitTransaction();
     await queryRunner.startTransaction();
     await queryRunner.query(
@@ -29,49 +23,5 @@ export class removeMigrateNamePartnerOrg1643720490970
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" ADD "namePartnerOrganization" character varying`,
     );
-  }
-
-  private async migrateData(manager: EntityManager): Promise<void> {
-    const programRepository = manager.getRepository(ProgramEntity);
-    const registrationRepository = manager.getRepository(RegistrationEntity);
-    const programCustomAttributeRepository = manager.getRepository(
-      ProgramCustomAttributeEntity,
-    );
-    const regsWithPartnerOrg = await manager
-      .getRepository(RegistrationEntity)
-      .createQueryBuilder('registration')
-      .select('registration.*')
-      .where('"namePartnerOrganization" is not null')
-      .getRawMany();
-    for (const r of regsWithPartnerOrg) {
-      r.customData['namePartnerOrganization'] = r['namePartnerOrganization'];
-      await registrationRepository.save(r);
-    }
-
-    const programs = await manager
-      .getRepository(ProgramEntity)
-      .createQueryBuilder('program')
-      .leftJoinAndSelect(
-        'program.programCustomAttributes',
-        'programCustomAttributes',
-      )
-      .select(['program.id'])
-      .getMany();
-    for (const program of programs) {
-      // Then namePartnerOrganization is part of this programCustomAttributes
-      if (regsWithPartnerOrg.length > 0) {
-        const attributeReturn = await programCustomAttributeRepository.save({
-          name: 'namePartnerOrganization',
-          type: CustomAttributeType.text,
-          label: JSON.parse(
-            JSON.stringify({
-              en: 'Partner Organization',
-            }),
-          ),
-        });
-        program.programCustomAttributes.push(attributeReturn);
-        await programRepository.save(program);
-      }
-    }
   }
 }
