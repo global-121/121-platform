@@ -3,12 +3,12 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 
 @Processor(TransactionJobQueueNames.intersolveVoucher)
@@ -18,7 +18,8 @@ export class PaymentProcessorIntersolveVoucher {
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
-  @Process(PaymentQueueNames.sendPayment)
+
+  @Process(JobNames.default)
   async handleSendPayment(job: Job): Promise<void> {
     await this.intersolveVoucherService.processQueuedPayment(job.data);
     await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);

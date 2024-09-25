@@ -3,11 +3,11 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 
@@ -20,7 +20,7 @@ export class TransactionJobProcessorIntersolveVisa {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(PaymentQueueNames.sendPayment)
+  @Process(JobNames.default)
   async handleIntersolveVisaTransactionJob(job: Job): Promise<void> {
     try {
       await this.transactionJobProcessorsService.processIntersolveVisaTransactionJob(

@@ -29,17 +29,11 @@ export class SafaricomApiService {
 
     if (!transferResponse || !transferResponse.data) {
       errorMessage = `Error: No response data from Safaricom API`;
-    }
-
-    if (transferResponse.data.errorCode) {
+    } else if (transferResponse.data.errorCode) {
       errorMessage = `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`;
-    }
-
-    if (!transferResponse.data.ResponseCode) {
+    } else if (!transferResponse.data.ResponseCode) {
       errorMessage = `Error: ${(transferResponse.data as any)?.statusCode} ${(transferResponse.data as any)?.error}`;
-    }
-
-    if (transferResponse.data.ResponseCode !== '0') {
+    } else if (transferResponse.data.ResponseCode !== '0') {
       errorMessage = transferResponse.data?.ResponseDescription;
     }
 

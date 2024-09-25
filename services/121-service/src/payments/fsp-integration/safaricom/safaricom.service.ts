@@ -4,15 +4,14 @@ import { Inject } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
-import { FinancialServiceProviderCallbackQueueNames } from '@121-service/src/financial-service-provider-callback-job-processors/enum/financial-service-provider-callback-queue-names.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
@@ -20,6 +19,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
 export class SafaricomService
@@ -30,13 +30,9 @@ export class SafaricomService
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(
-      FinancialServiceProviderCallbackQueueNames.safaricomTransferCallback,
-    )
+    @InjectQueue(SafaricomCallbackQueueNames.transfer)
     private readonly safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(
-      FinancialServiceProviderCallbackQueueNames.safaricomTimeoutCallback,
-    )
+    @InjectQueue(SafaricomCallbackQueueNames.timeout)
     private readonly safaricomTimeoutCallbackQueue: Queue,
   ) {}
 
@@ -97,7 +93,7 @@ export class SafaricomService
     };
 
     const job = await this.safaricomTransferCallbackQueue.add(
-      PaymentQueueNames.financialServiceProviderCallback,
+      JobNames.default,
       safaricomTransferCallbackJob,
     );
 
@@ -113,7 +109,7 @@ export class SafaricomService
     };
 
     const job = await this.safaricomTimeoutCallbackQueue.add(
-      PaymentQueueNames.financialServiceProviderTimeoutCallback,
+      JobNames.default,
       safaricomTimeoutCallbackJob,
     );
 
