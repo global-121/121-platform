@@ -21,7 +21,7 @@ export default class ResetModel {
   }
 
   resetDB(resetScript) {
-    const url = `${baseUrl}api/scripts/reset?isApiTests=false&script=${resetScript}`;
+    const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=${resetScript}`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
@@ -31,7 +31,6 @@ export default class ResetModel {
       },
     };
     const res = http.post(url, payload, params);
-    console.log('res: ', res);
     return res;
   }
 
