@@ -114,6 +114,7 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
+        'fspconfig.financialServiceProviderName as "financialServiceProviderName"',
         'transaction.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
         'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
         'fspconfig.name as "programFinancialServiceProviderConfigurationName"',

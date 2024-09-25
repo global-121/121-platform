@@ -272,7 +272,7 @@ export class ExcelService
       payment,
       undefined,
       undefined,
-      FinancialServiceProviderName.excel,
+      FinancialServiceProviders.excel,
     );
     // Join registration data with the imported CSV records
     return this.joinRegistrationsAndImportRecords(
