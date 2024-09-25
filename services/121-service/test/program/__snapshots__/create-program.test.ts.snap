@@ -472,7 +472,7 @@ exports[`Create program should post a program: Create program response for progr
       },
       "fsp": "Commercial-bank-ethiopia",
       "hasReconciliation": false,
-      "id": 9,
+      "id": 6,
       "integrationType": "api",
       "notifyOnTransaction": false,
       "questions": [
@@ -483,8 +483,8 @@ exports[`Create program should post a program: Create program response for progr
             "all-people-affected",
             "included",
           ],
-          "fspId": 9,
-          "id": 17,
+          "fspId": 6,
+          "id": 11,
           "label": {
             "en": "Bank Account Number",
           },
