@@ -186,6 +186,33 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
+  getIntersolveVoucher({
+    projectId,
+    voucherReferenceId,
+    paymentId,
+  }: {
+    projectId: Signal<number>;
+    voucherReferenceId: string;
+    paymentId: number;
+  }) {
+    return this.generateQueryOptions<Blob>({
+      path: [
+        BASE_ENDPOINT,
+        projectId,
+        'financial-service-providers/intersolve-voucher/vouchers',
+      ],
+      requestOptions: {
+        params: new HttpParams({
+          fromObject: {
+            referenceId: voucherReferenceId,
+            payment: paymentId.toString(),
+          },
+        }),
+        responseAsBlob: true,
+      },
+    });
+  }
+
   getIntersolveVoucherBalance({
     projectId,
     registrationReferenceId,

@@ -12,4 +12,5 @@ import { TableCellComponent } from '~/components/query-table/table-cell/table-ce
 })
 export class TableCellTextComponent implements TableCellComponent<string> {
   value = input.required<string>();
+  context = input<never>();
 }

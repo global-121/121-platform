@@ -31,6 +31,7 @@ export class TableCellActivityComponent
   implements TableCellComponent<ActivityLogItemWithOverview>
 {
   value = input.required<ActivityLogItemWithOverview>();
+  context = input<never>();
 
   label = computed(
     () => ACTIVITY_LOG_ITEM_TYPE_LABELS[this.value().activityType],

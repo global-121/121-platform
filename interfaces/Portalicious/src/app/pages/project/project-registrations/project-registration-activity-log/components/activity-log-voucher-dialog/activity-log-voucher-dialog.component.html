@@ -1,0 +1,53 @@
+<p-button
+  label="View voucher"
+  i18n-label
+  (onClick)="dialogVisible.set(true)"
+  outlined
+  rounded
+  [size]="'small'"
+/>
+<p-dialog
+  [header]="dialogHeader()"
+  [modal]="true"
+  [dismissableMask]="true"
+  [(visible)]="dialogVisible"
+  [style]="{ width: '70rem' }"
+>
+  @defer {
+    @if (voucher.isSuccess()) {
+      <p-scrollPanel styleClass="h-96 w-full border border-grey-300">
+        <iframe
+          #voucherIframe
+          [src]="sanitizedVoucherUrl()"
+          style="width: 100%; height: 100%; border: 0"
+        ></iframe>
+      </p-scrollPanel>
+      <div class="mt-4 flex justify-end gap-3">
+        <a
+          [href]="sanitizedVoucherUrl()"
+          class="p-button p-button-rounded p-button-outlined"
+          [download]="voucherFileName()"
+        >
+          <span class="p-button-icon p-button-icon-left pi pi-download"></span>
+          <span
+            class="p-button-label"
+            i18n="@@generic-download"
+            >Download</span
+          >
+        </a>
+        <p-button
+          label="Print voucher"
+          i18n-label
+          (onClick)="printVoucher()"
+          outlined
+          rounded
+          icon="pi pi-print"
+        />
+      </div>
+    } @else if (voucher.isPending()) {
+      <p-skeleton height="24rem" />
+    } @else {
+      <p>{{ voucher.error()?.message }}</p>
+    }
+  }
+</p-dialog>

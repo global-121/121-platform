@@ -684,7 +684,7 @@
         <target state="new">Time and date</target>
       </trans-unit>
       <trans-unit id="412801067474625773" datatype="html">
-        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
+        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.payment" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
         <target state="new"><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> van <x equiv-text="item.contents.totalTransfers" id="totalCount"/></target>
       </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
@@ -718,6 +718,22 @@
       <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
         <source>Remaining payments</source>
         <target state="new">Remaining payments</target>
+      </trans-unit>
+      <trans-unit id="362413796363960378" datatype="html">
+        <source>View voucher</source>
+        <target state="new">View voucher</target>
+      </trans-unit>
+      <trans-unit id="generic-download" datatype="html">
+        <source>Download</source>
+        <target state="new">Download</target>
+      </trans-unit>
+      <trans-unit id="8102975218009674229" datatype="html">
+        <source>Print voucher</source>
+        <target state="new">Print voucher</target>
+      </trans-unit>
+      <trans-unit id="3132687678063886490" datatype="html">
+        <source>Voucher - payment <x equiv-text="this.paymentId()" id="PH"/> of <x equiv-text="this.totalTransfers()" id="PH_1"/></source>
+        <target state="new">Voucher - payment <x equiv-text="this.paymentId()" id="PH"/> of <x equiv-text="this.totalTransfers()" id="PH_1"/></target>
       </trans-unit>
     </body>
   </file>

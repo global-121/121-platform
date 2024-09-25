@@ -13,4 +13,5 @@ import { TableCellComponent } from '~/components/query-table/table-cell/table-ce
 })
 export class TableCellDateComponent implements TableCellComponent<Date> {
   value = input.required<Date>();
+  context = input<never>();
 }

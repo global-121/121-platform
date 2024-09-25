@@ -38,7 +38,8 @@ export interface QueryTableColumn<TData, TField = keyof TData & string> {
   hidden?: boolean;
   type?: 'date' | 'multiselect' | 'text'; // defaults to text
   options?: { label: string; value: number | string }[]; // for type 'multiselect'
-  component?: Type<TableCellComponent<TData>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component?: Type<TableCellComponent<TData, any>>;
 }
 
 @Component({
@@ -66,7 +67,7 @@ export interface QueryTableColumn<TData, TField = keyof TData & string> {
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QueryTableComponent<TData extends { id: PropertyKey }> {
+export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   locale = inject<Locale>(LOCALE_ID);
 
   items = input.required<TData[]>();
@@ -75,8 +76,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }> {
   localStorageKey = input.required<string>();
   contextMenuItems = input<MenuItem[]>();
   globalFilterFields = input<(keyof TData & string)[]>();
-  expandableRowTemplate = input<Type<TableCellComponent<TData>>>();
-  expandableRowContext = input<unknown>();
+  expandableRowTemplate = input<Type<TableCellComponent<TData, TContext>>>();
+  tableCellContext = input<TContext>();
   readonly onUpdateContextMenuItem = output<TData>();
 
   @ViewChild('table') table: Table;
@@ -126,7 +127,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }> {
         ? event.filters.global[0]
         : event.filters.global;
       if (globalFilter.value && globalFilter.value !== '') {
-        // without this, the global filter value is not not restored properly from local storage
+        // without this, the global filter value is not restored properly from local storage
         this.globalFilterValue.set(globalFilter.value as string);
       }
     }
