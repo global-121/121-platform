@@ -1,4 +1,7 @@
-import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import {
+  AnswerTypes,
+  CustomAttributeType,
+} from '@121-service/src/registration/enum/custom-data-attributes';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { DataListItem } from '~/components/data-list/data-list.component';
@@ -19,14 +22,13 @@ export const attributeToDataListItem = (
     attribute.label ?? ATTRIBUTE_LABELS[attribute.name] ?? attribute.name;
 
   // XXX: safer check to make sure attribute.type is an AnswerTypes?
-  switch (attribute.type as AnswerTypes) {
-    case AnswerTypes.dropdown:
+  switch (attribute.type as AnswerTypes | CustomAttributeType) {
     case AnswerTypes.multiSelect:
-      // XXX: is this ok?
+      // TODO: Implement multiSelect when necessary
       console.log(
-        'attributeToDataListItem: dropdown/multiSelect not implemented',
+        'attributeToDataListItem: multiSelect not implemented',
+        value,
       );
-      console.log(value);
       return undefined;
     case AnswerTypes.numeric:
       return {
@@ -46,8 +48,16 @@ export const attributeToDataListItem = (
         type: 'date',
         value: value as Date,
       };
+    case CustomAttributeType.boolean:
+      return {
+        label,
+        type: 'boolean',
+        value: value as boolean,
+      };
+    case AnswerTypes.dropdown:
     case AnswerTypes.tel:
     case AnswerTypes.text:
+    case CustomAttributeType.text:
       return {
         label,
         type: 'text',

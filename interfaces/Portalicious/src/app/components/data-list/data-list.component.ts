@@ -19,6 +19,10 @@ export type DataListItem = {
   chipVariant?: ChipVariant;
 } & (
   | {
+      type: 'boolean';
+      value: boolean;
+    }
+  | {
       type: 'currency';
       value?: null | number | string;
       currencyCode?: null | string;
