@@ -70,6 +70,7 @@ export default {
     typographySizes: {
       s: '0.85rem', // ~12px
       m: '1rem', // ~14px
+      l: '1.85rem', // ~26px
     },
     extend: {
       gridTemplateAreas: {
@@ -93,7 +94,7 @@ export default {
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@savvywombat/tailwindcss-grid-areas'),
-    plugin(function ({ addUtilities, matchUtilities, theme }) {
+    plugin(function ({ matchUtilities, theme }) {
       // heading utilities
       matchUtilities(
         {
@@ -138,15 +139,6 @@ export default {
         },
         { values: theme('typographySizes') },
       );
-      addUtilities({
-        '.txt-metric': {
-          fontSize: '1.85rem', // ~26px
-          fontFamily: theme('fontFamily.display'),
-          lineHeight: '140%',
-          letterSpacing: '0px',
-          fontWeight: '700',
-        },
-      });
     }),
   ],
 } satisfies Config;
