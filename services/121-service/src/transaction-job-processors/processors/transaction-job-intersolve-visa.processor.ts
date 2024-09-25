@@ -3,7 +3,6 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
-import { PaymentQueueNames } from '@121-service/src/payments/enum/payment-queue-names.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
