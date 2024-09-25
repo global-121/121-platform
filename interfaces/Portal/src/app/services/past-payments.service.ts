@@ -124,7 +124,10 @@ export class PastPaymentsService {
         );
         paymentRowValue.status = StatusEnum.notYetSent;
       } else {
-        transaction.fspName = this.translatableString.get(transaction.fspName);
+        transaction.programFinancialServiceProviderConfigurationTranslatedLabel =
+          this.translatableString.get(
+            transaction.programFinancialServiceProviderConfigurationLabel,
+          );
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
           program,

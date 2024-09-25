@@ -24,7 +24,9 @@ export class PaymentUtils {
       transaction,
       amount: transaction.amount,
       currency: program?.currency,
-      fsp: transaction.fsp as FspName,
+      financialServiceProviderName: transaction.financialServiceProviderName,
+      programFinancialServiceProviderConfigurationTranslatedLabel:
+        transaction.programFinancialServiceProviderConfigurationTranslatedLabel,
       sentDate: transaction.paymentDate,
       paymentDate: transaction.paymentDate,
     };
@@ -101,7 +103,8 @@ export class PaymentUtils {
 
   static getCustomDataAttributesToShow(paymentRow: PaymentRowDetail) {
     if (
-      paymentRow.transaction?.fsp === FinancialServiceProviders.intersolveVisa
+      paymentRow.transaction?.financialServiceProviderName ===
+      FinancialServiceProviders.intersolveVisa
     ) {
       return [TransactionCustomDataAttributes.intersolveVisaWalletTokenCode];
     } else {

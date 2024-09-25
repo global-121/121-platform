@@ -562,11 +562,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
               : ''
           }`
         : '',
-      fsp: person.financialServiceProvider,
+      fsp: person.financialServiceProviderName,
       financialServiceProvider: this.translatableStringService.get(
         this.program?.financialServiceProviderConfigurations?.find(
-          (p) => p.name === person?.financialServiceProvider,
-        )?.displayName,
+          (p) => p.name === person?.financialServiceProviderName,
+        )?.label,
       ),
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
@@ -622,8 +622,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public showInclusionScore(): boolean {
     let show = false;
     if (this.program?.programRegistrationAttributes) {
-      for (const question of this.program.programRegistrationAttributes) {
-        if (question['scoring']) {
+      for (const attribute of this.program.programRegistrationAttributes) {
+        if (attribute['scoring']) {
           show = true;
           break;
         }

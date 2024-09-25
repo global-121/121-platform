@@ -85,6 +85,27 @@ export class RegistrationsInputValidator {
        * Add default registration attributes without custom validation
        * =============================================================
        */
+      const errorObjFspConfig = this.validateProgramFspConfigurationName({
+        programFinancialServiceProviderConfigurationName:
+          row[
+            AdditionalAttributes
+              .programFinancialServiceProviderConfigurationName
+          ],
+        programFinancialServiceProviderConfigurations:
+          program.programFinancialServiceProviderConfigurations,
+        i,
+      });
+      if (errorObjFspConfig) {
+        errors.push(errorObjFspConfig);
+      } else {
+        importRecord[
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName
+        ] =
+          row[
+            AdditionalAttributes.programFinancialServiceProviderConfigurationName
+          ];
+      }
+
       importRecord.programFinancialServiceProviderConfigurationName =
         row.programFinancialServiceProviderConfigurationName;
       // ##TODO add validation to check if the financialServiceProvider is valid and the required attributes are present (only for import not bulk update)
@@ -313,6 +334,32 @@ export class RegistrationsInputValidator {
       mapping[cleanedFullNameLanguage] = languageAbbr;
     }
     return mapping;
+  }
+
+  private validateProgramFspConfigurationName({
+    programFinancialServiceProviderConfigurationName,
+    programFinancialServiceProviderConfigurations,
+    i,
+  }: {
+    programFinancialServiceProviderConfigurationName: string;
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    i: number;
+  }): ValidateRegistrationErrorObjectDto | undefined {
+    if (
+      !programFinancialServiceProviderConfigurationName ||
+      !programFinancialServiceProviderConfigurations.some(
+        (fspConfig) =>
+          fspConfig.name === programFinancialServiceProviderConfigurationName,
+      )
+    ) {
+      return {
+        lineNumber: i,
+        column:
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName,
+        value: programFinancialServiceProviderConfigurationName,
+        error: `FinancialServiceProviderConfigurationName ${programFinancialServiceProviderConfigurationName} not found in program. Allowed values: ${programFinancialServiceProviderConfigurations.join(', ')}`,
+      };
+    }
   }
 
   private validatePreferredLanguage(
