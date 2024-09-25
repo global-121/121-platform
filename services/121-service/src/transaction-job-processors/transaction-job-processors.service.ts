@@ -281,12 +281,25 @@ export class TransactionJobProcessorsService {
       });
     } catch (error) {
       if (error instanceof SafaricomApiError) {
+        // ##TODO: check only on code or enum value (like IntersolveVisa121ErrorText)
+        if (
+          error.message === '500.002.1001 - Duplicate OriginatorConversationID.'
+        ) {
+          // This error means the API-request has gone through before, so we should not overrule the original transaction
+          // Delete the new transaction again and return early
+          console.error(
+            `Error ${error.message} for ${registration.referenceId}`,
+          );
+          await this.transactionScopedRepository.remove(transaction);
+          return;
+        }
         await this.transactionScopedRepository.update(
           { id: transaction.id },
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
         );
         return;
       }
+      // ##TODO: this can be removed again probably, because we no longer let it fail on the unique constraint
       if (error instanceof QueryFailedError) {
         if (error['code'] === '23505') {
           await this.transactionScopedRepository.update(

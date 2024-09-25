@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
+import { Equal } from 'typeorm';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -15,6 +16,7 @@ import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integ
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -55,26 +57,63 @@ export class SafaricomService
     idNumber,
     originatorConversationId,
   }: DoTransferParams): Promise<void> {
-    // Store initial transfer record before transfer because of callback
-    const safaricomTransfer = new SafaricomTransferEntity();
-    safaricomTransfer.originatorConversationId = originatorConversationId;
-    safaricomTransfer.transactionId = transactionId;
-    await this.safaricomTransferScopedRepository.save(safaricomTransfer);
+    // Check if transfer record exists already, if so, use that
+    let safaricomTransfer =
+      await this.safaricomTransferScopedRepository.findOne({
+        where: {
+          originatorConversationId: Equal(originatorConversationId),
+        },
+      });
+    if (!safaricomTransfer) {
+      // otherwise, create a new record
+      const newSafaricomTransfer = new SafaricomTransferEntity();
+      newSafaricomTransfer.originatorConversationId = originatorConversationId;
+      newSafaricomTransfer.transactionId = transactionId;
+      safaricomTransfer =
+        await this.safaricomTransferScopedRepository.save(newSafaricomTransfer);
+    }
 
     // Prepare the transfer payload and send the request to safaricom
-    const transferResult =
-      await this.safaricomApiService.sendTransferAndHandleResponse({
-        transactionId,
-        transferAmount,
-        phoneNumber,
-        idNumber,
-        originatorConversationId,
-      });
+    let transferResult;
+    try {
+      transferResult =
+        await this.safaricomApiService.sendTransferAndHandleResponse({
+          transactionId,
+          transferAmount,
+          phoneNumber,
+          idNumber,
+          originatorConversationId,
+        });
+    } catch (error) {
+      // ##TODO: check only on code or enum value (like IntersolveVisa121ErrorText)
+      if (
+        error instanceof SafaricomApiError &&
+        error.message === '500.002.1001 - Duplicate OriginatorConversationID.'
+      ) {
+        // 1. This error means the API-request has gone through before, we will remove the new transaction record, so do not update transactionId here
+        throw error;
+      }
+
+      // 2. In all other error cases do update transactionId here
+      await this.safaricomTransferScopedRepository.update(
+        { id: safaricomTransfer.id },
+        {
+          transactionId,
+        },
+      );
+      throw error;
+    }
+
+    // Simulate timeout, use this to test by restarting 121-service during this timeout
+    await new Promise((resolve) => setTimeout(resolve, 60000));
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
       { id: safaricomTransfer.id },
-      { mpesaConversationId: transferResult?.data?.ConversationID },
+      {
+        mpesaConversationId: transferResult?.data?.ConversationID,
+        transactionId, // 3. Also update transactionId in case of success response
+      },
     );
   }
 
