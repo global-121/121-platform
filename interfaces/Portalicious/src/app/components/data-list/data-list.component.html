@@ -22,6 +22,13 @@
         @if (item.value) {
           <span>
             @switch (item.type) {
+              @case ('boolean') {
+                @if (item.value) {
+                  <span i18n="@@generic-boolean-true">Yes</span>
+                } @else {
+                  <span i18n="@@generic-boolean-false">No</span>
+                }
+              }
               @case ('currency') {
                 {{
                   item.value

@@ -533,6 +533,12 @@
       <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
         <source>Transfer value multiplier</source>
       </trans-unit>
+      <trans-unit id="generic-boolean-false" datatype="html">
+        <source>No</source>
+      </trans-unit>
+      <trans-unit id="generic-boolean-true" datatype="html">
+        <source>Yes</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

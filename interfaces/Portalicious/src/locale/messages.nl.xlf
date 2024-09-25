@@ -707,6 +707,14 @@
         <source>Transfer value multiplier</source>
         <target state="new">Transfer value multiplier</target>
       </trans-unit>
+      <trans-unit id="generic-boolean-true" datatype="html">
+        <source>Yes</source>
+        <target state="new">Yes</target>
+      </trans-unit>
+      <trans-unit id="generic-boolean-false" datatype="html">
+        <source>No</source>
+        <target state="new">No</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
