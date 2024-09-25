@@ -23,7 +23,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-describe('Block visa debit card', () => {
+describe('(Un)Block visa debit card', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -79,8 +79,8 @@ describe('Block visa debit card', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    // Assert
 
+    // Assert
     expect(blockVisaResponse.status).toBe(200);
     expect(visaWalletResponseAfterBlock.body.cards[0].status).toBe(
       VisaCard121Status.Paused,

@@ -1,7 +1,6 @@
-import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 export class ValidationInfo {
-  public readonly type?: AnswerTypes | CustomAttributeType;
+  public readonly type?: RegistrationAttributeTypes;
   public readonly options?: any[];
 }
