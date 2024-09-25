@@ -180,6 +180,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
       };
     } else if (name === Attributes.scope) {
       return { type: RegistrationAttributeTypes.text };
+    } else if (
+      name === Attributes.programFinancialServiceProviderConfigurationName
+    ) {
+      return { type: RegistrationAttributeTypes.text };
     }
 
     const repo = AppDataSource.getRepository(ProgramEntity);
