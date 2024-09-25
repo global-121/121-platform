@@ -157,7 +157,11 @@ export class ProjectApiService extends DomainApiService {
     );
   }
 
-  removeProjectUser(projectId: Signal<number>, userId: number) {
+  removeProjectUser(projectId: Signal<number>, userId?: number) {
+    if (!userId) {
+      return Promise.reject(new Error('User ID is required'));
+    }
+
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'DELETE',
       endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/users/${userId.toString()}`,

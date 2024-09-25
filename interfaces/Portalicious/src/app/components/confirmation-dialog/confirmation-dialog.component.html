@@ -1,5 +1,32 @@
-<p-confirmDialog>
+<p-confirmDialog
+  #confirmDialog
+  [header]="header()"
+  closeOnEscape
+>
   <ng-template pTemplate="message">
-    <ng-content></ng-content>
+    <div>
+      <ng-content></ng-content>
+      @if (mutation().isError()) {
+        <div class="mt-4">
+          <app-form-error [error]="mutation().failureReason()?.message" />
+        </div>
+      }
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      i18n-label="@@generic-cancel"
+      outlined
+      rounded
+      [disabled]="mutation().isPending()"
+      (click)="confirmDialog.reject()"
+    />
+    <p-button
+      [label]="proceedLabel()"
+      rounded
+      [loading]="mutation().isPending()"
+      (click)="onProceed()"
+    />
   </ng-template>
 </p-confirmDialog>

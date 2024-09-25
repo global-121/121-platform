@@ -3,40 +3,45 @@ import {
   Component,
   inject,
   input,
+  ViewChild,
 } from '@angular/core';
 
+import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
+
+import { FormErrorComponent } from '~/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-confirmation-dialog',
   standalone: true,
-  imports: [ConfirmDialogModule],
+  imports: [ConfirmDialogModule, ButtonModule, FormErrorComponent],
   providers: [ConfirmationService],
   templateUrl: './confirmation-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConfirmationDialogComponent {
+export class ConfirmationDialogComponent<TMutationData = unknown> {
   private confirmationService = inject(ConfirmationService);
 
+  mutation =
+    input.required<CreateMutationResult<unknown, Error, TMutationData>>();
+  mutationData = input.required<TMutationData>();
   header = input($localize`:@@confirmation-dialog-header:Are you sure?`);
-  acceptLabel = input($localize`:@@generic-proceed:Proceed`);
-  rejectLabel = input($localize`:@@generic-cancel:Cancel`);
-  acceptIcon = input('none');
-  rejectIcon = input('none');
+  proceedLabel = input($localize`:@@generic-proceed:Proceed`);
 
-  confirm({ accept, reject }: { accept: () => void; reject?: () => void }) {
-    this.confirmationService.confirm({
-      accept,
-      reject,
-      header: this.header(),
-      acceptLabel: this.acceptLabel(),
-      rejectLabel: this.rejectLabel(),
-      acceptIcon: this.acceptIcon(),
-      rejectIcon: this.rejectIcon(),
-      rejectButtonStyleClass: 'p-button-rounded p-button-outlined',
-      acceptButtonStyleClass: 'p-button-rounded',
+  @ViewChild('confirmDialog') confirmDialog: ConfirmDialog;
+
+  askForConfirmation() {
+    this.confirmationService.confirm({});
+  }
+
+  onProceed() {
+    this.mutation().mutate(this.mutationData(), {
+      onSuccess: () => {
+        this.confirmDialog.accept();
+      },
     });
   }
 }

@@ -199,7 +199,7 @@
       <trans-unit id="1887371025019909976" datatype="html">
         <source>Kobo Asset ID</source>
       </trans-unit>
-      <trans-unit id="2159130950882492111" datatype="html">
+      <trans-unit id="generic-cancel" datatype="html">
         <source>Cancel</source>
       </trans-unit>
       <trans-unit id="7750664097458673871" datatype="html">
@@ -267,9 +267,6 @@
       </trans-unit>
       <trans-unit id="8875170340911342447" datatype="html">
         <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
-      </trans-unit>
-      <trans-unit id="generic-cancel" datatype="html">
-        <source>Cancel</source>
       </trans-unit>
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
