@@ -198,7 +198,7 @@
 
         <div
           *ngIf="
-            (!canUpdatePaData || !canUpdatePaFsp) &&
+            (!canUpdatePaData || !canUpdatePaProgramFspConfig) &&
             person?.programFinancialServiceProviderConfigurationLabel
           "
           class="ion-margin-vertical"
@@ -216,7 +216,7 @@
           data-testid="edit-person-affected-popup-fsp-dropdown"
           *ngIf="
             canUpdatePaData &&
-            canUpdatePaFsp &&
+            canUpdatePaProgramFspConfig &&
             programFspConfigList.length === programFspLength &&
             person?.programFinancialServiceProviderConfigurationName
           "
