@@ -1,47 +1,12 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsNumberString,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-
-export class SafaricomTransactionJobDto {
-  @IsNotEmpty()
-  @IsNumberString()
-  public readonly programId: number;
-
-  @IsNotEmpty()
-  @IsNumberString()
-  public readonly paymentNumber: number;
-
-  @IsNotEmpty()
-  @IsString()
-  public readonly referenceId: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  public readonly transactionAmount: number;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  public readonly isRetry: boolean;
-
-  @IsNotEmpty()
-  @IsNumber()
-  public readonly userId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  public readonly bulkSize: number;
-
-  @IsOptional()
-  public readonly phoneNumber?: string;
-
-  @IsOptional()
-  public readonly idNumber?: string;
-
-  @IsOptional()
-  public readonly originatorConversationId?: string;
+export interface SafaricomTransactionJobDto {
+  readonly programId: number;
+  readonly paymentNumber: number;
+  readonly referenceId: string;
+  readonly transactionAmount: number;
+  readonly isRetry: boolean;
+  readonly userId: number;
+  readonly bulkSize: number;
+  readonly originatorConversationId: string;
+  readonly phoneNumber?: string;
+  readonly idNumber?: string;
 }

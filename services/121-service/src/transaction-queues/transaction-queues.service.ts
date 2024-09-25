@@ -7,8 +7,8 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 
@@ -17,9 +17,9 @@ export class TransactionQueuesService {
   public constructor(
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(TransactionQueueNames.paymentIntersolveVisa)
+    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
     private readonly paymentIntersolveVisaQueue: Queue,
-    @InjectQueue(TransactionQueueNames.paymentSafaricom)
+    @InjectQueue(TransactionJobQueueNames.safaricom)
     private readonly paymentSafaricomQueue: Queue,
   ) {}
 
@@ -28,7 +28,7 @@ export class TransactionQueuesService {
   ): Promise<void> {
     for (const transferJob of transferJobs) {
       const job = await this.paymentIntersolveVisaQueue.add(
-        PaymentQueueNames.sendPayment,
+        JobNames.default,
         transferJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
@@ -40,7 +40,7 @@ export class TransactionQueuesService {
   ): Promise<void> {
     for (const safaricomTransactionJob of safaricomTransactionJobs) {
       const job = await this.paymentSafaricomQueue.add(
-        PaymentQueueNames.sendPayment,
+        JobNames.default,
         safaricomTransactionJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);

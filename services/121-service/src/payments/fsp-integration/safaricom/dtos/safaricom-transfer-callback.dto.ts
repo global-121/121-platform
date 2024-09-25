@@ -3,6 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 
 class SafaricomTransferCallbackResult {
   @ApiProperty()
+  @IsNotEmpty()
   readonly OriginatorConversationID: string;
   @ApiProperty()
   readonly ConversationID: string;

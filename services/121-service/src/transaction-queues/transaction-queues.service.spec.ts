@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { Queue } from 'bull';
 
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
@@ -54,11 +54,11 @@ describe('TransactionQueuesService', () => {
 
     transactionQueuesService = unit;
     intersolveVisaQueue = unitRef.get(
-      getQueueName(TransactionQueueNames.paymentIntersolveVisa),
+      getQueueName(TransactionJobQueueNames.intersolveVisa),
     );
 
     safaricomQueue = unitRef.get(
-      getQueueName(TransactionQueueNames.paymentSafaricom),
+      getQueueName(TransactionJobQueueNames.safaricom),
     );
   });
 
@@ -82,7 +82,7 @@ describe('TransactionQueuesService', () => {
     // Assert
     expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
     expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
-      PaymentQueueNames.sendPayment,
+      JobNames.default,
       mockIntersolveVisaTransactionJobDto[0],
     );
   });
@@ -103,7 +103,7 @@ describe('TransactionQueuesService', () => {
     // Assert
     expect(safaricomQueue.add).toHaveBeenCalledTimes(1);
     expect(safaricomQueue.add).toHaveBeenCalledWith(
-      PaymentQueueNames.sendPayment,
+      JobNames.default,
       mockSafaricomTransactionJobDto[0],
     );
   });
