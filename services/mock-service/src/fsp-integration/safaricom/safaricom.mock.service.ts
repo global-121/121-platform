@@ -141,7 +141,7 @@ export class SafaricomMockService {
 
     // Switch between mock scenarios
     let response = {};
-    let url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
+    let url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTransferCallback}`;
     if (mockScenario === MockScenario.success) {
       response = {
         Result: successStatus.Result,

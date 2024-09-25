@@ -47,6 +47,7 @@ import {
   ImportResult,
   ImportStatus,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -63,7 +64,7 @@ import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-import { formatDate } from '@121-service/src/utils/formatDate';
+import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 
 @Injectable()
@@ -702,33 +703,20 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaQuestions =
-      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+    const intersolveVisaQuestionNames =
+      await this.getFinancialServiceProviderQuestionNames(
         FinancialServiceProviderName.intersolveVisa,
       );
-    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
-      (q) => q.name,
-    );
     const dataFieldNames = [
       'fullName',
       'phoneNumber',
       ...intersolveVisaQuestionNames,
     ];
-    const referenceIds = referenceIdsTransactionAmounts.map(
-      (r) => r.referenceId,
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      dataFieldNames,
+      programId,
     );
-    const paginateQuery =
-      this.registrationsBulkService.getRegistrationsForPaymentQuery(
-        referenceIds,
-        dataFieldNames,
-      );
-
-    const registrationViews =
-      await this.registrationsPaginationService.getRegistrationsChunked(
-        programId,
-        paginateQuery,
-        4000,
-      );
 
     // Convert the array into a map for increased performace (hashmap lookup)
     const transactionAmountsMap = new Map(
@@ -751,7 +739,7 @@ export class PaymentsService {
               registrationView.referenceId,
             )!,
             isRetry,
-            bulkSize: referenceIds.length,
+            bulkSize: referenceIdsTransactionAmounts.length,
             name: registrationView['fullName'],
             addressStreet: registrationView['addressStreet'],
             addressHouseNumber: registrationView['addressHouseNumber'],
@@ -790,32 +778,20 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
-    const safaricomQuestions =
-      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+    const safaricomQuestionNames =
+      await this.getFinancialServiceProviderQuestionNames(
         FinancialServiceProviderName.safaricom,
       );
-    const safaricomQuestionNames = safaricomQuestions.map((q) => q.name);
     const dataFieldNames = [
-      'phoneNumber',
       'nationalId',
       'registrationProgramId',
       ...safaricomQuestionNames,
     ];
-    const referenceIds = referenceIdsTransactionAmounts.map(
-      (r) => r.referenceId,
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      dataFieldNames,
+      programId,
     );
-    const paginateQuery =
-      this.registrationsBulkService.getRegistrationsForPaymentQuery(
-        referenceIds,
-        dataFieldNames,
-      );
-
-    const registrationViews =
-      await this.registrationsPaginationService.getRegistrationsChunked(
-        programId,
-        paginateQuery,
-        4000,
-      );
 
     // Convert the array into a map for increased performace (hashmap lookup)
     const transactionAmountsMap = new Map(
@@ -836,15 +812,48 @@ export class PaymentsService {
           )!,
           isRetry,
           userId,
-          bulkSize: referenceIds.length,
+          bulkSize: referenceIdsTransactionAmounts.length,
           phoneNumber: registrationView.phoneNumber,
           idNumber: registrationView['nationalId'],
-          originatorConversationId: `P${programId}PA${registrationView.registrationProgramId}_${formatDate(new Date())}_${generateRandomString(3)}`,
+          originatorConversationId: `P${programId}PA${registrationView.registrationProgramId}_${formatDateYYMMDD(new Date())}_${generateRandomString(3)}`,
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
       safaricomTransferJobs,
     );
+  }
+
+  private async getFinancialServiceProviderQuestionNames(
+    financialServiceProviderName: FinancialServiceProviderName,
+  ): Promise<string[]> {
+    const questions =
+      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+        financialServiceProviderName,
+      );
+    return questions.map((q) => q.name);
+  }
+
+  private async getRegistrationViews(
+    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[],
+    dataFieldNames: string[],
+    programId: number,
+  ): Promise<MappedPaginatedRegistrationDto[]> {
+    const referenceIds = referenceIdsTransactionAmounts.map(
+      (r) => r.referenceId,
+    );
+    const paginateQuery =
+      this.registrationsBulkService.getRegistrationsForPaymentQuery(
+        referenceIds,
+        dataFieldNames,
+      );
+
+    const registrationViews =
+      await this.registrationsPaginationService.getRegistrationsChunked(
+        programId,
+        paginateQuery,
+        4000,
+      );
+    return registrationViews;
   }
 
   private failedTransactionForRegistrationAndPayment(
