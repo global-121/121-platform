@@ -128,7 +128,7 @@ export class TableService {
       {
         prop: 'financialServiceProvider',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.fspDisplayName',
+          'page.program.program-people-affected.column.programFinancialServiceProviderConfigurationLabel',
         ),
         ...this.getColumnDefaults(),
         minWidth: 220,
@@ -229,13 +229,13 @@ export class TableService {
       for (const nameColumn of program.fullnameNamingConvention) {
         const searchableColumns = program.programRegistrationAttributes;
 
-        const nameQuestion = searchableColumns.find(
-          (question) => question.name === nameColumn,
+        const nameAttribute = searchableColumns.find(
+          (attribute) => attribute.name === nameColumn,
         );
-        if (nameQuestion) {
+        if (nameAttribute) {
           const addCol = {
             prop: nameColumn,
-            name: this.translatableStringService.get(nameQuestion.label),
+            name: this.translatableStringService.get(nameAttribute.label),
             ...this.getColumnDefaults(),
             frozenLeft: this.platform.width() > 768,
             permissions: [Permission.RegistrationPersonalREAD],

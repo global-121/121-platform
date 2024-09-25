@@ -4,14 +4,10 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import FspName from 'src/app/enums/fsp-name.enum';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import {
-  AnswerType,
-  FinancialServiceProviderConfiguration,
-} from '../../models/fsp.model';
+import { FinancialServiceProviderConfiguration } from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
-import { CheckAttributeInputUtils } from '../../shared/utils/check-attribute-input.utils';
 
 @Component({
   selector: 'app-update-fsp',
@@ -44,7 +40,7 @@ export class UpdateFspComponent implements OnInit {
   public inProgress: boolean;
 
   @Input()
-  public fspConfigList: FinancialServiceProviderConfiguration[];
+  public programFspConfigList: FinancialServiceProviderConfiguration[];
 
   @Input()
   public referenceId: string;
@@ -73,22 +69,24 @@ export class UpdateFspComponent implements OnInit {
   public selectedFspName: string;
   public attributesToSave: object = {};
   public enableUpdateBtn = true;
+  public reason = 'Financial service provider change';
 
   ngOnInit() {
     this.propertyModel = this.value;
     this.startingFspName = this.value;
-    this.getFspAttributes(this.value);
+    this.setSelectedFspAndPrepareDropdown(this.value);
     this.startingAttributes = [...this.selectedFspAttributes];
     this.enableUpdateBtn = false;
   }
 
   public updateChosenFsp() {
     this.programsService
-      .updateChosenFsp(
-        this.referenceId,
+      .updatePaAttribute(
         this.programId,
+        this.referenceId,
+        'programFinancialServiceProviderConfigurationName', // Not sure how this should be done in a strongly typed way in our Portal way of working
         this.selectedFspName,
-        this.attributesToSave,
+        this.reason,
       )
       .then(
         () => {
@@ -116,75 +114,27 @@ export class UpdateFspComponent implements OnInit {
       );
   }
 
-  public onFspChange({ detail }) {
-    this.getFspAttributes(detail.value);
-    this.checkAttributesCorrectlyFilled();
+  public onFspSelectionChange({ detail }) {
+    this.setSelectedFspAndPrepareDropdown(detail.value);
+    this.enableUpdateBtn = this.startingFspName !== this.selectedFspName;
   }
 
-  public getFspAttributes(fspString: FspName) {
-    this.selectedFspAttributes = [];
-    this.attributesToSave = {};
-    if (this.fspConfigList) {
-      this.fspConfigList = this.fspConfigList.map((fspItem) => ({
-        ...fspItem,
-        displayName: this.translatableString.get(fspItem.displayName),
-      }));
+  public setSelectedFspAndPrepareDropdown(fspString: FspName) {
+    if (this.programFspConfigList) {
+      this.programFspConfigList = this.programFspConfigList.map(
+        (programFspConfig) => ({
+          ...programFspConfig,
+          translatedLabel: this.translatableString.get(programFspConfig.label),
+        }),
+      );
 
-      const selectedFsp = this.fspConfigList.find(
+      const selectedFsp = this.programFspConfigList.find(
         (fspItem) => fspItem.name === fspString,
       );
 
       if (selectedFsp) {
         this.selectedFspName = selectedFsp.name;
-        this.selectedFspAttributes = selectedFsp.editableAttributes.map(
-          (attr) => ({
-            ...attr,
-            label: this.translatableString.get(attr.label),
-          }),
-        );
-
-        // Preload attributesToSave ..
-        this.attributesToSave = this.selectedFspAttributes.reduce(
-          (obj, key) => {
-            obj[key.name] =
-              //.. with prefilled value if available
-              this.attributeValues[key.name] ||
-              // .. and with empty string / null otherwise
-              (key.type === AnswerType.Text ? '' : null);
-            return obj;
-          },
-          {},
-        );
-      }
-
-      this.attributeDifference = this.startingAttributes.filter(
-        (attr) => !this.selectedFspAttributes.includes(attr),
-      );
-    }
-  }
-
-  public onAttributeChange(attrName, { detail }) {
-    this.attributesToSave = {
-      ...this.attributesToSave,
-      [attrName]: detail.value.trim(),
-    };
-
-    this.checkAttributesCorrectlyFilled();
-  }
-
-  private checkAttributesCorrectlyFilled() {
-    for (const attr of this.selectedFspAttributes) {
-      if (
-        !CheckAttributeInputUtils.isAttributeCorrectlyFilled(
-          attr.type,
-          attr.pattern,
-          this.attributesToSave[attr.name],
-        )
-      ) {
-        this.enableUpdateBtn = false;
-        return;
       }
     }
-    this.enableUpdateBtn = true;
   }
 }

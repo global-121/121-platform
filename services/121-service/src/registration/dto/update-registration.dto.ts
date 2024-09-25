@@ -10,6 +10,7 @@ export enum AdditionalAttributes {
   maxPayments = 'maxPayments',
   referenceId = 'referenceId',
   scope = 'scope',
+  programFinancialServiceProviderConfigurationName = 'programFinancialServiceProviderConfigurationName',
 }
 export const Attributes = {
   ...AdditionalAttributes,

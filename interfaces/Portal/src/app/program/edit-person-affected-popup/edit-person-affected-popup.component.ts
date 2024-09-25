@@ -5,7 +5,6 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   AnswerType,
   FinancialServiceProviderConfiguration,
-  FspAttributeOption,
 } from 'src/app/models/fsp.model';
 import { Person, PersonDefaultAttributes } from 'src/app/models/person.model';
 import {
@@ -66,7 +65,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public paTableAttributes: Attribute[] = [];
   private paTableAttributesInput: Program['editableAttributes'];
 
-  public fspList: FinancialServiceProviderConfiguration[] = [];
+  public programFspConfigList: FinancialServiceProviderConfiguration[] = [];
   public programFspLength = 0;
   public personFsp: FinancialServiceProviderConfiguration;
 
@@ -93,15 +92,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.availableLanguages = this.getAvailableLanguages();
 
     if (this.program && this.program.financialServiceProviderConfigurations) {
-      for (const fsp of this.program.financialServiceProviderConfigurations) {
-        const fspDetails = await this.programsService.getFspById(fsp.id);
-        fspDetails.displayName = Object.assign(
-          {},
-          fspDetails.displayName,
-          fsp.displayName,
-        );
-        this.fspList.push(fspDetails);
-      }
+      this.programFspConfigList =
+        this.program.financialServiceProviderConfigurations;
     }
 
     this.person = (
@@ -125,8 +117,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
 
-      const fspObject = this.fspList.find(
-        (f) => f.name === this.person?.financialServiceProvider,
+      const fspObject = this.programFspConfigList.find(
+        (f) => f.name === this.person?.financialServiceProviderName,
       );
       if (fspObject && fspObject.editableAttributes) {
         this.paTableAttributesInput = fspObject.editableAttributes.concat(
@@ -144,10 +136,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.attributeValues.scope = this.person?.scope;
     }
 
-    if (this.person?.fspDisplayName) {
-      this.person.fspDisplayName = this.translatableString.get(
-        this.person.fspDisplayName,
-      );
+    if (this.person?.programFinancialServiceProviderConfigurationLabel) {
+      this.person.programFinancialServiceProviderConfigurationLabel =
+        this.translatableString.get(
+          this.person.programFinancialServiceProviderConfigurationLabel,
+        );
     }
 
     this.loading = false;
@@ -264,9 +257,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private fillPaTableAttributes() {
-    this.programFspLength = this.fspList.length;
-    for (const fspItem of this.fspList) {
-      if (fspItem.name === this.person.financialServiceProvider) {
+    this.programFspLength = this.programFspConfigList.length;
+    for (const fspItem of this.programFspConfigList) {
+      if (fspItem.name === this.person.financialServiceProviderName) {
         this.personFsp = fspItem;
       }
     }
@@ -303,11 +296,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private getDropdownOptions(
     paTableAttribute: Attribute,
-  ): FspAttributeOption[] | ProgramRegistrationAttributeOption[] {
+  ): ProgramRegistrationAttributeOption[] {
     const programRegistrationAttribute =
       this.program.programRegistrationAttributes.find(
-        (question: ProgramRegistrationAttribute) =>
-          question.name === paTableAttribute.name,
+        (attribute: ProgramRegistrationAttribute) =>
+          attribute.name === paTableAttribute.name,
       );
 
     return programRegistrationAttribute.options

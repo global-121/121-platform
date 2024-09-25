@@ -161,15 +161,13 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     }
 
     if (
-      this.person.financialServiceProvider &&
+      this.person.financialServiceProviderName &&
       this.program.financialServiceProviderConfigurations
     ) {
       this.personalInfoTable.push({
         label: this.getLabel('fsp'),
         value: this.translatableString.get(
-          this.program.financialServiceProviderConfigurations.find(
-            (i) => i.name === this.person.financialServiceProvider,
-          )?.displayName,
+          this.person.programFinancialServiceProviderConfigurationLabel,
         ),
       });
     }
