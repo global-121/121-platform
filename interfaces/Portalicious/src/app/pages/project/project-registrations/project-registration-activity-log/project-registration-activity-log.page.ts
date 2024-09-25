@@ -17,7 +17,7 @@ import {
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helpers';
+import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import {
   ActivityLogItemType,
   ActivityLogItemWithOverview,
