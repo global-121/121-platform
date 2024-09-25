@@ -9,7 +9,7 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
-import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helpers';
+import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import {
   ActivityLogItemType,
   ActivityLogItemWithOverview,
