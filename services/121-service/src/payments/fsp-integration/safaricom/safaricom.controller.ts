@@ -2,8 +2,8 @@ import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
+import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
-import { SafaricomTransferTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-timeout-callback.dto';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 
 @ApiTags('financial-service-providers/safaricom')
@@ -20,7 +20,7 @@ export class SafaricomController {
     status: HttpStatus.CREATED,
     description: 'Notified transfer status',
   })
-  @Post('callback')
+  @Post('transfer-callback')
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<any> {
@@ -38,19 +38,19 @@ export class SafaricomController {
     status: HttpStatus.CREATED,
     description: 'Notified of timeout',
   })
-  @Post('timeout')
-  public async processTransferTimeoutCallback(
+  @Post('timeout-callback')
+  public async processTimeoutCallback(
     @Body()
-    safaricomTransferTimeoutCallback: SafaricomTransferTimeoutCallbackDto,
+    safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
   ): Promise<any> {
     // Added a logging here just to monitor safaricom callback for payout timeout notification
     console.log(
-      'safaricomTransferTimeoutCallback: ',
-      JSON.stringify(safaricomTransferTimeoutCallback, null, 2),
+      'safaricomTimeoutCallback: ',
+      JSON.stringify(safaricomTimeoutCallback, null, 2),
     );
 
-    await this.safaricomService.processTransferTimeoutCallback(
-      safaricomTransferTimeoutCallback,
+    await this.safaricomService.processTimeoutCallback(
+      safaricomTimeoutCallback,
     );
   }
 }

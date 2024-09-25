@@ -16,7 +16,6 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
-import { SafaricomTransferRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -62,7 +61,6 @@ export class TransactionJobProcessorsService {
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
-    private readonly safaricomTransferRepository: SafaricomTransferRepository,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
@@ -274,7 +272,7 @@ export class TransactionJobProcessorsService {
 
     // 4. Start the transfer, if failure update to error transaction and return early
     try {
-      await this.safaricomService.doTransfer({
+      await this.safaricomService.saveAndDoTransfer({
         transactionId: transaction.id,
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber!,

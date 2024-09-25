@@ -4,16 +4,14 @@ import { Job } from 'bull';
 import Redis from 'ioredis';
 
 import { FinancialServiceProviderCallbackJobProcessorsService } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.service';
+import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { FinancialServiceProviderCallbackQueuesNames } from '@121-service/src/shared/enum/financial-service-provider-callback-queue-names.enum';
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(
-  FinancialServiceProviderCallbackQueuesNames.safaricomTransferTimeoutCallback,
-)
+@Processor(SafaricomCallbackQueueNames.timeout)
 export class TimeoutCallbackJobProcessorSafaricom {
   constructor(
     private readonly financialServiceProviderCallbackJobProcessorsService: FinancialServiceProviderCallbackJobProcessorsService,
@@ -21,7 +19,7 @@ export class TimeoutCallbackJobProcessorSafaricom {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(PaymentQueueNames.financialServiceProviderTimeoutCallback)
+  @Process(JobNames.default)
   async handleSafaricomTimeoutCallbackJob(job: Job): Promise<void> {
     try {
       await this.financialServiceProviderCallbackJobProcessorsService.processSafaricomTimeoutCallbackJob(

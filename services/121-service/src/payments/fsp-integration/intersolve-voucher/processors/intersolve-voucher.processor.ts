@@ -8,17 +8,18 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 
-@Processor(TransactionQueueNames.paymentIntersolveVoucher)
+@Processor(TransactionJobQueueNames.intersolveVoucher)
 export class PaymentProcessorIntersolveVoucher {
   constructor(
     private readonly intersolveVoucherService: IntersolveVoucherService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
-  @Process(PaymentQueueNames.sendPayment)
+
+  @Process(JobNames.default)
   async handleSendPayment(job: Job): Promise<void> {
     await this.intersolveVoucherService.processQueuedPayment(job.data);
     await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);

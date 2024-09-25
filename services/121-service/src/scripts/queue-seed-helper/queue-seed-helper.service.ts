@@ -7,18 +7,18 @@ import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
 
 @Injectable()
 export class QueueSeedHelperService {
   constructor(
-    @InjectQueue(TransactionQueueNames.paymentIntersolveVisa)
+    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
     private paymentIntersolveVisa: Queue,
-    @InjectQueue(TransactionQueueNames.paymentIntersolveVoucher)
+    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
     private paymentIntersolveVoucher: Queue,
-    @InjectQueue(TransactionQueueNames.paymentCommercialBankEthiopia)
+    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
     private paymentCommercialBankEthiopia: Queue,
-    @InjectQueue(TransactionQueueNames.paymentSafaricom)
+    @InjectQueue(TransactionJobQueueNames.safaricom)
     private paymentSafaricom: Queue,
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
     private replyOnIncoming: Queue,

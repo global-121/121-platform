@@ -36,8 +36,9 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { PaymentQueueNames } from '@121-service/src/shared/enum/payment-queue-names.enum';
-import { TransactionQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -60,7 +61,7 @@ export class CommercialBankEthiopiaService
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
-    @InjectQueue(TransactionQueueNames.paymentCommercialBankEthiopia)
+    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
     private readonly commercialBankEthiopiaQueue: Queue,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly transactionsService: TransactionsService,
@@ -111,7 +112,7 @@ export class CommercialBankEthiopiaService
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
-        PaymentQueueNames.sendPayment,
+        JobNames.default,
         jobData,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
@@ -228,23 +229,11 @@ export class CommercialBankEthiopiaService
       }
     });
 
-    function padTo2Digits(num: number): string {
-      return num.toString().padStart(2, '0');
-    }
-
-    function formatDate(date: Date): string {
-      return [
-        date.getFullYear().toString().substring(2),
-        padTo2Digits(date.getMonth() + 1),
-        padTo2Digits(date.getDate()),
-      ].join('');
-    }
-
     return {
       debitAmount: payment.transactionAmount,
       debitTheIrRef:
         debitTheIrRefRetry ||
-        `${formatDate(new Date())}${this.generateRandomNumerics(10)}`,
+        `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`,
       creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
