@@ -13,19 +13,19 @@ import {
 
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
-import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-class BaseProgramQuestionDto {
+class BaseProgramRegistrationAttributeDto {
   @ApiProperty({})
   @IsNotEmpty()
   @IsString()
   public readonly name: string;
 
   @ApiProperty({ required: false })
-  @ValidateIf((o) => o.answerType === AnswerTypes.dropdown)
+  @ValidateIf((o) => o.answerType === RegistrationAttributeTypes.dropdown)
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
@@ -71,7 +71,7 @@ class BaseProgramQuestionDto {
   public duplicateCheck?: boolean;
 }
 
-export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
+export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
   @ApiProperty({
     example: {
       en: 'Please enter your last name:',
@@ -81,24 +81,27 @@ export class CreateProgramQuestionDto extends BaseProgramQuestionDto {
   public readonly label: LocalizedString;
 
   @ApiProperty({
-    example: AnswerTypes.text,
+    example: RegistrationAttributeTypes.text,
   })
   @IsString()
   @IsIn([
-    AnswerTypes.numeric,
-    AnswerTypes.dropdown,
-    AnswerTypes.tel,
-    AnswerTypes.text,
-    AnswerTypes.date,
+    RegistrationAttributeTypes.numeric,
+    RegistrationAttributeTypes.dropdown,
+    RegistrationAttributeTypes.tel,
+    RegistrationAttributeTypes.text,
+    RegistrationAttributeTypes.date,
   ])
-  public readonly answerType: string;
+  public readonly type: WrapperType<RegistrationAttributeTypes>;
 
-  @ApiProperty({ example: 'standard' })
-  @IsIn(['standard', 'custom'])
-  public readonly questionType: string;
+  @ApiProperty({
+    example: false,
+    required: false,
+  })
+  @IsBoolean()
+  public readonly isRequired: boolean;
 }
 
-export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
+export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
   @ApiProperty({
     example: {
       en: 'Please enter your last name:',
@@ -107,25 +110,28 @@ export class UpdateProgramQuestionDto extends BaseProgramQuestionDto {
     required: false,
   })
   @IsOptional()
-  public readonly label?: LocalizedString;
+  public readonly label?: WrapperType<LocalizedString>;
 
   @ApiProperty({
-    example: AnswerTypes.numeric,
+    example: RegistrationAttributeTypes.numeric,
     required: false,
   })
   @IsOptional()
   @IsString()
   @IsIn([
-    AnswerTypes.numeric,
-    AnswerTypes.dropdown,
-    AnswerTypes.tel,
-    AnswerTypes.text,
-    AnswerTypes.date,
+    RegistrationAttributeTypes.numeric,
+    RegistrationAttributeTypes.dropdown,
+    RegistrationAttributeTypes.tel,
+    RegistrationAttributeTypes.text,
+    RegistrationAttributeTypes.date,
   ])
-  public readonly answerType?: WrapperType<AnswerTypes>;
+  public readonly type?: WrapperType<RegistrationAttributeTypes>;
 
-  @ApiProperty({ example: 'standard', required: false })
-  @IsIn(['standard', 'custom'])
+  @ApiProperty({
+    example: false,
+    required: false,
+  })
   @IsOptional()
-  public readonly questionType?: string;
+  @IsBoolean()
+  public readonly isRequired?: boolean;
 }

@@ -564,8 +564,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : '',
       fsp: person.financialServiceProvider,
       financialServiceProvider: this.translatableStringService.get(
-        this.program?.financialServiceProviders?.find(
-          (p) => p.fsp === person?.financialServiceProvider,
+        this.program?.financialServiceProviderConfigurations?.find(
+          (p) => p.name === person?.financialServiceProvider,
         )?.displayName,
       ),
       lastMessageStatus: person.lastMessageStatus,
@@ -621,8 +621,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public showInclusionScore(): boolean {
     let show = false;
-    if (this.program?.programQuestions) {
-      for (const question of this.program.programQuestions) {
+    if (this.program?.programRegistrationAttributes) {
+      for (const question of this.program.programRegistrationAttributes) {
         if (question['scoring']) {
           show = true;
           break;

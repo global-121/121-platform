@@ -6,6 +6,5 @@ export class CommercialBankEthiopiaJobDto {
   paymentNr: number;
   programId: number;
   payload: CommercialBankEthiopiaTransferPayload;
-  credentials: { username: string; password: string };
   userId: number;
 }

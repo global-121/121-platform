@@ -24,36 +24,8 @@
   "distributionDuration": 8,
   "fixedTransferValue": 10,
   "paymentAmountMultiplierFormula": "1 + 1 * dragon",
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Excel",
-      "configuration": [
-        {
-          "name": "columnsToExport",
-          "value": ["name", "dob", "house", "phoneNumber"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 250,
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "name",
       "label": {
@@ -63,7 +35,7 @@
         "fr": "Nom",
         "nl": "Naam"
       },
-      "answerType": "text",
+      "type": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -80,7 +52,7 @@
         "fr": "Date de naissance",
         "nl": "Geboortedatum"
       },
-      "answerType": "date",
+      "type": "date",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -98,8 +70,9 @@
         "fr": "Maison",
         "nl": "Huis"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "questionType": "standard",
+      "isRequired": true,
       "options": [
         {
           "option": "lannister",
@@ -136,7 +109,7 @@
         "fr": "Nombre de dragons",
         "nl": "Aantal draken"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "questionType": "standard",
       "options": null,
       "editableInPortal": true,
@@ -144,9 +117,7 @@
         "multiplier": 2
       },
       "showInPeopleAffectedTable": false
-    }
-  ],
-  "programCustomAttributes": [
+    },
     {
       "label": {
         "ar": "لا يعرف شيئًا",
@@ -172,6 +143,137 @@
       "type": "text",
       "editableInPortal": true,
       "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "personalId",
+      "label": {
+        "ar": "الهوية الشخصية",
+        "en": "Personal ID",
+        "es": "ID Personal",
+        "fr": "ID Personnel",
+        "nl": "Nationaal ID"
+      },
+      "type": "text",
+      "pattern": ".+",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "ar": "الهاتف.",
+        "en": "Phone Nr.",
+        "es": "Nr. teléfono",
+        "fr": "Nr. de téléphone",
+        "nl": "Telefoonnr."
+      },
+      "placeholder": {
+        "en": "+000 000 00 00"
+      },
+      "type": "tel",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "accountId",
+      "label": {
+        "ar": "حسابك",
+        "en": "Account Nr.",
+        "es": "Num. de cuenta",
+        "fr": "Num. de compte",
+        "nl": "Rekeningnr."
+      },
+      "type": "numeric",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "date",
+      "label": {
+        "ar": "تاريخ",
+        "en": "Date",
+        "es": "Fecha",
+        "fr": "Date",
+        "nl": "Datum"
+      },
+      "type": "date",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "openAnswer",
+      "label": {
+        "ar": "إجابة مفتوحة",
+        "en": "Open Answer",
+        "es": "Abrir respuesta",
+        "fr": "Réponse ouverte",
+        "nl": "Open antwoord"
+      },
+      "type": "text",
+      "pattern": ".+",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "fixedChoice",
+      "label": {
+        "ar": "خيار",
+        "en": "Choice",
+        "es": "Elección",
+        "fr": "Choix",
+        "nl": "Keuze"
+      },
+      "type": "dropdown",
+      "options": [
+        {
+          "option": "true",
+          "label": {
+            "ar": "نعم",
+            "en": "Yes",
+            "es": "Sí",
+            "fr": "Oui",
+            "nl": "Ja"
+          }
+        },
+        {
+          "option": "false",
+          "label": {
+            "ar": "لا",
+            "en": "No",
+            "es": "No",
+            "fr": "Non",
+            "nl": "Nee"
+          }
+        }
+      ],
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "healthArea",
+      "label": {
+        "en": "Health area",
+        "fr": "Aire de santé"
+      },
+      "type": "text",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included"],
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {
@@ -186,5 +288,45 @@
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "bank_a"
+    },
+    {
+      "financialServiceProvider": "fsp_all_attributes"
+    },
+    {
+      "financialServiceProvider": "fsp_no_attributes"
+    },
+    {
+      "financialServiceProvider": "VodaCash"
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "properties": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "dob", "house", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ]
 }

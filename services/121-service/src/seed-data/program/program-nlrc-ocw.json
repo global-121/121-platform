@@ -15,49 +15,16 @@
   "distributionFrequency": "2-weeks",
   "distributionDuration": 46,
   "fixedTransferValue": 25,
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Intersolve-visa",
-      "configuration": [
-        {
-          "name": "brandCode",
-          "value": "INTERSOLVE_VISA_BRAND_CODE"
-        },
-        {
-          "name": "coverLetterCode",
-          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
-        },
-        {
-          "name": "fundingTokenCode",
-          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 100000,
   "programCustomAttributes": [],
   "tryWhatsAppFirst": true,
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "fullName",
       "label": {
         "en": "Full Name"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "pattern": null,
       "options": null,
       "persistence": true,
@@ -74,14 +41,74 @@
       "placeholder": {
         "en": "+31 6 00 00 00 00"
       },
-      "answerType": "tel",
-      "questionType": "standard",
+      "type": "tel",
       "options": null,
       "persistence": true,
       "export": [],
       "scoring": {},
       "duplicateCheck": true,
       "editableInPortal": false,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "addressStreet",
+      "label": {
+        "en": "Address street"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressHouseNumber",
+      "label": {
+        "en": "Address house number"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "numeric",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressHouseNumberAddition",
+      "label": {
+        "en": "Address house number addition"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "isRequired": false,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressPostalCode",
+      "label": {
+        "en": "Address postal code"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressCity",
+      "label": {
+        "en": "Address city"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
       "showInPeopleAffectedTable": false
     }
   ],
@@ -93,5 +120,37 @@
   "enableMaxPayments": false,
   "enableScope": false,
   "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Intersolve-visa",
+      "properties": [
+        {
+          "name": "brandCode",
+          "value": "INTERSOLVE_VISA_BRAND_CODE"
+        },
+        {
+          "name": "coverLetterCode",
+          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
+        },
+        {
+          "name": "fundingTokenCode",
+          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
+        }
+      ]
+    }
+  ]
 }

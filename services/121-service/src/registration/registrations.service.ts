@@ -6,12 +6,10 @@ import { Equal, Repository } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -19,19 +17,18 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
-import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { CustomDataDto } from '@121-service/src/registration/dto/custom-data.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
 import {
@@ -41,9 +38,9 @@ import {
   UpdateRegistrationDto,
 } from '@121-service/src/registration/dto/update-registration.dto';
 import {
-  AnswerTypes,
-  CustomDataAttributes,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+  DefaultRegistrationDataAttributeNames,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
@@ -70,12 +67,8 @@ export class RegistrationsService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramQuestionEntity)
-  private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(ProgramRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -90,7 +83,6 @@ export class RegistrationsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly eventsService: EventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
   ) {}
@@ -256,7 +248,7 @@ export class RegistrationsService {
     programId,
   }: {
     referenceId: string;
-    relations?: string[];
+    relations?: (keyof RegistrationEntity)[];
     programId?: number;
   }): Promise<RegistrationEntity> {
     if (!referenceId) {
@@ -280,16 +272,19 @@ export class RegistrationsService {
 
   public async addFsp(
     referenceId: string,
-    fspId: number,
+    programFinancialServiceProviderConfigurationId: number,
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
     });
-    const fsp = await this.fspRepository.findOneOrFail({
-      where: { id: Equal(fspId) },
-      relations: ['questions'],
-    });
-    registration.fsp = fsp;
+    const fspConfig =
+      await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+        {
+          where: { id: Equal(programFinancialServiceProviderConfigurationId) },
+          relations: ['questions'],
+        },
+      );
+    registration.programFinancialServiceProviderConfiguration = fspConfig;
     return await this.registrationUtilsService.save(registration);
   }
 
@@ -342,16 +337,11 @@ export class RegistrationsService {
     )?.allowEmptyPhoneNumber;
 
     const answersTypeTel: string[] = [];
-    const fspAttributesTypeTel = await this.fspAttributeRepository.find({
-      where: { answerType: Equal(AnswerTypes.tel) },
-    });
-    for (const fspAttr of fspAttributesTypeTel) {
-      answersTypeTel.push(fspAttr.name);
-    }
-    const programQuestionsTypeTel = await this.programQuestionRepository.find({
-      where: { answerType: Equal(AnswerTypes.tel) },
-    });
-    for (const question of programQuestionsTypeTel) {
+    const programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { type: Equal(RegistrationAttributeTypes.tel) },
+      });
+    for (const question of programRegistrationAttributes) {
       answersTypeTel.push(question.name);
     }
 
@@ -361,7 +351,7 @@ export class RegistrationsService {
 
     if (
       !allowEmptyPhoneNumber &&
-      customDataKey === CustomDataAttributes.phoneNumber
+      customDataKey === DefaultRegistrationDataAttributeNames.phoneNumber
     ) {
       // phoneNumber cannot be empty
       if (!customDataValue) {
@@ -450,7 +440,7 @@ export class RegistrationsService {
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
-      relations: ['programCustomAttributes'],
+      relations: ['programRegistrationAttributes'],
     });
     if (!program) {
       const errors = 'Program not found.';
@@ -461,8 +451,8 @@ export class RegistrationsService {
 
   public transformRegistrationByNamingConvention(
     nameColumns: string[],
-    registrationObject: Record<string, any>, // Allow dynamic key access
-  ): Record<string, any> {
+    registrationObject: MappedPaginatedRegistrationDto, // Allow dynamic key access
+  ): MappedPaginatedRegistrationDto {
     const fullnameConcat: string[] = [];
 
     // Loop through nameColumns and access properties dynamically
@@ -474,7 +464,7 @@ export class RegistrationsService {
     }
 
     // Concatenate the full name and assign to the 'name' property
-    registrationObject['name'] = fullnameConcat.join(' ');
+    registrationObject.name = fullnameConcat.join(' ');
 
     return registrationObject; // Return the modified object
   }
@@ -510,9 +500,12 @@ export class RegistrationsService {
 
     let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
-      relations: ['program', 'fsp'],
+      relations: ['program', 'programFinancialServiceProviderConfiguration'],
       programId,
     });
+
+    // ##TODO Also enable updating the FSP configuration in this function
+
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
 
@@ -697,8 +690,8 @@ export class RegistrationsService {
     }
 
     const customAttributesPhoneNumberNames = [
-      CustomDataAttributes.phoneNumber as string,
-      CustomDataAttributes.whatsappPhoneNumber as string,
+      DefaultRegistrationDataAttributeNames.phoneNumber as string,
+      DefaultRegistrationDataAttributeNames.whatsappPhoneNumber as string,
     ];
 
     const matchingRegistrations = (
@@ -791,56 +784,51 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  public async updateChosenFsp({
+  public async updateChosenFspConfiguration({
     referenceId,
-    newFspName,
-    newFspAttributesRaw = {},
+    newFspConfigurationName: newFspConfigurationName,
     userId,
   }: {
     referenceId: string;
-    newFspName: FinancialServiceProviderName;
-    newFspAttributesRaw?: Record<string, any>;
+    newFspConfigurationName: string;
     userId: number;
   }) {
     //Identify new FSP
-    const newFsp = await this.fspRepository.findOne({
-      where: { fsp: Equal(newFspName) },
-      relations: ['questions'],
-    });
-    if (!newFsp) {
+    const newFspConfig =
+      await this.programFinancialServiceProviderConfigurationRepository.findOne(
+        {
+          where: { name: Equal(newFspConfigurationName) },
+        },
+      );
+    if (!newFspConfig) {
       const errors = `FSP with this name not found`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    // ###TODO: Use the new FSP configuration to check if required attributes are already stored with the registration
+
     // Check if required attributes are present
-    newFsp.questions.forEach((requiredAttribute) => {
-      if (!Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)) {
-        const requiredAttributes = newFsp.questions
-          .map((a) => a.name)
-          .join(', ');
-        const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    });
+    // newFsp.questions.forEach((requiredAttribute) => {
+    //   if (!Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)) {
+    //     const requiredAttributes = newFsp.questions
+    //       .map((a) => a.name)
+    //       .join(', ');
+    //     const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
+    //     throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    //   }
+    // });
 
     // Get registration by referenceId
     const registration = await this.getRegistrationOrThrow({
       referenceId,
-      relations: ['fsp', 'fsp.questions'],
+      relations: ['programFinancialServiceProviderConfiguration'],
     });
-    if (registration.fsp?.id === newFsp.id) {
-      const errors = `New FSP is the same as existing FSP for this Person Affected.`;
+    if (
+      registration.programFinancialServiceProviderConfigurationId ===
+      newFspConfig.id
+    ) {
+      const errors = `New FSP config id is the same as existing FSP config id for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-
-    // Check if potential phonenumbers are correct and clean them
-    const newFspAttributes = {};
-    for (const [key, value] of Object.entries(newFspAttributesRaw)) {
-      newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(
-        key,
-        value,
-        registration.programId,
-      );
     }
 
     // Get old registration to log
@@ -850,48 +838,17 @@ export class RegistrationsService {
         registration.programId,
       );
 
-    // Remove old attributes
-    const oldFsp = registration.fsp;
-    for (const attribute of oldFsp?.questions) {
-      const regData =
-        await this.registrationDataService.getRegistrationDataByName(
-          registration,
-          attribute.name,
-        );
-      await this.registrationDataScopedRepository.deleteUnscoped({
-        id: regData?.id,
-      });
-    }
-
     // Update FSP
-    const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
-
-    // Add new attributes
-    for (const attribute of updatedRegistration.fsp.questions) {
-      await this.validateAttribute(
-        referenceId,
-        attribute.name,
-        newFspAttributes[attribute.name],
-        userId,
-      );
-      await this.addRegistrationData(
-        referenceId,
-        attribute.name,
-        newFspAttributes[attribute.name],
-      );
+    const updatedRegistration = await this.addFsp(referenceId, newFspConfig.id);
+    if (process.env.SYNC_WITH_THIRD_PARTIES) {
+      await this.sendContactInformationToIntersolve(updatedRegistration);
     }
-    await this.registrationUtilsService.save(updatedRegistration);
 
     const newViewRegistration =
       await this.getPaginateRegistrationForReferenceId(
         referenceId,
         registration.programId,
       );
-
-    if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.sendContactInformationToIntersolve(updatedRegistration);
-    }
-
     // Log change
     await this.eventsService.log(oldViewRegistration, newViewRegistration, {
       additionalLogAttributes: { reason: 'Financial service provider change' },
@@ -1029,32 +986,44 @@ export class RegistrationsService {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       programId,
+      relations: ['programFinancialServiceProviderConfiguration'],
     });
+    if (
+      !registration.programFinancialServiceProviderConfigurationId ||
+      registration.programFinancialServiceProviderConfiguration
+        ?.financialServiceProviderName !==
+        FinancialServiceProviders.intersolveVisa
+    ) {
+      throw new HttpException(
+        `This registration is not associated with the Intersolve Visa financial service provider.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValuesByNamesOrThrow(
         {
-          programId,
-          financialServiceProviderName:
-            FinancialServiceProviderName.intersolveVisa,
+          programFinancialServiceProviderConfigurationId:
+            registration.programFinancialServiceProviderConfigurationId,
           names: [
-            FinancialServiceProviderConfigurationEnum.brandCode,
-            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+            FinancialServiceProviderConfigurationProperties.brandCode,
+            FinancialServiceProviderConfigurationProperties.coverLetterCode,
           ],
         },
       );
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaQuestions =
-      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
-        FinancialServiceProviderName.intersolveVisa,
-      );
-    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
+    const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
+      FinancialServiceProviders.intersolveVisa,
+    ).attributes;
+
+    const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
     );
     const dataFieldNames = [
       'fullName',
       'phoneNumber',
-      ...intersolveVisaQuestionNames,
+      ...intersolveVisaAttributeNames,
     ];
 
     const registrationData =
@@ -1093,39 +1062,30 @@ export class RegistrationsService {
     }
     await this.sendContactInformationToIntersolve(registration);
 
-    try {
-      await this.intersolveVisaService.reissueCard({
-        registrationId: registration.id,
-        reference: registration.referenceId,
-        name: mappedRegistrationData['fullName'],
-        contactInformation: {
-          addressStreet: mappedRegistrationData['addressStreet'],
-          addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
-          addressHouseNumberAddition:
-            mappedRegistrationData['addressHouseNumberAddition'],
-          addressPostalCode: mappedRegistrationData['addressPostalCode'],
-          addressCity: mappedRegistrationData['addressCity'],
-          phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
-        },
-        brandCode: intersolveVisaConfig.find(
-          (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
-        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-        coverLetterCode: intersolveVisaConfig.find(
-          (c) =>
-            c.name ===
-            FinancialServiceProviderConfigurationEnum.coverLetterCode,
-        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-      });
-    } catch (error) {
-      if (error instanceof IntersolveVisaApiError) {
-        throw new HttpException(
-          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw error;
-      }
-    }
+    await this.intersolveVisaService.reissueCard({
+      registrationId: registration.id,
+      // Why do we need this?
+      reference: registration.referenceId,
+      name: mappedRegistrationData['fullName'],
+      contactInformation: {
+        addressStreet: mappedRegistrationData['addressStreet'],
+        addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
+        addressHouseNumberAddition:
+          mappedRegistrationData['addressHouseNumberAddition'],
+        addressPostalCode: mappedRegistrationData['addressPostalCode'],
+        addressCity: mappedRegistrationData['addressCity'],
+        phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
+      },
+      brandCode: intersolveVisaConfig.find(
+        (c) =>
+          c.name === FinancialServiceProviderConfigurationProperties.brandCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      coverLetterCode: intersolveVisaConfig.find(
+        (c) =>
+          c.name ===
+          FinancialServiceProviderConfigurationProperties.coverLetterCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+    });
 
     await this.queueMessageService.addMessageJob({
       registration,

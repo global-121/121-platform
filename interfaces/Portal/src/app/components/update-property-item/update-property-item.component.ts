@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { ProgramQuestionOption } from 'src/app/models/program.model';
+import { ProgramRegistrationAttributeOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { AnswerType } from '../../models/fsp.model';
 import {
@@ -44,7 +44,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public showSubmit = true;
 
   @Input()
-  public options: ProgramQuestionOption[] = null;
+  public options: ProgramRegistrationAttributeOption[] = null;
 
   @Input()
   public prop = '';

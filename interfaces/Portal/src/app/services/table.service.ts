@@ -227,10 +227,7 @@ export class TableService {
 
     if (canViewPersonalData) {
       for (const nameColumn of program.fullnameNamingConvention) {
-        const searchableColumns = [
-          ...program.programQuestions,
-          ...program.programCustomAttributes,
-        ];
+        const searchableColumns = program.programRegistrationAttributes;
 
         const nameQuestion = searchableColumns.find(
           (question) => question.name === nameColumn,

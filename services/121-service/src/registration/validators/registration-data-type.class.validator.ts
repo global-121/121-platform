@@ -12,10 +12,7 @@ import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
-import {
-  AnswerTypes,
-  CustomAttributeType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
@@ -47,7 +44,7 @@ export class RegistrationDataTypeClassValidator
       return false;
     }
     const validationInfo =
-      await registration.program.getValidationInfoForQuestionName(attribute);
+      await registration.program.getValidationInfoForAttributeName(attribute);
     if (!validationInfo.type) {
       this.message = `Attribute '${attribute}' was not found for the program related to the reference id:' ${referenceId}'`;
       return false;
@@ -142,24 +139,24 @@ export class RegistrationDataTypeClassValidator
     options?: any[],
   ): boolean | null {
     let isValid: boolean | null = false;
-    if (type === AnswerTypes.date) {
+    if (type === RegistrationAttributeTypes.date) {
       const datePattern =
         /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
       isValid = datePattern.test(value);
-    } else if (type === AnswerTypes.dropdown) {
+    } else if (type === RegistrationAttributeTypes.dropdown) {
       isValid = this.optionIsValid(value, options);
-    } else if (type === AnswerTypes.multiSelect) {
+    } else if (type === RegistrationAttributeTypes.multiSelect) {
       isValid = this.multiSelectIsValid(value, options);
-    } else if (type === AnswerTypes.numeric) {
+    } else if (type === RegistrationAttributeTypes.numeric) {
       isValid = !isNaN(+value);
-    } else if (type === AnswerTypes.numericNullable) {
+    } else if (type === RegistrationAttributeTypes.numericNullable) {
       isValid = !isNaN(+value) || null;
-    } else if (type === AnswerTypes.tel) {
+    } else if (type === RegistrationAttributeTypes.tel) {
       // Potential refactor: put lookup code here
       isValid = this.phoneNumberIsValid(value);
-    } else if (type === AnswerTypes.text || type === CustomAttributeType.text) {
+    } else if (type === RegistrationAttributeTypes.text) {
       isValid = typeof value === 'string';
-    } else if (type === CustomAttributeType.boolean) {
+    } else if (type === RegistrationAttributeTypes.boolean) {
       isValid = typeof value == 'boolean' || this.valueIsBool(value);
     } else {
       this.message = `Type '${type}' is unknown'`;
