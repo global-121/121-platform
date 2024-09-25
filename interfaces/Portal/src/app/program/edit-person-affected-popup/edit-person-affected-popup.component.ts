@@ -2,16 +2,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import {
-  AnswerType,
-  FinancialServiceProviderConfiguration,
-} from 'src/app/models/fsp.model';
+import { FinancialServiceProviderConfiguration } from 'src/app/models/fsp.model';
 import { Person, PersonDefaultAttributes } from 'src/app/models/person.model';
 import {
   Program,
   ProgramRegistrationAttribute,
   ProgramRegistrationAttributeOption,
 } from 'src/app/models/program.model';
+import { RegistrationAttributeType } from 'src/app/models/registration-attribute.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -45,7 +43,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   @Input({ required: true })
-  public canUpdatePaFsp = false;
+  public canUpdatePaProgramFspConfig = false;
 
   @Input({ required: true })
   public canViewMessageHistory = false;
@@ -271,8 +269,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
         let options = null;
         if (
-          paTableAttribute.type === AnswerType.Enum ||
-          paTableAttribute.type === AnswerType.MultiSelect
+          paTableAttribute.type === RegistrationAttributeType.Enum ||
+          paTableAttribute.type === RegistrationAttributeType.MultiSelect
         ) {
           options = this.getDropdownOptions(paTableAttribute);
         }

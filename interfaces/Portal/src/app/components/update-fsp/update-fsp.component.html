@@ -22,10 +22,10 @@
             (ionChange)="onFspSelectionChange($event)"
           >
             <ion-select-option
-              *ngFor="let fspItem of programFspConfigList"
-              value="{{ fspItem.name }}"
+              *ngFor="let fspConfigItem of programFspConfigList"
+              value="{{ fspConfigItem.name }}"
             >
-              {{ fspItem.translatedLabel }}
+              {{ fspConfigItem.translatedLabel }}
             </ion-select-option>
           </ion-select>
         </ion-item>
