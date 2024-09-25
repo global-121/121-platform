@@ -5,6 +5,7 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 import { Relation } from 'typeorm';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 export class TransactionReturnDto {
   @ApiProperty({
