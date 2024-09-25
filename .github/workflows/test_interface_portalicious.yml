@@ -30,6 +30,10 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm ci --no-fund --no-audit'
 
+      - name: Type Check
+        working-directory: ${{ env.interfacePath }}
+        run: 'npm run typecheck'
+
       - name: Lint
         working-directory: ${{ env.interfacePath }}
         run: 'npm run lint'
