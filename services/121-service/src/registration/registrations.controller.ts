@@ -194,7 +194,7 @@ export class RegistrationsController {
   @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async patchRegistrations(
-    @UploadedFile() csvFile: any,
+    @UploadedFile() csvFile: Blob,
     @Body('reason') reason: string,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,

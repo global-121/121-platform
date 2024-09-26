@@ -69,7 +69,13 @@ export class PaymentsController {
   public async getPayments(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<any> {
+  ): Promise<
+    {
+      payment: number;
+      paymentDate: Date | string;
+      amount: number;
+    }[]
+  > {
     // TODO: REFACTOR: use a DTO to define stable structure of result body
     return await this.paymentsService.getPayments(programId);
   }
@@ -166,7 +172,7 @@ export class PaymentsController {
     @Paginate() query: PaginateQuery,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
-    @Query() queryParams, // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
     const userId = RequestHelper.getUserId(req);
 
@@ -175,9 +181,8 @@ export class PaymentsController {
       programId,
       query,
     );
-    const dryRun = queryParams.dryRun === 'true';
-
-    if (!dryRun && (data.amount === undefined || data.amount <= 0)) {
+    const dryRunBoolean = dryRun === 'true'; // defaults to false
+    if (!dryRunBoolean && (data.amount === undefined || data.amount <= 0)) {
       throw new HttpException(
         'Amount should be larger than 0 when not using dry run',
         HttpStatus.BAD_REQUEST,
@@ -190,10 +195,10 @@ export class PaymentsController {
       data.payment,
       data.amount,
       query,
-      dryRun,
+      dryRunBoolean,
     );
 
-    if (dryRun) {
+    if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothing is going to change (202)
       // I did not find another way to send a different status code than with a HttpException
       throw new HttpException(result, HttpStatus.OK);
@@ -268,10 +273,11 @@ export class PaymentsController {
   })
   @Get('programs/:programId/payments/fsp-reconciliation/import-template')
   public async getImportFspReconciliationTemplate(
-    @Param() params,
+    @Param('programId', ParseIntPipe)
+    programId: number,
   ): Promise<string[]> {
     return await this.paymentsService.getImportInstructionsTemplate(
-      Number(params.programId),
+      Number(programId),
     );
   }
 
@@ -291,7 +297,7 @@ export class PaymentsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importFspReconciliationData(
-    @UploadedFile() file,
+    @UploadedFile() file: Blob,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('payment', ParseIntPipe)

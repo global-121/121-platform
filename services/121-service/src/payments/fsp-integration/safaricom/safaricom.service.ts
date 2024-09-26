@@ -15,6 +15,7 @@ import {
 } from '@121-service/src/payments/enum/queue.names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-job.dto';
+import { SafaricomPaymentResult } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
 import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
@@ -204,7 +205,7 @@ export class SafaricomService
     } else {
       paTransactionResult.status = StatusEnum.error;
       payload.status = StatusEnum.error;
-      paTransactionResult.message = result.errorMessage;
+      paTransactionResult.message = result.errorMessage || null;
     }
 
     paTransactionResult.customData = {
@@ -214,10 +215,10 @@ export class SafaricomService
   }
 
   public async processSafaricomRequest(
-    payload,
-    paymentRequestResultPerPa,
+    payload: SafaricomTransferPayload,
+    paymentRequestResultPerPa: PaTransactionResultDto,
     transaction: TransactionEntity,
-  ): Promise<any> {
+  ): Promise<void> {
     const payloadResult = Object.fromEntries(
       Object.entries(payload).map(([k, v]) => [
         k.charAt(0).toLowerCase() + k.slice(1),
@@ -239,7 +240,7 @@ export class SafaricomService
   }
 
   public async processSafaricomResult(
-    safaricomPaymentResultData: any,
+    safaricomPaymentResultData: SafaricomPaymentResult,
     attempt = 1,
   ): Promise<void> {
     const safaricomDbRequest = await this.safaricomRequestRepository
@@ -271,11 +272,12 @@ export class SafaricomService
     } else {
       paymentStatus = StatusEnum.error;
       safaricomDbRequest[0].transaction.errorMessage =
-        safaricomPaymentResultData.Result.ResultDesc;
+        safaricomPaymentResultData.Result.ResultDesc ?? null;
     }
 
     safaricomDbRequest[0].status = paymentStatus;
-    safaricomDbRequest[0].paymentResult = safaricomPaymentResultData;
+    safaricomDbRequest[0].paymentResult =
+      safaricomPaymentResultData as unknown as Record<string, unknown>;
 
     const safaricomCustomData = {
       ...safaricomDbRequest[0].transaction.customData,

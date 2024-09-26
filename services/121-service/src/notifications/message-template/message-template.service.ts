@@ -97,9 +97,13 @@ export class MessageTemplateService {
     for (const key of Object.keys(
       updateMessageTemplateDto,
     ) as (keyof UpdateTemplateBodyDto)[]) {
-      // Ensure that the key exists in both the DTO and entity
       if (key in template) {
-        (template as any)[key] = updateMessageTemplateDto[key];
+        const newValue = updateMessageTemplateDto[key];
+        const currentValue = template[key];
+
+        if (this.areValuesCompatible(currentValue, newValue)) {
+          (template[key] as typeof newValue) = newValue; // Strictly assign values with type compatibility
+        }
       }
     }
 
@@ -153,5 +157,18 @@ export class MessageTemplateService {
         }
       }
     }
+  }
+
+  // Utility function to check if the types are compatible
+  private areValuesCompatible<T>(
+    currentValue: T,
+    newValue: unknown,
+  ): newValue is T {
+    return (
+      newValue === null ||
+      newValue === undefined ||
+      typeof newValue === typeof currentValue ||
+      (typeof currentValue === 'object' && typeof newValue === 'object')
+    );
   }
 }

@@ -210,7 +210,7 @@ export class MessageService {
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string | undefined;
-    let errorMessage: string | null;
+    let errorMessage: string | null = null;
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,
@@ -336,7 +336,10 @@ export class MessageService {
 
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
-    placeholderData: object,
+    placeholderData: Record<
+      string,
+      string | null | { [key in LanguageEnum]?: string }
+    >,
     preferredLanguage: LanguageEnum,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;

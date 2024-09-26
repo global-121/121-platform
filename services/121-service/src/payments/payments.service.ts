@@ -454,7 +454,12 @@ export class PaymentsService {
     const program = await this.getProgramWithFspOrThrow(programId);
 
     for (const fspEntity of program.financialServiceProviders) {
-      if (await this.checkFspQueueProgress(fspEntity.fsp, programId)) {
+      if (
+        await this.checkFspQueueProgress(
+          fspEntity.fsp as FinancialServiceProviderName,
+          programId,
+        )
+      ) {
         return true;
       }
     }
@@ -490,7 +495,7 @@ export class PaymentsService {
   }
 
   private async checkFspQueueProgress(
-    fsp: string,
+    fsp: FinancialServiceProviderName,
     programId: number,
   ): Promise<boolean> {
     const service = this.fspWithQueueServiceMapping[fsp];
@@ -507,21 +512,27 @@ export class PaymentsService {
       },
     });
     const nrPending = await service.getQueueProgress(
-      programsWithFsp.length > 0 ? programId : null,
+      programsWithFsp.length > 0 ? programId : undefined,
     );
     return nrPending > 0;
   }
 
   private splitPaListByFsp(
     paPaymentDataList: PaPaymentDataDto[],
-  ): SplitPaymentListDto {
-    return paPaymentDataList.reduce((acc, paPaymentData) => {
-      if (!acc[paPaymentData.fspName]) {
-        acc[paPaymentData.fspName] = [];
-      }
-      acc[paPaymentData.fspName].push(paPaymentData);
-      return acc;
-    }, {});
+  ): Record<FinancialServiceProviderName, PaPaymentDataDto[]> {
+    return paPaymentDataList.reduce(
+      (
+        acc: Record<FinancialServiceProviderName, PaPaymentDataDto[]>,
+        paPaymentData,
+      ) => {
+        if (!acc[paPaymentData.fspName]) {
+          acc[paPaymentData.fspName] = [];
+        }
+        acc[paPaymentData.fspName].push(paPaymentData);
+        return acc;
+      },
+      {} as Record<FinancialServiceProviderName, PaPaymentDataDto[]>,
+    );
   }
 
   private async makePaymentRequest(
@@ -532,7 +543,9 @@ export class PaymentsService {
     await Promise.all(
       Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
         const [paymentService, useWhatsapp] =
-          this.financialServiceProviderNameToServiceMap[fsp];
+          this.financialServiceProviderNameToServiceMap[
+            fsp as FinancialServiceProviderName
+          ];
         return await paymentService.sendPayment(
           paPaymentList,
           programId,
@@ -789,7 +802,7 @@ export class PaymentsService {
   }
 
   public async importFspReconciliationData(
-    file,
+    file: Blob,
     programId: number,
     payment: number,
     userId: number,

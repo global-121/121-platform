@@ -3,6 +3,7 @@ import { TokenSet } from 'openid-client';
 
 import {
   SafaricomAuthResponseDto,
+  SafaricomTransferResponseBodyDto,
   SafaricomTransferResponseDto,
 } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-load-response.dto';
 import { SafaricomTransferPayload } from '@121-service/src/payments/fsp-integration/safaricom/dto/safaricom-transfer-payload.dto';
@@ -50,7 +51,9 @@ export class SafaricomApiService {
     }
   }
 
-  public async transfer(payload: SafaricomTransferPayload): Promise<any> {
+  public async transfer(
+    payload: SafaricomTransferPayload,
+  ): Promise<SafaricomTransferResponseBodyDto> {
     try {
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`

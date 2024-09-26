@@ -267,7 +267,7 @@ describe('MessageService', () => {
         testMessageJob.registrationId,
         2,
         StatusEnum.success,
-        undefined,
+        undefined || null,
         testMessageJob.programId,
         {
           messageSid: testMessageID,
