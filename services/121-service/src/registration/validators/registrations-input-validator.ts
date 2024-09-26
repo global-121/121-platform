@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { Equal, Repository } from 'typeorm';
+import { Equal, Not, Repository } from 'typeorm';
 
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -25,6 +25,10 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 
 @Injectable()
 export class RegistrationsInputValidator {
@@ -36,6 +40,8 @@ export class RegistrationsInputValidator {
   constructor(
     private readonly userService: UserService,
     private readonly lookupService: LookupService,
+    private readonly registrationPaginationService: RegistrationsPaginationService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async validateAndCleanRegistrationsInput(
@@ -46,6 +52,11 @@ export class RegistrationsInputValidator {
     typeOfInput: RegistrationCsvValidationEnum,
     validationConfig: ValidationConfigDto = new ValidationConfigDto(),
   ): Promise<ImportRegistrationsDto[] | BulkImportDto[]> {
+    const originalRegistrations = await this.getOriginalRegistrations(
+      csvArray,
+      programId,
+    );
+
     const errors: ValidateRegistrationErrorObjectDto[] = [];
     const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
@@ -85,34 +96,6 @@ export class RegistrationsInputValidator {
        * Add default registration attributes without custom validation
        * =============================================================
        */
-      const errorObjFspConfig = this.validateProgramFspConfigurationName({
-        programFinancialServiceProviderConfigurationName:
-          row[
-            AdditionalAttributes
-              .programFinancialServiceProviderConfigurationName
-          ],
-        programFinancialServiceProviderConfigurations:
-          program.programFinancialServiceProviderConfigurations,
-        i,
-      });
-      if (errorObjFspConfig) {
-        errors.push(errorObjFspConfig);
-      } else {
-        importRecord[
-          AdditionalAttributes.programFinancialServiceProviderConfigurationName
-        ] =
-          row[
-            AdditionalAttributes.programFinancialServiceProviderConfigurationName
-          ];
-      }
-
-      importRecord.programFinancialServiceProviderConfigurationName =
-        row.programFinancialServiceProviderConfigurationName;
-      // ##TODO add validation to check if the financialServiceProvider is valid and the required attributes are present (only for import not bulk update)
-      const requiredAttributesForFsp = this.getRequiredAttributesForFsp(
-        importRecord.programFinancialServiceProviderConfigurationName,
-        program.programFinancialServiceProviderConfigurations,
-      );
 
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
@@ -169,12 +152,53 @@ export class RegistrationsInputValidator {
       }
       importRecord.referenceId = row.referenceId;
 
-      const errorObj = this.validatePhoneNumberEmpty(row, i, validationConfig);
-      if (errorObj) {
-        errors.push(errorObj);
+      const errorObjValidatePhoneNr = this.validatePhoneNumberEmpty(
+        row,
+        i,
+        validationConfig,
+      );
+      if (errorObjValidatePhoneNr) {
+        errors.push(errorObjValidatePhoneNr);
       } else {
         importRecord.phoneNumber = row.phoneNumber ? row.phoneNumber : ''; // If the phone number is empty use an empty string
       }
+
+      /*
+       * =============================================
+       * Validate fsp config related attributes
+       * =============================================
+       */
+      const errorObjFspConfig = this.validateProgramFspConfigurationName({
+        programFinancialServiceProviderConfigurationName:
+          row[
+            AdditionalAttributes
+              .programFinancialServiceProviderConfigurationName
+          ],
+        programFinancialServiceProviderConfigurations:
+          program.programFinancialServiceProviderConfigurations,
+        i,
+        typeOfInput,
+      });
+      if (errorObjFspConfig) {
+        errors.push(errorObjFspConfig);
+      } else {
+        importRecord[
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName
+        ] =
+          row[
+            AdditionalAttributes.programFinancialServiceProviderConfigurationName
+          ];
+      }
+
+      const errorObjsFspRequiredAttributes = this.validateFspRequiredAttributes(
+        row,
+        // ##TODO: Look into optimizing or at least test the performance of this on bulk updates
+        originalRegistrations.find(
+          (reg) => reg.referenceId === row.referenceId,
+        ),
+        program.programFinancialServiceProviderConfigurations,
+      );
+      errors.push(...errorObjsFspRequiredAttributes);
 
       /*
        * =============================================
@@ -340,11 +364,21 @@ export class RegistrationsInputValidator {
     programFinancialServiceProviderConfigurationName,
     programFinancialServiceProviderConfigurations,
     i,
+    typeOfInput,
   }: {
     programFinancialServiceProviderConfigurationName: string;
     programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
     i: number;
+    typeOfInput: RegistrationCsvValidationEnum;
   }): ValidateRegistrationErrorObjectDto | undefined {
+    // The registration is being patched, and the programFinancialServiceProviderConfigurationName is not being updated so the validation can be skipped
+    if (
+      typeOfInput === RegistrationCsvValidationEnum.bulkUpdate &&
+      !programFinancialServiceProviderConfigurationName
+    ) {
+      return;
+    }
+
     if (
       !programFinancialServiceProviderConfigurationName ||
       !programFinancialServiceProviderConfigurations.some(
@@ -526,27 +560,6 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private getRequiredAttributesForFsp(
-    programFinancialServiceProviderConfigurationName: string,
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
-  ): string[] {
-    const fspName = programFinancialServiceProviderConfigurations.find(
-      (programFspConfig) =>
-        programFspConfig.name ===
-        programFinancialServiceProviderConfigurationName,
-    )?.financialServiceProviderName;
-    const foundFsp = FINANCIAL_SERVICE_PROVIDERS.find(
-      (fsp) => fsp.name === fspName,
-    );
-    if (!foundFsp) {
-      return [];
-    }
-    const requiredAttributes = foundFsp.attributes.filter(
-      (attribute) => attribute.isRequired,
-    );
-    return requiredAttributes.map((attribute) => attribute.name);
-  }
-
   private async validateLookupPhoneNumber(
     value: string,
     i: number,
@@ -613,5 +626,127 @@ export class RegistrationsInputValidator {
         // If the type is neither numeric nor boolean, return the original value
         return value;
     }
+  }
+
+  private validateFspRequiredAttributes(
+    row: object,
+    originalRegistration: MappedPaginatedRegistrationDto | undefined,
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+  ): ValidateRegistrationErrorObjectDto[] {
+    // Decide which required attributes to check
+    // If the updated row has a value a new fsp configuration name, check the required attributes for that fsp
+    // Otherwise, check the required attributes for the original registration that is in the database
+
+    const relevantFspConfigName =
+      row[
+        GenericRegistrationAttributes
+          .programFinancialServiceProviderConfigurationName
+      ] ??
+      originalRegistration?.programFinancialServiceProviderConfigurationName;
+    if (!relevantFspConfigName) {
+      // If the programFinancialServiceProviderConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
+      // Errors will be thrown in a different validation step
+      return [];
+    }
+
+    const requiredAttributes = this.getRequiredAttributesForFsp(
+      relevantFspConfigName,
+      programFinancialServiceProviderConfigurations,
+    );
+
+    const errors: ValidateRegistrationErrorObjectDto[] = [];
+    for (const attribute of requiredAttributes) {
+      // Check if required attributes are not being deleted or set to nullable in the PATCH / POST request
+      if (row.hasOwnProperty(attribute)) {
+        if (row[attribute] == null || row[attribute] === '') {
+          errors.push({
+            lineNumber: 0,
+            column: attribute,
+            value: row[attribute],
+            error: `Cannot update/set ${attribute} with a nullable value as it is required for the FSP: ${relevantFspConfigName}`,
+          });
+          continue;
+        }
+      }
+
+      // If the programFinancialServiceProviderConfigurationName being updated / set in this request
+      // check if a combination orignal registration and new row has all required attributes
+      if (
+        row[
+          GenericRegistrationAttributes
+            .programFinancialServiceProviderConfigurationName
+        ]
+      ) {
+        // Check if the required attributes are present in the row
+        if (
+          !this.isRequiredAttributeInObject(attribute, row) &&
+          !this.isRequiredAttributeInObject(attribute, originalRegistration)
+        ) {
+          errors.push({
+            lineNumber: 0,
+            column: attribute,
+            value: row[attribute],
+            error: `Cannot update ${attribute} with a nullable value as it is required for the FSP: ${relevantFspConfigName}`,
+          });
+        }
+      }
+    }
+    return errors;
+  }
+
+  private isRequiredAttributeInObject(
+    attribute: string,
+    body: object | undefined,
+  ): boolean {
+    if (!body) {
+      return false;
+    }
+    return (
+      body.hasOwnProperty(attribute) &&
+      body[attribute] != null &&
+      body[attribute] !== ''
+    );
+  }
+
+  private getRequiredAttributesForFsp(
+    programFinancialServiceProviderConfigurationName: string,
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+  ): string[] {
+    const fspName = programFinancialServiceProviderConfigurations.find(
+      (programFspConfig) =>
+        programFspConfig.name ===
+        programFinancialServiceProviderConfigurationName,
+    )?.financialServiceProviderName;
+    const foundFsp = FINANCIAL_SERVICE_PROVIDERS.find(
+      (fsp) => fsp.name === fspName,
+    );
+    if (!foundFsp) {
+      return [];
+    }
+    const requiredAttributes = foundFsp.attributes.filter(
+      (attribute) => attribute.isRequired,
+    );
+    return requiredAttributes.map((attribute) => attribute.name);
+  }
+
+  private async getOriginalRegistrations(
+    csvArray: object[],
+    programId: number,
+  ) {
+    const referenceIds = csvArray
+      .filter((row) => row[GenericRegistrationAttributes.referenceId])
+      .map((row) => row[GenericRegistrationAttributes.referenceId]);
+    const qb = this.registrationViewScopedRepository
+      .createQueryBuilder('registration')
+      .andWhere({ status: Not(RegistrationStatusEnum.deleted) })
+      .andWhere('registration.referenceId IN (:...referenceIds)', {
+        referenceIds,
+      });
+    return await this.registrationPaginationService.getRegistrationsChunked(
+      programId,
+      { limit: 10000, path: '' },
+      10000,
+      qb,
+    );
   }
 }
