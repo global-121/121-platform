@@ -11,7 +11,7 @@
  * See the bottom of the file for custom utility types.
  */
 
-type IsOptional<T> = Extract<T, undefined> extends never ? false : true;
+type IsOptional<T> = Extract<T, null | undefined> extends never ? false : true;
 export type Func = (...args: any[]) => any;
 type IsFunction<T> = T extends Func ? true : false;
 type IsValueType<T> = T extends
@@ -55,7 +55,7 @@ export type Dto<T> =
   IsFunction<T> extends true
     ? never
     : IsOptional<T> extends true
-      ? Dtoified<Exclude<T, undefined>> | null
+      ? Dtoified<Exclude<T, null | undefined>> | undefined
       : Dtoified<T>;
 
 export type Serializable<T> = { serialize(): Dto<T> } & T;

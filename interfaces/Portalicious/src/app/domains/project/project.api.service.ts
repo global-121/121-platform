@@ -1,8 +1,11 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
+import { uniqBy } from 'lodash';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
+  Attribute,
   Project,
   ProjectMetrics,
   ProjectUser,
@@ -66,6 +69,42 @@ export class ProjectApiService extends DomainApiService {
         );
 
         return usersWithRolesLabel;
+      },
+    });
+  }
+
+  getProjectAttributes({
+    projectId,
+    includeCustomAttributes = false,
+    includeProgramQuestions = false,
+    includeFspQuestions = false,
+    includeTemplateDefaultAttributes = false,
+    filterShowInPeopleAffectedTable = false,
+  }: {
+    projectId: Signal<number>;
+    includeCustomAttributes?: boolean;
+    includeProgramQuestions?: boolean;
+    includeFspQuestions?: boolean;
+    includeTemplateDefaultAttributes?: boolean;
+    filterShowInPeopleAffectedTable?: boolean;
+  }) {
+    const params = new HttpParams({
+      fromObject: {
+        includeCustomAttributes,
+        includeProgramQuestions,
+        includeFspQuestions,
+        includeTemplateDefaultAttributes,
+        filterShowInPeopleAffectedTable,
+      },
+    });
+
+    return this.generateQueryOptions<Attribute[]>({
+      path: [BASE_ENDPOINT, projectId, 'attributes'],
+      requestOptions: {
+        params,
+      },
+      processResponse: (attributes) => {
+        return uniqBy(attributes, 'name');
       },
     });
   }

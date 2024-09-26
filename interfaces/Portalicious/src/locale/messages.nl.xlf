@@ -299,8 +299,8 @@
         <target state="new">Token expired</target>
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
-        <source>Something went wrong: <x equiv-text="errorMessage" id="PH"/></source>
-        <target state="new">Something went wrong: <x equiv-text="errorMessage" id="PH"/></target>
+        <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
+        <target state="new">Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></target>
       </trans-unit>
       <trans-unit id="add-project-label" datatype="html">
         <source>Add project</source>
@@ -495,9 +495,9 @@
         <source>Duration</source>
         <target state="new">Duration</target>
       </trans-unit>
-      <trans-unit id="7549920543899608806" datatype="html">
-        <source><x equiv-text="projectData.distributionDuration" id="PH"/> disbursements</source>
-        <target state="new"><x equiv-text="projectData.distributionDuration" id="PH"/> disbursements</target>
+      <trans-unit id="3382782841789683257" datatype="html">
+        <source><x equiv-text="projectData.distributionDuration" id="count"/> disbursements</source>
+        <target state="new"><x equiv-text="projectData.distributionDuration" id="count"/> disbursements</target>
       </trans-unit>
       <trans-unit id="926636196686296455" datatype="html">
         <source>Base transfer value</source>
@@ -535,17 +535,13 @@
         <source>Scope</source>
         <target state="new">Scope</target>
       </trans-unit>
-      <trans-unit id="7786605624712277167" datatype="html">
-        <source><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</source>
-        <target state="new"><x equiv-text="paymentCount.toString()" id="PH"/> (out of <x equiv-text="maxPayments.toString()" id="PH_1"/>)</target>
+      <trans-unit id="4309697217076303455" datatype="html">
+        <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
+        <target state="new"><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</target>
       </trans-unit>
       <trans-unit id="8285202625820348519" datatype="html">
         <source>registration-debit-cards works</source>
         <target state="new">registration-debit-cards works</target>
-      </trans-unit>
-      <trans-unit id="1533306147940335597" datatype="html">
-        <source>registration-personal-information works</source>
-        <target state="new">registration-personal-information works</target>
       </trans-unit>
       <trans-unit id="page-title-project-registrations-activity-log" datatype="html">
         <source>Activity log</source>
@@ -691,9 +687,9 @@
         <source>Time and date</source>
         <target state="new">Time and date</target>
       </trans-unit>
-      <trans-unit id="3791822671319116066" datatype="html">
-        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="PH"/> <x equiv-text="item.contents.transferNumber" id="PH_1"/> of <x equiv-text="item.contents.totalTransfers" id="PH_2"/></source>
-        <target state="translated"><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="PH"/> <x equiv-text="item.contents.transferNumber" id="PH_1"/> van <x equiv-text="item.contents.totalTransfers" id="PH_2"/></target>
+      <trans-unit id="412801067474625773" datatype="html">
+        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
+        <target state="new"><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> van <x equiv-text="item.contents.totalTransfers" id="totalCount"/></target>
       </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
         <source>Current balance</source>
@@ -702,6 +698,30 @@
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
         <target state="new">Filter by keyword</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-fspDisplayName" datatype="html">
+        <source>FSP Display Name</source>
+        <target state="new">FSP Display Name</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
+        <source>Transfer value multiplier</source>
+        <target state="new">Transfer value multiplier</target>
+      </trans-unit>
+      <trans-unit id="generic-boolean-true" datatype="html">
+        <source>Yes</source>
+        <target state="new">Yes</target>
+      </trans-unit>
+      <trans-unit id="generic-boolean-false" datatype="html">
+        <source>No</source>
+        <target state="new">No</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-maxPayments" datatype="html">
+        <source>Max. payments</source>
+        <target state="new">Max. payments</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
+        <source>Remaining payments</source>
+        <target state="new">Remaining payments</target>
       </trans-unit>
     </body>
   </file>

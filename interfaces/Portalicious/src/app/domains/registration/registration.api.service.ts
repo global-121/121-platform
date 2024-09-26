@@ -9,7 +9,7 @@ import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
-import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helpers';
+import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import {
   ActivityLogItemType,
   ActivityLogItemWithOverview,
@@ -229,7 +229,7 @@ export class RegistrationApiService extends DomainApiService {
                 case ActivityLogItemType.Transfer:
                   return {
                     ...item,
-                    overview: $localize`${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]} ${item.contents.transferNumber} of ${item.contents.totalTransfers}`,
+                    overview: $localize`${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]}:activityType: ${item.contents.transferNumber}:count: of ${item.contents.totalTransfers}:totalCount:`,
                   };
               }
             })
