@@ -14,6 +14,8 @@ import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enu
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { UserService } from '@121-service/src/user/user.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 
 const programId = 1;
 const userId = 1;
@@ -90,6 +92,12 @@ describe('RegistrationsInputValidator', () => {
     mockProgramRepository = {};
     mockRegistrationRepository = {};
 
+    const mockRegistrationViewScopedRepository = {
+      createQueryBuilder: jest.fn().mockReturnValue({
+        andWhere: jest.fn().mockReturnThis(),
+      }),
+      // other methods...
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RegistrationsInputValidator,
@@ -101,6 +109,7 @@ describe('RegistrationsInputValidator', () => {
           provide: getRepositoryToken(RegistrationEntity),
           useValue: mockRegistrationRepository,
         },
+
         {
           provide: UserService,
           useValue: {
@@ -112,6 +121,16 @@ describe('RegistrationsInputValidator', () => {
           useValue: {
             lookupAndCorrect: jest.fn().mockResolvedValue('1234567890'),
           },
+        },
+        {
+          provide: RegistrationsPaginationService,
+          useValue: {
+            getRegistrationsChunked: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: RegistrationViewScopedRepository,
+          useValue: mockRegistrationViewScopedRepository,
         },
       ],
     }).compile();
