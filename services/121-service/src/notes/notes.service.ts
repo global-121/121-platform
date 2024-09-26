@@ -7,7 +7,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
-export class NoteService {
+export class NotesService {
   public constructor(
     private readonly registrationsService: RegistrationsService,
     @Inject(getScopedRepositoryProviderName(NoteEntity))
@@ -15,6 +15,7 @@ export class NoteService {
   ) {}
 
   public async createNote(
+    // TODO: REFACTOR: Should be an object as there are 4 parameters
     referenceId: string,
     text: string,
     userId: number,

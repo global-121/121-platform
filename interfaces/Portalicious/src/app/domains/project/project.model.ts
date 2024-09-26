@@ -1,5 +1,6 @@
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
+import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { UserController } from '@121-service/src/user/user.controller';
 
 import { Dto, Dto121Service } from '~/utils/dto-type';
@@ -23,3 +24,7 @@ export type ProjectUserWithRolesLabel = {
   allRolesLabel: string;
   lastLogin?: Date;
 } & Omit<ProjectUser, 'lastLogin'>;
+
+export type Attribute = ArrayElement<
+  Dto121Service<ProgramController['getAttributes']>
+>;
