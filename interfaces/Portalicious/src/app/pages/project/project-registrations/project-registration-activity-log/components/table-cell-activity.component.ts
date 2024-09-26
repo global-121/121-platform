@@ -9,7 +9,7 @@ import { TableCellComponent } from '~/components/query-table/table-cell/table-ce
 import {
   ACTIVITY_LOG_ITEM_TYPE_ICONS,
   ACTIVITY_LOG_ITEM_TYPE_LABELS,
-} from '~/domains/registration/registration.helpers';
+} from '~/domains/registration/registration.helper';
 import { ActivityLogItemWithOverview } from '~/domains/registration/registration.model';
 
 @Component({

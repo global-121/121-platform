@@ -128,9 +128,9 @@ export class ProjectMonitoringPageComponent {
       },
       {
         label: $localize`Duration`,
-        value:
-          projectData?.distributionDuration &&
-          $localize`${projectData.distributionDuration} disbursements`,
+        value: projectData?.distributionDuration
+          ? $localize`${projectData.distributionDuration}:count: disbursements`
+          : undefined,
       },
       {
         label: $localize`Base transfer value`,

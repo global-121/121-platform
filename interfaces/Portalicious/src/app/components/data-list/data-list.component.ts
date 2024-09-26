@@ -1,20 +1,27 @@
 import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+
 import {
   ChipVariant,
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 export type DataListItem = {
-  label: string;
+  label: LocalizedString | string;
   tooltip?: string;
   loading?: boolean;
   chipLabel?: string;
   chipVariant?: ChipVariant;
 } & (
+  | {
+      type: 'boolean';
+      value: boolean;
+    }
   | {
       type: 'currency';
       value?: null | number | string;
@@ -22,12 +29,16 @@ export type DataListItem = {
       currencyFormat?: string;
     }
   | {
+      type: 'date';
+      value?: Date | null | number | string;
+    }
+  | {
       type: 'number';
       value?: null | number;
     }
   | {
-      type?: 'date' | 'text';
-      value?: Date | null | number | string;
+      type?: 'text';
+      value?: LocalizedString | null | string;
     }
 );
 
@@ -41,6 +52,7 @@ export type DataListItem = {
     DecimalPipe,
     SkeletonInlineComponent,
     ColoredChipComponent,
+    TranslatableStringPipe,
     NgClass,
   ],
   templateUrl: './data-list.component.html',
