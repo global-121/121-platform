@@ -61,6 +61,7 @@ graph LR
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->QueueRegistrationUpdateModule
+  RegistrationsModule-->ActivitiesModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->UserModule
