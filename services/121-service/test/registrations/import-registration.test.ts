@@ -26,6 +26,7 @@ import {
   programIdPV,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 describe('Import a registration', () => {
   let accessToken: string;
@@ -222,6 +223,41 @@ describe('Import a registration', () => {
     const programIdWestoros = 1;
     // @ts-expect-error we are forcing something to be null when it shouldn't be
     registrationWesteros1Copy.house = null;
+
+    // Act
+    const response = await importRegistrations(
+      programIdWestoros,
+      [registrationWesteros1Copy],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body).toMatchSnapshot();
+
+    const result = await searchRegistrationByReferenceId(
+      registrationWesteros1Copy.referenceId,
+      programIdWestoros,
+      accessToken,
+    );
+
+    const registration = result.body.data;
+    expect(registration).toHaveLength(0);
+  });
+
+  it('should throw an error when a required a fsp attribute is missing', async () => {
+    // Arrange
+    await resetDB(SeedScript.test);
+    accessToken = await getAccessToken();
+
+    // Removes whatsapp from original registration
+    const { whatsappPhoneNumber, ...registrationWesteros1Copy } =
+      registrationWesteros1;
+    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
+      FinancialServiceProviders.intersolveVoucherWhatsapp;
+
+    const programIdWestoros = 1;
+    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
+      FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     // Act
     const response = await importRegistrations(

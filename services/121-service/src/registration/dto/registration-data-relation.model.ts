@@ -1,5 +1,5 @@
 export class RegistrationDataRelation {
-  public programRegistrationAttributeId?: number;
+  public programRegistrationAttributeId: number;
 }
 
 interface RegistrationDataOpionsWithRequiredRelation {

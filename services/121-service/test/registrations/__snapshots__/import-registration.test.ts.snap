@@ -17,6 +17,16 @@ exports[`Import a registration should give me a CSV template when I request it 1
 ]
 `;
 
+exports[`Import a registration should throw an error when a required a fsp attribute is missing 1`] = `
+[
+  {
+    "column": "whatsappPhoneNumber",
+    "error": "Cannot update whatsappPhoneNumber with a nullable value as it is required for the FSP: Intersolve-voucher-whatsapp",
+    "lineNumber": 0,
+  },
+]
+`;
+
 exports[`Import a registration should throw an error with a dropdown registration atribute set to null 1`] = `
 [
   {

@@ -333,7 +333,7 @@ export class RegistrationsImportService {
           registrationData.registration = registration;
           registrationData.value = value as string;
           registrationData.programRegistrationAttributeId =
-            att.relation.programRegistrationAttributeId ?? null;
+            att.relation.programRegistrationAttributeId;
           registrationDataArray.push(registrationData);
         }
       }
