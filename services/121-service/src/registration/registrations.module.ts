@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
+import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsModule } from '@121-service/src/events/events.module';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
@@ -73,6 +74,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationUtilsModule,
     EventsModule,
     QueueRegistrationUpdateModule,
+    ActivitiesModule,
   ],
   providers: [
     RegistrationsService,
