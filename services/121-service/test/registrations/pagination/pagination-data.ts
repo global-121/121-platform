@@ -2,7 +2,7 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 interface RegistrationWithFspName extends RegistrationEntity {
-  fspName?: string;
+  programFinancialServiceProviderConfigurationName?: string;
 }
 
 export function createExpectedValueObject(
@@ -14,7 +14,6 @@ export function createExpectedValueObject(
     registrationProgramId: sequenceNumber,
     personAffectedSequence: `PA #${sequenceNumber}`,
   };
-  delete expectedValueObject.fspName;
 
   return expectedValueObject;
 }
