@@ -23,7 +23,7 @@ export class SafaricomController {
   @Post('transfer-callback')
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
-  ): Promise<any> {
+  ): Promise<void> {
     await this.safaricomService.processTransferCallback(
       safaricomTransferCallback,
     );
@@ -42,7 +42,7 @@ export class SafaricomController {
   public async processTimeoutCallback(
     @Body()
     safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
-  ): Promise<any> {
+  ): Promise<void> {
     // Added a logging here just to monitor safaricom callback for payout timeout notification
     console.log(
       'safaricomTimeoutCallback: ',

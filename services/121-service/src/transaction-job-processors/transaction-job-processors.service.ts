@@ -222,13 +222,19 @@ export class TransactionJobProcessorsService {
     });
   }
 
-  public async processSafaricomTransactionJob(
-    transactionJob: SafaricomTransactionJobDto,
-  ): Promise<void> {
+  public async processSafaricomTransactionJob({
+    programId,
+    paymentNumber,
+    referenceId,
+    transactionAmount,
+    isRetry = false,
+    userId,
+    originatorConversationId,
+    phoneNumber,
+    idNumber,
+  }: SafaricomTransactionJobDto): Promise<void> {
     // 1. Get additional data
-    const registration = await this.getRegistrationOrThrow(
-      transactionJob.referenceId,
-    );
+    const registration = await this.getRegistrationOrThrow(referenceId);
     const oldRegistration = structuredClone(registration);
     const financialServiceProvider =
       await this.getFinancialServiceProviderOrThrow(
@@ -236,37 +242,36 @@ export class TransactionJobProcessorsService {
       );
 
     // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(transactionJob)) {
-      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
-      if (value === null || value === undefined || value === '') {
-        const errorText = `Property ${name} is undefined`;
-        await this.createTransactionAndUpdateRegistration({
-          programId: transactionJob.programId,
-          paymentNumber: transactionJob.paymentNumber,
-          userId: transactionJob.userId,
-          calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
-          financialServiceProviderId: financialServiceProvider.id,
-          registration,
-          oldRegistration,
-          isRetry: transactionJob.isRetry,
-          status: TransactionStatusEnum.error,
-          errorText,
-        });
-        return;
-      }
+
+    // Define "empty" based on your needs. Here, we check for null, undefined, or an empty values.
+    if (!programId || !paymentNumber || !userId) {
+      const errorText = `Missing programId or userId or paymentNumber for the transaction.`;
+      await this.createTransactionAndUpdateRegistration({
+        programId,
+        paymentNumber,
+        userId,
+        calculatedTransferAmountInMajorUnit: transactionAmount,
+        financialServiceProviderId: financialServiceProvider.id,
+        registration,
+        oldRegistration,
+        isRetry,
+        status: TransactionStatusEnum.error,
+        errorText,
+      });
+      return;
     }
 
     // 3. Save the transaction into database with 'waiting' status and then call to safaricom for payouts. And then safaricom will return the
     // actual payout status in callback url and then we will update the transaction status to success or error after procced the callback.
     const transaction = await this.createTransactionAndUpdateRegistration({
-      programId: transactionJob.programId,
-      paymentNumber: transactionJob.paymentNumber,
-      userId: transactionJob.userId,
-      calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
+      programId,
+      paymentNumber,
+      userId,
+      calculatedTransferAmountInMajorUnit: transactionAmount,
       financialServiceProviderId: financialServiceProvider.id,
       registration,
       oldRegistration,
-      isRetry: transactionJob.isRetry,
+      isRetry,
       status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
 
@@ -274,10 +279,10 @@ export class TransactionJobProcessorsService {
     try {
       await this.safaricomService.saveAndDoTransfer({
         transactionId: transaction.id,
-        transferAmount: transactionJob.transactionAmount,
-        phoneNumber: transactionJob.phoneNumber!,
-        idNumber: transactionJob.idNumber!,
-        originatorConversationId: transactionJob.originatorConversationId!,
+        transferAmount: transactionAmount,
+        phoneNumber: phoneNumber!,
+        idNumber: idNumber!,
+        originatorConversationId: originatorConversationId!,
       });
     } catch (error) {
       if (error instanceof SafaricomApiError) {
@@ -293,7 +298,7 @@ export class TransactionJobProcessorsService {
             { id: transaction.id },
             {
               status: TransactionStatusEnum.error,
-              errorMessage: `Payout with originatorConversationId=${transactionJob.originatorConversationId} already exists & processed before.`,
+              errorMessage: `Payout with originatorConversationId=${originatorConversationId} already exists & processed before.`,
             },
           );
         }

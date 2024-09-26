@@ -26,13 +26,13 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
       );
 
     // Prepare the transaction status based on resultCode from callback
-    let updatedTransactionStatus = {};
+    let updatedTransactionStatusAndErrorMessage = {};
     if (safaricomTransferCallbackJob.resultCode === 0) {
-      updatedTransactionStatus = {
+      updatedTransactionStatusAndErrorMessage = {
         status: TransactionStatusEnum.success,
       };
     } else {
-      updatedTransactionStatus = {
+      updatedTransactionStatusAndErrorMessage = {
         status: TransactionStatusEnum.error,
         errorMessage: safaricomTransferCallbackJob.resultDescription,
       };
@@ -49,7 +49,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
     // Update transaction status
     await this.transactionScopedRepository.update(
       { id: safaricomTransfer.transaction.id },
-      updatedTransactionStatus,
+      updatedTransactionStatusAndErrorMessage,
     );
   }
 
