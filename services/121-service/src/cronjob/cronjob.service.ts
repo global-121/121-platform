@@ -6,6 +6,10 @@ import { ExchangeRateService } from '@121-service/src/exchange-rate/exchange-rat
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
+function shouldBeEnabled(envVariable: string | undefined): boolean {
+  return !!envVariable && envVariable.toLowerCase() === 'true';
+}
+
 @Injectable()
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
@@ -13,7 +17,11 @@ export class CronjobService {
 
   constructor(private exchangeRateService: ExchangeRateService) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES, {
+    disabled: !shouldBeEnabled(
+      process.env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
+    ),
+  })
   public async cronCancelByRefposIntersolve(): Promise<void> {
     // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
@@ -23,7 +31,11 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
+    disabled: !shouldBeEnabled(
+      process.env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
+    ),
+  })
   public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -32,7 +44,11 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
+    disabled: !shouldBeEnabled(
+      process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
+    ),
+  })
   public async cronCacheUnusedVouchers(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -41,7 +57,11 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_6AM)
+  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
+    disabled: !shouldBeEnabled(
+      process.env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
+    ),
+  })
   public async cronUpdateVisaDebitWalletDetails(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -51,7 +71,11 @@ export class CronjobService {
     await this.httpService.patch(url, {}, headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON)
+  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
+    disabled: !shouldBeEnabled(
+      process.env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
+    ),
+  })
   public async cronSendWhatsappReminders(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -60,7 +84,9 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_6AM)
+  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
+    disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
+  })
   public async getDailyExchangeRates(): Promise<void> {
     console.info('CronjobService - Started: getDailyExchangeRates');
 
