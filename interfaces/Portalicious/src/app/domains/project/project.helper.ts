@@ -21,7 +21,7 @@ export const attributeToDataListItem = (
   const label =
     attribute.label ?? ATTRIBUTE_LABELS[attribute.name] ?? attribute.name;
 
-  // XXX: safer check to make sure attribute.type is an AnswerTypes?
+  // TODO: AB#30519 avoid using "as" here
   switch (attribute.type as AnswerTypes | CustomAttributeType) {
     case AnswerTypes.multiSelect:
       // TODO: Implement multiSelect when necessary
