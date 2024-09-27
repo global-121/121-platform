@@ -16,6 +16,7 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
@@ -259,7 +260,7 @@ export class TransactionJobProcessorsService {
     }
 
     // 3. Check for existing safaricom transfer with the same originatorConversationId. This implies an unintended Redis job re-attempt.
-    const existingSafaricomTransfer =
+    let safaricomTransfer =
       await this.safaricomTransferScopedRepository.findOne({
         where: {
           originatorConversationId: Equal(
@@ -269,7 +270,7 @@ export class TransactionJobProcessorsService {
       });
     // if no safaricom transfer yet, create a transaction, otherwise this has already happened before
     let transactionId: number;
-    if (!existingSafaricomTransfer) {
+    if (!safaricomTransfer) {
       const transaction = await this.createTransactionAndUpdateRegistration({
         programId: transactionJob.programId,
         paymentNumber: transactionJob.paymentNumber,
@@ -282,14 +283,19 @@ export class TransactionJobProcessorsService {
         status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
       });
       transactionId = transaction.id;
+      const newSafaricomTransfer = new SafaricomTransferEntity();
+      newSafaricomTransfer.originatorConversationId =
+        transactionJob.originatorConversationId;
+      newSafaricomTransfer.transactionId = transactionId;
+      safaricomTransfer =
+        await this.safaricomTransferScopedRepository.save(newSafaricomTransfer);
     } else {
-      transactionId = existingSafaricomTransfer.transactionId;
+      transactionId = safaricomTransfer.transactionId;
     }
 
     // 4. Start the transfer, if failure update to error transaction and return early
     try {
-      await this.safaricomService.saveAndDoTransfer({
-        transactionId,
+      await this.safaricomService.doTransfer({
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,

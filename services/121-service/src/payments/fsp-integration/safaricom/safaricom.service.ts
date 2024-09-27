@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
-import { Equal } from 'typeorm';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -11,7 +10,6 @@ import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integ
 import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
@@ -49,34 +47,14 @@ export class SafaricomService
     throw new Error('Method should not be called anymore.');
   }
 
-  public async saveAndDoTransfer({
-    transactionId,
+  public async doTransfer({
     transferAmount,
     phoneNumber,
     idNumber,
     originatorConversationId,
   }: DoTransferParams): Promise<void> {
-    // ##TODO: can we move this save to transaction-job-processors.service to put it together with transaction save?
-    // Check if transfer record exists already, if so, use that
-    let safaricomTransfer =
-      await this.safaricomTransferScopedRepository.findOne({
-        where: {
-          originatorConversationId: Equal(originatorConversationId),
-        },
-      });
-    if (!safaricomTransfer) {
-      // otherwise, create a new record
-      const newSafaricomTransfer = new SafaricomTransferEntity();
-      newSafaricomTransfer.originatorConversationId = originatorConversationId;
-      newSafaricomTransfer.transactionId = transactionId;
-      safaricomTransfer =
-        await this.safaricomTransferScopedRepository.save(newSafaricomTransfer);
-    }
-
-    // Prepare the transfer payload and send the request to safaricom
     const transferResult =
       await this.safaricomApiService.sendTransferAndHandleResponse({
-        transactionId,
         transferAmount,
         phoneNumber,
         idNumber,
@@ -89,7 +67,7 @@ export class SafaricomService
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
-      { id: safaricomTransfer.id },
+      { originatorConversationId },
       {
         mpesaConversationId: transferResult?.data?.ConversationID,
       },

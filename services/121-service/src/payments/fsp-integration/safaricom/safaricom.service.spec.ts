@@ -22,7 +22,6 @@ const mockedSafaricomTransferParams: DoTransferParams = {
   phoneNumber: '254708374149',
   originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
-  transactionId: 1,
 };
 
 describe('SafaricomService', () => {
@@ -106,17 +105,15 @@ describe('SafaricomService', () => {
         },
       };
 
-      jest.spyOn(safaricomTransferScopedRepository, 'save');
       jest.spyOn(safaricomTransferScopedRepository, 'update');
       jest
         .spyOn(safaricomApiService, 'sendTransferAndHandleResponse')
         .mockResolvedValue(sendTransferResult);
 
-      const transferResult = await service.saveAndDoTransfer(
+      const transferResult = await service.doTransfer(
         mockedSafaricomTransferParams,
       );
 
-      expect(safaricomTransferScopedRepository.save).toHaveBeenCalled();
       expect(
         safaricomApiService.sendTransferAndHandleResponse,
       ).toHaveBeenCalledWith(mockedSafaricomTransferParams);
