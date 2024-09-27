@@ -21,9 +21,7 @@
                 outlined
                 icon="pi pi-pause"
                 class="ml-auto"
-                (click)="pauseCard()"
-                [disabled]="pauseCardMutation.isPending()"
-                [loading]="pauseCardMutation.isPending()"
+                (click)="pauseConfirmationDialog.askForConfirmation()"
               />
             }
             @case ('unpause') {
@@ -34,9 +32,7 @@
                 outlined
                 icon="pi pi-play"
                 class="ml-auto"
-                (click)="unpauseCard()"
-                [disabled]="unpauseCardMutation.isPending()"
-                [loading]="unpauseCardMutation.isPending()"
+                (click)="unpauseConfirmationDialog.askForConfirmation()"
               />
             }
             @case ('reissue') {
@@ -47,9 +43,7 @@
                 outlined
                 icon="pi pi-refresh"
                 class="ms-4"
-                (click)="reissueCard()"
-                [disabled]="reissueCardMutation.isPending()"
-                [loading]="reissueCardMutation.isPending()"
+                (click)="reissueConfirmationDialog.askForConfirmation()"
               />
             }
           }
@@ -86,40 +80,50 @@
   </div>
 </app-page-layout>
 <app-confirmation-dialog
-  i18n
   #pauseConfirmationDialog
   header="Pause card"
   i18n-header="@@debit-cards-actions-pause-card"
   acceptLabel="Pause card"
   i18n-acceptLabel="@@debit-cards-actions-pause-card"
+  [mutation]="changeCardPauseStatusMutation"
+  [mutationData]="{ pauseStatus: true }"
 >
-  You're about to pause debit card number {{ curCard?.tokenCode }}.
-  <br />
-  A message will be sent to the registration about this update.
+  <p i18n>You're about to pause debit card number {{ curCard?.tokenCode }}.</p>
+  <p i18n="@@generic-message-will-be-sent">
+    A message will be sent to the registration about this update.
+  </p>
 </app-confirmation-dialog>
 <app-confirmation-dialog
-  i18n
   #unpauseConfirmationDialog
   header="Unpause card"
   i18n-header="@@debit-cards-actions-unpause-card"
   acceptLabel="Unpause card"
   i18n-acceptLabel="@@debit-cards-actions-unpause-card"
+  [mutation]="changeCardPauseStatusMutation"
+  [mutationData]="{ pauseStatus: false }"
 >
-  You're about to unpause debit card number {{ curCard?.tokenCode }}.
-  <br />
-  A message will be sent to the registration about this update.
+  <p i18n>
+    You're about to unpause debit card number {{ curCard?.tokenCode }}.
+  </p>
+  <p i18n="@@generic-message-will-be-sent">
+    A message will be sent to the registration about this update.
+  </p>
 </app-confirmation-dialog>
 <app-confirmation-dialog
-  i18n
   #reissueConfirmationDialog
   header="Replace card"
   i18n-header="@@debit-cards-actions-replace-card"
   acceptLabel="Replace card"
   i18n-acceptLabel="@@debit-cards-actions-replace-card"
+  [mutation]="reissueCardMutation"
+  [mutationData]="undefined"
 >
-  You're about to replace debit card number {{ curCard?.tokenCode }}. This will
-  block the current card and a new card will be issued. A message will be sent
-  to the registration about this update.
-  <br />
-  A message will be sent to the registration about this update.
+  <p i18n>
+    You're about to replace debit card number {{ curCard?.tokenCode }}. This
+    will block the current card and a new card will be issued. A message will be
+    sent to the registration about this update.
+  </p>
+  <p i18n="@@generic-message-will-be-sent">
+    A message will be sent to the registration about this update.
+  </p>
 </app-confirmation-dialog>

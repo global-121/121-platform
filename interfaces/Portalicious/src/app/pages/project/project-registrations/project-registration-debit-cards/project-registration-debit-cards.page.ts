@@ -5,7 +5,6 @@ import {
   computed,
   inject,
   input,
-  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -55,13 +54,6 @@ export class ProjectRegistrationDebitCardsPageComponent {
   private readonly toastService = inject(ToastService);
   private readonly queryClient = injectQueryClient();
 
-  @ViewChild('pauseConfirmationDialog')
-  private pauseConfirmationDialog: ConfirmationDialogComponent;
-  @ViewChild('unpauseConfirmationDialog')
-  private unpauseConfirmationDialog: ConfirmationDialogComponent;
-  @ViewChild('reissueConfirmationDialog')
-  private reissueConfirmationDialog: ConfirmationDialogComponent;
-
   projectId = input.required<number>();
   registrationId = input.required<number>();
 
@@ -81,12 +73,12 @@ export class ProjectRegistrationDebitCardsPageComponent {
   currentCard = computed(() => this.walletWithCards.data()?.cards[0]);
   walletWithCurrentCardData = computed(() => {
     const { chipLabel, chipVariant } = getChipDataByVisaCardStatus(
-      this.walletWithCards.data()?.cards[0].status,
+      this.currentCard()?.status,
     );
     const listData: DataListItem[] = [
       {
         label: $localize`:@@debit-card-number:Card number`,
-        value: this.walletWithCards.data()?.cards[0].tokenCode,
+        value: this.currentCard()?.tokenCode,
       },
       {
         label: $localize`:@@debit-card-status:Card status`,
@@ -105,7 +97,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
       },
       {
         label: $localize`:@@debit-card-issued-on:Issued on`,
-        value: this.walletWithCards.data()?.cards[0].issuedDate,
+        value: this.currentCard()?.issuedDate,
         type: 'date',
       },
       {
@@ -149,8 +141,8 @@ export class ProjectRegistrationDebitCardsPageComponent {
       };
     });
   });
-  pauseCardMutation = injectMutation(() => ({
-    mutationFn: () => {
+  changeCardPauseStatusMutation = injectMutation(() => ({
+    mutationFn: ({ pauseStatus }: { pauseStatus: boolean }) => {
       const referenceId = this.referenceId();
       const tokenCode = this.currentCard()?.tokenCode;
 
@@ -159,56 +151,18 @@ export class ProjectRegistrationDebitCardsPageComponent {
         throw new Error('ReferenceId or tokenCode is missing');
       }
 
-      return this.registrationApiService.pauseCard({
+      return this.registrationApiService.changeCardPauseStatus({
         projectId: this.projectId,
         referenceId,
         tokenCode,
-        pause: true,
+        pauseStatus,
       });
     },
     onSuccess: () => {
       this.toastService.showToast({
-        detail: $localize`Card is paused`,
+        detail: $localize`Card has been successfully updated`,
       });
       this.invalidateWalletQuery();
-    },
-    onError: (error) => {
-      // XXX: will be better once #5859 is merged
-      this.toastService.showToast({
-        detail: $localize`An error occurred while pausing the card. Error: ${error}`,
-        severity: 'error',
-      });
-    },
-  }));
-  unpauseCardMutation = injectMutation(() => ({
-    mutationFn: () => {
-      const referenceId = this.referenceId();
-      const tokenCode = this.currentCard()?.tokenCode;
-
-      if (!referenceId || !tokenCode) {
-        this.toastService.showGenericError();
-        throw new Error('ReferenceId or tokenCode is missing');
-      }
-
-      return this.registrationApiService.pauseCard({
-        projectId: this.projectId,
-        referenceId,
-        tokenCode,
-        pause: false,
-      });
-    },
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: $localize`Card is unpaused`,
-      });
-      this.invalidateWalletQuery();
-    },
-    onError: (error) => {
-      // XXX: will be better once #5859 is merged
-      this.toastService.showToast({
-        detail: $localize`An error occurred while unpausing the card. Error: ${error}`,
-        severity: 'error',
-      });
     },
   }));
   reissueCardMutation = injectMutation(() => ({
@@ -231,13 +185,6 @@ export class ProjectRegistrationDebitCardsPageComponent {
       });
       this.invalidateWalletQuery();
     },
-    onError: (error) => {
-      // XXX: will be better once #5859 is merged
-      this.toastService.showToast({
-        detail: $localize`An error occurred while replacing the card. Error: ${error}`,
-        severity: 'error',
-      });
-    },
   }));
 
   private invalidateWalletQuery() {
@@ -246,30 +193,6 @@ export class ProjectRegistrationDebitCardsPageComponent {
         this.projectId,
         this.referenceId,
       )().queryKey,
-    });
-  }
-
-  pauseCard() {
-    this.pauseConfirmationDialog.confirm({
-      accept: () => {
-        this.pauseCardMutation.mutate();
-      },
-    });
-  }
-
-  unpauseCard() {
-    this.unpauseConfirmationDialog.confirm({
-      accept: () => {
-        this.unpauseCardMutation.mutate();
-      },
-    });
-  }
-
-  reissueCard() {
-    this.reissueConfirmationDialog.confirm({
-      accept: () => {
-        this.reissueCardMutation.mutate();
-      },
     });
   }
 }

@@ -11,7 +11,7 @@ import {
   SaveOptions,
   UpdateResult,
 } from 'typeorm';
-import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';

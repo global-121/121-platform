@@ -14,11 +14,15 @@ import {
   ActivityLogItemType,
   ActivityLogItemWithOverview,
   DataChangeActivity,
+  IntersolveVisaCardStatus,
+  IntersolveVisaTokenStatus,
   MessageActivity,
   NoteActivity,
   Registration,
   StatusUpdateActivity,
   TransferActivity,
+  VisaCard121Status,
+  VisaCardAction,
   WalletWithCards,
 } from '~/domains/registration/registration.model';
 
@@ -257,28 +261,75 @@ export class RegistrationApiService extends DomainApiService {
     projectId: Signal<number>,
     referenceId: Signal<string | undefined>,
   ) {
-    return this.generateQueryOptions<WalletWithCards>({
-      path: [
+    // TODO: AB#30525 - Use the real endpoint from intersolve visa branch
+    // and use the 'generateQueryOptions' method instead of hardcoding the data here.
+    //
+    // return this.generateQueryOptions<WalletWithCards>({
+    //   path: [
+    //     ...BASE_ENDPOINT(projectId),
+    //     referenceId,
+    //     'financial-service-providers',
+    //     'intersolve-visa',
+    //     'wallet',
+    //   ],
+    //   enabled: () => !!referenceId(),
+    // });
+
+    return () => {
+      const path = [
         ...BASE_ENDPOINT(projectId),
         referenceId,
         'financial-service-providers',
         'intersolve-visa',
         'wallet',
-      ],
-      enabled: () => !!referenceId(),
-    });
+      ];
+      return queryOptions({
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps
+        queryKey: this.pathToQueryKey(path),
+        queryFn: async () => {
+          // fake a bit of a delay
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          const data: WalletWithCards = {
+            tokenCode: 'dfb237cf-c6e3-448d-ab7e-6df8e66fca0c',
+            balance: 58,
+            spentThisMonth: 12,
+            maxToSpendPerMonth: 15000,
+            lastUsedDate: '2024-09-27',
+            lastExternalUpdate: '2024-09-27T14:20:37.346Z',
+            cards: [
+              {
+                tokenCode: '3c11290f-0f1c-4334-a465-51a643009888',
+                status: VisaCard121Status.Active,
+                explanation: '',
+                issuedDate: '2024-09-27T14:20:37.350Z',
+                actions: [VisaCardAction.pause, VisaCardAction.reissue],
+                debugInformation: {
+                  intersolveVisaCardStatus: IntersolveVisaCardStatus.CardOk,
+                  intersolveVisaTokenStatus: IntersolveVisaTokenStatus.Active,
+                  isTokenBlocked: false,
+                },
+              },
+            ],
+          };
+
+          return data;
+        },
+        enabled: () => !!referenceId(),
+      });
+    };
   }
 
-  pauseCard({
+  changeCardPauseStatus({
     projectId,
     referenceId,
     tokenCode,
-    pause,
+    pauseStatus,
   }: {
     projectId: Signal<number>;
     referenceId: string;
     tokenCode: string;
-    pause: boolean;
+    pauseStatus: boolean;
   }) {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(projectId),
@@ -292,7 +343,12 @@ export class RegistrationApiService extends DomainApiService {
 
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'PATCH',
-      endpoint: endpoint + '?pause=' + pause.toString(),
+      endpoint,
+      params: new HttpParams({
+        fromObject: {
+          pause: pauseStatus,
+        },
+      }),
     });
   }
 

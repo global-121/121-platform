@@ -93,7 +93,7 @@ export interface ActivityLogItemDto {
   };
 }
 
-// XXX: all of the stuff below should be removed on the intersolve visa branch
+// TODO: AB#30525 all of the stuff below should be removed and we should just reference the "IntersolveVisaWalletDto" from the 121-service
 export enum VisaCard121Status {
   Active = 'Active',
   Blocked = 'Blocked',
@@ -111,7 +111,7 @@ export enum VisaCardAction {
   unpause = 'unpause',
 }
 
-enum IntersolveVisaCardStatus {
+export enum IntersolveVisaCardStatus {
   CardBlocked = 'CARD_BLOCKED',
   CardClosed = 'CARD_CLOSED',
   CardClosedDueToFraud = 'CARD_CLOSED_DUE_TO_FRAUD',
@@ -123,7 +123,7 @@ enum IntersolveVisaCardStatus {
   SuspectedFraud = 'SUSPECTED_FRAUD',
 }
 
-enum IntersolveVisaTokenStatus {
+export enum IntersolveVisaTokenStatus {
   Active = 'ACTIVE',
   Disabled = 'DISABLED',
   Expired = 'EXPIRED',
