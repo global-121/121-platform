@@ -3,11 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
-import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { SaveAndDoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
+import { SaveAndDoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
@@ -97,13 +97,8 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should do transfer', async () => {
-      const transferResult: TransferResponseSafaricomApiDto = {
-        data: {
-          ConversationID: 'mocked_conversation_id',
-          OriginatorConversationID: 'mocked_originator_conversation_id',
-          ResponseCode: '0',
-          ResponseDescription: 'Success',
-        },
+      const transferResult: SaveAndDoTransferReturnType = {
+        mpesaConversationId: 'mocked_conversation_id',
       };
 
       jest.spyOn(safaricomTransferScopedRepository, 'save');
@@ -115,9 +110,13 @@ describe('SafaricomService', () => {
       await service.saveAndDoTransfer(mockedSafaricomTransferParams);
 
       expect(safaricomTransferScopedRepository.save).toHaveBeenCalled();
-      expect(safaricomApiService.transfer).toHaveBeenCalledWith(
-        mockedSafaricomTransferParams,
-      );
+      expect(safaricomApiService.transfer).toHaveBeenCalledWith({
+        transferAmount: mockedSafaricomTransferParams.transferAmount,
+        phoneNumber: mockedSafaricomTransferParams.phoneNumber,
+        idNumber: mockedSafaricomTransferParams.idNumber,
+        originatorConversationId:
+          mockedSafaricomTransferParams.originatorConversationId,
+      });
       expect(safaricomTransferScopedRepository.update).toHaveBeenCalled();
     });
   });
