@@ -9,7 +9,7 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 
 @Processor(TransactionJobQueueNames.commercialBankEthiopia)
 export class PaymentProcessorCommercialBankEthiopia {

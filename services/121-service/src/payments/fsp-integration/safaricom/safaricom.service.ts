@@ -11,7 +11,7 @@ import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-in
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
-import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
+import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
@@ -53,13 +53,12 @@ export class SafaricomService
     idNumber,
     originatorConversationId,
   }: DoTransferParams): Promise<void> {
-    const transferResult =
-      await this.safaricomApiService.sendTransferAndHandleResponse({
-        transferAmount,
-        phoneNumber,
-        idNumber,
-        originatorConversationId,
-      });
+    const transferResult = await this.safaricomApiService.transfer({
+      transferAmount,
+      phoneNumber,
+      idNumber,
+      originatorConversationId,
+    });
 
     // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
     // It can be placed before or after the API call, as these are different scenarios to test
@@ -67,10 +66,8 @@ export class SafaricomService
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
-      { originatorConversationId },
-      {
-        mpesaConversationId: transferResult?.data?.ConversationID,
-      },
+      { originatorConversationId }, //##TODO Check if this OK
+      { mpesaConversationId: transferResult.mpesaConversationId },
     );
   }
 

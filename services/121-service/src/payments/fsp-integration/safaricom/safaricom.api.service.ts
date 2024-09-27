@@ -4,7 +4,7 @@ import { TokenSet } from 'openid-client';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
-import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
+import { SaveAndDoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -14,16 +14,23 @@ const safaricomTransferCallbacktUrl = `${callbackBaseUrl}financial-service-provi
 
 @Injectable()
 export class SafaricomApiService {
-  public tokenSet: TokenSet | null;
+  public tokenSet: TokenSet;
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async sendTransferAndHandleResponse(
-    transferData: DoTransferParams,
-  ): Promise<TransferResponseSafaricomApiDto> {
-    await this.authenticate();
-    const payload = this.createTransferPayload(transferData);
-    const transferResponse = await this.transfer(payload);
+  public async transfer({
+    transferAmount,
+    phoneNumber,
+    idNumber,
+    originatorConversationId,
+  }): Promise<SaveAndDoTransferReturnType> {
+    const payload = this.createTransferPayload({
+      transferAmount,
+      phoneNumber,
+      idNumber,
+      originatorConversationId,
+    });
+    const transferResponse = await this.makeTransferCall(payload);
 
     let errorMessage: string | undefined;
 
@@ -32,9 +39,9 @@ export class SafaricomApiService {
     } else if (transferResponse.data.errorCode) {
       errorMessage = `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`;
     } else if (!transferResponse.data.ResponseCode) {
-      errorMessage = `Error: ${(transferResponse.data as any)?.statusCode} ${(transferResponse.data as any)?.error}`;
+      errorMessage = `Error: ${transferResponse.data?.statusCode} ${transferResponse.data?.error}`;
     } else if (transferResponse.data.ResponseCode !== '0') {
-      errorMessage = transferResponse.data?.ResponseDescription;
+      errorMessage = `Response: ${transferResponse.data?.ResponseCode} - ${transferResponse.data?.ResponseDescription}`;
     }
 
     if (errorMessage) {
@@ -42,10 +49,12 @@ export class SafaricomApiService {
     }
 
     // All the checks above mean that at this stage transferResponse.data.ResponseCode === '0'
-    return transferResponse;
+    return {
+      mpesaConversationId: transferResponse.data.ConversationID,
+    };
   }
 
-  private async authenticate(): Promise<string | undefined> {
+  private async authenticate(): Promise<void> {
     const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
     const accessTokenUrl = !!process.env.MOCK_SAFARICOM
@@ -54,8 +63,6 @@ export class SafaricomApiService {
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
     );
-
-    this.tokenSet = null;
 
     try {
       const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
@@ -73,46 +80,53 @@ export class SafaricomApiService {
       });
 
       this.tokenSet = tokenSet;
-
-      return tokenSet.access_token;
     } catch (error) {
-      console.log(error, 'authenticate');
-      console.error('Failed to make OAuth Access Token payment API call');
-
+      console.error(
+        'Failed to make OAuth Access Token payment API call',
+        error,
+      );
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
 
-  private createTransferPayload(
-    transferData: DoTransferParams,
-  ): TransferRequestSafaricomApiDto {
+  private createTransferPayload({
+    transferAmount,
+    phoneNumber,
+    idNumber,
+    originatorConversationId,
+  }): TransferRequestSafaricomApiDto {
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
       CommandID: 'BusinessPayment',
-      Amount: transferData.transferAmount,
+      Amount: transferAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: transferData.phoneNumber, // Set to '254000000000' to trigger mock failure on callback and '254000000001' to trigger mock failure on request
+      PartyB: phoneNumber,
       Remarks: 'No remarks', // Not used for reconciliation by clients. Required to be non-empty, so filled with default value.
       QueueTimeOutURL: safaricomTimeoutCallbackUrl,
       ResultURL: safaricomTransferCallbacktUrl,
-      OriginatorConversationID: transferData.originatorConversationId,
+      OriginatorConversationID: originatorConversationId,
       IDType: process.env.SAFARICOM_IDTYPE!,
-      IDNumber: transferData.idNumber,
+      IDNumber: idNumber,
     };
   }
 
-  private async transfer(
+  private async makeTransferCall(
     payload: TransferRequestSafaricomApiDto,
   ): Promise<TransferResponseSafaricomApiDto> {
     try {
+      if (!this.isTokenValid(this.tokenSet)) {
+        await this.authenticate();
+      }
+
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
         : `${process.env.SAFARICOM_API_URL}/${process.env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
+
       const headers = [
         {
           name: 'Authorization',
-          value: `Bearer ${this.tokenSet?.access_token}`,
+          value: `Bearer ${this.tokenSet.access_token}`,
         },
       ];
 
@@ -122,10 +136,21 @@ export class SafaricomApiService {
         headers,
       );
     } catch (error) {
-      console.log(error, 'transfer');
-      console.error('Failed to make Safaricom B2C payment API call');
-
+      console.error('Failed to make Safaricom B2C payment API call', error);
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
+  }
+
+  private isTokenValid(
+    tokenSet: TokenSet,
+  ): tokenSet is TokenSet & Required<Pick<TokenSet, 'access_token'>> {
+    if (!tokenSet || !tokenSet.expires_at) {
+      return false;
+    }
+    // Convert expires_at to milliseconds
+    const expiresAtInMs = tokenSet.expires_at * 1000;
+    const timeLeftBeforeExpire = expiresAtInMs - Date.now();
+    // If more than 1 hour left before expiration, the token is considered valid
+    return timeLeftBeforeExpire > 3600000;
   }
 }
