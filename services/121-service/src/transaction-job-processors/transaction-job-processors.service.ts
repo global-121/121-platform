@@ -451,7 +451,9 @@ export class TransactionJobProcessorsService {
   ): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
 
-    const paymentCount = (registration.paymentCount || 0) + 1;
+    const paymentCount = await this.latestTransactionRepository.getPaymentCount(
+      registration.id,
+    );
 
     let updateData: {
       paymentCount: number;
