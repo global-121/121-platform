@@ -63,7 +63,6 @@ export class SafaricomService
 
     // Prepare the transfer payload and send the request to safaricom
     const transferResult = await this.safaricomApiService.transfer({
-      transactionId,
       transferAmount,
       phoneNumber,
       idNumber,
@@ -73,7 +72,7 @@ export class SafaricomService
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
       { id: safaricomTransfer.id },
-      { mpesaConversationId: transferResult?.data?.ConversationID },
+      { mpesaConversationId: transferResult.mpesaConversationId },
     );
   }
 
