@@ -34,7 +34,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
     } else {
       updatedTransactionStatusAndErrorMessage = {
         status: TransactionStatusEnum.error,
-        errorMessage: safaricomTransferCallbackJob.resultDescription,
+        errorMessage: `${safaricomTransferCallbackJob.resultCode} - ${safaricomTransferCallbackJob.resultDescription}`,
       };
     }
 

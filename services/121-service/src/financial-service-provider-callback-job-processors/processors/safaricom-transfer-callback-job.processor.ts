@@ -26,7 +26,6 @@ export class TransferCallbackJobProcessorSafaricom {
         job.data,
       );
     } catch (error) {
-      console.log(error);
       throw error;
     } finally {
       await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);

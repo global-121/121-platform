@@ -21,10 +21,6 @@ export class SafaricomApiService {
   public async sendTransferAndHandleResponse(
     transferData: DoTransferParams,
   ): Promise<TransferResponseSafaricomApiDto> {
-    if (!this.isTokenValid(this.tokenSet)) {
-      await this.authenticate();
-    }
-
     const payload = this.createTransferPayload(transferData);
     const transferResponse = await this.transfer(payload);
 
@@ -37,7 +33,7 @@ export class SafaricomApiService {
     } else if (!transferResponse.data.ResponseCode) {
       errorMessage = `Error: ${transferResponse.data?.statusCode} ${transferResponse.data?.error}`;
     } else if (transferResponse.data.ResponseCode !== '0') {
-      errorMessage = transferResponse.data?.ResponseDescription;
+      errorMessage = `Response: ${transferResponse.data?.ResponseCode} - ${transferResponse.data?.ResponseDescription}`;
     }
 
     if (errorMessage) {
@@ -76,7 +72,6 @@ export class SafaricomApiService {
       this.tokenSet = tokenSet;
     } catch (error) {
       console.error('Failed to make OAuth Access Token payment API call');
-
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
@@ -104,13 +99,18 @@ export class SafaricomApiService {
     payload: TransferRequestSafaricomApiDto,
   ): Promise<TransferResponseSafaricomApiDto> {
     try {
+      if (!this.isTokenValid(this.tokenSet)) {
+        await this.authenticate();
+      }
+
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
         : `${process.env.SAFARICOM_API_URL}/${process.env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
+
       const headers = [
         {
           name: 'Authorization',
-          value: `Bearer ${this.tokenSet?.access_token}`,
+          value: `Bearer ${this.tokenSet.access_token}`,
         },
       ];
 
@@ -121,7 +121,6 @@ export class SafaricomApiService {
       );
     } catch (error) {
       console.error('Failed to make Safaricom B2C payment API call');
-
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
@@ -135,7 +134,7 @@ export class SafaricomApiService {
     // Convert expires_at to milliseconds
     const expiresAtInMs = tokenSet.expires_at * 1000;
     const timeLeftBeforeExpire = expiresAtInMs - Date.now();
-    // If more than 1 minute left before expiration, the token is considered valid
-    return timeLeftBeforeExpire > 60000;
+    // If more than 1 hour left before expiration, the token is considered valid
+    return timeLeftBeforeExpire > 3600000;
   }
 }

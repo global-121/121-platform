@@ -25,7 +25,7 @@ import { RegistrationDataModule } from '@121-service/src/registration/modules/re
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
