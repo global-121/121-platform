@@ -51,8 +51,8 @@ export class ProjectTeamPageComponent {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
-  @ViewChild('confirmationDialog')
-  private confirmationDialog: ConfirmationDialogComponent;
+  @ViewChild('removeUserConfirmationDialog')
+  private removeUserConfirmationDialog: ConfirmationDialogComponent;
 
   // this is injected by the router
   projectId = input.required<number>();
@@ -66,19 +66,21 @@ export class ProjectTeamPageComponent {
     this.projectApiService.getProjectUsers(this.projectId),
   );
 
-  removeUserMutation = injectMutation(() => ({
-    mutationFn: ({ userId }: { userId: number }) =>
-      this.projectApiService.removeProjectUser(this.projectId, userId),
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: $localize`User removed`,
-      });
-      void this.projectApiService.invalidateCache(this.projectId);
-    },
-    onError: () => {
-      this.toastService.showGenericError();
-    },
-  }));
+  removeUserMutation = injectMutation<unknown, Error, { userId?: number }>(
+    () => ({
+      mutationFn: ({ userId }) =>
+        this.projectApiService.removeProjectUser(this.projectId, userId),
+      onSuccess: () => {
+        this.toastService.showToast({
+          detail: $localize`User removed`,
+        });
+        void this.projectApiService.invalidateCache(this.projectId);
+      },
+      onError: () => {
+        this.toastService.showGenericError();
+      },
+    }),
+  );
 
   columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(() => [
     {
@@ -145,16 +147,7 @@ export class ProjectTeamPageComponent {
         icon: 'pi pi-times text-red-500',
         visible: this.canManageAidworkers(),
         command: () => {
-          const user = this.selectedUser();
-          if (!user) {
-            this.toastService.showGenericError();
-            return;
-          }
-          this.confirmationDialog.confirm({
-            accept: () => {
-              this.removeUserMutation.mutate({ userId: user.id });
-            },
-          });
+          this.removeUserConfirmationDialog.askForConfirmation();
         },
       },
     ];

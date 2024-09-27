@@ -33,11 +33,13 @@
   </p-card>
 </app-page-layout>
 <app-confirmation-dialog
-  #confirmationDialog
+  #removeUserConfirmationDialog
   header="Remove user from team"
   i18n-header
-  acceptLabel="Remove user"
-  i18n-acceptLabel="@@remove-user-button"
+  proceedLabel="Remove user"
+  i18n-proceedLabel="@@remove-user-button"
+  [mutation]="removeUserMutation"
+  [mutationData]="{ userId: selectedUser()?.id }"
 >
   <p i18n>
     You're about to remove
