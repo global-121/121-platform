@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Equal, QueryFailedError } from 'typeorm';
+import { Equal } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
 import {
@@ -283,6 +283,8 @@ export class TransactionJobProcessorsService {
         status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
       });
       transactionId = transaction.id;
+
+      // ##TODO: combine this with the transaction creation above in one SQL transaction
       const newSafaricomTransfer = new SafaricomTransferEntity();
       newSafaricomTransfer.originatorConversationId =
         transactionJob.originatorConversationId;
@@ -315,25 +317,12 @@ export class TransactionJobProcessorsService {
           );
           return;
         }
-        // In all other error cases update transaction to error
+        // In all other SafaricomApiError cases update transaction to error
         await this.transactionScopedRepository.update(
           { id: transactionId },
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
         );
         return;
-      }
-      // ##TODO: this can be removed again probably, because we no longer let it fail on the unique constraint
-      if (error instanceof QueryFailedError) {
-        if (error['code'] === '23505') {
-          await this.transactionScopedRepository.update(
-            { id: transactionId },
-            {
-              status: TransactionStatusEnum.error,
-              errorMessage: `Payout with originatorConversationId=${transactionJob.originatorConversationId} already exists & processed before.`,
-            },
-          );
-        }
-        throw error;
       } else {
         throw error;
       }

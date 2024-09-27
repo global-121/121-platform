@@ -1,10 +1,11 @@
 import { TestBed } from '@automock/jest';
-import { QueryFailedError, UpdateResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -126,27 +127,22 @@ describe('TransactionJobProcessorsService', () => {
       .spyOn(latestTransactionRepository, 'insertOrUpdateFromTransaction')
       .mockResolvedValueOnce();
 
-    const queryFailedError = new QueryFailedError(
-      'safaricom_transfer',
-      [],
-      new Error('duplicate key value violates unique constraint'),
+    const idempotencyError = new SafaricomApiError(
+      '500.002.1001 - Duplicate OriginatorConversationID.',
     );
-    (queryFailedError as any).code = '23505';
 
     jest
       .spyOn(safaricomService, 'doTransfer')
-      .mockRejectedValueOnce(queryFailedError);
+      .mockRejectedValueOnce(idempotencyError);
 
     jest
       .spyOn(transactionScopedRepository, 'update')
       .mockResolvedValueOnce({} as UpdateResult);
 
     // Call the service method
-    await expect(
-      transactionJobProcessorsService.processSafaricomTransactionJob(
-        mockedTransactionJob,
-      ),
-    ).rejects.toThrow(QueryFailedError);
+    await transactionJobProcessorsService.processSafaricomTransactionJob(
+      mockedTransactionJob,
+    );
 
     expect(registrationScopedRepository.getByReferenceId).toHaveBeenCalledWith({
       referenceId: mockedTransactionJob.referenceId,
