@@ -55,7 +55,7 @@ export class SafaricomService
   }: DoTransferParams): Promise<void> {
     // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
     // 1. Simulate crash before API-call
-    await new Promise((resolve) => setTimeout(resolve, 60000));
+    // await new Promise((resolve) => setTimeout(resolve, 60000));
 
     const transferResult = await this.safaricomApiService.transfer({
       transferAmount,
