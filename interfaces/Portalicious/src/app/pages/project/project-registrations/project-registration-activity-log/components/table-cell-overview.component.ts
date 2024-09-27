@@ -84,7 +84,7 @@ export class TableCellOverviewComponent
 
     if (
       item.activityType !== ActivityLogItemType.Transfer ||
-      item.contents.fsp ===
+      item.contents.fsp !==
         FinancialServiceProviderName.intersolveVoucherWhatsapp
     ) {
       return;
