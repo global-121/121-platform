@@ -11,7 +11,7 @@ import {
   SaveOptions,
   UpdateResult,
 } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -23,7 +23,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   constructor(
     dataSource: DataSource,
     // TODO check if this can be set on ScopedRepository so it can be reused
-    @Inject(REQUEST) public request: ScopedUserRequest,
+    @Inject(REQUEST) public override request: ScopedUserRequest,
   ) {
     super(RegistrationEntity, dataSource);
   }

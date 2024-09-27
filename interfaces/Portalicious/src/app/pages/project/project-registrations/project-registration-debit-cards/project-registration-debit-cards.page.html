@@ -1,3 +1,4 @@
+@let curCard = currentCard();
 <app-page-layout
   pageTitle=""
   i18n-pageTitle="@@page-title-project-registration-debit-cards"
@@ -8,6 +9,117 @@
     registration-page
     class="px-2"
   >
-    <p i18n>registration-debit-cards works</p>
+    <div class="my-auto ms-auto flex">
+      @if (curCard) {
+        @for (action of curCard.actions; track $index) {
+          @switch (action) {
+            @case ('pause') {
+              <p-button
+                label="Pause card"
+                i18n-label="@@debit-cards-actions-pause-card"
+                rounded
+                outlined
+                icon="pi pi-pause"
+                class="ml-auto"
+                (click)="pauseCard()"
+                [disabled]="pauseCardMutation.isPending()"
+                [loading]="pauseCardMutation.isPending()"
+              />
+            }
+            @case ('unpause') {
+              <p-button
+                label="Unpause card"
+                i18n-label="@@debit-cards-actions-unpause-card"
+                rounded
+                outlined
+                icon="pi pi-play"
+                class="ml-auto"
+                (click)="unpauseCard()"
+                [disabled]="unpauseCardMutation.isPending()"
+                [loading]="unpauseCardMutation.isPending()"
+              />
+            }
+            @case ('reissue') {
+              <p-button
+                label="Replace card"
+                i18n-label="@@debit-cards-actions-replace-card"
+                rounded
+                outlined
+                icon="pi pi-refresh"
+                class="ms-4"
+                (click)="reissueCard()"
+                [disabled]="reissueCardMutation.isPending()"
+                [loading]="reissueCardMutation.isPending()"
+              />
+            }
+          }
+        }
+      }
+    </div>
+    <app-data-list [data]="walletWithCurrentCardData()" />
+    <div class="py-1"></div>
+    @if (oldCards().length > 0) {
+      <p-accordion>
+        @for (card of oldCards(); track $index) {
+          <p-accordionTab
+            class="[&_.p-accordion-content]:px-1 [&_.p-accordion-header-link]:px-0 [&_.p-accordion-header-link]:text-black"
+          >
+            <ng-template pTemplate="header">
+              <span class="flex items-center gap-1">
+                <strong i18n>Old card:</strong>
+                <span class="font-normal"> {{ card.tokenCode }} </span>
+                <app-colored-chip
+                  [variant]="card.chipVariant"
+                  [label]="card.chipLabel"
+                />
+              </span>
+            </ng-template>
+            <app-data-list
+              class="text-black"
+              [data]="card.dataList"
+              [hideBottomBorder]="true"
+            />
+          </p-accordionTab>
+        }
+      </p-accordion>
+    }
   </div>
 </app-page-layout>
+<app-confirmation-dialog
+  i18n
+  #pauseConfirmationDialog
+  header="Pause card"
+  i18n-header="@@debit-cards-actions-pause-card"
+  acceptLabel="Pause card"
+  i18n-acceptLabel="@@debit-cards-actions-pause-card"
+>
+  You're about to pause debit card number {{ curCard?.tokenCode }}.
+  <br />
+  A message will be sent to the registration about this update.
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  i18n
+  #unpauseConfirmationDialog
+  header="Unpause card"
+  i18n-header="@@debit-cards-actions-unpause-card"
+  acceptLabel="Unpause card"
+  i18n-acceptLabel="@@debit-cards-actions-unpause-card"
+>
+  You're about to unpause debit card number {{ curCard?.tokenCode }}.
+  <br />
+  A message will be sent to the registration about this update.
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  i18n
+  #reissueConfirmationDialog
+  header="Replace card"
+  i18n-header="@@debit-cards-actions-replace-card"
+  acceptLabel="Replace card"
+  i18n-acceptLabel="@@debit-cards-actions-replace-card"
+>
+  You're about to replace debit card number {{ curCard?.tokenCode }}. This will
+  block the current card and a new card will be issued. A message will be sent
+  to the registration about this update.
+  <br />
+  A message will be sent to the registration about this update.
+</app-confirmation-dialog>

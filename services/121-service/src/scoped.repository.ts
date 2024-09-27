@@ -13,7 +13,7 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import {
@@ -33,7 +33,7 @@ export class ScopedQueryBuilder<
     // Copy other properties if needed
   }
   // Would be better if there was a way to give an error before runtime
-  where(): this {
+  override where(): this {
     // The reason for this error is that you else overwrite the .where of the scoped repository
     const errorText =
       'ERROR: The .where method is not allowed for scope repositories. Use .andWhere instead.';
@@ -90,7 +90,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
 
-  public async find(options: FindOptionsCombined<T>): Promise<T[]> {
+  public override async find(options: FindOptionsCombined<T>): Promise<T[]> {
     if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
@@ -102,7 +102,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.find(scopedOptions);
   }
 
-  public async findAndCount(
+  public override async findAndCount(
     options: FindOptionsCombined<T>,
   ): Promise<[T[], number]> {
     if (!hasUserScope(this.request)) {
@@ -116,7 +116,9 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findAndCount(scopedOptions);
   }
 
-  public async findOne(options: FindOptionsCombined<T>): Promise<T | null> {
+  public override async findOne(
+    options: FindOptionsCombined<T>,
+  ): Promise<T | null> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
     }
@@ -128,7 +130,9 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
-  public async findOneOrFail(options: FindOptionsCombined<T>): Promise<T> {
+  public override async findOneOrFail(
+    options: FindOptionsCombined<T>,
+  ): Promise<T> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOneOrFail(options);
     }
@@ -140,7 +144,9 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findOneOrFail(scopedOptions);
   }
 
-  public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
+  public override createQueryBuilder(
+    queryBuilderAlias: string,
+  ): ScopedQueryBuilder<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
     if (!hasUserScope(this.request)) {
@@ -171,32 +177,38 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   ////////////////////////////////////////////////////////////////
   // COPIED IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
-  public async save(
+  public override async save(
     entity: T,
     options: SaveOptions & { reload: false },
   ): Promise<T>;
-  public async save(entity: T, options?: SaveOptions): Promise<T>;
-  public async save(
+  public override async save(entity: T, options?: SaveOptions): Promise<T>;
+  public override async save(
     entities: T[],
     options: SaveOptions & { reload: false },
   ): Promise<T[]>;
-  public async save(entities: T[], options?: SaveOptions): Promise<T[]>;
-  public async save(
+  public override async save(
+    entities: T[],
+    options?: SaveOptions,
+  ): Promise<T[]>;
+  public override async save(
     entityOrEntities: T | T[],
     options?: SaveOptions,
   ): Promise<T | T[]> {
     return this.repository.save(entityOrEntities as any, options);
   }
 
-  public async insert(
+  public override async insert(
     entityOrEntities: QueryDeepPartialEntity<T> | QueryDeepPartialEntity<T>[],
   ): Promise<InsertResult> {
     return this.repository.insert(entityOrEntities);
   }
 
-  public async remove(entity: T, options?: RemoveOptions): Promise<T>;
-  public async remove(entities: T[], options?: RemoveOptions): Promise<T[]>;
-  public async remove(
+  public override async remove(entity: T, options?: RemoveOptions): Promise<T>;
+  public override async remove(
+    entities: T[],
+    options?: RemoveOptions,
+  ): Promise<T[]>;
+  public override async remove(
     entityOrEntities: T | T[],
     options?: RemoveOptions,
   ): Promise<T | T[]> {
@@ -266,5 +278,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
         return relation;
       }
     }
+
+    return undefined;
   }
 }
