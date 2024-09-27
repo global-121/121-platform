@@ -27,6 +27,7 @@ export abstract class DomainApiService {
     path,
     processResponse,
     requestOptions = {},
+    method = 'GET',
     ...opts
   }: {
     path: Parameters<typeof DomainApiService.prototype.pathToQueryKey>[0];
@@ -35,6 +36,7 @@ export abstract class DomainApiService {
       Perform121ServiceRequestParams,
       'endpoint' | 'method'
     >;
+    method?: Perform121ServiceRequestParams['method'];
   } & Partial<UndefinedInitialDataOptions<ProcessedResponseShape>>) {
     return () => {
       const queryKey = this.pathToQueryKey(path);
@@ -49,7 +51,7 @@ export abstract class DomainApiService {
             await this.httpWrapperService.perform121ServiceRequest<BackendDataShape>(
               {
                 ...requestOptions,
-                method: 'GET',
+                method,
                 endpoint,
               },
             );

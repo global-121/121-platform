@@ -19,7 +19,7 @@
             [label]="item.chipLabel"
           />
         }
-        @if (item.value) {
+        @if (item.value !== undefined && item.value !== null) {
           <span>
             @switch (item.type) {
               @case ('boolean') {
