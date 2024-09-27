@@ -164,9 +164,9 @@ export class RegistrationsPaginationService {
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
 
     // Replacing the filter on referenceId is needed in specific cases where the referenceId only consists of numbers.
-    // The includes('$') === false is needed to check if the query doesn't contain an '$ilike' operator.
+    // The !query.filter.referenceId.includes('$') is needed to check if the query doesn't contain an operator like '$ilike'.
     // If the filter has a '$' we don't need to replace the filter
-    if (query?.filter?.referenceId?.includes('$') === false) {
+    if (query?.filter?.referenceId && !query.filter.referenceId.includes('$')) {
       queryBuilder.andWhere('CAST("referenceId" AS TEXT) = :referenceId', {
         referenceId: query.filter.referenceId,
       });
