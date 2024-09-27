@@ -1,3 +1,3 @@
-export interface SaveAndDoTransferReturnType {
+export interface DoTransferReturnType {
   mpesaConversationId: string;
 }
