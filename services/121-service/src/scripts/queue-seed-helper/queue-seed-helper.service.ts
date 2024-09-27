@@ -7,7 +7,7 @@ import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 
 @Injectable()
 export class QueueSeedHelperService {

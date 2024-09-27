@@ -50,7 +50,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()

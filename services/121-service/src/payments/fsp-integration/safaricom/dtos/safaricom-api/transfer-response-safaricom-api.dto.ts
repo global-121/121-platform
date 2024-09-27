@@ -6,5 +6,7 @@ export interface TransferResponseSafaricomApiDto {
     readonly ResponseDescription?: string;
     readonly errorCode?: string;
     readonly errorMessage?: string;
+    readonly statusCode?: string;
+    readonly error?: string;
   };
 }

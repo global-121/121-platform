@@ -3,7 +3,7 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 
 @Module({

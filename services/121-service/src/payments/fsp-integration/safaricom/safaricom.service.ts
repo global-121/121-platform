@@ -12,7 +12,7 @@ import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-inte
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
-import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
+import { SaveAndDoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
@@ -54,7 +54,7 @@ export class SafaricomService
     phoneNumber,
     idNumber,
     originatorConversationId,
-  }: DoTransferParams): Promise<void> {
+  }: SaveAndDoTransferParams): Promise<void> {
     // Store initial transfer record before transfer because of callback
     const safaricomTransfer = new SafaricomTransferEntity();
     safaricomTransfer.originatorConversationId = originatorConversationId;
@@ -62,14 +62,13 @@ export class SafaricomService
     await this.safaricomTransferScopedRepository.save(safaricomTransfer);
 
     // Prepare the transfer payload and send the request to safaricom
-    const transferResult =
-      await this.safaricomApiService.sendTransferAndHandleResponse({
-        transactionId,
-        transferAmount,
-        phoneNumber,
-        idNumber,
-        originatorConversationId,
-      });
+    const transferResult = await this.safaricomApiService.transfer({
+      transactionId,
+      transferAmount,
+      phoneNumber,
+      idNumber,
+      originatorConversationId,
+    });
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
