@@ -163,7 +163,7 @@ export class RegistrationsPaginationService {
 
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
 
-    if (query?.filter?.referenceId) {
+    if (query?.filter?.referenceId?.includes('$ilike') === false) {
       queryBuilder.andWhere('CAST("referenceId" AS TEXT) = :referenceId', {
         referenceId: query.filter.referenceId,
       });
