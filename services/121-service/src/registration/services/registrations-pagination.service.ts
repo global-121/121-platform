@@ -164,6 +164,13 @@ export class RegistrationsPaginationService {
 
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
 
+    if (query?.filter?.referenceId) {
+      queryBuilder.andWhere('CAST("referenceId" AS TEXT) = :referenceId', {
+        referenceId: query.filter.referenceId,
+      });
+      delete query.filter.referenceId;
+    }
+
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
