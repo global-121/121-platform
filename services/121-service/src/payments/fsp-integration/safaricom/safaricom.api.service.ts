@@ -4,7 +4,7 @@ import { TokenSet } from 'openid-client';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
-import { SaveAndDoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
+import { SaveAndDoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -18,10 +18,18 @@ export class SafaricomApiService {
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async transfer(
-    transferData: SaveAndDoTransferParams,
-  ): Promise<TransferResponseSafaricomApiDto> {
-    const payload = this.createTransferPayload(transferData);
+  public async transfer({
+    transferAmount,
+    phoneNumber,
+    idNumber,
+    originatorConversationId,
+  }): Promise<SaveAndDoTransferReturnType> {
+    const payload = this.createTransferPayload({
+      transferAmount,
+      phoneNumber,
+      idNumber,
+      originatorConversationId,
+    });
     const transferResponse = await this.makeTransferCall(payload);
 
     let errorMessage: string | undefined;
@@ -41,7 +49,9 @@ export class SafaricomApiService {
     }
 
     // All the checks above mean that at this stage transferResponse.data.ResponseCode === '0'
-    return transferResponse;
+    return {
+      mpesaConversationId: transferResponse.data.ConversationID,
+    };
   }
 
   private async authenticate(): Promise<void> {
@@ -79,22 +89,25 @@ export class SafaricomApiService {
     }
   }
 
-  private createTransferPayload(
-    transferData: SaveAndDoTransferParams,
-  ): TransferRequestSafaricomApiDto {
+  private createTransferPayload({
+    transferAmount,
+    phoneNumber,
+    idNumber,
+    originatorConversationId,
+  }): TransferRequestSafaricomApiDto {
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL!,
       CommandID: 'BusinessPayment',
-      Amount: transferData.transferAmount,
+      Amount: transferAmount,
       PartyA: process.env.SAFARICOM_PARTY_A!,
-      PartyB: transferData.phoneNumber,
+      PartyB: phoneNumber,
       Remarks: 'No remarks', // Not used for reconciliation by clients. Required to be non-empty, so filled with default value.
       QueueTimeOutURL: safaricomTimeoutCallbackUrl,
       ResultURL: safaricomTransferCallbacktUrl,
-      OriginatorConversationID: transferData.originatorConversationId,
+      OriginatorConversationID: originatorConversationId,
       IDType: process.env.SAFARICOM_IDTYPE!,
-      IDNumber: transferData.idNumber,
+      IDNumber: idNumber,
     };
   }
 
