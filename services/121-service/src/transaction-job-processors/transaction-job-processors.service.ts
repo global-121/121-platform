@@ -305,19 +305,6 @@ export class TransactionJobProcessorsService {
       });
     } catch (error) {
       if (error instanceof SafaricomApiError) {
-        // ##TODO: check only on code or enum value (like IntersolveVisa121ErrorText)
-        // ##TODO: also, this is not good api service encapsulation
-        if (
-          error.message === '500.002.1001 - Duplicate OriginatorConversationID.'
-        ) {
-          // This error means the API-request has gone through before, so we should not overrule the original transaction
-          // write to console so that we know this happened, and return early
-          console.error(
-            `Error ${error.message} for ${registration.referenceId}`,
-          );
-          return;
-        }
-        // In all other SafaricomApiError cases update transaction to error
         await this.transactionScopedRepository.update(
           { id: transactionId },
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
@@ -330,7 +317,7 @@ export class TransactionJobProcessorsService {
 
     // 5. No messages sent for safaricom
 
-    // 6. No transaction stored or updated, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+    // 6. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   private async getRegistrationOrThrow(

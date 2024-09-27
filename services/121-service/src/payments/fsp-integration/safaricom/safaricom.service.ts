@@ -53,6 +53,10 @@ export class SafaricomService
     idNumber,
     originatorConversationId,
   }: DoTransferParams): Promise<void> {
+    // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
+    // 1. Simulate crash before API-call
+    await new Promise((resolve) => setTimeout(resolve, 60000));
+
     const transferResult = await this.safaricomApiService.transfer({
       transferAmount,
       phoneNumber,
@@ -60,13 +64,16 @@ export class SafaricomService
       originatorConversationId,
     });
 
-    // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
-    // It can be placed before or after the API call, as these are different scenarios to test
+    // 2. Simulate crash after API call
     // await new Promise((resolve) => setTimeout(resolve, 60000));
+
+    if (transferResult.duplicateOriginatorConversationIdError) {
+      return;
+    }
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
-      { originatorConversationId }, //##TODO Check if this OK
+      { originatorConversationId },
       { mpesaConversationId: transferResult.mpesaConversationId },
     );
   }

@@ -37,6 +37,14 @@ export class SafaricomApiService {
     if (!transferResponse || !transferResponse.data) {
       errorMessage = `Error: No response data from Safaricom API`;
     } else if (transferResponse.data.errorCode) {
+      if (transferResponse.data.errorCode === '500.002.1001') {
+        // This happens only in case of unintended Redis job re-attempt, and only if the API-request already went through the first time
+        // Only console.error and then return to close the job without any further processing
+        console.error(
+          `Error ${transferResponse.data.errorMessage} for originatorConversationId ${originatorConversationId}`,
+        );
+        return { duplicateOriginatorConversationIdError: true };
+      }
       errorMessage = `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`;
     } else if (!transferResponse.data.ResponseCode) {
       errorMessage = `Error: ${transferResponse.data?.statusCode} ${transferResponse.data?.error}`;
