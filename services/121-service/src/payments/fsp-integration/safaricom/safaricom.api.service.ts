@@ -4,7 +4,7 @@ import { TokenSet } from 'openid-client';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
-import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
+import { SaveAndDoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -18,11 +18,11 @@ export class SafaricomApiService {
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async sendTransferAndHandleResponse(
-    transferData: DoTransferParams,
+  public async transfer(
+    transferData: SaveAndDoTransferParams,
   ): Promise<TransferResponseSafaricomApiDto> {
     const payload = this.createTransferPayload(transferData);
-    const transferResponse = await this.transfer(payload);
+    const transferResponse = await this.makeTransferCall(payload);
 
     let errorMessage: string | undefined;
 
@@ -80,7 +80,7 @@ export class SafaricomApiService {
   }
 
   private createTransferPayload(
-    transferData: DoTransferParams,
+    transferData: SaveAndDoTransferParams,
   ): TransferRequestSafaricomApiDto {
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,
@@ -98,7 +98,7 @@ export class SafaricomApiService {
     };
   }
 
-  private async transfer(
+  private async makeTransferCall(
     payload: TransferRequestSafaricomApiDto,
   ): Promise<TransferResponseSafaricomApiDto> {
     try {

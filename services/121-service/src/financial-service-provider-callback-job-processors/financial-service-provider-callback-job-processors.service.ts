@@ -58,6 +58,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
         updatedTransactionStatusAndErrorMessage,
       );
     } catch (error) {
+      // This should never happen. This way, if it happens, we receive an alert
       if (error instanceof NotFoundException) {
         throw new InternalServerErrorException(error.message);
       }
@@ -85,6 +86,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
         },
       );
     } catch (error) {
+      // This should never happen. This way, if it happens, we receive an alert
       if (error instanceof NotFoundException) {
         throw new InternalServerErrorException(error.message);
       }
