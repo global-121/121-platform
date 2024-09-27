@@ -71,7 +71,10 @@ export class SafaricomApiService {
 
       this.tokenSet = tokenSet;
     } catch (error) {
-      console.error('Failed to make OAuth Access Token payment API call');
+      console.error(
+        'Failed to make OAuth Access Token payment API call',
+        error,
+      );
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
@@ -120,7 +123,7 @@ export class SafaricomApiService {
         headers,
       );
     } catch (error) {
-      console.error('Failed to make Safaricom B2C payment API call');
+      console.error('Failed to make Safaricom B2C payment API call', error);
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
