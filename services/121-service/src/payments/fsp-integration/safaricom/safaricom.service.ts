@@ -16,7 +16,6 @@ import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integ
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
-import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -57,6 +56,7 @@ export class SafaricomService
     idNumber,
     originatorConversationId,
   }: DoTransferParams): Promise<void> {
+    // ##TODO: can we move this save to transaction-job-processors.service to put it together with transaction save?
     // Check if transfer record exists already, if so, use that
     let safaricomTransfer =
       await this.safaricomTransferScopedRepository.findOne({
@@ -74,45 +74,24 @@ export class SafaricomService
     }
 
     // Prepare the transfer payload and send the request to safaricom
-    let transferResult;
-    try {
-      transferResult =
-        await this.safaricomApiService.sendTransferAndHandleResponse({
-          transactionId,
-          transferAmount,
-          phoneNumber,
-          idNumber,
-          originatorConversationId,
-        });
-    } catch (error) {
-      // ##TODO: check only on code or enum value (like IntersolveVisa121ErrorText)
-      if (
-        error instanceof SafaricomApiError &&
-        error.message === '500.002.1001 - Duplicate OriginatorConversationID.'
-      ) {
-        // 1. This error means the API-request has gone through before, we will remove the new transaction record, so do not update transactionId here
-        throw error;
-      }
+    const transferResult =
+      await this.safaricomApiService.sendTransferAndHandleResponse({
+        transactionId,
+        transferAmount,
+        phoneNumber,
+        idNumber,
+        originatorConversationId,
+      });
 
-      // 2. In all other error cases do update transactionId here
-      await this.safaricomTransferScopedRepository.update(
-        { id: safaricomTransfer.id },
-        {
-          transactionId,
-        },
-      );
-      throw error;
-    }
-
-    // Simulate timeout, use this to test by restarting 121-service during this timeout
-    await new Promise((resolve) => setTimeout(resolve, 60000));
+    // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
+    // It can be placed before or after the API call, as these are different scenarios to test
+    // await new Promise((resolve) => setTimeout(resolve, 60000));
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
       { id: safaricomTransfer.id },
       {
         mpesaConversationId: transferResult?.data?.ConversationID,
-        transactionId, // 3. Also update transactionId in case of success response
       },
     );
   }
