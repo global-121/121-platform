@@ -258,10 +258,7 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Save the transaction into database with 'waiting' status and then call to safaricom for payouts. And then safaricom will return the
-    // actual payout status in callback url and then we will update the transaction status to success or error after procced the callback.
-
-    // Check for existing safaricom transfer with the same originatorConversationId. This implies an unintended Redis job re-attempt.
+    // 3. Check for existing safaricom transfer with the same originatorConversationId. This implies an unintended Redis job re-attempt.
     const existingSafaricomTransfer =
       await this.safaricomTransferScopedRepository.findOne({
         where: {

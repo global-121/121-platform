@@ -1,4 +1,4 @@
-export interface TransferRequestDto {
+export interface TransferRequestIntersolveApiDto {
   readonly quantity: {
     assetCode: string;
     value: number;
