@@ -94,7 +94,6 @@ export class ProjectRegistrationPersonalInformationPageComponent {
         continue;
       }
 
-      // XXX: where do we get the value for custom attributes? eg. Westeros -> house
       const value = this.registration.data()[attribute.name] as unknown;
       const dataListItem = attributeToDataListItem(attribute, value);
       if (dataListItem) {

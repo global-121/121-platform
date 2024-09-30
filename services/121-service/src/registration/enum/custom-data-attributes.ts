@@ -47,9 +47,9 @@ export enum GenericAttributes {
 export class Attribute {
   public id?: number;
   public name: string;
-  public type: string;
-  // XXX: can we force this to AnswerTypes? Relevant for Ruben's refactoring?
+  // TODO: AB#30519 type should not be "string" after the refactor
   // public type: AnswerTypes;
+  public type: string;
   public label: LocalizedString | null;
   public options?: QuestionOption[] | null;
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination

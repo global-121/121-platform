@@ -32,7 +32,7 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
 })
 export class RegistrationApiService extends DomainApiService {
   getManyByQuery(projectId: Signal<number>) {
-    // XXX: the query shouldn't be defined here. This should be removed / refactored when the registrations page is built.
+    // TODO: AB#28791 the query shouldn't be defined here. This should be removed / refactored when the registrations page is built.
     let params = new HttpParams();
     params = params.append('limit', 10);
     params = params.append('page', 1);
