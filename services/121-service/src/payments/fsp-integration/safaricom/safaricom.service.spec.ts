@@ -6,8 +6,8 @@ import { Redis } from 'ioredis';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
-import { SaveAndDoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
-import { SaveAndDoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
@@ -17,12 +17,11 @@ import {
 } from '@121-service/src/payments/redis/redis-client';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-const mockedSafaricomTransferParams: SaveAndDoTransferParams = {
+const mockedDoTransferParams: DoTransferParams = {
   transferAmount: 100,
   phoneNumber: '254708374149',
   originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
-  transactionId: 1,
 };
 
 describe('SafaricomService', () => {
@@ -47,7 +46,6 @@ describe('SafaricomService', () => {
         {
           provide: SafaricomTransferScopedRepository,
           useValue: {
-            save: jest.fn(),
             update: jest.fn(),
           },
         },
@@ -97,25 +95,23 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should do transfer', async () => {
-      const transferResult: SaveAndDoTransferReturnType = {
+      const transferResult: DoTransferReturnType = {
         mpesaConversationId: 'mocked_conversation_id',
       };
 
-      jest.spyOn(safaricomTransferScopedRepository, 'save');
       jest.spyOn(safaricomTransferScopedRepository, 'update');
       jest
         .spyOn(safaricomApiService, 'transfer')
         .mockResolvedValue(transferResult);
 
-      await service.saveAndDoTransfer(mockedSafaricomTransferParams);
+      await service.doTransfer(mockedDoTransferParams);
 
-      expect(safaricomTransferScopedRepository.save).toHaveBeenCalled();
       expect(safaricomApiService.transfer).toHaveBeenCalledWith({
-        transferAmount: mockedSafaricomTransferParams.transferAmount,
-        phoneNumber: mockedSafaricomTransferParams.phoneNumber,
-        idNumber: mockedSafaricomTransferParams.idNumber,
+        transferAmount: mockedDoTransferParams.transferAmount,
+        phoneNumber: mockedDoTransferParams.phoneNumber,
+        idNumber: mockedDoTransferParams.idNumber,
         originatorConversationId:
-          mockedSafaricomTransferParams.originatorConversationId,
+          mockedDoTransferParams.originatorConversationId,
       });
       expect(safaricomTransferScopedRepository.update).toHaveBeenCalled();
     });

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { QueryFailedError } from 'typeorm';
+import { Equal } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
 import {
@@ -16,6 +16,8 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -54,6 +56,7 @@ export class TransactionJobProcessorsService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
@@ -256,24 +259,45 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Save the transaction into database with 'waiting' status and then call to safaricom for payouts. And then safaricom will return the
-    // actual payout status in callback url and then we will update the transaction status to success or error after procced the callback.
-    const transaction = await this.createTransactionAndUpdateRegistration({
-      programId: transactionJob.programId,
-      paymentNumber: transactionJob.paymentNumber,
-      userId: transactionJob.userId,
-      calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
-      financialServiceProviderId: financialServiceProvider.id,
-      registration,
-      oldRegistration,
-      isRetry: transactionJob.isRetry,
-      status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
-    });
+    // 3. Check for existing safaricom transfer with the same originatorConversationId. This implies an unintended Redis job re-attempt.
+    let safaricomTransfer =
+      await this.safaricomTransferScopedRepository.findOne({
+        where: {
+          originatorConversationId: Equal(
+            transactionJob.originatorConversationId,
+          ),
+        },
+      });
+    // if no safaricom transfer yet, create a transaction, otherwise this has already happened before
+    let transactionId: number;
+    if (!safaricomTransfer) {
+      const transaction = await this.createTransactionAndUpdateRegistration({
+        programId: transactionJob.programId,
+        paymentNumber: transactionJob.paymentNumber,
+        userId: transactionJob.userId,
+        calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
+        financialServiceProviderId: financialServiceProvider.id,
+        registration,
+        oldRegistration,
+        isRetry: transactionJob.isRetry,
+        status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+      });
+      transactionId = transaction.id;
+
+      // ##TODO: combine this with the transaction creation above in one SQL transaction
+      const newSafaricomTransfer = new SafaricomTransferEntity();
+      newSafaricomTransfer.originatorConversationId =
+        transactionJob.originatorConversationId;
+      newSafaricomTransfer.transactionId = transactionId;
+      safaricomTransfer =
+        await this.safaricomTransferScopedRepository.save(newSafaricomTransfer);
+    } else {
+      transactionId = safaricomTransfer.transactionId;
+    }
 
     // 4. Start the transfer, if failure update to error transaction and return early
     try {
-      await this.safaricomService.saveAndDoTransfer({
-        transactionId: transaction.id,
+      await this.safaricomService.doTransfer({
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,
@@ -282,22 +306,10 @@ export class TransactionJobProcessorsService {
     } catch (error) {
       if (error instanceof SafaricomApiError) {
         await this.transactionScopedRepository.update(
-          { id: transaction.id },
+          { id: transactionId },
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
         );
         return;
-      }
-      if (error instanceof QueryFailedError) {
-        if (error['code'] === '23505') {
-          await this.transactionScopedRepository.update(
-            { id: transaction.id },
-            {
-              status: TransactionStatusEnum.error,
-              errorMessage: `Payout with originatorConversationId=${transactionJob.originatorConversationId} already exists & processed before.`,
-            },
-          );
-        }
-        throw error;
       } else {
         throw error;
       }
@@ -305,7 +317,7 @@ export class TransactionJobProcessorsService {
 
     // 5. No messages sent for safaricom
 
-    // 6. No transaction stored or updated, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+    // 6. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   private async getRegistrationOrThrow(
