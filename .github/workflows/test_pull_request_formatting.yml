@@ -11,9 +11,6 @@ jobs:
     if: contains(github.actor, 'dependabot') == false
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-
       - name: Check PR description and labels
         id: fetch_pr
         uses: actions/github-script@v7
@@ -45,6 +42,9 @@ jobs:
             }
 
             return pr.data;
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
 
       - name: Check that no "XXX" comments have been left on the PR
         run: |
