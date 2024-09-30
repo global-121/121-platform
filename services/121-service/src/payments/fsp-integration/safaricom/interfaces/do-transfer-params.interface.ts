@@ -1,5 +1,4 @@
-export interface SaveAndDoTransferParams {
-  readonly transactionId: number;
+export interface DoTransferParams {
   readonly transferAmount: number;
   readonly phoneNumber: string;
   readonly idNumber: string;

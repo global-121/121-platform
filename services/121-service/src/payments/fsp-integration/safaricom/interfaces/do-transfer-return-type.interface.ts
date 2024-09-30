@@ -1,3 +1,4 @@
-export interface SaveAndDoTransferReturnType {
-  mpesaConversationId: string;
+export interface DoTransferReturnType {
+  mpesaConversationId?: string;
+  duplicateOriginatorConversationIdError?: boolean;
 }

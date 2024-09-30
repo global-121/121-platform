@@ -10,9 +10,8 @@ import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integ
 import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
-import { SaveAndDoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
+import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import {
@@ -48,20 +47,16 @@ export class SafaricomService
     throw new Error('Method should not be called anymore.');
   }
 
-  public async saveAndDoTransfer({
-    transactionId,
+  public async doTransfer({
     transferAmount,
     phoneNumber,
     idNumber,
     originatorConversationId,
-  }: SaveAndDoTransferParams): Promise<void> {
-    // Store initial transfer record before transfer because of callback
-    const safaricomTransfer = new SafaricomTransferEntity();
-    safaricomTransfer.originatorConversationId = originatorConversationId;
-    safaricomTransfer.transactionId = transactionId;
-    await this.safaricomTransferScopedRepository.save(safaricomTransfer);
+  }: DoTransferParams): Promise<void> {
+    // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
+    // 1. Simulate crash before API-call
+    // await new Promise((resolve) => setTimeout(resolve, 60000));
 
-    // Prepare the transfer payload and send the request to safaricom
     const transferResult = await this.safaricomApiService.transfer({
       transferAmount,
       phoneNumber,
@@ -69,9 +64,16 @@ export class SafaricomService
       originatorConversationId,
     });
 
+    // 2. Simulate crash after API call
+    // await new Promise((resolve) => setTimeout(resolve, 60000));
+
+    if (transferResult.duplicateOriginatorConversationIdError) {
+      return;
+    }
+
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
-      { id: safaricomTransfer.id },
+      { originatorConversationId },
       { mpesaConversationId: transferResult.mpesaConversationId },
     );
   }

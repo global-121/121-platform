@@ -4,7 +4,7 @@ import { TokenSet } from 'openid-client';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
-import { SaveAndDoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
+import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -23,7 +23,7 @@ export class SafaricomApiService {
     phoneNumber,
     idNumber,
     originatorConversationId,
-  }): Promise<SaveAndDoTransferReturnType> {
+  }): Promise<DoTransferReturnType> {
     const payload = this.createTransferPayload({
       transferAmount,
       phoneNumber,
@@ -37,6 +37,14 @@ export class SafaricomApiService {
     if (!transferResponse || !transferResponse.data) {
       errorMessage = `Error: No response data from Safaricom API`;
     } else if (transferResponse.data.errorCode) {
+      if (transferResponse.data.errorCode === '500.002.1001') {
+        // This happens only in case of unintended Redis job re-attempt, and only if the API-request already went through the first time
+        // Only console.error and then return to close the job without any further processing
+        console.error(
+          `Error ${transferResponse.data.errorMessage} for originatorConversationId ${originatorConversationId}`,
+        );
+        return { duplicateOriginatorConversationIdError: true };
+      }
       errorMessage = `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`;
     } else if (!transferResponse.data.ResponseCode) {
       errorMessage = `Error: ${transferResponse.data?.statusCode} ${transferResponse.data?.error}`;

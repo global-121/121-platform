@@ -49,6 +49,7 @@ export class FinancialServiceProviderCallbackJobProcessorsService {
         { id: safaricomTransfer.id },
         {
           mpesaTransactionId: safaricomTransferCallbackJob.mpesaTransactionId,
+          mpesaConversationId: safaricomTransferCallbackJob.mpesaConversationId, // This should already be updated on initial request response, but just in case (e.g 121-service crash)
         },
       );
 
