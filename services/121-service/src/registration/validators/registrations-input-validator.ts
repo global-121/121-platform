@@ -435,6 +435,14 @@ export class RegistrationsInputValidator {
     i: number,
     validationConfig: ValidationConfigDto,
   ): Promise<ValidateRegistrationErrorObjectDto | undefined> {
+    if (row.referenceId && row.referenceId.includes('$')) {
+      return {
+        lineNumber: i + 1,
+        column: GenericAttributes.referenceId,
+        value: row.referenceId,
+        error: 'referenceId contains a $ character',
+      };
+    }
     if (validationConfig.validateExistingReferenceId && row.referenceId) {
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: Equal(row.referenceId) },
