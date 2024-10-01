@@ -11,6 +11,7 @@ class ProjectMonitoring extends BasePage {
   readonly cashDisbursedTile: Locator;
   readonly projectDescriptionTile: Locator;
   readonly metricTileComponent: Locator;
+  readonly monitoringIframe: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -25,9 +26,14 @@ class ProjectMonitoring extends BasePage {
       'metric-project-description',
     );
     this.metricTileComponent = this.page.getByTestId('metric-tile-component');
+    this.monitoringIframe = this.page.getByTestId('monitoring-iframe');
   }
 
-  async assertMonitoringTabElements() {
+  async assertMonitoringTabElements({
+    shouldHaveIframe,
+  }: {
+    shouldHaveIframe: boolean;
+  }) {
     await expect(this.peopleRegisteredTile).toContainText('People registered');
     await expect(this.peopleIncludedTile).toContainText('People included');
     await expect(this.remainingBudgetTile).toContainText('Remaining budget');
@@ -36,7 +42,15 @@ class ProjectMonitoring extends BasePage {
       'Project description',
     );
 
-    // For the moment we are not checking the iframe area because there are no visible elemnts in it
+    const iframe = await this.monitoringIframe.locator('iframe').all();
+    if (shouldHaveIframe) {
+      await expect(iframe.length).toBe(1);
+    } else {
+      await expect(iframe.length).toBe(0);
+      await expect(this.monitoringIframe).toContainText(
+        'No PowerBI dashboard has been configured for this project, please contact support@121.global to set this up',
+      );
+    }
   }
 
   async assertValuesInMonitoringTab({
