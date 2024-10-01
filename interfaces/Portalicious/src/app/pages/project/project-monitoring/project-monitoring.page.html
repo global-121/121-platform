@@ -15,6 +15,7 @@
       chipTooltip="Registrations with the status “new”."
       i18n-chipTooltip
       [metricValue]="metrics.data()?.registeredPeople | number"
+      data-testid="metric-people-registered"
       metricLabel="People registered"
       i18n-metricLabel
       metricTooltip="Total registrations excluding rejected and deleted registrations."
@@ -25,6 +26,7 @@
       [pending]="metrics.isPending()"
       [metricValue]="metrics.data()?.includedPeople | number"
       metricLabel="People included"
+      data-testid="metric-people-included"
       i18n-metricLabel
       metricTooltip="Registrations with the status “included”."
       i18n-metricTooltip
@@ -44,6 +46,7 @@
             : '1.0-0'
       "
       metricLabel="Remaining budget"
+      data-testid="metric-remaining-budget"
       i18n-metricLabel
     />
 
@@ -58,11 +61,13 @@
             : '1.0-0'
       "
       metricLabel="Cash disbursed"
+      data-testid="metric-cash-disbursed"
       i18n-metricLabel
     />
 
     <p-card
       class="grid-in-description [&_.p-card-body]:h-full [&_.p-card]:h-full"
+      data-testid="metric-project-description"
     >
       <div class="border-b border-grey-300 pb-3">
         <p
