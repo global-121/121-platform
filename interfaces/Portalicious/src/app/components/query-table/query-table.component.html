@@ -145,7 +145,10 @@
         <td>
           @if (column.component) {
             <ng-container
-              *ngComponentOutlet="column.component; inputs: { value: item }"
+              *ngComponentOutlet="
+                column.component;
+                inputs: { value: item, context: tableCellContext() }
+              "
             />
           } @else {
             @switch (column.type) {
@@ -231,7 +234,7 @@
             <ng-container
               *ngComponentOutlet="
                 expandableRowTemplate()!;
-                inputs: { value: item, context: expandableRowContext() }
+                inputs: { value: item, context: tableCellContext() }
               "
             />
           }

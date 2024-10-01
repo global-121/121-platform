@@ -4,6 +4,7 @@ import { Injectable, Signal } from '@angular/core';
 import { queryOptions } from '@tanstack/angular-query-experimental';
 import { uniqueId } from 'lodash';
 
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
@@ -166,13 +167,14 @@ export class RegistrationApiService extends DomainApiService {
               date: new Date(new Date().getTime() - Math.random() * 1e12),
               activityType: ActivityLogItemType.Transfer,
               contents: {
-                transferNumber: 2,
+                payment: 2,
+                referenceId: '4212e8b29521366838192e87811de5bc',
                 totalTransfers: 2,
                 status: StatusEnum.waiting,
                 amount: 100,
                 sent: new Date(),
                 received: new Date(),
-                fsp: 'Intersolve',
+                fsp: FinancialServiceProviderName.intersolveVisa,
                 approvedBy: 'Samer@financial',
               },
             },
@@ -182,13 +184,14 @@ export class RegistrationApiService extends DomainApiService {
               date: new Date(new Date().getTime() - Math.random() * 1e12),
               activityType: ActivityLogItemType.Transfer,
               contents: {
-                transferNumber: 1,
+                payment: 1,
+                referenceId: '4212e8b29521366838192e87811de5bc',
                 totalTransfers: 2,
                 status: StatusEnum.success,
                 amount: 100,
                 sent: new Date(),
                 received: new Date(),
-                fsp: 'Intersolve',
+                fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
                 approvedBy: 'Samer@financial',
               },
             },
@@ -229,7 +232,7 @@ export class RegistrationApiService extends DomainApiService {
                 case ActivityLogItemType.Transfer:
                   return {
                     ...item,
-                    overview: $localize`${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]}:activityType: ${item.contents.transferNumber}:count: of ${item.contents.totalTransfers}:totalCount:`,
+                    overview: $localize`${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]}:activityType: ${item.contents.payment}:count: of ${item.contents.totalTransfers}:totalCount:`,
                   };
               }
             })

@@ -4,10 +4,11 @@ import {
   computed,
   inject,
   input,
-  Signal,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import {
   DataListComponent,
@@ -21,6 +22,7 @@ import {
   ActivityLogItemWithOverview,
   TransferActivity,
 } from '~/domains/registration/registration.model';
+import { ActivityLogTableCellContext } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
 
 @Component({
   selector: 'app-activity-log-expanded-row',
@@ -31,29 +33,32 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogExpandedRowComponent
-  implements TableCellComponent<ActivityLogItemWithOverview>
+  implements
+    TableCellComponent<
+      ActivityLogItemWithOverview,
+      ActivityLogTableCellContext
+    >
 {
   private readonly projectApiService = inject(ProjectApiService);
 
   value = input.required<ActivityLogItemWithOverview>();
-  context = input.required<{
-    projectId: Signal<number>;
-    referenceId: string;
-  }>();
+  context = input.required<ActivityLogTableCellContext>();
 
   intersolveVoucherBalance = injectQuery(() => ({
     ...this.projectApiService.getIntersolveVoucherBalance({
       projectId: this.context().projectId,
-      registrationReferenceId: this.context().referenceId,
-      paymentId: (this.value() as TransferActivity).contents.transferNumber,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      registrationReferenceId: this.context().referenceId!,
+      paymentId: (this.value() as TransferActivity).contents.payment,
     })(),
-    enabled: () => this.shouldShowVoucherBalance(),
+    enabled: () => this.isIntersolveVoucher() && !!this.context().referenceId,
   }));
 
-  shouldShowVoucherBalance = computed(() => {
+  isIntersolveVoucher = computed(() => {
     return (
       this.value().activityType === ActivityLogItemType.Transfer &&
-      (this.value() as TransferActivity).contents.fsp === 'Intersolve'
+      (this.value() as TransferActivity).contents.fsp ===
+        FinancialServiceProviderName.intersolveVoucherWhatsapp
     );
   });
 
@@ -114,7 +119,7 @@ export class ActivityLogExpandedRowComponent
           },
         ];
 
-        if (this.shouldShowVoucherBalance()) {
+        if (this.isIntersolveVoucher()) {
           list.push({
             label: $localize`Current balance`,
             value: this.intersolveVoucherBalance.data(),

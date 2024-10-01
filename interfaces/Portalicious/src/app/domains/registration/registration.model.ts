@@ -1,3 +1,4 @@
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
@@ -40,13 +41,14 @@ interface BaseActivity {
 export interface TransferActivity extends BaseActivity {
   activityType: ActivityLogItemType.Transfer;
   contents: {
-    transferNumber: number;
+    referenceId: string; // e.g., "123456"
+    payment: number;
     totalTransfers: number;
     status: StatusEnum;
     amount: number;
     sent: Date;
     received?: Date;
-    fsp: string; // Financial service provider, like "Intersolve"
+    fsp: FinancialServiceProviderName;
     used?: string; // e.g., "Partly used"
     approvedBy: string; // e.g., "Samer@financial"
   };

@@ -516,7 +516,7 @@
         <source>Pending</source>
       </trans-unit>
       <trans-unit id="412801067474625773" datatype="html">
-        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
+        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.payment" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
       </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
         <source>Current balance</source>
@@ -541,6 +541,18 @@
       </trans-unit>
       <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
         <source>Remaining payments</source>
+      </trans-unit>
+      <trans-unit id="3132687678063886490" datatype="html">
+        <source>Voucher - payment <x equiv-text="this.paymentId()" id="PH"/> of <x equiv-text="this.totalTransfers()" id="PH_1"/></source>
+      </trans-unit>
+      <trans-unit id="362413796363960378" datatype="html">
+        <source>View voucher</source>
+      </trans-unit>
+      <trans-unit id="8102975218009674229" datatype="html">
+        <source>Print voucher</source>
+      </trans-unit>
+      <trans-unit id="generic-download" datatype="html">
+        <source>Download</source>
       </trans-unit>
     </body>
   </file>

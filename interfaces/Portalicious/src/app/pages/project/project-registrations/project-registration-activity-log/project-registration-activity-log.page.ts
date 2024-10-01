@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  Signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -26,6 +27,11 @@ import { ActivityLogExpandedRowComponent } from '~/pages/project/project-registr
 import { TableCellActivityComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-activity.component';
 import { TableCellOverviewComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-overview.component';
 
+export interface ActivityLogTableCellContext {
+  projectId: Signal<number>;
+  referenceId?: string;
+}
+
 @Component({
   selector: 'app-project-registration-activity-log',
   standalone: true,
@@ -47,7 +53,7 @@ export class ProjectRegistrationActivityLogPageComponent {
   registrationApiService = inject(RegistrationApiService);
 
   expandableRowTemplate = ActivityLogExpandedRowComponent;
-  expandableRowContext = computed(() => ({
+  tableCellContext = computed<ActivityLogTableCellContext>(() => ({
     projectId: this.projectId,
     referenceId: this.registration.data()?.referenceId,
   }));

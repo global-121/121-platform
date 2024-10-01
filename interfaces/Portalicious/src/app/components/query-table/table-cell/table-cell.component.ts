@@ -12,6 +12,10 @@ import { ChangeDetectionStrategy, Component, InputSignal } from '@angular/core';
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export abstract class TableCellComponent<TDataType> extends Component {
+export abstract class TableCellComponent<
+  TDataType,
+  TContextType = undefined,
+> extends Component {
   value: InputSignal<TDataType>;
+  context: InputSignal<TContextType>;
 }
