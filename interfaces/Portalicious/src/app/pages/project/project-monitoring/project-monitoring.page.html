@@ -94,7 +94,10 @@
         height="8rem"
       ></p-skeleton>
     } @else {
-      <p-card class="grid-in-iframe">
+      <p-card
+        class="grid-in-iframe"
+        data-testid="monitoring-iframe"
+      >
         @if (project.data()?.monitoringDashboardUrl) {
           <app-monitoring-iframe
             [url]="project.data()!.monitoringDashboardUrl!"

@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[30326] All elements of Monitoring page display correct data', async ({
+test('[30579] All elements of Monitoring page display correct data for OCW', async ({
   page,
 }) => {
   const basePage = new BasePage(page);
@@ -39,10 +39,36 @@ test('[30326] All elements of Monitoring page display correct data', async ({
   });
 
   await test.step('Check if all elements are displayed', async () => {
-    await projectMonitoring.assertMonitoringTabElements();
+    await projectMonitoring.assertMonitoringTabElements({
+      shouldHaveIframe: true,
+    });
     await projectMonitoring.assertValuesInMonitoringTab({
       peopleIncluded: 4,
       peopleRegistered: 4,
+    });
+  });
+});
+
+test('[30326] All elements of Monitoring page display correct data for NLRC', async ({
+  page,
+}) => {
+  const basePage = new BasePage(page);
+  const projectMonitoring = new ProjectMonitoring(page);
+
+  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+
+  await test.step('Navigate to project`s monitoring page', async () => {
+    await basePage.selectProgram(projectTitle);
+    await projectMonitoring.navigateToProgramPage('Monitoring');
+  });
+
+  await test.step('Check if all elements are displayed', async () => {
+    await projectMonitoring.assertMonitoringTabElements({
+      shouldHaveIframe: false,
+    });
+    await projectMonitoring.assertValuesInMonitoringTab({
+      peopleIncluded: 0,
+      peopleRegistered: 0,
     });
   });
 });
