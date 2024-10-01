@@ -28,25 +28,13 @@ class ProjectMonitoring extends BasePage {
   }
 
   async assertMonitoringTabElements() {
-    const registrationsTileLocator = this.peopleRegisteredTile;
-    const includedTileLocator = this.peopleIncludedTile;
-    const remainingBudgetTileLocator = this.remainingBudgetTile;
-    const cashDisbursedTileLocator = this.cashDisbursedTile;
-    const projectDescriptionTileLocator = this.projectDescriptionTile;
-
-    const registrationTileText = await registrationsTileLocator.innerText();
-    const includedTileText = await includedTileLocator.innerText();
-    const remainingBudgetTileText =
-      await remainingBudgetTileLocator.innerText();
-    const cashDisbursedTileText = await cashDisbursedTileLocator.innerText();
-    const projectDescriptionTileText =
-      await projectDescriptionTileLocator.innerText();
-
-    expect(registrationTileText).toContain('People registered');
-    expect(includedTileText).toContain('People included');
-    expect(remainingBudgetTileText).toContain('Remaining budget');
-    expect(cashDisbursedTileText).toContain('Cash disbursed');
-    expect(projectDescriptionTileText).toContain('Project description');
+    await expect(this.peopleRegisteredTile).toContainText('People registered');
+    await expect(this.peopleIncludedTile).toContainText('People included');
+    await expect(this.remainingBudgetTile).toContainText('Remaining budget');
+    await expect(this.cashDisbursedTile).toContainText('Cash disbursed');
+    await expect(this.projectDescriptionTile).toContainText(
+      'Project description',
+    );
 
     // For the moment we are not checking the iframe area because there are no visible elemnts in it
   }
@@ -65,11 +53,10 @@ class ProjectMonitoring extends BasePage {
       'metric-tile-component',
     );
 
-    const registrationTileText = await registrationsTileLocator.innerText();
-    const includedTileText = await includedTileLocator.innerText();
-
-    expect(registrationTileText).toContain(peopleRegistered.toString());
-    expect(includedTileText).toContain(peopleIncluded.toString());
+    await expect(registrationsTileLocator).toHaveText(
+      peopleRegistered.toString(),
+    );
+    await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
   }
 }
 
