@@ -87,8 +87,8 @@
         <source>Users</source>
         <target state="translated">Gebruikers</target>
       </trans-unit>
-      <trans-unit id="page-title-roles-and-permissions" datatype="html">
-        <source>Roles and permissions</source>
+      <trans-unit id="page-title-user-roles" datatype="html">
+        <source>User roles</source>
         <target state="translated">Rollen en Rechten</target>
       </trans-unit>
       <trans-unit id="page-title-project-monitoring" datatype="html">
@@ -146,10 +146,6 @@
       <trans-unit id="7596687906875795034" datatype="html">
         <source>project-payments works!</source>
         <target state="new">project-payments werkt!</target>
-      </trans-unit>
-      <trans-unit id="8837209833313387366" datatype="html">
-        <source>roles-and-permissions works!</source>
-        <target state="new">roles-and-permissions werkt!</target>
       </trans-unit>
       <trans-unit id="1519584467841622217" datatype="html">
         <source>users works!</source>
@@ -830,6 +826,18 @@
       <trans-unit id="4702579085370193789" datatype="html">
         <source>Card successfully replaced</source>
         <target state="new">Card successfully replaced</target>
+      </trans-unit>
+      <trans-unit id="6553913710509292194" datatype="html">
+        <source>Role name</source>
+        <target state="new">Role name</target>
+      </trans-unit>
+      <trans-unit id="7073019979553772020" datatype="html">
+        <source>Role label</source>
+        <target state="new">Role label</target>
+      </trans-unit>
+      <trans-unit id="6751038926528230759" datatype="html">
+        <source>Role description</source>
+        <target state="new">Role description</target>
       </trans-unit>
     </body>
   </file>

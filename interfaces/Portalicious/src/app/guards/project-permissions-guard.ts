@@ -6,22 +6,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 
-export const authGuard: CanActivateFn = (_, state) => {
-  const authService = inject(AuthService);
-
-  if (authService.isLoggedIn) {
-    return true;
-  }
-
-  const router = inject(Router);
-  return router.navigate(['/', AppRoutes.login], {
-    queryParams: {
-      returnUrl: state.url,
-    },
-    queryParamsHandling: 'merge',
-  });
-};
-
 export const projectPermissionsGuard: (
   permission: PermissionEnum,
 ) => CanActivateFn = (permission: PermissionEnum) => {

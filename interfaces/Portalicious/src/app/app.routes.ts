@@ -2,7 +2,9 @@ import { Routes } from '@angular/router';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { authGuard, projectPermissionsGuard } from '~/auth.guard';
+import { authGuard } from '~/guards/auth.guard';
+import { organizationAdminGuard } from '~/guards/organization-admin.guard';
+import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 import { ChangePasswordPageComponent } from '~/pages/change-password/change-password.page';
 import { LoginPageComponent } from '~/pages/login/login.page';
 import { ProjectMonitoringPageComponent } from '~/pages/project/project-monitoring/project-monitoring.page';
@@ -13,7 +15,7 @@ import { ProjectRegistrationPersonalInformationPageComponent } from '~/pages/pro
 import { ProjectRegistrationsPageComponent } from '~/pages/project/project-registrations/project-registrations.page';
 import { ProjectTeamPageComponent } from '~/pages/project/project-team/project-team.page';
 import { ProjectsOverviewPageComponent } from '~/pages/projects-overview/projects-overview.page';
-import { RolesAndPermissionsPageComponent } from '~/pages/roles-and-permissions/roles-and-permissions.page';
+import { UserRolesPageComponent } from '~/pages/user-roles/user-roles.page';
 import { UsersPageComponent } from '~/pages/users/users.page';
 
 export enum AppRoutes {
@@ -28,7 +30,7 @@ export enum AppRoutes {
   projectRegistrations = 'registrations',
   projects = 'projects',
   projectTeam = 'team',
-  rolesAndPermissions = 'roles-and-permissions',
+  userRoles = 'user-roles',
   users = 'users',
 }
 
@@ -38,6 +40,12 @@ export const routes: Routes = [
     component: LoginPageComponent,
   },
   {
+    path: AppRoutes.changePassword,
+    title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
+    component: ChangePasswordPageComponent,
+    canActivate: [authGuard],
+  },
+  {
     path: AppRoutes.projects,
     component: ProjectsOverviewPageComponent,
     canActivate: [authGuard],
@@ -45,18 +53,12 @@ export const routes: Routes = [
   {
     path: AppRoutes.users,
     component: UsersPageComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, organizationAdminGuard],
   },
   {
-    path: AppRoutes.changePassword,
-    title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
-    component: ChangePasswordPageComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: AppRoutes.rolesAndPermissions,
-    component: RolesAndPermissionsPageComponent,
-    canActivate: [authGuard],
+    path: AppRoutes.userRoles,
+    component: UserRolesPageComponent,
+    canActivate: [authGuard, organizationAdminGuard],
   },
   {
     path: `${AppRoutes.project}/:projectId`,

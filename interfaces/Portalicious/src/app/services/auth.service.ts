@@ -11,7 +11,12 @@ import { environment } from '~environment';
 
 type LocalStorageUser = Pick<
   User,
-  'expires' | 'isAdmin' | 'isEntraUser' | 'permissions' | 'username'
+  | 'expires'
+  | 'isAdmin'
+  | 'isEntraUser'
+  | 'isOrganizationAdmin'
+  | 'permissions'
+  | 'username'
 >;
 
 const LOCAL_STORAGE_AUTH_USER_KEY = 'logged-in-user-portalicious';
@@ -51,11 +56,16 @@ export class AuthService {
     return this.user?.isAdmin ?? false;
   }
 
+  public get isOrganizationAdmin(): boolean {
+    return this.user?.isOrganizationAdmin ?? false;
+  }
+
   private setUserInStorage(user: User): void {
     const userToStore: LocalStorageUser = {
       username: user.username,
       permissions: user.permissions,
       isAdmin: user.isAdmin,
+      isOrganizationAdmin: user.isOrganizationAdmin,
       isEntraUser: user.isEntraUser,
       expires: user.expires ?? undefined,
     };

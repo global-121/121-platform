@@ -75,7 +75,7 @@
   </ng-template>
   <div class="flex h-full w-full flex-col">
     <div class="mb-auto">
-      @for (sidebarLink of sidebarLinks; track $index) {
+      @for (sidebarLink of sidebarLinks(); track $index) {
         <a
           [routerLink]="sidebarLink.routerLink"
           [routerLinkActive]="['font-bold', 'pointer-events-none']"

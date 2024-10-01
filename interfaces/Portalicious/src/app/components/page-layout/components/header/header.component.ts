@@ -62,18 +62,28 @@ export class HeaderComponent {
 
   sidebarVisible = false;
 
-  sidebarLinks = [
-    {
-      label: $localize`:@@page-title-all-projects:All projects`,
-      routerLink: `/${AppRoutes.projects}`,
-    },
-    {
-      label: $localize`:@@page-title-users:Users`,
-      routerLink: `/${AppRoutes.users}`,
-    },
-    {
-      label: $localize`:@@page-title-roles-and-permissions:Roles and permissions`,
-      routerLink: `/${AppRoutes.rolesAndPermissions}`,
-    },
-  ];
+  sidebarLinks = computed(() => {
+    const links = [
+      {
+        label: $localize`:@@page-title-all-projects:All projects`,
+        routerLink: `/${AppRoutes.projects}`,
+      },
+    ];
+
+    if (!this.authService.isOrganizationAdmin) {
+      return links;
+    }
+
+    return [
+      ...links,
+      {
+        label: $localize`:@@page-title-users:Users`,
+        routerLink: `/${AppRoutes.users}`,
+      },
+      {
+        label: $localize`:@@page-title-user-roles:User roles`,
+        routerLink: `/${AppRoutes.userRoles}`,
+      },
+    ];
+  });
 }

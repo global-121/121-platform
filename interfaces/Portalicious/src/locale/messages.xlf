@@ -78,8 +78,8 @@
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="page-title-roles-and-permissions" datatype="html">
-        <source>Roles and permissions</source>
+      <trans-unit id="page-title-user-roles" datatype="html">
+        <source>User roles</source>
       </trans-unit>
       <trans-unit id="6186007479370342072" datatype="html">
         <source>Request a password reset</source>
@@ -101,9 +101,6 @@
       </trans-unit>
       <trans-unit id="7807685431509530550" datatype="html">
         <source>API Documentation</source>
-      </trans-unit>
-      <trans-unit id="8837209833313387366" datatype="html">
-        <source>roles-and-permissions works!</source>
       </trans-unit>
       <trans-unit id="888507803757257524" datatype="html">
         <source>API Version:</source>
@@ -625,6 +622,15 @@
       </trans-unit>
       <trans-unit id="4702579085370193789" datatype="html">
         <source>Card successfully replaced</source>
+      </trans-unit>
+      <trans-unit id="6553913710509292194" datatype="html">
+        <source>Role name</source>
+      </trans-unit>
+      <trans-unit id="7073019979553772020" datatype="html">
+        <source>Role label</source>
+      </trans-unit>
+      <trans-unit id="6751038926528230759" datatype="html">
+        <source>Role description</source>
       </trans-unit>
     </body>
   </file>
