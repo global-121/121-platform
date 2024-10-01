@@ -1,7 +1,10 @@
 import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+import { SkeletonModule } from 'primeng/skeleton';
+
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 
 import {
   ChipVariant,
@@ -50,6 +53,7 @@ export type DataListItem = {
     CurrencyPipe,
     DatePipe,
     DecimalPipe,
+    SkeletonModule,
     SkeletonInlineComponent,
     ColoredChipComponent,
     TranslatableStringPipe,
@@ -62,4 +66,8 @@ export type DataListItem = {
 export class DataListComponent {
   data = input.required<DataListItem[]>();
   hideBottomBorder = input<boolean>();
+
+  skeletonWidth() {
+    return `${getRandomInt(42, 98).toString()}%`;
+  }
 }

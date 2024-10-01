@@ -1,8 +1,24 @@
-<p-card
-  styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
->
-  <div class="flex">
-    <h2>{{ registration.data()?.name }}</h2>
+<app-page-layout-title-and-actions>
+  <ng-container page-layout-title>
+    @if (registration.isPending()) {
+      <p-skeleton
+        width="24rem"
+        height="1.6rem"
+      />
+    } @else {
+      <a
+        i18n
+        [routerLink]="allRegistrationsLink()"
+        class="font-normal hover:text-purple-700"
+        >All Registrations</a
+      >
+      <i class="pi pi-chevron-right mx-2"></i>
+      <ng-container i18n>Reg. #</ng-container
+      >{{ registration.data()?.registrationProgramId }} -
+      {{ registration.data()?.name }}
+    }
+  </ng-container>
+  <ng-container page-layout-actions>
     @if (canUpdatePersonalData() && !registration.isError()) {
       <p-button
         label="Add note"
@@ -23,18 +39,26 @@
         />
       }
     }
-  </div>
+  </ng-container>
+</app-page-layout-title-and-actions>
+
+<p-card
+  styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
+>
   <app-data-list [data]="registrationData()" />
   <div class="mt-4 text-end">
     <span class="text-grey-700 txt-system-s">
       @if (registration.isPending()) {
         <app-skeleton-inline width="8rem" />
-      }
-      <ng-container i18n>Registered: </ng-container>
-      @if (registration.data()?.registrationCreatedDate) {
-        {{ registration.data()?.registrationCreatedDate | date: 'dd-MM-yyyy' }}
       } @else {
-        —
+        <ng-container i18n>Registered: </ng-container>
+        @if (registration.data()?.registrationCreatedDate) {
+          {{
+            registration.data()?.registrationCreatedDate | date: 'dd-MM-yyyy'
+          }}
+        } @else {
+          —
+        }
       }
     </span>
   </div>

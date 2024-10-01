@@ -128,6 +128,7 @@ module.exports = tseslint.config(
             'p-table[stateKey]',
             'p-table[stateStorage]',
             'styleClass',
+            'severity',
             'th[pSortableColumn]',
             'app-colored-chip[variant]',
             'app-metric-tile[chipIcon]',

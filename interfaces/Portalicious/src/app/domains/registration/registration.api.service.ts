@@ -54,11 +54,12 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   getRegistrationById(
-    projectId: Signal<number>,
-    registrationId: Signal<number>,
+    projectId: Signal<number | undefined>,
+    registrationId: Signal<number | undefined>,
   ) {
     return this.generateQueryOptions<Registration>({
-      path: [...BASE_ENDPOINT(projectId), registrationId],
+      path: [...BASE_ENDPOINT(projectId as Signal<number>), registrationId],
+      enabled: () => !!projectId() && !!registrationId(),
     });
   }
 
