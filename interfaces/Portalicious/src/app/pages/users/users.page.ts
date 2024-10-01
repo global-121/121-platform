@@ -6,8 +6,8 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
   selector: 'app-users',
   standalone: true,
   imports: [PageLayoutComponent],
-  templateUrl: './users.component.html',
+  templateUrl: './users.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UsersComponent {}
+export class UsersPageComponent {}

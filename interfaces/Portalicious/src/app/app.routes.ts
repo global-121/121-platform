@@ -3,8 +3,8 @@ import { Routes } from '@angular/router';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { authGuard, projectPermissionsGuard } from '~/auth.guard';
-import { ChangePasswordComponent } from '~/pages/change-password/change-password.component';
-import { LoginComponent } from '~/pages/login/login.component';
+import { ChangePasswordPageComponent } from '~/pages/change-password/change-password.page';
+import { LoginPageComponent } from '~/pages/login/login.page';
 import { ProjectMonitoringPageComponent } from '~/pages/project/project-monitoring/project-monitoring.page';
 import { ProjectPaymentsPageComponent } from '~/pages/project/project-payments/project-payments.page';
 import { ProjectRegistrationActivityLogPageComponent } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
@@ -13,8 +13,8 @@ import { ProjectRegistrationPersonalInformationPageComponent } from '~/pages/pro
 import { ProjectRegistrationsPageComponent } from '~/pages/project/project-registrations/project-registrations.page';
 import { ProjectTeamPageComponent } from '~/pages/project/project-team/project-team.page';
 import { ProjectsOverviewPageComponent } from '~/pages/projects-overview/projects-overview.page';
-import { RolesAndPermissionsComponent } from '~/pages/roles-and-permissions/roles-and-permissions.component';
-import { UsersComponent } from '~/pages/users/users.component';
+import { RolesAndPermissionsPageComponent } from '~/pages/roles-and-permissions/roles-and-permissions.page';
+import { UsersPageComponent } from '~/pages/users/users.page';
 
 export enum AppRoutes {
   changePassword = 'change-password',
@@ -35,7 +35,7 @@ export enum AppRoutes {
 export const routes: Routes = [
   {
     path: AppRoutes.login,
-    component: LoginComponent,
+    component: LoginPageComponent,
   },
   {
     path: AppRoutes.projects,
@@ -44,18 +44,18 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.users,
-    component: UsersComponent,
+    component: UsersPageComponent,
     canActivate: [authGuard],
   },
   {
     path: AppRoutes.changePassword,
     title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
-    component: ChangePasswordComponent,
+    component: ChangePasswordPageComponent,
     canActivate: [authGuard],
   },
   {
     path: AppRoutes.rolesAndPermissions,
-    component: RolesAndPermissionsComponent,
+    component: RolesAndPermissionsPageComponent,
     canActivate: [authGuard],
   },
   {

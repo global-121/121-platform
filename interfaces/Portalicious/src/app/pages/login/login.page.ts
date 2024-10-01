@@ -27,7 +27,7 @@ import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/co
 import { AuthService } from '~/services/auth.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
-type LoginFormGroup = (typeof LoginComponent)['prototype']['formGroup'];
+type LoginFormGroup = (typeof LoginPageComponent)['prototype']['formGroup'];
 
 @Component({
   selector: 'app-login',
@@ -45,11 +45,11 @@ type LoginFormGroup = (typeof LoginComponent)['prototype']['formGroup'];
     ReactiveFormsModule,
     FormFieldWrapperComponent,
   ],
-  templateUrl: './login.component.html',
+  templateUrl: './login.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {
+export class LoginPageComponent {
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);

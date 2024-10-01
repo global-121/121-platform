@@ -6,8 +6,8 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
   selector: 'app-roles-and-permissions',
   standalone: true,
   imports: [PageLayoutComponent],
-  templateUrl: './roles-and-permissions.component.html',
+  templateUrl: './roles-and-permissions.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RolesAndPermissionsComponent {}
+export class RolesAndPermissionsPageComponent {}
