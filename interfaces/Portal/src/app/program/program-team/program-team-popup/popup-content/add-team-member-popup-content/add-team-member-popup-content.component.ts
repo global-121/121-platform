@@ -63,9 +63,7 @@ export class AddTeamMemberPopupContentComponent implements OnInit {
       )
     ).filter((user) => user.id !== 1);
 
-    this.searchResults.length > 0 && searchTerm !== ''
-      ? (this.showSearchResults = true)
-      : (this.showSearchResults = false);
+    this.showSearchResults = this.searchResults.length > 0 && searchTerm !== '';
   }
 
   public isFormComplete(): boolean {
