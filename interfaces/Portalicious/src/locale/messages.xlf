@@ -632,6 +632,18 @@
       <trans-unit id="6751038926528230759" datatype="html">
         <source>Role description</source>
       </trans-unit>
+      <trans-unit id="3284816784388197103" datatype="html">
+        <source>Project not found. Please check the URL and try again.</source>
+      </trans-unit>
+      <trans-unit id="8040367464671654118" datatype="html">
+        <source>Reg. #</source>
+      </trans-unit>
+      <trans-unit id="6884725425179376273" datatype="html">
+        <source>Registration not found. Please check the URL and try again.</source>
+      </trans-unit>
+      <trans-unit id="7739650586737813677" datatype="html">
+        <source>All Registrations</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
