@@ -46,7 +46,7 @@ const confirmPasswordValidator: ValidatorFn = (
 };
 
 type ChangePasswordFormGroup =
-  (typeof ChangePasswordComponent)['prototype']['formGroup'];
+  (typeof ChangePasswordPageComponent)['prototype']['formGroup'];
 
 @Component({
   selector: 'app-change-password',
@@ -61,11 +61,11 @@ type ChangePasswordFormGroup =
     CardModule,
   ],
   providers: [ToastService],
-  templateUrl: './change-password.component.html',
+  templateUrl: './change-password.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangePasswordComponent {
+export class ChangePasswordPageComponent {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
