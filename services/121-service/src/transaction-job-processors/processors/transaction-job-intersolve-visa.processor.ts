@@ -11,7 +11,6 @@ import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 
-// TODO: REFACTOR: Rename TransactionQueueNames to transferQueueNames or something, and move the enum to the TransferQueues Module. Also rename the paymentIntersolveVisa to IntersolveVisa probably.
 @Processor(TransactionJobQueueNames.intersolveVisa)
 export class TransactionJobProcessorIntersolveVisa {
   constructor(
