@@ -49,7 +49,6 @@ export class IntersolveVisaService
     throw new Error('Method should not be called anymore.');
   }
 
-  // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
   /**
    * This function handles the process of transferring money to a person using intersolve visa.
    * - It first checks if the customer exists, if not it creates a new customer.
@@ -517,7 +516,6 @@ export class IntersolveVisaService
    * @returns {Promise<void>}
    */
   public async reissueCard(input: ReissueCardParams): Promise<void> {
-    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         input.registrationId,
