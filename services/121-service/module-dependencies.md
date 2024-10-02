@@ -104,8 +104,6 @@ graph LR
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
-  AuthModule-->UserModule
-  AuthModule-->PassportModule
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule
   TransactionJobProcessorsModule-->SafaricomModule
