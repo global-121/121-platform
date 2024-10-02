@@ -39,7 +39,7 @@ export class MigrateVisaService {
   public async migrateData(limit: number): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
     await this.migrationTemplateData(queryRunner);
-    await this.inserProgramConfiguration();
+    await this.insertProgramConfiguration();
     // await this.COMMENT_OUT_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(
     //   queryRunner,
     // );
@@ -50,7 +50,7 @@ export class MigrateVisaService {
     }
   }
 
-  private async inserProgramConfiguration(): Promise<void> {
+  private async insertProgramConfiguration(): Promise<void> {
     // this should not be set on production so it should not run on production
     if (process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE) {
       // Insert program configuration
@@ -319,8 +319,22 @@ export class MigrateVisaService {
         await queryRunner.manager.save(savedChildWallet);
       }
 
-      // Block wallet again if original wallet was blocked
+      if (
+        (originalWallet.walletStatus as unknown as IntersolveVisaTokenStatus) ===
+        IntersolveVisaTokenStatus.Inactive
+      ) {
+        // get pre-activation value per child wallet
+        const preActivationValue = (
+          await this.getPreActivationValueOfOriginalWallet(
+            originalWallet.tokenCode,
+            queryRunner,
+          )
+        )[0].amount;
+        // transfer pre-activation value to parent wallet
+        await this.postTransfer(parentWallet.tokenCode, preActivationValue);
+      }
       if (originalWallet.tokenBlocked) {
+        // Block wallet again if original wallet was blocked
         await this.postToggleBlockWallet(
           originalWallet.tokenCode,
           {
@@ -402,6 +416,29 @@ export class MigrateVisaService {
   ): Promise<any[]> {
     return queryRunner.query(
       `SELECT * FROM "121-service"."intersolve_visa_wallet" WHERE "intersolveVisaCustomerId" = ${visaCustomer.id} order by "created" desc`,
+    );
+  }
+
+  private async getPreActivationValueOfOriginalWallet(
+    tokenCode: string | null,
+    queryRunner: QueryRunner,
+  ): Promise<any[]> {
+    // query something along the lines below
+    // 1. make use of fact that tokenCode is stored in transaction.customData
+    // 2. get the first payment number with the tokenCode
+    // 3. filter on only success transactions
+    // 4. join back on itself to get transaction amount
+    return queryRunner.query(
+      `SELECT amount
+      FROM "transaction" t
+      INNER JOIN (
+        SELECT "customData"->>'intersolveVisaWalletTokenCode' as "tokenCode"
+          ,MIN(t.payment) as min_payment
+        FROM "transaction"
+        WHERE "customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode} 
+        GROUP BY "customData"->>'intersolveVisaWalletTokenCode'
+      ) min_payment
+      ON t."customData"->>'intersolveVisaWalletTokenCode' = min_payment."tokenCode" AND t.payment = min_payment.min_payment AND t.status = 'success'`,
     );
   }
 
@@ -577,5 +614,49 @@ export class MigrateVisaService {
     };
     const linkResult = await this.httpService.post<any>(url, payload, headers);
     return linkResult;
+  }
+
+  public async postTransfer(
+    parentTokenCode: string | null,
+    amountInMajorUnit: number,
+  ): Promise<{
+    data: {
+      success?: boolean;
+      errors?: ErrorsInResponseIntersolveApi[];
+      code?: string;
+      correlationId?: string;
+    };
+    status: number;
+    statusText?: string;
+  }> {
+    const authToken = await this.getAuthenticationToken();
+    const apiPath = process.env.INTERSOLVE_VISA_PROD
+      ? 'wallet-payments'
+      : 'wallet';
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE}/transfer`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+
+    const amountInCent = amountInMajorUnit * 100;
+    const payload = {
+      quantity: {
+        value: amountInCent,
+        assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
+      },
+      creditor: {
+        tokenCode: parentTokenCode,
+      },
+      reference: `ParentTokenCode=${parentTokenCode},OneTimeMigration`,
+      operationReference: new uuid(), // Required to pass in a UUID, which needs be unique for all transfers. Is used as idempotency key.
+    };
+
+    const transferResult = await this.httpService.post<any>(
+      url,
+      payload,
+      headers,
+    );
+    return transferResult;
   }
 }
