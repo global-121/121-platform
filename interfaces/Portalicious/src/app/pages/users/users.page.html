@@ -2,5 +2,46 @@
   pageTitle="Users"
   i18n-pageTitle="@@page-title-users"
 >
-  <p i18n>users works!</p>
+  <div header-actions>
+    <p-button
+      label="Add new user"
+      i18n-label="@@add-user"
+      rounded
+      icon="pi pi-plus"
+      (click)="openForm('add')"
+    />
+    <!-- <app-add-user-form
+        [(formVisible)]="formVisible"
+        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
+      /> -->
+  </div>
+  <p-card>
+    <app-query-table
+      [items]="users.data() ?? []"
+      [isPending]="users.isPending()"
+      [columns]="columns()"
+      localStorageKey="users-table"
+      [contextMenuItems]="contextMenuItems()"
+      (onUpdateContextMenuItem)="selectedUser.set($event)"
+      [globalFilterFields]="['displayName', 'username']"
+    />
+  </p-card>
 </app-page-layout>
+<app-confirmation-dialog
+  #resetPasswordConfirmationDialog
+  header="Reset user password"
+  i18n-header
+  headerIcon="pi pi-refresh"
+  proceedLabel="Reset password"
+  i18n-proceedLabel="@@reset-password-button"
+  [mutation]="resetPasswordMutation"
+  [mutationData]="{ username: selectedUser()?.username }"
+>
+  <p i18n>
+    You're about to reset
+    <b>{{ selectedUser()?.displayName }}</b
+    >'s password. The user will receive an email with the new password sent to
+    their registered email address. Only proceed if the user has requested this
+    action.
+  </p>
+</app-confirmation-dialog>

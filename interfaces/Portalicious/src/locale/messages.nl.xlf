@@ -147,10 +147,6 @@
         <source>project-payments works!</source>
         <target state="new">project-payments werkt!</target>
       </trans-unit>
-      <trans-unit id="1519584467841622217" datatype="html">
-        <source>users works!</source>
-        <target state="new">users werkt!</target>
-      </trans-unit>
       <trans-unit id="9132374083993014120" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
         <target state="translated">Ongeldig e-mailadres of wachtwoord. Dubbel-check uw gegevens en probeer opnieuw.</target>
@@ -854,6 +850,34 @@
       <trans-unit id="6884725425179376273" datatype="html">
         <source>Registration not found. Please check the URL and try again.</source>
         <target state="new">Registration not found. Please check the URL and try again.</target>
+      </trans-unit>
+      <trans-unit id="8953033926734869941" datatype="html">
+        <source>Name</source>
+        <target state="new">Name</target>
+      </trans-unit>
+      <trans-unit id="7910076708497708162" datatype="html">
+        <source>Last login</source>
+        <target state="new">Last login</target>
+      </trans-unit>
+      <trans-unit id="1693473022450987876" datatype="html">
+        <source>Reset user password</source>
+        <target state="new">Reset user password</target>
+      </trans-unit>
+      <trans-unit id="reset-password-button" datatype="html">
+        <source>Reset password</source>
+        <target state="new">Reset password</target>
+      </trans-unit>
+      <trans-unit id="add-user" datatype="html">
+        <source>Add new user</source>
+        <target state="new">Add new user</target>
+      </trans-unit>
+      <trans-unit id="2413028101045997188" datatype="html">
+        <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
+        <target state="new">You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</target>
+      </trans-unit>
+      <trans-unit id="4249207548869932033" datatype="html">
+        <source>Password reset successful</source>
+        <target state="new">Password reset successful</target>
       </trans-unit>
     </body>
   </file>

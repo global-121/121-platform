@@ -131,6 +131,7 @@ module.exports = tseslint.config(
             'severity',
             'th[pSortableColumn]',
             'app-colored-chip[variant]',
+            'app-confirmation-dialog[headerIcon]',
             'app-metric-tile[chipIcon]',
             'app-metric-tile[chipVariant]',
             'iframe[referrerpolicy]',
