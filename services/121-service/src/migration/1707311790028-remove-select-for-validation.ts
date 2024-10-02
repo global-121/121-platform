@@ -2,7 +2,6 @@ import { Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
-import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 
 export class RemoveSelectForValidation1707311790028
   implements MigrationInterface
@@ -58,44 +57,48 @@ export class RemoveSelectForValidation1707311790028
         permissionEntity = await permissionsRepository.save(permission);
       }
 
+      // Commenting out because this was causing issues with new entities and legacy migrations
+      // and the migration is likely not needed anymore.
       // Loop over all existing roles, if it has the closes permission, also add the new permission
-      const closestPermission =
-        'registration:status:selectedForValidation.update' as PermissionEnum;
-      const userRoleRepository =
-        queryRunner.manager.getRepository(UserRoleEntity);
-      const userRoles = await userRoleRepository.find({
-        relations: ['permissions'],
-      });
-      for (const role of userRoles) {
-        const rolePermissions = role.permissions.map(
-          (p) => p.name as PermissionEnum,
-        );
-        if (
-          (rolePermissions.includes(closestPermission) ||
-            role.role === 'partner') && // specifically also add to NLRC partner role
-          !rolePermissions.includes(name)
-        ) {
-          role.permissions.push(permissionEntity);
-          await userRoleRepository.save(role);
-        }
-      }
+      // const closestPermission =
+      //   'registration:status:selectedForValidation.update' as PermissionEnum;
+      // const userRoleRepository =
+      //   queryRunner.manager.getRepository(UserRoleEntity);
+      // const userRoles = await userRoleRepository.find({
+      //   relations: ['permissions'],
+      // });
+      // for (const role of userRoles) {
+      //   const rolePermissions = role.permissions.map(
+      //     (p) => p.name as PermissionEnum,
+      //   );
+      //   if (
+      //     (rolePermissions.includes(closestPermission) ||
+      //       role.role === 'partner') && // specifically also add to NLRC partner role
+      //     !rolePermissions.includes(name)
+      //   ) {
+      //     role.permissions.push(permissionEntity);
+      //     await userRoleRepository.save(role);
+      //   }
+      // }
     }
 
-    // Remove permission from roles and permission itself
-    const oldPermissionName =
-      'registration:status:selectedForValidation.update' as any;
-    const oldPermission = await permissionsRepository.findOne({
-      where: { name: Equal(oldPermissionName) },
-      relations: ['roles'],
-    });
-    if (oldPermission) {
-      oldPermission.roles = [];
-      // Removes relations
-      await permissionsRepository.save(oldPermission);
-      await permissionsRepository.delete({
-        name: oldPermissionName,
-      });
-    }
+    // Commenting out because this was causing issues with new entities and legacy migrations
+    // and the migration is likely not needed anymore.
+    // // Remove permission from roles and permission itself
+    // const oldPermissionName =
+    //   'registration:status:selectedForValidation.update' as any;
+    // const oldPermission = await permissionsRepository.findOne({
+    //   where: { name: Equal(oldPermissionName) },
+    //   relations: ['roles'],
+    // });
+    // if (oldPermission) {
+    //   oldPermission.roles = [];
+    //   // Removes relations
+    //   await permissionsRepository.save(oldPermission);
+    //   await permissionsRepository.delete({
+    //     name: oldPermissionName,
+    //   });
+    // }
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {

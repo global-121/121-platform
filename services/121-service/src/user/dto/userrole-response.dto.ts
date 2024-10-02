@@ -13,6 +13,9 @@ export class UserRoleResponseDTO {
   @ApiProperty({ example: 'Do Field Validation' })
   public label: string | null;
 
+  @ApiProperty({ example: 'This role allows you to do field validation' })
+  public description: string | null;
+
   @ApiProperty({
     example: ['registration:attribute.update', 'registration:fsp.read'],
   })
