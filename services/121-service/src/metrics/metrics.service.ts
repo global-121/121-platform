@@ -6,6 +6,7 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
@@ -18,6 +19,7 @@ import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -41,6 +43,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
@@ -936,6 +939,18 @@ export class MetricsService {
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('transaction.financialServiceProvider', 'fsp');
 
+    const additionalFspExportFields =
+      await this.getAdditionalFspExportFields(programId);
+
+    for (const field of additionalFspExportFields) {
+      transactionQuery.leftJoin(
+        field.entityJoinedToTransaction,
+        'joinTable',
+        'transaction.id = joinTable.transactionId',
+      );
+      transactionQuery.addSelect(`"${field.attribute}"`);
+    }
+
     const duplicateNames = registrationDataOptions
       .map((r) => r.name)
       .filter((value, index, self) => self.indexOf(value) !== index);
@@ -999,6 +1014,35 @@ export class MetricsService {
     }
 
     return result;
+  }
+
+  private async getAdditionalFspExportFields(
+    programId: number,
+  ): Promise<
+    { entityJoinedToTransaction: EntityClass<any>; attribute: string }[]
+  > {
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      relations: ['financialServiceProviders'],
+    });
+    let fields: {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+    }[] = [];
+    for (const fsp of program.financialServiceProviders) {
+      if (fsp.fsp === FinancialServiceProviderName.safaricom) {
+        fields = [
+          ...fields,
+          ...[
+            {
+              entityJoinedToTransaction: SafaricomTransferEntity,
+              attribute: 'mpesaTransactionId',
+            },
+          ],
+        ];
+      }
+    }
+    return fields;
   }
 
   public async getPaymentsWithStateSums(
