@@ -22,8 +22,10 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entit
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -648,53 +650,49 @@ export class RegistrationsService {
   private async sendContactInformationToIntersolve(
     registration: RegistrationEntity,
   ): Promise<void> {
-    const registrationHasVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-    if (registrationHasVisaCustomer) {
-      // TODO: REFACTOR: Find a way to not have the data fields hardcoded in this function. -> can be implemented in registration data refeactor
-      type ContactInformationKeys = keyof ContactInformation;
-      const fieldNames: ContactInformationKeys[] = [
-        'addressStreet',
-        'addressHouseNumber',
-        'addressHouseNumberAddition',
-        'addressPostalCode',
-        'addressCity',
-        'phoneNumber',
-      ];
-      const registrationData =
-        await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
-          registration,
-          fieldNames,
-        );
-
-      if (!registrationData || registrationData.length === 0) {
-        throw new HttpException(
-          `No registration data found for referenceId: ${registration.referenceId}`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      const mappedRegistrationData = registrationData.reduce(
-        (acc, { name, value }) => {
-          acc[name] = value;
-          return acc;
-        },
-        {},
+    // TODO: REFACTOR: Find a way to not have the data fields hardcoded in this function. -> can be implemented in registration data refeactor
+    type ContactInformationKeys = keyof ContactInformation;
+    const fieldNames: ContactInformationKeys[] = [
+      'addressStreet',
+      'addressHouseNumber',
+      'addressHouseNumberAddition',
+      'addressPostalCode',
+      'addressCity',
+      'phoneNumber',
+    ];
+    const registrationData =
+      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+        registration,
+        fieldNames,
       );
 
-      await this.intersolveVisaService.sendUpdatedContactInformation({
-        registrationId: registration.id,
-        contactInformation: {
-          addressStreet: mappedRegistrationData[`addressStreet`],
-          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
-          addressHouseNumberAddition:
-            mappedRegistrationData[`addressHouseNumberAddition`],
-          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
-          addressCity: mappedRegistrationData[`addressCity`],
-          phoneNumber: mappedRegistrationData[`phoneNumber`],
-        },
-      });
+    if (!registrationData || registrationData.length === 0) {
+      throw new HttpException(
+        `No registration data found for referenceId: ${registration.referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
     }
+
+    const mappedRegistrationData = registrationData.reduce(
+      (acc, { name, value }) => {
+        acc[name] = value;
+        return acc;
+      },
+      {},
+    );
+
+    await this.intersolveVisaService.sendUpdatedContactInformation({
+      registrationId: registration.id,
+      contactInformation: {
+        addressStreet: mappedRegistrationData[`addressStreet`],
+        addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
+        addressHouseNumberAddition:
+          mappedRegistrationData[`addressHouseNumberAddition`],
+        addressPostalCode: mappedRegistrationData[`addressPostalCode`],
+        addressCity: mappedRegistrationData[`addressCity`],
+        phoneNumber: mappedRegistrationData[`phoneNumber`],
+      },
+    });
   }
 
   public async searchRegistration(rawPhoneNumber: string, userId: number) {
@@ -1099,28 +1097,41 @@ export class RegistrationsService {
     }
     await this.sendContactInformationToIntersolve(registration);
 
-    await this.intersolveVisaService.reissueCard({
-      registrationId: registration.id,
-      // Why do we need this?
-      reference: registration.referenceId,
-      name: mappedRegistrationData['fullName'],
-      contactInformation: {
-        addressStreet: mappedRegistrationData['addressStreet'],
-        addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
-        addressHouseNumberAddition:
-          mappedRegistrationData['addressHouseNumberAddition'],
-        addressPostalCode: mappedRegistrationData['addressPostalCode'],
-        addressCity: mappedRegistrationData['addressCity'],
-        phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
-      },
-      brandCode: intersolveVisaConfig.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-      coverLetterCode: intersolveVisaConfig.find(
-        (c) =>
-          c.name === FinancialServiceProviderConfigurationEnum.coverLetterCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-    });
+    // ##TODO: Put a try/catch around this and catch any IntersolveVisaApi errors (only?), and throw an appropriate HTTP error response code.
+
+    try {
+      await this.intersolveVisaService.reissueCard({
+        registrationId: registration.id,
+        reference: registration.referenceId,
+        name: mappedRegistrationData['fullName'],
+        contactInformation: {
+          addressStreet: mappedRegistrationData['addressStreet'],
+          addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
+          addressHouseNumberAddition:
+            mappedRegistrationData['addressHouseNumberAddition'],
+          addressPostalCode: mappedRegistrationData['addressPostalCode'],
+          addressCity: mappedRegistrationData['addressCity'],
+          phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
+        },
+        brandCode: intersolveVisaConfig.find(
+          (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+        coverLetterCode: intersolveVisaConfig.find(
+          (c) =>
+            c.name ===
+            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      });
+    } catch (error) {
+      if (error instanceof IntersolveVisaApiError) {
+        throw new HttpException(
+          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw error;
+      }
+    }
 
     await this.queueMessageService.addMessageJob({
       registration,
