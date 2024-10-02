@@ -35,6 +35,7 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
 
   askForConfirmation() {
     this.confirmationService.confirm({});
+    this.mutation().reset();
   }
 
   onProceed() {
