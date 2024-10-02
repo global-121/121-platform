@@ -217,7 +217,7 @@ export class MetricsService {
       programId,
       ExportType.included,
     );
-    const pastPaymentDetails = await this.getPaymentDetailsPayment(
+    const pastPaymentDetails = await this.getPastPaymentDetails(
       programId,
       minPaymentId,
       maxPaymentId,
@@ -893,7 +893,7 @@ export class MetricsService {
     return relationOptionsPerFsp;
   }
 
-  private async getPaymentDetailsPayment(
+  private async getPastPaymentDetails(
     programId: number,
     minPaymentId: number,
     maxPaymentId: number,
