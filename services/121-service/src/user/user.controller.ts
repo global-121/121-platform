@@ -37,6 +37,7 @@ import {
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
+import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
@@ -44,10 +45,7 @@ import {
   UpdateUserDto,
   UpdateUserPasswordDto,
 } from '@121-service/src/user/dto/update-user.dto';
-import {
-  CreateUserRoleDto,
-  UpdateUserRoleDto,
-} from '@121-service/src/user/dto/user-role.dto';
+import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import {
   AssignmentResponseDTO,
   UserRoleResponseDTO,

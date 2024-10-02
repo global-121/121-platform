@@ -4,7 +4,7 @@ import TestAgent from 'supertest/lib/agent';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { UpdateUserRoleDto } from '@121-service/src/user/dto/user-role.dto';
+import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
