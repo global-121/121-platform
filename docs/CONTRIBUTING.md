@@ -76,6 +76,9 @@ Below is a list of other guidelines we try to follow for PRs.
     - the author has enabled auto-merge and
     - a branch update (without conflicts) is the only thing stopping the auto-merge
 - For substantial changes, we prefer creating a "parent/feature" PR which receives multiple smaller PRs. For the parent PR and all the smaller child PRs, all the general guidelines apply.
+- For PRs towards main
+  - Every PR should contain a reference to a devops task
+  - Every PR should have one of the [labels we use for auto-generating release notes](../.github/release.yml)
 
 Some useful reading:
 

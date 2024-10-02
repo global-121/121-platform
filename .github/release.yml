@@ -10,12 +10,12 @@ changelog:
     - title: Bug Fixes 🛠
       labels:
         - bugfix
+    - title: Other Changes 🔄
+      labels:
+        - other
     - title: Chores 🧹
       labels:
         - chore
     - title: Portalicious 🚀
       labels:
         - portalicious
-    - title: Other Changes
-      labels:
-        - '*'
