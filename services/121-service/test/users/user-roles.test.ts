@@ -26,6 +26,7 @@ describe('/ Users', () => {
         .send({
           role: 'test-manager',
           label: 'Do stuff with certain permissions',
+          description: 'This is a test role',
           permissions: [
             'program.update',
             'program:custom-attribute.update',
@@ -48,6 +49,7 @@ describe('/ Users', () => {
         .send({
           role: roleId,
           label: 'Do stuff with certain permissions',
+          description: 'This is a test role',
           permissions: [
             'program.update',
             'program:custom-attribute.update',
@@ -65,6 +67,7 @@ describe('/ Users', () => {
         .send({
           role: roleId,
           label: 'Do stuff with certain permissions',
+          description: 'This is a test role',
           permissions: [
             'program.update',
             'program:custom-attribute.update',
@@ -88,6 +91,7 @@ describe('/ Users', () => {
         .send({
           role: 'test-manager',
           label: 'Do stuff with certain permissions',
+          description: 'This is a test role',
           permissions: [
             'program.update',
             fakePermission,

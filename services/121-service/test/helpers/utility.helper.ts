@@ -111,7 +111,6 @@ export async function removePermissionsFromRole(
     (permission: PermissionEnum) => !permissionsToRemove.includes(permission),
   );
   await updatePermissionsOfRole(role.id, {
-    label: role.label!,
     permissions: adjustedPermissions as PermissionEnum[],
   });
 }

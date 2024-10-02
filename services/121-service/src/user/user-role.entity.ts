@@ -12,6 +12,9 @@ export class UserRoleEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
   public label: string | null;
 
+  @Column({ type: 'character varying', nullable: true })
+  public description: string | null;
+
   @ManyToMany(
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.roles,

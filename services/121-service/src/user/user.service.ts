@@ -163,6 +163,7 @@ export class UserService {
       id: userRole.id,
       role: userRole.role,
       label: userRole.label,
+      description: userRole.description,
     };
     if (userRole.permissions) {
       userRoleResponse.permissions = userRole.permissions.map(
@@ -188,6 +189,7 @@ export class UserService {
     const userRoleEntity = new UserRoleEntity();
     userRoleEntity.role = userRoleData.role;
     userRoleEntity.label = userRoleData.label;
+    userRoleEntity.description = userRoleData.description;
     const permissionEntities: PermissionEntity[] = [];
     for (const permission of userRoleData.permissions) {
       try {
@@ -214,16 +216,26 @@ export class UserService {
     userRoleData: UpdateUserRoleDto,
   ): Promise<UserRoleResponseDTO> {
     const existingRole = await this.findRoleOrThrow(userRoleId);
-    existingRole.label = userRoleData.label;
-    const permissionEntities: PermissionEntity[] = [];
-    for (const permission of userRoleData.permissions) {
-      permissionEntities.push(
-        await this.permissionRepository.findOneByOrFail({
-          name: permission,
-        }),
-      );
+
+    if (userRoleData.label) {
+      existingRole.label = userRoleData.label;
     }
-    existingRole.permissions = permissionEntities;
+
+    if (userRoleData.description) {
+      existingRole.description = userRoleData.description;
+    }
+
+    if (userRoleData.permissions) {
+      const permissionEntities: PermissionEntity[] = [];
+      for (const permission of userRoleData.permissions) {
+        permissionEntities.push(
+          await this.permissionRepository.findOneByOrFail({
+            name: permission,
+          }),
+        );
+      }
+      existingRole.permissions = permissionEntities;
+    }
 
     const savedUserRole = await this.userRoleRepository.save(existingRole);
     return this.getUserRoleResponse(savedUserRole);
