@@ -1,37 +1,57 @@
 <div class="flex min-h-screen flex-col">
   <app-header [projectId]="projectId()" />
-  <div class="flex-1">
-    @if (projectId()) {
-      <app-project-menu [projectId]="projectId()!" />
-    }
-    @if (registrationId()) {
-      <div class="mt-2 px-6 pb-8 pt-4 lg:px-24">
-        <app-registration-header
-          [projectId]="projectId()!"
-          [registrationId]="registrationId()!"
+  <div class="flex flex-1 flex-col">
+    @if (project.isError()) {
+      <div class="flex-1 px-6 py-8 lg:px-24">
+        <p-message
+          severity="warn"
+          styleClass="w-full"
+          text="Project not found. Please check the URL and try again."
+          i18n-text
         />
-        <p-card styleClass="mt-6">
-          <app-registration-menu
-            [projectId]="projectId()!"
-            [registrationId]="registrationId()!"
-          />
-          <ng-content select="[registration-page]"></ng-content>
-        </p-card>
       </div>
     } @else {
-      <div class="px-6 py-8 lg:px-24">
-        @if (pageTitle()) {
-          <div class="flex items-start justify-between pb-9 pt-1">
-            <h1 class="my-0 min-w-48">
-              {{ pageTitle() }}
-            </h1>
+      @if (projectId()) {
+        <app-project-menu [projectId]="projectId()!" />
+      }
+      <div class="flex-1 px-6 py-8 lg:px-24">
+        @if (registration.isError()) {
+          <p-message
+            severity="warn"
+            styleClass="w-full"
+            text="Registration not found. Please check the URL and try again."
+            i18n-text
+          />
+        } @else {
+          @if (registrationId()) {
+            <app-registration-header
+              [projectId]="projectId()!"
+              [registrationId]="registrationId()!"
+            />
+            <p-card styleClass="mt-6">
+              <app-registration-menu
+                [projectId]="projectId()!"
+                [registrationId]="registrationId()!"
+              />
+              <ng-content select="[registration-page]"></ng-content>
+            </p-card>
+          } @else {
+            @if (pageTitle()) {
+              <app-page-layout-title-and-actions>
+                <ng-container page-layout-title>
+                  {{ pageTitle() }}
+                </ng-container>
+                <ng-container page-layout-actions>
+                  <ng-content select="[header-actions]"></ng-content>
+                </ng-container>
+              </app-page-layout-title-and-actions>
+            }
 
-            <ng-content select="[header-actions]"></ng-content>
-          </div>
+            <ng-content></ng-content>
+          }
         }
-        <ng-content></ng-content>
       </div>
     }
+    <app-footer />
   </div>
-  <app-footer />
 </div>

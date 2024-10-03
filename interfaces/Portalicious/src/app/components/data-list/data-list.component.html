@@ -7,7 +7,9 @@
   @for (item of data(); track $index) {
     <p class="trim space-x-1 border-b border-grey-300 py-3">
       @if (item.loading) {
-        <app-skeleton-inline />
+        <div class="py-1">
+          <p-skeleton [width]="skeletonWidth()" />
+        </div>
       } @else {
         <strong> {{ item.label | translatableString }}:</strong>
         @if (item.tooltip) {

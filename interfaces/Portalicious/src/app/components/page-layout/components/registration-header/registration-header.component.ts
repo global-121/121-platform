@@ -11,15 +11,18 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { SkeletonModule } from 'primeng/skeleton';
 import { TabMenuModule } from 'primeng/tabmenu';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { AppRoutes } from '~/app.routes';
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { PageLayoutTitleAndActionsComponent } from '~/components/page-layout/components/page-layout-title-and-actions/page-layout-title-and-actions.component';
 import { AddNoteFormComponent } from '~/components/page-layout/components/registration-header/add-note-form/add-note-form.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -36,7 +39,9 @@ import { AuthService } from '~/services/auth.service';
     ButtonModule,
     DatePipe,
     SkeletonInlineComponent,
+    SkeletonModule,
     AddNoteFormComponent,
+    PageLayoutTitleAndActionsComponent,
   ],
   templateUrl: './registration-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -95,6 +100,10 @@ export class RegistrationHeaderComponent {
       loading: this.registration.isPending(),
     }));
   });
+
+  allRegistrationsLink = computed(() => [
+    `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}`,
+  ]);
 
   addNoteFormVisible = signal(false);
 
