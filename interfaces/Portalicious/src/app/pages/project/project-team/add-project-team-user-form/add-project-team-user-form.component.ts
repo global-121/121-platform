@@ -36,13 +36,13 @@ import {
 } from '~/utils/form-validation';
 
 type AddUserToTeamFormGroup =
-  (typeof AddUserFormComponent)['prototype']['formGroup'];
+  (typeof AddProjectTeamUserFormComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-add-user-form',
+  selector: 'app-add-project-team-user-form',
   styles: ``,
   standalone: true,
-  templateUrl: './add-user-form.component.html',
+  templateUrl: './add-project-team-user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
@@ -54,7 +54,7 @@ type AddUserToTeamFormGroup =
     ReactiveFormsModule,
   ],
 })
-export class AddUserFormComponent {
+export class AddProjectTeamUserFormComponent {
   projectId = input.required<number>();
   enableScope = input.required<boolean>();
   formVisible = model.required<boolean>();
