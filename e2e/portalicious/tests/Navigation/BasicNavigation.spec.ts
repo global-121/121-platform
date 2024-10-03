@@ -25,10 +25,8 @@ test('Navigation from sidebar', async ({ page }) => {
   await homePage.navigateToPage('Users');
   await page.waitForURL((url) => url.pathname.startsWith('/en/users'));
 
-  await homePage.navigateToPage('Roles and permissions');
-  await page.waitForURL((url) =>
-    url.pathname.startsWith('/en/roles-and-permissions'),
-  );
+  await homePage.navigateToPage('User roles');
+  await page.waitForURL((url) => url.pathname.startsWith('/en/user-roles'));
 });
 
 test('Navigation from program header', async ({ page }) => {

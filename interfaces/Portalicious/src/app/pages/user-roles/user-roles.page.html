@@ -1,0 +1,14 @@
+<app-page-layout
+  pageTitle="User roles"
+  i18n-pageTitle="@@page-title-user-roles"
+>
+  <p-card>
+    <app-query-table
+      [items]="roles.data() ?? []"
+      [isPending]="roles.isPending()"
+      [columns]="columns()"
+      localStorageKey="user-roles-table"
+      [globalFilterFields]="['role', 'label']"
+    />
+  </p-card>
+</app-page-layout>
