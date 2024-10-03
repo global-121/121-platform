@@ -839,6 +839,22 @@
         <source>Role description</source>
         <target state="new">Role description</target>
       </trans-unit>
+      <trans-unit id="7739650586737813677" datatype="html">
+        <source>All Registrations</source>
+        <target state="new">All Registrations</target>
+      </trans-unit>
+      <trans-unit id="8040367464671654118" datatype="html">
+        <source>Reg. #</source>
+        <target state="new">Reg. #</target>
+      </trans-unit>
+      <trans-unit id="3284816784388197103" datatype="html">
+        <source>Project not found. Please check the URL and try again.</source>
+        <target state="new">Project not found. Please check the URL and try again.</target>
+      </trans-unit>
+      <trans-unit id="6884725425179376273" datatype="html">
+        <source>Registration not found. Please check the URL and try again.</source>
+        <target state="new">Registration not found. Please check the URL and try again.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
