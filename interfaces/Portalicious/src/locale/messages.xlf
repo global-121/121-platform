@@ -17,9 +17,6 @@
       <trans-unit id="1431416938026210429" datatype="html">
         <source>Password</source>
       </trans-unit>
-      <trans-unit id="1519584467841622217" datatype="html">
-        <source>users works!</source>
-      </trans-unit>
       <trans-unit id="page-title-project-registrations" datatype="html">
         <source>Registrations</source>
       </trans-unit>
@@ -643,6 +640,27 @@
       </trans-unit>
       <trans-unit id="7739650586737813677" datatype="html">
         <source>All Registrations</source>
+      </trans-unit>
+      <trans-unit id="7910076708497708162" datatype="html">
+        <source>Last login</source>
+      </trans-unit>
+      <trans-unit id="8953033926734869941" datatype="html">
+        <source>Name</source>
+      </trans-unit>
+      <trans-unit id="1693473022450987876" datatype="html">
+        <source>Reset user password</source>
+      </trans-unit>
+      <trans-unit id="reset-password-button" datatype="html">
+        <source>Reset password</source>
+      </trans-unit>
+      <trans-unit id="add-user" datatype="html">
+        <source>Add new user</source>
+      </trans-unit>
+      <trans-unit id="2413028101045997188" datatype="html">
+        <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
+      </trans-unit>
+      <trans-unit id="4249207548869932033" datatype="html">
+        <source>Password reset successful</source>
       </trans-unit>
     </body>
   </file>

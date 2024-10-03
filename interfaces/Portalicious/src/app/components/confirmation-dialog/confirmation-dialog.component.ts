@@ -29,6 +29,7 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
     input.required<CreateMutationResult<unknown, Error, TMutationData>>();
   mutationData = input.required<TMutationData>();
   header = input($localize`:@@confirmation-dialog-header:Are you sure?`);
+  headerIcon = input<string>('pi pi-question');
   proceedLabel = input($localize`:@@generic-proceed:Proceed`);
 
   @ViewChild('confirmDialog') confirmDialog: ConfirmDialog;

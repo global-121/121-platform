@@ -47,6 +47,19 @@ export class UserApiService extends DomainApiService {
     });
   }
 
+  resetPassword({ username }: { username?: string }) {
+    if (!username) {
+      return Promise.reject(new Error('Username is required'));
+    }
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/password`,
+      body: {
+        username,
+      },
+    });
+  }
+
   getAllUsers() {
     return this.generateQueryOptions<User[]>({
       path: [BASE_ENDPOINT],

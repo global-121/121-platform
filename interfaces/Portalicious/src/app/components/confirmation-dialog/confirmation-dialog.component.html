@@ -1,9 +1,23 @@
 <p-confirmDialog
   #confirmDialog
-  [header]="header()"
   closeOnEscape
   class="[&_.p-dialog-content]:max-w-[632px]"
 >
+  <ng-template pTemplate="header">
+    <div class="flex w-full items-center">
+      <h3>
+        <i class="me-2 {{ headerIcon() }}"></i>
+        {{ header() }}
+      </h3>
+      <p-button
+        icon="pi pi-times"
+        class="ms-auto"
+        severity="secondary"
+        text
+        (click)="confirmDialog.reject()"
+      />
+    </div>
+  </ng-template>
   <ng-template pTemplate="message">
     <div>
       <ng-content></ng-content>
