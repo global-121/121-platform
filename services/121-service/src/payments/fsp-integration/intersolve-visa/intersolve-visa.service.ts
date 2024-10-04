@@ -7,7 +7,6 @@ import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { CreatePhysicalCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-physical-card-params.interface';
@@ -21,7 +20,6 @@ import { ReissueCardParams } from '@121-service/src/payments/fsp-integration/int
 import { SendUpdatedContactInformationParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
-import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaDtoMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-dto.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
@@ -51,7 +49,6 @@ export class IntersolveVisaService
     throw new Error('Method should not be called anymore.');
   }
 
-  // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
   /**
    * This function handles the process of transferring money to a person using intersolve visa.
    * - It first checks if the customer exists, if not it creates a new customer.
@@ -519,7 +516,6 @@ export class IntersolveVisaService
    * @returns {Promise<void>}
    */
   public async reissueCard(input: ReissueCardParams): Promise<void> {
-    // TODO: REFACTOR: See Dom's suggestion: https://gist.github.com/aberonni/afed0df72b77f0d1c71f454b7c1f7098 ####
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         input.registrationId,
@@ -551,30 +547,6 @@ export class IntersolveVisaService
       intersolveVisaCustomer.intersolveVisaParentWallet
         .intersolveVisaChildWallets[0];
 
-    try {
-      await this.executeReissueCardSteps(
-        input,
-        intersolveVisaCustomer,
-        childWalletToReplace,
-      );
-    } catch (error) {
-      if (error instanceof IntersolveVisaApiError) {
-        throw new HttpException(
-          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
-          HttpStatus.NOT_FOUND,
-        );
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  // TODO: REFACTOR: Do not "blindly" re-use input parameters from one function (reissueCard) in another function (executeReissueCardSteps), instead only pass in parameters the function needs to perform its responsibility.
-  private async executeReissueCardSteps(
-    input: ReissueCardParams,
-    intersolveVisaCustomer: IntersolveVisaCustomerEntity,
-    childWalletToReplace: IntersolveVisaChildWalletEntity,
-  ): Promise<void> {
     // Update Customer at Intersolve with the received address and phone number, to make sure that any old data at Intersolve is replaced.
     if (childWalletToReplace.isTokenBlocked) {
       await this.intersolveVisaApiService.setTokenBlocked(
@@ -619,10 +591,9 @@ export class IntersolveVisaService
 
     // Update old child wallet: set status to SUBSTITUTED
     childWalletToReplace.walletStatus = IntersolveVisaTokenStatus.Substituted;
-    childWalletToReplace =
-      await this.intersolveVisaChildWalletScopedRepository.save(
-        childWalletToReplace,
-      );
+    await this.intersolveVisaChildWalletScopedRepository.save(
+      childWalletToReplace,
+    );
 
     // Create new card
     await this.intersolveVisaApiService.createPhysicalCard({
@@ -642,17 +613,16 @@ export class IntersolveVisaService
 
     // Update child wallet: set isDebitCardCreated to true
     newChildWallet.isDebitCardCreated = true;
-    // TODO: Find out if it's safe to assume that cards that receive a 200 on createPhysicalCard are always cardOk
     newChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
     await this.intersolveVisaChildWalletScopedRepository.save(newChildWallet);
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
-    const count = await this.intersolveVisaCustomerScopedRepository
-      .createQueryBuilder('customer')
-      .andWhere('customer.registrationId = :registrationId', { registrationId })
-      .getCount();
-    return count > 0;
+    await this.intersolveVisaCustomerScopedRepository.findOneByOrFail({
+      registrationId,
+    });
+
+    return true;
   }
 
   /**
@@ -768,7 +738,6 @@ export class IntersolveVisaService
     }
   }
 
-  // TODO: It looks like the old implementation (this.syncIntersolveCustomerWith121) had some logic to only send data to Intersolve if it changed. Do we want to implement that again? That probably then should be in the RegistrationService and not here.
   /**
    * This function sends updated contact information for a customer to Intersolve. It uses 2 api call:
    * - update the address
