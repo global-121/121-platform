@@ -8,7 +8,7 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
-export class EventRepository extends ScopedRepository<EventEntity> {
+export class EventScopedRepository extends ScopedRepository<EventEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(EventEntity)
@@ -17,7 +17,10 @@ export class EventRepository extends ScopedRepository<EventEntity> {
     super(request, scopedRepository);
   }
 
-  async getMany(programId: number, searchOptions: EventSearchOptionsDto) {
+  async getManyByProgramIdAndSearchOptions(
+    programId: number,
+    searchOptions: EventSearchOptionsDto,
+  ) {
     const exportLimit = 500000;
     const events = await this.find({
       where: this.createWhereClause(programId, searchOptions),
