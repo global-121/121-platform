@@ -18,6 +18,7 @@ import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fs
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
@@ -31,12 +32,22 @@ interface VisaCustomerWithReferenceId extends IntersolveVisaCustomerEntity {
 export class MigrateVisaService {
   constructor(
     private readonly httpService: CustomHttpService,
+    private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
   ) {}
   name = 'VisaMigrateChildParentWallet1717505534921';
   public tokenSet: TokenSet;
 
-  public async migrateData(limit: number): Promise<void> {
+  public async migrateData(
+    limit: number,
+    csvFileWithPreActivationValues: Blob,
+  ): Promise<void> {
+    // ##TODO run this later, so to not pass it down all the methods?
+    // ##TODO type this object properly
+    const preActivationValueRecords = await this.fileImportService.validateCsv(
+      csvFileWithPreActivationValues,
+      limit, // ##TODO does limit make sense here?
+    );
     const queryRunner = this.dataSource.createQueryRunner();
     await this.migrationTemplateData(queryRunner);
     await this.insertProgramConfiguration();
@@ -46,7 +57,12 @@ export class MigrateVisaService {
     const programIds =
       await this.selectProgramIdsForInstanceWithVisa(queryRunner);
     for (const programId of programIds) {
-      await this.migrateProgramData(queryRunner, programId, limit);
+      await this.migrateProgramData(
+        queryRunner,
+        programId,
+        limit,
+        preActivationValueRecords,
+      );
     }
   }
 
@@ -126,6 +142,7 @@ export class MigrateVisaService {
     queryRunner: QueryRunner,
     programId: number,
     limit: number,
+    preActivationValueRecords: object[],
   ): Promise<void> {
     await this.createMigrationProgressTableAndIndex(queryRunner);
 
@@ -158,6 +175,7 @@ export class MigrateVisaService {
           visaCustomer,
           brandCode,
           queryRunner,
+          preActivationValueRecords,
         );
       } catch (e) {
         // console.log('error:', e);
@@ -190,10 +208,18 @@ export class MigrateVisaService {
     visaCustomer: VisaCustomerWithReferenceId,
     brandCode: string,
     queryRunner: QueryRunner,
+    preActivationValueRecords: object[],
   ): Promise<void> {
     const originalWalletsOfCustomer = await this.selectOriginalWallets(
       visaCustomer,
       queryRunner,
+    );
+
+    const preActivationValuesMap = new Map(
+      preActivationValueRecords.map((item) => [
+        item['tokenCode'],
+        item['preActivationValue'],
+      ]),
     );
 
     if (originalWalletsOfCustomer.length > 0) {
@@ -211,6 +237,7 @@ export class MigrateVisaService {
         originalWalletsOfCustomer,
         parentWallet,
         queryRunner,
+        preActivationValuesMap,
       );
     }
   }
@@ -279,6 +306,7 @@ export class MigrateVisaService {
     originalWallets: IntersolveVisaWalletEntity[],
     parentWallet: IntersolveVisaParentWalletEntity,
     queryRunner: QueryRunner,
+    preActivationValuesMap: Map<string, number>,
   ): Promise<void> {
     for (const originalWallet of originalWallets) {
       const childWallet = new IntersolveVisaChildWalletEntity();
@@ -324,15 +352,22 @@ export class MigrateVisaService {
         IntersolveVisaTokenStatus.Inactive
       ) {
         // get pre-activation value per child wallet
-        const preActivationValue = (
-          await this.getPreActivationValueOfOriginalWallet(
-            originalWallet.tokenCode,
-            queryRunner,
-          )
-        )[0].amount;
+        const preActivationValue = preActivationValuesMap.get(
+          originalWallet.tokenCode as string,
+        );
+        // (
+        //   await this.getPreActivationValueOfOriginalWallet(
+        //     originalWallet.tokenCode,
+        //     queryRunner,
+        //   )
+        // )[0].amount;
         // transfer pre-activation value to parent wallet
-        await this.postTransfer(parentWallet.tokenCode, preActivationValue);
+        await this.postTransfer(
+          parentWallet.tokenCode,
+          preActivationValue as number,
+        );
       }
+
       if (originalWallet.tokenBlocked) {
         // Block wallet again if original wallet was blocked
         await this.postToggleBlockWallet(
@@ -419,26 +454,27 @@ export class MigrateVisaService {
     );
   }
 
+  // We intend to no longer use this, but instead get the pre-activation value from the csv file
   private async getPreActivationValueOfOriginalWallet(
     tokenCode: string | null,
     queryRunner: QueryRunner,
   ): Promise<any[]> {
-    // query something along the lines below
-    // 1. make use of fact that tokenCode is stored in transaction.customData
+    // 1. make use of fact that tokenCode is stored in transaction.customData and is still available during this migration
     // 2. get the first payment number with the tokenCode
     // 3. filter on only success transactions
     // 4. join back on itself to get transaction amount
     return queryRunner.query(
-      `SELECT amount
-      FROM "transaction" t
-      INNER JOIN (
-        SELECT "customData"->>'intersolveVisaWalletTokenCode' as "tokenCode"
-          ,MIN(t.payment) as min_payment
-        FROM "transaction"
-        WHERE "customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode} 
-        GROUP BY "customData"->>'intersolveVisaWalletTokenCode'
-      ) min_payment
-      ON t."customData"->>'intersolveVisaWalletTokenCode' = min_payment."tokenCode" AND t.payment = min_payment.min_payment AND t.status = 'success'`,
+      `select "tokenCode", amount
+      from "transaction" t
+      inner join (
+        select ivw."tokenCode" 
+          ,min(t.payment) as "minPayment"
+        from intersolve_visa_wallet ivw 
+        left join "transaction" t on ivw."tokenCode" = t."customData"->>'intersolveVisaWalletTokenCode'
+        where t."customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode}
+        group by ivw."tokenCode" 
+      ) "minPayment"
+      on t."customData"->>'intersolveVisaWalletTokenCode' = "minPayment"."tokenCode" and t.payment = "minPayment"."minPayment" and t.status = 'success'`,
     );
   }
 
