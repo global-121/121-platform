@@ -37,7 +37,7 @@ export class ScopedQueryBuilder<
     // Copy other properties if needed
   }
   // Would be better if there was a way to give an error before runtime
-  where(): this {
+  override where(): this {
     // The reason for this error is that you else overwrite the .where of the scoped repository
     const errorText =
       'ERROR: The .where method is not allowed for scope repositories. Use .andWhere instead.';
@@ -274,5 +274,7 @@ export class ScopedRepository<T extends ObjectLiteral> {
         return relation;
       }
     }
+
+    return undefined;
   }
 }

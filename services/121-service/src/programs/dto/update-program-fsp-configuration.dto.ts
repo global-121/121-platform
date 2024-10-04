@@ -1,15 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
 import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class UpdateProgramFspConfigurationDto {
   @ApiProperty({
     example: FinancialServiceProviderConfigurationEnum.displayName,
   })
   @IsNotEmpty()
-  @IsString()
-  name: string;
+  @IsEnum(FinancialServiceProviderConfigurationEnum)
+  name: WrapperType<FinancialServiceProviderConfigurationEnum>;
 
   @ApiProperty({
     example: { en: 'FSP display name' },

@@ -3,6 +3,7 @@ import { Column, Entity, ManyToMany, OneToMany, Relation } from 'typeorm';
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
@@ -13,9 +14,9 @@ import { getEnumValue, WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('financial_service_provider')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
-  @Column({ unique: true })
+  @Column({ type: 'character varying', unique: true })
   @ApiProperty({ example: 'fspName' })
-  public fsp: string;
+  public fsp: WrapperType<FinancialServiceProviderName>;
 
   @Column('json', { nullable: true })
   @ApiProperty({ example: { en: 'FSP display name' } })

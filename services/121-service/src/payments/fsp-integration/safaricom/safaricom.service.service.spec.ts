@@ -1,5 +1,5 @@
 import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
+import { Job, Queue } from 'bull';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -49,12 +49,15 @@ describe('SafaricomService', () => {
   });
 
   it('should add payment to queue', async () => {
-    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
+    const mockJob = {
+      id: 'mockJobId',
       data: {
         id: 1,
         programId: 3,
       },
-    });
+    } as Job;
+
+    jest.spyOn(paymentQueue, 'add').mockResolvedValue(mockJob);
 
     // Act
     await safaricomService.sendPayment(sendPaymentData, programId, paymentNr);

@@ -146,7 +146,7 @@ export class IntersolveVoucherController {
   )
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
-    @UploadedFile() instructionsFileBlob,
+    @UploadedFile() instructionsFileBlob: Blob,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<void> {

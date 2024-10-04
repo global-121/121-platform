@@ -5,6 +5,7 @@ import { Equal, Repository } from 'typeorm';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import {
+  MessageJobCustomDataDto,
   MessageJobDto,
   MessageProcessType,
 } from '@121-service/src/notifications/message-job.dto';
@@ -171,7 +172,7 @@ export class MessageService {
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string | undefined;
-    let errorMessage: any;
+    let errorMessage: string | undefined;
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,
@@ -210,7 +211,7 @@ export class MessageService {
     messageJobDto: MessageJobDto,
   ): Promise<void> {
     let messageSid: string | undefined;
-    let errorMessage: any;
+    let errorMessage: string | null = null;
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,
@@ -336,7 +337,10 @@ export class MessageService {
 
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
-    placeholderData: object,
+    placeholderData: Exclude<
+      MessageJobCustomDataDto['placeholderData'],
+      undefined | null
+    >,
     preferredLanguage: LanguageEnum,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;

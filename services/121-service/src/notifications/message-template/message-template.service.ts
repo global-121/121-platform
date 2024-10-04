@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Equal, Repository } from 'typeorm';
+import { DeleteResult, Equal, FindOptionsWhere, Repository } from 'typeorm';
 
 import {
   CreateMessageTemplateDto,
@@ -24,7 +24,7 @@ export class MessageTemplateService {
     type?: string,
     language?: string,
   ): Promise<MessageTemplateEntity[]> {
-    let where: any = { programId };
+    let where: FindOptionsWhere<MessageTemplateEntity> = { programId };
 
     if (type) {
       where = { ...where, type };

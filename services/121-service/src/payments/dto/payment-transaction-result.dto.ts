@@ -17,6 +17,7 @@ export class PaTransactionResultDto {
   public fspName: FinancialServiceProviderName;
   public messageSid?: string;
   public registrationId?: number;
+  public errorMessage?: string | null;
 }
 
 export class TransactionNotificationObject {

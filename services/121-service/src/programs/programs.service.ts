@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
@@ -393,12 +392,10 @@ export class ProgramService {
       paymentAmountMultiplierFormula:
         program.paymentAmountMultiplierFormula ?? undefined,
       financialServiceProviders: program.financialServiceProviders.map(
-        (fsp) => {
-          return {
-            fsp: fsp.fsp as FinancialServiceProviderName,
-            configuration: fsp.configuration,
-          };
-        },
+        ({ fsp, configuration }) => ({
+          fsp,
+          configuration,
+        }),
       ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,

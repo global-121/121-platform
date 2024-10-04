@@ -76,7 +76,7 @@ export class VodacashService
     registration: RegistrationEntity,
     transaction: TransactionReturnDto,
     vodacashInstructionsXml?: string,
-  ): Promise<any> {
+  ): Promise<string> {
     const locationBaseXml =
       './src/payments/fsp-integration/vodacash/xml/vodacash-base.xml';
     const locationCustomerXml =
@@ -221,10 +221,12 @@ export class VodacashService
     element: convert.Element | convert.ElementCompact,
     name: string,
   ): convert.Element | convert.ElementCompact {
-    return element.elements.find((el) => el.name === name);
+    return element.elements.find((el: convert.Element) => el.name === name);
   }
 
-  private async readXmlAsJs(path: string): Promise<any> {
+  private async readXmlAsJs(
+    path: string,
+  ): Promise<convert.Element | convert.ElementCompact> {
     const xml = fs.readFileSync(path, 'utf-8');
     return convert.xml2js(xml);
   }
@@ -244,7 +246,7 @@ export class VodacashService
 
   // This method is potentially generic, but since it does contain vodacash-specific code down the line, putting it here
   public async xmlToValidatedFspReconciliation(
-    xmlFile,
+    xmlFile: Blob,
   ): Promise<ImportFspReconciliationArrayDto[]> {
     const importRecords = await this.fileImportService.validateXml(xmlFile);
     return (await this.validateFspReconciliationXmlInput(importRecords))
@@ -252,11 +254,14 @@ export class VodacashService
   }
 
   private async validateFspReconciliationXmlInput(
-    xmlArray,
+    xmlArray: convert.Element | convert.ElementCompact,
   ): Promise<ImportFspReconciliationDto> {
     const validatedArray: ImportFspReconciliationArrayDto[] = [];
     let recordsCount = 0;
-    for (const row of xmlArray) {
+    const rows = Array.isArray(xmlArray.elements)
+      ? xmlArray.elements
+      : [xmlArray];
+    for (const row of rows) {
       recordsCount += 1;
       if (this.fileImportService.checkForCompletelyEmptyRow(row)) {
         continue;
