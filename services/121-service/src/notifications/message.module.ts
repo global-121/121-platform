@@ -13,6 +13,8 @@ import {
 } from '@121-service/src/notifications/processors/message.processor';
 import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { SmsModule } from '@121-service/src/notifications/sms/sms.module';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -28,6 +30,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       RegistrationEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
+      TwilioMessageEntity,
     ]),
     WhatsappModule,
     SmsModule,
@@ -44,8 +47,9 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     MessageProcessorLargeBulk,
     MessageProcessorLowPriority,
     AzureLogService,
+    TwilioMessageScopedRepository,
   ],
   controllers: [],
-  exports: [MessageService],
+  exports: [MessageService, TwilioMessageScopedRepository],
 })
 export class MessageModule {}
