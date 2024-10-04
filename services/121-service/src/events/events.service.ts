@@ -12,7 +12,7 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
-import { EventRepository } from '@121-service/src/events/event.repository';
+import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -28,7 +28,7 @@ type LogEntity = Partial<RegistrationViewEntity> & {
 @Injectable()
 export class EventsService {
   constructor(
-    private eventRepository: EventRepository,
+    private eventRepository: EventScopedRepository,
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
@@ -54,7 +54,10 @@ export class EventsService {
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<EventEntity[]> {
-    return await this.eventRepository.getMany(programId, searchOptions);
+    return await this.eventRepository.getManyByProgramIdAndSearchOptions(
+      programId,
+      searchOptions,
+    );
   }
 
   public async log(
