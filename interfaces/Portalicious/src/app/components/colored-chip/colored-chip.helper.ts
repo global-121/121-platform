@@ -1,5 +1,5 @@
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import {
@@ -47,7 +47,9 @@ export function getChipDataByRegistrationStatus(
   }
 }
 
-export function getChipDataByStatusEnum(status?: null | StatusEnum): ChipData {
+export function getChipDataByTransactionStatusEnum(
+  status?: null | TransactionStatusEnum,
+): ChipData {
   if (!status) {
     return {
       chipVariant: 'grey',
@@ -55,17 +57,17 @@ export function getChipDataByStatusEnum(status?: null | StatusEnum): ChipData {
     };
   }
   switch (status) {
-    case StatusEnum.success:
+    case TransactionStatusEnum.success:
       return {
         chipLabel: $localize`:@@generic-success:Success`,
         chipVariant: 'green',
       };
-    case StatusEnum.waiting:
+    case TransactionStatusEnum.waiting:
       return {
         chipLabel: $localize`:@@generic-pending:Pending`,
         chipVariant: 'orange',
       };
-    case StatusEnum.error:
+    case TransactionStatusEnum.error:
       return {
         chipLabel: $localize`:@@generic-error:Error`,
         chipVariant: 'red',

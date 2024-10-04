@@ -5,8 +5,8 @@ import { queryOptions } from '@tanstack/angular-query-experimental';
 import { uniqueId } from 'lodash';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
@@ -176,7 +176,7 @@ export class RegistrationApiService extends DomainApiService {
                 payment: 2,
                 referenceId: '4212e8b29521366838192e87811de5bc',
                 totalTransfers: 2,
-                status: StatusEnum.waiting,
+                status: TransactionStatusEnum.waiting,
                 amount: 100,
                 sent: new Date(),
                 received: new Date(),
@@ -193,7 +193,7 @@ export class RegistrationApiService extends DomainApiService {
                 payment: 1,
                 referenceId: '4212e8b29521366838192e87811de5bc',
                 totalTransfers: 2,
-                status: StatusEnum.success,
+                status: TransactionStatusEnum.success,
                 amount: 100,
                 sent: new Date(),
                 received: new Date(),

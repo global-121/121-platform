@@ -23,10 +23,10 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { generateRandomString } from '@121-service/src/utils/getRandomValue.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
@@ -200,11 +200,11 @@ export class SafaricomService
     const result = await this.safaricomApiService.transfer(payload);
 
     if (result && result.ResponseCode === '0') {
-      paTransactionResult.status = StatusEnum.waiting;
-      payload.status = StatusEnum.waiting;
+      paTransactionResult.status = TransactionStatusEnum.waiting;
+      payload.status = TransactionStatusEnum.waiting;
     } else {
-      paTransactionResult.status = StatusEnum.error;
-      payload.status = StatusEnum.error;
+      paTransactionResult.status = TransactionStatusEnum.error;
+      payload.status = TransactionStatusEnum.error;
       paTransactionResult.message = result.errorMessage ?? null;
     }
 
@@ -261,16 +261,16 @@ export class SafaricomService
       return;
     }
 
-    let paymentStatus: StatusEnum | null = null;
+    let paymentStatus: TransactionStatusEnum | null = null;
 
     if (
       safaricomPaymentResultData &&
       safaricomPaymentResultData.Result &&
       safaricomPaymentResultData.Result.ResultCode === 0
     ) {
-      paymentStatus = StatusEnum.success;
+      paymentStatus = TransactionStatusEnum.success;
     } else {
-      paymentStatus = StatusEnum.error;
+      paymentStatus = TransactionStatusEnum.error;
       safaricomDbRequest[0].transaction.errorMessage =
         safaricomPaymentResultData.Result?.ResultDesc ?? null;
     }

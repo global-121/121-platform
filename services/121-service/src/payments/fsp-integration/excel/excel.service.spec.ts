@@ -4,12 +4,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 const mockTransactionService = {
   retrieveTransaction: jest.fn(),
@@ -30,7 +30,7 @@ describe('ExcelService', () => {
   const phoneNumber = '27883373741';
   const referenceid = 'referenceId1234';
   const registrationId = 1;
-  const transactionStatus = StatusEnum.success;
+  const transactionStatus = TransactionStatusEnum.success;
   const transactionAmount = 25;
   const registrationViewEntity = new RegistrationViewEntity();
   registrationViewEntity.phoneNumber = phoneNumber;

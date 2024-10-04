@@ -1,5 +1,5 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 export class FspTransactionResultDto {
   public fspName: FinancialServiceProviderName;
@@ -8,7 +8,7 @@ export class FspTransactionResultDto {
 
 export class PaTransactionResultDto {
   public referenceId: string;
-  public status: StatusEnum;
+  public status: TransactionStatusEnum;
   public message: string | null;
   public notificationObjects?: TransactionNotificationObject[];
   public date?: Date;

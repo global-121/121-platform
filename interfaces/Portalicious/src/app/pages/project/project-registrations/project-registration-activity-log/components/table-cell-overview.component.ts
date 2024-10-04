@@ -10,7 +10,7 @@ import { ChipModule } from 'primeng/chip';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { getChipDataByStatusEnum } from '~/components/colored-chip/colored-chip.helper';
+import { getChipDataByTransactionStatusEnum } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
 import {
   ActivityLogItemType,
@@ -71,7 +71,7 @@ export class TableCellOverviewComponent
       return;
     }
 
-    return getChipDataByStatusEnum(contents.status);
+    return getChipDataByTransactionStatusEnum(contents.status);
   });
 
   voucherDialogData = computed(() => {

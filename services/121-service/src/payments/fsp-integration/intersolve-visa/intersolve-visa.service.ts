@@ -74,6 +74,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis-client';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
@@ -84,7 +85,6 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -383,7 +383,7 @@ export class IntersolveVisaService
 
       // if error, return error
       if (!createCustomerResult.data?.success) {
-        paTransactionResult.status = StatusEnum.error;
+        paTransactionResult.status = TransactionStatusEnum.error;
         paTransactionResult.message = `CREATE CUSTOMER ERROR: ${
           this.intersolveErrorToMessage(createCustomerResult.data?.errors) ||
           `${createCustomerResult.status} - ${createCustomerResult.statusText}`
@@ -409,7 +409,7 @@ export class IntersolveVisaService
 
       // if error, return error
       if (!createWalletResult.data?.success) {
-        paTransactionResult.status = StatusEnum.error;
+        paTransactionResult.status = TransactionStatusEnum.error;
         paTransactionResult.message = `CREATE WALLET ERROR: ${
           this.intersolveErrorToMessage(createWalletResult.data?.errors) ||
           `${createWalletResult.status} - ${createWalletResult.statusText}`
@@ -449,7 +449,7 @@ export class IntersolveVisaService
 
       // if error, return error
       if (!this.isSuccessResponseStatus(registerResult.status)) {
-        paTransactionResult.status = StatusEnum.error;
+        paTransactionResult.status = TransactionStatusEnum.error;
         paTransactionResult.message = `LINK CUSTOMER ERROR: ${
           this.intersolveErrorToMessage(registerResult.data?.errors) ||
           registerResult.data?.code ||
@@ -482,8 +482,8 @@ export class IntersolveVisaService
       );
       // error or success: set transaction result either way
       paTransactionResult.status = createDebitCardResultStatus
-        ? StatusEnum.success
-        : StatusEnum.error;
+        ? TransactionStatusEnum.success
+        : TransactionStatusEnum.error;
       paTransactionResult.message = createDebitCardResultStatus
         ? null
         : `CREATE DEBIT CARD ERROR: ${
@@ -495,7 +495,7 @@ export class IntersolveVisaService
       };
 
       // if success, update wallet: set debitCardCreated to true ..
-      if (paTransactionResult.status === StatusEnum.success) {
+      if (paTransactionResult.status === TransactionStatusEnum.success) {
         visaCustomer.visaWallets[0].debitCardCreated = true;
         await this.intersolveVisaWalletScopedRepo.save(
           visaCustomer.visaWallets[0],
@@ -520,7 +520,7 @@ export class IntersolveVisaService
           visaCustomer,
         );
       } catch (error) {
-        paTransactionResult.status = StatusEnum.error;
+        paTransactionResult.status = TransactionStatusEnum.error;
         let errorMessage = 'Unknown';
         if (error?.response?.errors) {
           errorMessage =
@@ -547,8 +547,8 @@ export class IntersolveVisaService
         );
 
         paTransactionResult.status = loadBalanceResult.data?.success
-          ? StatusEnum.success
-          : StatusEnum.error;
+          ? TransactionStatusEnum.success
+          : TransactionStatusEnum.error;
         paTransactionResult.message = loadBalanceResult.data?.success
           ? null
           : `LOAD BALANCE CARD ERROR: ${
@@ -557,7 +557,7 @@ export class IntersolveVisaService
             }`;
       } else {
         // If topupAmount is 0, DON'T call Intersolve. Create a   successfull transaction
-        paTransactionResult.status = StatusEnum.success;
+        paTransactionResult.status = TransactionStatusEnum.success;
         paTransactionResult.message = null;
       }
       paTransactionResult.customData = {
