@@ -23,6 +23,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
+import { AddUserFormComponent } from '~/pages/users/add-user-form/add-user-form.component';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -34,6 +35,7 @@ import { ToastService } from '~/services/toast.service';
     CardModule,
     QueryTableComponent,
     ConfirmationDialogComponent,
+    AddUserFormComponent,
   ],
   providers: [ToastService],
   templateUrl: './users.page.html',

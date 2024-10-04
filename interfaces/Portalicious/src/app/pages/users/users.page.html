@@ -10,10 +10,7 @@
       icon="pi pi-plus"
       (click)="openForm('add')"
     />
-    <!-- <app-add-user-form
-        [(formVisible)]="formVisible"
-        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
-      /> -->
+    <app-add-user-form [(formVisible)]="formVisible" />
   </div>
   <p-card>
     <app-query-table
