@@ -1,10 +1,9 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
 import {
   FinancialServiceProviderConfigurationEnum,
@@ -18,12 +17,12 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -60,12 +59,10 @@ import { RegistrationViewScopedRepository } from '@121-service/src/registration/
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {
@@ -79,9 +76,6 @@ export class RegistrationsService {
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
-  // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
-  @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -96,10 +90,6 @@ export class RegistrationsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly eventsService: EventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
-    private twilioMessageScopedRepository: ScopedRepository<TwilioMessageEntity>,
-    @Inject(getScopedRepositoryProviderName(EventEntity))
-    private eventScopedRepository: ScopedRepository<EventEntity>,
     private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
@@ -1099,28 +1089,39 @@ export class RegistrationsService {
     }
     await this.sendContactInformationToIntersolve(registration);
 
-    await this.intersolveVisaService.reissueCard({
-      registrationId: registration.id,
-      // Why do we need this?
-      reference: registration.referenceId,
-      name: mappedRegistrationData['fullName'],
-      contactInformation: {
-        addressStreet: mappedRegistrationData['addressStreet'],
-        addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
-        addressHouseNumberAddition:
-          mappedRegistrationData['addressHouseNumberAddition'],
-        addressPostalCode: mappedRegistrationData['addressPostalCode'],
-        addressCity: mappedRegistrationData['addressCity'],
-        phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
-      },
-      brandCode: intersolveVisaConfig.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-      coverLetterCode: intersolveVisaConfig.find(
-        (c) =>
-          c.name === FinancialServiceProviderConfigurationEnum.coverLetterCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-    });
+    try {
+      await this.intersolveVisaService.reissueCard({
+        registrationId: registration.id,
+        reference: registration.referenceId,
+        name: mappedRegistrationData['fullName'],
+        contactInformation: {
+          addressStreet: mappedRegistrationData['addressStreet'],
+          addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
+          addressHouseNumberAddition:
+            mappedRegistrationData['addressHouseNumberAddition'],
+          addressPostalCode: mappedRegistrationData['addressPostalCode'],
+          addressCity: mappedRegistrationData['addressCity'],
+          phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
+        },
+        brandCode: intersolveVisaConfig.find(
+          (c) => c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+        coverLetterCode: intersolveVisaConfig.find(
+          (c) =>
+            c.name ===
+            FinancialServiceProviderConfigurationEnum.coverLetterCode,
+        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      });
+    } catch (error) {
+      if (error instanceof IntersolveVisaApiError) {
+        throw new HttpException(
+          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        throw error;
+      }
+    }
 
     await this.queueMessageService.addMessageJob({
       registration,
