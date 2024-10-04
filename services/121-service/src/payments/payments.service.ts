@@ -25,6 +25,7 @@ import { VodacashService } from '@121-service/src/payments/fsp-integration/vodac
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
@@ -86,6 +87,7 @@ export class PaymentsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {
     this.fspWithQueueServiceMapping = {
       [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
@@ -149,15 +151,15 @@ export class PaymentsService {
       .select(['status', 'COUNT(*) as count', 'SUM(amount) as totalAmount'])
       .from(
         '(' +
-          this.transactionsService
-            .getLastTransactionsQuery(programId, payment)
+          this.transactionScopedRepository
+            .getLastTransactionsQuery({ programId, payment })
             .getQuery() +
           ')',
         'transactions',
       )
       .setParameters(
-        this.transactionsService
-          .getLastTransactionsQuery(programId, payment)
+        this.transactionScopedRepository
+          .getLastTransactionsQuery({ programId, payment })
           .getParameters(),
       )
       .groupBy('status')
