@@ -1,7 +1,7 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 import { Dto } from '~/utils/dto-type';
 
@@ -44,7 +44,7 @@ export interface TransferActivity extends BaseActivity {
     referenceId: string; // e.g., "123456"
     payment: number;
     totalTransfers: number;
-    status: StatusEnum;
+    status: TransactionStatusEnum;
     amount: number;
     sent: Date;
     received?: Date;

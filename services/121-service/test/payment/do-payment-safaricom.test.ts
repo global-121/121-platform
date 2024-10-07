@@ -1,11 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 import {
   doPayment,
   getTransactions,
@@ -177,7 +177,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         3001,
-        [StatusEnum.success, StatusEnum.error],
+        [TransactionStatusEnum.success, TransactionStatusEnum.error],
       );
 
       // Assert
@@ -192,7 +192,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(StatusEnum.success);
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.success,
+      );
       expect(getTransactionsBody.body[0].errorMessage).toBe(null);
     });
 
@@ -234,7 +236,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         3001,
-        Object.values(StatusEnum),
+        Object.values(TransactionStatusEnum),
       );
 
       // Assert
@@ -249,7 +251,9 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(StatusEnum.error);
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.error,
+      );
       expect(getTransactionsBody.body[0].errorMessage).toBe(
         'The initiator information is invalid.',
       );
