@@ -326,6 +326,7 @@
           "csv": "Betalingsgegevens voor {{nrPa}} hulpvrager('s) voorbereid. <br><br>Volgende:Selecteer de betaling in de <ol><li>vervolgkeuzelijst <strong>Betaling kiezen...</strong></li> <li>Gebruik de knop <strong>Betalingsinstructies exporteren</strong></li> <li>Sla het resulterende XLSX-bestand op</li> in het formaat dat de financiële dienstverlener vereist <li>Upload het bestand in de portal van de financiële dienstverlener.</li></ol>",
           "xml": "Betalingsgegevens voor {{nrPa}} hulpvrager('s) voorbereid. <br><br>Vervolgens:Selecteer de betaling in de <ol><li>vervolgkeuzelijst <strong>Betaling kiezen...</strong></li> <li>Gebruik de knop <strong>Betalingsinstructies exporteren</strong></li> <li>Sla het resulterende XML-bestand op</li><li>Upload het bestand in de portal van de financiële dienstverlener.</li></ol>"
         },
+        "show-transfer-amount-input": "Bewerk Standaard overdrachtswaarde",
         "start-payout": "Start betaling",
         "total-amount": "Maximaal bedrag dat aan deze betaling wordt besteed: {{totalCost}}",
         "total-included": "Uitbetaling aan: {{totalIncluded}} hulpvrager(s)"

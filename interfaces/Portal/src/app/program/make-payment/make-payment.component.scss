@@ -1,0 +1,14 @@
+.edit-transfer-value-input {
+  // Make the toggle look like a link
+  summary {
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--ion-color-primary);
+  }
+
+  // Hide the toggle when triggered
+  &[open] summary {
+    display: none;
+  }
+}

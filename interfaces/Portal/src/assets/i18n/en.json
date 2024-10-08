@@ -293,6 +293,7 @@
           "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>Select the payment in the <strong>Choose payment...</strong> dropdown</li><li>Use the <strong>Export payment instructions</strong> button</li><li>Save the resulting XLSX-file in the format required by the Financial Service Provider</li><li>Upload the file in the portal of the Financial Service Provider.</li></ol>",
           "xml": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>Select the payment in the <strong>Choose payment...</strong> dropdown</li><li>Use the <strong>Export payment instructions</strong> button</li><li>Save the resulting XML-file</li><li>Upload the file in the portal of the Financial Service Provider.</li></ol>"
         },
+        "show-transfer-amount-input": "Edit default transfer value",
         "start-payout": "Start payout now",
         "total-amount": "Maximum amount that will be spend this payment: {{totalCost}}",
         "total-included": "Payout to: {{totalIncluded}} PA(s)"
