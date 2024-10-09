@@ -32,7 +32,10 @@ export const API_PATHS = {
   smsStatus: 'notifications/sms/status',
   whatsAppStatus: 'notifications/whatsapp/status',
   whatsAppIncoming: 'notifications/whatsapp/incoming',
-  safaricomCallback: 'payments/safaricom/transaction',
+  safaricomTransferCallback:
+    'financial-service-providers/safaricom/transfer-callback',
+  safaricomTimeoutCallback:
+    'financial-service-providers/safaricom/timeout-callback',
 };
 
 export const EXTERNAL_API_ROOT = `${

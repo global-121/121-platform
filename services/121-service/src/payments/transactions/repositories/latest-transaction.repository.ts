@@ -45,4 +45,14 @@ export class LatestTransactionRepository extends Repository<LatestTransactionEnt
       }
     }
   }
+
+  public async getPaymentCount(registrationId: number): Promise<number> {
+    const distinctPayments = await this.baseRepository
+      .createQueryBuilder('transaction')
+      .select('DISTINCT transaction.payment')
+      .where('transaction.registrationId = :registrationId', { registrationId })
+      .getRawMany();
+
+    return distinctPayments.length;
+  }
 }

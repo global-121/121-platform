@@ -52,7 +52,7 @@ const indirectRelationConfig: EntityRelations = {
     'registration',
   ],
   IntersolveVisaParentWalletEntity: ['intersolveVisaCustomer', 'registration'],
-  SafaricomRequestEntity: ['transaction', 'registration'],
+  SafaricomTransferEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
 };
 

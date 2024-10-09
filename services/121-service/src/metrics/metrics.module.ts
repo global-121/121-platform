@@ -8,6 +8,7 @@ import { MetricsController } from '@121-service/src/metrics/metrics.controller';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -28,6 +29,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       ProgramCustomAttributeEntity,
       FspQuestionEntity,
       ProgramEntity,
+      SafaricomTransferEntity,
     ]),
     UserModule,
     RegistrationsModule,

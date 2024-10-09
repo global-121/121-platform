@@ -19,6 +19,7 @@ import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -42,6 +43,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
@@ -215,7 +217,7 @@ export class MetricsService {
       programId,
       ExportType.included,
     );
-    const pastPaymentDetails = await this.getPaymentDetailsPayment(
+    const pastPaymentDetails = await this.getPastPaymentDetails(
       programId,
       minPaymentId,
       maxPaymentId,
@@ -891,7 +893,7 @@ export class MetricsService {
     return relationOptionsPerFsp;
   }
 
-  private async getPaymentDetailsPayment(
+  private async getPastPaymentDetails(
     programId: number,
     minPaymentId: number,
     maxPaymentId: number,
@@ -941,15 +943,12 @@ export class MetricsService {
       await this.getAdditionalFspExportFields(programId);
 
     for (const field of additionalFspExportFields) {
-      const nestedParts = field.split('.');
-      let variabeleSelectQuery = 'transaction."customData"';
-      for (const part of nestedParts) {
-        variabeleSelectQuery += `->'${part}'`;
-      }
-      transactionQuery.addSelect(
-        variabeleSelectQuery,
-        nestedParts[nestedParts.length - 1],
+      transactionQuery.leftJoin(
+        field.entityJoinedToTransaction,
+        'joinTable',
+        'transaction.id = joinTable.transactionId',
       );
+      transactionQuery.addSelect(`"${field.attribute}"`);
     }
 
     const duplicateNames = registrationDataOptions
@@ -1019,15 +1018,28 @@ export class MetricsService {
 
   private async getAdditionalFspExportFields(
     programId: number,
-  ): Promise<string[]> {
+  ): Promise<
+    { entityJoinedToTransaction: EntityClass<any>; attribute: string }[]
+  > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
       relations: ['financialServiceProviders'],
     });
-    let fields: string[] = [];
+    let fields: {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+    }[] = [];
     for (const fsp of program.financialServiceProviders) {
       if (fsp.fsp === FinancialServiceProviderName.safaricom) {
-        fields = [...fields, ...['requestResult.OriginatorConversationID']];
+        fields = [
+          ...fields,
+          ...[
+            {
+              entityJoinedToTransaction: SafaricomTransferEntity,
+              attribute: 'mpesaTransactionId',
+            },
+          ],
+        ];
       }
     }
     return fields;
