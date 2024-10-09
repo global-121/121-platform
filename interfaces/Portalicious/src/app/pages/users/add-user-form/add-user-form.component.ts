@@ -104,7 +104,12 @@ export class AddUserFormComponent {
     this.formGroup,
     {
       usernameValue: genericFieldIsRequiredValidationMessage,
-      emailValue: genericFieldIsRequiredValidationMessage,
+      emailValue: (control) => {
+        if (!control.invalid) {
+          return;
+        }
+        return $localize`Enter a valid email address`;
+      },
     },
   );
 
