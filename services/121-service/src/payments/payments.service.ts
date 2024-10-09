@@ -173,7 +173,6 @@ export class PaymentsService {
       programId,
       payment,
     );
-
     return {
       nrSuccess:
         statusAggregation.find(
