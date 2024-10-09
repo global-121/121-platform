@@ -88,6 +88,25 @@ export class UserApiService extends DomainApiService {
     });
   }
 
+  udpateUserDisplayName({
+    id,
+    displayName,
+  }: {
+    id: number | undefined;
+    displayName: string;
+  }) {
+    if (!id) {
+      return Promise.reject(new Error('User ID is required'));
+    }
+    return this.httpWrapperService.perform121ServiceRequest<User>({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${id.toString()}`,
+      body: {
+        displayName,
+      },
+    });
+  }
+
   public invalidateCache(): Promise<void> {
     return this.queryClient.invalidateQueries({
       queryKey: [BASE_ENDPOINT],
