@@ -13,7 +13,10 @@ import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-int
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
+import {
+  IntersolveVisaWalletEntity,
+  IntersolveVisaWalletStatus,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
 import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
@@ -363,21 +366,31 @@ export class MigrateVisaService {
         await queryRunner.manager.save(savedChildWallet);
       }
 
-      if (
-        (originalWallet.walletStatus as unknown as IntersolveVisaTokenStatus) ===
-        IntersolveVisaTokenStatus.Inactive
-      ) {
+      if (originalWallet.walletStatus === IntersolveVisaWalletStatus.Inactive) {
         // get pre-activation value per child wallet
         const preActivationValue = preActivationValuesMap.get(
           originalWallet.tokenCode as string,
         );
         console.log('preActivationValue: ', preActivationValue);
+        if (!preActivationValue) {
+          throw new Error(
+            `No pre-activation value found for wallet ${originalWallet.id} with tokenCode ${originalWallet.tokenCode}`,
+          );
+        }
 
         // transfer pre-activation value to parent wallet
-        await this.postTransfer(
+        const postTransferResult = await this.postTransfer(
           parentWallet.tokenCode,
           preActivationValue as number,
         );
+
+        if (!this.isSuccessResponseStatus(postTransferResult.status)) {
+          const errors = postTransferResult?.data?.errors;
+          const formattedErrors = this.formatErrors(errors);
+          throw new Error(
+            `Failed to transfer pre-activation value of inactive original wallet ${originalWallet.id} to parent wallet ${parentWallet.id}. Errors: ${formattedErrors}`,
+          );
+        }
       }
 
       if (originalWallet.tokenBlocked) {
@@ -697,7 +710,7 @@ export class MigrateVisaService {
         tokenCode: parentTokenCode,
       },
       reference: `ParentTokenCode=${parentTokenCode},OneTimeMigration`,
-      operationReference: new uuid(), // Required to pass in a UUID, which needs be unique for all transfers. Is used as idempotency key.
+      operationReference: uuid(), // Required to pass in a UUID, which needs be unique for all transfers. Is used as idempotency key.
     };
 
     const transferResult = await this.httpService.post<any>(
