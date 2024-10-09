@@ -65,11 +65,7 @@ export class SafaricomService
     });
 
     // 2. Simulate crash after API call
-    // await new Promise((resolve) => setTimeout(resolve, 60000));
-
-    if (transferResult.duplicateOriginatorConversationIdError) {
-      return;
-    }
+    await new Promise((resolve) => setTimeout(resolve, 60000));
 
     // Update transfer record with conversation ID
     await this.safaricomTransferScopedRepository.update(
