@@ -46,4 +46,9 @@ export class PaymentReturnDto {
   nrWaiting: number;
   @ApiProperty({ example: 2, type: 'number' })
   nrError: number;
+  @ApiProperty({
+    example: { success: 819200, waiting: 0, error: 0 },
+    type: 'object',
+  }) // Updated example to include error
+  totalAmountPerStatus: Record<string, number>;
 }

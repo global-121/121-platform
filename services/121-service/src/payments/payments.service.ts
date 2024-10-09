@@ -146,7 +146,7 @@ export class PaymentsService {
   ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
-      .select(['status', 'COUNT(*) as count'])
+      .select(['status', 'COUNT(*) as count', 'SUM(amount) as totalAmount'])
       .from(
         '(' +
           this.transactionsService
@@ -173,19 +173,31 @@ export class PaymentsService {
       programId,
       payment,
     );
+
+    const totalAmountPerStatus: Record<string, number> = {};
+    const nrSuccess =
+      statusAggregation.find(
+        (row) => row.status === TransactionStatusEnum.success,
+      )?.count || 0;
+    const nrWaiting =
+      statusAggregation.find(
+        (row) => row.status === TransactionStatusEnum.waiting,
+      )?.count || 0;
+    const nrError =
+      statusAggregation.find(
+        (row) => row.status === TransactionStatusEnum.error,
+      )?.count || 0;
+
+    statusAggregation.forEach((row) => {
+      totalAmountPerStatus[row.status] =
+        (totalAmountPerStatus[row.status] || 0) + (row.totalamount || 0);
+    });
+
     return {
-      nrSuccess:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.success,
-        )?.count || 0,
-      nrWaiting:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.waiting,
-        )?.count || 0,
-      nrError:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.error,
-        )?.count || 0,
+      nrSuccess,
+      nrWaiting,
+      nrError,
+      totalAmountPerStatus,
     };
   }
 
