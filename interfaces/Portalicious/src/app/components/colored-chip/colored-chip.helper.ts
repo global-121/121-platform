@@ -1,3 +1,4 @@
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -6,8 +7,6 @@ import {
   REGISTRATION_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
-// TODO: AB#30525 should import this from 121-service
-import { VisaCard121Status } from '~/domains/registration/registration.model';
 
 interface ChipData {
   chipLabel: string;

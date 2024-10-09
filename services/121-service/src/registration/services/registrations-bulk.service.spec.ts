@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -18,7 +18,7 @@ describe('RegistrationBulkService', () => {
   const userId = 1;
 
   let registrationsBulkService: RegistrationsBulkService;
-  let queueMessageService: QueueMessageService;
+  let queueMessageService: MessageQueuesService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -90,7 +90,7 @@ describe('RegistrationBulkService', () => {
           },
         };
       });
-    queueMessageService = unitRef.get(QueueMessageService);
+    queueMessageService = unitRef.get(MessageQueuesService);
 
     jest
       .spyOn(queueMessageService as any, 'getPlaceholdersInMessageText')
@@ -144,7 +144,7 @@ describe('RegistrationBulkService', () => {
         applicableCount: 1,
         nonApplicableCount: 0,
       });
-      expect(queueMessageService.addMessageToQueue).toHaveBeenCalledTimes(0);
+      expect(queueMessageService.addMessageJob).toHaveBeenCalledTimes(0);
     });
 
     it('should return result and add messages to queue', async () => {
@@ -170,7 +170,7 @@ describe('RegistrationBulkService', () => {
       await new Promise((resolve) => setImmediate(resolve));
 
       // Assert
-      expect(queueMessageService.addMessageToQueue).toHaveBeenCalled();
+      expect(queueMessageService.addMessageJob).toHaveBeenCalled();
     });
   });
 });
