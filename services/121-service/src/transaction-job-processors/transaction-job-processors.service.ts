@@ -260,7 +260,7 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 3. Check for existing safaricom transfer with the same originatorConversationId. This implies an unintended Redis job re-attempt.
+    // 3. Check for existing Safaricom Transfer with the same originatorConversationId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
     let safaricomTransfer =
       await this.safaricomTransferScopedRepository.findOne({
         where: {
@@ -285,7 +285,7 @@ export class TransactionJobProcessorsService {
       });
       transactionId = transaction.id;
 
-      // ##TODO: combine this with the transaction creation above in one SQL transaction
+      // TODO: combine this with the transaction creation above in one SQL transaction
       const newSafaricomTransfer = new SafaricomTransferEntity();
       newSafaricomTransfer.originatorConversationId =
         transactionJob.originatorConversationId;
