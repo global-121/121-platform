@@ -34,6 +34,6 @@ export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
         'user.username AS username',
       ])
       .orderBy('note.created', 'DESC')
-      .getRawMany<GetNotesDto>();
+      .getRawMany<GetNotesDto>(); // ##TODO: Why not just return TwilioMessageEntity[]? And is this an example where we want to try a "normal" TypeORM query instead of a raw query?
   }
 }

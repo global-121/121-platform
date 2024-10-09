@@ -82,7 +82,7 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
         registrationId,
       })
       .orderBy('twilioMessage.dateCreated', 'DESC')
-      .getRawMany<GetTwilioMessageDto>();
+      .getRawMany<GetTwilioMessageDto>(); // ##TODO: Why not just return TwilioMessageEntity[]? And is this an example where we want to try a "normal" TypeORM query instead of a raw query?
 
     if (
       messageHistoryArray.length === 1 &&
