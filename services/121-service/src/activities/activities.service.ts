@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { ActivitiesMapper } from '@121-service/src/activities/activities.mapper';
+import { ActivityTypeEnum } from '@121-service/src/activities/dtos/activities.dto';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
@@ -40,12 +41,35 @@ export class ActivitiesService {
         programId,
       );
 
-    const mappedDto = ActivitiesMapper.mergeAndMapToActivitiesDto(
+    const availableTypes: ActivityTypeEnum[] = [];
+
+    // TODO: get permissions from somewhere
+    const canViewPaymentData = true;
+    const canViewMessageHistory = true;
+    const canViewPersonalData = true;
+
+    if (canViewPaymentData) {
+      availableTypes.push(ActivityTypeEnum.Transaction);
+    }
+
+    if (canViewMessageHistory) {
+      availableTypes.push(ActivityTypeEnum.Message);
+    }
+
+    if (canViewPersonalData) {
+      availableTypes.push(ActivityTypeEnum.DataChange);
+      availableTypes.push(ActivityTypeEnum.StatusChange);
+      availableTypes.push(ActivityTypeEnum.Note);
+      availableTypes.push(ActivityTypeEnum.FinancialServiceProviderChange);
+    }
+
+    const mappedDto = ActivitiesMapper.mergeAndMapToActivitiesDto({
       transactions,
       messages,
       events,
       notes,
-    );
+      availableTypes,
+    });
 
     return mappedDto;
   }
