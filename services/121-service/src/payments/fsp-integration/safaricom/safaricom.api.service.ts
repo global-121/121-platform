@@ -64,6 +64,10 @@ export class SafaricomApiService {
   }
 
   private async authenticate(): Promise<void> {
+    if (this.isTokenValid(this.tokenSet)) {
+      return;
+    }
+
     const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
     const accessTokenUrl = !!process.env.MOCK_SAFARICOM
@@ -124,9 +128,7 @@ export class SafaricomApiService {
     payload: TransferRequestSafaricomApiDto,
   ): Promise<TransferResponseSafaricomApiDto> {
     try {
-      if (!this.isTokenValid(this.tokenSet)) {
-        await this.authenticate();
-      }
+      await this.authenticate();
 
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
