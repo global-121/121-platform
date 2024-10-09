@@ -3,14 +3,19 @@
   i18n-pageTitle="@@page-title-users"
 >
   <div header-actions>
-    <p-button
-      label="Add new user"
-      i18n-label="@@add-user"
-      rounded
-      icon="pi pi-plus"
-      (click)="openForm('add')"
-    />
-    <app-add-user-form [(formVisible)]="formVisible" />
+    @if (canManageUsers()) {
+      <p-button
+        label="Add new user"
+        i18n-label="@@add-user"
+        rounded
+        icon="pi pi-plus"
+        (click)="openForm('add')"
+      />
+      <app-add-user-form
+        [(formVisible)]="formVisible"
+        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
+      />
+    }
   </div>
   <p-card>
     <app-query-table

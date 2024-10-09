@@ -1,7 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  effect,
   inject,
+  input,
   model,
 } from '@angular/core';
 import {
@@ -22,8 +25,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
 
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { RoleApiService } from '~/domains/role/role.api.service';
 import { UserApiService } from '~/domains/user/user.api.service';
+import { User } from '~/domains/user/user.model';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -50,41 +53,34 @@ type AddUserToTeamFormGroup =
   ],
 })
 export class AddUserFormComponent {
-  // userToEdit = input<ProjectUserWithRolesLabel | undefined>();
+  userToEdit = input<undefined | User>();
   formVisible = model.required<boolean>();
 
-  // private projectApiService = inject(ProjectApiService);
   private userApiService = inject(UserApiService);
-  private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
 
-  // constructor() {
-  //   effect(
-  //     () => {
-  //       const user = this.userToEdit();
-  //       if (user) {
-  //         this.formGroup.patchValue({
-  //           userValue: user.id,
-  //           rolesValue: user.roles.map(({ role }) => role),
-  //           scopeValue: user.scope,
-  //         });
-  //         this.formGroup.controls.userValue.disable();
-  //       } else {
-  //         this.formGroup.patchValue({
-  //           userValue: -1,
-  //         });
-  //         this.formGroup.controls.userValue.enable();
-  //       }
-  //     },
-  //     {
-  //       allowSignalWrites: true,
-  //     },
-  //   );
-  // }
+  constructor() {
+    effect(
+      () => {
+        const user = this.userToEdit();
+        if (user) {
+          this.formGroup.patchValue({
+            usernameValue: user.displayName,
+            emailValue: user.username,
+          });
+          this.formGroup.controls.emailValue.disable();
+        } else {
+          this.formGroup.controls.emailValue.enable();
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
+  }
 
-  // isEditing = computed(() => !!this.userToEdit());
+  isEditing = computed(() => !!this.userToEdit());
 
-  roles = injectQuery(this.roleApiService.getRoles());
   allUsers = injectQuery(this.userApiService.getAllUsers());
 
   formGroup = new FormGroup({
@@ -121,6 +117,12 @@ export class AddUserFormComponent {
       usernameValue: string;
       emailValue: string;
     }) => {
+      if (this.isEditing() && this.userToEdit()?.id) {
+        return this.userApiService.udpateUserDisplayName({
+          id: this.userToEdit()?.id,
+          displayName: usernameValue,
+        });
+      }
       return this.userApiService.createUser({
         username: emailValue,
         displayName: usernameValue,
@@ -131,18 +133,12 @@ export class AddUserFormComponent {
       this.formGroup.reset();
 
       this.toastService.showToast({
-        detail: $localize`User added`,
+        detail: this.isEditing()
+          ? $localize`User updated`
+          : $localize`User added`,
       });
 
       void this.userApiService.invalidateCache();
-
-      // this.toastService.showToast({
-      //   detail: this.isEditing()
-      //     ? $localize`User updated`
-      //     : $localize`User added`,
-      // });
-
-      // void this.projectApiService.invalidateCache(this.projectId);
     },
   }));
 }

@@ -24,6 +24,7 @@ import {
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { AddUserFormComponent } from '~/pages/users/add-user-form/add-user-form.component';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -43,6 +44,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersPageComponent {
+  private authService = inject(AuthService);
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
 
@@ -71,11 +73,11 @@ export class UsersPageComponent {
     },
   ]);
 
+  canManageUsers = computed(
+    () => this.authService.isAdmin || this.authService.isOrganizationAdmin,
+  );
+
   openForm(formMode: 'add' | 'edit') {
-    // TODO: AB30598
-    // Copied this from project-team but currently does nothing.
-    // It's a good starting point though because we will need to
-    // implement add / edit on this page too.
     this.formMode.set(formMode);
     this.formVisible.set(true);
   }
@@ -105,9 +107,7 @@ export class UsersPageComponent {
             this.toastService.showGenericError();
             return;
           }
-          this.toastService.showToast({
-            detail: 'Functionality not implemented yet',
-          });
+          this.openForm('edit');
         },
       },
       {
