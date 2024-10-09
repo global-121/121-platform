@@ -14,9 +14,7 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entit
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MessageSizeType as MessageSizeTypeDto } from '@121-service/src/registration/dto/message-size-type.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -37,8 +35,6 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 export class RegistrationsBulkService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(LatestMessageEntity)
@@ -55,8 +51,6 @@ export class RegistrationsBulkService {
     private readonly eventsService: EventsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProviderName(SafaricomRequestEntity))
-    private readonly safaricomRequestScopedRepository: ScopedRepository<SafaricomRequestEntity>,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
@@ -570,42 +564,6 @@ export class RegistrationsBulkService {
     await this.intersolveVoucherScopedRepo.updateUnscoped(
       { id: In(voucherIds) },
       { whatsappPhoneNumber: null },
-    );
-
-    const transactionIdsQueryResult = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoin('registration.transactions', 'transactions')
-      .select('transactions.id as "transactionId"')
-      .andWhere({
-        id: In(registrationsIds),
-      })
-      .getRawMany();
-    const transactionIds = transactionIdsQueryResult.map(
-      (t) => t.transactionId,
-    );
-    const transactionsRelatedToSafaricomQueryResult =
-      await this.safaricomRequestScopedRepository
-        .createQueryBuilder('safaricom_request')
-        .select('"transactionId"')
-        .andWhere({
-          transactionId: In(transactionIds),
-        })
-        .getRawMany();
-    const transactionIdsRelatedToSafaricom =
-      transactionsRelatedToSafaricomQueryResult.map((t) => t.transactionId);
-
-    await this.safaricomRequestScopedRepository
-      .createQueryBuilder('safaricom_request')
-      .delete()
-      .from(SafaricomRequestEntity)
-      .where('transactionId IN  (:...transactionIds)', {
-        transactionIds,
-      })
-      .execute();
-
-    await this.transactionScopedRepository.updateUnscoped(
-      { id: In(transactionIdsRelatedToSafaricom) },
-      { customData: JSON.parse('{}') },
     );
   }
 

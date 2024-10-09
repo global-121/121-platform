@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Equal, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
@@ -46,6 +47,7 @@ import {
   ImportResult,
   ImportStatus,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -58,6 +60,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
@@ -68,16 +71,6 @@ export class PaymentsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-
-  private fspWithQueueServiceMapping: Partial<
-    Record<
-      FinancialServiceProviderName,
-      | IntersolveVoucherService
-      | IntersolveVisaService
-      | SafaricomService
-      | CommercialBankEthiopiaService
-    >
-  >;
 
   private financialServiceProviderNameToServiceMap: Record<
     FinancialServiceProviderName,
@@ -105,18 +98,6 @@ export class PaymentsService {
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {
-    this.fspWithQueueServiceMapping = {
-      [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-      [FinancialServiceProviderName.intersolveVoucherPaper]:
-        this.intersolveVoucherService,
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
-        this.intersolveVoucherService,
-      [FinancialServiceProviderName.safaricom]: this.safaricomService,
-      [FinancialServiceProviderName.commercialBankEthiopia]:
-        this.commercialBankEthiopiaService,
-      // Add more FSP mappings if they work queue-based
-    };
-
     this.financialServiceProviderNameToServiceMap = {
       [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
         this.intersolveVoucherService,
@@ -649,6 +630,23 @@ export class PaymentsService {
           });
         }
 
+        if (fsp === FinancialServiceProviderName.safaricom) {
+          return await this.createAndAddSafaricomTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
+            programId,
+            paymentNumber: payment,
+            isRetry,
+          });
+        }
+
         const [paymentService, useWhatsapp] =
           this.financialServiceProviderNameToServiceMap[fsp];
         return await paymentService.sendPayment(
@@ -690,33 +688,20 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaQuestions =
-      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+    const intersolveVisaQuestionNames =
+      await this.getFinancialServiceProviderQuestionNames(
         FinancialServiceProviderName.intersolveVisa,
       );
-    const intersolveVisaQuestionNames = intersolveVisaQuestions.map(
-      (q) => q.name,
-    );
     const dataFieldNames = [
       'fullName',
       'phoneNumber',
       ...intersolveVisaQuestionNames,
     ];
-    const referenceIds = referenceIdsTransactionAmounts.map(
-      (r) => r.referenceId,
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      dataFieldNames,
+      programId,
     );
-    const paginateQuery =
-      this.registrationsBulkService.getRegistrationsForPaymentQuery(
-        referenceIds,
-        dataFieldNames,
-      );
-
-    const registrationViews =
-      await this.registrationsPaginationService.getRegistrationsChunked(
-        programId,
-        paginateQuery,
-        4000,
-      );
 
     // Convert the array into a map for increased performace (hashmap lookup)
     const transactionAmountsMap = new Map(
@@ -739,7 +724,7 @@ export class PaymentsService {
               registrationView.referenceId,
             )!,
             isRetry,
-            bulkSize: referenceIds.length,
+            bulkSize: referenceIdsTransactionAmounts.length,
             name: registrationView['fullName'],
             addressStreet: registrationView['addressStreet'],
             addressHouseNumber: registrationView['addressHouseNumber'],
@@ -754,6 +739,102 @@ export class PaymentsService {
     await this.transactionQueuesService.addIntersolveVisaTransactionJobs(
       intersolveVisaTransferJobs,
     );
+  }
+
+  /**
+   * Creates and adds safaricom transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Safaricom. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddSafaricomTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    const safaricomQuestionNames =
+      await this.getFinancialServiceProviderQuestionNames(
+        FinancialServiceProviderName.safaricom,
+      );
+    const dataFieldNames = ['nationalId', ...safaricomQuestionNames];
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      dataFieldNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const safaricomTransferJobs: SafaricomTransactionJobDto[] =
+      registrationViews.map((registrationView): SafaricomTransactionJobDto => {
+        return {
+          programId,
+          paymentNumber,
+          referenceId: registrationView.referenceId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId,
+          bulkSize: referenceIdsTransactionAmounts.length,
+          phoneNumber: registrationView.phoneNumber,
+          idNumber: registrationView['nationalId'],
+          originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
+        };
+      });
+    await this.transactionQueuesService.addSafaricomTransactionJobs(
+      safaricomTransferJobs,
+    );
+  }
+
+  private async getFinancialServiceProviderQuestionNames(
+    financialServiceProviderName: FinancialServiceProviderName,
+  ): Promise<string[]> {
+    const questions =
+      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
+        financialServiceProviderName,
+      );
+    return questions.map((q) => q.name);
+  }
+
+  private async getRegistrationViews(
+    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[],
+    dataFieldNames: string[],
+    programId: number,
+  ): Promise<MappedPaginatedRegistrationDto[]> {
+    const referenceIds = referenceIdsTransactionAmounts.map(
+      (r) => r.referenceId,
+    );
+    const paginateQuery =
+      this.registrationsBulkService.getRegistrationsForPaymentQuery(
+        referenceIds,
+        dataFieldNames,
+      );
+
+    const registrationViews =
+      await this.registrationsPaginationService.getRegistrationsChunked(
+        programId,
+        paginateQuery,
+        4000,
+      );
+    return registrationViews;
   }
 
   private failedTransactionForRegistrationAndPayment(
