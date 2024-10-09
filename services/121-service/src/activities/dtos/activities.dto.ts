@@ -1,30 +1,30 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { NotificationType } from '@121-service/src/notifications/twilio.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 export class ActivitiesDto {
   meta: {
-    availableTypes: ActivityItemType[];
-    count: Partial<Record<ActivityItemType, number>>;
+    availableTypes: ActivityTypeEnum[];
+    count: Partial<Record<ActivityTypeEnum, number>>;
   };
-  data: ActivityLogItem[];
+  data: ActivityType[];
 }
 
-export type ActivityLogItem =
+export type ActivityType =
   | DataChangeActivity
   | MessageActivity
   | NoteActivity
-  | StatusUpdateActivity
+  | StatusChangeActivity
   | TransactionActivity;
 
-export enum ActivityItemType {
-  DataChange = 'data-change',
+export enum ActivityTypeEnum {
   Transaction = 'transaction',
   Message = 'message',
   Note = 'note',
-  StatusUpdate = 'status-update',
-  FinancialServiceProviderChange = 'financial-service-provider-change',
+  DataChange = 'data-change',
+  StatusChange = 'status-change',
+  FinancialServiceProviderChange = 'financial-service-provider-change', // ##TODO: Looks like this type is still missing in the rest of the code, e.g. extending from BaseActivity.
 }
 
 interface BaseActivity {
@@ -34,33 +34,33 @@ interface BaseActivity {
     username: string;
   };
   created: Date;
-  activityType: ActivityItemType;
+  type: ActivityTypeEnum;
   attributes: Record<string, unknown>;
 }
 
 export interface TransactionActivity extends BaseActivity {
-  activityType: ActivityItemType.Transaction;
+  type: ActivityTypeEnum.Transaction;
   attributes: {
     payment: number;
-    status: StatusEnum;
+    status: TransactionStatusEnum;
     amount: number;
     paymentDate: Date;
     fsp: string; // Financial service provider enum name, like "intersolve-visa";
     fspName: string; // Financial service provider name, like "Intersolve Visa";
     errorMessage: null | string;
-    customData: unknown;
+    customData: unknown; // ##TODO: Do we want/need to expose customData via the API?
   };
 }
 
 export interface NoteActivity extends BaseActivity {
-  activityType: ActivityItemType.Note;
+  type: ActivityTypeEnum.Note;
   attributes: {
     text: string; // The note content
   };
 }
 
 export interface MessageActivity extends BaseActivity {
-  activityType: ActivityItemType.Message;
+  type: ActivityTypeEnum.Message;
   attributes: {
     from: string;
     to: string;
@@ -73,8 +73,8 @@ export interface MessageActivity extends BaseActivity {
   };
 }
 
-export interface StatusUpdateActivity extends BaseActivity {
-  activityType: ActivityItemType.StatusUpdate;
+export interface StatusChangeActivity extends BaseActivity {
+  type: ActivityTypeEnum.StatusChange;
   attributes: {
     oldValue: RegistrationStatusEnum;
     newValue: RegistrationStatusEnum;
@@ -82,7 +82,7 @@ export interface StatusUpdateActivity extends BaseActivity {
 }
 
 export interface DataChangeActivity extends BaseActivity {
-  activityType: ActivityItemType.DataChange;
+  type: ActivityTypeEnum.DataChange;
   attributes: {
     fieldName: string;
     oldValue: string;
