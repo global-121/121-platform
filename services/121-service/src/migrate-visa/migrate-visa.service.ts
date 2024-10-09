@@ -28,6 +28,11 @@ interface VisaCustomerWithReferenceId extends IntersolveVisaCustomerEntity {
   referenceId: string;
 }
 
+interface PreActivationValueRecord {
+  CardCode: string;
+  PreActivationValue: number;
+}
+
 @Injectable()
 export class MigrateVisaService {
   constructor(
@@ -42,12 +47,6 @@ export class MigrateVisaService {
     limit: number,
     csvFileWithPreActivationValues: Blob,
   ): Promise<void> {
-    // ##TODO run this later, so to not pass it down all the methods?
-    // ##TODO type this object properly
-    const preActivationValueRecords = await this.fileImportService.validateCsv(
-      csvFileWithPreActivationValues,
-      limit, // ##TODO does limit make sense here?
-    );
     const queryRunner = this.dataSource.createQueryRunner();
     await this.migrationTemplateData(queryRunner);
     await this.insertProgramConfiguration();
@@ -61,7 +60,7 @@ export class MigrateVisaService {
         queryRunner,
         programId,
         limit,
-        preActivationValueRecords,
+        csvFileWithPreActivationValues,
       );
     }
   }
@@ -142,9 +141,15 @@ export class MigrateVisaService {
     queryRunner: QueryRunner,
     programId: number,
     limit: number,
-    preActivationValueRecords: object[],
+    csvFileWithPreActivationValues: Blob,
   ): Promise<void> {
     await this.createMigrationProgressTableAndIndex(queryRunner);
+
+    // Process pre-activation values of wallets to be able to transfer them to parent wallets in case of INACTIVE wallets
+    const preActivationValuesMap = await this.processPreActivationValuesCsvFile(
+      csvFileWithPreActivationValues,
+      limit,
+    );
 
     console.time(`Migrating program ${programId}`);
     const brandCode = await this.getBrandcodeForProgram(queryRunner, programId);
@@ -175,7 +180,7 @@ export class MigrateVisaService {
           visaCustomer,
           brandCode,
           queryRunner,
-          preActivationValueRecords,
+          preActivationValuesMap,
         );
       } catch (e) {
         // console.log('error:', e);
@@ -204,22 +209,33 @@ export class MigrateVisaService {
     console.timeEnd(`Migrating program ${programId}`);
   }
 
+  private async processPreActivationValuesCsvFile(
+    csvFileWithPreActivationValues: Blob,
+    limit: number,
+  ): Promise<Map<string, number>> {
+    const preActivationValueRecords = (await this.fileImportService.validateCsv(
+      csvFileWithPreActivationValues,
+      limit, // ##TODO does limit make sense here?
+    )) as PreActivationValueRecord[];
+    // Convert to map for performance reasons
+    const preActivationValuesMap = new Map(
+      preActivationValueRecords.map((item) => [
+        item['CardCode'],
+        item['PreActivationBudget'],
+      ]),
+    );
+    return preActivationValuesMap;
+  }
+
   private async migrateCustomerAndWalletData(
     visaCustomer: VisaCustomerWithReferenceId,
     brandCode: string,
     queryRunner: QueryRunner,
-    preActivationValueRecords: object[],
+    preActivationValuesMap: Map<string, number>,
   ): Promise<void> {
     const originalWalletsOfCustomer = await this.selectOriginalWallets(
       visaCustomer,
       queryRunner,
-    );
-
-    const preActivationValuesMap = new Map(
-      preActivationValueRecords.map((item) => [
-        item['tokenCode'],
-        item['preActivationValue'],
-      ]),
     );
 
     if (originalWalletsOfCustomer.length > 0) {
@@ -355,12 +371,8 @@ export class MigrateVisaService {
         const preActivationValue = preActivationValuesMap.get(
           originalWallet.tokenCode as string,
         );
-        // (
-        //   await this.getPreActivationValueOfOriginalWallet(
-        //     originalWallet.tokenCode,
-        //     queryRunner,
-        //   )
-        // )[0].amount;
+        console.log('preActivationValue: ', preActivationValue);
+
         // transfer pre-activation value to parent wallet
         await this.postTransfer(
           parentWallet.tokenCode,
@@ -455,28 +467,28 @@ export class MigrateVisaService {
   }
 
   // We intend to no longer use this, but instead get the pre-activation value from the csv file
-  private async getPreActivationValueOfOriginalWallet(
-    tokenCode: string | null,
-    queryRunner: QueryRunner,
-  ): Promise<any[]> {
-    // 1. make use of fact that tokenCode is stored in transaction.customData and is still available during this migration
-    // 2. get the first payment number with the tokenCode
-    // 3. filter on only success transactions
-    // 4. join back on itself to get transaction amount
-    return queryRunner.query(
-      `select "tokenCode", amount
-      from "transaction" t
-      inner join (
-        select ivw."tokenCode" 
-          ,min(t.payment) as "minPayment"
-        from intersolve_visa_wallet ivw 
-        left join "transaction" t on ivw."tokenCode" = t."customData"->>'intersolveVisaWalletTokenCode'
-        where t."customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode}
-        group by ivw."tokenCode" 
-      ) "minPayment"
-      on t."customData"->>'intersolveVisaWalletTokenCode' = "minPayment"."tokenCode" and t.payment = "minPayment"."minPayment" and t.status = 'success'`,
-    );
-  }
+  // private async getPreActivationValueOfOriginalWallet(
+  //   tokenCode: string | null,
+  //   queryRunner: QueryRunner,
+  // ): Promise<any[]> {
+  //   // 1. make use of fact that tokenCode is stored in transaction.customData and is still available during this migration
+  //   // 2. get the first payment number with the tokenCode
+  //   // 3. filter on only success transactions
+  //   // 4. join back on itself to get transaction amount
+  //   return queryRunner.query(
+  //     `select "tokenCode", amount
+  //     from "transaction" t
+  //     inner join (
+  //       select ivw."tokenCode"
+  //         ,min(t.payment) as "minPayment"
+  //       from intersolve_visa_wallet ivw
+  //       left join "transaction" t on ivw."tokenCode" = t."customData"->>'intersolveVisaWalletTokenCode'
+  //       where t."customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode}
+  //       group by ivw."tokenCode"
+  //     ) "minPayment"
+  //     on t."customData"->>'intersolveVisaWalletTokenCode' = "minPayment"."tokenCode" and t.payment = "minPayment"."minPayment" and t.status = 'success'`,
+  //   );
+  // }
 
   private formatErrors(errors: unknown): string {
     return errors
