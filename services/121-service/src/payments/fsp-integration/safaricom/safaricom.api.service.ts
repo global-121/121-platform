@@ -4,8 +4,9 @@ import { TokenSet } from 'openid-client';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
-import { DoTransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-return-type.interface';
-import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-api.error';
+import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
+import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
+import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
@@ -23,7 +24,7 @@ export class SafaricomApiService {
     phoneNumber,
     idNumber,
     originatorConversationId,
-  }): Promise<DoTransferReturnType> {
+  }): Promise<TransferReturnType> {
     const payload = this.createTransferPayload({
       transferAmount,
       phoneNumber,
@@ -39,11 +40,11 @@ export class SafaricomApiService {
     } else if (transferResponse.data.errorCode) {
       if (transferResponse.data.errorCode === '500.002.1001') {
         // This happens only in case of unintended Redis job re-attempt, and only if the API-request already went through the first time
-        // Only console.error and then return to close the job without any further processing
-        console.error(
-          `Error ${transferResponse.data.errorMessage} for originatorConversationId ${originatorConversationId}`,
+        // Return custom error, as it should be handled differently than other errors
+        const duplicateOriginatorConversationIdErrorMessage = `Error: ${transferResponse.data.errorMessage} for originatorConversationId ${originatorConversationId}`;
+        throw new DuplicateOriginatorConversationIdError(
+          duplicateOriginatorConversationIdErrorMessage,
         );
-        return { duplicateOriginatorConversationIdError: true };
       }
       errorMessage = `${transferResponse.data.errorCode} - ${transferResponse.data.errorMessage}`;
     } else if (!transferResponse.data.ResponseCode) {
@@ -63,6 +64,10 @@ export class SafaricomApiService {
   }
 
   private async authenticate(): Promise<void> {
+    if (this.isTokenValid(this.tokenSet)) {
+      return;
+    }
+
     const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
     const accessTokenUrl = !!process.env.MOCK_SAFARICOM
@@ -123,9 +128,7 @@ export class SafaricomApiService {
     payload: TransferRequestSafaricomApiDto,
   ): Promise<TransferResponseSafaricomApiDto> {
     try {
-      if (!this.isTokenValid(this.tokenSet)) {
-        await this.authenticate();
-      }
+      await this.authenticate();
 
       const paymentUrl = !!process.env.MOCK_SAFARICOM
         ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
