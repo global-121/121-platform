@@ -102,4 +102,8 @@ graph LR
   NoteModule-->UserModule
   AuthModule-->UserModule
   AuthModule-->PassportModule
+  ActivitiesModule-->NoteModule
+  ActivitiesModule-->TransactionsModule
+  ActivitiesModule-->MessageModule
+  ActivitiesModule-->EventsModule
 ```
