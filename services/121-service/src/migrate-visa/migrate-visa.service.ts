@@ -13,11 +13,15 @@ import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-int
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import { IntersolveVisaWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
+import {
+  IntersolveVisaWalletEntity,
+  IntersolveVisaWalletStatus,
+} from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
 import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
@@ -27,30 +31,44 @@ interface VisaCustomerWithReferenceId extends IntersolveVisaCustomerEntity {
   referenceId: string;
 }
 
+interface PreActivationValueRecord {
+  CardCode: string;
+  PreActivationValue: number;
+}
+
 @Injectable()
 export class MigrateVisaService {
   constructor(
     private readonly httpService: CustomHttpService,
+    private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
   ) {}
   name = 'VisaMigrateChildParentWallet1717505534921';
   public tokenSet: TokenSet;
 
-  public async migrateData(limit: number): Promise<void> {
+  public async migrateData(
+    limit: number,
+    csvFileWithPreActivationValues: Blob,
+  ): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
     await this.migrationTemplateData(queryRunner);
-    await this.inserProgramConfiguration();
+    await this.insertProgramConfiguration();
     // await this.COMMENT_OUT_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(
     //   queryRunner,
     // );
     const programIds =
       await this.selectProgramIdsForInstanceWithVisa(queryRunner);
     for (const programId of programIds) {
-      await this.migrateProgramData(queryRunner, programId, limit);
+      await this.migrateProgramData(
+        queryRunner,
+        programId,
+        limit,
+        csvFileWithPreActivationValues,
+      );
     }
   }
 
-  private async inserProgramConfiguration(): Promise<void> {
+  private async insertProgramConfiguration(): Promise<void> {
     // this should not be set on production so it should not run on production
     if (process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE) {
       // Insert program configuration
@@ -126,8 +144,15 @@ export class MigrateVisaService {
     queryRunner: QueryRunner,
     programId: number,
     limit: number,
+    csvFileWithPreActivationValues: Blob,
   ): Promise<void> {
     await this.createMigrationProgressTableAndIndex(queryRunner);
+
+    // Process pre-activation values of wallets to be able to transfer them to parent wallets in case of INACTIVE wallets
+    const preActivationValuesMap = await this.processPreActivationValuesCsvFile(
+      csvFileWithPreActivationValues,
+      limit,
+    );
 
     console.time(`Migrating program ${programId}`);
     const brandCode = await this.getBrandcodeForProgram(queryRunner, programId);
@@ -158,6 +183,7 @@ export class MigrateVisaService {
           visaCustomer,
           brandCode,
           queryRunner,
+          preActivationValuesMap,
         );
       } catch (e) {
         // console.log('error:', e);
@@ -186,10 +212,29 @@ export class MigrateVisaService {
     console.timeEnd(`Migrating program ${programId}`);
   }
 
+  private async processPreActivationValuesCsvFile(
+    csvFileWithPreActivationValues: Blob,
+    limit: number,
+  ): Promise<Map<string, number>> {
+    const preActivationValueRecords = (await this.fileImportService.validateCsv(
+      csvFileWithPreActivationValues,
+      limit, // ##TODO does limit make sense here?
+    )) as PreActivationValueRecord[];
+    // Convert to map for performance reasons
+    const preActivationValuesMap = new Map(
+      preActivationValueRecords.map((item) => [
+        item['CardCode'],
+        item['PreActivationBudget'],
+      ]),
+    );
+    return preActivationValuesMap;
+  }
+
   private async migrateCustomerAndWalletData(
     visaCustomer: VisaCustomerWithReferenceId,
     brandCode: string,
     queryRunner: QueryRunner,
+    preActivationValuesMap: Map<string, number>,
   ): Promise<void> {
     const originalWalletsOfCustomer = await this.selectOriginalWallets(
       visaCustomer,
@@ -211,6 +256,7 @@ export class MigrateVisaService {
         originalWalletsOfCustomer,
         parentWallet,
         queryRunner,
+        preActivationValuesMap,
       );
     }
   }
@@ -279,6 +325,7 @@ export class MigrateVisaService {
     originalWallets: IntersolveVisaWalletEntity[],
     parentWallet: IntersolveVisaParentWalletEntity,
     queryRunner: QueryRunner,
+    preActivationValuesMap: Map<string, number>,
   ): Promise<void> {
     for (const originalWallet of originalWallets) {
       const childWallet = new IntersolveVisaChildWalletEntity();
@@ -319,8 +366,34 @@ export class MigrateVisaService {
         await queryRunner.manager.save(savedChildWallet);
       }
 
-      // Block wallet again if original wallet was blocked
+      if (originalWallet.walletStatus === IntersolveVisaWalletStatus.Inactive) {
+        // get pre-activation value per child wallet
+        const preActivationValue = preActivationValuesMap.get(
+          originalWallet.tokenCode as string,
+        );
+        if (!preActivationValue) {
+          throw new Error(
+            `No pre-activation value found for wallet ${originalWallet.id} with tokenCode ${originalWallet.tokenCode}`,
+          );
+        }
+
+        // transfer pre-activation value to parent wallet
+        const postTransferResult = await this.postTransfer(
+          parentWallet.tokenCode,
+          preActivationValue as number,
+        );
+
+        if (!this.isSuccessResponseStatus(postTransferResult.status)) {
+          const errors = postTransferResult?.data?.errors;
+          const formattedErrors = this.formatErrors(errors);
+          throw new Error(
+            `Failed to transfer pre-activation value of inactive original wallet ${originalWallet.id} to parent wallet ${parentWallet.id}. Errors: ${formattedErrors}`,
+          );
+        }
+      }
+
       if (originalWallet.tokenBlocked) {
+        // Block wallet again if original wallet was blocked
         await this.postToggleBlockWallet(
           originalWallet.tokenCode,
           {
@@ -404,6 +477,30 @@ export class MigrateVisaService {
       `SELECT * FROM "121-service"."intersolve_visa_wallet" WHERE "intersolveVisaCustomerId" = ${visaCustomer.id} order by "created" desc`,
     );
   }
+
+  // We intend to no longer use this, but instead get the pre-activation value from the csv file
+  // private async getPreActivationValueOfOriginalWallet(
+  //   tokenCode: string | null,
+  //   queryRunner: QueryRunner,
+  // ): Promise<any[]> {
+  //   // 1. make use of fact that tokenCode is stored in transaction.customData and is still available during this migration
+  //   // 2. get the first payment number with the tokenCode
+  //   // 3. filter on only success transactions
+  //   // 4. join back on itself to get transaction amount
+  //   return queryRunner.query(
+  //     `select "tokenCode", amount
+  //     from "transaction" t
+  //     inner join (
+  //       select ivw."tokenCode"
+  //         ,min(t.payment) as "minPayment"
+  //       from intersolve_visa_wallet ivw
+  //       left join "transaction" t on ivw."tokenCode" = t."customData"->>'intersolveVisaWalletTokenCode'
+  //       where t."customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode}
+  //       group by ivw."tokenCode"
+  //     ) "minPayment"
+  //     on t."customData"->>'intersolveVisaWalletTokenCode' = "minPayment"."tokenCode" and t.payment = "minPayment"."minPayment" and t.status = 'success'`,
+  //   );
+  // }
 
   private formatErrors(errors: unknown): string {
     return errors
@@ -577,5 +674,49 @@ export class MigrateVisaService {
     };
     const linkResult = await this.httpService.post<any>(url, payload, headers);
     return linkResult;
+  }
+
+  public async postTransfer(
+    parentTokenCode: string | null,
+    amountInMajorUnit: number,
+  ): Promise<{
+    data: {
+      success?: boolean;
+      errors?: ErrorsInResponseIntersolveApi[];
+      code?: string;
+      correlationId?: string;
+    };
+    status: number;
+    statusText?: string;
+  }> {
+    const authToken = await this.getAuthenticationToken();
+    const apiPath = process.env.INTERSOLVE_VISA_PROD
+      ? 'wallet-payments'
+      : 'wallet';
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE}/transfer`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+
+    const amountInCent = amountInMajorUnit * 100;
+    const payload = {
+      quantity: {
+        value: amountInCent,
+        assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
+      },
+      creditor: {
+        tokenCode: parentTokenCode,
+      },
+      reference: `ParentTokenCode=${parentTokenCode},OneTimeMigration`,
+      operationReference: uuid(), // Required to pass in a UUID, which needs be unique for all transfers. Is used as idempotency key.
+    };
+
+    const transferResult = await this.httpService.post<any>(
+      url,
+      payload,
+      headers,
+    );
+    return transferResult;
   }
 }
