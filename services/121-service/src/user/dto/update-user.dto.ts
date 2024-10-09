@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
 
@@ -21,4 +21,9 @@ export class UpdateUserDto {
   @ApiProperty({ example: true }) // Only this field is @ApiProperty, as only this field is currently used from endpoint/swagger, the rest only from service.
   @IsOptional()
   public readonly isOrganizationAdmin?: boolean;
+
+  @ApiProperty({ example: 'Firstname Lastname' })
+  @IsOptional()
+  @IsString()
+  public readonly displayName?: string;
 }

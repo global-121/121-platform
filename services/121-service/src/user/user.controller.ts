@@ -483,7 +483,8 @@ export class UserController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users')
   @ApiOperation({
-    summary: 'Update user properties (currently only isOrganizationAdmin)',
+    summary:
+      'Update user properties (currently isOrganizationAdmin and displayName)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -503,6 +504,7 @@ export class UserController {
     const user = await this.userService.updateUser({
       id: userId,
       isOrganizationAdmin: updateUserDto.isOrganizationAdmin,
+      displayName: updateUserDto.displayName,
     });
 
     return this.userService.buildUserRO(user);
