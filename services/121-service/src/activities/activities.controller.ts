@@ -22,7 +22,7 @@ export class ActivitiesController {
   @ApiOperation({ summary: '[SCOPED] Get activities for registration' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'TODO: Provide description',
+    description: '##TODO: Provide description',
     type: [ActivitiesDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
