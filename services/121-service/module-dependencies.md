@@ -73,8 +73,6 @@ graph LR
   VodacashModule-->RegistrationDataModule
   VodacashModule-->RegistrationsModule
   PaymentsModule-->SafaricomModule
-  SafaricomModule-->UserModule
-  SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
@@ -106,10 +104,9 @@ graph LR
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
-  AuthModule-->UserModule
-  AuthModule-->PassportModule
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule
+  TransactionJobProcessorsModule-->SafaricomModule
   TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule
@@ -118,4 +115,6 @@ graph LR
   TransactionJobProcessorsModule-->FinancialServiceProvidersModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->RedisModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->SafaricomModule
 ```

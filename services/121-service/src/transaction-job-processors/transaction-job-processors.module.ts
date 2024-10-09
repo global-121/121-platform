@@ -5,6 +5,7 @@ import { FinancialServiceProvidersModule } from '@121-service/src/financial-serv
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
+import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
@@ -12,6 +13,7 @@ import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-servic
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
+import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-job-processors/processors/transaction-job-safaricom.processor';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -19,6 +21,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   imports: [
     RedisModule,
     IntersolveVisaModule,
+    SafaricomModule,
     ProgramFinancialServiceProviderConfigurationsModule,
     RegistrationsModule,
     ProgramModule,
@@ -28,10 +31,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     EventsModule,
     MessageTemplateModule,
   ],
-
   providers: [
     TransactionJobProcessorsService,
     TransactionJobProcessorIntersolveVisa,
+    TransactionJobProcessorSafaricom,
     createScopedRepositoryProvider(TransactionEntity),
   ],
 })

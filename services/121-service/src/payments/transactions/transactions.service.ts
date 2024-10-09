@@ -175,7 +175,7 @@ export class TransactionsService {
     transaction.payment = relationDetails.paymentNr;
     transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
-    transaction.errorMessage = transactionResponse.message;
+    transaction.errorMessage = transactionResponse.message ?? null;
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 

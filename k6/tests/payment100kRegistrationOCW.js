@@ -1,14 +1,12 @@
 import { check, sleep } from 'k6';
 
-import loginModel from '../models/login.js';
-import paymentsModel from '../models/payments.js';
-import resetModel from '../models/reset.js';
+import { registrationVisa } from '../helpers/registration-default.data.js';
+import InitializePaymentModel from '../models/initalize-payment.js';
 
-const paymentsPage = new paymentsModel();
-const resetPage = new resetModel();
-const loginPage = new loginModel();
+const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 15;
+const duplicateNumber = 17; // '17' leads to 131k registrations
+const resetScript = 'nlrc-multiple';
 const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 200;
@@ -24,41 +22,13 @@ export const options = {
 };
 
 export default function () {
-  // reset db
-  const reset = resetPage.resetDBMockRegistrations(17, '7m');
-  check(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
-  });
-
-  // login
-  const login = loginPage.login();
-  check(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
-    'Login time is less than 200ms': (r) => {
-      if (r.timings.duration >= 200) {
-        console.log(`Login time was ${r.timings.duration}ms`);
-      }
-      return r.timings.duration < 200;
-    },
-  });
-
-  // Do the payment
-  const doPayment = paymentsPage.createPayment(programId);
-  check(doPayment, {
-    'Payment successfully done status 202': (r) => {
-      if (r.status != 202) {
-        console.log(r.body);
-      }
-      return r.status == 202;
-    },
-  });
-
-  // Monitor that 10% of payments is successful and then stop the test
-  const monitorPayment = paymentsPage.getPaymentResults(
+  const monitorPayment = initializePayment.initializePayment(
+    resetScript,
     programId,
-    maxTimeoutAttempts,
-    paymentId,
+    registrationVisa,
     duplicateNumber,
+    paymentId,
+    maxTimeoutAttempts,
     minPassRatePercentage,
   );
   check(monitorPayment, {
