@@ -18,16 +18,16 @@ export class ActivitiesMapper {
     return { meta: { availableTypes: [], count: {} }, data: [] };
   }
 
-  private static mapTransactionsToData(transactions: unknown[]): [] {
+  private static mapTransactionsToData(_transactions: unknown[]): [] {
     return [];
   }
-  private static mapMessagesToData(messages: unknown[]): [] {
+  private static mapMessagesToData(_messages: unknown[]): [] {
     return [];
   }
-  private static mapEventsToData(events: unknown[]): [] {
+  private static mapEventsToData(_events: unknown[]): [] {
     return [];
   }
-  private static mapNotesToData(notes: unknown[]): [] {
+  private static mapNotesToData(_notes: unknown[]): [] {
     return [];
   }
 

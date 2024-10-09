@@ -5,9 +5,9 @@ export interface GetTwilioMessageDto {
   from: string;
   to: string;
   body: string;
-  status: string; //TODO: might not be the correct type
+  status: string; // ##TODO: might not be the correct type
   medialUrl: string;
-  contentType: MessageContentType; //TODO: might not be the correct type
+  contentType: MessageContentType; //##TODO: might not be the correct type
   errorCode: string | null;
   userId: number;
   username: string;
