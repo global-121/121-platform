@@ -22,6 +22,7 @@ import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/co
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
+  QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -82,26 +83,29 @@ export class ProjectTeamPageComponent {
     }),
   );
 
-  columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(() => [
-    {
-      field: 'username',
-      header: $localize`User name`,
-    },
-    {
-      field: 'allRolesLabel',
-      header: $localize`Roles`,
-    },
-    {
+  columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(() => {
+    const scopeColumn: QueryTableColumn<ProjectUserWithRolesLabel> = {
       field: 'scope',
       header: $localize`Scope`,
-      hidden: !this.enableScope(),
-    },
-    {
-      field: 'lastLogin',
-      header: $localize`Last log in`,
-      type: 'date',
-    },
-  ]);
+    };
+
+    return [
+      {
+        field: 'username',
+        header: $localize`User name`,
+      },
+      {
+        field: 'allRolesLabel',
+        header: $localize`Roles`,
+      },
+      ...(this.enableScope() ? [scopeColumn] : []),
+      {
+        field: 'lastLogin',
+        header: $localize`Last log in`,
+        type: QueryTableColumnType.DATE,
+      },
+    ];
+  });
 
   canManageAidworkers = computed(() =>
     this.authService.hasPermission({

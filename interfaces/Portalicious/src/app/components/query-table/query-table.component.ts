@@ -13,8 +13,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UrlTree } from '@angular/router';
 
-import { FilterMetadata, MenuItem, TableState } from 'primeng/api';
+import {
+  FilterMatchMode,
+  FilterMetadata,
+  MenuItem,
+  TableState,
+} from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -23,24 +29,52 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Table, TableModule } from 'primeng/table';
+import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { ChipData } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
-import { TableCellChipComponent } from '~/components/query-table/table-cell/table-cell-chip.component';
-import { TableCellDateComponent } from '~/components/query-table/table-cell/table-cell-date.component';
-import { TableCellTextComponent } from '~/components/query-table/table-cell/table-cell-text.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import {
+  PaginateQuery,
+  PaginateQueryService,
+} from '~/services/paginate-query.service';
 import { Locale } from '~/utils/locale';
 
-export interface QueryTableColumn<TData, TField = keyof TData & string> {
+export enum QueryTableColumnType {
+  DATE = 'date',
+  MULTISELECT = 'multiselect',
+  NUMERIC = 'numeric',
+  TEXT = 'text',
+}
+
+export type QueryTableColumn<TData, TField = keyof TData & string> = {
   header: string;
   field: TField;
-  hidden?: boolean;
-  type?: 'date' | 'multiselect' | 'text'; // defaults to text
-  options?: { label: string; value: number | string }[]; // for type 'multiselect'
+  fieldForSort?: TField; // defaults to field
+  fieldForFilter?: TField; // defaults to field
+  disableSorting?: boolean;
+  disableFiltering?: boolean;
+  filterMatchMode?: FilterMatchMode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component?: Type<TableCellComponent<TData, any>>;
-}
+} & (
+  | {
+      type: QueryTableColumnType.MULTISELECT;
+      options: { label: string; value: number | string }[];
+      getCellChipData?: (item: TData) => ChipData;
+    }
+  | {
+      type?:
+        | QueryTableColumnType.DATE
+        | QueryTableColumnType.NUMERIC
+        | QueryTableColumnType.TEXT; // defaults to QueryTableColumnType.TEXT
+      getCellText?: (item: TData) => string;
+      getCellRouterLink?: (
+        item: TData,
+      ) => (number | string)[] | null | string | undefined | UrlTree;
+    }
+);
 
 @Component({
   selector: 'app-query-table',
@@ -53,15 +87,13 @@ export interface QueryTableColumn<TData, TField = keyof TData & string> {
     ContextMenuModule,
     ButtonModule,
     DatePipe,
-    TableCellDateComponent,
-    TableCellTextComponent,
     IconFieldModule,
     InputTextModule,
     InputIconModule,
     MultiSelectModule,
     FormsModule,
     SkeletonInlineComponent,
-    TableCellChipComponent,
+    ColoredChipComponent,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -69,6 +101,7 @@ export interface QueryTableColumn<TData, TField = keyof TData & string> {
 })
 export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   locale = inject<Locale>(LOCALE_ID);
+  paginateQueryService = inject(PaginateQueryService);
 
   items = input.required<TData[]>();
   isPending = input.required<boolean>();
@@ -78,28 +111,54 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   globalFilterFields = input<(keyof TData & string)[]>();
   expandableRowTemplate = input<Type<TableCellComponent<TData, TContext>>>();
   tableCellContext = input<TContext>();
+  serverSideFiltering = input<boolean>(false);
+  serverSideTotalRecords = input<number>();
   readonly onUpdateContextMenuItem = output<TData>();
+  readonly onUpdatePaginateQuery = output<PaginateQuery>();
 
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
 
-  visibleColumns = computed(() =>
-    this.columns().filter((column) => !column.hidden),
-  );
+  /**
+   * DISPLAY
+   */
+  // This is triggered whenever primeng saves the state of the table to local storage
+  // which is an optimal time to update our local state, and make sure the table is showing the correct data
+  onStateSave(event: TableState) {
+    this.synchronizeFilters(event);
+    this.synchronizeExpandedRowKeys(event);
+  }
 
   totalColumnCount = computed(
     () =>
-      this.visibleColumns().length +
+      this.columns().length +
       (this.contextMenuItems() ? 1 : 0) +
       (this.expandableRowTemplate() ? 1 : 0),
   );
 
-  // This is triggered whenever primeng saves the state of the table to local storage
-  // which is an optimal time to update our local state
-  onStateSave(event: TableState) {
-    this.synchronizeFilters(event);
-    this.synchronizeExpandedRowKeys(event);
+  getCellText(column: QueryTableColumn<TData>, item: TData) {
+    if (
+      column.type !== QueryTableColumnType.MULTISELECT &&
+      column.getCellText
+    ) {
+      return column.getCellText(item);
+    }
+
+    const text = item[column.field];
+
+    if (text && column.type === QueryTableColumnType.DATE) {
+      return new DatePipe(this.locale).transform(
+        new Date(text as string),
+        'short',
+      );
+    }
+
+    return text;
+  }
+
+  getColumnType(column: QueryTableColumn<TData>) {
+    return column.type ?? QueryTableColumnType.TEXT;
   }
 
   /**
@@ -115,7 +174,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.isFiltered.set(false);
   }
 
-  synchronizeFilters(event: TableState) {
+  private synchronizeFilters(event: TableState) {
     if (!event.filters) {
       return;
     }
@@ -147,6 +206,51 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     );
   }
 
+  getColumnMatchMode(column: QueryTableColumn<TData>) {
+    if (column.filterMatchMode) {
+      return column.filterMatchMode as string;
+    }
+
+    const type = this.getColumnType(column);
+    switch (type) {
+      case QueryTableColumnType.MULTISELECT:
+        return FilterMatchMode.IN;
+      // case QueryTableColumnType.DATE:
+      case QueryTableColumnType.NUMERIC:
+        return FilterMatchMode.EQUALS;
+      default:
+        return FilterMatchMode.CONTAINS;
+    }
+  }
+
+  /**
+   * LAZY LOADING
+   */
+  onLazyLoadEvent(event: TableLazyLoadEvent) {
+    const paginateQuery =
+      this.paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery(
+        event,
+      );
+    if (!paginateQuery) {
+      return;
+    }
+    this.onUpdatePaginateQuery.emit(paginateQuery);
+  }
+
+  totalRecords = computed(() => {
+    if (!this.serverSideFiltering()) {
+      return this.items().length;
+    }
+
+    const totalRecords = this.serverSideTotalRecords();
+
+    if (totalRecords === undefined) {
+      throw new Error('Server side filtering requires totalRecords to be set');
+    }
+
+    return totalRecords;
+  });
+
   /**
    *  EXPANDABLE ROWS
    */
@@ -168,7 +272,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       this.items().every((item) => this.expandedRowKeys()[item.id] === true),
   );
 
-  synchronizeExpandedRowKeys(event: TableState) {
+  private synchronizeExpandedRowKeys(event: TableState) {
     if (!event.expandedRowKeys) {
       return;
     }
