@@ -371,7 +371,6 @@ export class MigrateVisaService {
         const preActivationValue = preActivationValuesMap.get(
           originalWallet.tokenCode as string,
         );
-        console.log('preActivationValue: ', preActivationValue);
         if (!preActivationValue) {
           throw new Error(
             `No pre-activation value found for wallet ${originalWallet.id} with tokenCode ${originalWallet.tokenCode}`,
