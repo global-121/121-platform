@@ -12,6 +12,8 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { uniqBy } from 'lodash';
 import { SelectButtonModule } from 'primeng/selectbutton';
 
+import { ActivityTypeEnum } from '@121-service/src/activities/dtos/activities.dto';
+
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -19,10 +21,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
-import {
-  ActivityLogItemType,
-  ActivityLogItemWithOverview,
-} from '~/domains/registration/registration.model';
+import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogExpandedRowComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/activity-log-expanded-row/activity-log-expanded-row.component';
 import { TableCellActivityComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-activity.component';
 import { TableCellOverviewComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-overview.component';
@@ -72,28 +71,28 @@ export class ProjectRegistrationActivityLogPageComponent {
     ),
   );
 
-  items = computed(() => this.activityLog.data()?.data ?? []);
+  activities = computed(() => this.activityLog.data()?.data ?? []);
 
   uniqueAuthors = computed(() => {
     return uniqBy(
-      this.items().map(({ author }) => ({
-        label: author,
-        value: author,
+      this.activities().map(({ username }) => ({
+        label: username ?? $localize`Unknown user`,
+        value: username ?? 'unknown-user',
       })),
       'value',
     ).sort((a, b) => a.label.localeCompare(b.label));
   });
 
-  columns = computed<QueryTableColumn<ActivityLogItemWithOverview>[]>(() => [
+  columns = computed<QueryTableColumn<Activity>[]>(() => [
     {
-      field: 'activityType',
+      field: 'type',
       header: $localize`Activity`,
       component: TableCellActivityComponent,
       type: 'multiselect',
       options: Object.entries(this.activityLog.data()?.meta.count ?? {}).map(
         ([type, count]) => ({
           label:
-            ACTIVITY_LOG_ITEM_TYPE_LABELS[type as ActivityLogItemType] +
+            ACTIVITY_LOG_ITEM_TYPE_LABELS[type as ActivityTypeEnum] +
             ` (${String(count)})`,
           value: type,
         }),
@@ -101,17 +100,16 @@ export class ProjectRegistrationActivityLogPageComponent {
     },
     {
       header: $localize`Overview`,
-      field: 'overview',
       component: TableCellOverviewComponent,
     },
     {
-      field: 'author',
+      field: 'username',
       header: $localize`Done by`,
       type: 'multiselect',
       options: this.uniqueAuthors(),
     },
     {
-      field: 'date',
+      field: 'created',
       header: $localize`Time and date`,
       type: 'date',
     },

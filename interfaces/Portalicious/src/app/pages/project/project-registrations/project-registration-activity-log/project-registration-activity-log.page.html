@@ -6,13 +6,13 @@
 >
   <div registration-page>
     <app-query-table
-      [items]="items()"
+      [items]="activities()"
       [isPending]="activityLog.isPending()"
       [columns]="columns()"
       localStorageKey="activity-log-table"
       [expandableRowTemplate]="expandableRowTemplate"
       [tableCellContext]="tableCellContext()"
-      [globalFilterFields]="['activityType', 'overview', 'author']"
+      [globalFilterFields]="['type', 'username']"
     />
   </div>
 </app-page-layout>

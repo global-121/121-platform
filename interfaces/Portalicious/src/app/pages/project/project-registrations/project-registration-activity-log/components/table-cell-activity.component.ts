@@ -10,7 +10,7 @@ import {
   ACTIVITY_LOG_ITEM_TYPE_ICONS,
   ACTIVITY_LOG_ITEM_TYPE_LABELS,
 } from '~/domains/registration/registration.helper';
-import { ActivityLogItemWithOverview } from '~/domains/registration/registration.model';
+import { Activity } from '~/domains/registration/registration.model';
 
 @Component({
   selector: 'app-table-cell-activity',
@@ -28,15 +28,11 @@ import { ActivityLogItemWithOverview } from '~/domains/registration/registration
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableCellActivityComponent
-  implements TableCellComponent<ActivityLogItemWithOverview>
+  implements TableCellComponent<Activity>
 {
-  value = input.required<ActivityLogItemWithOverview>();
+  value = input.required<Activity>();
   context = input<never>();
 
-  label = computed(
-    () => ACTIVITY_LOG_ITEM_TYPE_LABELS[this.value().activityType],
-  );
-  icon = computed(
-    () => ACTIVITY_LOG_ITEM_TYPE_ICONS[this.value().activityType],
-  );
+  label = computed(() => ACTIVITY_LOG_ITEM_TYPE_LABELS[this.value().type]);
+  icon = computed(() => ACTIVITY_LOG_ITEM_TYPE_ICONS[this.value().type]);
 }

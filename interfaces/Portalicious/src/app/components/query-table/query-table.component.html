@@ -150,7 +150,7 @@
                 inputs: { value: item, context: tableCellContext() }
               "
             />
-          } @else {
+          } @else if (column.field) {
             @switch (column.type) {
               @case ('date') {
                 <app-table-cell-date [value]="item[column.field]" />

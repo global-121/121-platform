@@ -34,7 +34,7 @@ import { Locale } from '~/utils/locale';
 
 export interface QueryTableColumn<TData, TField = keyof TData & string> {
   header: string;
-  field: TField;
+  field?: TField;
   hidden?: boolean;
   type?: 'date' | 'multiselect' | 'text'; // defaults to text
   options?: { label: string; value: number | string }[]; // for type 'multiselect'
