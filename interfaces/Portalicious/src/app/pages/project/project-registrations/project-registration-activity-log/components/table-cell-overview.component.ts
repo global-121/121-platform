@@ -7,15 +7,17 @@ import {
 
 import { ChipModule } from 'primeng/chip';
 
+import { ActivityTypeEnum } from '@121-service/src/activities/dtos/activities.dto';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { getChipDataByTransactionStatusEnum } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
 import {
-  ActivityLogItemType,
-  ActivityLogItemWithOverview,
-} from '~/domains/registration/registration.model';
+  getChipDataByRegistrationStatus,
+  getChipDataByTransactionStatusEnum,
+} from '~/components/colored-chip/colored-chip.helper';
+import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
+import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
 
@@ -29,7 +31,7 @@ import { ActivityLogTableCellContext } from '~/pages/project/project-registratio
   ],
   template: `
     <span class="inline-flex w-full items-center">
-      {{ value().overview }}
+      {{ overview() }}
 
       @if (chipData()) {
         <app-colored-chip
@@ -55,23 +57,41 @@ import { ActivityLogTableCellContext } from '~/pages/project/project-registratio
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableCellOverviewComponent
-  implements
-    TableCellComponent<
-      ActivityLogItemWithOverview,
-      ActivityLogTableCellContext
-    >
+  implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
-  value = input.required<ActivityLogItemWithOverview>();
+  value = input.required<Activity>();
   context = input.required<ActivityLogTableCellContext>();
 
   chipData = computed(() => {
-    const { activityType, contents } = this.value();
+    const { type, attributes } = this.value();
 
-    if (activityType !== ActivityLogItemType.Transfer) {
-      return;
+    if (type === ActivityTypeEnum.Transaction) {
+      return getChipDataByTransactionStatusEnum(attributes.status);
     }
 
-    return getChipDataByTransactionStatusEnum(contents.status);
+    if (type === ActivityTypeEnum.StatusChange) {
+      return getChipDataByRegistrationStatus(attributes.newValue);
+    }
+
+    return undefined;
+  });
+
+  overview = computed(() => {
+    const item = this.value();
+    switch (item.type) {
+      case ActivityTypeEnum.DataChange:
+        return item.attributes.fieldName;
+      case ActivityTypeEnum.FinancialServiceProviderChange:
+        return item.attributes.newValue;
+      case ActivityTypeEnum.Message:
+        return item.attributes.contentType;
+      case ActivityTypeEnum.Note:
+        return item.attributes.text;
+      case ActivityTypeEnum.StatusChange:
+        return $localize`New status:`;
+      case ActivityTypeEnum.Transaction:
+        return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} #${item.attributes.payment.toString()}`;
+    }
   });
 
   voucherDialogData = computed(() => {
@@ -83,8 +103,8 @@ export class TableCellOverviewComponent
     }
 
     if (
-      item.activityType !== ActivityLogItemType.Transfer ||
-      item.contents.fsp !==
+      item.type !== ActivityTypeEnum.Transaction ||
+      item.attributes.fsp !==
         FinancialServiceProviderName.intersolveVoucherWhatsapp
     ) {
       return;
@@ -92,8 +112,8 @@ export class TableCellOverviewComponent
 
     return {
       projectId: this.context().projectId(),
-      paymentId: item.contents.payment,
-      totalTransfers: item.contents.totalTransfers,
+      paymentId: item.attributes.payment,
+      totalTransfers: item.attributes.amount,
       voucherReferenceId: referenceId,
     };
   });
