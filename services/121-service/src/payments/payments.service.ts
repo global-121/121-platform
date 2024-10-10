@@ -146,7 +146,7 @@ export class PaymentsService {
   ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
-      .select(['status', 'COUNT(*) as count'])
+      .select(['status', 'COUNT(*) as count', 'SUM(amount) as totalAmount'])
       .from(
         '(' +
           this.transactionsService
@@ -186,6 +186,13 @@ export class PaymentsService {
         statusAggregation.find(
           (row) => row.status === TransactionStatusEnum.error,
         )?.count || 0,
+      totalAmountPerStatus: statusAggregation.reduce(
+        (acc, row) => {
+          acc[row.status] = (acc[row.status] || 0) + (row.totalamount || 0);
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
     };
   }
 
