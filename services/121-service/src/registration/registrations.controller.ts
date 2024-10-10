@@ -42,6 +42,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
@@ -159,7 +160,7 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
-  ) {
+  ): Promise<FindAllRegistrationsResultDto> {
     const userId = RequestHelper.getUserId(req);
 
     const hasPersonalRead =

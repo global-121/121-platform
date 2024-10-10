@@ -8,4 +8,4 @@ export type MappedPaginatedRegistrationDto = Omit<
   // potential extra fields that we know could exist.
   // They are all wrapped with a Partial<> as an extra safety measure, given that we
   // don't have any guarantee from TS that they will be there.
-  Partial<{ name: string }>;
+  Partial<{ name: string; fullName: string }>;

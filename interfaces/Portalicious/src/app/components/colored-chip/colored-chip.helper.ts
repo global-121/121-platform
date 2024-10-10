@@ -9,7 +9,7 @@ import {
 // TODO: AB#30525 should import this from 121-service
 import { VisaCard121Status } from '~/domains/registration/registration.model';
 
-interface ChipData {
+export interface ChipData {
   chipLabel: string;
   chipVariant: ChipVariant;
 }

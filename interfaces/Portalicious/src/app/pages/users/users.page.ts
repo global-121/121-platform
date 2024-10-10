@@ -19,6 +19,7 @@ import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/co
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
+  QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { UserApiService } from '~/domains/user/user.api.service';
@@ -65,7 +66,7 @@ export class UsersPageComponent {
     {
       field: 'lastLogin',
       header: $localize`Last login`,
-      type: 'date',
+      type: QueryTableColumnType.DATE,
     },
   ]);
 

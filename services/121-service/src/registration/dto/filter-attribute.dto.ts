@@ -1,4 +1,4 @@
-import { FilterOperator } from 'nestjs-paginate';
+import { FilterOperator, PaginateQuery } from 'nestjs-paginate';
 
 export class FilterAttributeDto {
   name: string;
@@ -6,6 +6,4 @@ export class FilterAttributeDto {
   isInteger: boolean;
 }
 
-export class PaginationFilter {
-  [column: string]: string | string[];
-}
+export type PaginationFilter = Exclude<PaginateQuery['filter'], undefined>;

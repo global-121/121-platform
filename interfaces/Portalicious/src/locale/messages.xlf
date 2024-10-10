@@ -662,6 +662,15 @@
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
       </trans-unit>
+      <trans-unit id="registration-created" datatype="html">
+        <source>Registration created</source>
+      </trans-unit>
+      <trans-unit id="registration-full-name" datatype="html">
+        <source>Full Name</source>
+      </trans-unit>
+      <trans-unit id="84476789249519306" datatype="html">
+        <source>PA #</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

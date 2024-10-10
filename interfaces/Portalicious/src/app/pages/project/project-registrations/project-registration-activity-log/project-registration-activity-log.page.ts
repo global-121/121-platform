@@ -15,6 +15,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
+  QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -89,7 +90,7 @@ export class ProjectRegistrationActivityLogPageComponent {
       field: 'activityType',
       header: $localize`Activity`,
       component: TableCellActivityComponent,
-      type: 'multiselect',
+      type: QueryTableColumnType.MULTISELECT,
       options: Object.entries(this.activityLog.data()?.meta.count ?? {}).map(
         ([type, count]) => ({
           label:
@@ -107,13 +108,13 @@ export class ProjectRegistrationActivityLogPageComponent {
     {
       field: 'author',
       header: $localize`Done by`,
-      type: 'multiselect',
+      type: QueryTableColumnType.MULTISELECT,
       options: this.uniqueAuthors(),
     },
     {
       field: 'date',
       header: $localize`Time and date`,
-      type: 'date',
+      type: QueryTableColumnType.DATE,
     },
   ]);
 }

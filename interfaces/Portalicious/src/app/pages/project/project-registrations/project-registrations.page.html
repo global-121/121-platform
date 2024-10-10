@@ -3,15 +3,15 @@
   i18n-pageTitle="@@page-title-project-registrations"
   [projectId]="projectId()"
 >
-  @if (registrations.isSuccess()) {
-    <ul>
-      @for (registration of registrations.data().data; track $index) {
-        <li>
-          <a [routerLink]="registrationLink(registration.id)">
-            {{ registration.name }}
-          </a>
-        </li>
-      }
-    </ul>
-  }
+  <p-card>
+    <app-query-table
+      [items]="registrations()"
+      [isPending]="registrationsResponse.isPending()"
+      [columns]="columns()"
+      localStorageKey="project-registrations-table"
+      [serverSideFiltering]="true"
+      [serverSideTotalRecords]="totalRegistrations()"
+      (onUpdatePaginateQuery)="paginateQuery.set($event)"
+    />
+  </p-card>
 </app-page-layout>
