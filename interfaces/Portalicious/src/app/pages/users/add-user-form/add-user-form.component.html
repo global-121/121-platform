@@ -1,0 +1,34 @@
+<app-form-sidebar
+  [(visible)]="formVisible"
+  [formGroup]="formGroup"
+  [mutation]="addUserMutation"
+  formTitle="Add user"
+  i18n-formTitle="@@add-user"
+>
+  <app-form-field-wrapper
+    label="User name"
+    i18n-label
+    [errorMessage]="formFieldErrors()('usernameValue')"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="usernameValue"
+      autocomplete="off"
+      class="font-mono"
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="User email"
+    i18n-label
+    [errorMessage]="formFieldErrors()('emailValue')"
+  >
+    <input
+      pInputText
+      type="email"
+      formControlName="emailValue"
+      autocomplete="off"
+      class="font-mono"
+    />
+  </app-form-field-wrapper>
+</app-form-sidebar>
