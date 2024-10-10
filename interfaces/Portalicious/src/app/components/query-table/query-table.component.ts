@@ -3,11 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   inject,
   input,
   LOCALE_ID,
   model,
   output,
+  Renderer2,
   signal,
   Type,
   ViewChild,
@@ -15,6 +17,7 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { FilterMetadata, MenuItem, TableState } from 'primeng/api';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -62,6 +65,7 @@ export interface QueryTableColumn<TData, TField = keyof TData & string> {
     FormsModule,
     SkeletonInlineComponent,
     TableCellChipComponent,
+    AutoFocusModule,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -83,6 +87,27 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
+  @ViewChild('globalFilterContainer')
+  globalFilterContainer: ElementRef<HTMLDivElement>;
+  @ViewChild('globalFilterInput')
+  globalFilterInput: ElementRef<HTMLInputElement>;
+
+  constructor(private renderer: Renderer2) {
+    this.renderer.listen('window', 'click', (e: Event) => {
+      const globalFilterValue = this.globalFilterValue();
+
+      const isNoGlobalFilterApplied =
+        globalFilterValue === undefined || globalFilterValue === '';
+
+      const hasCickedOutsideGlobalFilterContainer =
+        e.target !== this.globalFilterContainer.nativeElement &&
+        !this.globalFilterContainer.nativeElement.contains(e.target as Node);
+
+      if (isNoGlobalFilterApplied && hasCickedOutsideGlobalFilterContainer) {
+        this.globalFilterVisible.set(false);
+      }
+    });
+  }
 
   visibleColumns = computed(() =>
     this.columns().filter((column) => !column.hidden),
@@ -105,13 +130,15 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    *  FILTERS
    */
+  globalFilterVisible = model<boolean>(false);
   globalFilterValue = model<string>();
   isFiltered = signal(false);
 
   clearAllFilters() {
     this.table.clear();
-    this.globalFilterValue.set('');
+    this.globalFilterValue.set(undefined);
     localStorage.removeItem(this.localStorageKey());
+    this.globalFilterVisible.set(false);
     this.isFiltered.set(false);
   }
 
@@ -120,16 +147,25 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return;
     }
 
+    let globalFilterValueFromEvent: string | undefined = undefined;
+
     // TS thinks this is always defined but it is not true
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (event.filters.global) {
       const globalFilter = Array.isArray(event.filters.global)
         ? event.filters.global[0]
         : event.filters.global;
-      if (globalFilter.value && globalFilter.value !== '') {
+      if (typeof globalFilter.value === 'string' && globalFilter.value !== '') {
         // without this, the global filter value is not restored properly from local storage
-        this.globalFilterValue.set(globalFilter.value as string);
+        globalFilterValueFromEvent = globalFilter.value;
       }
+    }
+
+    this.globalFilterValue.set(globalFilterValueFromEvent);
+
+    if (globalFilterValueFromEvent) {
+      this.isFiltered.set(true);
+      return;
     }
 
     this.isFiltered.set(
