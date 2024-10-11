@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -12,6 +13,8 @@ import { ActivitiesService } from '@121-service/src/activities/activities.servic
 import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/registrations')
@@ -31,10 +34,14 @@ export class ActivitiesController {
   public async getActivitiesByRegistrationId(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('registrationId') registrationId: number,
+    @Req() req: ScopedUserRequest,
   ): Promise<ActivitiesDto> {
-    return await this.activitiesService.getByRegistrationIdAndProgramId(
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.activitiesService.getByRegistrationIdAndProgramId({
       registrationId,
       programId,
-    );
+      userId,
+    });
   }
 }
