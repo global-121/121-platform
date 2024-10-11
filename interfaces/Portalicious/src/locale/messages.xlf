@@ -654,7 +654,7 @@
         <source>Reset password</source>
       </trans-unit>
       <trans-unit id="add-user" datatype="html">
-        <source>Add user</source>
+        <source>Add new user</source>
       </trans-unit>
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
@@ -672,6 +672,9 @@
         <source>PA #</source>
       <trans-unit id="2590833001810330604" datatype="html">
         <source>User email</source>
+      </trans-unit>
+      <trans-unit id="5918723526444903137" datatype="html">
+        <source>Add user</source>
       </trans-unit>
     </body>
   </file>

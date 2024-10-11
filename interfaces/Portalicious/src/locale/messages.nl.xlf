@@ -868,8 +868,8 @@
         <target state="new">Reset password</target>
       </trans-unit>
       <trans-unit id="add-user" datatype="html">
-        <source>Add user</source>
-        <target state="new">Add user</target>
+        <source>Add new user</source>
+        <target state="new">Add new user</target>
       </trans-unit>
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
@@ -893,6 +893,10 @@
       <trans-unit id="2590833001810330604" datatype="html">
         <source>User email</source>
         <target state="new">User email</target>
+      </trans-unit>
+      <trans-unit id="5918723526444903137" datatype="html">
+        <source>Add user</source>
+        <target state="new">Add user</target>
       </trans-unit>
     </body>
   </file>
