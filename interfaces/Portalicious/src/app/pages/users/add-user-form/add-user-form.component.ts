@@ -65,12 +65,12 @@ export class AddUserFormComponent {
         const user = this.userToEdit();
         if (user) {
           this.formGroup.patchValue({
-            usernameValue: user.displayName,
-            emailValue: user.username,
+            displayNameValue: user.displayName,
+            usernameValue: user.username,
           });
-          this.formGroup.controls.emailValue.disable();
+          this.formGroup.controls.usernameValue.disable();
         } else {
-          this.formGroup.controls.emailValue.enable();
+          this.formGroup.controls.usernameValue.enable();
         }
       },
       {
@@ -84,12 +84,12 @@ export class AddUserFormComponent {
   allUsers = injectQuery(this.userApiService.getAllUsers());
 
   formGroup = new FormGroup({
-    usernameValue: new FormControl<string>('', {
+    displayNameValue: new FormControl<string>('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       validators: [Validators.required],
       nonNullable: true,
     }),
-    emailValue: new FormControl<string>('', {
+    usernameValue: new FormControl<string>('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       validators: [Validators.required, Validators.email],
       nonNullable: true,
@@ -99,8 +99,8 @@ export class AddUserFormComponent {
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
-      usernameValue: genericFieldIsRequiredValidationMessage,
-      emailValue: (control) => {
+      displayNameValue: genericFieldIsRequiredValidationMessage,
+      usernameValue: (control) => {
         if (!control.invalid) {
           return;
         }
@@ -109,7 +109,7 @@ export class AddUserFormComponent {
     },
   );
 
-  addUserMutation = injectMutation(() => ({
+  userMutation = injectMutation(() => ({
     mutationFn: ({
       usernameValue,
       emailValue,
@@ -117,7 +117,7 @@ export class AddUserFormComponent {
       usernameValue: string;
       emailValue: string;
     }) => {
-      if (this.isEditing() && this.userToEdit()?.id) {
+      if (this.isEditing()) {
         return this.userApiService.udpateUserDisplayName({
           id: this.userToEdit()?.id,
           displayName: usernameValue,

@@ -1,14 +1,14 @@
 <app-form-sidebar
   [(visible)]="formVisible"
   [formGroup]="formGroup"
-  [mutation]="addUserMutation"
+  [mutation]="userMutation"
   formTitle="Add user"
-  i18n-formTitle="@@add-user"
+  i18n-formTitle
 >
   <app-form-field-wrapper
     label="User name"
     i18n-label
-    [errorMessage]="formFieldErrors()('usernameValue')"
+    [errorMessage]="formFieldErrors()('displayNameValue')"
   >
     <input
       pInputText
@@ -21,7 +21,7 @@
   <app-form-field-wrapper
     label="User email"
     i18n-label
-    [errorMessage]="formFieldErrors()('emailValue')"
+    [errorMessage]="formFieldErrors()('usernameValue')"
   >
     <input
       pInputText
