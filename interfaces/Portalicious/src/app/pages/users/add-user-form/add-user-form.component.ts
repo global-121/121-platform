@@ -111,21 +111,21 @@ export class AddUserFormComponent {
 
   userMutation = injectMutation(() => ({
     mutationFn: ({
+      displayNameValue,
       usernameValue,
-      emailValue,
     }: {
+      displayNameValue: string;
       usernameValue: string;
-      emailValue: string;
     }) => {
       if (this.isEditing()) {
         return this.userApiService.udpateUserDisplayName({
           id: this.userToEdit()?.id,
-          displayName: usernameValue,
+          displayName: displayNameValue,
         });
       }
       return this.userApiService.createUser({
-        username: emailValue,
-        displayName: usernameValue,
+        username: usernameValue,
+        displayName: displayNameValue,
       });
     },
     onSuccess: () => {
