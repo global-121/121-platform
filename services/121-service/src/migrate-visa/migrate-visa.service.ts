@@ -151,7 +151,6 @@ export class MigrateVisaService {
     // Process pre-activation values of wallets to be able to transfer them to parent wallets in case of INACTIVE wallets
     const preActivationValuesMap = await this.processPreActivationValuesCsvFile(
       csvFileWithPreActivationValues,
-      limit,
     );
 
     console.time(`Migrating program ${programId}`);
@@ -214,11 +213,9 @@ export class MigrateVisaService {
 
   private async processPreActivationValuesCsvFile(
     csvFileWithPreActivationValues: Blob,
-    limit: number,
   ): Promise<Map<string, number>> {
     const preActivationValueRecords = (await this.fileImportService.validateCsv(
       csvFileWithPreActivationValues,
-      limit, // ##TODO does limit make sense here?
     )) as PreActivationValueRecord[];
     // Convert to map for performance reasons
     const preActivationValuesMap = new Map(
@@ -478,30 +475,6 @@ export class MigrateVisaService {
     );
   }
 
-  // We intend to no longer use this, but instead get the pre-activation value from the csv file
-  // private async getPreActivationValueOfOriginalWallet(
-  //   tokenCode: string | null,
-  //   queryRunner: QueryRunner,
-  // ): Promise<any[]> {
-  //   // 1. make use of fact that tokenCode is stored in transaction.customData and is still available during this migration
-  //   // 2. get the first payment number with the tokenCode
-  //   // 3. filter on only success transactions
-  //   // 4. join back on itself to get transaction amount
-  //   return queryRunner.query(
-  //     `select "tokenCode", amount
-  //     from "transaction" t
-  //     inner join (
-  //       select ivw."tokenCode"
-  //         ,min(t.payment) as "minPayment"
-  //       from intersolve_visa_wallet ivw
-  //       left join "transaction" t on ivw."tokenCode" = t."customData"->>'intersolveVisaWalletTokenCode'
-  //       where t."customData"->>'intersolveVisaWalletTokenCode' = ${tokenCode}
-  //       group by ivw."tokenCode"
-  //     ) "minPayment"
-  //     on t."customData"->>'intersolveVisaWalletTokenCode' = "minPayment"."tokenCode" and t.payment = "minPayment"."minPayment" and t.status = 'success'`,
-  //   );
-  // }
-
   private formatErrors(errors: unknown): string {
     return errors
       ? Object.values(errors)
@@ -677,7 +650,7 @@ export class MigrateVisaService {
   }
 
   public async postTransfer(
-    parentTokenCode: string | null,
+    parentTokenCode: string,
     amountInCent: number,
   ): Promise<{
     data: {
