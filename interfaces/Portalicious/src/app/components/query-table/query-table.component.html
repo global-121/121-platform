@@ -25,29 +25,53 @@
   [dataKey]="'id'"
 >
   <ng-template pTemplate="caption">
-    <div class="flex">
-      @if (globalFilterFields() || serverSideFiltering()) {
-        <p-iconField iconPosition="left">
-          <p-inputIcon styleClass="pi pi-search" />
-          <input
-            pInputText
-            type="text"
-            [(ngModel)]="globalFilterValue"
-            (input)="table.filterGlobal(globalFilterValue(), 'contains')"
-            placeholder="Filter by keyword"
-            i18n-placeholder="@@table-quick-search"
-          />
-        </p-iconField>
-      }
+    <div class="flex items-center justify-end gap-4">
       @if (isFiltered()) {
         <p-button
           label="Clear all filters"
           i18n-label="@@table-clear-filters"
           [outlined]="true"
+          rounded
+          severity="secondary"
           icon="pi pi-filter-slash"
           (onClick)="clearAllFilters()"
-          class="ms-auto"
         />
+      }
+      @if (globalFilterFields() || serverSideFiltering()) {
+        <div #globalFilterContainer>
+          @if (globalFilterVisible() || !!globalFilterValue()) {
+            <p-iconField
+              iconPosition="left"
+              pAutoFocus
+              [autofocus]="true"
+            >
+              <p-inputIcon styleClass="pi pi-search" />
+              <input
+                pInputText
+                type="text"
+                [(ngModel)]="globalFilterValue"
+                (input)="table.filterGlobal(globalFilterValue(), 'contains')"
+                placeholder="Filter by keyword"
+                i18n-placeholder="@@table-quick-search"
+              />
+              <p-button
+                icon="pi pi-times"
+                (onClick)="table.filterGlobal(undefined, 'contains')"
+                text
+                severity="secondary"
+                class="absolute right-0 top-1/2 -translate-y-1/2"
+                styleClass="bg-transparent hover:text-purple-700"
+              />
+            </p-iconField>
+          } @else {
+            <p-button
+              icon="pi pi-search"
+              (onClick)="globalFilterVisible.set(true)"
+              text
+              severity="secondary"
+            />
+          }
+        </div>
       }
     </div>
   </ng-template>
