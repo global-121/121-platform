@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
-import { Repository } from 'typeorm';
 
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -11,7 +11,6 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 const programId = 1;
 
@@ -88,7 +87,7 @@ function getViewRegistration(): RegistrationViewEntity {
   } as unknown as RegistrationViewEntity;
 }
 
-let eventScopedRepository: jest.Mocked<Repository<EventEntity>>;
+let eventRepository: jest.Mocked<EventScopedRepository>;
 let oldViewRegistration: RegistrationViewEntity;
 let newViewRegistration: RegistrationViewEntity;
 
@@ -98,16 +97,14 @@ describe('EventsService', () => {
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(EventsService).compile();
-    eventScopedRepository = unitRef.get(
-      getScopedRepositoryProviderName(EventEntity),
-    );
+    eventRepository = unitRef.get(EventScopedRepository);
     userService = unitRef.get(UserService);
     eventsService = unit;
     // Mock request user id
     eventsService['request']['user']!['id'] = 2;
 
     jest
-      .spyOn(eventScopedRepository, 'find')
+      .spyOn(eventRepository, 'getManyByProgramIdAndSearchOptions')
       .mockResolvedValue(mockFindEventResult);
 
     jest.spyOn(userService, 'findById').mockResolvedValue({
@@ -175,7 +172,7 @@ describe('EventsService', () => {
     });
 
     // Assert
-    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    expect(eventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
@@ -190,7 +187,7 @@ describe('EventsService', () => {
       },
     ];
 
-    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
       chunk: 2000,
     });
   });
@@ -215,7 +212,7 @@ describe('EventsService', () => {
     await eventsService.log(oldViewRegistration, newViewRegistration);
 
     // Assert
-    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    expect(eventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
@@ -293,7 +290,7 @@ describe('EventsService', () => {
     ];
 
     for (const event of expectedEvents) {
-      expect(eventScopedRepository.save).not.toHaveBeenCalledWith(
+      expect(eventRepository.save).not.toHaveBeenCalledWith(
         expect.objectContaining({
           registrationId: event.registrationId,
           type: event.type,
@@ -304,7 +301,7 @@ describe('EventsService', () => {
       );
     }
     // Assert that the intersolveVoucherWhatsapp change is not logged
-    expect(eventScopedRepository.save).not.toHaveBeenCalledWith(
+    expect(eventRepository.save).not.toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
           attributes: expect.arrayContaining([
@@ -330,7 +327,7 @@ describe('EventsService', () => {
     });
 
     // Assert
-    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    expect(eventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
@@ -354,7 +351,7 @@ describe('EventsService', () => {
         userId: 2,
       },
     ];
-    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
       chunk: 2000,
     });
   });
@@ -370,7 +367,7 @@ describe('EventsService', () => {
     });
 
     // Assert
-    expect(eventScopedRepository.save).toHaveBeenCalledTimes(1);
+    expect(eventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
@@ -392,7 +389,7 @@ describe('EventsService', () => {
         userId: 2,
       },
     ];
-    expect(eventScopedRepository.save).toHaveBeenCalledWith(expectedEvents, {
+    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
       chunk: 2000,
     });
   });

@@ -11,14 +11,14 @@ export class ActivitiesDto {
   data: ActivityType[];
 }
 
-export type ActivityType =
+type ActivityType =
   | DataChangeActivity
   | MessageActivity
   | NoteActivity
   | StatusChangeActivity
   | TransactionActivity;
 
-export enum ActivityTypeEnum {
+enum ActivityTypeEnum {
   Transaction = 'transaction',
   Message = 'message',
   Note = 'note',
@@ -38,7 +38,7 @@ interface BaseActivity {
   attributes: Record<string, unknown>;
 }
 
-export interface TransactionActivity extends BaseActivity {
+interface TransactionActivity extends BaseActivity {
   type: ActivityTypeEnum.Transaction;
   attributes: {
     payment: number;
@@ -52,14 +52,14 @@ export interface TransactionActivity extends BaseActivity {
   };
 }
 
-export interface NoteActivity extends BaseActivity {
+interface NoteActivity extends BaseActivity {
   type: ActivityTypeEnum.Note;
   attributes: {
     text: string; // The note content
   };
 }
 
-export interface MessageActivity extends BaseActivity {
+interface MessageActivity extends BaseActivity {
   type: ActivityTypeEnum.Message;
   attributes: {
     from: string;
@@ -73,7 +73,7 @@ export interface MessageActivity extends BaseActivity {
   };
 }
 
-export interface StatusChangeActivity extends BaseActivity {
+interface StatusChangeActivity extends BaseActivity {
   type: ActivityTypeEnum.StatusChange;
   attributes: {
     oldValue: RegistrationStatusEnum;
@@ -81,7 +81,7 @@ export interface StatusChangeActivity extends BaseActivity {
   };
 }
 
-export interface DataChangeActivity extends BaseActivity {
+interface DataChangeActivity extends BaseActivity {
   type: ActivityTypeEnum.DataChange;
   attributes: {
     fieldName: string;
