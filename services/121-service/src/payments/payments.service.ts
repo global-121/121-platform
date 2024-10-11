@@ -193,7 +193,7 @@ export class PaymentsService {
         count: 0,
         amount: 0,
       },
-      error: totalAmountPerStatus[TransactionStatusEnum.error] || {
+      failed: totalAmountPerStatus[TransactionStatusEnum.error] || {
         count: 0,
         amount: 0,
       },

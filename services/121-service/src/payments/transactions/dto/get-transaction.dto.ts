@@ -47,5 +47,5 @@ export class PaymentReturnDto {
   waiting: { count: number; amount: number };
 
   @ApiProperty({ example: { count: 3, amount: 75 }, type: 'object' })
-  error: { count: number; amount: number };
+  failed: { count: number; amount: number };
 }

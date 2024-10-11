@@ -27,7 +27,7 @@ export class Transaction {
 export class PaymentSummary {
   success: { count: number; amount: number };
   waiting: { count: number; amount: number };
-  error: { count: number; amount: number };
+  failed: { count: number; amount: number };
 }
 
 export class ProgramPaymentsStatus {
