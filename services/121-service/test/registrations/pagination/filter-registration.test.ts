@@ -166,10 +166,9 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(1);
     });
 
-    it('should filter using a referenceId string that could be interpreted as number', async () => {
+    it('should filter with $eq using a referenceId string that could be interpreted as number', async () => {
       // Arrange
       const referenceIdInterpretableAsNumber = '651581942751358e5'; // A just-number string like '1234567890' is somehow not sufficiently covering the edge case, as this would not lead to the same bug prior to bugfix AB#30713
-      // Don't update existing registration, because updating referenceId is not preferable, and it messes up the other tests in this file
       const newRegistration = structuredClone(registrationOCW1);
       newRegistration.referenceId = referenceIdInterpretableAsNumber;
       await importRegistrations(programIdOCW, [newRegistration], accessToken);
@@ -180,6 +179,50 @@ describe('Load PA table', () => {
         accessToken,
         filter: {
           'filter.referenceId': `$eq:${referenceIdInterpretableAsNumber}`,
+        },
+      });
+      const meta = getRegistrationsResponse.body.meta;
+
+      // Assert
+      expect(getRegistrationsResponse.status).toBe(200);
+      expect(meta.totalItems).toBe(1);
+    });
+
+    it('should filter with $ilike using a referenceId string that could be interpreted as number', async () => {
+      // Arrange
+      const referenceIdInterpretableAsNumber = '751581942751358e5';
+      const newRegistration = structuredClone(registrationOCW1);
+      newRegistration.referenceId = referenceIdInterpretableAsNumber;
+      await importRegistrations(programIdOCW, [newRegistration], accessToken);
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.referenceId': `$ilike:${referenceIdInterpretableAsNumber}`,
+        },
+      });
+      const meta = getRegistrationsResponse.body.meta;
+
+      // Assert
+      expect(getRegistrationsResponse.status).toBe(200);
+      expect(meta.totalItems).toBe(1);
+    });
+
+    it('should filter with $in using a referenceId string that could be interpreted as number', async () => {
+      // Arrange
+      const referenceIdInterpretableAsNumber = '851581942751358e5';
+      const newRegistration = structuredClone(registrationOCW1);
+      newRegistration.referenceId = referenceIdInterpretableAsNumber;
+      await importRegistrations(programIdOCW, [newRegistration], accessToken);
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.referenceId': `$in:${referenceIdInterpretableAsNumber}`,
         },
       });
       const meta = getRegistrationsResponse.body.meta;
