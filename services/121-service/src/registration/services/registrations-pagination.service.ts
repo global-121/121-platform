@@ -31,6 +31,7 @@ import {
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
 } from '@121-service/src/registration/const/filter-operation.const';
+import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
   RegistrationDataInfo,
@@ -70,7 +71,7 @@ export class RegistrationsPaginationService {
     hasPersonalReadPermission: boolean,
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
-  ) {
+  ): Promise<FindAllRegistrationsResultDto> {
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
 

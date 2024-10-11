@@ -1,5 +1,6 @@
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -7,6 +8,8 @@ import { Dto } from '~/utils/dto-type';
 
 // TODO: AB#30152 This type should be refactored to use Dto121Service
 export type Registration = Dto<MappedPaginatedRegistrationDto>;
+// TODO: AB#30152 This type should be refactored to use Dto121Service
+export type FindAllRegistrationsResult = Dto<FindAllRegistrationsResultDto>;
 
 // We add the overview property to the ActivityLogItem type to be able to
 // display a summary of the activity log item in the activity log table and make it searchable/filterable
