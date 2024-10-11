@@ -678,7 +678,7 @@ export class MigrateVisaService {
 
   public async postTransfer(
     parentTokenCode: string | null,
-    amountInMajorUnit: number,
+    amountInCent: number,
   ): Promise<{
     data: {
       success?: boolean;
@@ -699,7 +699,6 @@ export class MigrateVisaService {
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
     ];
 
-    const amountInCent = amountInMajorUnit * 100;
     const payload = {
       quantity: {
         value: amountInCent,
@@ -708,7 +707,7 @@ export class MigrateVisaService {
       creditor: {
         tokenCode: parentTokenCode,
       },
-      reference: `ParentTokenCode=${parentTokenCode},OneTimeMigration`,
+      reference: `ParentTokenCode=${parentTokenCode}`, // Should be 50 characters or less!
       operationReference: uuid(), // Required to pass in a UUID, which needs be unique for all transfers. Is used as idempotency key.
     };
 
