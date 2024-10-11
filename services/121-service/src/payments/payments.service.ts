@@ -173,26 +173,30 @@ export class PaymentsService {
       programId,
       payment,
     );
+    const totalAmountPerStatus = statusAggregation.reduce(
+      (acc, row) => {
+        acc[row.status] = {
+          count: (acc[row.status]?.count || 0) + Number(row.count || 0),
+          amount: (acc[row.status]?.amount || 0) + (row.totalamount || 0),
+        };
+        return acc;
+      },
+      {} as Record<string, { count: number; amount: number }>,
+    );
+
     return {
-      nrSuccess:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.success,
-        )?.count || 0,
-      nrWaiting:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.waiting,
-        )?.count || 0,
-      nrError:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.error,
-        )?.count || 0,
-      totalAmountPerStatus: statusAggregation.reduce(
-        (acc, row) => {
-          acc[row.status] = (acc[row.status] || 0) + (row.totalamount || 0);
-          return acc;
-        },
-        {} as Record<string, number>,
-      ),
+      success: totalAmountPerStatus[TransactionStatusEnum.success] || {
+        count: 0,
+        amount: 0,
+      },
+      waiting: totalAmountPerStatus[TransactionStatusEnum.waiting] || {
+        count: 0,
+        amount: 0,
+      },
+      error: totalAmountPerStatus[TransactionStatusEnum.error] || {
+        count: 0,
+        amount: 0,
+      },
     };
   }
 

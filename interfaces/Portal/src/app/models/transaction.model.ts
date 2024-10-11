@@ -25,9 +25,9 @@ export class Transaction {
 }
 
 export class PaymentSummary {
-  nrSuccess: number;
-  nrWaiting: number;
-  nrError: number;
+  success: { count: number; amount: number };
+  waiting: { count: number; amount: number };
+  error: { count: number; amount: number };
 }
 
 export class ProgramPaymentsStatus {

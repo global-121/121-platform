@@ -40,15 +40,12 @@ export class AuditedTransactionReturnDto extends TransactionReturnDto {
 }
 
 export class PaymentReturnDto {
-  @ApiProperty({ example: 2, type: 'number' })
-  nrSuccess: number;
-  @ApiProperty({ example: 2, type: 'number' })
-  nrWaiting: number;
-  @ApiProperty({ example: 2, type: 'number' })
-  nrError: number;
-  @ApiProperty({
-    example: { success: 819200, waiting: 0, error: 0 },
-    type: 'object',
-  })
-  totalAmountPerStatus: Record<string, number>;
+  @ApiProperty({ example: { count: 0, amount: 0 }, type: 'object' })
+  success: { count: number; amount: number };
+
+  @ApiProperty({ example: { count: 0, amount: 0 }, type: 'object' })
+  waiting: { count: number; amount: number };
+
+  @ApiProperty({ example: { count: 3, amount: 75 }, type: 'object' })
+  error: { count: number; amount: number };
 }
