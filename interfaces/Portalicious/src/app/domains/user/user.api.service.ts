@@ -63,6 +63,53 @@ export class UserApiService extends DomainApiService {
   getAllUsers() {
     return this.generateQueryOptions<User[]>({
       path: [BASE_ENDPOINT],
+      queryKey: [BASE_ENDPOINT],
+    });
+  }
+
+  createUser({
+    username,
+    displayName,
+  }: {
+    username: string;
+    displayName: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<User>({
+      method: 'POST',
+      endpoint: BASE_ENDPOINT,
+      body: {
+        users: [
+          {
+            username,
+            displayName,
+          },
+        ],
+      },
+    });
+  }
+
+  udpateUserDisplayName({
+    id,
+    displayName,
+  }: {
+    id: number | undefined;
+    displayName: string;
+  }) {
+    if (!id) {
+      return Promise.reject(new Error('User ID is required'));
+    }
+    return this.httpWrapperService.perform121ServiceRequest<User>({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${id.toString()}`,
+      body: {
+        displayName,
+      },
+    });
+  }
+
+  public invalidateCache(): Promise<void> {
+    return this.queryClient.invalidateQueries({
+      queryKey: [BASE_ENDPOINT],
     });
   }
 }
