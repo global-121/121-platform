@@ -29,6 +29,7 @@
       [contextMenuItems]="contextMenuItems()"
       (onUpdateContextMenuItem)="selectedUser.set($event)"
       [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
+      [initialSortField]="'username'"
     />
   </p-card>
 </app-page-layout>

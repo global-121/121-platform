@@ -10,6 +10,7 @@
   [filterDelay]="serverSideFiltering() ? 500 : 0"
   [filterLocale]="locale"
   [rowHover]="contextMenuItems()"
+  [sortField]="initialSortField()"
   [contextMenu]="contextMenu"
   (contextMenuSelectionChange)="onUpdateContextMenuItem.emit($event)"
   [globalFilterFields]="globalFilterFields()"
@@ -47,21 +48,26 @@
             >
               <p-inputIcon styleClass="pi pi-search" />
               <input
+                #globalFilterInput
                 pInputText
                 type="text"
-                [(ngModel)]="globalFilterValue"
-                (input)="table.filterGlobal(globalFilterValue(), 'contains')"
+                [value]="globalFilterValue() ?? ''"
+                (input)="
+                  table.filterGlobal(globalFilterInput.value, 'contains')
+                "
                 placeholder="Filter by keyword"
                 i18n-placeholder="@@table-quick-search"
               />
-              <p-button
-                icon="pi pi-times"
-                (onClick)="table.filterGlobal(undefined, 'contains')"
-                text
-                severity="secondary"
-                class="absolute right-0 top-1/2 -translate-y-1/2"
-                styleClass="bg-transparent hover:text-purple-700"
-              />
+              @if (globalFilterValue()) {
+                <p-button
+                  icon="pi pi-times"
+                  (onClick)="table.filterGlobal(undefined, 'contains')"
+                  text
+                  severity="secondary"
+                  class="absolute end-0 top-1/2 -translate-y-1/2"
+                  styleClass="bg-transparent hover:text-purple-700"
+                />
+              }
             </p-iconField>
           } @else {
             <p-button
@@ -158,7 +164,7 @@
       }
       @if (contextMenuItems()) {
         <!-- Extra column for the ellipsis button -->
-        <th></th>
+        <th i18n>Actions</th>
       }
     </tr>
   </ng-template>
@@ -227,7 +233,7 @@
         </td>
       }
       @if (contextMenuItems()) {
-        <td class="w-0 py-0 ps-0">
+        <td class="w-0 py-0 pe-2 text-end">
           <p-button
             text
             plain

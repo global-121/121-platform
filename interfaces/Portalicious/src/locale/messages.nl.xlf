@@ -127,10 +127,6 @@
         <source>E-mail</source>
         <target state="final">E-mail</target>
       </trans-unit>
-      <trans-unit id="5393972837576333232" datatype="html">
-        <source>example: yourname@example.org</source>
-        <target state="translated">bijv.: uwnaam@example.nl</target>
-      </trans-unit>
       <trans-unit id="8938510541215036054" datatype="html">
         <source>Enter a valid email address</source>
         <target state="translated">Vul een geldig e-mailadres in</target>
@@ -823,18 +819,6 @@
         <source>Card successfully replaced</source>
         <target state="new">Card successfully replaced</target>
       </trans-unit>
-      <trans-unit id="6553913710509292194" datatype="html">
-        <source>Role name</source>
-        <target state="new">Role name</target>
-      </trans-unit>
-      <trans-unit id="7073019979553772020" datatype="html">
-        <source>Role label</source>
-        <target state="new">Role label</target>
-      </trans-unit>
-      <trans-unit id="6751038926528230759" datatype="html">
-        <source>Role description</source>
-        <target state="new">Role description</target>
-      </trans-unit>
       <trans-unit id="7739650586737813677" datatype="html">
         <source>All Registrations</source>
         <target state="new">All Registrations</target>
@@ -891,13 +875,37 @@
         <source>PA #</source>
         <target state="new">PA #</target>
       </trans-unit>
-      <trans-unit id="2590833001810330604" datatype="html">
-        <source>User email</source>
-        <target state="new">User email</target>
-      </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
         <target state="new">Add user</target>
+      </trans-unit>
+      <trans-unit id="3193976279273491157" datatype="html">
+        <source>Actions</source>
+        <target state="new">Actions</target>
+      </trans-unit>
+      <trans-unit id="138735154290622738" datatype="html">
+        <source>yourname@example.org</source>
+        <target state="new">yourname@example.org</target>
+      </trans-unit>
+      <trans-unit id="4145496584631696119" datatype="html">
+        <source>Role</source>
+        <target state="new">Role</target>
+      </trans-unit>
+      <trans-unit id="4902817035128594900" datatype="html">
+        <source>Description</source>
+        <target state="new">Description</target>
+      </trans-unit>
+      <trans-unit id="8301535046747035390" datatype="html">
+        <source>Full name</source>
+        <target state="new">Full name</target>
+      </trans-unit>
+      <trans-unit id="6255566478374242100" datatype="html">
+        <source>Firstname Lastname</source>
+        <target state="new">Firstname Lastname</target>
+      </trans-unit>
+      <trans-unit id="8182296119853145202" datatype="html">
+        <source>username@example.org</source>
+        <target state="new">username@example.org</target>
       </trans-unit>
     </body>
   </file>
