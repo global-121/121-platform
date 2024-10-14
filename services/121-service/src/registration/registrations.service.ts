@@ -873,6 +873,10 @@ export class RegistrationsService {
     value: any,
     userId: number,
   ): Promise<void> {
+    if (attributeName === 'referenceId') {
+      const errors = `Cannot update referenceId`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
     const attributeDto: UpdateAttributeDto = {
       referenceId,
       attribute: attributeName,
