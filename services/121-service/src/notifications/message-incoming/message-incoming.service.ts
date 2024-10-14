@@ -514,10 +514,6 @@ export class MessageIncomingService {
               ProgramNotificationEnum.whatsappVoucher,
               language,
             );
-          console.log(
-            '🚀 ~ MessageIncomingService ~ forawait ~ foundMessageTemplateText:',
-            foundMessageTemplateText,
-          );
           if (foundMessageTemplateText) {
             message = foundMessageTemplateText;
             message = message
