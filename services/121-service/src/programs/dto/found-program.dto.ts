@@ -6,6 +6,4 @@ export interface FoundProgramDto
       ProgramEntity,
       'monitoringDashboardUrl' | 'programFspConfiguration'
     >,
-    Partial<
-      Pick<ProgramEntity, 'monitoringDashboardUrl' | 'programFspConfiguration'>
-    > {}
+    Partial<Pick<ProgramEntity, 'monitoringDashboardUrl'>> {}

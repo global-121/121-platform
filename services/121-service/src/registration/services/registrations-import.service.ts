@@ -6,13 +6,9 @@ import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
   ImportRegistrationsDto,
@@ -22,19 +18,17 @@ import { RegistrationDataInfo } from '@121-service/src/registration/dto/registra
 import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-registration-config.dto';
 import {
-  AnswerTypes,
-  Attribute,
   AttributeWithOptionalLabel,
-  GenericAttributes,
-  QuestionType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.service';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -45,14 +39,8 @@ const MASS_UPDATE_ROW_LIMIT = 100000;
 
 @Injectable()
 export class RegistrationsImportService {
-  @InjectRepository(ProgramQuestionEntity)
-  private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(ProgramRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
@@ -66,6 +54,7 @@ export class RegistrationsImportService {
     private readonly eventsService: EventsService,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
+    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
 
   public async patchBulk(
@@ -128,10 +117,10 @@ export class RegistrationsImportService {
     programId: number,
   ): Promise<string[]> {
     const genericAttributes: string[] = [
-      GenericAttributes.referenceId,
-      GenericAttributes.fspName,
-      GenericAttributes.phoneNumber,
-      GenericAttributes.preferredLanguage,
+      GenericRegistrationAttributes.referenceId,
+      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+      GenericRegistrationAttributes.phoneNumber,
+      GenericRegistrationAttributes.preferredLanguage,
     ];
     const dynamicAttributes: string[] = (
       await this.getDynamicAttributes(programId)
@@ -142,13 +131,15 @@ export class RegistrationsImportService {
     });
     // If paymentAmountMultiplier automatic, then drop from template
     if (!program.paymentAmountMultiplierFormula) {
-      genericAttributes.push(String(GenericAttributes.paymentAmountMultiplier));
+      genericAttributes.push(
+        String(GenericRegistrationAttributes.paymentAmountMultiplier),
+      );
     }
     if (program.enableMaxPayments) {
-      genericAttributes.push(String(GenericAttributes.maxPayments));
+      genericAttributes.push(String(GenericRegistrationAttributes.maxPayments));
     }
     if (program.enableScope) {
-      genericAttributes.push(String(GenericAttributes.scope));
+      genericAttributes.push(String(GenericRegistrationAttributes.scope));
     }
 
     const attributes = genericAttributes.concat(dynamicAttributes);
@@ -201,7 +192,7 @@ export class RegistrationsImportService {
         registration.scope = record.scope || '';
       }
       for await (const att of dynamicAttributes) {
-        if (att.type === CustomAttributeType.boolean) {
+        if (att.type === RegistrationAttributeTypes.boolean) {
           customData[att.name] =
             RegistrationsInputValidatorHelpers.stringToBoolean(
               record[att.name],
@@ -211,10 +202,19 @@ export class RegistrationsImportService {
           customData[att.name] = record[att.name];
         }
       }
-      const fsp = await this.fspRepository.findOneOrFail({
-        where: { fsp: Equal(record.fspName) },
-      });
-      registration.fsp = fsp;
+
+      const programFinancialServiceProviderConfiguration =
+        await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+          {
+            where: {
+              name: Equal(
+                record.programFinancialServiceProviderConfigurationName,
+              ),
+            },
+          },
+        );
+      registration.programFinancialServiceProviderConfiguration =
+        programFinancialServiceProviderConfiguration;
       registrations.push(registration);
       customDataList.push(customData);
     }
@@ -243,7 +243,7 @@ export class RegistrationsImportService {
     // Save registration data in bulk for performance
     const dynamicAttributeRelations =
       await this.programService.getAllRelationProgram(program.id);
-    let registrationDataArrayAllPa: RegistrationDataEntity[] = [];
+    let registrationDataArrayAllPa: RegistrationAttributeDataEntity[] = [];
     for (const [i, registration] of savedRegistrations.entries()) {
       const registrationDataArray = this.prepareRegistrationData(
         registration,
@@ -287,13 +287,17 @@ export class RegistrationsImportService {
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {
-    const programQuestions = await this.programQuestionRepository.find({
-      where: {
-        programId: Equal(programId),
-      },
-    });
-    for (const q of programQuestions) {
-      if (q.scoring != null && JSON.stringify(q.scoring) !== '{}') {
+    const programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: {
+          programId: Equal(programId),
+        },
+      });
+    for (const attribute of programRegistrationAttributes) {
+      if (
+        attribute.scoring != null &&
+        JSON.stringify(attribute.scoring) !== '{}'
+      ) {
         return true;
       }
     }
@@ -304,40 +308,33 @@ export class RegistrationsImportService {
     registration: RegistrationEntity,
     customData: object,
     dynamicAttributeRelations: RegistrationDataInfo[],
-  ): RegistrationDataEntity[] {
-    const registrationDataArray: RegistrationDataEntity[] = [];
+  ): RegistrationAttributeDataEntity[] {
+    const registrationDataArray: RegistrationAttributeDataEntity[] = [];
     for (const att of dynamicAttributeRelations) {
-      if (att.relation.fspQuestionId && att.fspId !== registration.fspId) {
-        continue;
-      }
       let values: unknown[] = [];
-      if (att.type === CustomAttributeType.boolean) {
+      if (att.type === RegistrationAttributeTypes.boolean) {
         values.push(
           RegistrationsInputValidatorHelpers.stringToBoolean(
             customData[att.name],
             false,
           ),
         );
-      } else if (att.type === CustomAttributeType.text) {
+      } else if (att.type === RegistrationAttributeTypes.text) {
         values.push(customData[att.name] ? customData[att.name] : '');
-      } else if (att.type === AnswerTypes.multiSelect) {
+      } else if (att.type === RegistrationAttributeTypes.multiSelect) {
         values = customData[att.name].split('|');
       } else {
         values.push(customData[att.name]);
       }
       for (const value of values) {
-        if (value == null) {
-          throw new Error(`Missing value for attribute ${att.name}`);
+        if (value != null) {
+          const registrationData = new RegistrationAttributeDataEntity();
+          registrationData.registration = registration;
+          registrationData.value = value as string;
+          registrationData.programRegistrationAttributeId =
+            att.relation.programRegistrationAttributeId ?? null;
+          registrationDataArray.push(registrationData);
         }
-        const registrationData = new RegistrationDataEntity();
-        registrationData.registration = registration;
-        registrationData.value = value as string;
-        registrationData.programCustomAttributeId =
-          att.relation.programCustomAttributeId ?? null;
-        registrationData.programQuestionId =
-          att.relation.programQuestionId ?? null;
-        registrationData.fspQuestionId = att.relation.fspQuestionId ?? null;
-        registrationDataArray.push(registrationData);
       }
     }
     return registrationDataArray;
@@ -360,98 +357,23 @@ export class RegistrationsImportService {
     );
   }
 
-  private async getProgramCustomAttributes(
-    programId: number,
-  ): Promise<Attribute[]> {
-    return (
-      await this.programCustomAttributeRepository.find({
-        where: { program: { id: Equal(programId) } },
-      })
-    ).map((c) => {
-      return {
-        id: c.id,
-        name: c.name,
-        type: c.type,
-        label: c.label,
-        questionType: QuestionType.programCustomAttribute,
-      };
-    });
-  }
-
   private async getDynamicAttributes(
     programId: number,
   ): Promise<AttributeWithOptionalLabel[]> {
-    let attributes: (AttributeWithOptionalLabel & {
-      fspName?: FinancialServiceProviderName;
-    })[] = [];
-    const programCustomAttributes =
-      await this.getProgramCustomAttributes(programId);
-    attributes = [...attributes, ...programCustomAttributes];
-
-    const programQuestions = (
-      await this.programQuestionRepository.find({
+    const programRegistrationAttributes = (
+      await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
       })
-    ).map((c) => {
+    ).map((attribute) => {
       return {
-        id: c.id,
-        name: c.name,
-        type: c.answerType,
-        options: c.options,
-        questionType: QuestionType.programQuestion,
+        id: attribute.id,
+        name: attribute.name,
+        type: attribute.type,
+        options: attribute.options,
+        isRequired: attribute.isRequired,
       } as AttributeWithOptionalLabel;
     });
-    attributes = [...attributes, ...programQuestions];
-
-    const fspAttributes = await this.fspAttributeRepository.find({
-      relations: ['fsp', 'fsp.program'],
-    });
-    const programFspAttributes = fspAttributes
-      .filter((a) => a.fsp.program.map((p) => p.id).includes(programId))
-      .map((c) => {
-        return {
-          id: c.id,
-          name: c.name,
-          type: c.answerType,
-          fspName: c.fsp.fsp as FinancialServiceProviderName,
-          questionType: QuestionType.fspQuestion,
-        };
-      });
-    attributes = [...programFspAttributes.reverse(), ...attributes];
-
-    // deduplicate attributes and concatenate fsp names
-    const deduplicatedAttributes = attributes.reduce((acc, curr) => {
-      const existingAttribute = acc.find((a) => a.name === curr.name);
-      if (existingAttribute) {
-        if (curr.questionType) {
-          if (!existingAttribute.questionTypes) {
-            existingAttribute.questionTypes = [];
-          }
-
-          if (!existingAttribute.questionTypes.includes(curr.questionType)) {
-            existingAttribute.questionTypes.push(curr.questionType);
-          }
-        }
-
-        if (curr.fspName) {
-          if (!existingAttribute.fspNames) {
-            existingAttribute.fspNames = [];
-          }
-          existingAttribute.fspNames.push(curr.fspName);
-        }
-      } else {
-        acc.push({
-          id: curr.id,
-          name: curr.name,
-          type: curr.type,
-          options: curr.options,
-          fspNames: curr.fspName ? [curr.fspName] : [],
-          questionTypes: curr.questionType ? [curr.questionType] : [],
-        });
-      }
-      return acc;
-    }, [] as AttributeWithOptionalLabel[]);
-    return deduplicatedAttributes;
+    return programRegistrationAttributes;
   }
 
   public async validateImportAsRegisteredInput(

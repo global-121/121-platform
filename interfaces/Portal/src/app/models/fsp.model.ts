@@ -2,14 +2,20 @@ import FspName from '../enums/fsp-name.enum';
 import { Attribute } from './attribute.model';
 import { TranslatableString } from './translatable-string.model';
 
-export class Fsp {
+export class FinancialServiceProviderConfiguration {
   id: number;
-  fsp: FspName;
+  name: string;
   displayName: TranslatableString | string;
+  editableAttributes?: Attribute[];
+  financialServiceProviderName: FspName;
+  financialServiceProvider: FinancialServiceProvider;
+}
+
+export class FinancialServiceProvider {
   integrationType: FspIntegrationType;
   hasReconciliation: boolean;
-  questions?: FspQuestion[];
-  editableAttributes?: Attribute[];
+  notifyOnTransaction: boolean;
+  attributes: { name: string; required: boolean }[];
 }
 
 export enum AnswerType {

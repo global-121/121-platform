@@ -362,7 +362,9 @@ export class EventsService {
       'programId',
       'registrationCreated',
       'registrationCreatedDate',
-      'financialServiceProvider',
+      'financialServiceProviderName',
+      'programFinancialServiceProviderConfigurationId',
+      'programFinancialServiceProviderConfigurationName',
       'registrationProgramId',
       'personAffectedSequence',
       'lastMessageStatus',
@@ -376,7 +378,7 @@ export class EventsService {
 
   private getEventType(key: string): EventEnum {
     const financialServiceProviderKey: keyof RegistrationViewEntity =
-      'fspDisplayName';
+      'programFinancialServiceProviderConfigurationLabel';
     if (key === financialServiceProviderKey) {
       return EventEnum.financialServiceProviderChange;
     }

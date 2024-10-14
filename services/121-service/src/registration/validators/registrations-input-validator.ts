@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
   BulkImportDto,
@@ -15,13 +16,10 @@ import { AdditionalAttributes } from '@121-service/src/registration/dto/update-r
 import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-registration-config.dto';
 import { ValidateRegistrationErrorObjectDto } from '@121-service/src/registration/dto/validate-registration-error-object.dto';
 import {
-  AnswerTypes,
-  Attribute,
   AttributeWithOptionalLabel,
-  CustomAttributeType,
-  GenericAttributes,
-  QuestionType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
@@ -60,8 +58,9 @@ export class RegistrationsInputValidator {
       this.validateUniqueReferenceIds(csvArray);
     }
 
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      relations: ['programFinancialServiceProviderConfigurations'],
     });
 
     const languageMapping = this.createLanguageMapping(
@@ -86,7 +85,14 @@ export class RegistrationsInputValidator {
        * Add default registration attributes without custom validation
        * =============================================================
        */
-      importRecord.fspName = row.fspName;
+      importRecord.programFinancialServiceProviderConfigurationName =
+        row.programFinancialServiceProviderConfigurationName;
+      // ##TODO add validation to check if the financialServiceProvider is valid and the required attributes are present (only for import not bulk update)
+      const requiredAttributesForFsp = this.getRequiredAttributesForFsp(
+        importRecord.programFinancialServiceProviderConfigurationName,
+        program.programFinancialServiceProviderConfigurations,
+      );
+
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
           ? +row.paymentAmountMultiplier
@@ -156,12 +162,9 @@ export class RegistrationsInputValidator {
        */
 
       // Filter dynamic atttributes that are not relevant for this fsp if question is only fsp specific
-      const dynamicAttributesForFsp = dynamicAttributes.filter((att) =>
-        this.isDynamicAttributeForFsp(att, row.fspName),
-      );
 
       await Promise.all(
-        dynamicAttributesForFsp.map(async (att) => {
+        dynamicAttributes.map(async (att) => {
           // Skip validation if the attribute is not present in the row and it is a bulk update because you do not have to update all attributes in a bulk update
           if (
             typeOfInput === RegistrationCsvValidationEnum.bulkUpdate &&
@@ -169,8 +172,11 @@ export class RegistrationsInputValidator {
           ) {
             return;
           }
+          if (!att.isRequired && row[att.name] == null) {
+            return;
+          }
 
-          if (att.type === AnswerTypes.tel) {
+          if (att.type === RegistrationAttributeTypes.tel) {
             /*
              * ==================================================================
              * If an attribute is a phone number, validate it using Twilio lookup
@@ -196,7 +202,7 @@ export class RegistrationsInputValidator {
             return;
           }
 
-          if (att.type === AnswerTypes.dropdown) {
+          if (att.type === RegistrationAttributeTypes.dropdown) {
             const optionNames = att.options
               ? att.options?.map((option) => option.option)
               : [];
@@ -450,7 +456,7 @@ export class RegistrationsInputValidator {
       if (registration) {
         return {
           lineNumber: i + 1,
-          column: GenericAttributes.referenceId,
+          column: GenericRegistrationAttributes.referenceId,
           value: row.referenceId,
           error: 'referenceId already exists in database',
         };
@@ -466,42 +472,32 @@ export class RegistrationsInputValidator {
     if (!row.phoneNumber && validationConfig.validatePhoneNumberEmpty) {
       return {
         lineNumber: i + 1,
-        column: GenericAttributes.phoneNumber,
+        column: GenericRegistrationAttributes.phoneNumber,
         value: row.phoneNumber,
         error: 'PhoneNumber is not allowed to be empty',
       };
     }
   }
 
-  private isDynamicAttributeForFsp(
-    attribute: Attribute | AttributeWithOptionalLabel,
-    fspName: FinancialServiceProviderName,
-  ): boolean {
-    // If the CSV does not have fspName all attributes may be relevant because a bulk PATCH may be for multiple FSPs
-    if (!fspName) {
-      return true;
+  private getRequiredAttributesForFsp(
+    programFinancialServiceProviderConfigurationName: string,
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+  ): string[] {
+    const fspName = programFinancialServiceProviderConfigurations.find(
+      (programFspConfig) =>
+        programFspConfig.name ===
+        programFinancialServiceProviderConfigurationName,
+    )?.financialServiceProviderName;
+    const foundFsp = FINANCIAL_SERVICE_PROVIDERS.find(
+      (fsp) => fsp.name === fspName,
+    );
+    if (!foundFsp) {
+      return [];
     }
-    if (
-      attribute.questionTypes &&
-      (attribute.questionTypes.length > 1 ||
-        attribute.questionTypes[0] !== QuestionType.fspQuestion)
-    ) {
-      // The attribute has multiple question types or is not FSP-specific
-      return true;
-    }
-
-    if (
-      attribute.questionTypes &&
-      attribute.questionTypes.length === 1 &&
-      attribute.questionTypes[0] === QuestionType.fspQuestion &&
-      attribute.fspNames?.includes(fspName)
-    ) {
-      // The attribute has a single question type that is FSP-specific and is relevant for the FSP of this registration
-      return true;
-    }
-
-    // The attribute is not relevant
-    return false;
+    const requiredAttributes = foundFsp.attributes.filter(
+      (attribute) => attribute.isRequired,
+    );
+    return requiredAttributes.map((attribute) => attribute.name);
   }
 
   private async validateLookupPhoneNumber(
@@ -553,14 +549,14 @@ export class RegistrationsInputValidator {
     type: string,
   ): number | boolean | string | null {
     switch (type) {
-      case AnswerTypes.numeric:
+      case RegistrationAttributeTypes.numeric:
         if (value == null) {
           return null;
         }
         // Convert the value to a number and return it
         // If the value is not a number, return null
         return isNaN(Number(value)) ? null : Number(value);
-      case CustomAttributeType.boolean:
+      case RegistrationAttributeTypes.boolean:
         // Convert the value to a boolean and return it
         // If the value is not a boolean, return null
         const convertedValue =

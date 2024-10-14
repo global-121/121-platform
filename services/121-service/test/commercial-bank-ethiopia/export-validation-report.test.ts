@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -20,7 +20,8 @@ describe('Export CBE validation report', () => {
     phoneNumber: '14155238886',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
-    fspName: FinancialServiceProviderName.commercialBankEthiopia,
+    programFinancialServiceProviderConfigurationName:
+      FinancialServiceProviders.commercialBankEthiopia,
     maxPayments: 3,
     fullName: 'ANDUALEM MOHAMMED YIMER',
     idNumber: '39231855170',
