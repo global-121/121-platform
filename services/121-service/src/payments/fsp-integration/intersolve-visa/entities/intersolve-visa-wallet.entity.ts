@@ -4,7 +4,8 @@ import { Base121Entity } from '@121-service/src/base.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
 
-enum IntersolveVisaWalletStatus {
+// Export this to use in migrate-visa.service
+export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE',
   Redeemed = 'REDEEMED',

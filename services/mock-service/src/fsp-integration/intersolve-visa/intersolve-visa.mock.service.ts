@@ -625,7 +625,7 @@ export class IntersolveVisaMockService {
   }
 
   public transfer(
-    fromToken: string,
+    toToken: string,
     amount: number,
   ): IntersolveVisaMockResponseDto {
     if (amount === MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT * 100) {
@@ -647,7 +647,7 @@ export class IntersolveVisaMockService {
         },
       };
     }
-    if (fromToken.includes('mock-fail-transfer')) {
+    if (toToken.includes('mock-fail-transfer')) {
       // We assume this is the correct response for a failed transfer
       // However I do not know a scenario where this would fail, maybe when our token code does not exist or is out of funding
       return {
