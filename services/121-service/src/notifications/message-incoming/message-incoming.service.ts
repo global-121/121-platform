@@ -34,6 +34,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -55,7 +56,7 @@ export class MessageIncomingService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackLanguage = LanguageEnum.en;
   private readonly genericDefaultReplies = {
     en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
@@ -507,14 +508,18 @@ export class MessageIncomingService {
         if (firstVoucherSent) {
           message = '';
         } else {
-          const templates =
-            await this.messageTemplateService.getMessageTemplatesByProgramId(
+          const foundMessageTemplateText =
+            await this.getMessageTemplateOrFallback(
               program.id,
               ProgramNotificationEnum.whatsappVoucher,
               language,
             );
-          if (templates.length > 0) {
-            message = templates[0].message;
+          console.log(
+            '🚀 ~ MessageIncomingService ~ forawait ~ foundMessageTemplateText:',
+            foundMessageTemplateText,
+          );
+          if (foundMessageTemplateText) {
+            message = foundMessageTemplateText;
             message = message
               .split('[[amount]]')
               .join(String(intersolveVoucher.amount));
@@ -561,6 +566,30 @@ export class MessageIncomingService {
       registrationsWithPendingMessage.length > 0
     ) {
       await this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
+    }
+  }
+
+  private async getMessageTemplateOrFallback(
+    programId: number,
+    key: ProgramNotificationEnum,
+    language: LanguageEnum,
+  ): Promise<string | undefined> {
+    const messageTemplates =
+      await this.messageTemplateService.getMessageTemplatesByProgramId(
+        programId,
+        key,
+      );
+    const messageTemplate = messageTemplates.find(
+      (template) => template.language === language,
+    );
+    if (messageTemplate) {
+      return messageTemplate.message;
+    }
+    const fallbackMessageTemplate = messageTemplates.find(
+      (template) => template.language === this.fallbackLanguage,
+    );
+    if (fallbackMessageTemplate) {
+      return fallbackMessageTemplate.message;
     }
   }
 
