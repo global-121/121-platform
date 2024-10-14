@@ -6,10 +6,11 @@ import { MigrateVisaController } from '@121-service/src/migrate-visa/migrate-vis
 import { MigrateVisaService } from '@121-service/src/migrate-visa/migrate-visa.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature(), UserModule, HttpModule],
-  providers: [MigrateVisaService, CustomHttpService],
+  providers: [MigrateVisaService, CustomHttpService, FileImportService],
   controllers: [MigrateVisaController],
   exports: [MigrateVisaService],
 })
