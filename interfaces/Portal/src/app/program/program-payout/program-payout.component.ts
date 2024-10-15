@@ -192,25 +192,15 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
-    try {
-      const paymentSummary = await this.programsService.getPaymentSummary(
-        this.programId,
-        this.lastPaymentId,
-      );
-      return {
-        error: paymentSummary?.failed?.count || 0,
-        success: paymentSummary?.success?.count || 0,
-        waiting: paymentSummary?.waiting?.count || 0,
-      };
-    } catch (error) {
-      console.error('Error fetching payment summary:', error);
-      // Return default values in case of error
-      return {
-        error: 0,
-        success: 0,
-        waiting: 0,
-      };
-    }
+    const paymentSummary = await this.programsService.getPaymentSummary(
+      this.programId,
+      this.lastPaymentId,
+    );
+    return {
+      error: paymentSummary?.failed?.count || 0,
+      success: paymentSummary?.success?.count || 0,
+      waiting: paymentSummary?.waiting?.count || 0,
+    };
   }
 
   private createTemplatePayments(count: number): Payment[] {
