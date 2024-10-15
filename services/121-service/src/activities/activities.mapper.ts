@@ -1,14 +1,12 @@
-import {
-  ActivitiesDto,
-  Activity,
-  ActivityTypeEnum,
-  DataChangeActivity,
-  FinancialServiceProviderChangeActivity,
-  MessageActivity,
-  NoteActivity,
-  StatusChangeActivity,
-  TransactionActivity,
-} from '@121-service/src/activities/dtos/activities.dto';
+import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
+import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
+import { DataChangeActivity } from '@121-service/src/activities/interfaces/data-change-activity.interface';
+import { FinancialServiceProviderChangeActivity } from '@121-service/src/activities/interfaces/financial-service-provider.interface';
+import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
+import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
+import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
+import { TransactionActivity } from '@121-service/src/activities/interfaces/transaction-activity.interface';
+import { Activity } from '@121-service/src/activities/types/activity.type';
 import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
@@ -107,7 +105,10 @@ export class ActivitiesMapper {
   ): TransactionActivity[] {
     return transactions.map((transaction, index) => ({
       id: `${ActivityTypeEnum.Transaction}${index}`,
-      username: transaction.username,
+      user: {
+        id: transaction.userId,
+        username: transaction.username,
+      },
       created: transaction.paymentDate,
       type: ActivityTypeEnum.Transaction,
       attributes: {
@@ -126,7 +127,10 @@ export class ActivitiesMapper {
   ): MessageActivity[] {
     return messages.map((message, index) => ({
       id: `${ActivityTypeEnum.Message}${index}`,
-      username: message.username,
+      user: {
+        id: message.userId,
+        username: message.username,
+      },
       created: message.created,
       type: ActivityTypeEnum.Message,
       attributes: {
@@ -143,7 +147,10 @@ export class ActivitiesMapper {
   private static mapNotesToActivity(notes: GetNotesDto[]): NoteActivity[] {
     return notes.map((note, index) => ({
       id: `${ActivityTypeEnum.Note}${index}`,
-      username: note.username,
+      user: {
+        id: note.userId,
+        username: note.username,
+      },
       created: note.created,
       type: ActivityTypeEnum.Note,
       attributes: {
@@ -156,7 +163,10 @@ export class ActivitiesMapper {
   ): DataChangeActivity[] {
     return events.map((event, index) => ({
       id: `${ActivityTypeEnum.DataChange}${index}`,
-      username: event.user?.username,
+      user: {
+        id: event.user?.id,
+        username: event.user?.username,
+      },
       created: event.created,
       type: ActivityTypeEnum.DataChange,
       attributes: {
@@ -172,7 +182,10 @@ export class ActivitiesMapper {
   ): StatusChangeActivity[] {
     return events.map((event, index) => ({
       id: `${ActivityTypeEnum.StatusChange}${index}`,
-      username: event.user?.username,
+      user: {
+        id: event.user?.id,
+        username: event.user?.username,
+      },
       created: event.created,
       type: ActivityTypeEnum.StatusChange,
       attributes: {
@@ -186,7 +199,10 @@ export class ActivitiesMapper {
   ): FinancialServiceProviderChangeActivity[] {
     return events.map((event, index) => ({
       id: `${ActivityTypeEnum.FinancialServiceProviderChange}${index}`,
-      username: event.user?.username,
+      user: {
+        id: event.user?.id,
+        username: event.user?.username,
+      },
       created: event.created,
       type: ActivityTypeEnum.FinancialServiceProviderChange,
       attributes: {

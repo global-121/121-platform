@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { ActivitiesMapper } from '@121-service/src/activities/activities.mapper';
-import { ActivityTypeEnum } from '@121-service/src/activities/dtos/activities.dto';
+import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { GetNotesDto } from '@121-service/src/notes/dto/get-notes.dto';
