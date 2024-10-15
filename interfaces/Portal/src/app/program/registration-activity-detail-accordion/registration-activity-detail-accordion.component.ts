@@ -93,7 +93,7 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
 
     if (
       !PaymentUtils.hasVoucherSupport(
-        paymentRow.programFinancialServiceProviderConfigurationTranslatedLabel,
+        paymentRow.financialServiceProviderName,
       ) &&
       !hasError &&
       !isSinglePayment
@@ -116,9 +116,7 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
 
     if (
       this.canViewVouchers &&
-      PaymentUtils.hasVoucherSupport(
-        paymentRow.programFinancialServiceProviderConfigurationTranslatedLabel,
-      ) &&
+      PaymentUtils.hasVoucherSupport(paymentRow.financialServiceProviderName) &&
       !!paymentRow.transaction
     ) {
       await this.programsService
