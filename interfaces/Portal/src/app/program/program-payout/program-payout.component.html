@@ -153,7 +153,7 @@
       </div>
     </ion-row>
     <ion-row
-      *ngIf="canMakePayment && lastPaymentResults?.error > 0"
+      *ngIf="canMakePayment && lastPaymentResults?.failed > 0"
       class="ion-align-items-center"
     >
       <app-confirm-prompt
@@ -161,7 +161,7 @@
         (confirm)="retryLastPayment()"
         [subHeader]="
           'page.program.program-payout.last-payment.confirm-prompt'
-            | translate: { number: lastPaymentResults?.error }
+            | translate: { number: lastPaymentResults?.failed }
         "
         fill="outline"
         color="danger"
@@ -175,7 +175,7 @@
         ></ion-icon>
         {{
           'page.program.program-payout.last-payment.retry-all'
-            | translate: { number: lastPaymentResults?.error }
+            | translate: { number: lastPaymentResults?.failed }
         }}
       </app-confirm-prompt>
     </ion-row>
