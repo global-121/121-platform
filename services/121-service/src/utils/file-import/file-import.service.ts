@@ -5,7 +5,10 @@ import * as convert from 'xml-js';
 
 @Injectable()
 export class FileImportService {
-  public async validateCsv(csvFile, maxRecords?: number): Promise<object[]> {
+  public async validateCsv(
+    csvFile: Express.Multer.File,
+    maxRecords?: number,
+  ): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -31,7 +34,7 @@ export class FileImportService {
   }
 
   public async validateXml(
-    xmlFile,
+    xmlFile: Express.Multer.File,
   ): Promise<convert.Element | convert.ElementCompact> {
     const indexLastPoint = xmlFile.originalname.lastIndexOf('.');
     const extension = xmlFile.originalname.substr(

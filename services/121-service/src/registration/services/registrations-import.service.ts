@@ -147,7 +147,7 @@ export class RegistrationsImportService {
   }
 
   public async importRegistrations(
-    csvFile,
+    csvFile: Express.Multer.File,
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
@@ -342,7 +342,7 @@ export class RegistrationsImportService {
   }
 
   private async csvToValidatedRegistrations(
-    csvFile: any[],
+    csvFile: Express.Multer.File,
     programId: number,
     userId: number,
   ): Promise<ImportRegistrationsDto[]> {

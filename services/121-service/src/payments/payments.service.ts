@@ -1202,7 +1202,7 @@ export class PaymentsService {
   }
 
   public async importFspReconciliationData(
-    file: Blob,
+    file: Express.Multer.File,
     programId: number,
     payment: number,
     userId: number,
@@ -1299,7 +1299,7 @@ export class PaymentsService {
     programId,
     fspConfig,
   }: {
-    file: Blob;
+    file: Express.Multer.File;
     payment: number;
     programId: number;
     fspConfig: ProgramFinancialServiceProviderConfigurationEntity;

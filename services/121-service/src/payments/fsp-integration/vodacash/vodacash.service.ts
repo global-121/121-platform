@@ -245,7 +245,7 @@ export class VodacashService
 
   // This method is potentially generic, but since it does contain vodacash-specific code down the line, putting it here
   public async xmlToValidatedFspReconciliation(
-    xmlFile: Blob,
+    xmlFile: Express.Multer.File,
   ): Promise<ImportFspReconciliationArrayDto[]> {
     const importRecords = await this.fileImportService.validateXml(xmlFile);
     return (await this.validateFspReconciliationXmlInput(importRecords))
