@@ -253,6 +253,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     });
   });
 
+  getColumnFilterField(column: QueryTableColumn<TData>) {
+    if (column.disableFiltering) {
+      return undefined;
+    }
+    return column.fieldForFilter ?? column.field;
+  }
+
   getColumnMatchMode(column: QueryTableColumn<TData>) {
     if (column.filterMatchMode) {
       return column.filterMatchMode as string;
@@ -268,6 +275,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       default:
         return FilterMatchMode.CONTAINS;
     }
+  }
+
+  getColumnSortField(column: QueryTableColumn<TData>) {
+    if (column.disableSorting) {
+      return undefined;
+    }
+    return column.fieldForSort ?? column.field;
   }
 
   /**
