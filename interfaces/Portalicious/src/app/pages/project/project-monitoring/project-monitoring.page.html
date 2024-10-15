@@ -50,9 +50,24 @@
       i18n-metricLabel
     />
 
+    @let latestPaymentAmount = this.latestPayment.data()?.success?.amount;
     <app-metric-tile
       class="grid-in-metric4"
       [pending]="metrics.isPending()"
+      [chipLabel]="
+        latestPaymentAmount
+          ? '+ ' +
+            (latestPaymentAmount
+              | currency
+                : project.data()?.currency ?? 'EUR'
+                : 'symbol-narrow'
+                : '1.0-0')
+          : '—'
+      "
+      chipIcon="pi pi-money-bill"
+      chipTooltip="Cash distributed in the last payment."
+      i18n-chipTooltip
+      chipVariant="blue"
       [metricValue]="
         metrics.data()?.spentMoney
           | currency

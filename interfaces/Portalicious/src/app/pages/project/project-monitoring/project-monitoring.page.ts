@@ -65,6 +65,13 @@ export class ProjectMonitoringPageComponent {
     ...this.paymentApiService.getPayments(this.projectId)(),
     enabled: !!this.project.data()?.id,
   }));
+  latestPayment = injectQuery(() => ({
+    ...this.paymentApiService.getPayment(
+      this.projectId,
+      this.latestPaymentNumber,
+    )(),
+    enabled: () => !!this.latestPaymentNumber(),
+  }));
 
   remainingBudget = computed(() => {
     const metricsData = this.metrics.data();
@@ -82,6 +89,14 @@ export class ProjectMonitoringPageComponent {
     }
 
     return metricsData.totalBudget - metricsData.spentMoney;
+  });
+
+  latestPaymentNumber = computed(() => {
+    if (!this.payments.isSuccess() || this.payments.data().length === 0) {
+      return;
+    }
+
+    return this.payments.data()[0].payment;
   });
 
   projectDescription = computed(() =>
