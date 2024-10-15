@@ -3,8 +3,8 @@ import { Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { PaginateQuery } from 'nestjs-paginate';
-import { v4 as uuid } from 'uuid';
 import { DataSource, Equal, In, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
@@ -34,11 +34,11 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import {
   PaymentReturnDto,
   TransactionReturnDto,
 } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
@@ -48,8 +48,8 @@ import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -1106,7 +1106,7 @@ export class PaymentsService {
           transaction.programFinancialServiceProviderConfigurationName,
           programFspConfigEntitiesWithFspInstruction,
         ) &&
-        transaction.status !== StatusEnum.waiting
+        transaction.status !== TransactionStatusEnum.waiting
       ) {
         result.push(transaction);
       }
@@ -1117,7 +1117,7 @@ export class PaymentsService {
           transaction.programFinancialServiceProviderConfigurationName,
           programFspConfigEntitiesWithFspInstruction,
         ) &&
-        transaction.status !== StatusEnum.success
+        transaction.status !== TransactionStatusEnum.success
       ) {
         result.push(transaction);
       }
@@ -1299,7 +1299,7 @@ export class PaymentsService {
     programId,
     fspConfig,
   }: {
-    file: unknown;
+    file: Blob;
     payment: number;
     programId: number;
     fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
