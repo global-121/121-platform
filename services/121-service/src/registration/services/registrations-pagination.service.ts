@@ -31,6 +31,7 @@ import {
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
 } from '@121-service/src/registration/const/filter-operation.const';
+import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
   RegistrationDataInfo,
@@ -70,7 +71,7 @@ export class RegistrationsPaginationService {
     hasPersonalReadPermission: boolean,
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
-  ) {
+  ): Promise<FindAllRegistrationsResultDto> {
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
 
@@ -164,14 +165,28 @@ export class RegistrationsPaginationService {
 
     queryBuilder = this.addPaymentFilter(queryBuilder, query);
 
-    // Replacing the filter on referenceId is needed in specific cases where the referenceId only consists of numbers.
-    // The !query.filter.referenceId.includes('$') is needed to check if the query doesn't contain an operator like '$ilike'.
-    // If the filter has a '$' we don't need to replace the filter
-    if (query?.filter?.referenceId && !query.filter.referenceId.includes('$')) {
-      queryBuilder.andWhere('CAST("referenceId" AS TEXT) = :referenceId', {
-        referenceId: query.filter.referenceId,
-      });
-      delete query.filter.referenceId;
+    // Replacing the filter on referenceId is needed in specific cases where the referenceId only consists of numbers
+    // or a string that javascript could mistakenly interpret as a number (ie. "651581942751358e5")
+    if (
+      query?.filter?.referenceId &&
+      typeof query.filter.referenceId === 'string'
+    ) {
+      if (!query.filter.referenceId.includes('$')) {
+        // The !query.filter.referenceId.includes('$') is needed to check if the query doesn't contain an operator like '$ilike'.
+        // If the filter has a '$' we don't need to replace the filter
+        queryBuilder.andWhere('CAST("referenceId" AS TEXT) = :referenceId', {
+          referenceId: query.filter.referenceId,
+        });
+        delete query.filter.referenceId;
+      } else if (query.filter.referenceId.includes('$eq')) {
+        // Weird edge case
+        // See this for more info: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/30713
+        // If we don't do this, nestjs-paginate could try to convert referenceId to a number and fail.
+        queryBuilder.andWhere('"referenceId" = :referenceId', {
+          referenceId: query.filter.referenceId.split('$eq:')[1],
+        });
+        delete query.filter.referenceId;
+      }
     }
 
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other

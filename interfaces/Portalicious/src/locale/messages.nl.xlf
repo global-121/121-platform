@@ -879,6 +879,26 @@
         <source>Password reset successful</source>
         <target state="new">Password reset successful</target>
       </trans-unit>
+      <trans-unit id="registration-full-name" datatype="html">
+        <source>Full Name</source>
+        <target state="new">Full Name</target>
+      </trans-unit>
+      <trans-unit id="registration-created" datatype="html">
+        <source>Registration created</source>
+        <target state="new">Registration created</target>
+      </trans-unit>
+      <trans-unit id="84476789249519306" datatype="html">
+        <source>PA #</source>
+        <target state="new">PA #</target>
+      </trans-unit>
+      <trans-unit id="2590833001810330604" datatype="html">
+        <source>User email</source>
+        <target state="new">User email</target>
+      </trans-unit>
+      <trans-unit id="5918723526444903137" datatype="html">
+        <source>Add user</source>
+        <target state="new">Add user</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

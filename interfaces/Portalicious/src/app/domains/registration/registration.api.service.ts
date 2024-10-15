@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
 import { uniqueId } from 'lodash';
@@ -15,6 +15,7 @@ import {
   ActivityLogItemType,
   ActivityLogItemWithOverview,
   DataChangeActivity,
+  FindAllRegistrationsResult,
   IntersolveVisaCardStatus,
   IntersolveVisaTokenStatus,
   MessageActivity,
@@ -26,6 +27,10 @@ import {
   VisaCardAction,
   WalletWithCards,
 } from '~/domains/registration/registration.model';
+import {
+  PaginateQuery,
+  PaginateQueryService,
+} from '~/services/paginate-query.service';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
@@ -37,20 +42,31 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   providedIn: 'root',
 })
 export class RegistrationApiService extends DomainApiService {
-  getManyByQuery(projectId: Signal<number>) {
-    // TODO: AB#28791 the query shouldn't be defined here. This should be removed / refactored when the registrations page is built.
-    let params = new HttpParams();
-    params = params.append('limit', 10);
-    params = params.append('page', 1);
+  paginateQueryService = inject(PaginateQueryService);
 
-    return this.generateQueryOptions<{
-      data: Registration[];
-    }>({
-      path: [...BASE_ENDPOINT(projectId)],
-      requestOptions: {
-        params,
-      },
-    });
+  getManyByQuery(
+    projectId: Signal<number>,
+    paginateQuery: Signal<PaginateQuery | undefined>,
+  ) {
+    return () => {
+      const path = [...BASE_ENDPOINT(projectId)];
+
+      return queryOptions({
+        queryKey: [path, paginateQuery()],
+        queryFn: async () =>
+          this.httpWrapperService.perform121ServiceRequest<FindAllRegistrationsResult>(
+            {
+              method: 'GET',
+              endpoint: this.pathToQueryKey(path).join('/'),
+              params:
+                this.paginateQueryService.paginateQueryToHttpParams(
+                  paginateQuery(),
+                ),
+            },
+          ),
+        enabled: () => !!paginateQuery(),
+      });
+    };
   }
 
   getRegistrationById(
