@@ -4,7 +4,6 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -86,14 +85,14 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviders,
+    programFinancialServiceProviderConfigId?: number,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
       payment,
       referenceId,
       status,
-      fspName,
+      programFinancialServiceProviderConfigId,
     ).getRawMany();
   }
 
@@ -102,7 +101,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviders,
+    programFinancialServiceProviderConfigId?: number,
   ): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
@@ -145,11 +144,11 @@ export class TransactionsService {
         { status },
       );
     }
-    if (fspName) {
+    if (programFinancialServiceProviderConfigId) {
       transactionQuery = transactionQuery.andWhere(
-        'fspconfig.financialServiceProviderName = :fspName',
+        'fspconfig.id = :programFinancialServiceProviderConfigId',
         {
-          fspName,
+          programFinancialServiceProviderConfigId,
         },
       );
     }
