@@ -196,11 +196,10 @@ export class ProgramPayoutComponent implements OnInit {
       this.programId,
       this.lastPaymentId,
     );
-
     return {
-      error: paymentSummary?.nrError || 0,
-      success: paymentSummary?.nrSuccess || 0,
-      waiting: paymentSummary?.nrWaiting || 0,
+      failed: paymentSummary?.failed?.count || 0,
+      success: paymentSummary?.success?.count || 0,
+      waiting: paymentSummary?.waiting?.count || 0,
     };
   }
 
