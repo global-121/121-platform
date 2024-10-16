@@ -340,7 +340,7 @@ export class ExcelService
     const resultFeedbackPerRow: ReconciliationFeedbackDto[] = [];
     for (const record of importRecordsOrdered) {
       let transaction: PaTransactionResultDto | null = null;
-      const importStatus = ImportStatus.notFound;
+      let importStatus = ImportStatus.notFound;
 
       if (
         ![TransactionStatusEnum.success, TransactionStatusEnum.error].includes(
@@ -361,6 +361,10 @@ export class ExcelService
       if (matchedRegistration) {
         transaction = this.createTransactionResult(matchedRegistration, record);
         transactionsToSave.push(transaction);
+        importStatus =
+          transaction.status === TransactionStatusEnum.success
+            ? ImportStatus.paymentSuccess
+            : ImportStatus.paymentFailed;
       }
       resultFeedbackPerRow.push({
         referenceId: (matchedRegistration?.referenceId as string) ?? null,
