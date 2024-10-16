@@ -1090,7 +1090,7 @@ export class PaymentsService {
     programFspConfigEntitiesWithFspInstruction: ProgramFinancialServiceProviderConfigurationEntity[],
   ): TransactionReturnDto[] {
     const programFspConfigNamesThatRequireInstructions =
-      this.getFspNamesThatRequireInstructions();
+      programFspConfigEntitiesWithFspInstruction.map((c) => c.name);
 
     const transactionsWithFspInstruction = transactions.filter((t) =>
       programFspConfigNamesThatRequireInstructions.includes(
@@ -1106,7 +1106,7 @@ export class PaymentsService {
           transaction.programFinancialServiceProviderConfigurationName,
           programFspConfigEntitiesWithFspInstruction,
         ) &&
-        transaction.status !== TransactionStatusEnum.waiting
+        transaction.status === TransactionStatusEnum.waiting
       ) {
         result.push(transaction);
       }
@@ -1117,7 +1117,7 @@ export class PaymentsService {
           transaction.programFinancialServiceProviderConfigurationName,
           programFspConfigEntitiesWithFspInstruction,
         ) &&
-        transaction.status !== TransactionStatusEnum.success
+        transaction.status === TransactionStatusEnum.success
       ) {
         result.push(transaction);
       }
