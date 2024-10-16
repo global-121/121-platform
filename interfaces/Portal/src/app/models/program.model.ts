@@ -82,7 +82,7 @@ export class PaTableAttribute extends Attribute {}
 export class ProgramRegistrationAttribute {
   id: number;
   name: string;
-  answerType: string;
+  registrationAttributeType: string;
   label: TranslatableString;
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
