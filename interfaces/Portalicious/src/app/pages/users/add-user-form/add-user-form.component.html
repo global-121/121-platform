@@ -6,7 +6,7 @@
   i18n-formTitle
 >
   <app-form-field-wrapper
-    label="User name"
+    label="Full name"
     i18n-label
     [errorMessage]="formFieldErrors()('displayNameValue')"
   >
@@ -15,10 +15,12 @@
       type="text"
       formControlName="displayNameValue"
       autocomplete="off"
+      placeholder="Firstname Lastname"
+      i18n-placeholder
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
-    label="User email"
+    label="E-mail"
     i18n-label
     [errorMessage]="formFieldErrors()('usernameValue')"
   >
@@ -27,6 +29,8 @@
       type="email"
       formControlName="usernameValue"
       autocomplete="off"
+      placeholder="username@example.org"
+      i18n-placeholder
     />
   </app-form-field-wrapper>
 </app-form-sidebar>

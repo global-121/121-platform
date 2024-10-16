@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -68,9 +68,6 @@
       </trans-unit>
       <trans-unit id="4829177270839953752" datatype="html">
         <source>Find out more</source>
-      </trans-unit>
-      <trans-unit id="5393972837576333232" datatype="html">
-        <source>example: yourname@example.org</source>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -620,15 +617,6 @@
       <trans-unit id="4702579085370193789" datatype="html">
         <source>Card successfully replaced</source>
       </trans-unit>
-      <trans-unit id="6553913710509292194" datatype="html">
-        <source>Role name</source>
-      </trans-unit>
-      <trans-unit id="7073019979553772020" datatype="html">
-        <source>Role label</source>
-      </trans-unit>
-      <trans-unit id="6751038926528230759" datatype="html">
-        <source>Role description</source>
-      </trans-unit>
       <trans-unit id="3284816784388197103" datatype="html">
         <source>Project not found. Please check the URL and try again.</source>
       </trans-unit>
@@ -671,11 +659,29 @@
       <trans-unit id="84476789249519306" datatype="html">
         <source>PA #</source>
       </trans-unit>
-      <trans-unit id="2590833001810330604" datatype="html">
-        <source>User email</source>
-      </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
+      </trans-unit>
+      <trans-unit id="3193976279273491157" datatype="html">
+        <source>Actions</source>
+      </trans-unit>
+      <trans-unit id="138735154290622738" datatype="html">
+        <source>yourname@example.org</source>
+      </trans-unit>
+      <trans-unit id="4145496584631696119" datatype="html">
+        <source>Role</source>
+      </trans-unit>
+      <trans-unit id="4902817035128594900" datatype="html">
+        <source>Description</source>
+      </trans-unit>
+      <trans-unit id="6255566478374242100" datatype="html">
+        <source>Firstname Lastname</source>
+      </trans-unit>
+      <trans-unit id="8301535046747035390" datatype="html">
+        <source>Full name</source>
+      </trans-unit>
+      <trans-unit id="8182296119853145202" datatype="html">
+        <source>username@example.org</source>
       </trans-unit>
     </body>
   </file>
