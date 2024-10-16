@@ -299,8 +299,9 @@ describe('Do payment with Excel FSP', () => {
             expect(importResultRecord.importStatus).toBe(
               ImportStatus.paymentSuccess,
             );
-          }
-          if (importResultRecord.status === TransactionStatusEnum.error) {
+          } else if (
+            importResultRecord.status === TransactionStatusEnum.error
+          ) {
             expect(importResultRecord.importStatus).toBe(
               ImportStatus.paymentFailed,
             );
@@ -326,7 +327,7 @@ describe('Do payment with Excel FSP', () => {
       }
     });
 
-    it.skip('should give me a CSV template when I request it', async () => {
+    it('should give me a CSV template when I request it', async () => {
       const response =
         await getImportFspReconciliationTemplate(programIdWesteros);
       expect(response.statusCode).toBe(HttpStatus.OK);
