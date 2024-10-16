@@ -377,6 +377,7 @@ export class ExcelService
         status: transaction?.status ?? null,
         message: transaction?.message ?? null,
         importStatus,
+        [matchColumn]: record[matchColumn],
       });
     }
 

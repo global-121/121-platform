@@ -295,7 +295,19 @@ describe('Do payment with Excel FSP', () => {
       // Check per import record if it is imported or not found
       for (const importResultRecord of importResultRecords) {
         if (phoneNumbersWesteros.includes(importResultRecord[matchColumn])) {
-          expect(importResultRecord.importStatus).toBe(ImportStatus.imported);
+          if (importResultRecord.status === TransactionStatusEnum.success) {
+            expect(importResultRecord.importStatus).toBe(
+              ImportStatus.paymentSuccess,
+            );
+          }
+          if (importResultRecord.status === TransactionStatusEnum.error) {
+            expect(importResultRecord.importStatus).toBe(
+              ImportStatus.paymentFailed,
+            );
+          } else {
+            // NOTE: This for-loop will have 8 iterations, not 4, because it needs to repeat all records for each bank, as it cannot distinguish a record from another bank from a completely unknown record
+            expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
+          }
         } else {
           expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
         }

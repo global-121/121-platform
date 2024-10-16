@@ -1354,6 +1354,7 @@ export class PaymentsService {
           status: transaction?.status ?? null,
           message: transaction?.message ?? null,
           importStatus,
+          phoneNumber: record.phoneNumber,
         });
       }
     }
