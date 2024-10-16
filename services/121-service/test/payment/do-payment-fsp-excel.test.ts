@@ -1,10 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -34,6 +31,7 @@ import {
   registrationPV5,
   registrationWesteros1,
   registrationWesteros2,
+  registrationWesteros3,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 // ##TODO: Re-enable these tests when the new flow with fsp configuration is implemented for the excel fsp
@@ -44,7 +42,11 @@ describe('Do payment with Excel FSP', () => {
   const paymentNr = 1;
 
   // Registrations
-  const registrationsWesteros = [registrationWesteros1, registrationWesteros2];
+  const registrationsWesteros = [
+    registrationWesteros1,
+    registrationWesteros2,
+    registrationWesteros3,
+  ];
   const referenceIdsWesteros = registrationsWesteros.map(
     (registration) => registration.referenceId,
   );
@@ -246,7 +248,7 @@ describe('Do payment with Excel FSP', () => {
   });
 
   describe('Import FSP reconciliation data', () => {
-    it.skip('Should update transaction status based on imported reconciliation data', async () => {
+    it('Should update transaction status based on imported reconciliation data', async () => {
       // Arrange
       const matchColumn = 'phoneNumber';
       // construct reconciliation-file here
@@ -258,6 +260,10 @@ describe('Do payment with Excel FSP', () => {
         {
           [matchColumn]: registrationWesteros2.phoneNumber,
           status: TransactionStatusEnum.error,
+        },
+        {
+          [matchColumn]: registrationWesteros3.phoneNumber,
+          status: TransactionStatusEnum.success,
         },
         { [matchColumn]: '123456789', status: TransactionStatusEnum.error },
       ];
@@ -289,7 +295,20 @@ describe('Do payment with Excel FSP', () => {
       // Check per import record if it is imported or not found
       for (const importResultRecord of importResultRecords) {
         if (phoneNumbersWesteros.includes(importResultRecord[matchColumn])) {
-          expect(importResultRecord.importStatus).toBe(ImportStatus.imported);
+          if (importResultRecord.status === TransactionStatusEnum.success) {
+            expect(importResultRecord.importStatus).toBe(
+              ImportStatus.paymentSuccess,
+            );
+          } else if (
+            importResultRecord.status === TransactionStatusEnum.error
+          ) {
+            expect(importResultRecord.importStatus).toBe(
+              ImportStatus.paymentFailed,
+            );
+          } else {
+            // NOTE: This for-loop will have 8 iterations, not 4, because it needs to repeat all records for each bank, as it cannot distinguish a record from another bank from a completely unknown record
+            expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
+          }
         } else {
           expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
         }
@@ -308,7 +327,7 @@ describe('Do payment with Excel FSP', () => {
       }
     });
 
-    it.skip('should give me a CSV template when I request it', async () => {
+    it('should give me a CSV template when I request it', async () => {
       const response =
         await getImportFspReconciliationTemplate(programIdWesteros);
       expect(response.statusCode).toBe(HttpStatus.OK);

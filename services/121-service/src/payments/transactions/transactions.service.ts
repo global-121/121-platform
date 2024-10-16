@@ -4,7 +4,6 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -86,14 +85,14 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviders,
+    programFinancialServiceProviderConfigId?: number,
   ): Promise<TransactionReturnDto[]> {
     return this.getLastTransactionsQuery(
       programId,
       payment,
       referenceId,
       status,
-      fspName,
+      programFinancialServiceProviderConfigId,
     ).getRawMany();
   }
 
@@ -102,7 +101,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviders,
+    programFinancialServiceProviderConfigId?: number,
   ): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.transactionScopedRepository
       .createQueryBuilder('transaction')
@@ -114,6 +113,7 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
+        'transaction.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
         'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
         'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
       ])
@@ -144,10 +144,13 @@ export class TransactionsService {
         { status },
       );
     }
-    if (fspName) {
-      transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
-        fspName,
-      });
+    if (programFinancialServiceProviderConfigId) {
+      transactionQuery = transactionQuery.andWhere(
+        'fspconfig.id = :programFinancialServiceProviderConfigId',
+        {
+          programFinancialServiceProviderConfigId,
+        },
+      );
     }
     return transactionQuery;
   }
@@ -363,7 +366,7 @@ export class TransactionsService {
     transactionStep?: number,
   ): Promise<void> {
     // NOTE: this method is currently only used for the import-fsp-reconciliation use case and assumes:
-    // 1: only 1 FSP
+    // 1: only 1 program financial service provider id
     // 2: no notifications to send
     // 3: no payment count to update (as it is reconciliation of existing payment)
     // 4: no twilio message to relate to
