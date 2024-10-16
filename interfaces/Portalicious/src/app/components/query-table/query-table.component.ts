@@ -117,6 +117,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   tableCellContext = input<TContext>();
   serverSideFiltering = input<boolean>(false);
   serverSideTotalRecords = input<number>();
+  initialSortField = input<keyof TData & string>();
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();
 
@@ -148,11 +149,25 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * DISPLAY
    */
+  expandedRowKeys = signal({});
+  tableFilters = signal<
+    Record<string, FilterMetadata | FilterMetadata[] | undefined>
+  >({});
   // This is triggered whenever primeng saves the state of the table to local storage
   // which is an optimal time to update our local state, and make sure the table is showing the correct data
+
   onStateSave(event: TableState) {
-    this.synchronizeFilters(event);
-    this.synchronizeExpandedRowKeys(event);
+    this.tableFilters.set({
+      // clone to make sure to trigger change detection
+      // https://stackoverflow.com/a/77532370
+      ...(event.filters ?? {}),
+    });
+
+    this.expandedRowKeys.set({
+      // clone to make sure to trigger change detection
+      // https://stackoverflow.com/a/77532370
+      ...(event.expandedRowKeys ?? {}),
+    });
   }
 
   totalColumnCount = computed(
@@ -190,56 +205,59 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    *  FILTERS
    */
   globalFilterVisible = model<boolean>(false);
-  globalFilterValue = model<string>();
-  isFiltered = signal(false);
 
   clearAllFilters() {
     this.table.clear();
-    this.globalFilterValue.set(undefined);
     localStorage.removeItem(this.localStorageKey());
     this.globalFilterVisible.set(false);
-    this.isFiltered.set(false);
+    this.tableFilters.set({});
   }
 
-  private synchronizeFilters(event: TableState) {
-    if (!event.filters) {
-      return;
+  globalFilterValue = computed(() => {
+    const tableFilters = this.tableFilters();
+
+    const globalFilter = Array.isArray(tableFilters.global)
+      ? tableFilters.global[0]
+      : tableFilters.global;
+    if (
+      globalFilter &&
+      typeof globalFilter.value === 'string' &&
+      globalFilter.value !== ''
+    ) {
+      // without this, the global filter value is not restored properly from local storage
+      return globalFilter.value;
     }
 
-    let globalFilterValueFromEvent: string | undefined = undefined;
+    return undefined;
+  });
 
-    // TS thinks this is always defined but it is not true
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (event.filters.global) {
-      const globalFilter = Array.isArray(event.filters.global)
-        ? event.filters.global[0]
-        : event.filters.global;
-      if (typeof globalFilter.value === 'string' && globalFilter.value !== '') {
-        // without this, the global filter value is not restored properly from local storage
-        globalFilterValueFromEvent = globalFilter.value;
+  isFiltered = computed(() => {
+    if (this.globalFilterValue()) {
+      return true;
+    }
+
+    // check if any filter is set by checking if any filter has a value
+    return Object.values(this.tableFilters()).some((filterMetadata) => {
+      if (!filterMetadata) {
+        return false;
       }
+
+      const filterMetadataArray: FilterMetadata[] = Array.isArray(
+        filterMetadata,
+      )
+        ? filterMetadata
+        : [filterMetadata];
+      return filterMetadataArray.some(
+        (filter) => filter.value !== undefined && filter.value !== null,
+      );
+    });
+  });
+
+  getColumnFilterField(column: QueryTableColumn<TData>) {
+    if (column.disableFiltering) {
+      return undefined;
     }
-
-    this.globalFilterValue.set(globalFilterValueFromEvent);
-
-    if (globalFilterValueFromEvent) {
-      this.isFiltered.set(true);
-      return;
-    }
-
-    this.isFiltered.set(
-      // check if any filter is set by checking if any filter has a value
-      Object.values(event.filters).some((filterMetadata) => {
-        const filterMetadataArray: FilterMetadata[] = Array.isArray(
-          filterMetadata,
-        )
-          ? filterMetadata
-          : [filterMetadata];
-        return filterMetadataArray.some(
-          (filter) => filter.value !== undefined && filter.value !== null,
-        );
-      }),
-    );
+    return column.fieldForFilter ?? column.field;
   }
 
   getColumnMatchMode(column: QueryTableColumn<TData>) {
@@ -257,6 +275,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       default:
         return FilterMatchMode.CONTAINS;
     }
+  }
+
+  getColumnSortField(column: QueryTableColumn<TData>) {
+    if (column.disableSorting) {
+      return undefined;
+    }
+    return column.fieldForSort ?? column.field;
   }
 
   /**
@@ -290,8 +315,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    *  EXPANDABLE ROWS
    */
-  expandedRowKeys = signal({});
-
   expandAll() {
     this.expandedRowKeys.set(
       this.items().reduce((acc, p) => ({ ...acc, [p.id]: true }), {}),
@@ -307,17 +330,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       this.items().length > 0 &&
       this.items().every((item) => this.expandedRowKeys()[item.id] === true),
   );
-
-  private synchronizeExpandedRowKeys(event: TableState) {
-    if (!event.expandedRowKeys) {
-      return;
-    }
-    this.expandedRowKeys.set({
-      // clone to make sure to trigger change detection
-      // https://stackoverflow.com/a/77532370
-      ...event.expandedRowKeys,
-    });
-  }
 
   /**
    *  PAGINATION

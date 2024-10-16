@@ -157,6 +157,34 @@ body {
         }
       }
     }
+
+    .p-datatable-thead > tr > th {
+      @apply bg-grey-50 text-black;
+    }
+
+    .p-sortable-column {
+      &:not(.p-highlight),
+      &.p-highlight {
+        @apply bg-grey-50 text-black;
+
+        &:hover,
+        &:focus-within {
+          @apply bg-purple-100 text-purple-700;
+        }
+      }
+
+      &.p-highlight {
+        .p-sortable-column-icon {
+          @apply text-purple-700;
+        }
+      }
+    }
+
+    .p-column-filter-menu-button.p-column-filter-menu-button-active,
+    .p-column-filter-menu-button.p-column-filter-menu-button-active:hover,
+    .p-column-filter-menu-button.p-column-filter-menu-button-active:focus {
+      @apply bg-purple-100 text-purple-700;
+    }
   }
 
   .p-chip .p-chip-text {
