@@ -1370,6 +1370,7 @@ export class PaymentsService {
         programId,
         payment,
         validatedExcelImport,
+        fspConfig,
       });
     }
     throw new Error(

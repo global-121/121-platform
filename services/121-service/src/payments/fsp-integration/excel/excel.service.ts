@@ -18,6 +18,7 @@ import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/p
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
@@ -246,10 +247,12 @@ export class ExcelService
     programId,
     payment,
     validatedExcelImport,
+    fspConfig,
   }: {
     programId: number;
     payment: number;
     validatedExcelImport: object[];
+    fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
   }): Promise<{
     transactions: PaTransactionResultDto[];
     resultFeedbackPerRow: ReconciliationFeedbackDto[];
@@ -260,6 +263,7 @@ export class ExcelService
         programId,
         payment,
         matchColumn,
+        fspConfig.id,
       );
     if (!registrationsForReconciliation?.length) {
       return {
@@ -287,11 +291,13 @@ export class ExcelService
     programId: number,
     payment: number,
     matchColumn: string,
+    programFinancialServiceProviderConfigurationId: number,
   ) {
     const qb =
       this.registrationsPaginationService.getQueryBuilderForFspInstructions({
         programId,
         payment,
+        programFinancialServiceProviderConfigurationId,
         financialServiceProviderName: FinancialServiceProviders.excel,
       });
     // log query
