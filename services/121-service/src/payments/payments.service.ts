@@ -1366,14 +1366,14 @@ export class PaymentsService {
         file,
         maxRecords,
       );
-      return await this.excelService.reconsiliatePayments({
+      return await this.excelService.reconciliatePayments({
         programId,
         payment,
         validatedExcelImport,
       });
     }
     throw new Error(
-      `FinancialServiceProviderName ${fspConfig.financialServiceProviderName} not supported in fsp reconsiliation import`,
+      `FinancialServiceProviderName ${fspConfig.financialServiceProviderName} not supported in fsp reconciliation import`,
     );
   }
 

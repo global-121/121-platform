@@ -242,7 +242,7 @@ export class ExcelService
     return matchColumn;
   }
 
-  public async reconsiliatePayments({
+  public async reconciliatePayments({
     programId,
     payment,
     validatedExcelImport,
@@ -255,13 +255,13 @@ export class ExcelService
     resultFeedbackPerRow: ReconciliationFeedbackDto[];
   }> {
     const matchColumn = await this.getImportMatchColumn(programId);
-    const registrationsForReconsiliation =
+    const registrationsForReconciliation =
       await this.getRegistrationsForReconciliation(
         programId,
         payment,
         matchColumn,
       );
-    if (!registrationsForReconsiliation?.length) {
+    if (!registrationsForReconciliation?.length) {
       return {
         transactions: [],
         resultFeedbackPerRow: [],
@@ -276,7 +276,7 @@ export class ExcelService
     );
     // Join registration data with the imported CSV records
     return this.joinRegistrationsAndImportRecords(
-      registrationsForReconsiliation,
+      registrationsForReconciliation,
       validatedExcelImport,
       matchColumn,
       lastTransactions,
