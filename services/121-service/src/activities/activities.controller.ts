@@ -26,7 +26,7 @@ export class ActivitiesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Returns activities (notes, transactions, messages, data changes, status changes) for registration',
+      'Returns activities (notes, transactions, messages, data changes, status changes, FSP changes) for registration',
     type: [ActivitiesDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
