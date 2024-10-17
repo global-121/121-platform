@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
@@ -14,8 +15,10 @@ import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safar
 import { VodacashModule } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
+import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -28,6 +31,7 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -47,6 +51,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     HttpModule,
     ActionsModule,
     IntersolveVoucherModule,
+    // TODO: REFACTOR: Remove IntersolveVisaModule after refactoring financialServiceProviderNameToServiceMap in the payments service
     IntersolveVisaModule,
     TransactionsModule,
     VodacashModule,
@@ -57,6 +62,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramModule,
     RegistrationUtilsModule,
     RegistrationDataModule,
+    TransactionQueuesModule,
+    FinancialServiceProvidersModule,
+    ProgramFinancialServiceProviderConfigurationsModule,
+    RedisModule,
   ],
   providers: [
     PaymentsService,
