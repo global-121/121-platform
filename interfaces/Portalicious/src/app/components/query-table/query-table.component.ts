@@ -17,6 +17,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { UrlTree } from '@angular/router';
 
+import { get } from 'lodash';
 import {
   FilterMatchMode,
   FilterMetadata,
@@ -57,9 +58,10 @@ export enum QueryTableColumnType {
   TEXT = 'text',
 }
 
+// TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
 export type QueryTableColumn<TData, TField = keyof TData & string> = {
   header: string;
-  field: TField;
+  field?: TField;
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
   disableSorting?: boolean;
@@ -197,12 +199,33 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return column.getCellText(item);
     }
 
-    const text = item[column.field];
+    if (!column.field) {
+      return;
+    }
 
-    if (text && column.type === QueryTableColumnType.DATE) {
-      return new DatePipe(this.locale).transform(
-        new Date(text as string),
-        'short',
+    // We're using lodash.get here to support "leaves" such as "user.username"
+    const text = get(item, column.field);
+
+    if (!text) {
+      return;
+    }
+
+    if (column.type === QueryTableColumnType.DATE) {
+      if (
+        !(text instanceof Date) &&
+        typeof text !== 'string' &&
+        typeof text !== 'number'
+      ) {
+        throw new Error(
+          `Expected field ${column.field} to be a Date or string, but got ${typeof text}`,
+        );
+      }
+      return new DatePipe(this.locale).transform(new Date(text), 'short');
+    }
+
+    if (typeof text !== 'string') {
+      throw new Error(
+        `Expected field ${column.field} to be a string, but got ${typeof text}`,
       );
     }
 

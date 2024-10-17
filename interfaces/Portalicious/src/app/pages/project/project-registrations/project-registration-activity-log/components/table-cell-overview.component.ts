@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,15 +8,20 @@ import {
 
 import { ChipModule } from 'primeng/chip';
 
+import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { getChipDataByTransactionStatusEnum } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
 import {
-  ActivityLogItemType,
-  ActivityLogItemWithOverview,
-} from '~/domains/registration/registration.model';
+  ChipData,
+  getChipDataByRegistrationStatus,
+  getChipDataByTransactionStatusEnum,
+  getChipDataByTwilioMessageStatus,
+} from '~/components/colored-chip/colored-chip.helper';
+import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
+import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
+import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
 
@@ -26,17 +32,12 @@ import { ActivityLogTableCellContext } from '~/pages/project/project-registratio
     ChipModule,
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
+    NgClass,
   ],
   template: `
-    <span class="inline-flex w-full items-center">
-      {{ value().overview }}
-
-      @if (chipData()) {
-        <app-colored-chip
-          [label]="chipData()!.chipLabel"
-          [variant]="chipData()!.chipVariant"
-          class="ms-2"
-        />
+    <div class="flex w-full content-between items-center">
+      @if (!!overview()) {
+        <span class="me-auto">{{ overview() }}</span>
       }
 
       @let dialogData = voucherDialogData();
@@ -46,32 +47,61 @@ import { ActivityLogTableCellContext } from '~/pages/project/project-registratio
           [paymentId]="dialogData.paymentId"
           [totalTransfers]="dialogData.totalTransfers"
           [voucherReferenceId]="dialogData.voucherReferenceId"
-          class="ms-auto"
+          class="me-2"
         />
       }
-    </span>
+
+      @if (chipData()) {
+        <app-colored-chip
+          [label]="chipData()!.chipLabel"
+          [variant]="chipData()!.chipVariant"
+        />
+      }
+    </div>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableCellOverviewComponent
-  implements
-    TableCellComponent<
-      ActivityLogItemWithOverview,
-      ActivityLogTableCellContext
-    >
+  implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
-  value = input.required<ActivityLogItemWithOverview>();
+  value = input.required<Activity>();
   context = input.required<ActivityLogTableCellContext>();
 
-  chipData = computed(() => {
-    const { activityType, contents } = this.value();
+  chipData = computed<ChipData | undefined>(() => {
+    const { type, attributes } = this.value();
 
-    if (activityType !== ActivityLogItemType.Transfer) {
-      return;
+    if (type === ActivityTypeEnum.Transaction) {
+      return getChipDataByTransactionStatusEnum(attributes.status);
     }
 
-    return getChipDataByTransactionStatusEnum(contents.status);
+    if (type === ActivityTypeEnum.StatusChange) {
+      return getChipDataByRegistrationStatus(attributes.newValue);
+    }
+
+    if (type === ActivityTypeEnum.Message) {
+      return getChipDataByTwilioMessageStatus(attributes.status);
+    }
+
+    return undefined;
+  });
+
+  overview = computed(() => {
+    const item = this.value();
+    switch (item.type) {
+      case ActivityTypeEnum.DataChange:
+        return item.attributes.fieldName;
+      case ActivityTypeEnum.FinancialServiceProviderChange:
+        return item.attributes.newValue;
+      case ActivityTypeEnum.Message:
+        return MESSAGE_CONTENT_TYPE_LABELS[item.attributes.contentType];
+      case ActivityTypeEnum.Note:
+        return item.attributes.text;
+      case ActivityTypeEnum.StatusChange:
+        return;
+      case ActivityTypeEnum.Transaction:
+        return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} #${item.attributes.payment.toString()}`;
+    }
   });
 
   voucherDialogData = computed(() => {
@@ -83,8 +113,8 @@ export class TableCellOverviewComponent
     }
 
     if (
-      item.activityType !== ActivityLogItemType.Transfer ||
-      item.contents.fsp !==
+      item.type !== ActivityTypeEnum.Transaction ||
+      item.attributes.fsp !==
         FinancialServiceProviderName.intersolveVoucherWhatsapp
     ) {
       return;
@@ -92,8 +122,8 @@ export class TableCellOverviewComponent
 
     return {
       projectId: this.context().projectId(),
-      paymentId: item.contents.payment,
-      totalTransfers: item.contents.totalTransfers,
+      paymentId: item.attributes.payment,
+      totalTransfers: item.attributes.amount,
       voucherReferenceId: referenceId,
     };
   });
