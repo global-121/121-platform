@@ -1,7 +1,7 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { Payment } from '~/domains/payment/payment.model';
+import { Payment, PaymentAggregate } from '~/domains/payment/payment.model';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
@@ -19,9 +19,10 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPayment(projectId: Signal<number>, paymentId: Signal<number>) {
-    return this.generateQueryOptions<Payment[]>({
+  getPayment(projectId: Signal<number>, paymentId: Signal<number | undefined>) {
+    return this.generateQueryOptions<PaymentAggregate>({
       path: [...BASE_ENDPOINT(projectId), paymentId],
+      enabled: () => !!paymentId(),
     });
   }
 

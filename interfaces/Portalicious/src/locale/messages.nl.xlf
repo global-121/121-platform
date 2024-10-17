@@ -907,6 +907,10 @@
         <source>username@example.org</source>
         <target state="new">username@example.org</target>
       </trans-unit>
+      <trans-unit id="3382504338655482064" datatype="html">
+        <source>Cash distributed in the last payment.</source>
+        <target state="new">Cash distributed in the last payment.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

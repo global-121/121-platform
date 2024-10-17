@@ -683,6 +683,9 @@
       <trans-unit id="8182296119853145202" datatype="html">
         <source>username@example.org</source>
       </trans-unit>
+      <trans-unit id="3382504338655482064" datatype="html">
+        <source>Cash distributed in the last payment.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
