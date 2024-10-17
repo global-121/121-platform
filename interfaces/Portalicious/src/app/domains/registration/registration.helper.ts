@@ -1,8 +1,7 @@
+import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import {
-  ActivityLogItemType,
-  ActivityLogItemWithOverview,
   // TODO: AB#30525 should import this from 121-service
   VisaCard121Status,
 } from '~/domains/registration/registration.model';
@@ -31,36 +30,20 @@ export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
   [VisaCard121Status.CardDataMissing]: $localize`:@@debit-card-status-card-data-missing:Debit card data missing`,
 };
 
-export const ACTIVITY_LOG_ITEM_TYPE_LABELS: Record<
-  ActivityLogItemType,
-  string
-> = {
-  [ActivityLogItemType.DataChange]: $localize`:@@activity-log-item-type-data-change:Data change`,
-  [ActivityLogItemType.Message]: $localize`:@@activity-log-item-type-message:Message`,
-  [ActivityLogItemType.Note]: $localize`:@@activity-log-item-type-note:Note`,
-  [ActivityLogItemType.StatusUpdate]: $localize`:@@activity-log-item-type-status-update:Status update`,
-  [ActivityLogItemType.Transfer]: $localize`:@@activity-log-item-type-transfer:Transfer`,
+export const ACTIVITY_LOG_ITEM_TYPE_LABELS: Record<ActivityTypeEnum, string> = {
+  [ActivityTypeEnum.DataChange]: $localize`:@@activity-log-item-type-data-change:Data change`,
+  [ActivityTypeEnum.FinancialServiceProviderChange]: $localize`:@@activity-log-item-type-fsp-change:FSP change`,
+  [ActivityTypeEnum.Message]: $localize`:@@activity-log-item-type-message:Message`,
+  [ActivityTypeEnum.Note]: $localize`:@@activity-log-item-type-note:Note`,
+  [ActivityTypeEnum.StatusChange]: $localize`:@@activity-log-item-type-status-update:Status update`,
+  [ActivityTypeEnum.Transaction]: $localize`:@@activity-log-item-type-transfer:Transfer`,
 };
 
-export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityLogItemType, string> =
-  {
-    [ActivityLogItemType.DataChange]: 'pi pi-pencil',
-    [ActivityLogItemType.Message]: 'pi pi-envelope',
-    [ActivityLogItemType.Note]: 'pi pi-pen-to-square',
-    [ActivityLogItemType.StatusUpdate]: 'pi pi-refresh',
-    [ActivityLogItemType.Transfer]: 'pi pi-money-bill',
-  };
-
-/**
- * Example usage:
- *
- * if (isActivityType<TransferActivity>(item, ActivityType.Transfer)) {
- *  console.log(log.transferNumber); // TypeScript now knows this is a TransferActivity!
- * }
- */
-export function isActivityType<TType extends ActivityLogItemWithOverview>(
-  activity: TType,
-  type: ActivityLogItemType,
-): activity is TType {
-  return activity.activityType === type;
-}
+export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
+  [ActivityTypeEnum.DataChange]: 'pi pi-pencil',
+  [ActivityTypeEnum.FinancialServiceProviderChange]: 'pi pi-pencil',
+  [ActivityTypeEnum.Message]: 'pi pi-envelope',
+  [ActivityTypeEnum.Note]: 'pi pi-pen-to-square',
+  [ActivityTypeEnum.StatusChange]: 'pi pi-refresh',
+  [ActivityTypeEnum.Transaction]: 'pi pi-money-bill',
+};
