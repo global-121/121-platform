@@ -185,8 +185,8 @@ export class AuthService {
   }): boolean {
     user = user ?? this.user;
     // During development: Use this to simulate a user not having a certain permission
-    // user.permissions[projectId] = user.permissions[projectId].filter(
-    //   (p) => p !== Permission.FspDebitCardBLOCK,
+    // user!.permissions[projectId] = user!.permissions[projectId].filter(
+    //   (p) => p !== PermissionEnum.RegistrationNotificationREAD,
     // );
 
     return (
