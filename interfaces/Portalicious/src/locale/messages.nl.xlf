@@ -919,6 +919,14 @@
         <source>Select one or more registrations and try again.</source>
         <target state="new">Select one or more registrations and try again.</target>
       </trans-unit>
+      <trans-unit id="8066608938393600549" datatype="html">
+        <source>Message</source>
+        <target state="new">Message</target>
+      </trans-unit>
+      <trans-unit id="no-registrations-selected" datatype="html">
+        <source>Select one or more registrations and try again.</source>
+        <target state="new">Select one or more registrations and try again.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
