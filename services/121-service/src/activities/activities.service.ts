@@ -4,9 +4,9 @@ import { ActivitiesMapper } from '@121-service/src/activities/activities.mapper'
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
-import { GetNotesDto } from '@121-service/src/notes/dto/get-notes.dto';
+import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
-import { GetTwilioMessageDto } from '@121-service/src/notifications/dto/get-twilio-message.dto';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
@@ -34,9 +34,9 @@ export class ActivitiesService {
     const availableTypes: ActivityTypeEnum[] = [];
 
     let transactions: GetAuditedTransactionDto[] = [];
-    let messages: GetTwilioMessageDto[] = [];
+    let messages: TwilioMessageEntity[] = [];
     let events: EventEntity[] = [];
-    let notes: GetNotesDto[] = [];
+    let notes: NoteEntity[] = [];
 
     const canViewPaymentData = await this.userService.canActivate(
       [PermissionEnum.PaymentREAD, PermissionEnum.PaymentTransactionREAD],

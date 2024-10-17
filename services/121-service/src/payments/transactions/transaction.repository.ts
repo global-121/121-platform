@@ -32,10 +32,10 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .leftJoin('transaction.user', 'user')
       .addSelect('user.id', 'userId')
       .addSelect('user.username', 'username');
-    return await query.getRawMany<GetAuditedTransactionDto>(); // ##TODO: Why not just return TwilioMessageEntity[]? And is this an example where we want to try a "normal" TypeORM query instead of a raw query?
+    return await query.getRawMany<GetAuditedTransactionDto>(); // Leaving this as getRawMany for now, as it is not a plain entity. It's a concatenation of multiple entities.
   }
 
-  // ##TODO: Since LatestTransactionEntity is another Entity, should it not also have its own custom repository?
+  // Make this private when all 'querying code' has been moved to this repository
   public getLastTransactionsQuery({
     programId,
     payment,
@@ -66,7 +66,6 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       ])
       .leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin('transaction.registration', 'r')
-      // ##TODO: Why is latest transaction joined here, no where/select on it?
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
         programId,
