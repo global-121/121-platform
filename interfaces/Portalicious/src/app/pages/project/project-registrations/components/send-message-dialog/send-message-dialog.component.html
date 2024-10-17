@@ -1,0 +1,16 @@
+<p-dialog
+  #dialog
+  closeOnEscape
+  class="[&_.p-dialog-content]:max-w-[632px]"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-envelope me-2"></i>
+      <ng-container i18n>Send message</ng-container>
+    </h3>
+  </ng-template>
+  {{ actionData() | json }}
+</p-dialog>
