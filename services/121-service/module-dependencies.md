@@ -101,4 +101,5 @@ graph LR
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->EventsModule
+  ActivitiesModule-->UserModule
 ```
