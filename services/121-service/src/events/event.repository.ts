@@ -5,8 +5,11 @@ import { Between, FindOptionsWhere } from 'typeorm';
 
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
+import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 export class EventScopedRepository extends ScopedRepository<EventEntity> {
   constructor(
@@ -22,9 +25,12 @@ export class EventScopedRepository extends ScopedRepository<EventEntity> {
     searchOptions: EventSearchOptionsDto,
   ) {
     const exportLimit = 500000;
-    const events = await this.find({
+    const events: (EventEntity & {
+      registration: RegistrationEntity;
+      user: UserEntity;
+      attributes: EventAttributeEntity[];
+    })[] = await this.find({
       where: this.createWhereClause(programId, searchOptions),
-      // TODO: How to reflect these relations in the return type
       relations: ['registration', 'user', 'attributes'],
       order: { created: 'DESC' },
       take: exportLimit,

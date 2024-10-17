@@ -11,8 +11,8 @@ import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
-import { GetNotesDto } from '@121-service/src/notes/dto/get-notes.dto';
-import { GetTwilioMessageDto } from '@121-service/src/notifications/dto/get-twilio-message.dto';
+import { NoteEntity } from '@121-service/src/notes/note.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -25,8 +25,8 @@ export class ActivitiesMapper {
     availableTypes,
   }: {
     transactions: GetAuditedTransactionDto[];
-    messages: GetTwilioMessageDto[];
-    notes: GetNotesDto[];
+    messages: TwilioMessageEntity[];
+    notes: NoteEntity[];
     events: EventEntity[];
     availableTypes: ActivityTypeEnum[];
   }): ActivitiesDto {
@@ -123,13 +123,13 @@ export class ActivitiesMapper {
     }));
   }
   private static mapMessagesToActivity(
-    messages: GetTwilioMessageDto[],
+    messages: TwilioMessageEntity[],
   ): MessageActivity[] {
     return messages.map((message, index) => ({
       id: `${ActivityTypeEnum.Message}${index}`,
       user: {
         id: message.userId,
-        username: message.username,
+        username: message.user.username ?? undefined,
       },
       created: message.created,
       type: ActivityTypeEnum.Message,
@@ -138,18 +138,18 @@ export class ActivitiesMapper {
         to: message.to,
         body: message.body,
         status: message.status,
-        mediaUrl: message.medialUrl,
+        mediaUrl: message.mediaUrl,
         contentType: message.contentType,
         errorCode: message.errorCode,
       },
     }));
   }
-  private static mapNotesToActivity(notes: GetNotesDto[]): NoteActivity[] {
+  private static mapNotesToActivity(notes: NoteEntity[]): NoteActivity[] {
     return notes.map((note, index) => ({
       id: `${ActivityTypeEnum.Note}${index}`,
       user: {
         id: note.userId,
-        username: note.username,
+        username: note.user.username ?? undefined,
       },
       created: note.created,
       type: ActivityTypeEnum.Note,
