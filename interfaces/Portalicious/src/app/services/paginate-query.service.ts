@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
+import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
+
 export enum FilterOperator {
   EQ = '$eq',
   ILIKE = '$ilike',
@@ -19,6 +21,12 @@ export interface PaginateQuery {
   search?: string;
   filter?: Record<string, string | string[]>;
   select?: string[];
+}
+
+interface ActionDataWithPaginateQuery {
+  query: PaginateQuery;
+  count: number;
+  selectAll: boolean;
 }
 
 @Injectable({
@@ -191,5 +199,48 @@ export class PaginateQueryService {
     }
 
     return params;
+  }
+
+  public selectionEventToActionData<TData>({
+    selection,
+    fieldForFilter,
+    totalCount,
+    currentPaginateQuery = {},
+    onEmptySelection,
+  }: {
+    selection: QueryTableSelectionEvent<TData>;
+    fieldForFilter: keyof TData & string;
+    totalCount: number;
+    currentPaginateQuery?: PaginateQuery;
+    onEmptySelection: () => void;
+  }): ActionDataWithPaginateQuery | undefined {
+    if ('selectAll' in selection) {
+      // Apply action to all items...
+      return {
+        query: {
+          ...currentPaginateQuery,
+          // ...including the ones in other pages
+          page: undefined,
+          limit: undefined,
+        },
+        count: totalCount,
+        selectAll: true,
+      };
+    }
+
+    if (selection.length === 0) {
+      onEmptySelection();
+      return;
+    }
+
+    return {
+      query: {
+        filter: {
+          [fieldForFilter]: `${FilterOperator.IN}:${selection.map((r) => r[fieldForFilter]).join(',')}`,
+        },
+      },
+      count: selection.length,
+      selectAll: false,
+    };
   }
 }

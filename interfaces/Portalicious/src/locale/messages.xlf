@@ -683,6 +683,12 @@
       <trans-unit id="8182296119853145202" datatype="html">
         <source>username@example.org</source>
       </trans-unit>
+      <trans-unit id="8066608938393600549" datatype="html">
+        <source>Message</source>
+      </trans-unit>
+      <trans-unit id="no-registrations-selected" datatype="html">
+        <source>Select one or more registrations and try again.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

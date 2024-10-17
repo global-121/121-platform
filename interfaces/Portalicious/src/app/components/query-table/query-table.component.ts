@@ -25,6 +25,7 @@ import {
 } from 'primeng/api';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -32,7 +33,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
+import {
+  Table,
+  TableLazyLoadEvent,
+  TableModule,
+  TableSelectAllChangeEvent,
+} from 'primeng/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
@@ -79,6 +85,8 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     }
 );
 
+export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
+
 @Component({
   selector: 'app-query-table',
   standalone: true,
@@ -98,6 +106,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     SkeletonInlineComponent,
     ColoredChipComponent,
     AutoFocusModule,
+    CheckboxModule,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -118,8 +127,10 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   serverSideFiltering = input<boolean>(false);
   serverSideTotalRecords = input<number>();
   initialSortField = input<keyof TData & string>();
+  enableSelection = input<boolean>(false);
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();
+  readonly onUpdateSelection = output<QueryTableSelectionEvent<TData>>();
 
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
@@ -174,7 +185,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     () =>
       this.columns().length +
       (this.contextMenuItems() ? 1 : 0) +
-      (this.expandableRowTemplate() ? 1 : 0),
+      (this.expandableRowTemplate() ? 1 : 0) +
+      (this.enableSelection() ? 1 : 0),
   );
 
   getCellText(column: QueryTableColumn<TData>, item: TData) {
@@ -311,6 +323,31 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
     return totalRecords;
   });
+
+  /**
+   * ROW SELECTION
+   */
+
+  selectedItems = model<TData[]>([]);
+  selectAll = model<boolean>(false);
+
+  onSelectionChange(items: TData[]) {
+    this.selectedItems.set(items);
+    this.onUpdateSelection.emit(items);
+  }
+
+  onSelectAllChange(event: TableSelectAllChangeEvent) {
+    const checked = event.checked;
+
+    this.selectedItems.set([]);
+    this.selectAll.set(checked);
+
+    if (checked) {
+      this.onUpdateSelection.emit({ selectAll: true });
+    } else {
+      this.onUpdateSelection.emit([]);
+    }
+  }
 
   /**
    *  EXPANDABLE ROWS
