@@ -11,7 +11,7 @@ import { FinancialServiceProviderName } from '@121-service/src/financial-service
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByTransactionStatusEnum } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import {
   ActivityLogItemType,
   ActivityLogItemWithOverview,
