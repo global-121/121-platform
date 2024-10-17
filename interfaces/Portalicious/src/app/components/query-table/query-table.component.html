@@ -26,7 +26,8 @@
   [dataKey]="'id'"
 >
   <ng-template pTemplate="caption">
-    <div class="flex items-center justify-end gap-4">
+    <div class="flex items-center justify-between gap-4">
+      <app-action-bar />
       @if (isFiltered()) {
         <p-button
           label="Clear all filters"

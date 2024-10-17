@@ -36,7 +36,8 @@ import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { ActionBarComponent } from '~/components/query-table/components/action-bar/action-bar.component';
+import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import {
   PaginateQuery,
@@ -98,6 +99,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     SkeletonInlineComponent,
     ColoredChipComponent,
     AutoFocusModule,
+    ActionBarComponent,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
