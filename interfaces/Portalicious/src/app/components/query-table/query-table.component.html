@@ -228,6 +228,7 @@
               "
             />
           } @else {
+            @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
               @if (column.getCellChipData) {
                 @let chipData = column.getCellChipData(item);
@@ -235,14 +236,13 @@
                   [label]="chipData.chipLabel"
                   [variant]="chipData.chipVariant"
                 />
-              } @else {
+              } @else if (cellText) {
                 <app-colored-chip
-                  [label]="item[column.field]"
+                  [label]="cellText"
                   [variant]="'grey'"
                 />
               }
             } @else {
-              @let cellText = getCellText(column, item);
               @let routerLink =
                 column.getCellRouterLink
                   ? column.getCellRouterLink(item)

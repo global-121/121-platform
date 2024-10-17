@@ -667,10 +667,6 @@
         <source>Time and date</source>
         <target state="new">Time and date</target>
       </trans-unit>
-      <trans-unit id="412801067474625773" datatype="html">
-        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.payment" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
-        <target state="new"><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.transferNumber" id="count"/> van <x equiv-text="item.contents.totalTransfers" id="totalCount"/></target>
-      </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
         <source>Current balance</source>
         <target state="new">Current balance</target>
@@ -918,6 +914,82 @@
       <trans-unit id="no-registrations-selected" datatype="html">
         <source>Select one or more registrations and try again.</source>
         <target state="new">Select one or more registrations and try again.</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-custom" datatype="html">
+        <source>Custom message</source>
+        <target state="new">Custom message</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-default-reply" datatype="html">
+        <source>Default reply</source>
+        <target state="new">Default reply</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-generic-templated" datatype="html">
+        <source>Message notification</source>
+        <target state="new">Message notification</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-included" datatype="html">
+        <source>Inclusion</source>
+        <target state="new">Inclusion</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-invited" datatype="html">
+        <source>Invitation for registration</source>
+        <target state="new">Invitation for registration</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment" datatype="html">
+        <source>Payment</source>
+        <target state="new">Payment</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-instructions" datatype="html">
+        <source>Payment instructions</source>
+        <target state="new">Payment instructions</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-reminder" datatype="html">
+        <source>Payment reminder</source>
+        <target state="new">Payment reminder</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-templated" datatype="html">
+        <source>Payment notification</source>
+        <target state="new">Payment notification</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-voucher" datatype="html">
+        <source>Payment voucher</source>
+        <target state="new">Payment voucher</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-registered" datatype="html">
+        <source>Registration</source>
+        <target state="new">Registration</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-paused" datatype="html">
+        <source>Paused</source>
+        <target state="new">Paused</target>
+      </trans-unit>
+      <trans-unit id="message-status-delivered" datatype="html">
+        <source>Delivered</source>
+        <target state="new">Delivered</target>
+      </trans-unit>
+      <trans-unit id="message-status-failed" datatype="html">
+        <source>Failed</source>
+        <target state="new">Failed</target>
+      </trans-unit>
+      <trans-unit id="message-status-read" datatype="html">
+        <source>Read</source>
+        <target state="new">Read</target>
+      </trans-unit>
+      <trans-unit id="message-status-sent" datatype="html">
+        <source>Sent</source>
+        <target state="new">Sent</target>
+      </trans-unit>
+      <trans-unit id="message-status-unknown" datatype="html">
+        <source>Unknown</source>
+        <target state="new">Unknown</target>
+      </trans-unit>
+      <trans-unit id="2161871078253886554" datatype="html">
+        <source>Unknown user</source>
+        <target state="new">Unknown user</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-fsp-change" datatype="html">
+        <source>FSP change</source>
+        <target state="new">FSP change</target>
       </trans-unit>
     </body>
   </file>
