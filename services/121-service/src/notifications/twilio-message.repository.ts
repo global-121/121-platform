@@ -1,11 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Equal } from 'typeorm';
 
-import { GetTwilioMessageDto } from '@121-service/src/notifications/dto/get-twilio-message.dto';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { UserEntity } from '@121-service/src/user/user.entity';
 
 export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessageEntity> {
   constructor(
@@ -62,35 +63,19 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
   }
 
   async getManyByRegistrationId(registrationId: number) {
-    const messageHistoryArray = await this.createQueryBuilder('twilioMessage')
-      .select([
-        'twilioMessage.dateCreated as created',
-        'twilioMessage.from as from',
-        'twilioMessage.to as to',
-        'twilioMessage.body as body',
-        'twilioMessage.status as status',
-        'twilioMessage.type as type',
-        'twilioMessage.mediaUrl as "mediaUrl"',
-        'twilioMessage.contentType as "contentType"',
-        'twilioMessage.errorCode as "errorCode"',
-        'user.id as "userId"',
-        'user.username as "username"',
-      ])
-      .leftJoin('twilioMessage.registration', 'registration')
-      .leftJoin('twilioMessage.user', 'user')
-      .andWhere('registration.id = :registrationId', {
-        registrationId,
-      })
-      .orderBy('twilioMessage.dateCreated', 'DESC')
-      .getRawMany<GetTwilioMessageDto>(); // ##TODO: Why not just return TwilioMessageEntity[]? And is this an example where we want to try a "normal" TypeORM query instead of a raw query?
+    const result: (TwilioMessageEntity & { user: UserEntity })[] =
+      await this.find({
+        where: {
+          registration: { id: Equal(registrationId) },
+        },
+        relations: ['user'],
+        order: { dateCreated: 'DESC' },
+      });
 
-    if (
-      messageHistoryArray.length === 1 &&
-      messageHistoryArray[0].created === null
-    ) {
+    if (result.length === 1 && result[0].created === null) {
       return [];
     }
 
-    return messageHistoryArray;
+    return result;
   }
 }

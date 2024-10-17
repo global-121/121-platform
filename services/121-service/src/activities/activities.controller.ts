@@ -25,7 +25,8 @@ export class ActivitiesController {
   @ApiOperation({ summary: '[SCOPED] Get activities for registration' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: '##TODO: Provide description',
+    description:
+      'Returns activities (notes, transactions, messages, data changes, status changes) for registration',
     type: [ActivitiesDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
