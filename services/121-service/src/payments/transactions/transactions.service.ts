@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
@@ -23,18 +23,14 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import {
-  ScopedQueryBuilder,
-  ScopedRepository,
-} from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class TransactionsService {
@@ -52,8 +48,7 @@ export class TransactionsService {
   public constructor(
     private registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly queueMessageService: QueueMessageService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly eventsService: EventsService,
@@ -64,7 +59,8 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
   ): Promise<AuditedTransactionReturnDto[]> {
-    const query = this.getLastTransactionsQuery(programId, payment, referenceId)
+    const query = this.transactionScopedRepository
+      .getLastTransactionsQuery({ programId, payment, referenceId })
       .leftJoin('transaction.user', 'user')
       .addSelect('user.id', 'userId')
       .addSelect('user.username', 'username');
@@ -89,66 +85,15 @@ export class TransactionsService {
     status?: TransactionStatusEnum,
     fspName?: FinancialServiceProviderName,
   ): Promise<TransactionReturnDto[]> {
-    return this.getLastTransactionsQuery(
-      programId,
-      payment,
-      referenceId,
-      status,
-      fspName,
-    ).getRawMany();
-  }
-
-  public getLastTransactionsQuery(
-    programId: number,
-    payment?: number,
-    referenceId?: string,
-    status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviderName,
-  ): ScopedQueryBuilder<TransactionEntity> {
-    let transactionQuery = this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .select([
-        'transaction.created AS "paymentDate"',
-        'transaction.payment AS payment',
-        'r."referenceId"',
-        'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
-        'fsp.displayName as "fspName"',
-        'fsp.fsp as "fsp"',
-        'fsp.integrationType as "fspIntegrationType"',
-      ])
-      .leftJoin('transaction.financialServiceProvider', 'fsp')
-      .leftJoin('transaction.registration', 'r')
-      .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('transaction."programId" = :programId', {
+    return this.transactionScopedRepository
+      .getLastTransactionsQuery({
         programId,
-      });
-    if (payment) {
-      transactionQuery = transactionQuery.andWhere(
-        'transaction.payment = :payment',
-        { payment },
-      );
-    }
-    if (referenceId) {
-      transactionQuery = transactionQuery.andWhere(
-        'r."referenceId" = :referenceId',
-        { referenceId },
-      );
-    }
-    if (status) {
-      transactionQuery = transactionQuery.andWhere(
-        'transaction.status = :status',
-        { status },
-      );
-    }
-    if (fspName) {
-      transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
+        payment,
+        referenceId,
+        status,
         fspName,
-      });
-    }
-    return transactionQuery;
+      })
+      .getRawMany();
   }
 
   public async storeTransactionUpdateStatus(

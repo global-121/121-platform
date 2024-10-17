@@ -29,6 +29,7 @@ export class TransactionsController {
     private readonly transactionsService: TransactionsService,
   ) {}
 
+  // TODO: Remove this endpoint when the old portal has been deprecated.
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({ summary: '[SCOPED] Get all transactions' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })

@@ -12,7 +12,7 @@ export class EventsMapper {
     return events.map((event) => this.mapEventToJsonDto(event));
   }
 
-  private static mapEventToXlsxDto(event: EventEntity): GetEventXlsxDto {
+  static mapEventToXlsxDto(event: EventEntity): GetEventXlsxDto {
     const attributes = this.createAttributesObject(event.attributes);
     return {
       paId: event.registration.registrationProgramId,
@@ -24,7 +24,7 @@ export class EventsMapper {
     };
   }
 
-  private static mapEventToJsonDto(event: EventEntity): GetEventDto {
+  static mapEventToJsonDto(event: EventEntity): GetEventDto {
     const attributes = this.createAttributesObject(event.attributes);
     return {
       id: event.id,
