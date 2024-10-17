@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NextFunction, Request, Response } from 'express';
+import twilio from 'twilio';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { twilio } from '@121-service/src/notifications/twilio.client';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
@@ -12,10 +12,24 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const twilioSignature = req.headers['x-twilio-signature'];
-
     if (process.env.MOCK_TWILIO) {
       return next();
+    }
+
+    let twilioSignature: string | string[] | undefined =
+      req.headers['x-twilio-signature'];
+    if (Array.isArray(twilioSignature)) {
+      twilioSignature = twilioSignature[0];
+    }
+    if (!twilioSignature) {
+      throw new HttpException(
+        'Twilio signature not found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (!process.env.TWILIO_AUTHTOKEN) {
+      throw new Error('Twilio auth token not found');
     }
 
     const validWhatsAppStatus = twilio.validateRequest(
@@ -23,9 +37,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       twilioSignature,
       EXTERNAL_API.whatsAppStatus,
       req.body,
-      {
-        accountSid: process.env.TWILIO_SID,
-      },
     );
     if (validWhatsAppStatus) {
       return next();
@@ -36,9 +47,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       twilioSignature,
       EXTERNAL_API.whatsAppIncoming,
       req.body,
-      {
-        accountSid: process.env.TWILIO_SID,
-      },
     );
     if (validWhatsAppIncoming) {
       return next();
@@ -49,9 +57,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       twilioSignature,
       EXTERNAL_API.smsStatus,
       req.body,
-      {
-        accountSid: process.env.TWILIO_SID,
-      },
     );
     if (validSms) {
       return next();

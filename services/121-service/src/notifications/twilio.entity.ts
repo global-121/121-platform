@@ -1,3 +1,4 @@
+import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import {
   Column,
   Entity,
@@ -44,7 +45,8 @@ export class TwilioMessageEntity extends Base121Entity {
 
   @Column()
   @Index()
-  public status: string;
+  @Column({ type: 'character varying' })
+  public status: MessageStatus;
 
   @Column({ type: 'character varying' })
   public type: NotificationType;
