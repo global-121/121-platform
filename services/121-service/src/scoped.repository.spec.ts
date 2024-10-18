@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TestBed } from '@automock/jest';
 
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 
 describe('ScopedRepository', () => {
-  let scopedRepository: ScopedRepository<RegistrationDataEntity>;
+  let scopedRepository: ScopedRepository<RegistrationAttributeDataEntity>;
 
   beforeEach(() => {
     const { unit: scopedRepositoryUnit, unitRef: scopedRepositoryUnitRef } =
-      TestBed.create(ScopedRepository<RegistrationDataEntity>).compile();
+      TestBed.create(
+        ScopedRepository<RegistrationAttributeDataEntity>,
+      ).compile();
 
     scopedRepository = scopedRepositoryUnit;
   });

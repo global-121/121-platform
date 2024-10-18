@@ -11,7 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -75,10 +75,10 @@ export class UpdateProgramDto {
   @ApiProperty({
     example: [
       {
-        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fsp: FinancialServiceProviders.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
+        fsp: FinancialServiceProviders.intersolveVoucherPaper,
       },
     ],
     description:

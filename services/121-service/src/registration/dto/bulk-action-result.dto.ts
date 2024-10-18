@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 export class BulkActionResultDto {
   @ApiProperty({
@@ -18,8 +18,8 @@ export class BulkActionResultDto {
 export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
   @ApiProperty({
     example: [
-      FinancialServiceProviderName.intersolveVisa,
-      FinancialServiceProviderName.excel,
+      FinancialServiceProviders.intersolveVisa,
+      FinancialServiceProviders.excel,
     ],
   })
   public readonly fspsInPayment: string[];

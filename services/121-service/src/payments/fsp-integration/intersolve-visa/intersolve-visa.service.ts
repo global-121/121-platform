@@ -618,11 +618,12 @@ export class IntersolveVisaService
   }
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
-    await this.intersolveVisaCustomerScopedRepository.findOneByOrFail({
-      registrationId,
+    const count = await this.intersolveVisaCustomerScopedRepository.count({
+      where: {
+        registrationId: registrationId,
+      },
     });
-
-    return true;
+    return count > 0;
   }
 
   /**
