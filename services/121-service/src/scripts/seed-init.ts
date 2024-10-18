@@ -11,7 +11,6 @@ import fspIntersolveVisa from '@121-service/src/seed-data/fsp/fsp-intersolve-vis
 import fspIntersolveVoucherPaper from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import fspIntersolveVoucher from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import fspSafaricom from '@121-service/src/seed-data/fsp/fsp-safaricom.json';
-import fspVodaCash from '@121-service/src/seed-data/fsp/fsp-vodacash.json';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
@@ -330,7 +329,6 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspIntersolveVoucher);
     await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
     await this.seedHelper.addFsp(fspIntersolveVisa);
-    await this.seedHelper.addFsp(fspVodaCash);
     await this.seedHelper.addFsp(fspSafaricom);
     await this.seedHelper.addFsp(fspCommercialBankEthiopia);
     await this.seedHelper.addFsp(fspExcel);

@@ -10,5 +10,4 @@ export class FspInstructions {
 export enum ExportFileType {
   csv = 'csv',
   excel = 'excel',
-  xml = 'xml',
 }

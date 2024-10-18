@@ -68,11 +68,6 @@ graph LR
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->TransactionsModule
-  PaymentsModule-->VodacashModule
-  VodacashModule-->UserModule
-  VodacashModule-->TransactionsModule
-  VodacashModule-->RegistrationDataModule
-  VodacashModule-->RegistrationsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->UserModule
   SafaricomModule-->TransactionsModule
