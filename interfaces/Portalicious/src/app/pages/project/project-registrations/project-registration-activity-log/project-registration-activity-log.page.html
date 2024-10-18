@@ -6,14 +6,14 @@
 >
   <div registration-page>
     <app-query-table
-      [items]="items()"
+      [items]="activities()"
       [isPending]="activityLog.isPending()"
       [columns]="columns()"
       localStorageKey="activity-log-table"
       [expandableRowTemplate]="expandableRowTemplate"
       [tableCellContext]="tableCellContext()"
-      [globalFilterFields]="['activityType', 'overview', 'author']"
-      [initialSortField]="'date'"
+      [globalFilterFields]="globalFilterFields()"
+      [initialSortField]="'created'"
     />
   </div>
 </app-page-layout>

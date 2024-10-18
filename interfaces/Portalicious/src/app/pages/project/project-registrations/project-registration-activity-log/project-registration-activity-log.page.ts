@@ -20,10 +20,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
-import {
-  ActivityLogItemType,
-  ActivityLogItemWithOverview,
-} from '~/domains/registration/registration.model';
+import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogExpandedRowComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/activity-log-expanded-row/activity-log-expanded-row.component';
 import { TableCellActivityComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-activity.component';
 import { TableCellOverviewComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-overview.component';
@@ -73,48 +70,60 @@ export class ProjectRegistrationActivityLogPageComponent {
     ),
   );
 
-  items = computed(() => this.activityLog.data()?.data ?? []);
+  activities = computed(() => this.activityLog.data()?.data ?? []);
 
   uniqueAuthors = computed(() => {
     return uniqBy(
-      this.items().map(({ author }) => ({
-        label: author,
-        value: author,
+      this.activities().map(({ user }) => ({
+        label: user.username ?? $localize`Unknown user`,
+        value: user.username ?? $localize`Unknown user`,
       })),
       'value',
     ).sort((a, b) => a.label.localeCompare(b.label));
   });
 
-  columns = computed<QueryTableColumn<ActivityLogItemWithOverview>[]>(() => [
+  availableActivityTypes = computed(
+    () => this.activityLog.data()?.meta.availableTypes ?? [],
+  );
+
+  columns = computed<QueryTableColumn<Activity>[]>(() => [
     {
-      field: 'activityType',
+      field: 'type',
       header: $localize`Activity`,
       component: TableCellActivityComponent,
       type: QueryTableColumnType.MULTISELECT,
-      options: Object.entries(this.activityLog.data()?.meta.count ?? {}).map(
-        ([type, count]) => ({
-          label:
-            ACTIVITY_LOG_ITEM_TYPE_LABELS[type as ActivityLogItemType] +
-            ` (${String(count)})`,
+      options: this.availableActivityTypes().map((type) => {
+        const count = this.activityLog.data()?.meta.count[type] ?? 0;
+        return {
+          label: ACTIVITY_LOG_ITEM_TYPE_LABELS[type] + ` (${String(count)})`,
           value: type,
-        }),
-      ),
+        };
+      }),
     },
     {
       header: $localize`Overview`,
-      field: 'overview',
       component: TableCellOverviewComponent,
     },
     {
-      field: 'author',
+      // TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
+      // @ts-expect-error the typing of query-table does not support "leaves" but the functionality does
+      field: 'user.username',
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
       options: this.uniqueAuthors(),
     },
     {
-      field: 'date',
+      field: 'created',
       header: $localize`Time and date`,
       type: QueryTableColumnType.DATE,
     },
+  ]);
+
+  globalFilterFields = computed<(keyof Activity)[]>(() => [
+    'type',
+    // TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
+    // @ts-expect-error the typing of query-table does not support "leaves" but the functionality does
+    'user.username',
+    'created',
   ]);
 }
