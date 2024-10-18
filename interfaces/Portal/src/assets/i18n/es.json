@@ -167,10 +167,6 @@
           "btn-text": "Exportación: Afectados",
           "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas."
         },
-        "card-balances": {
-          "btn-text": "Exportar el uso de la tarjeta de débito",
-          "confirm-message": "Esto descargará un archivo de Excel que muestra el saldo de cada tarjeta.<br /><br />Aviso importante: Los saldos de las tarjetas disponibles para descargar no están en tiempo real. El informe incluye la fecha y hora de la última actualización externa de cada tarjeta."
-        },
         "duplicates": {
           "basedOn": "La comprobación de duplicados se basa en: {{duplicateAttributes}}",
           "btn-text": "Exportar duplicado Personas afectadas",
@@ -184,6 +180,10 @@
         "included": {
           "btn-text": "La exportación incluyó a las personas afectadas",
           "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas incluidas."
+        },
+        "intersolve-visa-card-details": {
+          "btn-text": "Exportar el uso de la tarjeta de débito",
+          "confirm-message": "Esto descargará un archivo de Excel que muestra el saldo de cada tarjeta.<br /><br />Aviso importante: Los saldos de las tarjetas disponibles para descargar no están en tiempo real. El informe incluye la fecha y hora de la última actualización externa de cada tarjeta."
         },
         "no-data": "Actualmente no hay datos para descargar",
         "pa-data-changes": {
@@ -677,6 +677,7 @@
         "pause-success": "Tarjeta de débito pausada correctamente",
         "unpause-success": "Tarjeta de débito sin pausa correcta"
       },
+      "card-number": "Número de tarjeta",
       "confirm-prompt": {
         "new-card": "bloquear permanentemente esta tarjeta y emitir una nueva?",
         "pause": "¿Pausar esta tarjeta?",
@@ -695,7 +696,8 @@
       "spent-this-month": "Gastado este mes (máximo {{maxAmount}})",
       "status": "Estado",
       "title": "Tarjetas de débito",
-      "unpause-card": "Tarjeta de reanudación"
+      "unpause-card": "Tarjeta de reanudación",
+      "wallet-number": "Número de billetera"
     },
     "show-all": "Mostrar todo"
   },

@@ -6,6 +6,8 @@ import { FinancialServiceProvidersController } from '@121-service/src/financial-
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FinancialServiceProvidersService } from '@121-service/src/financial-service-providers/financial-service-provider.service';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
+import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
 import { UserModule } from '@121-service/src/user/user.module';
 
 @Module({
@@ -17,8 +19,16 @@ import { UserModule } from '@121-service/src/user/user.module';
       FspQuestionEntity,
     ]),
   ],
-  providers: [FinancialServiceProvidersService],
+  providers: [
+    FinancialServiceProvidersService,
+    FinancialServiceProviderQuestionRepository,
+    FinancialServiceProviderRepository,
+  ],
   controllers: [FinancialServiceProvidersController],
-  exports: [FinancialServiceProvidersService],
+  exports: [
+    FinancialServiceProvidersService,
+    FinancialServiceProviderQuestionRepository,
+    FinancialServiceProviderRepository,
+  ],
 })
 export class FinancialServiceProvidersModule {}
