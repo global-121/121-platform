@@ -63,5 +63,6 @@ export class RemoveVodacashFromFspTable1729241929168
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async down(_queryRunner: QueryRunner): Promise<void> {}
 }
