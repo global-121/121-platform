@@ -114,30 +114,14 @@ export class RegistrationsController {
     data: ImportRegistrationsDto[],
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query('validation') validation = true,
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
     const userId = RequestHelper.getUserId(req);
-
-    if (validation) {
-      const validatedData =
-        await this.registrationsService.importJsonValidateRegistrations(
-          data,
-          programId,
-          userId,
-        );
-      return await this.registrationsService.importValidatedRegistrations(
-        validatedData,
-        programId,
-        userId,
-      );
-    } else {
-      return await this.registrationsService.importValidatedRegistrations(
-        data,
-        programId,
-        userId,
-      );
-    }
+    return await this.registrationsService.importRegistrationFromJson(
+      data,
+      programId,
+      userId,
+    );
   }
 
   @ApiTags('programs/registrations')

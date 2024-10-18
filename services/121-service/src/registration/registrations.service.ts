@@ -426,14 +426,20 @@ export class RegistrationsService {
     );
   }
 
-  public async importJsonValidateRegistrations(
+  public async importRegistrationFromJson(
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
     userId: number,
-  ): Promise<ImportRegistrationsDto[]> {
-    return await this.registrationsImportService.validateImportAsRegisteredInput(
-      validatedJsonData,
-      programId,
+  ): Promise<ImportResult> {
+    const validateRegistrationsInput =
+      await this.registrationsImportService.validateImportAsRegisteredInput(
+        validatedJsonData,
+        programId,
+        userId,
+      );
+    return await this.registrationsImportService.importValidatedRegistrations(
+      validateRegistrationsInput,
+      await this.findProgramOrThrow(programId),
       userId,
     );
   }
