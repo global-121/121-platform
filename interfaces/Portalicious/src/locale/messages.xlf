@@ -686,6 +686,12 @@
       <trans-unit id="3382504338655482064" datatype="html">
         <source>Cash distributed in the last payment.</source>
       </trans-unit>
+      <trans-unit id="8066608938393600549" datatype="html">
+        <source>Message</source>
+      </trans-unit>
+      <trans-unit id="no-registrations-selected" datatype="html">
+        <source>Select one or more registrations and try again.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

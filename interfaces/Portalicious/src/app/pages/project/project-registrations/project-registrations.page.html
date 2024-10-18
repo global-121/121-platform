@@ -12,6 +12,19 @@
       [serverSideFiltering]="true"
       [serverSideTotalRecords]="totalRegistrations()"
       (onUpdatePaginateQuery)="paginateQuery.set($event)"
-    />
+      [enableSelection]="true"
+      (onUpdateSelection)="tableSelection.set($event)"
+    >
+      <div table-actions>
+        <p-button
+          label="Message"
+          i18n-label
+          icon="pi pi-envelope"
+          rounded
+          outlined
+          (click)="sendMessage()"
+        />
+      </div>
+    </app-query-table>
   </p-card>
 </app-page-layout>
