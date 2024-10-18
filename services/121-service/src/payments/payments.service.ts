@@ -21,7 +21,6 @@ import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/p
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -78,7 +77,6 @@ export class PaymentsService {
     private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
-    private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
@@ -111,7 +109,6 @@ export class PaymentsService {
       [FinancialServiceProviderName.intersolveVisa]: [
         this.intersolveVisaService,
       ],
-      [FinancialServiceProviderName.vodacash]: [this.vodacashService],
       [FinancialServiceProviderName.safaricom]: [this.safaricomService],
       [FinancialServiceProviderName.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
@@ -744,7 +741,6 @@ export class PaymentsService {
     }
 
     let csvInstructions: CsvInstructions = [];
-    let xmlInstructions: string | undefined;
     let fileType: ExportFileType | undefined;
 
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
@@ -764,17 +760,6 @@ export class PaymentsService {
         transaction.status !== TransactionStatusEnum.waiting
       ) {
         continue;
-      }
-
-      if (registration.fsp.fsp === FinancialServiceProviderName.vodacash) {
-        xmlInstructions = await this.vodacashService.getFspInstructions(
-          registration,
-          transaction,
-          xmlInstructions,
-        );
-        if (!fileType) {
-          fileType = ExportFileType.xml;
-        }
       }
     }
 
@@ -800,7 +785,7 @@ export class PaymentsService {
     );
 
     return {
-      data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
+      data: csvInstructions,
       fileType,
     };
   }
@@ -823,37 +808,6 @@ export class PaymentsService {
 
     let importResponseRecords: any[] = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.vodacash) {
-        const vodacashRegistrations =
-          await this.vodacashService.getRegistrationsForReconciliation(
-            programId,
-            payment,
-          );
-        if (!vodacashRegistrations?.length) {
-          continue;
-        }
-        const validatedVodacashImport =
-          await this.vodacashService.xmlToValidatedFspReconciliation(file);
-        for (const record of validatedVodacashImport) {
-          const matchedRegistration =
-            await this.vodacashService.findReconciliationRegistration(
-              record,
-              vodacashRegistrations,
-            );
-          if (matchedRegistration) {
-            record['paTransactionResult'] =
-              await this.vodacashService.createTransactionResult(
-                matchedRegistration.id,
-                matchedRegistration.referenceId,
-                record,
-                programId,
-                payment,
-              );
-          }
-          importResponseRecords.push(record);
-        }
-      }
-
       if (fsp.fsp === FinancialServiceProviderName.excel) {
         const maxRecords = 10000;
         const matchColumn =

@@ -11,7 +11,6 @@ import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/exc
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
-import { VodacashModule } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -49,7 +48,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     IntersolveVoucherModule,
     IntersolveVisaModule,
     TransactionsModule,
-    VodacashModule,
     SafaricomModule,
     ExcelModule,
     CommercialBankEthiopiaModule,

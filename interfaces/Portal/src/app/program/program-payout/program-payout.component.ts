@@ -86,10 +86,8 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.financialServiceProviders,
     );
     this.hasFspWithExportFileIntegration =
-      this.program.financialServiceProviders.some((fsp) =>
-        [FspIntegrationType.csv, FspIntegrationType.xml].includes(
-          fsp.integrationType,
-        ),
+      this.program.financialServiceProviders.some(
+        (fsp) => fsp.integrationType === FspIntegrationType.csv,
       );
     this.hasFspWithReconciliation = this.program.financialServiceProviders.some(
       (fsp) => fsp.hasReconciliation,
@@ -355,7 +353,7 @@ export class ProgramPayoutComponent implements OnInit {
 
           if (response) {
             message += this.translate.instant(
-              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv/xml' becuse retry only possible for 'api'
+              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry only possible for 'api'
               {
                 nrPa: `<strong>${response.applicableCount}</strong>`,
               },

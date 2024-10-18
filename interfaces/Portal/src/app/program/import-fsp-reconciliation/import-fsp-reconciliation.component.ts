@@ -172,7 +172,7 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
 
   private setupFilePickerProps() {
     this.filePickerProps = {
-      type: 'csv,xml',
+      type: 'csv',
       explanation: this.translate.instant(
         'page.program.import-fsp-reconciliation.explanation',
         {

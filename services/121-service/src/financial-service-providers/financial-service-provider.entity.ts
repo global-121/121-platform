@@ -34,7 +34,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column({ default: false })
   @ApiProperty({
     example: false,
-    description: 'Only relevant for integrationType=csv/xml',
+    description: 'Only relevant for integrationType=csv',
   })
   public hasReconciliation: boolean;
 

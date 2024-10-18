@@ -313,8 +313,7 @@
         "payment-nr": "Pago #{{number}}",
         "result": {
           "api": "Solicitud de pago enviada con éxito por {{nrPa}} PA(s). <br><br>Los pagos pueden tardar algún tiempo en procesarse. Inspeccione la tabla PA a continuación para conocer el estado actualizado de los pagos. <br><br>Puede cerrar esta ventana emergente.",
-          "csv": "Preparó con éxito los datos de pago para {{nrPa}} PA(s). <br><br>A continuación, por favor:Seleccione el pago en el <ol><li>menú desplegable <strong>Elegir pago...</strong></li> <li>Utilice el botón <strong>Exportar instrucciones de pago</strong></li> <li>Guarde el archivo XLSX resultante en el formato requerido por</li> el proveedor de servicios financieros <li>Cargue el archivo en el portal del proveedor de servicios financieros.</li></ol>",
-          "xml": "Preparó con éxito los datos de pago para {{nrPa}} PA(s). <br><br>A continuación, por favor:Seleccione el pago en el <ol><li>menú desplegable <strong>Elegir pago...</strong></li> <li>Utilice el botón <strong>Exportar instrucciones de pago</strong></li> <li>Guarde el archivo XML resultante</li><li>Cargue el archivo en el portal del proveedor de servicios financieros.</li></ol>"
+          "csv": "Preparó con éxito los datos de pago para {{nrPa}} PA(s). <br><br>A continuación, por favor:Seleccione el pago en el <ol><li>menú desplegable <strong>Elegir pago...</strong></li> <li>Utilice el botón <strong>Exportar instrucciones de pago</strong></li> <li>Guarde el archivo XLSX resultante en el formato requerido por</li> el proveedor de servicios financieros <li>Cargue el archivo en el portal del proveedor de servicios financieros.</li></ol>"
         },
         "show-transfer-amount-input": "Editar valor de transferencia predeterminado",
         "start-payout": "Comience a pagar ahora",
