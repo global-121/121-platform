@@ -11,7 +11,6 @@ import {
 } from 'class-validator';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ImportFspReconciliationArrayDto } from '@121-service/src/payments/dto/import-fsp-reconciliation.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -65,14 +64,9 @@ export class BulkImportResult extends BulkImportDto {
   public registrationStatus: RegistrationStatusEnum | string;
 }
 
-class ImportFspReconciliationResult extends ImportFspReconciliationArrayDto {
-  public importStatus: ImportStatus;
-}
-
 export class ImportResult {
   public aggregateImportResult: AggregateImportResult;
   public importResult?: BulkImportResult[];
-  public uploadFspReconciliationResult?: ImportFspReconciliationResult[];
 }
 
 class AggregateImportResult {
