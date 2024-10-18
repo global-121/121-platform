@@ -1,0 +1,33 @@
+<p i18n>
+  Custom messages are <b>not automatically translated</b> to the registration's
+  preferred language.
+</p>
+
+<p>
+  <strong i18n> Message: </strong>
+  <app-info-tooltip
+    message="XXX: figure out tooltip text"
+    i18n-message
+  />
+</p>
+
+<p i18n>Use &amp; to add personalized fields. <a href="XXX">Learn more</a></p>
+
+<textarea
+  rows="5"
+  pInputTextarea
+  [formControlName]="formControlName()"
+  autocomplete="off"
+  class="w-full"
+></textarea>
+<p
+  i18n
+  class="w-full text-end txt-body-s"
+>
+  (>20) characters.
+</p>
+
+<p i18n>
+  *Please make sure registration data is available for all used personalized
+  fields.
+</p>

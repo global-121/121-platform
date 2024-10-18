@@ -5,6 +5,7 @@ import {
   inject,
   input,
   signal,
+  ViewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -23,6 +24,7 @@ import {
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { SendMessageDialogComponent } from '~/pages/project/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import {
   PaginateQuery,
   PaginateQueryService,
@@ -32,7 +34,13 @@ import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-project-registrations',
   standalone: true,
-  imports: [PageLayoutComponent, CardModule, QueryTableComponent, ButtonModule],
+  imports: [
+    PageLayoutComponent,
+    CardModule,
+    QueryTableComponent,
+    ButtonModule,
+    SendMessageDialogComponent,
+  ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
   styles: ``,
@@ -45,6 +53,9 @@ export class ProjectRegistrationsPageComponent {
   private paginateQueryService = inject(PaginateQueryService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+
+  @ViewChild('sendMessageDialog')
+  private sendMessageDialog: SendMessageDialogComponent;
 
   paginateQuery = signal<PaginateQuery | undefined>(undefined);
   tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
@@ -104,7 +115,7 @@ export class ProjectRegistrationsPageComponent {
     registrationId,
   ];
 
-  private get actionData() {
+  private getActionData() {
     return this.paginateQueryService.selectionEventToActionData({
       selection: this.tableSelection(),
       fieldForFilter: 'referenceId',
@@ -120,19 +131,12 @@ export class ProjectRegistrationsPageComponent {
   }
 
   sendMessage() {
-    const actionData = this.actionData;
+    const actionData = this.getActionData();
 
     if (!actionData) {
       return;
     }
 
-    // TODO: Instead of showing a toast, do something with the data
-    console.log(actionData);
-    this.toastService.showToast({
-      severity: 'info',
-      detail: actionData.selectAll
-        ? `Sending message to all filtered registrations (${actionData.count.toString()})`
-        : `Sending message to the ${actionData.count.toString()} selected registration(s)`,
-    });
+    this.sendMessageDialog.triggerAction(actionData);
   }
 }

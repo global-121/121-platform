@@ -6,6 +6,7 @@ import { uniqueId } from 'lodash';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -76,6 +77,41 @@ export class RegistrationApiService extends DomainApiService {
     return this.generateQueryOptions<Registration>({
       path: [...BASE_ENDPOINT(projectId as Signal<number>), registrationId],
       enabled: () => !!projectId() && !!registrationId(),
+    });
+  }
+
+  sendMessage({
+    projectId,
+    paginateQuery,
+    messageData,
+  }: {
+    projectId: Signal<number>;
+    paginateQuery: PaginateQuery | undefined;
+    messageData: { customMessage: string } | { messageTemplateKey: string };
+  }) {
+    let body: Partial<SendCustomTextDto>;
+
+    if ('customMessage' in messageData) {
+      body = {
+        message: messageData.customMessage,
+        skipMessageValidation: false,
+      };
+    } else {
+      body = {
+        messageTemplateKey: messageData.messageTemplateKey,
+        skipMessageValidation: false,
+      };
+    }
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'messages',
+      ]).join('/'),
+      body,
+      params:
+        this.paginateQueryService.paginateQueryToHttpParams(paginateQuery),
     });
   }
 
