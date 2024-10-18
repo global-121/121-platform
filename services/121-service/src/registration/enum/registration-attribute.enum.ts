@@ -1,4 +1,3 @@
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -36,12 +35,13 @@ export enum GenericRegistrationAttributes {
   preferredLanguage = 'preferredLanguage',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   programFinancialServiceProviderConfigurationName = 'programFinancialServiceProviderConfigurationName',
+  programFinancialServiceProviderConfigurationLabel = 'programFinancialServiceProviderConfigurationLabel',
   maxPayments = 'maxPayments',
   paymentCount = 'paymentCount',
+  paymentCountRemaining = 'paymentCountRemaining',
   scope = 'scope',
   status = 'status',
   registrationProgramId = 'registrationProgramId',
-  programFinancialServiceProviderConfigurationLabel = 'programFinancialServiceProviderConfigurationLabel',
   registrationCreatedDate = 'registrationCreatedDate',
 }
 
@@ -52,7 +52,6 @@ export class Attribute {
   public isRequired?: boolean;
   public label: LocalizedString | null;
   public options?: QuestionOption[] | null;
-  public fspNames?: FinancialServiceProviders[];
   public pattern?: string | null;
 }
 
