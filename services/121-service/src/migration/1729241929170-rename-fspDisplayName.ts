@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RenameFspDisplayName1726752622008 implements MigrationInterface {
-  name = 'RenameFspDisplayName1726752622008';
+export class RenameFspDisplayName1729241929170 implements MigrationInterface {
+  name = 'RenameFspDisplayName1729241929170';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);

@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class FincancialServiceProviderConfigurationRefactor1726668618637
+export class FincancialServiceProviderConfigurationRefactor1729241929169
   implements MigrationInterface
 {
-  name = 'FincancialServiceProviderConfigurationRefactor1726668618637';
+  name = 'FincancialServiceProviderConfigurationRefactor1729241929169';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
