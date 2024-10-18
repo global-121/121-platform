@@ -313,14 +313,36 @@
       "financialServiceProvider": "fsp_no_attributes"
     },
     {
-      "financialServiceProvider": "VodaCash"
-    },
-    {
       "financialServiceProvider": "Excel",
+      "name": "ironBank",
+      "label": {
+        "en": "Iron Bank",
+        "fr": "Banque de fer",
+        "nl": "IJzeren Bank"
+      },
       "properties": [
         {
           "name": "columnsToExport",
-          "value": ["name", "dob", "house", "phoneNumber"]
+          "value": ["name", "birthdate", "documentid", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "name": "gringotts",
+      "label": {
+        "en": "Gringotts",
+        "fr": "Gringotts",
+        "nl": "Goudgrijp"
+      },
+      "properties": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "birthdate", "documentid", "phoneNumber"]
         },
         {
           "name": "columnToMatch",

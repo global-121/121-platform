@@ -736,25 +736,45 @@ export class RegistrationsPaginationService {
     return queryBuilder;
   }
 
-  public getQueryBuilderForFsp(
-    programId: number,
-    payment: number,
-    fspName: FinancialServiceProviders,
-    status?: TransactionStatusEnum,
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
+  public getQueryBuilderForFspInstructions({
+    programId,
+    payment,
+    programFinancialServiceProviderConfigurationId,
+    financialServiceProviderName,
+    status,
+  }: {
+    programId: number;
+    payment: number;
+    programFinancialServiceProviderConfigurationId?: number;
+    financialServiceProviderName?: FinancialServiceProviders;
+    status?: TransactionStatusEnum;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
       .innerJoin('registration.latestTransactions', 'latestTransaction')
       .innerJoin('latestTransaction.transaction', 'transaction')
-      .innerJoin('transaction.financialServiceProvider', 'fsp')
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('transaction.payment = :payment', { payment })
-      .andWhere('fsp.fsp = :fsp', {
-        fsp: fspName,
-      })
       .orderBy('registration.referenceId', 'ASC');
     if (status) {
       query.andWhere('transaction.status = :status', { status });
+    }
+    if (programFinancialServiceProviderConfigurationId) {
+      query.andWhere(
+        'transaction.programFinancialServiceProviderConfigurationId = :programFinancialServiceProviderConfigurationId',
+        { programFinancialServiceProviderConfigurationId },
+      );
+    }
+    if (financialServiceProviderName) {
+      query
+        .leftJoin(
+          'transaction.programFinancialServiceProviderConfiguration',
+          'programFinancialServiceProviderConfiguration',
+        )
+        .andWhere(
+          'programFinancialServiceProviderConfiguration.financialServiceProviderName = :financialServiceProviderName',
+          { financialServiceProviderName },
+        );
     }
     return query;
   }
