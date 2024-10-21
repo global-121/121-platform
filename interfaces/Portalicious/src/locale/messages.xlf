@@ -503,9 +503,6 @@
       <trans-unit id="generic-pending" datatype="html">
         <source>Pending</source>
       </trans-unit>
-      <trans-unit id="412801067474625773" datatype="html">
-        <source><x equiv-text="ACTIVITY_LOG_ITEM_TYPE_LABELS[item.activityType]" id="activityType"/> <x equiv-text="item.contents.payment" id="count"/> of <x equiv-text="item.contents.totalTransfers" id="totalCount"/></source>
-      </trans-unit>
       <trans-unit id="1270421233965290368" datatype="html">
         <source>Current balance</source>
       </trans-unit>
@@ -691,6 +688,63 @@
       </trans-unit>
       <trans-unit id="no-registrations-selected" datatype="html">
         <source>Select one or more registrations and try again.</source>
+      </trans-unit>
+      <trans-unit id="2161871078253886554" datatype="html">
+        <source>Unknown user</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-custom" datatype="html">
+        <source>Custom message</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-default-reply" datatype="html">
+        <source>Default reply</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-generic-templated" datatype="html">
+        <source>Message notification</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-included" datatype="html">
+        <source>Inclusion</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-invited" datatype="html">
+        <source>Invitation for registration</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-paused" datatype="html">
+        <source>Paused</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment" datatype="html">
+        <source>Payment</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-instructions" datatype="html">
+        <source>Payment instructions</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-reminder" datatype="html">
+        <source>Payment reminder</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-templated" datatype="html">
+        <source>Payment notification</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-voucher" datatype="html">
+        <source>Payment voucher</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-registered" datatype="html">
+        <source>Registration</source>
+      </trans-unit>
+      <trans-unit id="message-status-delivered" datatype="html">
+        <source>Delivered</source>
+      </trans-unit>
+      <trans-unit id="message-status-failed" datatype="html">
+        <source>Failed</source>
+      </trans-unit>
+      <trans-unit id="message-status-read" datatype="html">
+        <source>Read</source>
+      </trans-unit>
+      <trans-unit id="message-status-sent" datatype="html">
+        <source>Sent</source>
+      </trans-unit>
+      <trans-unit id="message-status-unknown" datatype="html">
+        <source>Unknown</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-fsp-change" datatype="html">
+        <source>FSP change</source>
       </trans-unit>
     </body>
   </file>

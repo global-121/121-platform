@@ -3,6 +3,11 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import {
+  convertTwilioMessageStatusToMessageStatus,
+  MESSAGE_STATUS_LABELS,
+  MessageStatus,
+} from '~/domains/message/message.helper';
+import {
   REGISTRATION_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
@@ -71,6 +76,31 @@ export function getChipDataByTransactionStatusEnum(
       return {
         chipLabel: $localize`:@@generic-error:Error`,
         chipVariant: 'red',
+      };
+  }
+}
+
+export function getChipDataByTwilioMessageStatus(status: string): ChipData {
+  const messageStatus = convertTwilioMessageStatusToMessageStatus(status);
+  const chipLabel = MESSAGE_STATUS_LABELS[messageStatus];
+
+  switch (messageStatus) {
+    case MessageStatus.delivered:
+    case MessageStatus.read:
+    case MessageStatus.sent:
+      return {
+        chipLabel,
+        chipVariant: 'green',
+      };
+    case MessageStatus.failed:
+      return {
+        chipLabel,
+        chipVariant: 'red',
+      };
+    default:
+      return {
+        chipLabel,
+        chipVariant: 'blue',
       };
   }
 }
