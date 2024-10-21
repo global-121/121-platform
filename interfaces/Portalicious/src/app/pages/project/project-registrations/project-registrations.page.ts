@@ -9,7 +9,10 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 import { CardModule } from 'primeng/card';
+
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
@@ -23,6 +26,7 @@ import {
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { AuthService } from '~/services/auth.service';
 import {
   PaginateQuery,
   PaginateQueryService,
@@ -32,7 +36,13 @@ import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-project-registrations',
   standalone: true,
-  imports: [PageLayoutComponent, CardModule, QueryTableComponent, ButtonModule],
+  imports: [
+    PageLayoutComponent,
+    CardModule,
+    QueryTableComponent,
+    ButtonModule,
+    ButtonGroupModule,
+  ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
   styles: ``,
@@ -42,10 +52,12 @@ export class ProjectRegistrationsPageComponent {
   // this is injected by the router
   projectId = input.required<number>();
 
+  public authService = inject(AuthService);
   private paginateQueryService = inject(PaginateQueryService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
+  PermissionEnum = PermissionEnum;
   paginateQuery = signal<PaginateQuery | undefined>(undefined);
   tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
 

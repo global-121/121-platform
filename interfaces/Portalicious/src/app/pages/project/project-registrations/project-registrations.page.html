@@ -16,14 +16,23 @@
       (onUpdateSelection)="tableSelection.set($event)"
     >
       <div table-actions>
-        <p-button
-          label="Message"
-          i18n-label
-          icon="pi pi-envelope"
-          rounded
-          outlined
-          (click)="sendMessage()"
-        />
+        <p-buttonGroup>
+          @if (
+            authService.hasPermission({
+              projectId: projectId(),
+              requiredPermission: PermissionEnum.RegistrationNotificationREAD,
+            })
+          ) {
+            <p-button
+              label="Message"
+              i18n-label
+              icon="pi pi-envelope"
+              rounded
+              outlined
+              (click)="sendMessage()"
+            />
+          }
+        </p-buttonGroup>
       </div>
     </app-query-table>
   </p-card>
