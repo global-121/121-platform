@@ -199,6 +199,8 @@ NOTE: if you're making many data-model changes at once, or are doing a lot of tr
    - generate migration-script (see above)
    - restart 121-service (like above, to run the new migration-script)
 
+You can also use a .sh script for this in `./services/121-service/src/migration/test-migration.sh` example usage `./services/121-service/src/migration/test-migration.sh main feat.new-awesome-entity`
+
 ### Authentication
 
 All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request by the browser via an `access_token` cookie. The JWT authentication middleware handles the validation and authentication of the token.
