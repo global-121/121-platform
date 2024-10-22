@@ -19,35 +19,36 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 class BaseProgramRegistrationAttributeDto {
-  @ApiProperty({})
-  @IsNotEmpty()
-  @IsString()
-  public readonly name: string;
-
   @ApiProperty({ required: false })
   @ValidateIf((o) => o.answerType === RegistrationAttributeTypes.dropdown)
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
   public readonly options?: QuestionOption[];
+
   @ApiProperty()
   @IsOptional()
   public readonly scoring?: Record<string, unknown>;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
   public readonly persistence?: boolean;
+
   @ApiProperty({ required: false })
   @IsOptional()
   public pattern?: string;
+
   @ApiProperty({
     example: false,
   })
   @IsOptional()
-  public showInPeopleAffectedTable: boolean;
+  public showInPeopleAffectedTable?: boolean;
+
   @ApiProperty({ example: true })
   @IsOptional()
   public readonly editableInPortal?: boolean;
+
   @ApiProperty({
     example: [ExportType.allPeopleAffected, ExportType.included],
     required: false,
@@ -55,6 +56,7 @@ class BaseProgramRegistrationAttributeDto {
   @IsOptional()
   @IsEnum(ExportType, { each: true }) // Use @IsEnum decorator to validate each element
   public readonly export?: WrapperType<ExportType[]>;
+
   @ApiProperty({
     example: {
       en: '+31 6 00 00 00 00',
@@ -63,6 +65,7 @@ class BaseProgramRegistrationAttributeDto {
   })
   @IsOptional()
   public placeholder?: LocalizedString;
+
   @ApiProperty({
     example: false,
     required: false,
@@ -72,6 +75,11 @@ class BaseProgramRegistrationAttributeDto {
 }
 
 export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
+  @ApiProperty({})
+  @IsNotEmpty()
+  @IsString()
+  public readonly name: string;
+
   @ApiProperty({
     example: {
       en: 'Please enter your last name:',

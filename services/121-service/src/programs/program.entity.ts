@@ -1,19 +1,13 @@
 import { BeforeRemove, Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { AppDataSource } from '@121-service/src/appdatasource';
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
-import { ValidationInfo } from '@121-service/src/programs/dto/validation-info.dto';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
-import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
-import {
-  Attribute,
-  RegistrationAttributeTypes,
-} from '@121-service/src/registration/enum/registration-attribute.enum';
+import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
@@ -154,65 +148,5 @@ export class ProgramEntity extends CascadeDeleteEntity {
         columnName: 'programId',
       },
     ]);
-  }
-
-  public async getValidationInfoForAttributeName(
-    name: string,
-  ): Promise<ValidationInfo> {
-    if (name === Attributes.paymentAmountMultiplier) {
-      return { type: RegistrationAttributeTypes.numeric };
-    } else if (name === Attributes.maxPayments) {
-      return { type: RegistrationAttributeTypes.numericNullable };
-    } else if (name === Attributes.referenceId) {
-      return { type: RegistrationAttributeTypes.text };
-    } else if (name === Attributes.phoneNumber) {
-      return { type: RegistrationAttributeTypes.tel };
-    } else if (name === Attributes.preferredLanguage) {
-      return {
-        type: RegistrationAttributeTypes.dropdown,
-        options: await this.getPreferredLanguageOptions(),
-      };
-    } else if (name === Attributes.scope) {
-      return { type: RegistrationAttributeTypes.text };
-    } else if (
-      name === Attributes.programFinancialServiceProviderConfigurationName
-    ) {
-      return { type: RegistrationAttributeTypes.text };
-    }
-
-    const repo = AppDataSource.getRepository(ProgramEntity);
-    const resultProgramRegistrationAttribute = await repo
-      .createQueryBuilder('program')
-      .leftJoin(
-        'program.programRegistrationAttributes',
-        'programRegistrationAttribute',
-      )
-      .where('program.id = :programId', { programId: this.id })
-      .andWhere('programRegistrationAttribute.name = :name', { name })
-      .select('"programRegistrationAttribute"."type"', 'type')
-      .addSelect('"programRegistrationAttribute"."options"', 'options')
-      .getRawOne();
-
-    if (
-      resultProgramRegistrationAttribute &&
-      resultProgramRegistrationAttribute.type
-    ) {
-      return {
-        type: resultProgramRegistrationAttribute.type as RegistrationAttributeTypes,
-        options: resultProgramRegistrationAttribute.options,
-      };
-    }
-    return new ValidationInfo();
-  }
-
-  private async getPreferredLanguageOptions(): Promise<object[]> {
-    const repo = AppDataSource.getRepository(ProgramEntity);
-    const program = await repo.findOneBy({ id: this.id });
-
-    return JSON.parse(JSON.stringify(program?.languages)).map((key: string) => {
-      return {
-        option: key,
-      };
-    });
   }
 }

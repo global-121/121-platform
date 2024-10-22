@@ -93,8 +93,7 @@ export class RegistrationsController {
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
     const userId = RequestHelper.getUserId(req);
-
-    return await this.registrationsService.importRegistrations(
+    return await this.registrationsService.importRegistrationsFromCsv(
       csvFile,
       programId,
       userId,
@@ -119,8 +118,8 @@ export class RegistrationsController {
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
     const userId = RequestHelper.getUserId(req);
-    return await this.registrationsService.importRegistrationFromJson(
-      data,
+    return await this.registrationsService.importRegistrationsFromJson(
+      data as unknown as Record<string, string | number | boolean>[],
       programId,
       userId,
     );
@@ -181,7 +180,7 @@ export class RegistrationsController {
   @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async patchRegistrations(
-    @UploadedFile() csvFile: Blob,
+    @UploadedFile() csvFile: Express.Multer.File,
     @Body('reason') reason: string,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
@@ -360,7 +359,7 @@ export class RegistrationsController {
   public async updateRegistration(
     @Param('programId', new ParseIntPipe()) programId: number,
     @Param('referenceId') referenceId: string,
-    @Body() updateRegistrationDataDto: UpdateRegistrationDto,
+    @Body() updateRegistrationDto: UpdateRegistrationDto,
     @Req() req: ScopedUserRequest,
   ) {
     const userId = RequestHelper.getUserId(req);
@@ -383,7 +382,7 @@ export class RegistrationsController {
       throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
     }
 
-    const partialRegistration = updateRegistrationDataDto.data;
+    const partialRegistration = updateRegistrationDto.data;
 
     if (!hasUpdateFinancialPermission && hasRegistrationUpdatePermission) {
       for (const attributeKey of Object.keys(partialRegistration)) {
@@ -409,22 +408,12 @@ export class RegistrationsController {
       }
     }
 
-    // first validate all attributes and return error if any
-    for (const attributeKey of Object.keys(partialRegistration)) {
-      await this.registrationsService.validateAttribute(
-        referenceId,
-        attributeKey,
-        partialRegistration[attributeKey],
-        userId,
-      );
-    }
-
-    // if all valid, process update
-    return await this.registrationsService.updateRegistration(
+    return await this.registrationsService.validateBodyAndUpdateRegistration({
       programId,
       referenceId,
-      updateRegistrationDataDto,
-    );
+      updateRegistrationDto,
+      userId,
+    });
   }
 
   @AuthenticatedUser()

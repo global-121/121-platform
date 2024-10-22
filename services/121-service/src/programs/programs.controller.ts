@@ -263,18 +263,18 @@ You can also leave the body empty.`,
     required: true,
     type: 'integer',
   })
-  @Patch(':programId/registration-attributes/:programRegistrationAttributeId')
+  @Patch(':programId/registration-attributes/:programRegistrationAttributeName')
   public async updateProgramRegistrationAttribute(
     @Body()
     updateProgramRegistrationAttributeDto: UpdateProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('programRegistrationAttributeId', ParseIntPipe)
-    programRegistrationAttributeId: number,
+    @Param('programRegistrationAttributeName')
+    programRegistrationAttributeName: string,
   ): Promise<ProgramRegistrationAttributeEntity> {
     return await this.programService.updateProgramRegistrationAttribute(
       programId,
-      programRegistrationAttributeId,
+      programRegistrationAttributeName,
       updateProgramRegistrationAttributeDto,
     );
   }
