@@ -20,6 +20,69 @@
           @if (
             authService.hasPermission({
               projectId: projectId(),
+              requiredPermission:
+                PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+            }) && project()?.validation
+          ) {
+            <p-button
+              label="Validate"
+              i18n-label
+              icon="pi pi-check-circle"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.validated)"
+            />
+          }
+          @if (
+            authService.hasPermission({
+              projectId: projectId(),
+              requiredPermission:
+                PermissionEnum.RegistrationStatusIncludedUPDATE,
+            })
+          ) {
+            <p-button
+              label="Include"
+              i18n-label
+              icon="pi pi-check"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.included)"
+            />
+          }
+          @if (
+            authService.hasPermission({
+              projectId: projectId(),
+              requiredPermission:
+                PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+            })
+          ) {
+            <p-button
+              label="Decline"
+              i18n-label
+              icon="pi pi-times"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.declined)"
+            />
+          }
+          @if (
+            authService.hasPermission({
+              projectId: projectId(),
+              requiredPermission: PermissionEnum.RegistrationStatusPausedUPDATE,
+            })
+          ) {
+            <p-button
+              label="Pause"
+              i18n-label
+              icon="pi pi-pause"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.paused)"
+            />
+          }
+          @if (
+            authService.hasPermission({
+              projectId: projectId(),
               requiredPermission: PermissionEnum.RegistrationNotificationREAD,
             })
           ) {
@@ -32,6 +95,12 @@
               (click)="sendMessage()"
             />
           }
+          <p-button
+            i18n-label
+            icon="pi pi-ellipsis-v"
+            outlined
+            rounded
+          />
         </p-buttonGroup>
       </div>
     </app-query-table>

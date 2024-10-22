@@ -1066,6 +1066,21 @@
       <trans-unit id="3573847364103936169" datatype="html">
         <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
         <target state="new">Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</target>
+      <trans-unit id="6057281094654962766" datatype="html">
+        <source>Validate</source>
+        <target state="new">Validate</target>
+      </trans-unit>
+      <trans-unit id="6381578200008167206" datatype="html">
+        <source>Include</source>
+        <target state="new">Include</target>
+      </trans-unit>
+      <trans-unit id="8116175184239166510" datatype="html">
+        <source>Decline</source>
+        <target state="new">Decline</target>
+      </trans-unit>
+      <trans-unit id="9042260521669277115" datatype="html">
+        <source>Pause</source>
+        <target state="new">Pause</target>
       </trans-unit>
     </body>
   </file>

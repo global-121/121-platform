@@ -13,6 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { CardModule } from 'primeng/card';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -24,6 +25,7 @@ import {
   QueryTableComponent,
   QueryTableSelectionEvent,
 } from '~/components/query-table/query-table.component';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
@@ -58,6 +60,7 @@ export class ProjectRegistrationsPageComponent {
   public authService = inject(AuthService);
   private paginateQueryService = inject(PaginateQueryService);
   private registrationApiService = inject(RegistrationApiService);
+  private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
 
   PermissionEnum = PermissionEnum;
@@ -65,6 +68,7 @@ export class ProjectRegistrationsPageComponent {
   @ViewChild('sendMessageDialog')
   private sendMessageDialog: SendMessageDialogComponent;
 
+  RegistrationStatusEnum = RegistrationStatusEnum;
   paginateQuery = signal<PaginateQuery | undefined>(undefined);
   tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
 
@@ -74,6 +78,11 @@ export class ProjectRegistrationsPageComponent {
       this.paginateQuery,
     ),
   );
+
+  projectReponse = injectQuery(
+    this.projectApiService.getProject(this.projectId),
+  );
+  project = computed(() => this.projectReponse.data());
 
   registrations = computed(() => this.registrationsResponse.data()?.data ?? []);
   totalRegistrations = computed(
@@ -146,5 +155,22 @@ export class ProjectRegistrationsPageComponent {
     }
 
     this.sendMessageDialog.triggerAction(actionData);
+  }
+
+  changeStatus(status: RegistrationStatusEnum) {
+    const actionData = this.actionData;
+
+    if (!actionData) {
+      return;
+    }
+
+    // TODO: Instead of showing a toast, do something with the data
+    console.log(actionData);
+    this.toastService.showToast({
+      severity: 'info',
+      detail: actionData.selectAll
+        ? `Applying status: ${status} on all filtered registrations (${actionData.count.toString()})`
+        : `Applying status: ${status} on the ${actionData.count.toString()} selected registration(s)`,
+    });
   }
 }
