@@ -144,6 +144,16 @@ export class ProjectRegistrationsPageComponent {
     });
   }
 
+  previewRegistration = computed(() => {
+    const tableSelection = this.tableSelection();
+
+    if ('selectAll' in tableSelection) {
+      return this.registrations()[0];
+    }
+
+    return tableSelection[0];
+  });
+
   sendMessage() {
     const actionData = this.getActionData();
 

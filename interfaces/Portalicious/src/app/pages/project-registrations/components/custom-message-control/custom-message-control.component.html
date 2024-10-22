@@ -14,17 +14,16 @@
 
   <p i18n>
     Use &commat; to add personalized fields.
-    <!-- TODO: AB#30847 figure out correct URL -->
     <a href="https://manual.121.global/">Learn more</a>
   </p>
 
   <div>
-    <!-- TODO: AB#30847 add possibility to insert placeholders from textarea -->
     <textarea
       rows="5"
       pInputTextarea
       [(ngModel)]="customMessageInternalModel"
       [disabled]="customMessageDisabled()"
+      [mentionConfig]="mentionConfig()"
       autocomplete="off"
       class="w-full"
       [ngClass]="{
