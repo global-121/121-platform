@@ -8,7 +8,6 @@ exports[`Create program questions should create a program with FSP configuration
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "EUR",
-  "deprecatedCustomDataKeys": [],
   "description": {
     "en": "",
   },

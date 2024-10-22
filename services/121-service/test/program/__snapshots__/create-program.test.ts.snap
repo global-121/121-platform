@@ -8,7 +8,6 @@ exports[`Create program should post a program: Create program response for progr
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "ETB",
-  "deprecatedCustomDataKeys": [],
   "description": {
     "en": "",
   },
@@ -1071,7 +1070,6 @@ exports[`Create program should post a program: Create program response for progr
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "EUR",
-  "deprecatedCustomDataKeys": [],
   "description": {
     "en": "",
   },
