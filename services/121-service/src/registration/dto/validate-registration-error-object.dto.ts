@@ -1,6 +1,6 @@
-export class ValidateRegistrationErrorObjectDto {
-  public lineNumber: number;
-  public column: string;
-  public value: string;
-  public error: string;
+export interface ValidateRegistrationErrorObject {
+  lineNumber: number;
+  column: string;
+  error: string;
+  value: string | number | undefined | boolean;
 }

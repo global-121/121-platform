@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
-
 import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -97,30 +96,6 @@ export class TransactionJobProcessorsService {
       }
 
       throw error;
-    }
-
-    // Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(input)) {
-      if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
-
-      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
-      if (value === null || value === undefined || value === '') {
-        const errorText = `Property ${name} is undefined`;
-        await this.createTransactionAndUpdateRegistration({
-          programId: input.programId,
-          paymentNumber: input.paymentNumber,
-          userId: input.userId,
-          calculatedTransferAmountInMajorUnit: transferAmountInMajorUnit,
-          programFinancialServiceProviderConfigurationId:
-            input.programFinancialServiceProviderConfigurationId,
-          registration,
-          oldRegistration,
-          isRetry: input.isRetry,
-          status: TransactionStatusEnum.error,
-          errorText,
-        });
-        return;
-      }
     }
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
@@ -230,29 +205,7 @@ export class TransactionJobProcessorsService {
     );
     const oldRegistration = structuredClone(registration);
 
-    // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(transactionJob)) {
-      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
-      if (value === null || value === undefined || value === '') {
-        const errorText = `Property ${name} is undefined`;
-        await this.createTransactionAndUpdateRegistration({
-          programId: transactionJob.programId,
-          paymentNumber: transactionJob.paymentNumber,
-          userId: transactionJob.userId,
-          calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
-          programFinancialServiceProviderConfigurationId:
-            transactionJob.programFinancialServiceProviderConfigurationId,
-          registration,
-          oldRegistration,
-          isRetry: transactionJob.isRetry,
-          status: TransactionStatusEnum.error,
-          errorText,
-        });
-        return;
-      }
-    }
-
-    // 3. Check for existing Safaricom Transfer with the same originatorConversationId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
+    // 2. Check for existing Safaricom Transfer with the same originatorConversationId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
     let safaricomTransfer =
       await this.safaricomTransferScopedRepository.findOne({
         where: {
@@ -289,7 +242,7 @@ export class TransactionJobProcessorsService {
       transactionId = safaricomTransfer.transactionId;
     }
 
-    // 4. Start the transfer, if failure update to error transaction and return early
+    // 3. Start the transfer, if failure update to error transaction and return early
     try {
       await this.safaricomService.doTransfer({
         transferAmount: transactionJob.transactionAmount,
@@ -313,9 +266,9 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 5. No messages sent for safaricom
+    // 4. No messages sent for safaricom
 
-    // 6. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+    // 5. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   private async getRegistrationOrThrow(

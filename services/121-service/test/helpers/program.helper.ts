@@ -7,7 +7,10 @@ import {
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import {
+  ProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributeDto,
+} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -61,6 +64,25 @@ export async function postProgramRegistrationAttribute(
 ): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/registration-attributes`)
+    .set('Cookie', [accessToken])
+    .send(programRegistrationAttribute);
+}
+
+export async function patchProgramRegistrationAttribute({
+  programRegistrationAttributeName,
+  programRegistrationAttribute,
+  programId,
+  accessToken,
+}: {
+  programRegistrationAttributeName: string;
+  programRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(
+      `/programs/${programId}/registration-attributes/${programRegistrationAttributeName}`,
+    )
     .set('Cookie', [accessToken])
     .send(programRegistrationAttribute);
 }
@@ -503,4 +525,19 @@ export async function getMessageTemplates(
   return await getServer()
     .get(`/notifications/${programId}/message-templates`)
     .set('Cookie', [accessToken]);
+}
+
+export async function setAllProgramsRegistrationAttributesNonRequired(
+  programId: number,
+  accessToken: string,
+) {
+  const program = (await getProgram(programId, accessToken)).body;
+  for (const attribute of program.programRegistrationAttributes) {
+    await patchProgramRegistrationAttribute({
+      programRegistrationAttributeName: attribute.name,
+      programRegistrationAttribute: { isRequired: false },
+      programId,
+      accessToken,
+    });
+  }
 }

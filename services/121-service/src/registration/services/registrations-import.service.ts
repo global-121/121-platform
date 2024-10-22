@@ -10,20 +10,18 @@ import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-ser
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
-import {
-  ImportRegistrationsDto,
-  ImportResult,
-} from '@121-service/src/registration/dto/bulk-import.dto';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
-import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-registration-config.dto';
 import {
   AttributeWithOptionalLabel,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
+import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
+import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.service';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -58,7 +56,7 @@ export class RegistrationsImportService {
   ) {}
 
   public async patchBulk(
-    csvFile: any,
+    csvFile: Express.Multer.File,
     programId: number,
     userId: number,
     reason: string,
@@ -67,31 +65,21 @@ export class RegistrationsImportService {
       csvFile,
       MASS_UPDATE_ROW_LIMIT,
     );
-    const columnNames = Object.keys(bulkUpdateRecords[0]);
-    const validatedRegistrations = await this.validateBulkUpdateInput(
-      bulkUpdateRecords,
-      programId,
-      userId,
-    );
 
-    // Filter out only columns that were in the original csv
-    const filteredRegistrations = validatedRegistrations.map((registration) => {
-      return columnNames.reduce((acc, key) => {
-        if (key in registration) {
-          acc[key] = registration[key];
-        }
-        return acc;
-      }, {});
-    });
+    // Do initial validation of the input without the checks that are slow
+    // So the user gets some feedback immidiately after upload
+    // The rest of the checks will be done in the queue (the user will get no feedback of this)
+    await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 
     // Prepare the job array to push to the queue
-    const updateJobs: RegistrationUpdateJobDto[] = filteredRegistrations.map(
-      (registration) => {
-        const updateData = { ...registration };
-        delete updateData['referenceId'];
+    const updateJobs: RegistrationUpdateJobDto[] = bulkUpdateRecords.map(
+      (record) => {
+        // const updateData = { ...registration, ...registration.data };
+        const referenceId = record['referenceId'];
+        delete record['referenceId'];
         return {
-          referenceId: registration['referenceId'],
-          data: updateData,
+          referenceId,
+          data: record,
           programId,
           reason,
         } as RegistrationUpdateJobDto;
@@ -147,12 +135,12 @@ export class RegistrationsImportService {
   }
 
   public async importRegistrations(
-    csvFile: Express.Multer.File,
+    inputRegistrations: Record<string, string | boolean | number | undefined>[],
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
-    const validatedImportRecords = await this.csvToValidatedRegistrations(
-      csvFile,
+    const validatedImportRecords = await this.validateImportRegistrationsInput(
+      inputRegistrations,
       program.id,
       userId,
     );
@@ -163,8 +151,26 @@ export class RegistrationsImportService {
     );
   }
 
+  public async importRegistrationsFromCsv(
+    csvFile: Express.Multer.File,
+    program: ProgramEntity,
+    userId: number,
+  ): Promise<ImportResult> {
+    const maxRecords = 1000;
+    const importRecords = await this.fileImportService.validateCsv(
+      csvFile,
+      maxRecords,
+    );
+    // TODO: Improve the typing of what comes out validateCsv function to avoid this cast
+    return this.importRegistrations(
+      importRecords as Record<string, string | boolean | number | undefined>[],
+      program,
+      userId,
+    );
+  }
+
   public async importValidatedRegistrations(
-    validatedImportRecords: ImportRegistrationsDto[],
+    validatedImportRecords: ValidatedRegistrationInput[],
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
@@ -194,21 +200,22 @@ export class RegistrationsImportService {
       for await (const att of dynamicAttributes) {
         if (att.type === RegistrationAttributeTypes.boolean) {
           customData[att.name] =
-            RegistrationsInputValidatorHelpers.stringToBoolean(
-              record[att.name],
+            RegistrationsInputValidatorHelpers.inputToBoolean(
+              record.data[att.name],
               false,
             );
         } else {
-          customData[att.name] = record[att.name];
+          customData[att.name] = record.data[att.name];
         }
       }
 
+      // ##TODO: Should this be moved out of the loop for performance?
       const programFinancialServiceProviderConfiguration =
         await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
           {
             where: {
               name: Equal(
-                record.programFinancialServiceProviderConfigurationName,
+                record.programFinancialServiceProviderConfigurationName ?? '',
               ),
               programId: Equal(program.id),
             },
@@ -315,7 +322,7 @@ export class RegistrationsImportService {
       let values: unknown[] = [];
       if (att.type === RegistrationAttributeTypes.boolean) {
         values.push(
-          RegistrationsInputValidatorHelpers.stringToBoolean(
+          RegistrationsInputValidatorHelpers.inputToBoolean(
             customData[att.name],
             false,
           ),
@@ -341,23 +348,6 @@ export class RegistrationsImportService {
     return registrationDataArray;
   }
 
-  private async csvToValidatedRegistrations(
-    csvFile: Express.Multer.File,
-    programId: number,
-    userId: number,
-  ): Promise<ImportRegistrationsDto[]> {
-    const maxRecords = 1000;
-    const importRecords = await this.fileImportService.validateCsv(
-      csvFile,
-      maxRecords,
-    );
-    return await this.validateImportAsRegisteredInput(
-      importRecords,
-      programId,
-      userId,
-    );
-  }
-
   private async getDynamicAttributes(
     programId: number,
   ): Promise<AttributeWithOptionalLabel[]> {
@@ -377,65 +367,48 @@ export class RegistrationsImportService {
     return programRegistrationAttributes;
   }
 
-  public async validateImportAsRegisteredInput(
-    csvArray: any[],
+  public async validateImportRegistrationsInput(
+    registrationInputToValidate: Record<
+      string,
+      string | boolean | number | undefined
+    >[],
     programId: number,
     userId: number,
-  ): Promise<ImportRegistrationsDto[]> {
-    const { allowEmptyPhoneNumber } =
-      await this.programService.findProgramOrThrow(programId);
-    const validationConfig = new ValidationConfigDto({
-      validatePhoneNumberEmpty: !allowEmptyPhoneNumber,
+  ): Promise<ValidatedRegistrationInput[]> {
+    const validationConfig: ValidationRegistrationConfig = {
       validatePhoneNumberLookup: true,
-      validateClassValidator: true,
       validateUniqueReferenceId: true,
-      validateScope: true,
-      validatePreferredLanguage: true,
-    });
-    const dynamicAttributes = await this.getDynamicAttributes(programId);
-    return (await this.registrationsInputValidator.validateAndCleanRegistrationsInput(
-      csvArray,
+      validateExistingReferenceId: true,
+    };
+    const data = await this.registrationsInputValidator.validateAndCleanInput({
+      registrationInputArray: registrationInputToValidate,
       programId,
       userId,
-      dynamicAttributes,
-      RegistrationCsvValidationEnum.importAsRegistered,
+      typeOfInput: RegistrationValidationInputType.create,
       validationConfig,
-    )) as ImportRegistrationsDto[];
+    });
+    return data;
   }
 
   private async validateBulkUpdateInput(
     csvArray: any[],
     programId: number,
     userId: number,
-  ): Promise<ImportRegistrationsDto[]> {
-    const { allowEmptyPhoneNumber } =
-      await this.programService.findProgramOrThrow(programId);
-
-    // Checking if there is any phoneNumber values in the submitted CSV file
-    const hasPhoneNumber = csvArray.some((row) => row.phoneNumber);
-
-    const validationConfig = new ValidationConfigDto({
+  ): Promise<ValidatedRegistrationInput[]> {
+    const validationConfig: ValidationRegistrationConfig = {
       validateExistingReferenceId: false,
-      // if there is no phoneNumber column in the submitted CSV file, but program is configured to not allow empty phone number
-      // then we are considering, in database we already have phone numbers for registrations and we are not expecting to update phone number through mas update.
-      // So ignoring phone number validation
-      validatePhoneNumberEmpty: hasPhoneNumber && !allowEmptyPhoneNumber,
       validatePhoneNumberLookup: false,
-      validateClassValidator: true,
       validateUniqueReferenceId: false,
-      validateScope: true,
-      validatePreferredLanguage: true,
-    });
-
-    const dynamicAttributes = await this.getDynamicAttributes(programId);
-
-    return (await this.registrationsInputValidator.validateAndCleanRegistrationsInput(
-      csvArray,
-      programId,
-      userId,
-      dynamicAttributes,
-      RegistrationCsvValidationEnum.bulkUpdate,
-      validationConfig,
-    )) as ImportRegistrationsDto[];
+    };
+    const result = await this.registrationsInputValidator.validateAndCleanInput(
+      {
+        registrationInputArray: csvArray,
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig,
+      },
+    );
+    return result;
   }
 }

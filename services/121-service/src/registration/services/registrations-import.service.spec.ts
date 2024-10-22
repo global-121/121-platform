@@ -2,7 +2,6 @@ import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -13,22 +12,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 describe('RegistrationsImportService', () => {
   let registrationsImportService: RegistrationsImportService;
 
-  const programId = 2;
   const language = LanguageEnum.en;
-  const importRegistrationsCsvInput = [
-    {
-      namePartnerOrganization: 'ABC',
-      preferredLanguage: language,
-      paymentAmountMultiplier: '',
-      maxPayments: '5',
-      nameFirst: 'Test',
-      nameLast: 'Test',
-      phoneNumber: '31600000000',
-      programFinancialServiceProviderConfigurationName:
-        FinancialServiceProviders.intersolveVoucherPaper,
-      whatsappPhoneNumber: '',
-    },
-  ];
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -86,29 +70,5 @@ describe('RegistrationsImportService', () => {
 
   it('should be defined', () => {
     expect(registrationsImportService).toBeDefined();
-  });
-
-  describe('validate registrations to import', () => {
-    it('should throw an error if phoneNumber is empty while not allowed', async () => {
-      // Arrange
-      importRegistrationsCsvInput[0].phoneNumber = '';
-      const userId = 1;
-
-      // Assert
-      await expect(
-        registrationsImportService.validateImportAsRegisteredInput(
-          importRegistrationsCsvInput,
-          programId,
-          userId,
-        ),
-      ).rejects.toHaveProperty('response', [
-        {
-          lineNumber: 1,
-          column: GenericRegistrationAttributes.phoneNumber,
-          value: '',
-          error: 'PhoneNumber is not allowed to be empty',
-        },
-      ]);
-    });
   });
 });

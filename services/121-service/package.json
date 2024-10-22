@@ -54,6 +54,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12",
     "applicationinsights": "^2.9.5",
     "bull": "^4.16.2",
     "bwip-js": "^2.0.11",

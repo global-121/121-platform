@@ -21,8 +21,19 @@ exports[`Import a registration should throw an error when a required a fsp attri
 [
   {
     "column": "whatsappPhoneNumber",
-    "error": "Cannot update whatsappPhoneNumber with a nullable value as it is required for the FSP: Intersolve-voucher-whatsapp",
+    "error": "Cannot update 'whatsappPhoneNumber' is required for the FSP: 'Intersolve-voucher-whatsapp'",
+    "lineNumber": 1,
+  },
+]
+`;
+
+exports[`Import a registration should throw an error when uploading a non existing fsp 1`] = `
+[
+  {
+    "column": "programFinancialServiceProviderConfigurationName",
+    "error": "FinancialServiceProviderConfigurationName non-existing-fsp not found in program. Allowed values: Intersolve-voucher-whatsapp, bank_a, fsp_all_attributes, fsp_no_attributes, ironBank, gringotts",
     "lineNumber": 0,
+    "value": "non-existing-fsp",
   },
 ]
 `;
@@ -42,7 +53,7 @@ exports[`Import a registration should throw an error with a numeric registration
 [
   {
     "column": "addressHouseNumber",
-    "error": "Value is not a valid numeric",
+    "error": "Cannot update/set addressHouseNumber with a nullable value as it is required for the FSP: Intersolve-visa",
     "lineNumber": 1,
     "value": null,
   },

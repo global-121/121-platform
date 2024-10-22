@@ -17,7 +17,6 @@ import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 const programId = 3;
 const paymentNr = 5;
 const userId = 1;
-const mockCredentials = { username: '1234', password: '1234' };
 const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,

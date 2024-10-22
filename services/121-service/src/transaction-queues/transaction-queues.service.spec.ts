@@ -40,6 +40,7 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
     phoneNumber: '254708374149',
     idNumber: 'nat-123',
     originatorConversationId: 'originator-id',
+    programFinancialServiceProviderConfigurationId: 1,
   },
 ];
 
