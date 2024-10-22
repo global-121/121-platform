@@ -5,6 +5,7 @@ import {
   inject,
   input,
   signal,
+  ViewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -26,6 +27,7 @@ import {
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { SendMessageDialogComponent } from '~/pages/project/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import {
   PaginateQuery,
@@ -42,6 +44,7 @@ import { ToastService } from '~/services/toast.service';
     QueryTableComponent,
     ButtonModule,
     ButtonGroupModule,
+    SendMessageDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
@@ -58,6 +61,10 @@ export class ProjectRegistrationsPageComponent {
   private toastService = inject(ToastService);
 
   PermissionEnum = PermissionEnum;
+
+  @ViewChild('sendMessageDialog')
+  private sendMessageDialog: SendMessageDialogComponent;
+
   paginateQuery = signal<PaginateQuery | undefined>(undefined);
   tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
 
@@ -116,7 +123,7 @@ export class ProjectRegistrationsPageComponent {
     registrationId,
   ];
 
-  private get actionData() {
+  private getActionData() {
     return this.paginateQueryService.selectionEventToActionData({
       selection: this.tableSelection(),
       fieldForFilter: 'referenceId',
@@ -132,19 +139,12 @@ export class ProjectRegistrationsPageComponent {
   }
 
   sendMessage() {
-    const actionData = this.actionData;
+    const actionData = this.getActionData();
 
     if (!actionData) {
       return;
     }
 
-    // TODO: Instead of showing a toast, do something with the data
-    console.log(actionData);
-    this.toastService.showToast({
-      severity: 'info',
-      detail: actionData.selectAll
-        ? `Sending message to all filtered registrations (${actionData.count.toString()})`
-        : `Sending message to the ${actionData.count.toString()} selected registration(s)`,
-    });
+    this.sendMessageDialog.triggerAction(actionData);
   }
 }

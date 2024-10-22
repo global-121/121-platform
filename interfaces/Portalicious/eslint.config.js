@@ -125,6 +125,7 @@ module.exports = tseslint.config(
             'p-button[iconPos]',
             'p-columnFilter[display]',
             'p-contextMenu[appendTo]',
+            'p-dropdown[appendTo]',
             'p-iconField[iconPosition]',
             'p-sidebar[position]',
             'p-table[stateKey]',

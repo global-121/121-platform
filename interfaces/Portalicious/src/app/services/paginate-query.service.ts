@@ -23,7 +23,7 @@ export interface PaginateQuery {
   select?: string[];
 }
 
-interface ActionDataWithPaginateQuery {
+export interface ActionDataWithPaginateQuery {
   query: PaginateQuery;
   count: number;
   selectAll: boolean;

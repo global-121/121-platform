@@ -1,0 +1,51 @@
+<div class="space-y-2">
+  <p i18n>
+    Custom messages are <b>not automatically translated</b> to the
+    registration's preferred language.
+  </p>
+
+  <p>
+    <strong i18n> Message: </strong>
+    <app-info-tooltip
+      message="Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone."
+      i18n-message
+    />
+  </p>
+
+  <p i18n>
+    Use &commat; to add personalized fields.
+    <!-- TODO: AB#30847 figure out correct URL -->
+    <a href="https://manual.121.global/">Learn more</a>
+  </p>
+
+  <div>
+    <!-- TODO: AB#30847 add possibility to insert placeholders from textarea -->
+    <textarea
+      rows="5"
+      pInputTextarea
+      [(ngModel)]="customMessageInternalModel"
+      [disabled]="customMessageDisabled()"
+      autocomplete="off"
+      class="w-full"
+      [ngClass]="{
+        'ng-invalid ng-dirty': !!error(),
+      }"
+    ></textarea>
+
+    @if (error()) {
+      <app-form-error [error]="error()" />
+    } @else {
+      <p
+        i18n
+        class="w-full text-end txt-body-s"
+      >
+        (>20) characters.
+      </p>
+    }
+  </div>
+
+  <p i18n>
+    *Please make sure registration data is available for all used personalized
+    fields.
+  </p>
+</div>
