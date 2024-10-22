@@ -408,8 +408,8 @@ export class RegistrationsService {
     );
   }
 
-  public async importValidatedRegistrations(
-    validatedImportRecords: ImportRegistrationsDto[],
+  public async importRegistrationFromJson(
+    validatedJsonData: ImportRegistrationsDto[],
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
@@ -419,18 +419,6 @@ export class RegistrationsService {
         'Registrations are not allowed for this program yet, try again later.';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    return await this.registrationsImportService.importValidatedRegistrations(
-      validatedImportRecords,
-      program,
-      userId,
-    );
-  }
-
-  public async importRegistrationFromJson(
-    validatedJsonData: ImportRegistrationsDto[],
-    programId: number,
-    userId: number,
-  ): Promise<ImportResult> {
     const validateRegistrationsInput =
       await this.registrationsImportService.validateImportAsRegisteredInput(
         validatedJsonData,
@@ -439,7 +427,7 @@ export class RegistrationsService {
       );
     return await this.registrationsImportService.importValidatedRegistrations(
       validateRegistrationsInput,
-      await this.findProgramOrThrow(programId),
+      program,
       userId,
     );
   }
