@@ -1,37 +1,31 @@
+import twilio, { ClientOpts } from 'twilio';
 import { RequestClient } from 'twilio';
 import { HttpMethod } from 'twilio/lib/interfaces';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-export const twilio = require('twilio');
+class MockTwilioRequestClient extends RequestClient {
+  public mockUrl: string;
 
-class PrismClient {
-  public prismUrl: string;
-  public requestClient: RequestClient;
-
-  constructor(prismUrl: string, requestClient: RequestClient) {
-    this.prismUrl = prismUrl;
-    this.requestClient = requestClient;
+  constructor(mockUrl: string) {
+    super();
+    this.mockUrl = mockUrl;
   }
 
-  public request(opts: {
+  public override request<TData>(opts: {
     uri: string;
     method: HttpMethod;
     [key: string]: unknown;
-  }): Promise<unknown> {
-    opts.uri = opts.uri.replace(/^https:\/\/.*?\.twilio\.com/, this.prismUrl);
-    return this.requestClient.request(opts);
+  }) {
+    opts.uri = opts.uri.replace(/^https:\/\/.*?\.twilio\.com/, this.mockUrl);
+    return super.request<TData>(opts);
   }
 }
 
-let mockClient: { httpClient: PrismClient } | null = null;
+let mockClient: ClientOpts | undefined;
 
 if (!!process.env.MOCK_TWILIO) {
-  const { RequestClient } = twilio;
-
   mockClient = {
-    httpClient: new PrismClient(
+    httpClient: new MockTwilioRequestClient(
       `${process.env.MOCK_SERVICE_URL}api`,
-      new RequestClient(),
     ),
   };
 }

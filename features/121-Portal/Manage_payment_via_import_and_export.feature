@@ -2,7 +2,7 @@
 Feature: Manage payment via import and export
 
   Background:
-    Given an FSP of integration type "csv" or "xml"
+    Given an FSP of integration type "csv"
     Given at least 1 payment is done for the program
 
   Scenario: Export payment instructions for FSP without reconciliation
@@ -25,12 +25,12 @@ Feature: Manage payment via import and export
     When the user clicks the "export payment instructions" button
     Then a difference is that only 'waiting' transactions are included, instead of all
     And this is also explained in the export popup
-    And - depending on the FSP - an XML or Excel file is downloaded
+    And an Excel file is downloaded
     And - if FSP='Excel' - then see [wiki](https://github.com/global-121/121-platform/wiki/Excel-payment-instructions-FSP) for details on which columns are exported
 
   Scenario: Successfully import payment reconciliation data
     Given a logged-in user with "PaymentCREATE" permissions
-    Given a correct input file (XML for 'Vodacash'; CSV for 'Excel')
+    Given a correct input file (CSV for 'Excel')
     When the user selects a "closed" payment from the dropdown-list
     Then the "import payment reconciliation data" button is enabled (except for the last payment if still in progress)
     When the user clicks the button

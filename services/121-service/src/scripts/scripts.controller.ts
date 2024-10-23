@@ -9,7 +9,6 @@ import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
-import { SeedProgramDrc } from '@121-service/src/scripts/seed-program-drc';
 import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
 import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
@@ -33,7 +32,6 @@ export class ScriptsController {
     private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
     private readonly seedMultipleNlrc: SeedMultipleNLRC,
     private readonly seedDemoProgram: SeedDemoProgram,
-    private readonly seedProgramDrc: SeedProgramDrc,
     private readonly seedEthJointRepose: SeedEthJointResponse,
     private readonly seedProgramNlrcPv: SeedNLProgramPV,
     private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
@@ -121,8 +119,6 @@ export class ScriptsController {
       await this.seedMultipleNlrc.run(isApiTests);
     } else if (script == SeedScript.nlrcPV) {
       await this.seedProgramNlrcPv.run(isApiTests);
-    } else if (script == SeedScript.DRC) {
-      await this.seedProgramDrc.run(isApiTests);
     } else if (script == SeedScript.validation) {
       await this.seedProgramValidation.run(isApiTests);
     } else if (script == SeedScript.ethJointResponse) {

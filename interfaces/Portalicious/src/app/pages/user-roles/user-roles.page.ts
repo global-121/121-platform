@@ -31,16 +31,12 @@ export class UserRolesPageComponent {
 
   columns = computed<QueryTableColumn<Role>[]>(() => [
     {
-      field: 'role',
-      header: $localize`Role name`,
-    },
-    {
       field: 'label',
-      header: $localize`Role label`,
+      header: $localize`Role`,
     },
     {
       field: 'description',
-      header: $localize`Role description`,
+      header: $localize`Description`,
     },
   ]);
 }

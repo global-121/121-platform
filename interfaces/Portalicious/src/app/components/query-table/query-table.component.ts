@@ -17,6 +17,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { UrlTree } from '@angular/router';
 
+import { get } from 'lodash';
 import {
   FilterMatchMode,
   FilterMetadata,
@@ -25,6 +26,7 @@ import {
 } from 'primeng/api';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -32,7 +34,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
+import {
+  Table,
+  TableLazyLoadEvent,
+  TableModule,
+  TableSelectAllChangeEvent,
+} from 'primeng/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
@@ -51,9 +58,10 @@ export enum QueryTableColumnType {
   TEXT = 'text',
 }
 
+// TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
 export type QueryTableColumn<TData, TField = keyof TData & string> = {
   header: string;
-  field: TField;
+  field?: TField;
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
   disableSorting?: boolean;
@@ -79,6 +87,8 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     }
 );
 
+export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
+
 @Component({
   selector: 'app-query-table',
   standalone: true,
@@ -98,6 +108,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     SkeletonInlineComponent,
     ColoredChipComponent,
     AutoFocusModule,
+    CheckboxModule,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -117,8 +128,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   tableCellContext = input<TContext>();
   serverSideFiltering = input<boolean>(false);
   serverSideTotalRecords = input<number>();
+  initialSortField = input<keyof TData & string>();
+  enableSelection = input<boolean>(false);
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();
+  readonly onUpdateSelection = output<QueryTableSelectionEvent<TData>>();
 
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
@@ -148,18 +162,33 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * DISPLAY
    */
+  expandedRowKeys = signal({});
+  tableFilters = signal<
+    Record<string, FilterMetadata | FilterMetadata[] | undefined>
+  >({});
   // This is triggered whenever primeng saves the state of the table to local storage
   // which is an optimal time to update our local state, and make sure the table is showing the correct data
+
   onStateSave(event: TableState) {
-    this.synchronizeFilters(event);
-    this.synchronizeExpandedRowKeys(event);
+    this.tableFilters.set({
+      // clone to make sure to trigger change detection
+      // https://stackoverflow.com/a/77532370
+      ...(event.filters ?? {}),
+    });
+
+    this.expandedRowKeys.set({
+      // clone to make sure to trigger change detection
+      // https://stackoverflow.com/a/77532370
+      ...(event.expandedRowKeys ?? {}),
+    });
   }
 
   totalColumnCount = computed(
     () =>
       this.columns().length +
       (this.contextMenuItems() ? 1 : 0) +
-      (this.expandableRowTemplate() ? 1 : 0),
+      (this.expandableRowTemplate() ? 1 : 0) +
+      (this.enableSelection() ? 1 : 0),
   );
 
   getCellText(column: QueryTableColumn<TData>, item: TData) {
@@ -170,12 +199,33 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return column.getCellText(item);
     }
 
-    const text = item[column.field];
+    if (!column.field) {
+      return;
+    }
 
-    if (text && column.type === QueryTableColumnType.DATE) {
-      return new DatePipe(this.locale).transform(
-        new Date(text as string),
-        'short',
+    // We're using lodash.get here to support "leaves" such as "user.username"
+    const text = get(item, column.field);
+
+    if (!text) {
+      return;
+    }
+
+    if (column.type === QueryTableColumnType.DATE) {
+      if (
+        !(text instanceof Date) &&
+        typeof text !== 'string' &&
+        typeof text !== 'number'
+      ) {
+        throw new Error(
+          `Expected field ${column.field} to be a Date or string, but got ${typeof text}`,
+        );
+      }
+      return new DatePipe(this.locale).transform(new Date(text), 'short');
+    }
+
+    if (typeof text !== 'string') {
+      throw new Error(
+        `Expected field ${column.field} to be a string, but got ${typeof text}`,
       );
     }
 
@@ -190,56 +240,59 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    *  FILTERS
    */
   globalFilterVisible = model<boolean>(false);
-  globalFilterValue = model<string>();
-  isFiltered = signal(false);
 
   clearAllFilters() {
     this.table.clear();
-    this.globalFilterValue.set(undefined);
     localStorage.removeItem(this.localStorageKey());
     this.globalFilterVisible.set(false);
-    this.isFiltered.set(false);
+    this.tableFilters.set({});
   }
 
-  private synchronizeFilters(event: TableState) {
-    if (!event.filters) {
-      return;
+  globalFilterValue = computed(() => {
+    const tableFilters = this.tableFilters();
+
+    const globalFilter = Array.isArray(tableFilters.global)
+      ? tableFilters.global[0]
+      : tableFilters.global;
+    if (
+      globalFilter &&
+      typeof globalFilter.value === 'string' &&
+      globalFilter.value !== ''
+    ) {
+      // without this, the global filter value is not restored properly from local storage
+      return globalFilter.value;
     }
 
-    let globalFilterValueFromEvent: string | undefined = undefined;
+    return undefined;
+  });
 
-    // TS thinks this is always defined but it is not true
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (event.filters.global) {
-      const globalFilter = Array.isArray(event.filters.global)
-        ? event.filters.global[0]
-        : event.filters.global;
-      if (typeof globalFilter.value === 'string' && globalFilter.value !== '') {
-        // without this, the global filter value is not restored properly from local storage
-        globalFilterValueFromEvent = globalFilter.value;
+  isFiltered = computed(() => {
+    if (this.globalFilterValue()) {
+      return true;
+    }
+
+    // check if any filter is set by checking if any filter has a value
+    return Object.values(this.tableFilters()).some((filterMetadata) => {
+      if (!filterMetadata) {
+        return false;
       }
+
+      const filterMetadataArray: FilterMetadata[] = Array.isArray(
+        filterMetadata,
+      )
+        ? filterMetadata
+        : [filterMetadata];
+      return filterMetadataArray.some(
+        (filter) => filter.value !== undefined && filter.value !== null,
+      );
+    });
+  });
+
+  getColumnFilterField(column: QueryTableColumn<TData>) {
+    if (column.disableFiltering) {
+      return undefined;
     }
-
-    this.globalFilterValue.set(globalFilterValueFromEvent);
-
-    if (globalFilterValueFromEvent) {
-      this.isFiltered.set(true);
-      return;
-    }
-
-    this.isFiltered.set(
-      // check if any filter is set by checking if any filter has a value
-      Object.values(event.filters).some((filterMetadata) => {
-        const filterMetadataArray: FilterMetadata[] = Array.isArray(
-          filterMetadata,
-        )
-          ? filterMetadata
-          : [filterMetadata];
-        return filterMetadataArray.some(
-          (filter) => filter.value !== undefined && filter.value !== null,
-        );
-      }),
-    );
+    return column.fieldForFilter ?? column.field;
   }
 
   getColumnMatchMode(column: QueryTableColumn<TData>) {
@@ -257,6 +310,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       default:
         return FilterMatchMode.CONTAINS;
     }
+  }
+
+  getColumnSortField(column: QueryTableColumn<TData>) {
+    if (column.disableSorting) {
+      return undefined;
+    }
+    return column.fieldForSort ?? column.field;
   }
 
   /**
@@ -288,10 +348,33 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   });
 
   /**
+   * ROW SELECTION
+   */
+
+  selectedItems = model<TData[]>([]);
+  selectAll = model<boolean>(false);
+
+  onSelectionChange(items: TData[]) {
+    this.selectedItems.set(items);
+    this.onUpdateSelection.emit(items);
+  }
+
+  onSelectAllChange(event: TableSelectAllChangeEvent) {
+    const checked = event.checked;
+
+    this.selectedItems.set([]);
+    this.selectAll.set(checked);
+
+    if (checked) {
+      this.onUpdateSelection.emit({ selectAll: true });
+    } else {
+      this.onUpdateSelection.emit([]);
+    }
+  }
+
+  /**
    *  EXPANDABLE ROWS
    */
-  expandedRowKeys = signal({});
-
   expandAll() {
     this.expandedRowKeys.set(
       this.items().reduce((acc, p) => ({ ...acc, [p.id]: true }), {}),
@@ -307,17 +390,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       this.items().length > 0 &&
       this.items().every((item) => this.expandedRowKeys()[item.id] === true),
   );
-
-  private synchronizeExpandedRowKeys(event: TableState) {
-    if (!event.expandedRowKeys) {
-      return;
-    }
-    this.expandedRowKeys.set({
-      // clone to make sure to trigger change detection
-      // https://stackoverflow.com/a/77532370
-      ...event.expandedRowKeys,
-    });
-  }
 
   /**
    *  PAGINATION

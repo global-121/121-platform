@@ -12,6 +12,9 @@ tailwindAttributes:
   - styleClass
   - icon
 overrides:
+  - files: '*.html'
+    options:
+      parser: angular
   - files: '*.xlf'
     options:
       parser: xml

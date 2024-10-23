@@ -1,3 +1,5 @@
+# See: https://prettier.io/docs/en/options.html
+#
 arrowParens: always
 semi: true
 singleAttributePerLine: true

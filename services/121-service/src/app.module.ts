@@ -7,6 +7,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
+import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
@@ -56,6 +57,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
       },
     }),
     AuthModule,
+    ActivitiesModule,
   ],
   controllers: [AppController],
   providers: [

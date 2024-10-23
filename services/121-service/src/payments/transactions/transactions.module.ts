@@ -10,6 +10,7 @@ import { QueueMessageModule } from '@121-service/src/notifications/queue-message
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsController } from '@121-service/src/payments/transactions/transactions.controller';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -25,6 +26,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       LatestTransactionEntity,
       FinancialServiceProviderEntity,
       TwilioMessageEntity,
+      TransactionEntity,
     ]),
     UserModule,
     HttpModule,
@@ -36,10 +38,11 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   ],
   providers: [
     TransactionsService,
+    TransactionScopedRepository,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(TransactionEntity),
   ],
   controllers: [TransactionsController],
-  exports: [TransactionsService],
+  exports: [TransactionsService, TransactionScopedRepository],
 })
 export class TransactionsModule {}

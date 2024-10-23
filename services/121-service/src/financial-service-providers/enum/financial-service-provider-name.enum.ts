@@ -2,7 +2,6 @@ export enum FinancialServiceProviderName {
   intersolveVoucherWhatsapp = 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
-  vodacash = 'VodaCash',
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
@@ -35,9 +34,6 @@ export const FinancialServiceProviderConfigurationMapping: Record<
   [FinancialServiceProviderName.intersolveVisa]: [
     FinancialServiceProviderConfigurationEnum.brandCode,
     FinancialServiceProviderConfigurationEnum.coverLetterCode,
-    FinancialServiceProviderConfigurationEnum.displayName,
-  ],
-  [FinancialServiceProviderName.vodacash]: [
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
   [FinancialServiceProviderName.safaricom]: [

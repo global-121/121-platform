@@ -14,11 +14,7 @@ export function getFspIntegrationType(
     const programFsp = program.financialServiceProviders.find(
       (f) => f.fsp === fsp,
     );
-    if (
-      [FspIntegrationType.csv, FspIntegrationType.xml].includes(
-        programFsp.integrationType,
-      )
-    ) {
+    if (programFsp.integrationType === FspIntegrationType.csv) {
       fspIntegrationType = programFsp.integrationType;
       return fspIntegrationType;
     }
@@ -34,13 +30,6 @@ export function getPaymentResultText(
   let message = '';
 
   switch (fspIntegrationType) {
-    case FspIntegrationType.xml:
-      message += translateService.instant(
-        'page.program.program-payout.result.xml',
-        { nrPa: `<strong>${nrPa}</strong>` },
-      );
-      break;
-
     case FspIntegrationType.csv:
       message += translateService.instant(
         'page.program.program-payout.result.csv',

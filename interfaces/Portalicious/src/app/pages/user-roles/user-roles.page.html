@@ -8,7 +8,8 @@
       [isPending]="roles.isPending()"
       [columns]="columns()"
       localStorageKey="user-roles-table"
-      [globalFilterFields]="['role', 'label']"
+      [globalFilterFields]="['label', 'description']"
+      [initialSortField]="'label'"
     />
   </p-card>
 </app-page-layout>

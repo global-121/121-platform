@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import csv from 'csv-parser';
 import { Readable } from 'typeorm/platform/PlatformTools';
-import * as convert from 'xml-js';
 
 @Injectable()
 export class FileImportService {
@@ -30,23 +29,6 @@ export class FileImportService {
     return importRecords;
   }
 
-  public async validateXml(
-    xmlFile,
-  ): Promise<convert.Element | convert.ElementCompact> {
-    const indexLastPoint = xmlFile.originalname.lastIndexOf('.');
-    const extension = xmlFile.originalname.substr(
-      indexLastPoint,
-      xmlFile.originalname.length - indexLastPoint,
-    );
-    if (extension !== '.xml') {
-      const errors = [`Wrong file extension. It should be .xml`];
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    const importRecords = await this.xmlBufferToArray(xmlFile.buffer);
-    return importRecords;
-  }
-
   private async csvBufferToArray(buffer, separator): Promise<object[]> {
     const stream = new Readable();
     stream.push(buffer.toString());
@@ -70,14 +52,6 @@ export class FileImportService {
           resolve(parsedData);
         });
     });
-  }
-
-  private async xmlBufferToArray(
-    buffer,
-  ): Promise<convert.Element | convert.ElementCompact> {
-    const xml = convert.xml2js(buffer.toString());
-    return xml.elements[0].elements.find((el) => el.name === 'Records')
-      .elements;
   }
 
   public checkForCompletelyEmptyRow(row): boolean {
