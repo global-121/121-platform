@@ -30,11 +30,11 @@ export class ActivitiesController {
     type: [ActivitiesDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'registrationId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @Get('programs/:programId/registrations/:registrationId/activities')
   public async getActivitiesByRegistrationId(
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('registrationId') registrationId: number,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<ActivitiesDto> {
     const userId = RequestHelper.getUserId(req);
