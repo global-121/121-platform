@@ -30,8 +30,8 @@ import {
   RegistrationApiService,
   SendMessageData,
 } from '~/domains/registration/registration.api.service';
-import { CustomMessageControlComponent } from '~/pages/project/project-registrations/components/custom-message-control/custom-message-control.component';
-import { CustomMessagePreviewComponent } from '~/pages/project/project-registrations/components/custom-message-preview/custom-message-preview.component';
+import { CustomMessageControlComponent } from '~/pages/project-registrations/components/custom-message-control/custom-message-control.component';
+import { CustomMessagePreviewComponent } from '~/pages/project-registrations/components/custom-message-preview/custom-message-preview.component';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';

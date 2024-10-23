@@ -27,7 +27,7 @@ import {
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
-import { SendMessageDialogComponent } from '~/pages/project/project-registrations/components/send-message-dialog/send-message-dialog.component';
+import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import {
   PaginateQuery,

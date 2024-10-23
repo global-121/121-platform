@@ -19,7 +19,7 @@ import { TableCellComponent } from '~/components/query-table/table-cell/table-ce
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
-import { ActivityLogTableCellContext } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
+import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 
 @Component({
   selector: 'app-activity-log-expanded-row',
