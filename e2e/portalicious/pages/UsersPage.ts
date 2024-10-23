@@ -54,13 +54,20 @@ class UsersPage extends BasePage {
     email?: string;
     textContent: string;
   }) {
-    const lastLogin = await this.page
+    const rowText = await this.page
       .getByRole('row', {
         name: email,
       })
       .textContent();
+    if (rowText === null) {
+      throw new Error(
+        `Row with email ${email} not found or has no text content.`,
+      );
+    }
+    const trimTextContent = rowText.trim();
+    const formattedTextContent = trimTextContent.replace('  ', ' ');
 
-    expect(lastLogin).toContain(textContent);
+    expect(formattedTextContent).toContain(textContent);
   }
 }
 
