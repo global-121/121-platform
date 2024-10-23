@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardIframeComponent } from '~/pages/project/project-monitoring/monitoring-iframe/monitoring-iframe.component';
+import { DashboardIframeComponent } from '~/pages/project-monitoring/components/monitoring-iframe/monitoring-iframe.component';
 
 @Component({
   selector: 'app-monitoring-iframe-test-host',

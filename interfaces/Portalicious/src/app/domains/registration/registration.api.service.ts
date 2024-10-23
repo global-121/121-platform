@@ -3,6 +3,8 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
 
+import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
   ActitivitiesResponse,
@@ -24,6 +26,10 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   projectId,
   'registrations',
 ];
+
+export type SendMessageData =
+  | { customMessage: string }
+  | { messageTemplateKey: string };
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +69,41 @@ export class RegistrationApiService extends DomainApiService {
     return this.generateQueryOptions<Registration>({
       path: [...BASE_ENDPOINT(projectId as Signal<number>), registrationId],
       enabled: () => !!projectId() && !!registrationId(),
+    });
+  }
+
+  sendMessage({
+    projectId,
+    paginateQuery,
+    messageData,
+  }: {
+    projectId: Signal<number>;
+    paginateQuery: PaginateQuery | undefined;
+    messageData: SendMessageData;
+  }) {
+    let body: Partial<SendCustomTextDto>;
+
+    if ('customMessage' in messageData) {
+      body = {
+        message: messageData.customMessage,
+        skipMessageValidation: false,
+      };
+    } else {
+      body = {
+        messageTemplateKey: messageData.messageTemplateKey,
+        skipMessageValidation: false,
+      };
+    }
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'message',
+      ]).join('/'),
+      body,
+      params:
+        this.paginateQueryService.paginateQueryToHttpParams(paginateQuery),
     });
   }
 

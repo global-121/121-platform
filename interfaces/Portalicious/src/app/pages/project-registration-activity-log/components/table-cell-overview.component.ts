@@ -22,8 +22,8 @@ import { TableCellComponent } from '~/components/query-table/table-cell/table-ce
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
-import { ActivityLogVoucherDialogComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
-import { ActivityLogTableCellContext } from '~/pages/project/project-registrations/project-registration-activity-log/project-registration-activity-log.page';
+import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
+import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 
 @Component({
   selector: 'app-table-cell-overview',

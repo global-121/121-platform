@@ -21,8 +21,8 @@ import { PageLayoutComponent } from '~/components/page-layout/page-layout.compon
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { MetricTileComponent } from '~/pages/project/project-monitoring/metric-tile/metric-tile.component';
-import { DashboardIframeComponent } from '~/pages/project/project-monitoring/monitoring-iframe/monitoring-iframe.component';
+import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
+import { DashboardIframeComponent } from '~/pages/project-monitoring/components/monitoring-iframe/monitoring-iframe.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
