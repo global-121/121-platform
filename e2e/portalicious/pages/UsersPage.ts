@@ -69,6 +69,18 @@ class UsersPage extends BasePage {
 
     expect(formattedTextContent).toContain(textContent);
   }
+
+  async addNewUser({ fullName, email }: { fullName: string; email: string }) {
+    await this.page.getByRole('button', { name: 'Add new User' }).click();
+    await this.page
+      .locator('label')
+      .filter({ hasText: 'Full name' })
+      .fill(fullName);
+    await this.page.locator('label').filter({ hasText: 'E-mail' }).fill(email);
+    await this.page.getByRole('button', { name: 'Submit' }).click();
+    await this.validateToastMessage('User added');
+    await this.validateRowTextContent(`${fullName} ${email}`);
+  }
 }
 
 export default UsersPage;
