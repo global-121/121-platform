@@ -323,7 +323,7 @@
       "properties": [
         {
           "name": "columnsToExport",
-          "value": ["name", "birthdate", "documentid", "phoneNumber"]
+          "value": ["name", "dob", "dragon", "phoneNumber"]
         },
         {
           "name": "columnToMatch",
@@ -342,7 +342,7 @@
       "properties": [
         {
           "name": "columnsToExport",
-          "value": ["name", "birthdate", "documentid", "phoneNumber"]
+          "value": ["name", "dob", "dragon", "phoneNumber"]
         },
         {
           "name": "columnToMatch",
