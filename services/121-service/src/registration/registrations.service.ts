@@ -591,7 +591,7 @@ export class RegistrationsService {
       AdditionalAttributes.programFinancialServiceProviderConfigurationName
     ) {
       registration = await this.updateChosenFspConfiguration({
-        registration: registration,
+        registration,
         newFspConfigurationName: String(value),
       });
     }

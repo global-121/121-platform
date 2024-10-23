@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import FspName from 'src/app/enums/fsp-name.enum';
+import { Person } from 'src/app/models/person.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { FinancialServiceProviderConfiguration } from '../../models/fsp.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
@@ -80,11 +81,14 @@ export class UpdateFspComponent implements OnInit {
   }
 
   public updateChosenFsp() {
+    const programFspConfigName: keyof Person =
+      'programFinancialServiceProviderConfigurationName';
+
     this.programsService
       .updatePaAttribute(
         this.programId,
         this.referenceId,
-        'programFinancialServiceProviderConfigurationName', // Not sure how this should be done in a strongly typed way in our Portal way of working
+        programFspConfigName, // Not sure how this should be done in a strongly typed way in our Portal way of working
         this.selectedFspName,
         this.reason,
       )
