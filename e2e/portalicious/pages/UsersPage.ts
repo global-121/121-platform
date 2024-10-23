@@ -46,6 +46,16 @@ class UsersPage extends BasePage {
 
     expect(sortedActualUserEmails).toEqual(sortedExpectedUserEmails);
   }
+
+  async validateLastLogin(timestamp: string) {
+    const lastLogin = await this.page
+      .getByRole('row', {
+        name: 'view-user view-user@example.',
+      })
+      .textContent();
+
+    expect(lastLogin).toContain(timestamp);
+  }
 }
 
 export default UsersPage;
