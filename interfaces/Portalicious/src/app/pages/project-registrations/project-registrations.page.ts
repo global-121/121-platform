@@ -79,10 +79,9 @@ export class ProjectRegistrationsPageComponent {
     ),
   );
 
-  projectReponse = injectQuery(
+  project = injectQuery(
     this.projectApiService.getProject(this.projectId),
   );
-  project = computed(() => this.projectReponse.data());
 
   registrations = computed(() => this.registrationsResponse.data()?.data ?? []);
   totalRegistrations = computed(
