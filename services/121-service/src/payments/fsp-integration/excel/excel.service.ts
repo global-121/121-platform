@@ -216,18 +216,20 @@ export class ExcelService
     return excelFspInstructions;
   }
 
-  public async getImportMatchColumn(programId: number): Promise<string> {
+  public async getImportMatchColumn(
+    programFinancialServiceProviderConfigurationId: number,
+  ): Promise<string> {
     const matchColumn =
       await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByNameOrThrow(
         {
-          programFinancialServiceProviderConfigurationId: programId,
+          programFinancialServiceProviderConfigurationId,
           name: FinancialServiceProviderConfigurationProperties.columnToMatch,
         },
       );
     if (!matchColumn) {
       throw new HttpException(
         {
-          errors: `No match column found for FSP 'Excel' and program with id ${programId}`,
+          errors: `No match column found for FSP 'Excel' and programFinancialServiceProviderConfigurationId with id ${programFinancialServiceProviderConfigurationId}`,
         },
         HttpStatus.NOT_FOUND,
       );
@@ -257,7 +259,7 @@ export class ExcelService
     transactions: PaTransactionResultDto[];
     resultFeedbackPerRow: ReconciliationFeedbackDto[];
   }> {
-    const matchColumn = await this.getImportMatchColumn(programId);
+    const matchColumn = await this.getImportMatchColumn(fspConfig.id);
     const registrationsForReconciliation =
       await this.getRegistrationsForReconciliation(
         programId,

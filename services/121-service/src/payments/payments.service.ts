@@ -1020,8 +1020,22 @@ export class PaymentsService {
       throw new HttpException('Program or FSP not found', HttpStatus.NOT_FOUND);
     }
 
-    const matchColumn = await this.excelService.getImportMatchColumn(programId);
-    return [matchColumn, 'status'];
+    const matchColumns: string[] = [];
+    for (const fspConfig of programWithReconciliationFsps.programFinancialServiceProviderConfigurations) {
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviders.excel
+      ) {
+        const matchColumn = await this.excelService.getImportMatchColumn(
+          fspConfig.id,
+        );
+        if (!matchColumns.includes(matchColumn)) {
+          matchColumns.push(matchColumn);
+        }
+      }
+    }
+
+    return [...matchColumns, 'status'];
   }
 
   public async getFspInstructions(
