@@ -79,9 +79,7 @@ export class ProjectRegistrationsPageComponent {
     ),
   );
 
-  project = injectQuery(
-    this.projectApiService.getProject(this.projectId),
-  );
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
 
   registrations = computed(() => this.registrationsResponse.data()?.data ?? []);
   totalRegistrations = computed(
@@ -157,7 +155,7 @@ export class ProjectRegistrationsPageComponent {
   }
 
   changeStatus(status: RegistrationStatusEnum) {
-    const actionData = this.actionData;
+    const actionData = this.getActionData();
 
     if (!actionData) {
       return;
@@ -170,6 +168,29 @@ export class ProjectRegistrationsPageComponent {
       detail: actionData.selectAll
         ? `Applying status: ${status} on all filtered registrations (${actionData.count.toString()})`
         : `Applying status: ${status} on the ${actionData.count.toString()} selected registration(s)`,
+    });
+  }
+
+  canChangeStatus(
+    status:
+      | RegistrationStatusEnum.declined
+      | RegistrationStatusEnum.included
+      | RegistrationStatusEnum.paused
+      | RegistrationStatusEnum.validated,
+  ) {
+    const statusToPermissionMap = {
+      [RegistrationStatusEnum.validated]:
+        PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+      [RegistrationStatusEnum.included]:
+        PermissionEnum.RegistrationStatusIncludedUPDATE,
+      [RegistrationStatusEnum.declined]:
+        PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+      [RegistrationStatusEnum.paused]:
+        PermissionEnum.RegistrationStatusPausedUPDATE,
+    };
+    return this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: statusToPermissionMap[status],
     });
   }
 }
