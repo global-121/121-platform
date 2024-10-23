@@ -112,12 +112,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
   public registrations: Relation<RegistrationEntity[]>;
 
-  // Can be used to add deprecated custom attributes to an export if
-  @Column('json', {
-    default: [],
-  })
-  public deprecatedCustomDataKeys: unknown[];
-
   @Column({ default: false })
   public tryWhatsAppFirst: boolean;
 
