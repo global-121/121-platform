@@ -991,6 +991,82 @@
         <source>FSP change</source>
         <target state="new">FSP change</target>
       </trans-unit>
+      <trans-unit id="2779521124294512411" datatype="html">
+        <source>Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</source>
+        <target state="new">Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</target>
+      </trans-unit>
+      <trans-unit id="8918915369134420822" datatype="html">
+        <source>Message:</source>
+        <target state="new">Message:</target>
+      </trans-unit>
+      <trans-unit id="1214152571980875649" datatype="html">
+        <source>Use @ to add personalized fields. <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot;&gt;" id="START_LINK"/>Learn more<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
+        <target state="new">Use @ to add personalized fields. <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot;&gt;" id="START_LINK"/>Learn more<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></target>
+      </trans-unit>
+      <trans-unit id="6356396558080396957" datatype="html">
+        <source>(&gt;20) characters.</source>
+        <target state="new">(&gt;20) characters.</target>
+      </trans-unit>
+      <trans-unit id="3900182075447065445" datatype="html">
+        <source>*Please make sure registration data is available for all used personalized fields.</source>
+        <target state="new">*Please make sure registration data is available for all used personalized fields.</target>
+      </trans-unit>
+      <trans-unit id="3082094200535618477" datatype="html">
+        <source>Message preview</source>
+        <target state="new">Message preview</target>
+      </trans-unit>
+      <trans-unit id="send-message" datatype="html">
+        <source>Send message</source>
+        <target state="new">Send message</target>
+      </trans-unit>
+      <trans-unit id="8535306348336143714" datatype="html">
+        <source>You&apos;ve selected <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>Select a message from the template messages or write a custom message.</source>
+        <target state="new">You&apos;ve selected <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>Select a message from the template messages or write a custom message.</target>
+      </trans-unit>
+      <trans-unit id="7613791439001735010" datatype="html">
+        <source>Template message</source>
+        <target state="new">Template message</target>
+      </trans-unit>
+      <trans-unit id="349264413670639690" datatype="html">
+        <source>Choose message</source>
+        <target state="new">Choose message</target>
+      </trans-unit>
+      <trans-unit id="29569660367309272" datatype="html">
+        <source>Custom message</source>
+        <target state="new">Custom message</target>
+      </trans-unit>
+      <trans-unit id="8411698505854313639" datatype="html">
+        <source>Continue to preview</source>
+        <target state="new">Continue to preview</target>
+      </trans-unit>
+      <trans-unit id="2290401575085388784" datatype="html">
+        <source>You are about to send a message to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
+        <target state="new">You are about to send a message to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</target>
+      </trans-unit>
+      <trans-unit id="generic-go-back" datatype="html">
+        <source>Go back</source>
+        <target state="new">Go back</target>
+      </trans-unit>
+      <trans-unit id="7203225042973794131" datatype="html">
+        <source>&lt;UNNAMED TEMPLATE&gt;</source>
+        <target state="new">&lt;UNNAMED TEMPLATE&gt;</target>
+      </trans-unit>
+      <trans-unit id="3979054462974448924" datatype="html">
+        <source>The message must be at least 20 characters long.</source>
+        <target state="new">The message must be at least 20 characters long.</target>
+      </trans-unit>
+      <trans-unit id="5397829192667702490" datatype="html">
+        <source>Sending messages</source>
+        <target state="new">Sending messages</target>
+      </trans-unit>
+      <trans-unit id="6562860910125244453" datatype="html">
+        <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
+        <target state="new">Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</target>
+      </trans-unit>
+      <trans-unit id="3573847364103936169" datatype="html">
+        <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
+        <target state="new">Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,0 +1,123 @@
+<p-dialog
+  #dialog
+  closeOnEscape
+  styleClass="md:min-w-[46rem]"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-envelope me-2"></i>
+      <ng-container i18n="@@send-message">Send message</ng-container>
+    </h3>
+  </ng-template>
+
+  <form
+    class="block w-full"
+    [formGroup]="formGroup"
+    (ngSubmit)="onFormSubmit()"
+  >
+    <div class="space-y-4">
+      @let preview = previewData();
+
+      @if (!preview) {
+        <p i18n>
+          You've selected {{ actionData()?.count }} registration(s).<br />Select
+          a message from the template messages or write a custom message.
+        </p>
+
+        <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+        <label class="flex cursor-pointer items-center">
+          <p-radioButton
+            [value]="'template'"
+            formControlName="messageType"
+          />
+          <span
+            class="ms-2 font-normal"
+            i18n
+            >Template message</span
+          >
+        </label>
+
+        @if (formGroup.value.messageType === 'template') {
+          <div>
+            <p-dropdown
+              formControlName="messageTemplateKey"
+              [options]="messageTemplateOptions()"
+              [loading]="messageTemplates.isPending()"
+              placeholder="Choose message"
+              i18n-placeholder
+              appendTo="body"
+            />
+            <app-form-error [error]="formFieldErrors()('messageTemplateKey')" />
+          </div>
+        }
+
+        <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+        <label class="flex cursor-pointer items-center">
+          <p-radioButton
+            [value]="'custom'"
+            formControlName="messageType"
+          />
+          <span
+            class="ms-2 font-normal"
+            i18n
+            >Custom message</span
+          >
+        </label>
+
+        @if (formGroup.value.messageType === 'custom') {
+          <div>
+            <app-custom-message-control
+              formControlName="customMessage"
+              [error]="formFieldErrors()('customMessage')"
+            />
+          </div>
+        }
+        <div class="flex justify-end space-x-2">
+          <p-button
+            label="Cancel"
+            i18n-label="@@generic-cancel"
+            outlined
+            rounded
+            severity="contrast"
+            (click)="dialogVisible.set(false)"
+          />
+          <p-button
+            label="Continue to preview"
+            i18n-label
+            rounded
+            (click)="onProceedToPreview()"
+          />
+        </div>
+      } @else {
+        <p i18n>
+          You are about to send a message to
+          {{ actionData()?.count }} registration(s).
+        </p>
+        <app-custom-message-preview
+          [sendMessageData]="preview"
+        ></app-custom-message-preview>
+        <app-form-error [error]="sendMessageMutation.error()?.message" />
+        <div class="flex justify-end space-x-2">
+          <p-button
+            label="Go back"
+            i18n-label="@@generic-go-back"
+            outlined
+            rounded
+            [disabled]="sendMessageMutation.isPending()"
+            (click)="previewData.set(undefined)"
+          />
+          <p-button
+            label="Send message"
+            i18n-label="@@send-message"
+            rounded
+            [loading]="sendMessageMutation.isPending()"
+            type="submit"
+          />
+        </div>
+      }
+    </div>
+  </form>
+</p-dialog>
