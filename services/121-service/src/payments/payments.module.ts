@@ -29,7 +29,6 @@ import { InclusionScoreService } from '@121-service/src/registration/services/in
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { UserModule } from '@121-service/src/user/user.module';
-import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
@@ -64,7 +63,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     LookupService,
     InclusionScoreService,
     RegistrationScopedRepository,
-    FileImportService,
     AzureLogService,
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],

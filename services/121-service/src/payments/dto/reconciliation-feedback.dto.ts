@@ -5,6 +5,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 
 export class ReconciliationFeedbackDto {
+  // ##TODO align wigh guidelines: use the dto only for the endpoint response, and don't pass it along multiple methods > create new interfaces for that + split in files where appropriate
   @ApiProperty({ example: '1234', description: 'The reference ID' })
   referenceId?: string | null;
 
@@ -21,18 +22,15 @@ export class ReconciliationFeedbackDto {
     example: ImportStatus.imported,
     enum: ImportStatus,
   })
-  importStatus?: ImportStatus;
+  importStatus: ImportStatus;
 
-  // ## TODO swagger decorators not needed here right?
+  [key: string]: string | undefined | null | ImportStatus;
+}
+
+export class ReconciliationDto {
+  feedback: ReconciliationFeedbackDto;
+
   programFinancialServiceProviderConfigurationId?: number;
 
   transaction?: PaTransactionResultDto;
-
-  [key: string]:
-    | string
-    | undefined
-    | null
-    | ImportStatus
-    | number
-    | PaTransactionResultDto;
 }

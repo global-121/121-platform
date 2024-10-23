@@ -18,7 +18,6 @@ import {
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
@@ -65,7 +64,6 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
-import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
 export class PaymentsService {
@@ -92,7 +90,6 @@ export class PaymentsService {
     private readonly excelService: ExcelService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionQueuesService: TransactionQueuesService,
@@ -1215,7 +1212,6 @@ export class PaymentsService {
       countNotFound: number;
     };
   }> {
-    // ##TODO: REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 import, but does not actually handle this correctly.
     const program = await this.programRepository.findOneOrFail({
       where: {
         id: Equal(programId),
@@ -1239,48 +1235,40 @@ export class PaymentsService {
       );
     }
 
-    const importResults: {
-      transactions: PaTransactionResultDto[];
-      resultFeedbackPerRow: ReconciliationFeedbackDto[];
-      programFinancialServiceProviderConfigurationId: number;
-    }[] = [];
-    for await (const fspConfig of fspConfigsWithReconciliation) {
-      const importResultForFspConfig =
-        await this.importReconciliationDataPerProgramFspConfig({
-          file,
-          payment,
-          programId,
-          fspConfig,
-        });
-      const resultWithConfigId = {
-        ...importResultForFspConfig,
-        programFinancialServiceProviderConfigurationId: fspConfig.id,
-      };
-      importResults.push(resultWithConfigId);
+    const fspConfigsExcel = fspConfigsWithReconciliation.filter(
+      (c) => c.financialServiceProviderName === FinancialServiceProviders.excel,
+    );
+    let importResults;
+    if (fspConfigsExcel.length) {
+      importResults = await this.excelService.processReconciliationData({
+        file,
+        payment,
+        programId,
+        fspConfigs: fspConfigsExcel,
+      });
     }
 
-    // Store the transactions after checking each FSP config
-    for (const importResult of importResults) {
+    for (const fspConfig of fspConfigsWithReconciliation) {
       await this.transactionsService.storeAllTransactionsBulk(
-        importResult.transactions,
+        importResults
+          .filter(
+            (r) =>
+              r.programFinancialServiceProviderConfigurationId === fspConfig.id,
+          )
+          .map((r) => r.transaction),
         {
           programId,
           paymentNr: payment,
           userId,
-          programFinancialServiceProviderConfigurationId:
-            importResult.programFinancialServiceProviderConfigurationId,
+          programFinancialServiceProviderConfigurationId: fspConfig.id,
         },
       );
     }
 
-    const resultFeedbackPerRow: ReconciliationFeedbackDto[] = [];
-    for (const importResult of importResults) {
-      for (const feedback of importResult.resultFeedbackPerRow) {
-        resultFeedbackPerRow.push(feedback);
-      }
-    }
-    const aggregateImportResult =
-      this.countFeedbackResults(resultFeedbackPerRow);
+    const feedback: ReconciliationFeedbackDto[] = importResults.map(
+      (r) => r.feedback,
+    );
+    const aggregateImportResult = this.countFeedbackResults(feedback);
 
     await this.actionService.saveAction(
       userId,
@@ -1289,43 +1277,9 @@ export class PaymentsService {
     );
 
     return {
-      importResult: resultFeedbackPerRow,
+      importResult: feedback,
       aggregateImportResult,
     };
-  }
-
-  private async importReconciliationDataPerProgramFspConfig({
-    file,
-    payment,
-    programId,
-    fspConfig,
-  }: {
-    file: Express.Multer.File;
-    payment: number;
-    programId: number;
-    fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
-  }): Promise<{
-    transactions: PaTransactionResultDto[];
-    resultFeedbackPerRow: ReconciliationFeedbackDto[];
-  }> {
-    if (
-      fspConfig.financialServiceProviderName === FinancialServiceProviders.excel
-    ) {
-      const maxRecords = 10000;
-      const validatedExcelImport = await this.fileImportService.validateCsv(
-        file,
-        maxRecords,
-      );
-      return await this.excelService.reconciliatePayments({
-        programId,
-        payment,
-        validatedExcelImport,
-        fspConfig,
-      });
-    }
-    throw new Error(
-      `FinancialServiceProviderName ${fspConfig.financialServiceProviderName} not supported in fsp reconciliation import`,
-    );
   }
 
   private countFeedbackResults(feedback: ReconciliationFeedbackDto[]): {
