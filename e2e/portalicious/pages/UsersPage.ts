@@ -6,11 +6,23 @@ import BasePage from './BasePage';
 class UsersPage extends BasePage {
   page: Page;
   readonly tableRows: Locator;
+  readonly newUserButton: Locator;
+  readonly fullNameInput: Locator;
+  readonly emailInput: Locator;
+  readonly submitButton: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
     this.tableRows = this.page.locator('table tbody tr');
+    this.newUserButton = this.page.getByRole('button', {
+      name: 'Add new User',
+    });
+    this.fullNameInput = this.page
+      .locator('label')
+      .filter({ hasText: 'Full name' });
+    this.emailInput = this.page.locator('label').filter({ hasText: 'E-mail' });
+    this.submitButton = this.page.getByRole('button', { name: 'Submit' });
   }
 
   async validateAssignedUsersNames(expectedAssignedUsers: string[]) {
@@ -71,13 +83,12 @@ class UsersPage extends BasePage {
   }
 
   async addNewUser({ fullName, email }: { fullName: string; email: string }) {
-    await this.page.getByRole('button', { name: 'Add new User' }).click();
-    await this.page
-      .locator('label')
-      .filter({ hasText: 'Full name' })
-      .fill(fullName);
-    await this.page.locator('label').filter({ hasText: 'E-mail' }).fill(email);
-    await this.page.getByRole('button', { name: 'Submit' }).click();
+    // Act
+    await this.newUserButton.click();
+    await this.fullNameInput.fill(fullName);
+    await this.emailInput.fill(email);
+    await this.submitButton.click();
+    // Assert
     await this.validateToastMessage('User added');
     await this.validateRowTextContent({
       email,
