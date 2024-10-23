@@ -1,6 +1,7 @@
 import FspName from '../enums/fsp-name.enum';
 import { StatusEnum } from './status.enum';
 import { IntersolvePayoutStatus } from './transaction-custom-data';
+import { TranslatableString } from './translatable-string.model';
 
 export class Transaction {
   id: number;
@@ -16,7 +17,10 @@ export class Transaction {
         IntersolvePayoutStatus: IntersolvePayoutStatus;
       }
     | any;
-  fspName: string;
+  financialServiceProviderName: FspName;
+  programFinancialServiceProviderConfigurationTranslatedLabel: string;
+  programFinancialServiceProviderConfigurationLabel: TranslatableString;
+  programFinancialServiceProviderConfigurationName: string;
   fsp: FspName;
   user: {
     id: number;

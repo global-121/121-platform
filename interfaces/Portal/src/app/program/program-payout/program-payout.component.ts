@@ -338,10 +338,13 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkProgramHasVoucherSupport(
-    fsps: Program['financialServiceProviderConfigurations'],
+    fspConfigs: Program['financialServiceProviderConfigurations'],
   ): boolean {
-    for (const fsp of fsps || []) {
-      if (fsp && PaymentUtils.hasVoucherSupport(fsp.name)) {
+    for (const fspConfig of fspConfigs || []) {
+      if (
+        fspConfig &&
+        PaymentUtils.hasVoucherSupport(fspConfig.financialServiceProviderName)
+      ) {
         return true;
       }
     }

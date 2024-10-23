@@ -198,33 +198,34 @@
 
         <div
           *ngIf="
-            (!canUpdatePaData || !canUpdatePaFsp) && person?.fspDisplayName
+            (!canUpdatePaData || !canUpdatePaProgramFspConfig) &&
+            person?.programFinancialServiceProviderConfigurationLabel
           "
           class="ion-margin-vertical"
         >
           <strong
             >{{
-              'page.program.program-people-affected.column.fspDisplayName'
+              'page.program.program-people-affected.column.programFinancialServiceProviderConfigurationLabel'
                 | translate
             }}:</strong
           >
           <br />
-          {{ person?.fspDisplayName }}
+          {{ person?.programFinancialServiceProviderConfigurationLabel }}
         </div>
         <app-update-fsp
           data-testid="edit-person-affected-popup-fsp-dropdown"
           *ngIf="
             canUpdatePaData &&
-            canUpdatePaFsp &&
-            fspList.length === programFspLength &&
-            person?.financialServiceProvider
+            canUpdatePaProgramFspConfig &&
+            programFspConfigList.length === programFspLength &&
+            person?.programFinancialServiceProviderConfigurationName
           "
-          [fspList]="fspList"
+          [programFspConfigList]="programFspConfigList"
           [label]="
-            'page.program.program-people-affected.column.fspDisplayName'
+            'page.program.program-people-affected.column.programFinancialServiceProviderConfigurationLabel'
               | translate
           "
-          [value]="person?.financialServiceProvider"
+          [value]="person?.programFinancialServiceProviderConfigurationName"
           [attributeValues]="attributeValues"
           [referenceId]="person?.referenceId"
           [programId]="programId"

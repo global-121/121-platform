@@ -14,8 +14,11 @@ export class Person {
   registrationCreated?: string;
   status: RegistrationStatus;
   note?: string;
-  financialServiceProvider?: FspName;
-  fspDisplayName?: string | TranslatableString;
+  financialServiceProviderName: FspName;
+  programFinancialServiceProviderConfigurationName: string;
+  programFinancialServiceProviderConfigurationLabel:
+    | string
+    | TranslatableString;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
