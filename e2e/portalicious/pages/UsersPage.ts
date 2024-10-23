@@ -79,7 +79,10 @@ class UsersPage extends BasePage {
     await this.page.locator('label').filter({ hasText: 'E-mail' }).fill(email);
     await this.page.getByRole('button', { name: 'Submit' }).click();
     await this.validateToastMessage('User added');
-    await this.validateRowTextContent(`${fullName} ${email}`);
+    await this.validateRowTextContent({
+      email,
+      textContent: `${fullName} ${email}`,
+    });
   }
 }
 
