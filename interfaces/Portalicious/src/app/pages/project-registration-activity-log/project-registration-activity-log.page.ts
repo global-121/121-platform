@@ -21,9 +21,9 @@ import {
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
-import { ActivityLogExpandedRowComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/activity-log-expanded-row/activity-log-expanded-row.component';
-import { TableCellActivityComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-activity.component';
-import { TableCellOverviewComponent } from '~/pages/project/project-registrations/project-registration-activity-log/components/table-cell-overview.component';
+import { ActivityLogExpandedRowComponent } from '~/pages/project-registration-activity-log/components/activity-log-expanded-row/activity-log-expanded-row.component';
+import { TableCellActivityComponent } from '~/pages/project-registration-activity-log/components/table-cell-activity.component';
+import { TableCellOverviewComponent } from '~/pages/project-registration-activity-log/components/table-cell-overview.component';
 
 export interface ActivityLogTableCellContext {
   projectId: Signal<number>;

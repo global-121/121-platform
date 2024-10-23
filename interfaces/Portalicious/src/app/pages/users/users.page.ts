@@ -24,7 +24,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
-import { AddUserFormComponent } from '~/pages/users/add-user-form/add-user-form.component';
+import { AddUserFormComponent } from '~/pages/users/components/add-user-form/add-user-form.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 

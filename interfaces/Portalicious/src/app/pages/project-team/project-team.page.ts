@@ -27,7 +27,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
-import { AddProjectTeamUserFormComponent } from '~/pages/project/project-team/add-project-team-user-form/add-project-team-user-form.component';
+import { AddProjectTeamUserFormComponent } from '~/pages/project-team/components/add-project-team-user-form/add-project-team-user-form.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
