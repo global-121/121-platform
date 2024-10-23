@@ -47,14 +47,20 @@ class UsersPage extends BasePage {
     expect(sortedActualUserEmails).toEqual(sortedExpectedUserEmails);
   }
 
-  async validateLastLogin(timestamp: string) {
+  async validateRowTextContent({
+    email,
+    textContent,
+  }: {
+    email?: string;
+    textContent: string;
+  }) {
     const lastLogin = await this.page
       .getByRole('row', {
-        name: 'view-user view-user@example.',
+        name: email,
       })
       .textContent();
 
-    expect(lastLogin).toContain(timestamp);
+    expect(lastLogin).toContain(textContent);
   }
 }
 
