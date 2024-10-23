@@ -1,17 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 export class ReconciliationFeedbackDto {
   @ApiProperty({ example: '1234', description: 'The reference ID' })
   referenceId?: string | null;
 
   @ApiProperty({
-    example: StatusEnum.success,
-    enum: StatusEnum,
+    example: TransactionStatusEnum.success,
+    enum: TransactionStatusEnum,
   })
-  status?: StatusEnum | null;
+  status?: TransactionStatusEnum | null;
 
   @ApiProperty({ example: 'Success', description: 'The message' })
   message?: string | null;
@@ -20,7 +21,18 @@ export class ReconciliationFeedbackDto {
     example: ImportStatus.imported,
     enum: ImportStatus,
   })
-  importStatus: ImportStatus;
+  importStatus?: ImportStatus;
 
-  [key: string]: string | undefined | null | ImportStatus;
+  // ## TODO swagger decorators not needed here right?
+  programFinancialServiceProviderConfigurationId?: number;
+
+  transaction?: PaTransactionResultDto;
+
+  [key: string]:
+    | string
+    | undefined
+    | null
+    | ImportStatus
+    | number
+    | PaTransactionResultDto;
 }
