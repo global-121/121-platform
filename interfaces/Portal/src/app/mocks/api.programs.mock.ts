@@ -30,7 +30,7 @@ const programsArray: Program[] = [
         },
       },
     ],
-    programQuestions: [
+    programRegistrationAttributes: [
       {
         id: 1,
         name: 'phoneNumber',
@@ -46,7 +46,7 @@ const programsArray: Program[] = [
     enableMaxPayments: true,
     enableScope: true,
     allowEmptyPhoneNumber: false,
-    financialServiceProviders: [],
+    financialServiceProviderConfigurations: [],
     aidworkerAssignments: [],
     fullnameNamingConvention: [],
     paTableAttributes: [],

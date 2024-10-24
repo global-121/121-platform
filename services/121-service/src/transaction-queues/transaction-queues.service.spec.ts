@@ -24,6 +24,7 @@ const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
     addressPostalCode: '1234AB',
     addressCity: 'Den Haag',
     phoneNumber: '14155238886',
+    programFinancialServiceProviderConfigurationId: 1,
   },
 ];
 

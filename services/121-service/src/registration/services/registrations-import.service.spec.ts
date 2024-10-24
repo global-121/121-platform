@@ -2,10 +2,10 @@ import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
-import { GenericAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -24,7 +24,8 @@ describe('RegistrationsImportService', () => {
       nameFirst: 'Test',
       nameLast: 'Test',
       phoneNumber: '31600000000',
-      fspName: FinancialServiceProviderName.intersolveVoucherPaper,
+      programFinancialServiceProviderConfigurationName:
+        FinancialServiceProviders.intersolveVoucherPaper,
       whatsappPhoneNumber: '',
     },
   ];
@@ -57,7 +58,7 @@ describe('RegistrationsImportService', () => {
           [
             {
               lineNumber: 1,
-              column: GenericAttributes.phoneNumber,
+              column: GenericRegistrationAttributes.phoneNumber,
               value: '',
               error: 'PhoneNumber is not allowed to be empty',
             },
@@ -103,7 +104,7 @@ describe('RegistrationsImportService', () => {
       ).rejects.toHaveProperty('response', [
         {
           lineNumber: 1,
-          column: GenericAttributes.phoneNumber,
+          column: GenericRegistrationAttributes.phoneNumber,
           value: '',
           error: 'PhoneNumber is not allowed to be empty',
         },

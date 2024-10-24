@@ -29,7 +29,8 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'financialServiceProvider',
+      'financialServiceProviderName',
+      'programFinancialServiceProviderConfigurationName',
       'registrationProgramId',
       'personAffectedSequence',
       'maxPayments',
@@ -47,8 +48,11 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       preferredLanguage: AllowedFilterOperatorsString,
       inclusionScore: AllowedFilterOperatorsNumber,
       paymentAmountMultiplier: AllowedFilterOperatorsNumber,
-      financialServiceProvider: AllowedFilterOperatorsString,
-      fspDisplayName: AllowedFilterOperatorsString,
+      financialServiceProviderName: AllowedFilterOperatorsString,
+      programFinancialServiceProviderConfigurationName:
+        AllowedFilterOperatorsString,
+      programFinancialServiceProviderConfigurationLabel:
+        AllowedFilterOperatorsString,
       registrationProgramId: AllowedFilterOperatorsNumber,
       maxPayments: AllowedFilterOperatorsNumber,
       paymentCount: AllowedFilterOperatorsNumber,
