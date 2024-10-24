@@ -1083,6 +1083,18 @@
         <source>Pause</source>
         <target state="new">Pause</target>
       </trans-unit>
+      <trans-unit id="4026691210548476882" datatype="html">
+        <source>Failed to load options</source>
+        <target state="new">Failed to load options</target>
+      </trans-unit>
+      <trans-unit id="loading" datatype="html">
+        <source>Loading...</source>
+        <target state="new">Loading...</target>
+      </trans-unit>
+      <trans-unit id="6655432650609946987" datatype="html">
+        <source>Are you sure you want to send this message?</source>
+        <target state="new">Are you sure you want to send this message?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

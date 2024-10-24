@@ -53,6 +53,24 @@ body {
   }
 }
 
+.mention-menu {
+  box-shadow: 0px 2px 12px 0px #0000001a;
+
+  li {
+    .mention-item {
+      @apply py-2 font-semibold text-black txt-body-m #{!important};
+    }
+
+    &.mention-active {
+      @apply bg-purple-100;
+
+      a {
+        background: inherit !important;
+      }
+    }
+  }
+}
+
 // PrimeNG Component overrides
 //
 // For now we're just overriding some defaults here instead of extending the whole theme,

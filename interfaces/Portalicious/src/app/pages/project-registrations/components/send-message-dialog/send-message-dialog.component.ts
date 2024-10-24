@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   input,
   model,
@@ -18,7 +17,6 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { uniqBy } from 'lodash';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -26,15 +24,16 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { NotificationApiService } from '~/domains/notification/notification.api.service';
-import {
-  RegistrationApiService,
-  SendMessageData,
-} from '~/domains/registration/registration.api.service';
+import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { Registration } from '~/domains/registration/registration.model';
 import { CustomMessageControlComponent } from '~/pages/project-registrations/components/custom-message-control/custom-message-control.component';
 import { CustomMessagePreviewComponent } from '~/pages/project-registrations/components/custom-message-preview/custom-message-preview.component';
+import {
+  MessageInputData,
+  MessagingService,
+} from '~/services/messaging.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   generateFieldErrors,
   genericFieldIsRequiredValidationMessage,
@@ -62,48 +61,34 @@ type SendMessageFormGroup =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SendMessageDialogComponent {
-  projectId = input.required<number>();
+  readonly projectId = input.required<number>();
+  readonly previewRegistration = input.required<Registration>();
 
+  private messagingService = inject(MessagingService);
   private notificationApiService = inject(NotificationApiService);
   private registrationApiService = inject(RegistrationApiService);
-  private translatableStringService = inject(TranslatableStringService);
   private toastService = inject(ToastService);
 
   actionData = signal<ActionDataWithPaginateQuery | undefined>(undefined);
   dialogVisible = model<boolean>(false);
-  previewData = signal<SendMessageData | undefined>(undefined);
+  previewData = signal<Partial<MessageInputData> | undefined>(undefined);
 
   messageTemplates = injectQuery(
     this.notificationApiService.getMessageTemplates(this.projectId),
   );
 
-  messageTemplateOptions = computed(() => {
-    if (!this.messageTemplates.isSuccess()) {
-      return [];
-    }
-
-    return uniqBy(
-      this.messageTemplates
-        .data()
-        .filter((template) => template.isSendMessageTemplate)
-        .map((template) => {
-          return {
-            label:
-              this.translatableStringService.translate(template.label) ??
-              $localize`<UNNAMED TEMPLATE>`,
-            value: template.type,
-          };
-        }),
-      'value',
-    ).sort((a, b) => a.label.localeCompare(b.label));
-  });
-
   formGroup = new FormGroup({
     messageType: new FormControl<'custom' | 'template'>('template', {
       nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      validators: [Validators.required],
     }),
-    messageTemplateKey: new FormControl<string | undefined>(undefined),
-    customMessage: new FormControl<string | undefined>(undefined),
+    messageTemplateKey: new FormControl<string | undefined>(undefined, {
+      nonNullable: true,
+    }),
+    customMessage: new FormControl<string | undefined>(undefined, {
+      nonNullable: true,
+    }),
   });
 
   formFieldErrors = generateFieldErrors<SendMessageFormGroup>(this.formGroup, {
@@ -151,29 +136,11 @@ export class SendMessageDialogComponent {
     this.dialogVisible.set(true);
   }
 
-  private getSendMessageData(
-    formValues: SendMessageFormGroup['value'],
-  ): SendMessageData | undefined {
-    const { messageType, customMessage, messageTemplateKey } = formValues;
-
-    if (messageType === 'template') {
-      if (!messageTemplateKey) {
-        return;
-      }
-
-      return { messageTemplateKey };
-    }
-
-    if (!customMessage) {
-      return;
-    }
-
-    return { customMessage };
-  }
-
   sendMessageMutation = injectMutation(() => ({
-    mutationFn: (formValues: SendMessageFormGroup['value']) => {
-      const messageData = this.getSendMessageData(formValues);
+    mutationFn: (
+      formValues: ReturnType<SendMessageFormGroup['getRawValue']>,
+    ) => {
+      const messageData = this.messagingService.getSendMessageData(formValues);
 
       if (!messageData) {
         // should never happen, but makes TS happy
@@ -200,15 +167,17 @@ export class SendMessageDialogComponent {
     },
   }));
 
-  onProceedToPreview(): void {
+  onProceedToPreview() {
     this.formGroup.markAllAsTouched();
+
     if (!this.formGroup.valid) {
       return;
     }
-    this.previewData.set(this.getSendMessageData(this.formGroup.value));
+
+    this.previewData.set(this.formGroup.getRawValue());
   }
 
   onFormSubmit(): void {
-    this.sendMessageMutation.mutate(this.formGroup.value);
+    this.sendMessageMutation.mutate(this.formGroup.getRawValue());
   }
 }

@@ -1,6 +1,5 @@
 <p-dialog
   #dialog
-  closeOnEscape
   styleClass="md:min-w-[46rem]"
   [(visible)]="dialogVisible"
   [modal]="true"
@@ -19,9 +18,9 @@
     (ngSubmit)="onFormSubmit()"
   >
     <div class="space-y-4">
-      @let preview = previewData();
+      @let previewMessageData = previewData();
 
-      @if (!preview) {
+      @if (!previewMessageData) {
         <p i18n>
           You've selected {{ actionData()?.count }} registration(s).<br />Select
           a message from the template messages or write a custom message.
@@ -44,10 +43,11 @@
           <div>
             <p-dropdown
               formControlName="messageTemplateKey"
-              [options]="messageTemplateOptions()"
+              [options]="messageTemplates.data()"
               [loading]="messageTemplates.isPending()"
               placeholder="Choose message"
               i18n-placeholder
+              optionValue="type"
               appendTo="body"
             />
             <app-form-error [error]="formFieldErrors()('messageTemplateKey')" />
@@ -71,6 +71,7 @@
           <div>
             <app-custom-message-control
               formControlName="customMessage"
+              [projectId]="projectId()"
               [error]="formFieldErrors()('customMessage')"
             />
           </div>
@@ -92,13 +93,24 @@
           />
         </div>
       } @else {
-        <p i18n>
+        <p
+          i18n
+          class="mb-7"
+        >
           You are about to send a message to
           {{ actionData()?.count }} registration(s).
         </p>
         <app-custom-message-preview
-          [sendMessageData]="preview"
+          [projectId]="projectId()"
+          [previewRegistration]="previewRegistration()"
+          [messageData]="previewMessageData"
         ></app-custom-message-preview>
+        <p
+          i18n
+          class="mt-7"
+        >
+          Are you sure you want to send this message?
+        </p>
         <app-form-error [error]="sendMessageMutation.error()?.message" />
         <div class="flex justify-end space-x-2">
           <p-button

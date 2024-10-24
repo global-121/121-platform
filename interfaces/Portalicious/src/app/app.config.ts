@@ -25,7 +25,15 @@ export function getAppConfig(locale: Locale): ApplicationConfig {
       provideExperimentalZonelessChangeDetection(),
       provideAnimationsAsync(),
       provideHttpClient(withInterceptorsFromDi()),
-      provideAngularQuery(new QueryClient()),
+      provideAngularQuery(
+        new QueryClient({
+          defaultOptions: {
+            queries: {
+              staleTime: 1000 * 60 * 5, // 5 minutes
+            },
+          },
+        }),
+      ),
       { provide: LOCALE_ID, useValue: locale },
     ],
   };

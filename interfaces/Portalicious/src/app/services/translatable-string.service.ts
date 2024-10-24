@@ -12,14 +12,18 @@ export class TranslatableStringService {
   private currentLocale = inject(LOCALE_ID);
 
   translate(
-    value: LocalizedString | null | string | undefined,
+    value: LocalizedString | null | number | string | undefined,
   ): string | undefined {
-    if (!value) {
+    if (value === null || value === undefined) {
       return undefined;
     }
 
     if (typeof value === 'string') {
       return value;
+    }
+
+    if (typeof value === 'number') {
+      return value.toString();
     }
 
     const locale = this.currentLocale as LanguageEnum;

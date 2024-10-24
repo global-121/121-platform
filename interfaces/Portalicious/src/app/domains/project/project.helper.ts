@@ -5,7 +5,7 @@ import {
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { DataListItem } from '~/components/data-list/data-list.component';
-import { Attribute } from '~/domains/project/project.model';
+import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
 
 export const ATTRIBUTE_LABELS: Record<string, string | undefined> = {
   fspDisplayName: $localize`:@@attribute-label-fspDisplayName:FSP Display Name`,
@@ -15,11 +15,10 @@ export const ATTRIBUTE_LABELS: Record<string, string | undefined> = {
 };
 
 export const attributeToDataListItem = (
-  attribute: Attribute,
+  attribute: AttributeWithTranslatedLabel,
   value: unknown,
 ): DataListItem | undefined => {
-  const label =
-    attribute.label ?? ATTRIBUTE_LABELS[attribute.name] ?? attribute.name;
+  const label = attribute.label;
 
   // TODO: AB#30519 avoid using "as" here
   switch (attribute.type as AnswerTypes | CustomAttributeType) {

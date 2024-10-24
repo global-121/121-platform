@@ -91,7 +91,10 @@ export class LoginPageComponent {
   });
 
   loginMutation = injectMutation(() => ({
-    mutationFn: ({ email, password }: Required<LoginFormGroup['value']>) =>
+    mutationFn: ({
+      email,
+      password,
+    }: ReturnType<LoginFormGroup['getRawValue']>) =>
       this.authService.login({ username: email, password }),
     onSuccess: () => {
       const returnUrl = this.returnUrl();

@@ -62,7 +62,7 @@ export class AddNoteFormComponent {
   });
 
   addNoteMutation = injectMutation(() => ({
-    mutationFn: ({ note }: Required<AddNoteFormGroup['value']>) =>
+    mutationFn: ({ note }: ReturnType<AddNoteFormGroup['getRawValue']>) =>
       this.projectApiService.addRegistrationNote({
         projectId: this.projectId,
         registrationReferenceId: this.registrationReferenceId,

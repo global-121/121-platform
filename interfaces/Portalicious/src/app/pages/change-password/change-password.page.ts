@@ -129,7 +129,7 @@ export class ChangePasswordPageComponent {
     mutationFn: ({
       currentPassword,
       newPassword,
-    }: Required<ChangePasswordFormGroup['value']>) =>
+    }: ReturnType<ChangePasswordFormGroup['getRawValue']>) =>
       this.authService.changePassword({
         password: currentPassword,
         newPassword,

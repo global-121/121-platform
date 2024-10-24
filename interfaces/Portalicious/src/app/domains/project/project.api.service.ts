@@ -1,11 +1,13 @@
 import { HttpParams } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 
 import { uniqBy } from 'lodash';
 
 import { DomainApiService } from '~/domains/domain-api.service';
+import { ATTRIBUTE_LABELS } from '~/domains/project/project.helper';
 import {
   Attribute,
+  AttributeWithTranslatedLabel,
   Project,
   ProjectMetrics,
   ProjectUser,
@@ -13,6 +15,7 @@ import {
   ProjectUserWithRolesLabel,
 } from '~/domains/project/project.model';
 import { Role } from '~/domains/role/role.model';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 const BASE_ENDPOINT = 'programs';
 
@@ -20,6 +23,10 @@ const BASE_ENDPOINT = 'programs';
   providedIn: 'root',
 })
 export class ProjectApiService extends DomainApiService {
+  private readonly translatableStringService = inject(
+    TranslatableStringService,
+  );
+
   createProjectFromKobo({
     token,
     assetId,
@@ -98,13 +105,28 @@ export class ProjectApiService extends DomainApiService {
       },
     });
 
-    return this.generateQueryOptions<Attribute[]>({
+    return this.generateQueryOptions<
+      Attribute[],
+      AttributeWithTranslatedLabel[]
+    >({
       path: [BASE_ENDPOINT, projectId, 'attributes'],
       requestOptions: {
         params,
       },
       processResponse: (attributes) => {
-        return uniqBy(attributes, 'name');
+        return uniqBy(attributes, 'name').map((attribute) => {
+          const translatedLabel = this.translatableStringService.translate(
+            attribute.label,
+          );
+
+          return {
+            ...attribute,
+            label:
+              translatedLabel ??
+              ATTRIBUTE_LABELS[attribute.name] ??
+              attribute.name,
+          };
+        });
       },
     });
   }
