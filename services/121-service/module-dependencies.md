@@ -15,28 +15,31 @@ graph LR
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
+  ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
+  ProgramModule-->IntersolveVisaModule
+  IntersolveVisaModule-->UserModule
   OrganizationModule-->UserModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->UserModule
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
-  MessageModule-->QueueMessageModule
-  QueueMessageModule-->ProgramAttributesModule
-  QueueMessageModule-->RegistrationDataModule
+  MessageModule-->MessageQueuesModule
+  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->RegistrationDataModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule
   IntersolveVoucherModule-->TransactionsModule
   TransactionsModule-->UserModule
   TransactionsModule-->ActionsModule
-  TransactionsModule-->QueueMessageModule
+  TransactionsModule-->MessageQueuesModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->EventsModule
   EventsModule-->UserModule
-  IntersolveVoucherModule-->QueueMessageModule
+  IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
@@ -50,17 +53,13 @@ graph LR
   RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FinancialServiceProvidersModule
-  RegistrationsModule-->QueueMessageModule
+  RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->UserModule
-  IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->QueueMessageModule
-  IntersolveVisaModule-->RegistrationDataModule
-  IntersolveVisaModule-->RedisModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->QueueRegistrationUpdateModule
+  RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->UserModule
@@ -69,8 +68,6 @@ graph LR
   PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->SafaricomModule
-  SafaricomModule-->UserModule
-  SafaricomModule-->TransactionsModule
   SafaricomModule-->RedisModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
@@ -83,23 +80,41 @@ graph LR
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationDataModule
+  PaymentsModule-->TransactionQueuesModule
+  TransactionQueuesModule-->RedisModule
+  PaymentsModule-->FinancialServiceProvidersModule
+  PaymentsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  PaymentsModule-->RedisModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
+  MetricsModule-->RegistrationDataModule
+  MigrateVisaModule-->UserModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->WhatsappModule
-  MessageIncomingModule-->QueueMessageModule
+  MessageIncomingModule-->MessageQueuesModule
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
-  AuthModule-->UserModule
-  AuthModule-->PassportModule
   ActivitiesModule-->NoteModule
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->EventsModule
   ActivitiesModule-->UserModule
+  TransactionJobProcessorsModule-->RedisModule
+  TransactionJobProcessorsModule-->IntersolveVisaModule
+  TransactionJobProcessorsModule-->SafaricomModule
+  TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  TransactionJobProcessorsModule-->RegistrationsModule
+  TransactionJobProcessorsModule-->ProgramModule
+  TransactionJobProcessorsModule-->TransactionsModule
+  TransactionJobProcessorsModule-->MessageQueuesModule
+  TransactionJobProcessorsModule-->FinancialServiceProvidersModule
+  TransactionJobProcessorsModule-->EventsModule
+  TransactionJobProcessorsModule-->MessageTemplateModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->RedisModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->SafaricomModule
 ```

@@ -11,13 +11,9 @@ import {
   TemplatedMessages,
 } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import {
-  ProcessNameMessage,
-  QueueNameMessageCallBack,
-} from '@121-service/src/notifications/enum/queue.names.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatus,
@@ -35,6 +31,10 @@ import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import {
+  ProcessNameMessage,
+  QueueNameMessageCallBack,
+} from '@121-service/src/shared/enum/queue-process.names.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -69,7 +69,7 @@ export class MessageIncomingService {
     private readonly messageStatusCallbackQueue: Queue,
     @InjectQueue(QueueNameMessageCallBack.incomingMessage)
     private readonly incommingMessageQueue: Queue,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
   ) {}
@@ -252,7 +252,7 @@ export class MessageIncomingService {
       );
     }
 
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration,
       message: message.body,
       messageContentType: message.contentType,
@@ -287,7 +287,7 @@ export class MessageIncomingService {
           relations: ['registration'],
         });
       for (const w of whatsappPendingMessages) {
-        await this.queueMessageService.addMessageToQueue({
+        await this.queueMessageService.addMessageJob({
           registration: w.registration,
           message: w.body,
           messageContentType: MessageContentType.invited,
@@ -465,7 +465,7 @@ export class MessageIncomingService {
             language,
           )
         )[0];
-        await this.queueMessageService.addMessageToQueue({
+        await this.queueMessageService.addMessageJob({
           registration: registrationsWithPhoneNumber[0],
           message: whatsappDefaultReply.message,
           messageContentType: MessageContentType.defaultReply,
@@ -526,7 +526,7 @@ export class MessageIncomingService {
           }
         }
 
-        await this.queueMessageService.addMessageToQueue({
+        await this.queueMessageService.addMessageJob({
           registration,
           message,
           messageContentType: MessageContentType.paymentVoucher,
@@ -547,7 +547,7 @@ export class MessageIncomingService {
 
       // Send instruction message only once (outside of loops)
       if (registrationsWithOpenVouchers.length > 0) {
-        await this.queueMessageService.addMessageToQueue({
+        await this.queueMessageService.addMessageJob({
           registration,
           message: '',
           messageContentType: MessageContentType.paymentInstructions,
@@ -595,7 +595,7 @@ export class MessageIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          await this.queueMessageService.addMessageToQueue({
+          await this.queueMessageService.addMessageJob({
             registration,
             message: message.body,
             messageContentType: message.contentType,

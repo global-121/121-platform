@@ -13,8 +13,8 @@ import {
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
@@ -23,10 +23,6 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
-import {
-  ProcessNamePayment,
-  QueueNamePayment,
-} from '@121-service/src/payments/enum/queue.names.enum';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
 import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
@@ -42,17 +38,19 @@ import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code
 import {
   getRedisSetName,
   REDIS_CLIENT,
-} from '@121-service/src/payments/redis-client';
+} from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -67,8 +65,8 @@ export class IntersolveVoucherService
   public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
+  public readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -81,9 +79,9 @@ export class IntersolveVoucherService
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
-    private readonly queueMessageService: QueueMessageService,
+    private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
+    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
     private readonly paymentIntersolveVoucherQueue: Queue,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -115,7 +113,7 @@ export class IntersolveVoucherService
 
     for (const paymentInfo of paPaymentList) {
       const job = await this.paymentIntersolveVoucherQueue.add(
-        ProcessNamePayment.sendPayment,
+        JobNames.default,
         {
           paymentInfo,
           useWhatsapp,
@@ -125,20 +123,6 @@ export class IntersolveVoucherService
         },
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
-  }
-
-  public async getQueueProgress(programId?: number): Promise<number> {
-    if (programId) {
-      // Get the count of job IDs in the Redis set for the program
-      const count = await this.redisClient.scard(getRedisSetName(programId));
-      return count;
-    } else {
-      // If no programId is provided, use Bull's method to get the total delayed count
-      // This requires an instance of the Bull queue
-      const delayedCount =
-        await this.paymentIntersolveVoucherQueue.getDelayedCount();
-      return delayedCount;
     }
   }
 
@@ -171,7 +155,7 @@ export class IntersolveVoucherService
       registration.id,
       1,
       paResult.status,
-      paResult.message,
+      paResult.message ?? null,
       registration.programId,
       {
         userId: jobData.paymentInfo.userId,
@@ -382,7 +366,7 @@ export class IntersolveVoucherService
       .split('[[amount]]')
       .join(String(calculatedAmount));
 
-    await this.queueMessageService.addMessageToQueue({
+    await this.queueMessageService.addMessageJob({
       registration,
       message: whatsappPayment,
       messageContentType: MessageContentType.paymentTemplated,

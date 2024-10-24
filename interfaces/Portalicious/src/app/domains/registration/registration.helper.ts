@@ -1,10 +1,7 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import {
-  // TODO: AB#30525 should import this from 121-service
-  VisaCard121Status,
-} from '~/domains/registration/registration.model';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 
 export const REGISTRATION_STATUS_LABELS: Record<
   RegistrationStatusEnum,

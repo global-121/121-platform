@@ -41,10 +41,12 @@ function generateModuleDependencyGraph(app: INestApplication): void {
     // Sorted alphabetically
     'ActionModule',
     'ApplicationModule',
+    'AuthModule',
     'BullModule',
     'HealthModule',
     'HttpModule',
     'MulterModule',
+    'PassportModule',
     'ScheduleModule',
     'ScriptsModule',
     'TerminusModule',

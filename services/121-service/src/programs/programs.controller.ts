@@ -418,4 +418,16 @@ You can also leave the body empty.`,
       filterShowInPeopleAffectedTable,
     );
   }
+
+  // TODO: REFACTOR: This endpoint's return is not typed as a DTO, so it is not clear what the response structure is in Swagger UI. See guidelines.
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiTags('financial-service-providers/intersolve-visa')
+  @ApiOperation({ summary: 'Get information about the funding wallet' })
+  @Get(':programId/financial-service-providers/intersolve-visa/funding-wallet')
+  public async getFundingWallet(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ) {
+    return await this.programService.getFundingWallet(programId);
+  }
 }
