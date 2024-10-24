@@ -33,7 +33,8 @@ describe('Sending templated message', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    fspName: FinancialServiceProviders.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    programFinancialServiceProviderConfigurationName:
+      FinancialServiceProviders.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
   };
 

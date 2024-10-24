@@ -22,7 +22,6 @@ import {
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
@@ -33,9 +32,10 @@ import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-inte
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { ReferenceIdConstraints } from '@121-service/src/shared/const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
@@ -62,8 +62,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column()
   public referenceId: string;
 
-  @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
-  public data: Relation<RegistrationDataEntity[]>;
+  @OneToMany(() => RegistrationAttributeDataEntity, (data) => data.registration)
+  public data: Relation<RegistrationAttributeDataEntity[]>;
 
   @Column({ type: 'character varying', nullable: true })
   public phoneNumber: string | null;
@@ -76,11 +76,13 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
-  @ManyToOne((_type) => FinancialServiceProviderEntity)
-  @JoinColumn({ name: 'fspId' })
-  public fsp: FinancialServiceProviderEntity;
-  @Column({ type: 'integer', nullable: true })
-  public fspId: number | null;
+  @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity)
+  @JoinColumn({
+    name: 'programFinancialServiceProviderConfigurationId',
+  })
+  public programFinancialServiceProviderConfiguration: ProgramFinancialServiceProviderConfigurationEntity;
+  @Column({ type: 'integer', nullable: false })
+  public programFinancialServiceProviderConfigurationId: number;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()
@@ -193,7 +195,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
-        entityClass: RegistrationDataEntity,
+        entityClass: RegistrationAttributeDataEntity,
         columnName: 'registration',
       },
       {

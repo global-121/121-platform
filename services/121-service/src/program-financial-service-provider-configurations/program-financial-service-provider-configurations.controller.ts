@@ -1,128 +1,334 @@
 import {
-  Body,
   Controller,
+  HttpCode,
+  ParseArrayPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  Body,
   Delete,
   Get,
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
+import { EXTERNAL_API } from '@121-service/src/config';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
+import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
+import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
+import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
-import { CreateProgramFspConfigurationDto } from '@121-service/src/programs/dto/create-program-fsp-configuration.dto';
-import { UpdateProgramFspConfigurationDto } from '@121-service/src/programs/dto/update-program-fsp-configuration.dto';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('programs')
+@ApiTags('programs/financial-service-provider-configurations')
 @Controller('programs')
-export class ProgramFspConfigurationController {
-  private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService;
+export class ProgramFinancialServiceProviderConfigurationsController {
   public constructor(
-    programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
-  ) {
-    this.programFspConfigurationService = programFspConfigurationService;
-  }
+    private readonly programFinancialServiceProviderConfigurationsService: ProgramFinancialServiceProviderConfigurationsService,
+  ) {}
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: 'Get all programFspConfigurationEntity for a specific program',
+    summary: 'Get all Financial Service Provider Configurations for a Program.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Return programFspConfigurationEntity by program id.',
+    description:
+      'Return Financial Service Provider Configurations by Program Id.',
   })
-  @Get(':programId/fsp-configuration')
-  public async findByProgramId(
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program does not exist',
+  })
+  @Get(':programId/financial-service-provider-configurations')
+  public async getByProgramId(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
-    return this.programFspConfigurationService.findByProgramId(programId);
+  ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
+    return this.programFinancialServiceProviderConfigurationsService.getByProgramId(
+      programId,
+    );
   }
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: 'Create ProgramFspConfigurationEntity for a program',
+    summary:
+      'Create a Financial Service Provider Configuration for a Program. You can also add properties in this API call or you can add them later using /programs/{programId}/financial-service-provider-configurations/{name}/properties',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description:
-      'The programFspConfigurationEntity has been successfully created.',
+      'The Financial Service Provider Configuration has been successfully created.',
   })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
-  @Post(':programId/fsp-configuration')
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program does not exist',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Body or params are malformed',
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Program Financial Service Provider Configuration with same name already exists',
+  })
+  @Post(':programId/financial-service-provider-configurations')
   public async create(
-    @Body() programFspConfigurationData: CreateProgramFspConfigurationDto,
+    @Body()
+    programFspConfigurationData: CreateProgramFinancialServiceProviderConfigurationDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<number> {
-    return await this.programFspConfigurationService.create(
+  ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
+    return await this.programFinancialServiceProviderConfigurationsService.create(
       programId,
       programFspConfigurationData,
     );
   }
 
   @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: 'Update ProgramFspConfigurationEntity' })
+  @ApiOperation({
+    summary:
+      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
-    name: 'programFspConfigurationId',
+    name: 'name',
     required: true,
-    type: 'integer',
+    type: 'string',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'The programFspConfigurationEntity has been successfully updated.',
+      'The Financial Service Provider Configuration has been successfully updated.',
   })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
-  @Put(':programId/fsp-configuration/:programFspConfigurationId')
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program does not exist',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Body or params are malformed',
+  })
+  @Patch(':programId/financial-service-provider-configurations/:name')
   public async update(
-    @Body() programFspConfigurationData: UpdateProgramFspConfigurationDto,
+    @Body()
+    programFspConfigurationData: UpdateProgramFinancialServiceProviderConfigurationDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('programFspConfigurationId', ParseIntPipe)
-    programFspConfigurationId: number,
-  ): Promise<number> {
-    return await this.programFspConfigurationService.update(
+    @Param('name')
+    name: string,
+  ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
+    return await this.programFinancialServiceProviderConfigurationsService.update(
       programId,
-      programFspConfigurationId,
+      name,
       programFspConfigurationData,
     );
   }
 
   @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: 'Update ProgramFspConfigurationEntity' })
+  @ApiOperation({
+    summary:
+      'Delete a Financial Service Provider Configuration for a Program. Program Financial Service Provider Configurations cannot be deleted if they are associated with any transactions.',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({
-    name: 'programFspConfigurationId',
-    required: true,
-    type: 'integer',
+  @HttpCode(204)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description:
+      'The Financial Service Provider Configuration has been successfully deleted.',
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.NOT_FOUND,
     description:
-      'The programFspConfigurationEntity has been successfully updated.',
+      'Program does not exist or Financial Service Provider Configuration does not exist',
   })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
-  @Delete(':programId/fsp-configuration/:programFspConfigurationId')
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Body or params are malformed',
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Program Financial Service Provider Configuration is associated with transactions, so cannot be deleted',
+  })
+  @Delete(':programId/financial-service-provider-configurations/:name')
   public async delete(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('programFspConfigurationId', ParseIntPipe)
-    programFspConfigurationId: number,
+    @Param('name')
+    name: string,
   ): Promise<void> {
-    return await this.programFspConfigurationService.delete(
+    await this.programFinancialServiceProviderConfigurationsService.delete(
       programId,
-      programFspConfigurationId,
+      name,
+    );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: `Create properties for a Program Financial Service Provider Configuration. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for allowed properties per financial service provider.`,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'name',
+    required: true,
+    type: 'string',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'The Financial Service Provider Configuration properties have been successfully created.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Body or params are malformed',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description:
+      'Program does not exist or Financial Service Provider Configuration does not exist',
+  })
+  @ApiBody({
+    isArray: true,
+    type: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
+  })
+  @Post(':programId/financial-service-provider-configurations/:name/properties')
+  public async createProperties(
+    @Body(
+      new ParseArrayPipe({
+        items: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
+      }),
+    )
+    properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('name')
+    name: string,
+  ): Promise<
+    ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
+  > {
+    return await this.programFinancialServiceProviderConfigurationsService.createProperties(
+      {
+        programId,
+        programFspConfigurationName: name,
+        properties,
+      },
+    );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: `Update a single property for a Program Financial Service Provider Configuration.. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for allowed properties per financial service provider.`,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'name',
+    required: true,
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'propertyName',
+    required: true,
+    type: 'string',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'The Financial Service Provider Configuration property has been successfully updated.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Body or params are malformed',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description:
+      'Program does not exist or Financial Service Provider Configuration or propery does not exist',
+  })
+  @Patch(
+    ':programId/financial-service-provider-configurations/:name/properties/:propertyName',
+  )
+  public async updateProperty(
+    @Body()
+    property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('name')
+    name: string,
+    @Param('propertyName')
+    propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
+  ): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
+    return await this.programFinancialServiceProviderConfigurationsService.updateProperty(
+      {
+        programId,
+        programFspConfigurationName: name,
+        propertyName,
+        property,
+      },
+    );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: `Delete a single Program Financial Service Provider Configuration property. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for required properties per financial service provider.`,
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'name',
+    required: true,
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'propertyName',
+    required: true,
+    type: 'string',
+  })
+  @HttpCode(204)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description:
+      'The Financial Service Provider Configuration property is successfully deleted.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request. Body or params are malformed',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description:
+      'Program does not exist or Financial Service Provider Configuration or propery does not exist',
+  })
+  @Delete(
+    ':programId/financial-service-provider-configurations/:name/properties/:propertyName',
+  )
+  public async deleteProperty(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('name')
+    name: string,
+    @Param('propertyName')
+    propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
+  ): Promise<void> {
+    await this.programFinancialServiceProviderConfigurationsService.deleteProperty(
+      {
+        programId,
+        programFspConfigurationName: name,
+        propertyName,
+      },
     );
   }
 }

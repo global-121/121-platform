@@ -31,8 +31,10 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
+import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
@@ -42,7 +44,6 @@ import {
   BulkActionResultDto,
   BulkActionResultPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
@@ -243,7 +244,7 @@ export class PaymentsController {
     @Param('payment', ParseIntPipe)
     payment: number,
     @Req() req: ScopedUserRequest,
-  ): Promise<FspInstructions> {
+  ): Promise<FspInstructions[]> {
     const userId = RequestHelper.getUserId(req);
 
     return await this.paymentsService.getFspInstructions(
@@ -269,7 +270,7 @@ export class PaymentsController {
   public async getImportFspReconciliationTemplate(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<string[]> {
+  ): Promise<GetImportTemplateResponseDto[]> {
     return await this.paymentsService.getImportInstructionsTemplate(
       Number(programId),
     );
@@ -291,15 +292,14 @@ export class PaymentsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importFspReconciliationData(
-    @UploadedFile() file: Blob,
+    @UploadedFile() file: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('payment', ParseIntPipe)
     payment: number,
-    @Req() req: ScopedUserRequest,
-  ): Promise<ImportResult> {
+    @Req() req,
+  ): Promise<ImportReconciliationResponseDto> {
     const userId = RequestHelper.getUserId(req);
-
     return await this.paymentsService.importFspReconciliationData(
       file,
       programId,

@@ -42,7 +42,7 @@ describe('Action mapper', () => {
     };
     const actionEntity: ActionEntity = {
       id: actionId,
-      actionType: AdditionalActionType.importPeopleAffected,
+      actionType: AdditionalActionType.importRegistrations,
       user,
       program: {} as ProgramEntity,
       userId,
@@ -56,7 +56,7 @@ describe('Action mapper', () => {
     };
     const expectedResult: ActionReturnDto = {
       id: actionId,
-      actionType: AdditionalActionType.importPeopleAffected,
+      actionType: AdditionalActionType.importRegistrations,
       user: expectedUserOwnerResult,
       created: createdDate,
     };

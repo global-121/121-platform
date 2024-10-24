@@ -1,6 +1,7 @@
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export function processMessagePlaceholders(
   messageTemplates: MessageTemplateEntity[],
@@ -21,12 +22,28 @@ export function processMessagePlaceholders(
   return processedTemplate;
 }
 
-export function assertRegistrationImport(response: any, expected: any): void {
-  expect(response.phoneNumber).toBe(expected.phoneNumber);
-  expect(response.fullName).toBe(expected.fullName);
-  expect(response.addressStreet).toBe(expected.addressStreet);
-  expect(response.addressHouseNumber).toBe(expected.addressHouseNumber);
-  expect(response.addressHouseNumberAddition).toBe(
-    expected.addressHouseNumberAddition,
-  );
+export function assertRegistrationBulkUpdate(
+  patchData: Record<
+    string,
+    string | undefined | boolean | number | null | LocalizedString
+  >,
+  updatedRegistration: Record<
+    string,
+    string | undefined | boolean | number | null
+  >,
+  originalRegistration: Record<
+    string,
+    string | undefined | boolean | number | null
+  >,
+): void {
+  for (const key in patchData) {
+    expect(JSON.stringify(updatedRegistration[key])).toBe(
+      JSON.stringify(patchData[key]),
+    );
+  }
+  for (const key in originalRegistration) {
+    if (patchData[key] === undefined && key !== 'name') {
+      expect(updatedRegistration[key]).toStrictEqual(originalRegistration[key]);
+    }
+  }
 }

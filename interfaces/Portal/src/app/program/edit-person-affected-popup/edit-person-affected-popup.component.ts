@@ -2,18 +2,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import {
-  AnswerType,
-  Fsp,
-  FspAttributeOption,
-  FspQuestion,
-} from 'src/app/models/fsp.model';
+import { FinancialServiceProviderConfiguration } from 'src/app/models/fsp.model';
 import { Person, PersonDefaultAttributes } from 'src/app/models/person.model';
 import {
   Program,
-  ProgramQuestion,
-  ProgramQuestionOption,
+  ProgramRegistrationAttribute,
+  ProgramRegistrationAttributeOption,
 } from 'src/app/models/program.model';
+import { RegistrationAttributeType } from 'src/app/models/registration-attribute.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -47,7 +43,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   @Input({ required: true })
-  public canUpdatePaFsp = false;
+  public canUpdatePaProgramFspConfig = false;
 
   @Input({ required: true })
   public canViewMessageHistory = false;
@@ -67,9 +63,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public paTableAttributes: Attribute[] = [];
   private paTableAttributesInput: Program['editableAttributes'];
 
-  public fspList: Fsp[] = [];
+  public programFspConfigList: FinancialServiceProviderConfiguration[] = [];
   public programFspLength = 0;
-  public personFsp: Fsp;
+  public personFsp: FinancialServiceProviderConfiguration;
 
   public availableLanguages = [];
 
@@ -93,16 +89,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.program = await this.programsService.getProgramById(this.programId);
     this.availableLanguages = this.getAvailableLanguages();
 
-    if (this.program && this.program.financialServiceProviders) {
-      for (const fsp of this.program.financialServiceProviders) {
-        const fspDetails = await this.programsService.getFspById(fsp.id);
-        fspDetails.displayName = Object.assign(
-          {},
-          fspDetails.displayName,
-          fsp.displayName,
-        );
-        this.fspList.push(fspDetails);
-      }
+    if (this.program && this.program.financialServiceProviderConfigurations) {
+      this.programFspConfigList =
+        this.program.financialServiceProviderConfigurations;
     }
 
     this.person = (
@@ -124,16 +113,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.preferredLanguage = this.person?.preferredLanguage;
 
     if (this.program && this.program.editableAttributes) {
-      this.paTableAttributesInput = this.program.editableAttributes;
-
-      const fspObject = this.fspList.find(
-        (f) => f.fsp === this.person?.financialServiceProvider,
+      // Filter out the phoneNumber attribute here, because it always added to the edit PA popup, regardless of the program configuration as it is also a field in the RegistrationEntity
+      this.paTableAttributesInput = this.program.editableAttributes.filter(
+        (attribute) => attribute.name !== 'phoneNumber',
       );
-      if (fspObject && fspObject.editableAttributes) {
-        this.paTableAttributesInput = fspObject.editableAttributes.concat(
-          this.paTableAttributesInput,
-        );
-      }
     }
 
     if (this.canViewPersonalData) {
@@ -145,10 +128,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.attributeValues.scope = this.person?.scope;
     }
 
-    if (this.person?.fspDisplayName) {
-      this.person.fspDisplayName = this.translatableString.get(
-        this.person.fspDisplayName,
-      );
+    if (this.person?.programFinancialServiceProviderConfigurationLabel) {
+      this.person.programFinancialServiceProviderConfigurationLabel =
+        this.translatableString.get(
+          this.person.programFinancialServiceProviderConfigurationLabel,
+        );
     }
 
     this.loading = false;
@@ -158,15 +142,16 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     attribute: string,
     value: string | number | string[],
     reason: string,
-    isPaTableAttribute: boolean,
+    isProgramRegistrationAttribute: boolean,
   ): Promise<void> {
     let valueToStore: string | number | string[];
 
     valueToStore = value;
 
-    if (isPaTableAttribute && !Array.isArray(value)) {
-      valueToStore = String(value);
+    if (isProgramRegistrationAttribute && value === '') {
+      valueToStore = null;
     }
+
     this.inProgress[attribute] = true;
 
     if (attribute === PersonDefaultAttributes.paymentAmountMultiplier) {
@@ -219,10 +204,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         reason,
       )
       .then((response: Person) => {
-        console.log(
-          '🚀 ~ file: edit-person-affected-popup.component.ts:197 ~ EditPersonAffectedPopupComponent ~ .then ~ response:',
-          response,
-        );
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = valueToStore;
         this.attributeValues.paymentAmountMultiplier =
@@ -265,9 +246,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private fillPaTableAttributes() {
-    this.programFspLength = this.fspList.length;
-    for (const fspItem of this.fspList) {
-      if (fspItem.fsp === this.person.financialServiceProvider) {
+    this.programFspLength = this.programFspConfigList.length;
+    for (const fspItem of this.programFspConfigList) {
+      if (fspItem.name === this.person.financialServiceProviderName) {
         this.personFsp = fspItem;
       }
     }
@@ -279,8 +260,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
         let options = null;
         if (
-          paTableAttribute.type === AnswerType.Enum ||
-          paTableAttribute.type === AnswerType.MultiSelect
+          paTableAttribute.type === RegistrationAttributeType.Enum ||
+          paTableAttribute.type === RegistrationAttributeType.MultiSelect
         ) {
           options = this.getDropdownOptions(paTableAttribute);
         }
@@ -292,6 +273,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         return {
           name: paTableAttribute.name,
           type: paTableAttribute.type,
+          isRequired: paTableAttribute.isRequired,
           label,
           value: this.person[paTableAttribute.name],
           options,
@@ -302,30 +284,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     );
   }
 
-  private isFspAttribute(paTableAttribute: Attribute): boolean {
-    if (!this.personFsp || !this.personFsp.questions) {
-      return false;
-    }
-    return this.personFsp.questions.some(
-      (attr) => attr.name === paTableAttribute.name,
-    );
-  }
-
   private getDropdownOptions(
     paTableAttribute: Attribute,
-  ): FspAttributeOption[] | ProgramQuestionOption[] {
-    if (this.isFspAttribute(paTableAttribute)) {
-      const fspQuestion = this.personFsp.questions.find(
-        (attr: FspQuestion) => attr.name === paTableAttribute.name,
+  ): ProgramRegistrationAttributeOption[] {
+    const programRegistrationAttribute =
+      this.program.programRegistrationAttributes.find(
+        (attribute: ProgramRegistrationAttribute) =>
+          attribute.name === paTableAttribute.name,
       );
-      return fspQuestion.options ? fspQuestion.options : [];
-    }
 
-    const programQuestion = this.program.programQuestions.find(
-      (question: ProgramQuestion) => question.name === paTableAttribute.name,
-    );
-
-    return programQuestion.options ? programQuestion.options : [];
+    return programRegistrationAttribute.options
+      ? programRegistrationAttribute.options
+      : [];
   }
 
   public closeModal() {

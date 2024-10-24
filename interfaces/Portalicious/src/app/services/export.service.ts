@@ -163,15 +163,20 @@ export class ExportService {
     };
   }
 
-  private toAtributesForDuplicateCheckFilter(
-    attributes: {
-      name: string;
-      duplicateCheck: boolean;
-    }[],
-  ) {
-    return attributes
-      .filter((attribute) => attribute.duplicateCheck)
-      .map((attribute) => attribute.name);
+  downloadExport() {
+    return ({
+      exportResult,
+      filename,
+    }: {
+      exportResult: Blob;
+      filename: string;
+    }) => {
+      const downloadURL = window.URL.createObjectURL(exportResult);
+      const link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = filename;
+      link.click();
+    };
   }
 
   async getDuplicateCheckAttributes(
@@ -183,22 +188,12 @@ export class ExportService {
       this.projectApiService.getProject(projectId)(),
     );
 
-    const {
-      programQuestions,
-      programCustomAttributes,
-      financialServiceProviders,
-    } = project;
+    const duplicateCheckAttributes = project.programRegistrationAttributes
+      .filter((attribute) => attribute.duplicateCheck)
+      .map((attribute) => attribute.name);
 
-    const fspAttributes = financialServiceProviders
-      .map((fsp) => fsp.questions)
-      .flat();
-
-    const allAttributeNames: string[] = [
-      ...this.toAtributesForDuplicateCheckFilter(programQuestions),
-      ...this.toAtributesForDuplicateCheckFilter(programCustomAttributes),
-      ...this.toAtributesForDuplicateCheckFilter(fspAttributes),
-    ];
-
-    return [...new Set(allAttributeNames)].sort((a, b) => a.localeCompare(b));
+    return [...new Set(duplicateCheckAttributes)].sort((a, b) =>
+      a.localeCompare(b),
+    );
   }
 }

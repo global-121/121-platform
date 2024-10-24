@@ -4,33 +4,27 @@ import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import {
-  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
+import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
-import {
-  CreateProgramCustomAttributeDto,
-  UpdateProgramCustomAttributeDto,
-} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import {
-  CreateProgramQuestionDto,
-  UpdateProgramQuestionDto,
-} from '@121-service/src/programs/dto/program-question.dto';
+  ProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributeDto,
+} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { overwriteProgramFspDisplayName } from '@121-service/src/programs/utils/overwrite-fsp-display-name.helper';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -41,14 +35,8 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 export class ProgramService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramQuestionEntity)
-  private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+  @InjectRepository(ProgramRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
 
@@ -74,11 +62,7 @@ export class ProgramService {
       );
     }
 
-    const relations = [
-      'financialServiceProviders',
-      'financialServiceProviders.questions',
-      'programFspConfiguration',
-    ];
+    const relations = ['programFinancialServiceProviderConfigurations'];
 
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
@@ -89,47 +73,34 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // Program attributes and questions are queried separately because the performance is bad when using relations
-    program.programCustomAttributes =
-      await this.programCustomAttributeRepository.find({
+    program.programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
       });
-    program.programQuestions = await this.programQuestionRepository.find({
-      where: { program: { id: Equal(programId) } },
-    });
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
     program['paTableAttributes'] =
-      await this.programAttributesService.getAttributes(
-        program.id,
-        true,
-        true,
-        true,
-        false,
-      );
+      await this.programAttributesService.getAttributes({
+        programId: program.id,
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: false,
+      });
 
     // TODO: Get these attributes from some enum or something
     program['filterableAttributes'] =
       this.programAttributesService.getFilterableAttributes(program);
 
+    program['financialServiceProviderConfigurations'] =
+      ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
+        program.programFinancialServiceProviderConfigurations,
+      );
     const outputProgram: FoundProgramDto = program;
 
+    // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     if (!includeMetricsUrl) {
       delete outputProgram.monitoringDashboardUrl;
     }
-
-    // over write fsp displayname by program specific displayName
-    if (outputProgram.financialServiceProviders?.length > 0) {
-      outputProgram.financialServiceProviders = overwriteProgramFspDisplayName(
-        outputProgram.financialServiceProviders,
-        outputProgram.programFspConfiguration ?? [],
-      );
-
-      delete outputProgram.programFspConfiguration;
-    }
-
-    // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return outputProgram;
   }
 
@@ -150,53 +121,32 @@ export class ProgramService {
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
     if (
-      !programData.financialServiceProviders ||
-      !programData.programQuestions ||
-      !programData.programCustomAttributes ||
+      !programData.programRegistrationAttributes ||
       !programData.fullnameNamingConvention
     ) {
       const errors =
-        'Required properties missing: `financialServiceProviders`, `programQuestions`, `programCustomAttributes` or `fullnameNamingConvention`';
+        'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
-    const fspAttributeNames: string[] = [];
-    for (const fsp of programData.financialServiceProviders) {
-      const fspEntity =
-        await this.financialServiceProviderRepository.findOneOrFail({
-          where: { fsp: Equal(fsp.fsp) },
-          relations: ['questions'],
-        });
-      for (const question of fspEntity.questions) {
-        fspAttributeNames.push(question.name);
-      }
-    }
-
-    const programQuestionNames = programData.programQuestions.map(
-      (q) => q.name,
-    );
-    const customAttributeNames = programData.programCustomAttributes.map(
+    const programAttributeNames = programData.programRegistrationAttributes.map(
       (ca) => ca.name,
     );
-    const allAttributeNames = programQuestionNames.concat(
-      customAttributeNames,
-      [...new Set(fspAttributeNames)],
-    );
+
     for (const name of Object.values(programData.fullnameNamingConvention)) {
-      if (!allAttributeNames.includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions or custom attributes`;
+      if (!programAttributeNames.includes(name)) {
+        const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }
-
-    // Check if allAttributeNames has duplicate values
-    const duplicateNames = allAttributeNames.filter(
-      (item, index) => allAttributeNames.indexOf(item) !== index,
+    // Check if programAttributeNames has duplicate values
+    const duplicateNames = programAttributeNames.filter(
+      (item, index) => programAttributeNames.indexOf(item) !== index,
     );
     if (duplicateNames.length > 0) {
-      const errors = `The names ${duplicateNames.join(
+      const errors = `The following names: '${duplicateNames.join(
         ', ',
-      )} are used more than once program question, custom attribute or fsp attribute`;
+      )}' are used more than once program registration attributes`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -240,47 +190,24 @@ export class ProgramService {
     // Make sure to use these repositories in this transaction else save will be part of another transacion
     // This can lead to duplication of data
     const programRepository = queryRunner.manager.getRepository(ProgramEntity);
-    const programQuestionRepository = queryRunner.manager.getRepository(
-      ProgramQuestionEntity,
-    );
-    const programCustomAttributeRepository = queryRunner.manager.getRepository(
-      ProgramCustomAttributeEntity,
-    );
+    const programRegistrationAttributeRepository =
+      queryRunner.manager.getRepository(ProgramRegistrationAttributeEntity);
 
-    let savedProgram;
+    let savedProgram: ProgramEntity;
     try {
       savedProgram = await programRepository.save(program);
 
-      savedProgram.programCustomAttributes = [];
-      for (const customAttribute of programData.programCustomAttributes) {
-        customAttribute['programId'] = savedProgram.id;
-        const customAttributeReturn =
-          await programCustomAttributeRepository.save(customAttribute);
-        savedProgram.programCustomAttributes.push(customAttributeReturn);
-      }
-
-      savedProgram.programQuestions = [];
-      for (const programQuestion of programData.programQuestions) {
-        const programQuestionEntity =
-          this.programQuestionDtoToEntity(programQuestion);
-        programQuestionEntity['programId'] = savedProgram.id;
-        const programQuestionReturn = await programQuestionRepository.save(
-          programQuestionEntity,
-        );
-        savedProgram.programQuestions.push(programQuestionReturn);
-      }
-
-      savedProgram.financialServiceProviders = [];
-      for (const fspItem of programData.financialServiceProviders) {
-        const fsp = await this.financialServiceProviderRepository.findOne({
-          where: { fsp: Equal(fspItem.fsp) },
-        });
-        if (!fsp) {
-          const errors = `Create program error: No fsp found with name ${fspItem.fsp}`;
-          await queryRunner.rollbackTransaction();
-          throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      savedProgram.programRegistrationAttributes = [];
+      for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
+        const attributeReturn =
+          await this.createProgramRegistrationAttributeEntity({
+            programId: savedProgram.id,
+            createProgramRegistrationAttributeDto: programRegistrationAttribute,
+            repository: programRegistrationAttributeRepository,
+          });
+        if (attributeReturn) {
+          savedProgram.programRegistrationAttributes.push(attributeReturn);
         }
-        savedProgram.financialServiceProviders.push(fsp);
       }
 
       newProgram = await programRepository.save(savedProgram);
@@ -288,27 +215,16 @@ export class ProgramService {
     } catch (err) {
       console.log('Error creating new program ', err);
       await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        'Error creating new program',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (err instanceof HttpException) {
+        throw err;
+      } else {
+        throw new HttpException(
+          'Error creating new program',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     } finally {
       await queryRunner.release();
-    }
-
-    // Loop through FSPs again to store config, which can only be done after program is saved
-    for (const fspItem of programData.financialServiceProviders) {
-      if (fspItem.configuration && fspItem.configuration?.length > 0) {
-        for (const config of fspItem.configuration) {
-          await this.programFspConfigurationService.create(newProgram.id, {
-            fspId: savedProgram.financialServiceProviders.find(
-              (f) => f.fsp === fspItem.fsp,
-            ).id,
-            name: config.name,
-            value: config.value,
-          });
-        }
-      }
     }
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
@@ -340,28 +256,8 @@ export class ProgramService {
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
       // Skip attribute financialServiceProviders, or all configured FSPs will be deleted. See processing of financialServiceProviders below.
-      if (attribute !== 'financialServiceProviders') {
+      if (attribute !== 'programFinancialServiceProviderConfigurations') {
         program[attribute] = updateProgramDto[attribute];
-      }
-    }
-
-    // Add newly supplied FSPs to the program.
-    if (updateProgramDto.financialServiceProviders) {
-      for (const fspItem of updateProgramDto.financialServiceProviders) {
-        if (
-          !program.financialServiceProviders.some(
-            (fsp) => fsp.fsp === fspItem.fsp,
-          )
-        ) {
-          const fsp = await this.financialServiceProviderRepository.findOne({
-            where: { fsp: Equal(fspItem.fsp) },
-          });
-          if (!fsp) {
-            const errors = `Update program error: No fsp found with name ${fspItem.fsp}`;
-            throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-          }
-          program.financialServiceProviders.push(fsp);
-        }
       }
     }
 
@@ -399,44 +295,17 @@ export class ProgramService {
       fixedTransferValue: program.fixedTransferValue ?? undefined,
       paymentAmountMultiplierFormula:
         program.paymentAmountMultiplierFormula ?? undefined,
-      financialServiceProviders: program.financialServiceProviders.map(
-        ({ fsp, configuration }) => ({
-          fsp,
-          configuration,
-        }),
-      ),
+      financialServiceProviderConfigurations:
+        ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
+          program.programFinancialServiceProviderConfigurations,
+        ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
       budget: program.budget ?? undefined,
-      programCustomAttributes: program.programCustomAttributes.map(
-        (programCustomAttribute) => {
-          return {
-            name: programCustomAttribute.name,
-            type: programCustomAttribute.type,
-            label: programCustomAttribute.label,
-            showInPeopleAffectedTable:
-              programCustomAttribute.showInPeopleAffectedTable,
-            duplicateCheck: programCustomAttribute.duplicateCheck,
-          };
-        },
-      ),
-      programQuestions: program.programQuestions.map((programQuestion) => {
-        return {
-          name: programQuestion.name,
-          label: programQuestion.label,
-          answerType: programQuestion.answerType,
-          questionType: programQuestion.questionType,
-          options: programQuestion.options ?? undefined,
-          scoring: programQuestion.scoring,
-          persistence: programQuestion.persistence,
-          pattern: programQuestion.pattern ?? undefined,
-          showInPeopleAffectedTable: programQuestion.showInPeopleAffectedTable,
-          editableInPortal: programQuestion.editableInPortal,
-          export: programQuestion.export as unknown as ExportType[],
-          duplicateCheck: programQuestion.duplicateCheck,
-          placeholder: programQuestion.placeholder ?? undefined,
-        };
-      }),
+      programRegistrationAttributes:
+        ProgramRegistrationAttributeMapper.entitiesToDtos(
+          program.programRegistrationAttributes,
+        ),
       aboutProgram: program.aboutProgram ?? undefined,
       fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
       languages: program.languages,
@@ -451,219 +320,169 @@ export class ProgramService {
     return programDto;
   }
 
-  public async updateProgramCustomAttributes(
-    programId: number,
-    customAttributeId: number,
-    updateProgramCustomAttributeDto: UpdateProgramCustomAttributeDto,
-  ): Promise<ProgramCustomAttributeEntity> {
-    const customAttribute = await this.programCustomAttributeRepository.findOne(
-      {
-        where: {
-          id: Equal(customAttributeId),
-          programId: Equal(programId),
-        },
-      },
-    );
-    if (!customAttribute) {
-      const errors = `No program custom attribute found with id ${customAttributeId} for program ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    for (const property of Object.keys(updateProgramCustomAttributeDto)) {
-      customAttribute[property] = updateProgramCustomAttributeDto[property];
-    }
-    return await this.programCustomAttributeRepository.save(customAttribute);
-  }
-
   private async validateAttributeName(
     programId: number,
     name: string,
   ): Promise<void> {
     const existingAttributes =
-      await this.programAttributesService.getAttributes(
+      await this.programAttributesService.getAttributes({
         programId,
-        true,
-        true,
-        true,
-        false,
-      );
+        includeProgramRegistrationAttributes: true,
+        includeTemplateDefaultAttributes: false,
+      });
     const existingNames = existingAttributes.map((attr) => {
       return attr.name;
     });
     if (existingNames.includes(name)) {
-      const errors = `Unable to create program question/attribute with name ${name}. The names ${existingNames.join(
+      const errors = `Unable to create program registration attribute with name ${name}. The names ${existingNames.join(
         ', ',
       )} are already in use`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
     if (nameConstraintQuestionsArray.includes(name)) {
-      const errors = `Unable to create program question/attribute with name ${name}. The names ${nameConstraintQuestionsArray.join(
+      const errors = `Unable to create program registration attribute with name ${name}. The names ${nameConstraintQuestionsArray.join(
         ', ',
       )} are forbidden to use`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
 
-  public async createProgramCustomAttribute(
-    programId: number,
-    createProgramAttributeDto: CreateProgramCustomAttributeDto,
-  ) {
-    await this.validateAttributeName(programId, createProgramAttributeDto.name);
-    const programCustomAttribute = this.programCustomAttributeDtoToEntity(
-      createProgramAttributeDto,
-    );
-    programCustomAttribute.programId = programId;
-    try {
-      return await this.programCustomAttributeRepository.save(
-        programCustomAttribute,
-      );
-    } catch (error) {
-      if (error instanceof QueryFailedError) {
-        const errorMessage = error.message; // Get the error message from QueryFailedError
-        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-      }
-    }
-    return;
-  }
-
-  private programCustomAttributeDtoToEntity(
-    dto: CreateProgramCustomAttributeDto,
-  ): ProgramCustomAttributeEntity {
-    const programCustomAttribute = new ProgramCustomAttributeEntity();
-    programCustomAttribute.name = dto.name;
-    programCustomAttribute.type = dto.type;
-    programCustomAttribute.label = dto.label;
-    programCustomAttribute.duplicateCheck = dto.duplicateCheck ?? false;
-    return programCustomAttribute;
-  }
-
-  public async createProgramQuestion(
-    programId: number,
-    createProgramQuestionDto: CreateProgramQuestionDto,
-  ) {
-    await this.validateAttributeName(programId, createProgramQuestionDto.name);
-    const programQuestion = this.programQuestionDtoToEntity(
-      createProgramQuestionDto,
-    );
-    programQuestion.programId = programId;
-
-    try {
-      return await this.programQuestionRepository.save(programQuestion);
-    } catch (error) {
-      if (error instanceof QueryFailedError) {
-        const errorMessage = error.message; // Get the error message from QueryFailedError
-        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-      }
-    }
-    return;
-  }
-
-  private programQuestionDtoToEntity(
-    dto: CreateProgramQuestionDto,
-  ): ProgramQuestionEntity {
-    const programQuestion = new ProgramQuestionEntity();
-    programQuestion.name = dto.name;
-    programQuestion.label = dto.label;
-    programQuestion.answerType = dto.answerType;
-    programQuestion.questionType = dto.questionType;
-    programQuestion.options = dto.options ?? null;
-    programQuestion.scoring = dto.scoring ?? {};
-    programQuestion.persistence = dto.persistence ?? false;
-    programQuestion.pattern = dto.pattern ?? null;
-    programQuestion.editableInPortal = dto.editableInPortal ?? false;
-    programQuestion.export = dto.export ?? [];
-    programQuestion.duplicateCheck = dto.duplicateCheck ?? false;
-    programQuestion.placeholder = dto.placeholder ?? null;
-    return programQuestion;
-  }
-
-  public async updateProgramQuestion(
-    programId: number,
-    programQuestionId: number,
-    updateProgramQuestionDto: UpdateProgramQuestionDto,
-  ): Promise<ProgramQuestionEntity> {
-    const programQuestion = await this.programQuestionRepository.findOne({
-      where: {
-        id: Equal(programQuestionId),
-        programId: Equal(programId),
-      },
+  public async createProgramRegistrationAttribute({
+    programId,
+    createProgramRegistrationAttributeDto,
+  }: {
+    programId: number;
+    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
+  }): Promise<ProgramRegistrationAttributeDto> {
+    const entity = await this.createProgramRegistrationAttributeEntity({
+      programId,
+      createProgramRegistrationAttributeDto,
     });
-    if (!programQuestion) {
-      const errors = `No programQuestion found with id ${programQuestionId} for program ${programId}`;
+    return ProgramRegistrationAttributeMapper.entityToDto(entity);
+  }
+
+  private async createProgramRegistrationAttributeEntity({
+    programId,
+    createProgramRegistrationAttributeDto,
+    repository,
+  }: {
+    programId: number;
+    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
+    repository?: Repository<ProgramRegistrationAttributeEntity>;
+  }): Promise<ProgramRegistrationAttributeEntity> {
+    await this.validateAttributeName(
+      programId,
+      createProgramRegistrationAttributeDto.name,
+    );
+    const programRegistrationAttribute =
+      this.programRegistrationAttributeDtoToEntity(
+        createProgramRegistrationAttributeDto,
+      );
+    programRegistrationAttribute.programId = programId;
+
+    try {
+      if (repository) {
+        return await repository.save(programRegistrationAttribute);
+      } else {
+        return await this.programRegistrationAttributeRepository.save(
+          programRegistrationAttribute,
+        );
+      }
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        const errorMessage = error.message; // Get the error message from QueryFailedError
+        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+      }
+      // Unexpected error
+      throw error;
+    }
+  }
+
+  private programRegistrationAttributeDtoToEntity(
+    dto: ProgramRegistrationAttributeDto,
+  ): ProgramRegistrationAttributeEntity {
+    const programRegistrationAttribute =
+      new ProgramRegistrationAttributeEntity();
+    programRegistrationAttribute.name = dto.name;
+    programRegistrationAttribute.label = dto.label;
+    programRegistrationAttribute.type = dto.type;
+    programRegistrationAttribute.options = dto.options ?? null;
+    programRegistrationAttribute.scoring = dto.scoring ?? {};
+    programRegistrationAttribute.pattern = dto.pattern ?? null;
+    programRegistrationAttribute.editableInPortal =
+      dto.editableInPortal ?? false;
+    programRegistrationAttribute.export = dto.export ?? [];
+    programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
+    programRegistrationAttribute.placeholder = dto.placeholder ?? null;
+    programRegistrationAttribute.isRequired = dto.isRequired ?? false;
+    programRegistrationAttribute.showInPeopleAffectedTable =
+      dto.showInPeopleAffectedTable ?? false;
+    return programRegistrationAttribute;
+  }
+
+  public async updateProgramRegistrationAttribute(
+    programId: number,
+    programRegistrationAttributeName: string,
+    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto,
+  ): Promise<ProgramRegistrationAttributeEntity> {
+    const programRegistrationAttribute =
+      await this.programRegistrationAttributeRepository.findOne({
+        where: {
+          name: Equal(programRegistrationAttributeName),
+          programId: Equal(programId),
+        },
+      });
+    if (!programRegistrationAttribute) {
+      const errors = `No programRegistrationAttribute found with name ${programRegistrationAttributeName} for program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (const attribute in updateProgramQuestionDto) {
-      programQuestion[attribute] = updateProgramQuestionDto[attribute];
+    for (const attribute in updateProgramRegistrationAttribute) {
+      programRegistrationAttribute[attribute] =
+        updateProgramRegistrationAttribute[attribute];
     }
 
-    await this.programQuestionRepository.save(programQuestion);
-    return programQuestion;
+    await this.programRegistrationAttributeRepository.save(
+      programRegistrationAttribute,
+    );
+    return programRegistrationAttribute;
   }
 
-  public async deleteProgramQuestion(
+  public async deleteProgramRegistrationAttribute(
     programId: number,
-    programQuestionId: number,
-  ): Promise<ProgramQuestionEntity> {
+    programRegistrationAttributeId: number,
+  ): Promise<ProgramRegistrationAttributeEntity> {
     await this.findProgramOrThrow(programId);
 
-    const programQuestion = await this.programQuestionRepository.findOne({
-      where: { id: Number(programQuestionId) },
-    });
-    if (!programQuestion) {
-      const errors = `Program question with id: '${programQuestionId}' not found.'`;
+    const programRegistrationAttribute =
+      await this.programRegistrationAttributeRepository.findOne({
+        where: { id: Number(programRegistrationAttributeId) },
+      });
+    if (!programRegistrationAttribute) {
+      const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found.'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return await this.programQuestionRepository.remove(programQuestion);
+    return await this.programRegistrationAttributeRepository.remove(
+      programRegistrationAttribute,
+    );
   }
 
   public async getAllRelationProgram(
     programId: number,
   ): Promise<RegistrationDataInfo[]> {
     const relations: RegistrationDataInfo[] = [];
-    const programCustomAttributes =
-      await this.programCustomAttributeRepository.find({
+
+    const programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
       });
-    for (const attribute of programCustomAttributes) {
+    for (const attribute of programRegistrationAttributes) {
       relations.push({
         name: attribute.name,
         type: attribute.type,
         relation: {
-          programCustomAttributeId: attribute.id,
+          programRegistrationAttributeId: attribute.id,
         },
-      });
-    }
-
-    const programQuestions = await this.programQuestionRepository.find({
-      where: { program: { id: Equal(programId) } },
-    });
-
-    for (const question of programQuestions) {
-      relations.push({
-        name: question.name,
-        type: question.answerType,
-        relation: {
-          programQuestionId: question.id,
-        },
-      });
-    }
-
-    const fspAttributes = await this.fspAttributeRepository.find({
-      relations: ['fsp', 'fsp.program'],
-    });
-    const programFspAttributes = fspAttributes.filter((a) =>
-      a.fsp.program.map((p) => p.id).includes(programId),
-    );
-
-    for (const attribute of programFspAttributes) {
-      relations.push({
-        name: attribute.name,
-        type: attribute.answerType,
-        relation: {
-          fspQuestionId: attribute.id,
-        },
-        fspId: attribute.fspId,
       });
     }
 
@@ -681,27 +500,16 @@ export class ProgramService {
     );
   }
 
-  public async getFspConfigurations(
-    programId: number,
-    configName: string[],
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
-    let programFspConfigurations =
-      await this.programFspConfigurationService.findByProgramId(programId);
-    if (configName.length > 0) {
-      programFspConfigurations = programFspConfigurations.filter(
-        (programFspConfiguration) =>
-          configName.includes(programFspConfiguration.name),
-      );
-    }
-
-    return programFspConfigurations;
-  }
-
   public async getFundingWallet(programId: number) {
+    // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =
       await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
-        programId,
-        FinancialServiceProviders.intersolveVisa,
+        {
+          programId,
+          financialServiceProviderName:
+            FinancialServiceProviders.intersolveVisa,
+          includeProperties: true,
+        },
       );
     if (!programFspConfigurations) {
       throw new HttpException(
@@ -710,20 +518,41 @@ export class ProgramService {
       );
     }
 
-    const fundingTokenConfiguration = programFspConfigurations.find(
+    // add all properties to a single array
+    const properties: ProgramFinancialServiceProviderConfigurationPropertyEntity[] =
+      [];
+    for (const programFspConfiguration of programFspConfigurations) {
+      properties.push(...programFspConfiguration.properties);
+    }
+
+    const fundingTokenConfigurationProperties = properties.filter(
       (config) =>
         config.name ===
-        FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode,
     );
-    if (!fundingTokenConfiguration) {
+    if (
+      !fundingTokenConfigurationProperties ||
+      fundingTokenConfigurationProperties.length === 0
+    ) {
       throw new HttpException(
-        'Funding token configuration not found',
+        'Funding token configuration property not found',
         HttpStatus.NOT_FOUND,
       );
     }
 
-    return await this.intersolveVisaService.getWallet(
-      fundingTokenConfiguration.value as string,
-    );
+    // loop over all properties and return all wallets as an array
+    const wallets: GetTokenReturnType[] = [];
+    for (const property of properties) {
+      if (
+        property.name ===
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode
+      ) {
+        const wallet = await this.intersolveVisaService.getWallet(
+          property.value as string,
+        );
+        wallets.push(wallet);
+      }
+    }
+    return wallets;
   }
 }

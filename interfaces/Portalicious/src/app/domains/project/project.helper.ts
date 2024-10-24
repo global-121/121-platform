@@ -1,7 +1,4 @@
-import {
-  AnswerTypes,
-  CustomAttributeType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { DataListItem } from '~/components/data-list/data-list.component';
@@ -28,42 +25,41 @@ export const attributeToDataListItem = (
   const label = attribute.label;
 
   // TODO: AB#30519 avoid using "as" here
-  switch (attribute.type as AnswerTypes | CustomAttributeType) {
-    case AnswerTypes.multiSelect:
+  switch (attribute.type) {
+    case RegistrationAttributeTypes.multiSelect:
       // TODO: Implement multiSelect when necessary
       console.log(
         'attributeToDataListItem: multiSelect not implemented',
         value,
       );
       return undefined;
-    case AnswerTypes.numeric:
+    case RegistrationAttributeTypes.numeric:
       return {
         label,
         type: 'number',
         value: value as number,
       };
-    case AnswerTypes.numericNullable:
+    case RegistrationAttributeTypes.numericNullable:
       return {
         label,
         type: 'number',
         value: value as null | number,
       };
-    case AnswerTypes.date:
+    case RegistrationAttributeTypes.date:
       return {
         label,
         type: 'date',
         value: value as Date,
       };
-    case CustomAttributeType.boolean:
+    case RegistrationAttributeTypes.boolean:
       return {
         label,
         type: 'boolean',
         value: value as boolean,
       };
-    case AnswerTypes.dropdown:
-    case AnswerTypes.tel:
-    case AnswerTypes.text:
-    case CustomAttributeType.text:
+    case RegistrationAttributeTypes.dropdown:
+    case RegistrationAttributeTypes.tel:
+    case RegistrationAttributeTypes.text:
       return {
         label,
         type: 'text',
@@ -73,13 +69,13 @@ export const attributeToDataListItem = (
 };
 
 export function projectHasVoucherSupport(project?: Project) {
-  return project?.financialServiceProviders.some((fsp) =>
-    FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.fsp),
+  return project?.programFinancialServiceProviderConfigurations.some((fsp) =>
+    FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.financialServiceProviderName),
   );
 }
 
 export function projectHasPhysicalCardSupport(project?: Project) {
-  return project?.financialServiceProviders.some((fsp) =>
-    FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.fsp),
+  return project?.programFinancialServiceProviderConfigurations.some((fsp) =>
+    FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.financialServiceProviderName),
   );
 }

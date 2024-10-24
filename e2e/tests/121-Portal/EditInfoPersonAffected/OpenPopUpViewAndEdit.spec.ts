@@ -3,7 +3,6 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import fspIntersolveVisa from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -15,7 +14,10 @@ import PersonalInformationPopUp from '@121-e2e/pages/PersonalInformationPopUp/Pe
 import TableModule from '@121-e2e/pages/Table/TableModule';
 
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
-const whatsappLabel = fspIntersolveVisa.questions[5].label.en;
+const whatsappLabel = NLRCProgram.programRegistrationAttributes.find(
+  (attribute) => attribute.name === 'whatsappPhoneNumber',
+)!.label.en;
+
 const save = englishTranslations.common.save;
 
 test.beforeEach(async ({ page }) => {

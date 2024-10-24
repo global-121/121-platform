@@ -2,7 +2,7 @@
   <div class="ion-no-padding ion-margin-end">
     <app-confirm-prompt
       [disabled]="isInProgress || isTableLoading"
-      (confirm)="importPeopleAffected($event)"
+      (confirm)="importRegistrations($event)"
       [subHeader]="
         'page.program.bulk-import.registered.confirm-message' | translate
       "
