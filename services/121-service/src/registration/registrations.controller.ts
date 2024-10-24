@@ -12,7 +12,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Put,
   Query,
   Req,
   UploadedFile,
@@ -50,8 +49,8 @@ import { MessageHistoryDto } from '@121-service/src/registration/dto/message-his
 import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
-import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -84,19 +83,18 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from CSV',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations')
+  @Post('programs/:programId/registrations/import')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
-  public async importRegistrations(
-    @UploadedFile() csvFile: Blob,
+  public async importRegistrationsFromCsv(
+    @UploadedFile() csvFile: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
     const userId = RequestHelper.getUserId(req);
-
-    return await this.registrationsService.importRegistrations(
+    return await this.registrationsService.importRegistrationsFromCsv(
       csvFile,
       programId,
       userId,
@@ -112,7 +110,7 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiBody({ isArray: true, type: ImportRegistrationsDto })
-  @Post('programs/:programId/registrations/import')
+  @Post('programs/:programId/registrations')
   public async importRegistrationsJSON(
     @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
     data: ImportRegistrationsDto[],
@@ -121,8 +119,8 @@ export class RegistrationsController {
     @Req() req: ScopedUserRequest,
   ): Promise<ImportResult> {
     const userId = RequestHelper.getUserId(req);
-    return await this.registrationsService.importRegistrationFromJson(
-      data,
+    return await this.registrationsService.importRegistrationsFromJson(
+      data as unknown as Record<string, string | number | boolean>[],
       programId,
       userId,
     );
@@ -132,7 +130,7 @@ export class RegistrationsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary:
-      '[SCOPED] Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
+      '[SCOPED] Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program registration attributes, even though not specified in the Swagger Docs.',
   })
   @ApiParam({
     name: 'programId',
@@ -183,7 +181,7 @@ export class RegistrationsController {
   @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async patchRegistrations(
-    @UploadedFile() csvFile: Blob,
+    @UploadedFile() csvFile: Express.Multer.File,
     @Body('reason') reason: string,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
@@ -206,7 +204,7 @@ export class RegistrationsController {
     summary: 'Get a CSV template for importing registrations',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('programs/:programId/registrations/import-template')
+  @Get('programs/:programId/registrations/import/template')
   public async getImportRegistrationsTemplate(
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<string[]> {
@@ -362,12 +360,12 @@ export class RegistrationsController {
   public async updateRegistration(
     @Param('programId', new ParseIntPipe()) programId: number,
     @Param('referenceId') referenceId: string,
-    @Body() updateRegistrationDataDto: UpdateRegistrationDto,
+    @Body() updateRegistrationDto: UpdateRegistrationDto,
     @Req() req: ScopedUserRequest,
   ) {
     const userId = RequestHelper.getUserId(req);
 
-    const hasRegistrationUpdatePermission =
+    const hasUpdateRegistrationPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
         programId,
@@ -379,54 +377,54 @@ export class RegistrationsController {
         programId,
         PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
+    const hasUpdateFspConfigPermission =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        PermissionEnum.RegistrationFspConfigUPDATE,
+      );
 
-    if (!hasRegistrationUpdatePermission && !hasUpdateFinancialPermission) {
+    if (
+      !hasUpdateRegistrationPermission &&
+      !hasUpdateFinancialPermission &&
+      !hasUpdateFspConfigPermission
+    ) {
       const errors = `User does not have permission to update attributes`;
       throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
     }
 
-    const partialRegistration = updateRegistrationDataDto.data;
+    const partialRegistration = updateRegistrationDto.data;
 
-    if (!hasUpdateFinancialPermission && hasRegistrationUpdatePermission) {
-      for (const attributeKey of Object.keys(partialRegistration)) {
-        if (
-          FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
-        ) {
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      if (
+        FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
+      ) {
+        if (!hasUpdateFinancialPermission) {
           const errors = `User does not have permission to update financial attributes`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
-      }
-    }
-
-    if (hasUpdateFinancialPermission && !hasRegistrationUpdatePermission) {
-      for (const attributeKey of Object.keys(partialRegistration)) {
-        if (
-          !FinancialAttributes.includes(
-            attributeKey as keyof RegistrationEntity,
-          )
-        ) {
+      } else if (
+        attributeKey ===
+        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
+      ) {
+        if (!hasUpdateFspConfigPermission) {
+          const errors = `User does not have permission to update chosen program financial service provider configuration`;
+          throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
+        }
+      } else {
+        if (!hasUpdateRegistrationPermission) {
           const errors = `User does not have permission to update attributes`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       }
     }
 
-    // first validate all attributes and return error if any
-    for (const attributeKey of Object.keys(partialRegistration)) {
-      await this.registrationsService.validateAttribute(
-        referenceId,
-        attributeKey,
-        partialRegistration[attributeKey],
-        userId,
-      );
-    }
-
-    // if all valid, process update
-    return await this.registrationsService.updateRegistration(
+    return await this.registrationsService.validateInputAndUpdateRegistration({
       programId,
       referenceId,
-      updateRegistrationDataDto,
-    );
+      updateRegistrationDto,
+      userId,
+    });
   }
 
   @AuthenticatedUser()
@@ -463,35 +461,6 @@ export class RegistrationsController {
       phonenumber,
       userId,
     );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspUPDATE] })
-  @ApiOperation({
-    summary:
-      '[SCOPED] [EXTERNALLY USED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Updated fsp and attributes - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Put('programs/:programId/registrations/:referenceId/fsp')
-  public async updateChosenFsp(
-    @Param() params: { referenceId: string; programId: number },
-    @Body() data: UpdateChosenFspDto,
-    @Req() req: ScopedUserRequest,
-  ) {
-    const userId = RequestHelper.getUserId(req);
-
-    return await this.registrationsService.updateChosenFsp({
-      referenceId: params.referenceId,
-      newFspName: data.newFspName,
-      newFspAttributesRaw: data.newFspAttributes,
-      userId,
-    });
   }
 
   @ApiTags('programs/registrations')

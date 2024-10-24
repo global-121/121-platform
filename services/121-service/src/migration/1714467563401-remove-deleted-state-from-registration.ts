@@ -6,7 +6,6 @@ export class RemoveDeletedStateFromRegistration1714467563401
   name = 'RemoveDeletedStateFromRegistration1714467563401';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.time('RemoveDeletedStateFromRegistration1714467563401');
     await queryRunner.commitTransaction();
 
     const queryCondition = `"fspId" is null AND "registrationStatus" = 'deleted'`;
@@ -44,7 +43,6 @@ export class RemoveDeletedStateFromRegistration1714467563401
     );
 
     await queryRunner.startTransaction();
-    console.timeEnd('RemoveDeletedStateFromRegistration1714467563401');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

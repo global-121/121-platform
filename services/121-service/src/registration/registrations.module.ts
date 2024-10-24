@@ -5,9 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsModule } from '@121-service/src/events/events.module';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
@@ -22,15 +20,14 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueueRegistrationUpdateModule } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -51,15 +48,12 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([
       UserEntity,
       ProgramEntity,
-      ProgramQuestionEntity,
-      FinancialServiceProviderEntity,
-      FspQuestionEntity,
       TryWhatsappEntity,
-      ProgramCustomAttributeEntity,
       RegistrationEntity,
       LatestMessageEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
+      ProgramRegistrationAttributeEntity,
     ]),
     UserModule,
     HttpModule,
@@ -90,7 +84,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationsInputValidator,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
-    createScopedRepositoryProvider(RegistrationDataEntity),
+    createScopedRepositoryProvider(RegistrationAttributeDataEntity),
     createScopedRepositoryProvider(NoteEntity),
     createScopedRepositoryProvider(TransactionEntity),
     createScopedRepositoryProvider(EventEntity),

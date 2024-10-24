@@ -165,7 +165,6 @@
         "btn-text": "Betaalinstructies exporteren",
         "confirm-message": "Hiermee downloadt u een bestand met betalingsinstructies voor de financiële dienstverlener.",
         "sub-message": {
-          "no-reconciliation": "U dient dit bestand slechts <strong> één keer per betaling </strong> te gebruiken in het portaal van de Financiële Dienstverlener.",
           "reconciliation": "Deze export omvat alleen hulpvragers waarvoor de huidige transactiestatus <strong> wachtend </strong> is."
         },
         "timestamp": "Laatste export is uitgevoerd op: {{dateTime}}"
@@ -376,12 +375,9 @@
         },
         "choose-action": "Kies actie...",
         "column": {
-          "custom-attribute-false": "Nee",
-          "custom-attribute-true": "Ja",
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
           "financialServiceProvider": "Type hulp",
-          "fspDisplayName": "Type hulp",
           "hasNote": "Heeft notitie",
           "inclusionScore": "Inclusiescore",
           "lastMessageStatus": "Laatste bericht",
@@ -396,7 +392,10 @@
           "personAffectedSequence": "Hulpvrager",
           "phoneNumber": "Telefoonnummer",
           "preferredLanguage": "Voorkeurstaal",
+          "programFinancialServiceProviderConfigurationLabel": "Type hulp",
           "referenceId": "Referentie nummer",
+          "registration-attribute-false": "Nee",
+          "registration-attribute-true": "Ja",
           "registrationCreated": "Aanmaakdatum",
           "registrationCreatedDate": "Aanmaakdatum registratie",
           "select": "Selecteer",
@@ -410,8 +409,6 @@
           "error-alert": {
             "invalid-date": "De datumnotatie die u hebt ingevoerd, is niet geldig. Een geldig voorbeeld van een datumnotatie is 31-12-1970. Dus: dag-maand-jaar, DD-MM-JJJJ"
           },
-          "fspChangeWarning": "Als u deze FSP selecteert, wordt de volgende informatie verwijderd die verband houden met de oude FSP:",
-          "fspNewAttributesExplanation": "Voor deze FSP is de volgende informatie vereist:",
           "has-notes-title": "Notities beschikbaar",
           "popup-title": "{{pa}} meer info",
           "properties": {

@@ -16,7 +16,7 @@ const expectedColumnsSelectedRegistrationsExport = [
   'paymentAmountMultiplier',
   'paymentCount',
   'registrationCreatedDate',
-  'fspDisplayName',
+  'programFinancialServiceProviderConfigurationLabel',
   'scope',
   'namePartnerOrganization',
   'fullName',
@@ -42,7 +42,8 @@ const expectedColumnsDuplicateRegistrationsExport = [
   'referenceId',
   'id',
   'status',
-  'fsp',
+  'financialServiceProviderName',
+  'programFinancialServiceProviderConfigurationLabel',
   'scope',
   'phoneNumber',
   'whatsappPhoneNumber',
@@ -55,12 +56,12 @@ interface ExportPaAssertionData {
   id: number;
   paymentAmountMultiplier: number;
   preferredLanguage: string;
-  fspDisplayName: string;
+  programFinancialServiceProviderConfigurationLabel: string;
   whatsappPhoneNumber?: string;
 }
 
 interface ExportStatusAndDataChangesData {
-  paId: number;
+  referenceId: string;
   changedBy: string;
   type: string;
   newValue: string;
@@ -70,7 +71,7 @@ interface ExportStatusAndDataChangesData {
 interface ExportDuplicateRegistrationsData {
   id: number;
   status: string;
-  fsp: string;
+  programFinancialServiceProviderConfigurationLabel: string;
   name: string;
   duplicateWithIds: string;
 }
@@ -307,11 +308,27 @@ class RegistrationsPage extends BasePage {
       col.toLowerCase().trim(),
     );
 
-    if (
-      !normalizedExpectedColumns.every((col) => actualColumns.includes(col)) ||
-      normalizedExpectedColumns.length !== actualColumns.length
-    ) {
-      throw new Error('Column validation failed');
+    const missingColumns = normalizedExpectedColumns.filter(
+      (col) => !actualColumns.includes(col),
+    );
+    const extraColumns = actualColumns.filter(
+      (col) => !normalizedExpectedColumns.includes(col),
+    );
+
+    if (missingColumns.length > 0 || extraColumns.length > 0) {
+      const errorMessage = [
+        'Column validation failed:',
+        missingColumns.length > 0
+          ? `Missing columns: ${missingColumns.join(', ')}`
+          : '',
+        extraColumns.length > 0
+          ? `Extra columns: ${extraColumns.join(', ')}`
+          : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      throw new Error(errorMessage);
     }
 
     const mappedAssertionData = Object.keys(assertionData).reduce(
@@ -343,7 +360,7 @@ class RegistrationsPage extends BasePage {
       id,
       paymentAmountMultiplier,
       preferredLanguage,
-      fspDisplayName,
+      programFinancialServiceProviderConfigurationLabel,
     }: ExportPaAssertionData,
     validateRowCount?: { condition: boolean; minRowCount: number },
   ) {
@@ -352,7 +369,7 @@ class RegistrationsPage extends BasePage {
       id,
       paymentAmountMultiplier,
       preferredLanguage,
-      fspDisplayName,
+      programFinancialServiceProviderConfigurationLabel,
     };
     await this.exportAndAssertData(
       expectedColumnsSelectedRegistrationsExport,
@@ -366,7 +383,7 @@ class RegistrationsPage extends BasePage {
   async exportAndAssertStatusAndDataChanges(
     registrationIndex: number,
     {
-      paId,
+      referenceId,
       changedBy,
       type,
       newValue,
@@ -375,7 +392,7 @@ class RegistrationsPage extends BasePage {
     validateRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
-      paId,
+      referenceId,
       changedBy,
       type,
       newValue,
@@ -385,7 +402,7 @@ class RegistrationsPage extends BasePage {
       expectedColumnsStatusAndDataChangesExport,
       assertionData,
       registrationIndex,
-      undefined,
+      referenceId,
       validateRowCount,
     );
   }
@@ -395,7 +412,7 @@ class RegistrationsPage extends BasePage {
     {
       id,
       status,
-      fsp,
+      programFinancialServiceProviderConfigurationLabel,
       name,
       duplicateWithIds,
     }: ExportDuplicateRegistrationsData,
@@ -404,7 +421,7 @@ class RegistrationsPage extends BasePage {
     const assertionData = {
       id,
       status,
-      fsp,
+      programFinancialServiceProviderConfigurationLabel,
       name,
       duplicateWithIds,
     };

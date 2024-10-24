@@ -24,7 +24,9 @@ export class PaymentUtils {
       transaction,
       amount: transaction.amount,
       currency: program?.currency,
-      fsp: transaction.fsp as FspName,
+      financialServiceProviderName: transaction.financialServiceProviderName,
+      programFinancialServiceProviderConfigurationTranslatedLabel:
+        transaction.programFinancialServiceProviderConfigurationTranslatedLabel,
       sentDate: transaction.paymentDate,
       paymentDate: transaction.paymentDate,
     };
