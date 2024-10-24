@@ -18,6 +18,49 @@
       <div table-actions>
         <p-buttonGroup>
           @if (
+            canChangeStatus(RegistrationStatusEnum.validated) &&
+            project.data()?.validation
+          ) {
+            <p-button
+              label="Validate"
+              i18n-label
+              icon="pi pi-check-circle"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.validated)"
+            />
+          }
+          @if (canChangeStatus(RegistrationStatusEnum.included)) {
+            <p-button
+              label="Include"
+              i18n-label
+              icon="pi pi-check"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.included)"
+            />
+          }
+          @if (canChangeStatus(RegistrationStatusEnum.declined)) {
+            <p-button
+              label="Decline"
+              i18n-label
+              icon="pi pi-times"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.declined)"
+            />
+          }
+          @if (canChangeStatus(RegistrationStatusEnum.paused)) {
+            <p-button
+              label="Pause"
+              i18n-label
+              icon="pi pi-pause"
+              rounded
+              outlined
+              (click)="changeStatus(RegistrationStatusEnum.paused)"
+            />
+          }
+          @if (
             authService.hasPermission({
               projectId: projectId(),
               requiredPermission: PermissionEnum.RegistrationNotificationREAD,
@@ -32,6 +75,12 @@
               (click)="sendMessage()"
             />
           }
+          <p-button
+            i18n-label
+            icon="pi pi-ellipsis-v"
+            outlined
+            rounded
+          />
         </p-buttonGroup>
       </div>
     </app-query-table>

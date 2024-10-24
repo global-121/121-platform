@@ -803,6 +803,18 @@
       <trans-unit id="3573847364103936169" datatype="html">
         <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
       </trans-unit>
+      <trans-unit id="6057281094654962766" datatype="html">
+        <source>Validate</source>
+      </trans-unit>
+      <trans-unit id="6381578200008167206" datatype="html">
+        <source>Include</source>
+      </trans-unit>
+      <trans-unit id="8116175184239166510" datatype="html">
+        <source>Decline</source>
+      </trans-unit>
+      <trans-unit id="9042260521669277115" datatype="html">
+        <source>Pause</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
