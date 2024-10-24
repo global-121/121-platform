@@ -2,9 +2,10 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
-import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { postProgramQuestion } from '@121-service/test/helpers/program.helper';
+import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
   resetDB,
@@ -14,9 +15,9 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 describe('Create program', () => {
   let accessToken: string;
 
-  const programQuestion = {
+  const programRegistrationAttribute: ProgramRegistrationAttributeDto = {
     name: 'string',
-    options: {},
+    options: [],
     scoring: {},
     persistence: true,
     pattern: 'string',
@@ -30,8 +31,8 @@ describe('Create program', () => {
       en: '+31 6 00 00 00 00',
     },
     duplicateCheck: false,
-    answerType: 'text',
-    questionType: 'standard',
+    type: RegistrationAttributeTypes.text,
+    isRequired: false,
   };
 
   beforeEach(async () => {
@@ -39,28 +40,27 @@ describe('Create program', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should post a program questions', async () => {
+  it('should post a program registration attribute', async () => {
     // Act
-    const createReponse = await postProgramQuestion(
-      programQuestion as CreateProgramQuestionDto,
+    const createReponse = await postProgramRegistrationAttribute(
+      programRegistrationAttribute,
       programIdPV,
       accessToken,
     );
-
     // Assert
     expect(createReponse.statusCode).toBe(HttpStatus.CREATED);
   });
 
-  it('should no be able to post a question with a name that already exists', async () => {
+  it('should not be able to post a registration attributes with a name that already exists', async () => {
     // Arrange
-    await postProgramQuestion(
-      programQuestion as CreateProgramQuestionDto,
+    await postProgramRegistrationAttribute(
+      programRegistrationAttribute,
       programIdPV,
       accessToken,
     );
     // Act
-    const createReponse2 = await postProgramQuestion(
-      programQuestion as CreateProgramQuestionDto,
+    const createReponse2 = await postProgramRegistrationAttribute(
+      programRegistrationAttribute as any,
       programIdPV,
       accessToken,
     );
@@ -68,17 +68,15 @@ describe('Create program', () => {
     expect(createReponse2.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
 
-  it('should no be able to post a question without obligatory attributes', async () => {
+  it('should not be able to post a registration attributes without obligatory attributes', async () => {
     // Arrange
-    const requiredAttributes = ['name', 'questionType', 'label', 'answerType'];
+    const requiredAttributes = ['name', 'type', 'label'];
     for (const attribute of requiredAttributes) {
-      const programQuestionCopy: Partial<typeof programQuestion> = {
-        ...programQuestion,
-      };
-      delete programQuestionCopy[attribute as keyof typeof programQuestion];
+      const programCustomAttributeCopy = { ...programRegistrationAttribute };
+      delete programCustomAttributeCopy[attribute];
 
-      const createResponse = await postProgramQuestion(
-        programQuestionCopy as CreateProgramQuestionDto,
+      const createResponse = await postProgramRegistrationAttribute(
+        programCustomAttributeCopy as any,
         programIdPV,
         accessToken,
       );
@@ -87,16 +85,16 @@ describe('Create program', () => {
     }
   });
 
-  it('should no be able to post a question with a fsp/custom attribute name that exists', async () => {
+  it('should not be able to post a registration attributes with an attribute name that exists', async () => {
     // Arrange
     const names = ['namePartnerOrganization', 'whatsappPhoneNumber'];
     for (const name of names) {
-      const programQuestionCopy = { ...programQuestion };
-      programQuestionCopy.name = name;
+      const programCustomAttributeCopy = { ...programRegistrationAttribute };
+      programCustomAttributeCopy.name = name;
 
       // Act
-      const createReponse = await postProgramQuestion(
-        programQuestionCopy as CreateProgramQuestionDto,
+      const createReponse = await postProgramRegistrationAttribute(
+        programCustomAttributeCopy,
         programIdPV,
         accessToken,
       );

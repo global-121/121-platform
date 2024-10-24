@@ -1,8 +1,8 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 export class FspTransactionResultDto {
-  public fspName: FinancialServiceProviderName;
+  public fspName: FinancialServiceProviders;
   public paList: PaTransactionResultDto[];
 }
 
@@ -14,7 +14,7 @@ export class PaTransactionResultDto {
   public date?: Date;
   public customData?: any;
   public calculatedAmount: number;
-  public fspName: FinancialServiceProviderName;
+  public fspName: FinancialServiceProviders;
   public messageSid?: string;
   public registrationId?: number;
   public errorMessage?: string | null;

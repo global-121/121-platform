@@ -5,12 +5,6 @@ import { DataSource, Equal } from 'typeorm';
 import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import fspCommercialBankEthiopia from '@121-service/src/seed-data/fsp/fsp-commercial-bank-ethiopia.json';
-import fspExcel from '@121-service/src/seed-data/fsp/fsp-excel.json';
-import fspIntersolveVisa from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
-import fspIntersolveVoucherPaper from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-paper.json';
-import fspIntersolveVoucher from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
-import fspSafaricom from '@121-service/src/seed-data/fsp/fsp-safaricom.json';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
@@ -44,7 +38,6 @@ export class SeedInit implements InterfaceScript {
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
-    await this.seedFsp();
   }
 
   private async clearCallbacksMockService(): Promise<void> {
@@ -323,14 +316,5 @@ export class SeedInit implements InterfaceScript {
     await this.dataSource.runMigrations({
       transaction: 'all',
     });
-  }
-
-  private async seedFsp(): Promise<void> {
-    await this.seedHelper.addFsp(fspIntersolveVoucher);
-    await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
-    await this.seedHelper.addFsp(fspIntersolveVisa);
-    await this.seedHelper.addFsp(fspSafaricom);
-    await this.seedHelper.addFsp(fspCommercialBankEthiopia);
-    await this.seedHelper.addFsp(fspExcel);
   }
 }

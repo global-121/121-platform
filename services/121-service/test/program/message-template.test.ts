@@ -44,10 +44,6 @@ describe('Message template', () => {
       messageTemplate as CreateMessageTemplateDto,
       accessToken,
     );
-    console.log(
-      'postMessageTemplateResult: ',
-      postMessageTemplateResult.statusCode,
-    );
 
     // Assert
     expect(postMessageTemplateResult.statusCode).toBe(HttpStatus.CREATED);

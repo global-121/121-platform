@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -83,15 +83,18 @@ export class ProgramPayoutComponent implements OnInit {
     this.program = await this.programsService.getProgramById(this.programId);
 
     this.programHasVoucherSupport = this.checkProgramHasVoucherSupport(
-      this.program.financialServiceProviders,
+      this.program.financialServiceProviderConfigurations,
     );
     this.hasFspWithExportFileIntegration =
-      this.program.financialServiceProviders.some(
-        (fsp) => fsp.integrationType === FspIntegrationType.csv,
+      this.program.financialServiceProviderConfigurations.some(
+        (fspConfig) =>
+          fspConfig.financialServiceProvider.integrationType ===
+          FspIntegrationType.csv,
       );
-    this.hasFspWithReconciliation = this.program.financialServiceProviders.some(
-      (fsp) => fsp.hasReconciliation,
-    );
+    this.hasFspWithReconciliation =
+      this.program.financialServiceProviderConfigurations.some(
+        (fspConfig) => fspConfig.financialServiceProvider.hasReconciliation,
+      );
 
     this.canMakePayment = this.checkCanMakePayment();
     this.canViewPayment = this.checkCanViewPayment();
@@ -152,8 +155,8 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkCanExportCardBalances(): boolean {
-    const visaFsp = this.program?.financialServiceProviders?.some((fsp) =>
-      PaymentUtils.hasPhysicalCardSupport(fsp.fsp),
+    const visaFsp = this.program?.financialServiceProviderConfigurations?.some(
+      (fsp) => PaymentUtils.hasPhysicalCardSupport(fsp.name),
     );
 
     const hasPermission = this.authService.hasAllPermissions(this.program.id, [
@@ -179,9 +182,10 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   async checkShowCbeValidation(): Promise<boolean> {
-    const hasCbeProvider = this.program?.financialServiceProviders?.some(
-      (fsp) => fsp.fsp === FinancialServiceProviderName.commercialBankEthiopia,
-    );
+    const hasCbeProvider =
+      this.program?.financialServiceProviderConfigurations?.some(
+        (fsp) => fsp.name === FinancialServiceProviders.commercialBankEthiopia,
+      );
     const hasPermission = await this.authService.hasPermission(
       this.program.id,
       Permission.PaymentFspInstructionREAD,
@@ -334,10 +338,10 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkProgramHasVoucherSupport(
-    fsps: Program['financialServiceProviders'],
+    fsps: Program['financialServiceProviderConfigurations'],
   ): boolean {
     for (const fsp of fsps || []) {
-      if (fsp && PaymentUtils.hasVoucherSupport(fsp.fsp)) {
+      if (fsp && PaymentUtils.hasVoucherSupport(fsp.name)) {
         return true;
       }
     }

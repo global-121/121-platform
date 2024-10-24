@@ -1,9 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { UpdateResult } from 'typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -26,11 +23,6 @@ const mockedRegistration: RegistrationEntity = {
   preferredLanguage: 'en',
 } as unknown as RegistrationEntity;
 
-const mockedFinancialServiceProvider: FinancialServiceProviderEntity = {
-  id: 1,
-  name: FinancialServiceProviderName.safaricom,
-} as unknown as FinancialServiceProviderEntity;
-
 const mockedTransaction: TransactionEntity = {
   id: 1,
   amount: 25,
@@ -48,6 +40,7 @@ const mockedTransactionJob: SafaricomTransactionJobDto = {
   bulkSize: 10,
   phoneNumber: '254708374149',
   idNumber: 'nat-123',
+  programFinancialServiceProviderConfigurationId: 1,
   originatorConversationId: 'originator-conversation-id',
 };
 
@@ -68,7 +61,6 @@ describe('TransactionJobProcessorsService', () => {
   let registrationScopedRepository: RegistrationScopedRepository;
   let latestTransactionRepository: LatestTransactionRepository;
   let transactionScopedRepository: ScopedRepository<TransactionEntity>;
-  let financialServiceProviderRepository: FinancialServiceProviderRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -83,11 +75,6 @@ describe('TransactionJobProcessorsService', () => {
     registrationScopedRepository = unitRef.get<RegistrationScopedRepository>(
       RegistrationScopedRepository,
     );
-
-    financialServiceProviderRepository =
-      unitRef.get<FinancialServiceProviderRepository>(
-        FinancialServiceProviderRepository,
-      );
 
     transactionScopedRepository = unitRef.get<
       ScopedRepository<TransactionEntity>
@@ -110,10 +97,6 @@ describe('TransactionJobProcessorsService', () => {
     jest
       .spyOn(registrationScopedRepository, 'updateUnscoped')
       .mockResolvedValueOnce({} as UpdateResult);
-
-    jest
-      .spyOn(financialServiceProviderRepository, 'getByName')
-      .mockResolvedValueOnce(mockedFinancialServiceProvider);
 
     jest
       .spyOn(programRepository, 'findByIdOrFail')
@@ -147,9 +130,6 @@ describe('TransactionJobProcessorsService', () => {
     expect(registrationScopedRepository.getByReferenceId).toHaveBeenCalledWith({
       referenceId: mockedTransactionJob.referenceId,
     });
-    expect(financialServiceProviderRepository.getByName).toHaveBeenCalledWith(
-      FinancialServiceProviderName.safaricom,
-    );
     expect(safaricomService.doTransfer).toHaveBeenCalledWith(
       expect.objectContaining({
         transferAmount: mockedTransactionJob.transactionAmount,

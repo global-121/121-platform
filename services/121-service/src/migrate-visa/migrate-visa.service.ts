@@ -4,8 +4,8 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
 import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
@@ -78,12 +78,14 @@ export class MigrateVisaService {
       const config2 = new ProgramFinancialServiceProviderConfigurationEntity();
       config2.fspId = fspVisaId[0].id;
       config2.programId = 2;
-      config2.name = FinancialServiceProviderConfigurationEnum.fundingTokenCode;
+      config2.name =
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode;
       config2.value = process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE;
       const config3 = new ProgramFinancialServiceProviderConfigurationEntity();
       config3.fspId = fspVisaId[0].id;
       config3.programId = 3;
-      config3.name = FinancialServiceProviderConfigurationEnum.fundingTokenCode;
+      config3.name =
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode;
       config3.value = process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE;
 
       // save
@@ -421,8 +423,8 @@ export class MigrateVisaService {
     `,
       [
         programId,
-        FinancialServiceProviderConfigurationEnum.brandCode,
-        FinancialServiceProviderName.intersolveVisa,
+        FinancialServiceProviderConfigurationProperties.brandCode,
+        FinancialServiceProviders.intersolveVisa,
       ],
     );
 
@@ -459,7 +461,7 @@ export class MigrateVisaService {
       from
         "121-service"."intersolve_visa_customer" i
       left join "121-service".registration r on
-        r.id = i."registrationId" 
+        r.id = i."registrationId"
       LEFT JOIN "121-service"."intersolve_migration_progress" imp ON r."referenceId" = imp."referenceId"
       WHERE "programId" = ${programId} AND imp."referenceId" IS NULL
       LIMIT ${limit ?? 'ALL'}`,

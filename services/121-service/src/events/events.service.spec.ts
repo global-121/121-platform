@@ -4,7 +4,7 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -66,8 +66,11 @@ function getViewRegistration(): RegistrationViewEntity {
     preferredLanguage: LanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
-    financialServiceProvider: FinancialServiceProviderName.intersolveVisa,
-    fspDisplayName: { en: 'Visa debit card' },
+    financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
+    programFinancialServiceProviderConfigurationName: 'Intersolve-Visa',
+    programFinancialServiceProviderConfigurationLabel: {
+      en: 'Visa debit card',
+    },
     registrationProgramId: 2,
     personAffectedSequence: 'PA #2',
     maxPayments: null,
@@ -195,7 +198,7 @@ describe('EventsService', () => {
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration['whatsappPhoneNumber'] = '1234567890';
-    newViewRegistration['fspDisplayName'] = {
+    newViewRegistration['programFinancialServiceProviderConfigurationLabel'] = {
       en: 'Albert Heijn voucher WhatsApp',
     };
     delete newViewRegistration['addressCity'];
@@ -205,8 +208,8 @@ describe('EventsService', () => {
     delete newViewRegistration['addressStreet'];
 
     // Changes that should not be logged
-    newViewRegistration.financialServiceProvider =
-      FinancialServiceProviderName.intersolveVoucherWhatsapp;
+    newViewRegistration.programFinancialServiceProviderConfigurationName =
+      FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     // Act
     await eventsService.log(oldViewRegistration, newViewRegistration);
@@ -220,11 +223,17 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value: oldViewRegistration['fspDisplayName'],
+            value:
+              oldViewRegistration[
+                'programFinancialServiceProviderConfigurationLabel'
+              ],
           },
           {
             key: 'newValue',
-            value: newViewRegistration['fspDisplayName'],
+            value:
+              newViewRegistration[
+                'programFinancialServiceProviderConfigurationLabel'
+              ],
           },
         ],
         userId: 2,
