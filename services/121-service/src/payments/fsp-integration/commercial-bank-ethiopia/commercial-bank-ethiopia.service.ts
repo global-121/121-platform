@@ -1,15 +1,12 @@
 import { InjectQueue } from '@nestjs/bull';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -32,7 +29,9 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { RequiredUsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/required-username-password.interface';
+import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -51,8 +50,6 @@ export class CommercialBankEthiopiaService
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -67,6 +64,7 @@ export class CommercialBankEthiopiaService
     private readonly transactionsService: TransactionsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
+    public readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
 
   public async sendPayment(
@@ -74,9 +72,7 @@ export class CommercialBankEthiopiaService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
-    const credentials: { username: string; password: string } =
-      await this.getCommercialBankEthiopiaCredentials(programId);
-
+    // ##TODO: Regactor this to ensure that the programFinancialServiceProviderConfigurationId is the same for the whole list
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
@@ -84,7 +80,7 @@ export class CommercialBankEthiopiaService
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName =
-      FinancialServiceProviderName.commercialBankEthiopia;
+      FinancialServiceProviders.commercialBankEthiopia;
 
     const referenceIds = paPaymentList.map(
       (paPayment) => paPayment.referenceId,
@@ -108,7 +104,6 @@ export class CommercialBankEthiopiaService
         paymentNr,
         programId,
         payload,
-        credentials,
         userId: paPayment.userId,
       };
       const job = await this.commercialBankEthiopiaQueue.add(
@@ -123,16 +118,23 @@ export class CommercialBankEthiopiaService
   async processQueuedPayment(
     data: CommercialBankEthiopiaJobDto,
   ): Promise<void> {
+    const credentials =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        data.paPaymentData.programFinancialServiceProviderConfigurationId,
+      );
+
     const paymentRequestResultPerPa = await this.sendPaymentPerPa(
       data.payload,
       data.paPaymentData.referenceId,
-      data.credentials,
+      credentials,
     );
 
     const transactionRelationDetails = {
       programId: data.programId,
       paymentNr: data.paymentNr,
       userId: data.userId,
+      programFinancialServiceProviderConfigurationId:
+        data.paPaymentData.programFinancialServiceProviderConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -176,20 +178,19 @@ export class CommercialBankEthiopiaService
       .select([
         'registration.referenceId AS "referenceId"',
         'data.value AS value',
-        'COALESCE("programQuestion".name, "fspQuestion".name) AS "fieldName"',
+        '"programRegistrationAttribute".name AS "fieldName"',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds,
       })
-      .andWhere(
-        '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
-        {
-          names: ['fullName', 'bankAccountNumber'],
-        },
-      )
+      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
+        names: ['fullName', 'bankAccountNumber'],
+      })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.programQuestion', 'programQuestion')
-      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .leftJoin(
+        'data.programRegistrationAttribute',
+        'programRegistrationAttribute',
+      )
       .getRawMany();
 
     // Filter out properties with null values from each object
@@ -248,51 +249,65 @@ export class CommercialBankEthiopiaService
   public async sendPaymentPerPa(
     payload: CommercialBankEthiopiaTransferPayload,
     referenceId: string,
-    credentials: { username: string; password: string },
+    credentials: UsernamePasswordInterface,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName =
-      FinancialServiceProviderName.commercialBankEthiopia;
+      FinancialServiceProviders.commercialBankEthiopia;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
 
-    let result = await this.commercialBankEthiopiaApiService.creditTransfer(
-      payload,
-      credentials,
-    );
-
-    if (result && result.resultDescription === 'Transaction is DUPLICATED') {
-      result = await this.commercialBankEthiopiaApiService.getTransactionStatus(
-        payload,
-        credentials,
-      );
-    }
-
-    if (
-      result &&
-      result.Status &&
-      result.Status.successIndicator &&
-      result.Status.successIndicator._text === 'Success'
-    ) {
-      paTransactionResult.status = TransactionStatusEnum.success;
-      payload.status = TransactionStatusEnum.success;
-    } else {
+    let requiredCredentials: RequiredUsernamePasswordInterface;
+    if (credentials.password == null || credentials.username == null) {
       paTransactionResult.status = TransactionStatusEnum.error;
       paTransactionResult.message =
-        result.resultDescription ||
-        (result.Status &&
-          result.Status.messages &&
-          (result.Status.messages.length > 0
-            ? result.Status.messages[0]._text
-            : result.Status.messages._text));
-    }
+        'Missing username or password for program financial service provider configuration of the registration';
+      return paTransactionResult;
+    } else {
+      requiredCredentials = {
+        username: credentials.username,
+        password: credentials.password,
+      };
 
-    paTransactionResult.customData = {
-      requestResult: payload,
-      paymentResult: result,
-    };
-    return paTransactionResult;
+      let result = await this.commercialBankEthiopiaApiService.creditTransfer(
+        payload,
+        requiredCredentials,
+      );
+
+      if (result && result.resultDescription === 'Transaction is DUPLICATED') {
+        result =
+          await this.commercialBankEthiopiaApiService.getTransactionStatus(
+            payload,
+            requiredCredentials,
+          );
+      }
+
+      if (
+        result &&
+        result.Status &&
+        result.Status.successIndicator &&
+        result.Status.successIndicator._text === 'Success'
+      ) {
+        paTransactionResult.status = TransactionStatusEnum.success;
+        payload.status = TransactionStatusEnum.success;
+      } else {
+        paTransactionResult.status = TransactionStatusEnum.error;
+        paTransactionResult.message =
+          result.resultDescription ||
+          (result.Status &&
+            result.Status.messages &&
+            (result.Status.messages.length > 0
+              ? result.Status.messages[0]._text
+              : result.Status.messages._text));
+      }
+
+      paTransactionResult.customData = {
+        requestResult: payload,
+        paymentResult: result,
+      };
+      return paTransactionResult;
+    }
   }
 
   public async validateAllPas(): Promise<void> {
@@ -303,8 +318,8 @@ export class CommercialBankEthiopiaService
   }
 
   public async validatePasForProgram(programId: number): Promise<void> {
-    const credentials: { username: string; password: string } =
-      await this.getCommercialBankEthiopiaCredentials(programId);
+    const credentials =
+      await this.getCommercialBankEthiopiaCredentialsOrThrow(programId);
 
     const getAllPersonsAffectedData =
       await this.getAllPersonsAffectedData(programId);
@@ -390,21 +405,20 @@ export class CommercialBankEthiopiaService
       .select([
         'registration.id AS "id"',
         'ARRAY_AGG(data.value) AS "values"',
-        'ARRAY_AGG(COALESCE("programQuestion".name, "fspQuestion".name)) AS "fieldNames"',
+        'ARRAY_AGG("programRegistrationAttribute".name) AS "fieldNames"',
       ])
       .where('registration.programId = :programId', { programId })
-      .andWhere(
-        '(programQuestion.name IN (:...names) OR fspQuestion.name IN (:...names))',
-        {
-          names: ['fullName', 'bankAccountNumber'],
-        },
-      )
+      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
+        names: ['fullName', 'bankAccountNumber'],
+      })
       .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
         statusValues: ['deleted', 'paused'],
       })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.programQuestion', 'programQuestion')
-      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .leftJoin(
+        'data.programRegistrationAttribute',
+        'programRegistrationAttribute',
+      )
       .groupBy('registration.id')
       .getRawMany();
 
@@ -420,30 +434,28 @@ export class CommercialBankEthiopiaService
     return formattedData;
   }
 
-  public async getCommercialBankEthiopiaCredentials(
-    programId: number,
-  ): Promise<{ username: string; password: string }> {
-    const config = await this.programFspConfigurationRepository
-      .createQueryBuilder('fspConfig')
-      .select('name')
-      .addSelect('value')
-      .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.fsp = :fspName', {
-        fspName: FinancialServiceProviderName.commercialBankEthiopia,
-      })
-      .leftJoin('fspConfig.fsp', 'fsp')
-      .getRawMany();
+  public async getCommercialBankEthiopiaCredentialsOrThrow(
+    programFinancialServiceProviderConfigurationId: number,
+  ): Promise<RequiredUsernamePasswordInterface> {
+    const credentials =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        programFinancialServiceProviderConfigurationId,
+      );
 
-    const credentials: { username: string; password: string } = {
-      username: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.username,
-      )?.value,
-      password: config.find(
-        (c) => c.name === FinancialServiceProviderConfigurationEnum.password,
-      )?.value,
+    if (credentials.password == null || credentials.username == null) {
+      throw new HttpException(
+        'Missing username or password for program financial service provider configuration of the registration',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // added this to prevent a typeerror as: return credentials gives a type error
+    const requiredCredentials: RequiredUsernamePasswordInterface = {
+      username: credentials.username,
+      password: credentials.password,
     };
 
-    return credentials;
+    return requiredCredentials;
   }
 
   public async getAllProgramsWithCBE(): Promise<ProgramEntity[]> {
@@ -451,12 +463,15 @@ export class CommercialBankEthiopiaService
       .createQueryBuilder('program')
       .select('program.id')
       .innerJoin(
-        'program.financialServiceProviders',
-        'financialServiceProviders',
+        'program.programFinancialServiceProviderConfigurations',
+        'programFinancialServiceProviderConfigurations',
       )
-      .where('financialServiceProviders.fsp = :fsp', {
-        fsp: FinancialServiceProviderName.commercialBankEthiopia,
-      })
+      .where(
+        'programFinancialServiceProviderConfigurations.financialServiceProviderName = :fsp',
+        {
+          fsp: FinancialServiceProviders.commercialBankEthiopia,
+        },
+      )
       .getMany();
 
     return programs;

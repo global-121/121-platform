@@ -26,7 +26,8 @@ export class PaymentRowDetail {
   transaction?: Transaction;
   errorMessage?: string;
   waiting?: boolean;
-  fsp?: FspName;
+  programFinancialServiceProviderConfigurationTranslatedLabel?: string;
+  financialServiceProviderName?: FspName;
   status?: string;
   paymentDate?: string;
 }

@@ -1,10 +1,4 @@
-import fs from 'fs';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class PhasesAndEditableProperties1654693178991
   implements MigrationInterface
@@ -50,86 +44,5 @@ export class PhasesAndEditableProperties1654693178991
     await queryRunner.query(
       `ALTER TABLE "121-service"."fsp_attribute" DROP COLUMN "phases"`,
     );
-  }
-
-  private async migrateData(manager: EntityManager): Promise<void> {
-    let programPilotNL, programPilotNL2, fspIntersolve;
-    try {
-      // refactor: if encountering issues with these imports, consider refactoring similarly to what was done in https://github.com/global-121/121-platform/pull/5192/files
-      programPilotNL = JSON.parse(
-        fs.readFileSync('seed-data/program/program-pilot-nl.json', 'utf8'),
-      );
-      programPilotNL2 = JSON.parse(
-        fs.readFileSync('seed-data/program/program-pilot-nl-2.json', 'utf8'),
-      );
-      // fspIntersolve = JSON.parse(
-      //   fs.readFileSync('seed-data/fsp/fsp-intersolve.json', 'utf8'),
-      // );
-    } catch {
-      console.log(
-        'NLRC programs not found. Not migrating phases and editable properties for NLRC program',
-      );
-    }
-    if (programPilotNL && programPilotNL2 && fspIntersolve) {
-      const programRepo = manager.getRepository(ProgramEntity);
-      const programQuestionsRepo = manager.getRepository(ProgramQuestionEntity);
-      const customAttributesRepo = manager.getRepository(
-        ProgramCustomAttributeEntity,
-      );
-      const program = await programRepo
-        .createQueryBuilder('program')
-        .leftJoin('program.programQuestions', 'programQuestion')
-        .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
-        .select('program.id')
-        .addSelect('program.titlePortal')
-        .addSelect('program.ngo')
-        .addSelect('programQuestion.id')
-        .addSelect('programQuestion.name')
-        .addSelect('programQuestion.phases')
-        .addSelect('programQuestion.editableInPortal')
-        .addSelect('programCustomAttribute.id')
-        .addSelect('programCustomAttribute.name')
-        .addSelect('programCustomAttribute.phases')
-        .where(`ngo = 'NLRC'`)
-        .getOne();
-
-      if (program) {
-        let programJson;
-        if (program.titlePortal!['en'] === programPilotNL.titlePortal.en) {
-          programJson = programPilotNL;
-        }
-        if (program.titlePortal!['en'] === programPilotNL2.titlePortal.en) {
-          programJson = programPilotNL2;
-        }
-        for (const q of program.programQuestions) {
-          const qJson = programJson.programQuestions.find(
-            (qJson) => qJson.name === q.name,
-          );
-          q.editableInPortal = qJson.editableInPortal;
-          await programQuestionsRepo.save(q);
-        }
-        for (const ca of program.programCustomAttributes) {
-          programJson.programCustomAttributes.find(
-            (caJson) => caJson.name === ca.name,
-          );
-          await customAttributesRepo.save(ca);
-        }
-      }
-
-      const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
-
-      const fspAttributes = await fspAttributeRepo
-        .createQueryBuilder('fspAttribute')
-        .select('fspAttribute.id')
-        .addSelect('fspAttribute.name')
-        .addSelect('fspAttribute.phases')
-        .getMany();
-
-      for (const fspAttribute of fspAttributes) {
-        if (fspAttribute.name === fspIntersolve.attributes[0].name) {
-          await fspAttributeRepo.save(fspAttribute);
-        }
-      }
-    }
   }
 }

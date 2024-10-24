@@ -15,7 +15,7 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
     When user selects the "Send message to PAs" action
     Then the popup shows an empty message
     And the user can edit the message
-    And the user can add placeholders for (Program question, Program attributes, Payment multiplier, Fsp diplayname and Max payments)
+    And the user can add placeholders for (Program registration attributes, Payment multiplier, Fsp diplayname and Max payments)
     And the placeholders are replaced by the preview values of the first PA in the popup
 
   Scenario: Confirm "Send message to PAs" action

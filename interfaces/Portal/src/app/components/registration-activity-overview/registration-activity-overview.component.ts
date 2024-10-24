@@ -17,8 +17,8 @@ import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import EventType from '../../enums/event-type.enum';
 import { Attribute } from '../../models/attribute.model';
-import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
+import { RegistrationAttributeType } from '../../models/registration-attribute.model';
 import { RegistrationActivityDetailAccordionComponent } from '../../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { EnumService } from '../../services/enum.service';
 import { MessagesService } from '../../services/messages.service';
@@ -199,13 +199,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             (attr) => attr.name === change.attributes.fieldName,
           );
 
-          if (attribute?.type === AnswerType.Boolean) {
+          if (attribute?.type === RegistrationAttributeType.Boolean) {
             const booleanLabel = {
               true: this.translate.instant(
-                'page.program.program-people-affected.column.custom-attribute-true',
+                'page.program.program-people-affected.column.registration-attribute-true',
               ),
               false: this.translate.instant(
-                'page.program.program-people-affected.column.custom-attribute-false',
+                'page.program.program-people-affected.column.registration-attribute-false',
               ),
             };
             oldValue = booleanLabel[oldValue];

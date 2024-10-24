@@ -2,10 +2,11 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
-import fspIntersolveVoucher from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import programOcw from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
@@ -18,8 +19,32 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const save = englishTranslations.common.save;
 const ok = englishTranslations.common.ok;
-const voucherFspName = fspIntersolveVoucher.displayName.en;
-const visaFspName = visaFspIntersolve.displayName.en;
+const voucherFspName = findFinancialServiceProviderByNameOrFail(
+  FinancialServiceProviders.intersolveVoucherWhatsapp,
+).defaultLabel.en;
+const visaFspName = findFinancialServiceProviderByNameOrFail(
+  FinancialServiceProviders.intersolveVisa,
+).defaultLabel.en;
+const visaQuestionStreet = programOcw.programRegistrationAttributes.find(
+  (attribute) => attribute.name === 'addressStreet',
+)!.label.en;
+
+const visaQuestionHouseNumberAddition =
+  programOcw.programRegistrationAttributes.find(
+    (attribute) => attribute.name === 'addressHouseNumberAddition',
+  )!.label.en;
+
+const visaQuestionPostalCode = programOcw.programRegistrationAttributes.find(
+  (attribute) => attribute.name === 'addressPostalCode',
+)!.label.en;
+
+const visaQuestionCity = programOcw.programRegistrationAttributes.find(
+  (attribute) => attribute.name === 'addressCity',
+)!.label.en;
+
+const visaQuestionHouseNumber = programOcw.programRegistrationAttributes.find(
+  (attribute) => attribute.name === 'addressHouseNumber',
+)!.label.en;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -55,17 +80,24 @@ test('[28048] Update chosen Finacial service provider', async ({ page }) => {
   // Need to be fixed
   await test.step('Update Finacial service provider from Voucher whatsapp to Visa debit card', async () => {
     await piiPopUp.updatefinancialServiceProvider({
-      fspNewName: visaFspName,
-      fspOldName: voucherFspName,
+      fspNewName: visaFspName!,
+      fspOldName: voucherFspName!,
       saveButtonName: save,
       okButtonName: ok,
+      newAttributes: [
+        { labelText: visaQuestionHouseNumber, newValue: '3' },
+        { labelText: visaQuestionStreet, newValue: 'Nieuwe straat' },
+        { labelText: visaQuestionHouseNumberAddition, newValue: 'D' },
+        { labelText: visaQuestionPostalCode, newValue: '1234AB' },
+        { labelText: visaQuestionCity, newValue: 'Amsterdam' },
+      ],
     });
   });
 
   await test.step('Validate Finacial service provider be updated', async () => {
     await table.validateFspCell({
       rowNumber,
-      fspName: visaFspName,
+      fspName: visaFspName!,
     });
   });
 });

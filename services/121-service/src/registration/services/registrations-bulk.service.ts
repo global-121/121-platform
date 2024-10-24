@@ -298,7 +298,9 @@ export class RegistrationsBulkService {
     query.select = ['referenceId', 'programId', ...selectColumns];
     if (includePaymentAttributes) {
       query.select.push('paymentAmountMultiplier');
-      query.select.push('financialServiceProvider');
+      query.select.push('programFinancialServiceProviderConfigurationId');
+      query.select.push('programFinancialServiceProviderConfigurationName');
+      query.select.push('financialServiceProviderName');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');
