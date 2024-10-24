@@ -23,38 +23,9 @@
   "distributionFrequency": "week",
   "distributionDuration": 10,
   "fixedTransferValue": 35,
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Excel",
-      "configuration": [
-        {
-          "name": "columnsToExport",
-          "value": ["name", "birthdate", "documentid", "phoneNumber"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": true,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "name",
       "label": {
@@ -64,10 +35,8 @@
         "fr": "Nom",
         "nl": "Naam"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -82,10 +51,8 @@
         "fr": "Deuxième prénom",
         "nl": "Tweede naam"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -100,10 +67,8 @@
         "fr": "Prénom",
         "nl": "Voornaam"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -118,8 +83,7 @@
         "fr": "Genre",
         "nl": "Geslacht"
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
+      "type": "dropdown",
       "options": [
         {
           "option": "M",
@@ -152,7 +116,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -167,10 +130,8 @@
         "fr": "Date de naissance",
         "nl": "Geboortedatum"
       },
-      "answerType": "date",
-      "questionType": "standard",
+      "type": "date",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -185,10 +146,8 @@
         "fr": "Numéro d'identification",
         "nl": "Document ID"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
@@ -204,8 +163,7 @@
         "fr": "Chef de ménage",
         "nl": "Hoofd huishouden"
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
+      "type": "dropdown",
       "options": [
         {
           "option": "Oui",
@@ -228,7 +186,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -243,10 +200,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -261,10 +216,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -281,10 +234,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -299,10 +250,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -319,8 +268,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
+      "type": "dropdown",
       "options": [
         {
           "option": "returnee",
@@ -363,7 +311,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "returnee": 2,
@@ -383,8 +330,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
+      "type": "dropdown",
       "options": [
         {
           "option": "widowed",
@@ -447,7 +393,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "widowed": 1,
@@ -469,10 +414,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -489,10 +432,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -509,10 +450,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -529,10 +468,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -549,10 +486,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -569,10 +504,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -589,10 +522,8 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "numeric",
-      "questionType": "standard",
+      "type": "numeric",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -609,8 +540,7 @@
         "fr": "",
         "nl": ""
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
+      "type": "dropdown",
       "options": [
         {
           "option": "Oui",
@@ -633,11 +563,25 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {
@@ -649,5 +593,33 @@
   },
   "fullnameNamingConvention": ["name", "middlename", "firstname"],
   "languages": ["ar", "en", "es", "fr", "nl"],
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "properties": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "birthdate", "documentid", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ]
 }

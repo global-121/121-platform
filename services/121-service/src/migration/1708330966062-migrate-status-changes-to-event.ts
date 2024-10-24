@@ -25,7 +25,6 @@ export class MigrateStatusChangesToEvent1708330966062
   public async down(_queryRunner: QueryRunner): Promise<void> {}
 
   private async migrateStatusChanges(queryRunner: QueryRunner): Promise<void> {
-    console.time('migrateStatusChanges');
     const manager = queryRunner.manager;
     const eventRepo = manager.getRepository(EventEntity);
     const adminUser = await queryRunner.query(
@@ -75,6 +74,5 @@ export class MigrateStatusChangesToEvent1708330966062
     });
 
     await eventRepo.save(events, { chunk: 300 });
-    console.timeEnd('migrateStatusChanges');
   }
 }

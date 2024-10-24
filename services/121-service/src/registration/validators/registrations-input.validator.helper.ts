@@ -1,23 +1,27 @@
 export class RegistrationsInputValidatorHelpers {
-  static stringToBoolean(
-    string: string | null | undefined,
+  static inputToBoolean(
+    input: string | null | undefined | number | boolean,
     defaultValue?: boolean,
   ): boolean | undefined {
-    if (typeof string === 'boolean') {
-      return string;
+    if (typeof input === 'boolean') {
+      return input;
     }
 
-    if (string === null) {
+    if (typeof input === 'number') {
+      return input === 1;
+    }
+
+    if (input === null) {
       return false;
     }
 
-    if (string === undefined) {
+    if (input === undefined) {
       return this.isValueUndefinedOrNull(defaultValue)
         ? undefined
         : defaultValue;
     }
 
-    switch (string.toLowerCase().trim()) {
+    switch (input.toLowerCase().trim()) {
       case 'true':
       case 'yes':
       case '1':

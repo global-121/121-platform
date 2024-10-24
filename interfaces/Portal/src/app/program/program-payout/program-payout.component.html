@@ -60,11 +60,10 @@
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
-      [hasFspWithReconciliation]="hasFspWithReconciliation"
       [paymentInProgress]="paymentInProgress"
     ></app-export-fsp-instructions>
     <app-import-fsp-reconciliation
-      *ngIf="hasFspWithReconciliation && canImportFspReconciliation"
+      *ngIf="hasFspWithExportFileIntegration && canImportFspReconciliation"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"

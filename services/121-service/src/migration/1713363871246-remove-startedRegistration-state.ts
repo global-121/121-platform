@@ -8,7 +8,6 @@ export class RemoveStartedRegistrationState1713363871246
   name = 'RemoveStartedRegistrationState1713363871246';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.time('RemoveStartedRegistrationState1713363871246');
     await queryRunner.commitTransaction();
 
     await queryRunner.query(`DELETE FROM "121-service".note WHERE "registrationId" IN
@@ -32,7 +31,6 @@ export class RemoveStartedRegistrationState1713363871246
     );
 
     await queryRunner.startTransaction();
-    console.timeEnd('RemoveStartedRegistrationState1713363871246');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

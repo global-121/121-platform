@@ -1,5 +1,5 @@
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
 
 import { Dto } from '~/utils/dto-type';
 
-export type FinancialServiceProvider = Dto<FinancialServiceProviderEntity>;
+export type FinancialServiceProvider = Dto<FinancialServiceProviderDto>;

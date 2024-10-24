@@ -21,9 +21,6 @@
 export enum PermissionEnum {
   // Program(s)
   ProgramUPDATE = 'program.update',
-  ProgramQuestionUPDATE = 'program:question.update',
-  ProgramQuestionDELETE = 'program:question.delete',
-  ProgramCustomAttributeUPDATE = 'program:custom-attribute.update',
   ProgramMetricsREAD = 'program:metrics.read',
 
   // Payment(s)
@@ -51,7 +48,7 @@ export enum PermissionEnum {
   RegistrationAttributeUPDATE = 'registration:attribute.update',
   RegistrationAttributeFinancialUPDATE = 'registration:attribute:financial.update',
 
-  RegistrationFspUPDATE = 'registration:fsp.update',
+  RegistrationFspConfigUPDATE = 'registration:fsp-config.update',
 
   RegistrationNotificationREAD = 'registration:notification.read',
   RegistrationNotificationCREATE = 'registration:notification.create',

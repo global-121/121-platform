@@ -25,6 +25,8 @@ import {
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+
+import 'multer'; // This is import is required to prevent typing error on the MulterModule
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import appInsights = require('applicationinsights');
 
