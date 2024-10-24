@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Create program should not be able to post a program with 2 of the same names 1`] = `
+{
+  "errors": "The following names: 'fullName' are used more than once program registration attributes",
+}
+`;
+
+exports[`Create program should not be able to post a program with missing names of full name naming convention 1`] = `
+{
+  "errors": "Element 'middle_name' of fullnameNamingConvention is not found in program questions or custom attributes",
+}
+`;
+
 exports[`Create program should post a program: Create program response for program: DRA Joint Response 2023 Ethiopia - Dorcas 1`] = `
 {
   "aboutProgram": {
@@ -15,6 +27,7 @@ exports[`Create program should post a program: Create program response for progr
   "distributionFrequency": "month",
   "editableAttributes": [
     {
+      "isRequired": false,
       "label": {
         "en": "Age",
         "et_AM": "እድሜ",
@@ -23,6 +36,15 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
+      "label": {
+        "en": "Bank Account Number",
+      },
+      "name": "bankAccountNumber",
+      "type": "text",
+    },
+    {
+      "isRequired": false,
       "label": {
         "en": "Name",
         "et_AM": "ስም",
@@ -31,6 +53,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Gender",
         "et_AM": "ጾታ",
@@ -39,6 +62,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "dropdown",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "How many female?",
         "et_AM": "ሴት አባላት",
@@ -47,6 +71,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female with disability over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ",
@@ -55,6 +80,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female with disability under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ",
@@ -63,6 +89,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ",
@@ -71,6 +98,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች",
@@ -79,6 +107,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "How many male?",
         "et_AM": "ወንድ አባላት",
@@ -87,6 +116,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male with disability over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ",
@@ -95,6 +125,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male with disability under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ",
@@ -103,6 +134,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ",
@@ -111,6 +143,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች",
@@ -119,6 +152,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "ID Card number",
         "et_AM": "የመታውቂያ ቁጥር",
@@ -127,6 +161,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Phone number",
         "et_AM": "ስልክ ቁጥር",
@@ -135,6 +170,7 @@ exports[`Create program should post a program: Create program response for progr
       "type": "tel",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Total family members",
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት",
@@ -464,40 +500,6 @@ exports[`Create program should post a program: Create program response for progr
       "group": "payments",
     },
   ],
-  "financialServiceProviders": [
-    {
-      "displayName": {
-        "en": "Commercial Bank of Ethiopia",
-      },
-      "fsp": "Commercial-bank-ethiopia",
-      "hasReconciliation": false,
-      "id": 5,
-      "integrationType": "api",
-      "notifyOnTransaction": false,
-      "questions": [
-        {
-          "answerType": "text",
-          "duplicateCheck": false,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 5,
-          "id": 9,
-          "label": {
-            "en": "Bank Account Number",
-          },
-          "name": "bankAccountNumber",
-          "options": null,
-          "pattern": ".+",
-          "placeholder": {
-            "en": "Please type your bank account number",
-          },
-          "showInPeopleAffectedTable": true,
-        },
-      ],
-    },
-  ],
   "fixedTransferValue": 7000,
   "fullnameNamingConvention": [
     "fullName",
@@ -512,170 +514,169 @@ exports[`Create program should post a program: Create program response for progr
   "ngo": "Dorcas",
   "paTableAttributes": [
     {
+      "isRequired": false,
       "label": {
         "en": "Age",
         "et_AM": "እድሜ",
       },
       "name": "age",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Bank Account Number",
       },
       "name": "bankAccountNumber",
-      "questionType": "fspQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Name",
         "et_AM": "ስም",
       },
       "name": "fullName",
-      "questionType": "programQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Gender",
         "et_AM": "ጾታ",
       },
       "name": "gender",
-      "questionType": "programQuestion",
       "type": "dropdown",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "How many female?",
         "et_AM": "ሴት አባላት",
       },
       "name": "howManyFemale",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female with disability over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ",
       },
       "name": "howManyFemaleDisabilityOver18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female with disability under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ",
       },
       "name": "howManyFemaleDisabilityUnder18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ",
       },
       "name": "howManyFemaleOver18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Female under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች",
       },
       "name": "howManyFemaleUnder18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "How many male?",
         "et_AM": "ወንድ አባላት",
       },
       "name": "howManyMale",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male with disability over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ",
       },
       "name": "howManyMaleDisabilityOver18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male with disability under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ",
       },
       "name": "howManyMaleDisabilityUnder18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ",
       },
       "name": "howManyMaleOver18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Male under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች",
       },
       "name": "howManyMaleUnder18",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "ID Card number",
         "et_AM": "የመታውቂያ ቁጥር",
       },
       "name": "idNumber",
-      "questionType": "programQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Phone number",
         "et_AM": "ስልክ ቁጥር",
       },
       "name": "phoneNumber",
-      "questionType": "programQuestion",
       "type": "tel",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Total family members",
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት",
       },
       "name": "totalFamilyMembers",
-      "questionType": "programQuestion",
       "type": "numeric",
     },
   ],
   "paymentAmountMultiplierFormula": null,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 10,
+      "id": 29,
+      "isRequired": false,
       "label": {
         "en": "Age",
         "et_AM": "እድሜ",
@@ -683,22 +684,44 @@ exports[`Create program should post a program: Create program response for progr
       "name": "age",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "text",
+      "duplicateCheck": false,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 42,
+      "isRequired": false,
+      "label": {
+        "en": "Bank Account Number",
+      },
+      "name": "bankAccountNumber",
+      "options": null,
+      "pattern": ".+",
+      "placeholder": {
+        "en": "Please type your bank account number",
+      },
+      "programId": 5,
+      "scoring": {},
+      "showInPeopleAffectedTable": true,
+      "type": "text",
+    },
+    {
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 7,
+      "id": 26,
+      "isRequired": false,
       "label": {
         "en": "Name",
         "et_AM": "ስም",
@@ -706,22 +729,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "fullName",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "text",
     },
     {
-      "answerType": "dropdown",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 11,
+      "id": 30,
+      "isRequired": false,
       "label": {
         "en": "Gender",
         "et_AM": "ጾታ",
@@ -744,22 +766,21 @@ exports[`Create program should post a program: Create program response for progr
         },
       ],
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "dropdown",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 12,
+      "id": 31,
+      "isRequired": false,
       "label": {
         "en": "How many female?",
         "et_AM": "ሴት አባላት",
@@ -767,22 +788,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyFemale",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 21,
+      "id": 40,
+      "isRequired": false,
       "label": {
         "en": "Female with disability over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ",
@@ -790,22 +810,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyFemaleDisabilityOver18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 19,
+      "id": 38,
+      "isRequired": false,
       "label": {
         "en": "Female with disability under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ",
@@ -813,22 +832,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyFemaleDisabilityUnder18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 17,
+      "id": 36,
+      "isRequired": false,
       "label": {
         "en": "Female over 18",
         "et_AM": "ሴት ከ18 ዓመት በላይ",
@@ -836,22 +854,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyFemaleOver18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 15,
+      "id": 34,
+      "isRequired": false,
       "label": {
         "en": "Female under 18",
         "et_AM": "ሴት ከ18 ዓመት በታች",
@@ -859,22 +876,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyFemaleUnder18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 13,
+      "id": 32,
+      "isRequired": false,
       "label": {
         "en": "How many male?",
         "et_AM": "ወንድ አባላት",
@@ -882,22 +898,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyMale",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 22,
+      "id": 41,
+      "isRequired": false,
       "label": {
         "en": "Male with disability over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ",
@@ -905,22 +920,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyMaleDisabilityOver18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 20,
+      "id": 39,
+      "isRequired": false,
       "label": {
         "en": "Male with disability under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ",
@@ -928,22 +942,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyMaleDisabilityUnder18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 18,
+      "id": 37,
+      "isRequired": false,
       "label": {
         "en": "Male over 18",
         "et_AM": "ወንድ ከ18 ዓመት በላይ",
@@ -951,22 +964,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyMaleOver18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 16,
+      "id": 35,
+      "isRequired": false,
       "label": {
         "en": "Male under 18",
         "et_AM": "ወንድ ከ18 ዓመት በታች",
@@ -974,22 +986,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "howManyMaleUnder18",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
     {
-      "answerType": "text",
       "duplicateCheck": true,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 9,
+      "id": 28,
+      "isRequired": false,
       "label": {
         "en": "ID Card number",
         "et_AM": "የመታውቂያ ቁጥር",
@@ -997,22 +1008,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "idNumber",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "text",
     },
     {
-      "answerType": "tel",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 8,
+      "id": 27,
+      "isRequired": false,
       "label": {
         "en": "Phone number",
         "et_AM": "ስልክ ቁጥር",
@@ -1020,22 +1030,21 @@ exports[`Create program should post a program: Create program response for progr
       "name": "phoneNumber",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "tel",
     },
     {
-      "answerType": "numeric",
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 14,
+      "id": 33,
+      "isRequired": false,
       "label": {
         "en": "Total family members",
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት",
@@ -1043,12 +1052,11 @@ exports[`Create program should post a program: Create program response for progr
       "name": "totalFamilyMembers",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 5,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "numeric",
     },
   ],
   "published": true,
@@ -1077,11 +1085,68 @@ exports[`Create program should post a program: Create program response for progr
   "distributionFrequency": "2-weeks",
   "editableAttributes": [
     {
+      "isRequired": false,
+      "label": {
+        "en": "Address city",
+      },
+      "name": "addressCity",
+      "type": "text",
+    },
+    {
+      "isRequired": false,
+      "label": {
+        "en": "Address house number",
+      },
+      "name": "addressHouseNumber",
+      "type": "numeric",
+    },
+    {
+      "isRequired": false,
+      "label": {
+        "en": "Address house number addition",
+      },
+      "name": "addressHouseNumberAddition",
+      "type": "text",
+    },
+    {
+      "isRequired": false,
+      "label": {
+        "en": "Address postal code",
+      },
+      "name": "addressPostalCode",
+      "type": "text",
+    },
+    {
+      "isRequired": false,
+      "label": {
+        "en": "Address street",
+      },
+      "name": "addressStreet",
+      "type": "text",
+    },
+    {
+      "isRequired": false,
       "label": {
         "en": "Full Name",
       },
       "name": "fullName",
       "type": "text",
+    },
+    {
+      "isRequired": false,
+      "label": {
+        "en": "Phone Number",
+      },
+      "name": "phoneNumber",
+      "type": "tel",
+    },
+    {
+      "isRequired": false,
+      "label": {
+        "en": "WhatsApp Nr.",
+      },
+      "name": "whatsappPhoneNumber",
+      "type": "tel",
     },
   ],
   "enableMaxPayments": false,
@@ -1299,164 +1364,6 @@ exports[`Create program should post a program: Create program response for progr
       "group": "payments",
     },
   ],
-  "financialServiceProviders": [
-    {
-      "displayName": {
-        "en": "Visa debit card",
-      },
-      "fsp": "Intersolve-visa",
-      "hasReconciliation": false,
-      "id": 3,
-      "integrationType": "api",
-      "notifyOnTransaction": true,
-      "questions": [
-        {
-          "answerType": "text",
-          "duplicateCheck": false,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 3,
-          "id": 6,
-          "label": {
-            "en": "Address city",
-          },
-          "name": "addressCity",
-          "options": null,
-          "pattern": ".+",
-          "placeholder": null,
-          "showInPeopleAffectedTable": false,
-        },
-        {
-          "answerType": "numeric",
-          "duplicateCheck": false,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 3,
-          "id": 3,
-          "label": {
-            "en": "Address house number",
-          },
-          "name": "addressHouseNumber",
-          "options": null,
-          "pattern": null,
-          "placeholder": null,
-          "showInPeopleAffectedTable": false,
-        },
-        {
-          "answerType": "text",
-          "duplicateCheck": false,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 3,
-          "id": 4,
-          "label": {
-            "en": "Address house number addition",
-          },
-          "name": "addressHouseNumberAddition",
-          "options": null,
-          "pattern": null,
-          "placeholder": null,
-          "showInPeopleAffectedTable": false,
-        },
-        {
-          "answerType": "text",
-          "duplicateCheck": false,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 3,
-          "id": 5,
-          "label": {
-            "en": "Address postal code",
-          },
-          "name": "addressPostalCode",
-          "options": null,
-          "pattern": ".+",
-          "placeholder": null,
-          "showInPeopleAffectedTable": false,
-        },
-        {
-          "answerType": "text",
-          "duplicateCheck": false,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 3,
-          "id": 2,
-          "label": {
-            "en": "Address street",
-          },
-          "name": "addressStreet",
-          "options": null,
-          "pattern": ".+",
-          "placeholder": null,
-          "showInPeopleAffectedTable": false,
-        },
-        {
-          "answerType": "tel",
-          "duplicateCheck": true,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 3,
-          "id": 7,
-          "label": {
-            "en": "WhatsApp Nr.",
-          },
-          "name": "whatsappPhoneNumber",
-          "options": null,
-          "pattern": null,
-          "placeholder": {
-            "ar": "00 00 00 00 0 00+",
-            "en": "+00 0 00 00 00 00",
-          },
-          "showInPeopleAffectedTable": false,
-        },
-      ],
-    },
-    {
-      "displayName": {
-        "en": "Albert Heijn voucher WhatsApp",
-      },
-      "fsp": "Intersolve-voucher-whatsapp",
-      "hasReconciliation": false,
-      "id": 1,
-      "integrationType": "api",
-      "notifyOnTransaction": false,
-      "questions": [
-        {
-          "answerType": "tel",
-          "duplicateCheck": true,
-          "export": [
-            "all-people-affected",
-            "included",
-          ],
-          "fspId": 1,
-          "id": 1,
-          "label": {
-            "en": "WhatsApp Nr.",
-          },
-          "name": "whatsappPhoneNumber",
-          "options": null,
-          "pattern": null,
-          "placeholder": {
-            "ar": "00 00 00 00 0 00+",
-            "en": "+00 0 00 00 00 00",
-          },
-          "showInPeopleAffectedTable": true,
-        },
-      ],
-    },
-  ],
   "fixedTransferValue": 25,
   "fullnameNamingConvention": [
     "fullName",
@@ -1473,123 +1380,241 @@ exports[`Create program should post a program: Create program response for progr
   "ngo": "NLRC",
   "paTableAttributes": [
     {
+      "isRequired": false,
       "label": {
         "en": "Address city",
       },
       "name": "addressCity",
-      "questionType": "fspQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Address house number",
       },
       "name": "addressHouseNumber",
-      "questionType": "fspQuestion",
       "type": "numeric",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Address house number addition",
       },
       "name": "addressHouseNumberAddition",
-      "questionType": "fspQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Address postal code",
       },
       "name": "addressPostalCode",
-      "questionType": "fspQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Address street",
       },
       "name": "addressStreet",
-      "questionType": "fspQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Full Name",
       },
       "name": "fullName",
-      "questionType": "programQuestion",
       "type": "text",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "Phone Number",
       },
       "name": "phoneNumber",
-      "questionType": "programQuestion",
       "type": "tel",
     },
     {
+      "isRequired": false,
       "label": {
         "en": "WhatsApp Nr.",
       },
       "name": "whatsappPhoneNumber",
-      "questionType": "fspQuestion",
-      "type": "tel",
-    },
-    {
-      "label": {
-        "en": "WhatsApp Nr.",
-      },
-      "name": "whatsappPhoneNumber",
-      "questionType": "fspQuestion",
       "type": "tel",
     },
   ],
   "paymentAmountMultiplierFormula": null,
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
-      "answerType": "text",
+      "duplicateCheck": false,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 25,
+      "isRequired": false,
+      "label": {
+        "en": "Address city",
+      },
+      "name": "addressCity",
+      "options": null,
+      "pattern": null,
+      "placeholder": null,
+      "programId": 4,
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+      "type": "text",
+    },
+    {
+      "duplicateCheck": false,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 22,
+      "isRequired": false,
+      "label": {
+        "en": "Address house number",
+      },
+      "name": "addressHouseNumber",
+      "options": null,
+      "pattern": null,
+      "placeholder": null,
+      "programId": 4,
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+      "type": "numeric",
+    },
+    {
+      "duplicateCheck": false,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 23,
+      "isRequired": false,
+      "label": {
+        "en": "Address house number addition",
+      },
+      "name": "addressHouseNumberAddition",
+      "options": null,
+      "pattern": null,
+      "placeholder": null,
+      "programId": 4,
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+      "type": "text",
+    },
+    {
+      "duplicateCheck": false,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 24,
+      "isRequired": false,
+      "label": {
+        "en": "Address postal code",
+      },
+      "name": "addressPostalCode",
+      "options": null,
+      "pattern": null,
+      "placeholder": null,
+      "programId": 4,
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+      "type": "text",
+    },
+    {
+      "duplicateCheck": false,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 21,
+      "isRequired": false,
+      "label": {
+        "en": "Address street",
+      },
+      "name": "addressStreet",
+      "options": null,
+      "pattern": null,
+      "placeholder": null,
+      "programId": 4,
+      "scoring": {},
+      "showInPeopleAffectedTable": false,
+      "type": "text",
+    },
+    {
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
         "all-people-affected",
         "included",
       ],
-      "id": 5,
+      "id": 18,
+      "isRequired": false,
       "label": {
         "en": "Full Name",
       },
       "name": "fullName",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": null,
       "programId": 4,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "text",
     },
     {
-      "answerType": "tel",
       "duplicateCheck": true,
       "editableInPortal": false,
       "export": [],
-      "id": 6,
+      "id": 19,
+      "isRequired": false,
       "label": {
         "en": "Phone Number",
       },
       "name": "phoneNumber",
       "options": null,
       "pattern": null,
-      "persistence": true,
       "placeholder": {
         "en": "+31 6 00 00 00 00",
       },
       "programId": 4,
-      "questionType": "standard",
       "scoring": {},
       "showInPeopleAffectedTable": false,
+      "type": "tel",
+    },
+    {
+      "duplicateCheck": true,
+      "editableInPortal": false,
+      "export": [
+        "all-people-affected",
+        "included",
+      ],
+      "id": 20,
+      "isRequired": false,
+      "label": {
+        "en": "WhatsApp Nr.",
+      },
+      "name": "whatsappPhoneNumber",
+      "options": null,
+      "pattern": null,
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00",
+      },
+      "programId": 4,
+      "scoring": {},
+      "showInPeopleAffectedTable": true,
+      "type": "tel",
     },
   ],
   "published": true,

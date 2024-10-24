@@ -1,5 +1,6 @@
 export interface SafaricomTransactionJobDto {
   readonly programId: number;
+  readonly programFinancialServiceProviderConfigurationId: number;
   readonly paymentNumber: number;
   readonly referenceId: string;
   readonly transactionAmount: number;
@@ -7,6 +8,6 @@ export interface SafaricomTransactionJobDto {
   readonly userId: number;
   readonly bulkSize: number;
   readonly originatorConversationId: string;
-  readonly phoneNumber?: string;
-  readonly idNumber?: string;
+  readonly phoneNumber: string;
+  readonly idNumber: string;
 }

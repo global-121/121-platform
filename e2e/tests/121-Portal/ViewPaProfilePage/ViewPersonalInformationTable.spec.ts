@@ -2,8 +2,9 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import visaFspTranslations from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -20,7 +21,9 @@ const pageTitle = englishTranslations['registration-details'].pageTitle;
 const status = englishTranslations.entity.registration.status.included;
 const language =
   englishTranslations.page.program['program-people-affected'].language.nl;
-const visaFsp = visaFspTranslations.displayName.en;
+const visaFsp = findFinancialServiceProviderByNameOrFail(
+  FinancialServiceProviders.intersolveVisa,
+).defaultLabel.en;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -62,7 +65,7 @@ test('[27492] View Personal information table', async ({ page }) => {
       await Helpers.getTodaysDate(),
       language,
       '+14155235555',
-      visaFsp,
+      visaFsp!,
     );
   });
 });

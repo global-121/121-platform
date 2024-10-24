@@ -1,27 +1,31 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import {
-  ExcelFspInstructions,
-  ExcelReconciliationDto,
-} from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
+import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
+import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { ReconciliationReturnType } from '@121-service/src/payments/interfaces/reconciliation-return-type.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { BulkImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
 export class ExcelService
@@ -35,6 +39,8 @@ export class ExcelService
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly fileImportService: FileImportService,
   ) {}
 
   public async sendPayment(
@@ -42,43 +48,71 @@ export class ExcelService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.excel;
+    const transactionResultObjectList: {
+      paTransactionResultDto: PaTransactionResultDto;
+      transactionRelationDetailsDto: TransactionRelationDetailsDto;
+    }[] = [];
+
     for (const paPayment of paPaymentList) {
-      const transactionResult = new PaTransactionResultDto();
-      transactionResult.calculatedAmount = paPayment.transactionAmount;
-      transactionResult.fspName = FinancialServiceProviderName.excel;
-      transactionResult.referenceId = paPayment.referenceId;
-      transactionResult.status = TransactionStatusEnum.waiting;
-      fspTransactionResult.paList.push(transactionResult);
+      const paTransactionResultDto = new PaTransactionResultDto();
+      paTransactionResultDto.calculatedAmount = paPayment.transactionAmount;
+      paTransactionResultDto.fspName = FinancialServiceProviders.excel;
+      paTransactionResultDto.referenceId = paPayment.referenceId;
+      paTransactionResultDto.status = TransactionStatusEnum.waiting;
+
+      const transactionRelationDetailsDto = {
+        programId,
+        paymentNr,
+        userId: paPaymentList[0].userId,
+        programFinancialServiceProviderConfigurationId:
+          paPayment.programFinancialServiceProviderConfigurationId,
+      };
+
+      const transactionResultObject = {
+        paTransactionResultDto,
+        transactionRelationDetailsDto,
+      };
+
+      transactionResultObjectList.push(transactionResultObject);
     }
-    const transactionRelationDetails = {
-      programId,
-      paymentNr,
-      userId: paPaymentList[0].userId,
-    };
+
     await this.transactionsService.storeAllTransactions(
-      fspTransactionResult,
-      transactionRelationDetails,
+      transactionResultObjectList,
     );
 
+    const fspTransactionResult = new FspTransactionResultDto();
+    fspTransactionResult.fspName = FinancialServiceProviders.excel;
+    fspTransactionResult.paList = transactionResultObjectList.map(
+      (transactionResultObject) =>
+        transactionResultObject.paTransactionResultDto,
+    );
     return fspTransactionResult;
   }
 
-  public async getFspInstructions(
-    transactions: TransactionReturnDto[],
-    programId: number,
-    payment: number,
-  ): Promise<ExcelFspInstructions[]> {
-    const exportColumns = await this.getExportColumnsForProgram(programId);
-    // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
-    const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
+  public async getFspInstructions({
+    transactions,
+    programId,
+    payment,
+    programFinancialServiceProviderConfigurationId,
+  }: {
+    transactions: TransactionReturnDto[];
+    programId: number;
+    payment: number;
+    programFinancialServiceProviderConfigurationId: number;
+  }): Promise<ExcelFspInstructions[]> {
+    const exportColumns = await this.getExportColumnsForProgramFspConfig(
+      programFinancialServiceProviderConfigurationId,
       programId,
-      payment,
-      FinancialServiceProviderName.excel,
-      TransactionStatusEnum.waiting,
     );
+    // TODO: Think about refactoring it's probably better use the transaction ids instead of the referenceIds not sure what the original reasoning was
+    // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
+    const qb =
+      this.registrationsPaginationService.getQueryBuilderForFspInstructions({
+        programId,
+        payment,
+        programFinancialServiceProviderConfigurationId,
+        status: TransactionStatusEnum.waiting,
+      });
     const chunkSize = 400000;
     const registrations =
       await this.registrationsPaginationService.getRegistrationsChunked(
@@ -98,42 +132,40 @@ export class ExcelService
     );
   }
 
-  private async getExportColumnsForProgram(
+  private async getExportColumnsForProgramFspConfig(
+    programFinancialServiceProviderConfigurationId: number,
     programId: number,
   ): Promise<string[]> {
-    const programWithConfig = await this.programRepository
-      .createQueryBuilder('program')
-      .leftJoinAndSelect('program.programQuestions', 'programQuestions')
-      .leftJoinAndSelect(
-        'program.programCustomAttributes',
-        'programCustomAttributes',
-      )
-      .leftJoinAndSelect(
-        'program.programFspConfiguration',
-        'programFspConfiguration',
-        'programFspConfiguration.name = :configName',
-        {
-          configName: FinancialServiceProviderConfigurationEnum.columnsToExport,
-        },
-      )
-      .andWhere('program.id = :programId', {
-        programId,
-      })
-      .getOneOrFail();
-
-    let exportColumns: string[];
     const columnsToExportConfig =
-      programWithConfig.programFspConfiguration[0]?.value;
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFinancialServiceProviderConfigurationId,
+          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
+        },
+      );
+
     if (columnsToExportConfig) {
-      exportColumns = columnsToExportConfig as string[];
-    } else {
-      // Default to using all program questions & attributes names if columnsToExport is not specified
-      // So generic fields must be specified in the programFspConfiguration
-      exportColumns = programWithConfig.programQuestions
-        .map((q) => q.name)
-        .concat(programWithConfig.programCustomAttributes.map((q) => q.name));
+      // check if columnsToExportConfig is a string array or throw an error
+      if (!Array.isArray(columnsToExportConfig)) {
+        throw new HttpException(
+          {
+            errors: `FinancialServiceProviderConfigurationProperty ${FinancialServiceProviderConfigurationProperties.columnsToExport} must be an array, but received ${typeof columnsToExportConfig}`,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return columnsToExportConfig;
     }
-    return exportColumns;
+
+    const programWithAttributes = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      relations: ['programRegistrationAttributes'],
+    });
+    // Default to using all program questions & attributes names if columnsToExport is not specified
+    // So generic fields must be specified in the programFspConfiguration
+    return programWithAttributes.programRegistrationAttributes.map(
+      (q) => q.name,
+    );
   }
 
   private joinRegistrationsAndTransactions(
@@ -157,7 +189,11 @@ export class ExcelService
     );
     let j = 0;
     const excelFspInstructions = orderedRegistrations.map((registration) => {
-      const fspInstructions = new ExcelFspInstructions();
+      const fspInstructions: ExcelFspInstructions = {
+        referenceId: registration.referenceId,
+        id: registration.id,
+        amount: 0, // Initialize amount with a default value this value will be overwritten but it is necessary to have a value here
+      };
       for (const col of exportColumns) {
         fspInstructions[col] = registration[col];
       }
@@ -184,25 +220,28 @@ export class ExcelService
     return excelFspInstructions;
   }
 
-  public async getImportMatchColumn(programId: number): Promise<string> {
-    const programWithConfig = await this.programRepository
-      .createQueryBuilder('program')
-      .leftJoinAndSelect(
-        'program.programFspConfiguration',
-        'programFspConfiguration',
-        'programFspConfiguration.name = :configName',
-        { configName: FinancialServiceProviderConfigurationEnum.columnToMatch },
-      )
-      .andWhere('program.id = :programId', {
-        programId,
-      })
-      .getOne();
-    const matchColumn: string = programWithConfig?.programFspConfiguration[0]
-      ?.value as string;
+  public async getImportMatchColumn(
+    programFinancialServiceProviderConfigurationId: number,
+  ): Promise<string> {
+    const matchColumn =
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFinancialServiceProviderConfigurationId,
+          name: FinancialServiceProviderConfigurationProperties.columnToMatch,
+        },
+      );
     if (!matchColumn) {
       throw new HttpException(
         {
-          errors: `No match column found for FSP 'Excel' and program with id ${programId}`,
+          errors: `No match column found for FSP 'Excel' and programFinancialServiceProviderConfigurationId with id ${programFinancialServiceProviderConfigurationId}`,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (typeof matchColumn !== 'string') {
+      throw new HttpException(
+        {
+          errors: `Match column must be a string, but received ${typeof matchColumn}`,
         },
         HttpStatus.NOT_FOUND,
       );
@@ -210,16 +249,127 @@ export class ExcelService
     return matchColumn;
   }
 
-  public async getRegistrationsForReconciliation(
+  public async processReconciliationData({
+    file,
+    payment,
+    programId,
+    fspConfigs,
+  }: {
+    file: Express.Multer.File;
+    payment: number;
+    programId: number;
+    fspConfigs: ProgramFinancialServiceProviderConfigurationEntity[];
+  }): Promise<ReconciliationReturnType[]> {
+    const maxRecords = 10000;
+    const validatedExcelImport = await this.fileImportService.validateCsv(
+      file,
+      maxRecords,
+    );
+
+    // First set up unfilled feedback object based on import rows ..
+    const crossFspConfigImportResults: ReconciliationReturnType[] = [];
+    for (const row of validatedExcelImport) {
+      const resultRow = new ReconciliationReturnType();
+      resultRow.feedback = new ReconciliationFeedbackDto();
+      resultRow.feedback = {
+        ...row,
+        importStatus: ImportStatus.notFound,
+        referenceId: null,
+        message: null,
+      };
+      resultRow.programFinancialServiceProviderConfigurationId = undefined;
+      resultRow.transaction = undefined;
+      crossFspConfigImportResults.push(resultRow);
+    }
+
+    // .. then loop over fspConfigs to update rows where matched
+    for await (const fspConfig of fspConfigs) {
+      const matchColumn = await this.getImportMatchColumn(fspConfig.id);
+      const importResultForFspConfig = await this.reconciliatePayments({
+        programId,
+        payment,
+        validatedExcelImport,
+        fspConfig,
+        matchColumn,
+      });
+      // Convert the array into a map for increased performace (hashmap lookup)
+      const importResultForFspConfigMap = new Map(
+        importResultForFspConfig.map((item) => [
+          item.feedback[matchColumn],
+          item,
+        ]),
+      );
+
+      // .. then loop over each row of the original import to update if a match has been found with this fspConfig
+      crossFspConfigImportResults.forEach((row, index) => {
+        const importResultForFspConfigRow = importResultForFspConfigMap.get(
+          row.feedback[matchColumn],
+        );
+        if (
+          importResultForFspConfigRow?.feedback.importStatus !==
+          ImportStatus.notFound
+        ) {
+          crossFspConfigImportResults[index] = importResultForFspConfigRow!;
+        }
+      });
+    }
+    return crossFspConfigImportResults;
+  }
+
+  private async reconciliatePayments({
+    programId,
+    payment,
+    validatedExcelImport,
+    fspConfig,
+    matchColumn,
+  }: {
+    programId: number;
+    payment: number;
+    validatedExcelImport: object[];
+    fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
+    matchColumn: string;
+  }): Promise<ReconciliationReturnType[]> {
+    const registrationsForReconciliation =
+      await this.getRegistrationsForReconciliation(
+        programId,
+        payment,
+        matchColumn,
+        fspConfig.id,
+      );
+    if (!registrationsForReconciliation?.length) {
+      return [];
+    }
+    const lastTransactions = await this.transactionsService.getLastTransactions(
+      programId,
+      payment,
+      undefined,
+      undefined,
+      fspConfig.id,
+    );
+    // Join registration data with the imported CSV records
+    return this.joinRegistrationsAndImportRecords(
+      registrationsForReconciliation,
+      validatedExcelImport,
+      matchColumn,
+      lastTransactions,
+      fspConfig.id,
+    );
+  }
+
+  private async getRegistrationsForReconciliation(
     programId: number,
     payment: number,
     matchColumn: string,
-  ) {
-    const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
-      programId,
-      payment,
-      FinancialServiceProviderName.excel,
-    );
+    programFinancialServiceProviderConfigurationId: number,
+  ): Promise<MappedPaginatedRegistrationDto[]> {
+    const qb =
+      this.registrationsPaginationService.getQueryBuilderForFspInstructions({
+        programId,
+        payment,
+        programFinancialServiceProviderConfigurationId,
+        financialServiceProviderName: FinancialServiceProviders.excel,
+      });
+    // log query
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
       programId,
@@ -232,21 +382,22 @@ export class ExcelService
     );
   }
 
-  public joinRegistrationsAndImportRecords(
+  private joinRegistrationsAndImportRecords(
     registrations: Awaited<
       ReturnType<ExcelService['getRegistrationsForReconciliation']>
     >,
     importRecords: object[],
     matchColumn: string,
-    transactions: TransactionReturnDto[],
-  ): BulkImportResult[] {
+    existingTransactions: TransactionReturnDto[],
+    fspConfigId: number,
+  ): ReconciliationReturnType[] {
     // First order registrations by referenceId to join amount from transactions
     const registrationsOrderedByReferenceId = registrations.sort((a, b) =>
       a.referenceId.localeCompare(b.referenceId),
     );
     const registrationsWithAmount = this.joinRegistrationsAndTransactions(
       registrationsOrderedByReferenceId,
-      transactions,
+      existingTransactions,
       ['id', 'referenceId', matchColumn],
     );
 
@@ -255,10 +406,14 @@ export class ExcelService
       a[matchColumn]?.localeCompare(b[matchColumn]),
     );
     const registrationsOrdered = registrationsWithAmount.sort((a, b) =>
-      a[matchColumn]?.localeCompare(b[matchColumn]),
+      (a[matchColumn] as string).localeCompare(b[matchColumn] as string),
     );
 
-    const importResponseRecords = importRecordsOrdered.map((record) => {
+    const resultFeedback: ReconciliationReturnType[] = [];
+    for (const record of importRecordsOrdered) {
+      let transaction: PaTransactionResultDto | null = null;
+      let importStatus = ImportStatus.notFound;
+
       if (
         ![TransactionStatusEnum.success, TransactionStatusEnum.error].includes(
           record[this.statusColumnName]?.toLowerCase(),
@@ -271,36 +426,48 @@ export class ExcelService
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
 
-      const importResponseRecord = record as BulkImportResult;
       // find registration with matching matchColumn value
       const matchedRegistration = registrationsOrdered.find(
         (r) => r[matchColumn] === record[matchColumn],
       );
       if (matchedRegistration) {
-        importResponseRecord['paTransactionResult'] =
-          this.createTransactionResult(
-            matchedRegistration as ExcelReconciliationDto,
-            record,
-          );
+        transaction = this.createTransactionResult(matchedRegistration, record);
+        importStatus =
+          transaction.status === TransactionStatusEnum.success
+            ? ImportStatus.paymentSuccess
+            : ImportStatus.paymentFailed;
       }
-      return importResponseRecord;
-    });
+      resultFeedback.push({
+        feedback: {
+          referenceId: (matchedRegistration?.referenceId as string) ?? null,
+          status: transaction?.status ?? null,
+          message: transaction?.message ?? null,
+          importStatus,
+          [matchColumn]: record[matchColumn],
+        },
+        programFinancialServiceProviderConfigurationId: matchedRegistration
+          ? fspConfigId
+          : undefined,
+        transaction: transaction || undefined,
+      });
+    }
 
-    return importResponseRecords;
+    return resultFeedback;
   }
 
   public createTransactionResult(
-    registrationWithAmount: ExcelReconciliationDto,
+    registrationWithAmount: ExcelFspInstructions,
     importResponseRecord: any,
   ): PaTransactionResultDto {
-    const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.referenceId = registrationWithAmount.referenceId;
-    paTransactionResult.registrationId = registrationWithAmount.id;
-    paTransactionResult.fspName = FinancialServiceProviderName.excel;
-    paTransactionResult.status = importResponseRecord[
-      this.statusColumnName
-    ]?.toLowerCase() as TransactionStatusEnum;
-    paTransactionResult.calculatedAmount = registrationWithAmount.amount;
-    return paTransactionResult;
+    return {
+      referenceId: registrationWithAmount.referenceId,
+      registrationId: registrationWithAmount.id,
+      fspName: FinancialServiceProviders.excel,
+      status: importResponseRecord[
+        this.statusColumnName
+      ]?.toLowerCase() as TransactionStatusEnum,
+      calculatedAmount: registrationWithAmount.amount,
+      message: null,
+    };
   }
 }

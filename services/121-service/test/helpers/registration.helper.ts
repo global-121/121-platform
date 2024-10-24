@@ -17,7 +17,7 @@ export function importRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/import`)
+    .post(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .send(registrations);
 }
@@ -28,7 +28,7 @@ export function importRegistrationsCSV(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/import-registrations`)
+    .post(`/programs/${programId}/registrations/import`)
     .set('Cookie', [accessToken])
     .attach('file', filePath);
 }
@@ -470,7 +470,7 @@ export async function getImportRegistrationsTemplate(
   const accessToken = await getAccessToken();
 
   return getServer()
-    .get(`/programs/${programId}/registrations/import-template`)
+    .get(`/programs/${programId}/registrations/import/template`)
     .set('Cookie', [accessToken])
     .send();
 }

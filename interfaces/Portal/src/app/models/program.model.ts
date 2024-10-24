@@ -1,6 +1,6 @@
 import { FilterOperator } from '../enums/filters.enum';
 import { Attribute } from './attribute.model';
-import { Fsp } from './fsp.model';
+import { FinancialServiceProviderConfiguration } from './fsp.model';
 import { LanguageEnum } from './person.model';
 import { TranslatableString } from './translatable-string.model';
 
@@ -18,14 +18,13 @@ export class Program {
   targetNrRegistrations?: number;
   distributionDuration: number;
   distributionFrequency: DistributionFrequency;
-  financialServiceProviders?: Fsp[];
+  financialServiceProviderConfigurations?: FinancialServiceProviderConfiguration[];
   aidworkerAssignments?: any[];
   created: string;
   updated: string;
   validation: boolean;
   published: boolean;
-  programCustomAttributes: ProgramCustomAttribute[];
-  programQuestions: ProgramQuestion[];
+  programRegistrationAttributes: ProgramRegistrationAttribute[];
   editableAttributes?: Attribute[];
   notifications: string | TranslatableString;
   languages: LanguageEnum[];
@@ -78,28 +77,20 @@ export class AidWorker {
   created: string | Date;
 }
 
-export class ProgramCustomAttribute {
-  id: number;
-  programId: number;
-  name: string;
-  type: string;
-  label?: TranslatableString;
-}
-
 export class PaTableAttribute extends Attribute {}
 
-export class ProgramQuestion {
+export class ProgramRegistrationAttribute {
   id: number;
   name: string;
-  answerType: string;
+  registrationAttributeType: string;
   label: TranslatableString;
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
-  options: null | ProgramQuestionOption[];
+  options: null | ProgramRegistrationAttributeOption[];
   duplicateCheck: boolean;
 }
 
-export class ProgramQuestionOption {
+export class ProgramRegistrationAttributeOption {
   option: string;
   label: TranslatableString;
 }

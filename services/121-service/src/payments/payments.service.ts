@@ -3,24 +3,27 @@ import { Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { PaginateQuery } from 'nestjs-paginate';
-import { DataSource, Equal, Repository } from 'typeorm';
+import { DataSource, Equal, In, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import {
-  FinancialServiceProviderName,
-  RequiredFinancialServiceProviderConfigurations,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
+  findFinancialServiceProviderByNameOrFail,
+  findRequiredConfigurationProperties,
+} from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import {
-  CsvInstructions,
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { ImportTemplateResponseDto } from '@121-service/src/payments/dto/import-template-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
@@ -33,27 +36,28 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import {
+  PaymentReturnDto,
+  TransactionReturnDto,
+} from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import {
-  ImportResult,
-  ImportStatus,
-} from '@121-service/src/registration/dto/bulk-import.dto';
+import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -64,7 +68,6 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
-import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
 export class PaymentsService {
@@ -74,7 +77,7 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   private financialServiceProviderNameToServiceMap: Record<
-    FinancialServiceProviderName,
+    FinancialServiceProviders,
     [FinancialServiceProviderIntegrationInterface, useWhatsapp?: boolean]
   >;
 
@@ -91,33 +94,29 @@ export class PaymentsService {
     private readonly excelService: ExcelService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionQueuesService: TransactionQueuesService,
-    private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {
     this.financialServiceProviderNameToServiceMap = {
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+      [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
         this.intersolveVoucherService,
         true,
       ],
-      [FinancialServiceProviderName.intersolveVoucherPaper]: [
+      [FinancialServiceProviders.intersolveVoucherPaper]: [
         this.intersolveVoucherService,
         false,
       ],
       // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
-      [FinancialServiceProviderName.intersolveVisa]: [
-        this.intersolveVisaService,
-      ],
-      [FinancialServiceProviderName.safaricom]: [this.safaricomService],
-      [FinancialServiceProviderName.commercialBankEthiopia]: [
+      [FinancialServiceProviders.intersolveVisa]: [this.intersolveVisaService],
+      [FinancialServiceProviders.safaricom]: [this.safaricomService],
+      [FinancialServiceProviders.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
       ],
-      [FinancialServiceProviderName.excel]: [this.excelService],
+      [FinancialServiceProviders.excel]: [this.excelService],
     };
   }
 
@@ -231,7 +230,7 @@ export class PaymentsService {
 
     // If amount is not defined do not calculate the totalMultiplierSum
     // This happens when you call the endpoint with dryRun=true
-    // happens in pa table to define which registrations are selectable
+    // Calling with dryrun is true happens in the pa table when you try to do a payment to decide which registrations are selectable
     if (!amount) {
       return {
         ...bulkActionResultDto,
@@ -251,27 +250,35 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspsInPayment: FinancialServiceProviderName[] = [];
+    const fspConfigIdsInPayment: number[] = [];
+    const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
+
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
-      if (
-        !dryRun && // This is only needed in actual doPayment call
-        registration.financialServiceProvider &&
-        !fspsInPayment.includes(registration.financialServiceProvider)
-      ) {
-        fspsInPayment.push(registration.financialServiceProvider);
+      // This is only needed in actual doPayment call
+      if (!dryRun) {
+        if (
+          registration.programFinancialServiceProviderConfigurationId &&
+          !fspConfigIdsInPayment.includes(
+            registration.programFinancialServiceProviderConfigurationId,
+          )
+        ) {
+          fspConfigIdsInPayment.push(
+            registration.programFinancialServiceProviderConfigurationId,
+          );
+        }
+        if (
+          registration.financialServiceProviderName &&
+          !fspsInPayment.includes(registration.financialServiceProviderName)
+        ) {
+          fspsInPayment.push(registration.financialServiceProviderName);
+        }
       }
     }
 
-    // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
-    for (const fsp of fspsInPayment) {
-      await this.validateRequiredFinancialServiceProviderConfigurations(
-        fsp,
-        programId,
-      );
-    }
+    await this.checkFspConfigurationsOrThrow(fspConfigIdsInPayment);
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
     const bulkActionResultPaymentDto = {
@@ -310,34 +317,57 @@ export class PaymentsService {
     return bulkActionResultPaymentDto;
   }
 
-  async validateRequiredFinancialServiceProviderConfigurations(
-    fsp: FinancialServiceProviderName,
-    programId: number,
-  ) {
-    const requiredConfigurations =
-      RequiredFinancialServiceProviderConfigurations[
-        fsp as FinancialServiceProviderName
-      ];
-    // Early return for FSP that don't have required configurarions
-    if (!requiredConfigurations) {
-      return;
-    }
-    const config =
-      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
-        programId,
-        fsp as FinancialServiceProviderName,
+  private async checkFspConfigurationsOrThrow(
+    programFinancialServiceProviderConfigurationIds: number[],
+  ): Promise<void> {
+    const validationResults = await Promise.all(
+      programFinancialServiceProviderConfigurationIds.map((id) =>
+        this.validateMissingFspConfigurations(id),
+      ),
+    );
+    const errorMessages = validationResults.flat();
+    if (errorMessages.length > 0) {
+      throw new HttpException(
+        `${errorMessages.join(', ')}`,
+        HttpStatus.BAD_REQUEST,
       );
-    for (const requiredConfiguration of requiredConfigurations) {
-      const foundConfig = config.find((c) => c.name === requiredConfiguration);
-      if (!foundConfig) {
-        throw new HttpException(
-          {
-            errors: `Missing required configuration ${requiredConfiguration} for FSP ${fsp}`,
+    }
+  }
+
+  private async validateMissingFspConfigurations(
+    programFinancialServiceProviderConfigurationId: number,
+  ): Promise<string[]> {
+    const config =
+      await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+        {
+          where: {
+            id: Equal(programFinancialServiceProviderConfigurationId),
           },
-          HttpStatus.BAD_REQUEST,
+          relations: ['properties'],
+        },
+      );
+
+    const requiredConfigurations = findRequiredConfigurationProperties(
+      config.financialServiceProviderName,
+    );
+    // Early return for FSP that don't have required configurations
+    if (!requiredConfigurations) {
+      return [];
+    }
+
+    const errorMessages: string[] = [];
+    for (const requiredConfiguration of requiredConfigurations) {
+      const foundConfig = config.properties.find(
+        (c) => c.name === requiredConfiguration,
+      );
+      if (!foundConfig) {
+        errorMessages.push(
+          `Missing required configuration ${requiredConfiguration} for FSP ${config.financialServiceProviderName}`,
         );
       }
     }
+
+    return errorMessages;
   }
 
   private async getRegistrationsForPaymentChunked(
@@ -422,7 +452,7 @@ export class PaymentsService {
   ): Promise<BulkActionResultRetryPaymentDto> {
     await this.checkPaymentInProgressAndThrow(programId);
 
-    await this.getProgramWithFspOrThrow(programId);
+    await this.getProgramWithFspConfigOrThrow(programId);
 
     const paPaymentDataList = await this.getPaymentListForRetry(
       programId,
@@ -454,11 +484,11 @@ export class PaymentsService {
         );
       });
 
-    const fspsInPayment: FinancialServiceProviderName[] = [];
+    const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
-      if (!fspsInPayment.includes(registration.fspName)) {
-        fspsInPayment.push(registration.fspName);
+      if (!fspsInPayment.includes(registration.financialServiceProviderName)) {
+        fspsInPayment.push(registration.financialServiceProviderName);
       }
     }
 
@@ -470,12 +500,12 @@ export class PaymentsService {
     };
   }
 
-  private async getProgramWithFspOrThrow(
+  private async getProgramWithFspConfigOrThrow(
     programId: number,
   ): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
-      relations: ['financialServiceProviders'],
+      relations: ['programFinancialServiceProviderConfigurations'],
     });
     if (!program) {
       const errors = 'Program not found.';
@@ -585,10 +615,10 @@ export class PaymentsService {
   ): SplitPaymentListDto {
     return paPaymentDataList.reduce(
       (acc: SplitPaymentListDto, paPaymentData) => {
-        if (!acc[paPaymentData.fspName]) {
-          acc[paPaymentData.fspName] = [];
+        if (!acc[paPaymentData.financialServiceProviderName]) {
+          acc[paPaymentData.financialServiceProviderName] = [];
         }
-        acc[paPaymentData.fspName]!.push(paPaymentData);
+        acc[paPaymentData.financialServiceProviderName]!.push(paPaymentData);
         return acc;
       },
       {},
@@ -608,7 +638,7 @@ export class PaymentsService {
   }): Promise<void> {
     await Promise.all(
       Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
-        if (fsp === FinancialServiceProviderName.intersolveVisa) {
+        if (fsp === FinancialServiceProviders.intersolveVisa) {
           /*
             TODO: REFACTOR: We need to refactor the Payments Service during segregation of duties implementation, so that the Payments Service calls a private function per FSP with a list of ReferenceIds (or RegistrationIds ?!)
             which then gathers the necessary data to create transaction jobs for the FSP.
@@ -633,7 +663,7 @@ export class PaymentsService {
           });
         }
 
-        if (fsp === FinancialServiceProviderName.safaricom) {
+        if (fsp === FinancialServiceProviders.safaricom) {
           return await this.createAndAddSafaricomTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
               (paPaymentData) => {
@@ -691,14 +721,16 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaQuestionNames =
-      await this.getFinancialServiceProviderQuestionNames(
-        FinancialServiceProviderName.intersolveVisa,
-      );
+    const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
+      FinancialServiceProviders.intersolveVisa,
+    ).attributes;
+    const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
+      (q) => q.name,
+    );
     const dataFieldNames = [
       'fullName',
       'phoneNumber',
-      ...intersolveVisaQuestionNames,
+      ...intersolveVisaAttributeNames,
     ];
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
@@ -722,20 +754,22 @@ export class PaymentsService {
             userId,
             paymentNumber,
             referenceId: registrationView.referenceId,
+            programFinancialServiceProviderConfigurationId:
+              registrationView.programFinancialServiceProviderConfigurationId,
             // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
             transactionAmountInMajorUnit: transactionAmountsMap.get(
               registrationView.referenceId,
             )!,
             isRetry,
             bulkSize: referenceIdsTransactionAmounts.length,
-            name: registrationView['fullName'],
+            name: registrationView['fullName']!, // Fullname is a required field if a registration has visa as FSP
             addressStreet: registrationView['addressStreet'],
             addressHouseNumber: registrationView['addressHouseNumber'],
             addressHouseNumberAddition:
               registrationView['addressHouseNumberAddition'],
             addressPostalCode: registrationView['addressPostalCode'],
             addressCity: registrationView['addressCity'],
-            phoneNumber: registrationView.phoneNumber,
+            phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
           };
         },
       );
@@ -766,14 +800,13 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
-    const safaricomQuestionNames =
-      await this.getFinancialServiceProviderQuestionNames(
-        FinancialServiceProviderName.safaricom,
-      );
-    const dataFieldNames = ['nationalId', ...safaricomQuestionNames];
+    const safaricomAttributes = findFinancialServiceProviderByNameOrFail(
+      FinancialServiceProviders.safaricom,
+    ).attributes;
+    const safaricomAttributeNames = safaricomAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
-      dataFieldNames,
+      safaricomAttributeNames,
       programId,
     );
 
@@ -791,13 +824,15 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
+          programFinancialServiceProviderConfigurationId:
+            registrationView.programFinancialServiceProviderConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
           isRetry,
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
-          phoneNumber: registrationView.phoneNumber,
+          phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
           idNumber: registrationView['nationalId'],
           originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
         };
@@ -805,16 +840,6 @@ export class PaymentsService {
     await this.transactionQueuesService.addSafaricomTransactionJobs(
       safaricomTransferJobs,
     );
-  }
-
-  private async getFinancialServiceProviderQuestionNames(
-    financialServiceProviderName: FinancialServiceProviderName,
-  ): Promise<string[]> {
-    const questions =
-      await this.financialServiceProviderQuestionRepository.getQuestionsByFspName(
-        financialServiceProviderName,
-      );
-    return questions.map((q) => q.name);
   }
 
   private async getRegistrationViews(
@@ -882,18 +907,26 @@ export class PaymentsService {
       .createQueryBuilder('registration')
       .select('"referenceId"')
       .addSelect('registration.id as id')
-      .addSelect('fsp.fsp as "fspName"')
+      .addSelect(
+        '"fspConfig"."financialServiceProviderName" as "financialServiceProviderName"',
+      )
+      .addSelect(
+        '"fspConfig"."id" as "programFinancialServiceProviderConfigurationId"',
+      )
       .andWhere('registration."programId" = :programId', { programId })
-      .leftJoin('registration.fsp', 'fsp');
+      .leftJoin(
+        'registration.programFinancialServiceProviderConfiguration',
+        'fspConfig',
+      );
     q.addSelect((subQuery) => {
       return subQuery
         .addSelect('value', 'paymentAddress')
-        .from(RegistrationDataEntity, 'data')
-        .leftJoin('data.fspQuestion', 'question')
-        .andWhere('question.name IN (:...names)', {
+        .from(RegistrationAttributeDataEntity, 'data')
+        .leftJoin('data.programRegistrationAttribute', 'attribute')
+        .andWhere('attribute.name IN (:...names)', {
           names: [
-            CustomDataAttributes.phoneNumber,
-            CustomDataAttributes.whatsappPhoneNumber,
+            DefaultRegistrationDataAttributeNames.phoneNumber,
+            DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
           ],
         })
         .andWhere('data.registrationId = registration.id')
@@ -971,10 +1004,12 @@ export class PaymentsService {
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
         userId,
+        programFinancialServiceProviderConfigurationId:
+          row.programFinancialServiceProviderConfigurationId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
-        fspName: row.fspName,
+        financialServiceProviderName: row.financialServiceProviderName,
         bulkSize,
       };
       paPaymentDataList.push(paPaymentData);
@@ -984,81 +1019,92 @@ export class PaymentsService {
 
   public async getImportInstructionsTemplate(
     programId: number,
-  ): Promise<string[]> {
-    const programWithReconciliationFsps = await this.programRepository.findOne({
+  ): Promise<ImportTemplateResponseDto[]> {
+    const programWithExcelFspConfigs = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
-        financialServiceProviders: {
-          fsp: Equal(FinancialServiceProviderName.excel),
+        programFinancialServiceProviderConfigurations: {
+          financialServiceProviderName: Equal(FinancialServiceProviders.excel),
         },
       },
-      relations: ['financialServiceProviders'],
+      relations: ['programFinancialServiceProviderConfigurations'],
       select: ['id'],
     });
 
-    if (!programWithReconciliationFsps) {
-      throw new HttpException('Program or FSP not found', HttpStatus.NOT_FOUND);
+    if (!programWithExcelFspConfigs) {
+      throw new HttpException(
+        'No program with `Excel` FSP found',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    const matchColumn = await this.excelService.getImportMatchColumn(programId);
-    return [matchColumn, 'status'];
+    const templates: ImportTemplateResponseDto[] = [];
+    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
+      const matchColumn = await this.excelService.getImportMatchColumn(
+        fspConfig.id,
+      );
+      templates.push({
+        name: fspConfig.name,
+        template: [matchColumn, 'status'],
+      });
+    }
+
+    return templates;
   }
 
   public async getFspInstructions(
     programId: number,
     payment: number,
     userId: number,
-  ): Promise<FspInstructions> {
-    const exportPaymentTransactions = (
-      await this.transactionsService.getLastTransactions(programId, payment)
-    ).filter(
-      (t) =>
-        t.fspIntegrationType !== FinancialServiceProviderIntegrationType.api,
+  ): Promise<FspInstructions[]> {
+    const transactions = await this.transactionsService.getLastTransactions(
+      programId,
+      payment,
     );
 
-    if (exportPaymentTransactions.length === 0) {
+    const programFspConfigEntitiesWithFspInstruction =
+      await this.programFinancialServiceProviderConfigurationRepository.find({
+        where: {
+          programId: Equal(programId),
+          financialServiceProviderName: In(
+            this.getFspNamesThatRequireInstructions(),
+          ),
+        },
+      });
+
+    const transactionsWithFspInstruction =
+      this.filterTransactionsWithFspInstructionBasedOnStatus(
+        transactions,
+        programFspConfigEntitiesWithFspInstruction,
+      );
+
+    if (transactionsWithFspInstruction.length === 0) {
       throw new HttpException(
         'No transactions found for this payment with FSPs that require to download payment instructions.',
         HttpStatus.NOT_FOUND,
       );
     }
 
-    let csvInstructions: CsvInstructions = [];
-    let fileType: ExportFileType | undefined;
-
-    // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
-    // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
-    for await (const transaction of exportPaymentTransactions.filter(
-      (t) => t.fsp !== FinancialServiceProviderName.excel,
-    )) {
-      const registration =
-        await this.registrationScopedRepository.findOneOrFail({
-          where: { referenceId: Equal(transaction.referenceId) },
-          relations: ['fsp'],
+    /// Seprate transactionsWithFspInstruction based on their programFinancialServiceProviderConfigurationName
+    const allFspInstructions: FspInstructions[] = [];
+    for (const fspConfigEntity of programFspConfigEntitiesWithFspInstruction) {
+      const fspInstructions =
+        await this.getFspInstructionsPerProgramFspConfiguration({
+          programId,
+          payment,
+          transactions: transactionsWithFspInstruction.filter(
+            (t) =>
+              t.programFinancialServiceProviderConfigurationName ===
+              fspConfigEntity.name,
+          ),
+          programFinancialServiceProviderConfigurationName:
+            fspConfigEntity.name,
+          programFinancialServiceProviderConfigurationId: fspConfigEntity.id,
+          financialServiceProviderName:
+            fspConfigEntity.financialServiceProviderName,
         });
-
-      if (
-        // For fsp's with reconciliation export only export waiting transactions
-        registration.fsp.hasReconciliation &&
-        transaction.status !== TransactionStatusEnum.waiting
-      ) {
-        continue;
-      }
-    }
-
-    // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
-    const excelTransactions = exportPaymentTransactions.filter(
-      (t) =>
-        t.fsp === FinancialServiceProviderName.excel &&
-        t.status === TransactionStatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
-    );
-    if (excelTransactions.length) {
-      csvInstructions = await this.excelService.getFspInstructions(
-        excelTransactions,
-        programId,
-        payment,
-      );
-      fileType = ExportFileType.excel;
+      // Should we exclude empty instructions where fspInstructions.data.length is empty, I think it is clearer for the user if they than get an empty file
+      allFspInstructions.push(fspInstructions);
     }
 
     await this.actionService.saveAction(
@@ -1066,100 +1112,142 @@ export class PaymentsService {
       programId,
       AdditionalActionType.exportFspInstructions,
     );
+    return allFspInstructions;
+  }
 
-    return {
-      data: csvInstructions,
-      fileType,
-    };
+  private getFspNamesThatRequireInstructions(): string[] {
+    return FINANCIAL_SERVICE_PROVIDERS.filter((fsp) =>
+      [FinancialServiceProviderIntegrationType.csv].includes(
+        fsp.integrationType,
+      ),
+    ).map((fsp) => fsp.name);
+  }
+
+  private filterTransactionsWithFspInstructionBasedOnStatus(
+    transactions: TransactionReturnDto[],
+    programFspConfigEntitiesWithFspInstruction: ProgramFinancialServiceProviderConfigurationEntity[],
+  ): TransactionReturnDto[] {
+    const programFspConfigNamesThatRequireInstructions =
+      programFspConfigEntitiesWithFspInstruction.map((c) => c.name);
+
+    const transactionsWithFspInstruction = transactions.filter((t) =>
+      programFspConfigNamesThatRequireInstructions.includes(
+        t.programFinancialServiceProviderConfigurationName,
+      ),
+    );
+
+    const result: TransactionReturnDto[] = [];
+    for (const transaction of transactionsWithFspInstruction) {
+      if (
+        // Only export waiting transactions, as others have already been reconciliated
+        transaction.status === TransactionStatusEnum.waiting
+      ) {
+        result.push(transaction);
+      }
+    }
+    return result;
+  }
+
+  private async getFspInstructionsPerProgramFspConfiguration({
+    transactions,
+    programId,
+    payment,
+    programFinancialServiceProviderConfigurationName,
+    programFinancialServiceProviderConfigurationId,
+    financialServiceProviderName,
+  }: {
+    transactions: TransactionReturnDto[];
+    programId: number;
+    payment: number;
+    programFinancialServiceProviderConfigurationName: string;
+    programFinancialServiceProviderConfigurationId: number;
+    financialServiceProviderName: FinancialServiceProviders;
+  }): Promise<FspInstructions> {
+    if (financialServiceProviderName === FinancialServiceProviders.excel) {
+      return {
+        data: await this.excelService.getFspInstructions({
+          transactions,
+          programId,
+          payment,
+          programFinancialServiceProviderConfigurationId,
+        }),
+        fileType: ExportFileType.excel,
+        fileNamePrefix: programFinancialServiceProviderConfigurationName,
+      };
+    }
+    // Is this the best way to prevent a typeerror on the return type?
+    throw new Error(
+      `FinancialServiceProviderName ${financialServiceProviderName} not supported in fsp export`,
+    );
   }
 
   public async importFspReconciliationData(
-    file: Blob,
+    file: Express.Multer.File,
     programId: number,
     payment: number,
     userId: number,
-  ): Promise<ImportResult> {
-    // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
-    const programWithReconciliationFsps =
-      await this.programRepository.findOneOrFail({
-        where: {
-          id: Equal(programId),
-          financialServiceProviders: { hasReconciliation: Equal(true) },
-        },
-        relations: ['financialServiceProviders'],
-      });
+  ): Promise<{
+    importResult: ReconciliationFeedbackDto[];
+    aggregateImportResult: {
+      countPaymentFailed: number;
+      countPaymentSuccess: number;
+      countNotFound: number;
+    };
+  }> {
+    const program = await this.programRepository.findOneOrFail({
+      where: {
+        id: Equal(programId),
+      },
+      relations: ['programFinancialServiceProviderConfigurations'],
+    });
+    const fspConfigsExcel: ProgramFinancialServiceProviderConfigurationEntity[] =
+      [];
+    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviders.excel
+      ) {
+        fspConfigsExcel.push(fspConfig);
+      }
+    }
+    if (!fspConfigsExcel.length) {
+      throw new HttpException(
+        'Other reconciliation FSPs than `Excel` are currently not supported.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-    let importResponseRecords: any[] = [];
-    for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.excel) {
-        const maxRecords = 10000;
-        const matchColumn =
-          await this.excelService.getImportMatchColumn(programId);
-        const excelRegistrations =
-          await this.excelService.getRegistrationsForReconciliation(
-            programId,
-            payment,
-            matchColumn,
-          );
-        if (!excelRegistrations?.length) {
-          continue;
-        }
-        const validatedExcelImport = await this.fileImportService.validateCsv(
-          file,
-          maxRecords,
-        );
-        const transactions = await this.transactionsService.getLastTransactions(
+    const importResults = await this.excelService.processReconciliationData({
+      file,
+      payment,
+      programId,
+      fspConfigs: fspConfigsExcel,
+    });
+
+    for (const fspConfig of fspConfigsExcel) {
+      const transactions = importResults
+        .filter(
+          (r) =>
+            r.programFinancialServiceProviderConfigurationId === fspConfig.id,
+        )
+        .map((r) => r.transaction)
+        .filter((t): t is PaTransactionResultDto => t !== undefined);
+
+      await this.transactionsService.storeReconciliationTransactionsBulk(
+        transactions,
+        {
           programId,
-          payment,
-          undefined,
-          undefined,
-          FinancialServiceProviderName.excel,
-        );
-        importResponseRecords =
-          this.excelService.joinRegistrationsAndImportRecords(
-            excelRegistrations,
-            validatedExcelImport,
-            matchColumn,
-            transactions,
-          );
-      }
-    }
-
-    let countPaymentSuccess = 0;
-    let countPaymentFailed = 0;
-    let countNotFound = 0;
-    const transactionsToSave: any[] = [];
-    for (const importResponseRecord of importResponseRecords) {
-      if (!importResponseRecord.paTransactionResult) {
-        importResponseRecord.importStatus = ImportStatus.notFound;
-        countNotFound += 1;
-        continue;
-      }
-
-      transactionsToSave.push(importResponseRecord.paTransactionResult);
-      importResponseRecord.importStatus = ImportStatus.imported;
-      countPaymentSuccess += Number(
-        importResponseRecord.paTransactionResult.status ===
-          TransactionStatusEnum.success,
-      );
-      countPaymentFailed += Number(
-        importResponseRecord.paTransactionResult.status ===
-          TransactionStatusEnum.error,
-      );
-      delete importResponseRecord.paTransactionResult;
-    }
-
-    if (transactionsToSave.length) {
-      const transactionRelationDetails = {
-        programId,
-        paymentNr: payment,
-        userId,
-      };
-      await this.transactionsService.storeAllTransactionsBulk(
-        transactionsToSave,
-        transactionRelationDetails,
+          paymentNr: payment,
+          userId,
+          programFinancialServiceProviderConfigurationId: fspConfig.id,
+        },
       );
     }
+
+    const feedback: ReconciliationFeedbackDto[] = importResults.map(
+      (r) => r.feedback,
+    );
+    const aggregateImportResult = this.countFeedbackResults(feedback);
 
     await this.actionService.saveAction(
       userId,
@@ -1168,12 +1256,34 @@ export class PaymentsService {
     );
 
     return {
-      importResult: importResponseRecords,
-      aggregateImportResult: {
-        countPaymentFailed,
-        countPaymentSuccess,
-        countNotFound,
-      },
+      importResult: feedback,
+      aggregateImportResult,
     };
+  }
+
+  private countFeedbackResults(feedback: ReconciliationFeedbackDto[]): {
+    countPaymentSuccess: number;
+    countPaymentFailed: number;
+    countNotFound: number;
+  } {
+    let countPaymentSuccess = 0;
+    let countPaymentFailed = 0;
+    let countNotFound = 0;
+
+    for (const result of feedback) {
+      if (!result.referenceId) {
+        countNotFound += 1;
+        continue;
+      }
+      if (result.importStatus === ImportStatus.paymentSuccess) {
+        countPaymentSuccess += 1;
+      } else if (result.importStatus === ImportStatus.paymentFailed) {
+        countPaymentFailed += 1;
+      } else if (result.importStatus === ImportStatus.notFound) {
+        countNotFound += 1;
+      }
+    }
+
+    return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 }

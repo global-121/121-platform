@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -19,7 +19,7 @@ const mockPaymentJob = {
   addressPostalCode: '1234AB',
   addressCity: 'Den Haag',
   id: 11,
-  fspName: FinancialServiceProviderName.commercialBankEthiopia,
+  fspName: FinancialServiceProviders.commercialBankEthiopia,
   paymentAddress: '14155238886',
   transactionAmount: 22,
   transactionId: 38,

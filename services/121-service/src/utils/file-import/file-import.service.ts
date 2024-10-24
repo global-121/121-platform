@@ -4,7 +4,10 @@ import { Readable } from 'typeorm/platform/PlatformTools';
 
 @Injectable()
 export class FileImportService {
-  public async validateCsv(csvFile, maxRecords?: number): Promise<object[]> {
+  public async validateCsv(
+    csvFile: Express.Multer.File,
+    maxRecords?: number,
+  ): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,

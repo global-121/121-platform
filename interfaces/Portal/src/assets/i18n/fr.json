@@ -178,7 +178,6 @@
         "btn-text": "Exporter les instructions de paiement",
         "confirm-message": "Cela téléchargera un fichier contenant les instructions de paiement pour le prestataire de services financiers.",
         "sub-message": {
-          "no-reconciliation": "Vous ne devez utiliser ce fichier <strong>qu’une seule fois par paiement</strong> sur le portail du prestataire de services financiers.",
           "reconciliation": "Cet export n’inclura que les Personnes Affectées pour lesquelles le statut actuel de la transaction est <strong>en attente</strong>."
         },
         "timestamp": "Dernier export effectué le : {{dateTime}}"
@@ -377,7 +376,6 @@
           "dob": "Date de naissance",
           "failedPayment": "Échec du paiement #",
           "financialServiceProvider": "Prestataire de Services Financiers",
-          "fspDisplayName": "Prestataire de Services Financiers",
           "hasNote": "A indiqué",
           "inclusionScore": "Score d’inclusion",
           "lastMessageStatus": "Dernier message",
@@ -392,6 +390,7 @@
           "personAffectedSequence": "Personne Affectée",
           "phoneNumber": "Numéro de téléphone",
           "preferredLanguage": "Langue préférée",
+          "programFinancialServiceProviderConfigurationLabel": "Prestataire de Services Financiers",
           "referenceId": "Identifiant de référence",
           "registrationCreated": "Création d’un enregistrement",
           "registrationCreatedDate": "Date de création de l'enregistrement",
@@ -406,8 +405,6 @@
           "error-alert": {
             "invalid-date": "Le format de date que vous avez saisi n’est pas valide. Un exemple de format de date valide est 31-12-1970 qui suit jour-mois-année, JJ-MM-AAAA"
           },
-          "fspChangeWarning": "La sélection de ce PSF supprimera les attributs suivants liés à l’ancien PSF :",
-          "fspNewAttributesExplanation": "Pour ce PSF, les attributs suivants sont requis :",
           "has-notes-title": "Notes disponibles",
           "popup-title": "{{pa}} info détaillée",
           "properties": {

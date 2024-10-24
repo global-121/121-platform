@@ -157,7 +157,6 @@
         "btn-text": "Instrucciones de pago de exportación",
         "confirm-message": "Esto descargará un archivo con instrucciones de pago para el Proveedor de Servicios Financieros.",
         "sub-message": {
-          "no-reconciliation": "Solo debe utilizar este archivo <strong>una vez por pago</strong> en el portal del Proveedor de Servicios Financieros.",
           "reconciliation": "Esta exportación solo incluirá a las personas afectadas para las que se esté esperando el estado actual <strong>de</strong> la transacción."
         },
         "timestamp": "La última exportación se ha realizado el: {{dateTime}}"
@@ -366,7 +365,6 @@
           "custom-attribute-true": "Sí",
           "dob": "Fecha de nacimiento",
           "failedPayment": "Error en el pago #",
-          "fspDisplayName": "Proveedor de servicios financieros",
           "hasNote": "Tiene nota",
           "inclusionScore": "Puntuación de inclusión",
           "lastMessageStatus": "Último mensaje",
@@ -381,6 +379,7 @@
           "personAffectedSequence": "Persona afectada",
           "phoneNumber": "Número de teléfono",
           "preferredLanguage": "Idioma preferido",
+          "programFinancialServiceProviderConfigurationLabel": "Proveedor de servicios financieros",
           "referenceId": "ID de referencia",
           "registrationCreated": "Registro creado",
           "registrationCreatedDate": "Fecha de creación de la inscripción",
@@ -395,8 +394,6 @@
           "error-alert": {
             "invalid-date": "El formato de fecha que ingresó no es válido. Un ejemplo de formato de fecha válido es 31-12-1970 que sigue día-mes-año, DD-MM-AAAA"
           },
-          "fspChangeWarning": "Al seleccionar este FSP, se eliminarán los siguientes atributos relacionados con el FSP anterior:",
-          "fspNewAttributesExplanation": "Para este FSP se requieren los siguientes atributos:",
           "has-notes-title": "Notas disponibles",
           "popup-title": "{{pa}} información detallada",
           "properties": {
