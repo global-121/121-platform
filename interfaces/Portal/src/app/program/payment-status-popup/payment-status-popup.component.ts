@@ -181,8 +181,10 @@ export class PaymentStatusPopupComponent implements OnInit {
 
         if (response) {
           const fspIntegrationType = getFspIntegrationType(
-            response.fspsInPayment ||
-              this.program.financialServiceProviders.map((fsp) => fsp.fsp),
+            response.programFinancialServiceProviderConfigurationNames ||
+              this.program.financialServiceProviderConfigurations.map(
+                (fspConfig) => fspConfig.name,
+              ),
             this.program,
           );
           message += getPaymentResultText(

@@ -227,52 +227,34 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/program-questions",
+    "path": "/api/programs/{programId}/registration-attributes",
     "params": [
       "programId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/program-questions/{programQuestionId}",
+    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeName}",
     "params": [
       "programId",
-      "programQuestionId"
+      "programRegistrationAttributeName"
     ],
-    "returnType": "ProgramQuestionEntity"
+    "returnType": "ProgramRegistrationAttributeEntity"
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/program-questions/{programQuestionId}",
+    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeId}",
     "params": [
       "programId",
-      "programQuestionId"
+      "programRegistrationAttributeId"
     ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/custom-attributes",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/custom-attributes/{customAttributeId}",
-    "params": [
-      "programId",
-      "customAttributeId"
-    ],
-    "returnType": "ProgramCustomAttributeEntity"
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/attributes",
     "params": [
       "programId",
-      "includeCustomAttributes",
-      "includeProgramQuestions",
-      "includeFspQuestions",
+      "includeProgramRegistrationAttributes",
       "includeTemplateDefaultAttributes",
       "filterShowInPeopleAffectedTable"
     ]
@@ -304,78 +286,99 @@
   {
     "method": "get",
     "path": "/api/financial-service-providers",
-    "params": []
+    "params": [],
+    "returnType": "FinancialServiceProviderDto"
   },
   {
     "method": "get",
-    "path": "/api/financial-service-providers/{fspId}",
+    "path": "/api/financial-service-providers/{financialServiceProviderName}",
     "params": [
-      "fspId"
+      "financialServiceProviderName"
     ],
-    "returnType": "FinancialServiceProviderEntity"
-  },
-  {
-    "method": "patch",
-    "path": "/api/financial-service-providers/{fspId}",
-    "params": [
-      "fspId"
-    ],
-    "returnType": "FinancialServiceProviderEntity"
-  },
-  {
-    "method": "patch",
-    "path": "/api/financial-service-providers/{fspId}/attribute/{attributeName}",
-    "params": [
-      "fspId",
-      "attributeName"
-    ],
-    "returnType": "FspQuestionEntity"
-  },
-  {
-    "method": "delete",
-    "path": "/api/financial-service-providers/{fspId}/attribute/{attributeName}",
-    "params": [
-      "fspId",
-      "attributeName"
-    ],
-    "returnType": "FspQuestionEntity"
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/{fspId}/attribute",
-    "params": [
-      "fspId"
-    ],
-    "returnType": "FspQuestionEntity"
+    "returnType": "FinancialServiceProviderDto"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsp-configuration",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations",
     "params": [
       "programId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/fsp-configuration",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations",
     "params": [
       "programId"
     ]
   },
   {
-    "method": "put",
-    "path": "/api/programs/{programId}/fsp-configuration/{programFspConfigurationId}",
+    "method": "patch",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}",
     "params": [
       "programId",
-      "programFspConfigurationId"
+      "name"
     ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/fsp-configuration/{programFspConfigurationId}",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}",
     "params": [
       "programId",
-      "programFspConfigurationId"
+      "name"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}/properties",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}/properties/{propertyName}",
+    "params": [
+      "programId",
+      "name",
+      "propertyName"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}/properties/{propertyName}",
+    "params": [
+      "programId",
+      "name",
+      "propertyName"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
+    "params": [
+      "registrationId",
+      "programId"
     ]
   },
   {
@@ -474,34 +477,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/transactions",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
-    "params": [
-      "registrationId",
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
     "params": [
       "programId",
@@ -515,8 +490,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProvider",
-      "filter.fspDisplayName",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -566,14 +542,14 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/import-registrations",
+    "path": "/api/programs/{programId}/registrations/import",
     "params": [
       "programId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/import",
+    "path": "/api/programs/{programId}/registrations",
     "params": [
       "programId"
     ]
@@ -593,8 +569,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProvider",
-      "filter.fspDisplayName",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -633,8 +610,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProvider",
-      "filter.fspDisplayName",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -653,7 +631,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/import-template",
+    "path": "/api/programs/{programId}/registrations/import/template",
     "params": [
       "programId"
     ]
@@ -674,8 +652,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProvider",
-      "filter.fspDisplayName",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -708,14 +687,6 @@
     ]
   },
   {
-    "method": "put",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsp",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/message",
     "params": [
@@ -731,8 +702,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProvider",
-      "filter.fspDisplayName",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -840,8 +812,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProvider",
-      "filter.fspDisplayName",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -941,13 +914,6 @@
     "method": "post",
     "path": "/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation",
     "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/migrate-visa/visa",
-    "params": [
-      "limit"
-    ]
   },
   {
     "method": "post",

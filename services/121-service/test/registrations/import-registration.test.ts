@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -9,6 +10,7 @@ import {
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
   patchProgram,
+  setAllProgramsRegistrationAttributesNonRequired,
   unpublishProgram,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -24,6 +26,8 @@ import {
 import {
   programIdOCW,
   programIdPV,
+  programIdWesteros,
+  registrationPV5,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -51,15 +55,44 @@ describe('Import a registration', () => {
     );
     const registration = result.body.data[0];
     for (const key in registrationVisa) {
-      if (key === 'fspName') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration['financialServiceProvider']).toBe(
-          registrationVisa[key],
-        );
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(registrationVisa[key]);
+      expect(registration[key]).toBe(registrationVisa[key]);
+    }
+  });
+
+  it('should import registration with mixed attributes (dropdown, boolean, string, numeric)', async () => {
+    // Arrange
+    await resetDB(SeedScript.testMultiple);
+    accessToken = await getAccessToken();
+
+    // Act
+    const response = await importRegistrations(
+      programIdWesteros,
+      [registrationWesteros1],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
+
+    const result = await searchRegistrationByReferenceId(
+      registrationWesteros1.referenceId,
+      programIdWesteros,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    for (const key in registrationWesteros1) {
+      // TODO: Number & Boolean is converted to string maybe we should fix this in the future
+      const expectedValue = registrationWesteros1[key];
+      const actualValue = registration[key];
+
+      let normalizedExpectedValue = expectedValue;
+      if (
+        typeof expectedValue === 'number' ||
+        typeof expectedValue === 'boolean'
+      ) {
+        normalizedExpectedValue = expectedValue.toString();
       }
+
+      expect(actualValue).toBe(normalizedExpectedValue);
     }
   });
 
@@ -106,15 +139,7 @@ describe('Import a registration', () => {
     const registrationResult = result.body.data[0];
 
     for (const key in registrationScopedGoesPv) {
-      if (key === 'fspName') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registrationResult['financialServiceProvider']).toBe(
-          registrationScopedGoesPv[key],
-        );
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registrationResult[key]).toBe(registrationScopedGoesPv[key]);
-      }
+      expect(registrationResult[key]).toBe(registrationScopedGoesPv[key]);
     }
   });
 
@@ -173,43 +198,34 @@ describe('Import a registration', () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-    const registrationVisaCopy = { ...registrationVisa };
+    const registrationPVCopy = { ...registrationPV5 };
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
-    delete registrationVisaCopy.phoneNumber;
+    delete registrationPVCopy.phoneNumber;
     const programUpdate = {
       allowEmptyPhoneNumber: true,
     };
-    await patchProgram(programIdOCW, programUpdate, accessToken);
+    await patchProgram(programIdPV, programUpdate, accessToken);
 
     // Act
     const response = await importRegistrations(
-      programIdOCW,
-      [registrationVisaCopy],
+      programIdPV,
+      [registrationPVCopy],
       accessToken,
     );
-
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      registrationVisaCopy.referenceId,
-      programIdOCW,
+      registrationPVCopy.referenceId,
+      programIdPV,
       accessToken,
     );
     const registration = result.body.data[0];
-    for (const key in registrationVisaCopy) {
-      if (key === 'fspName') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration['financialServiceProvider']).toBe(
-          registrationVisaCopy[key],
-        );
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(registration[key]).toBe(registrationVisaCopy[key]);
-      }
+    for (const key in registrationPVCopy) {
+      expect(registration[key]).toBe(registrationPVCopy[key]);
     }
   });
 
-  it('should throw an error with a numeric custom atribute set to null', async () => {
+  it('should throw an error with a numeric registration atribute set to null', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
@@ -237,7 +253,7 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
-  it('should throw an error with a dropdown custom atribute set to null', async () => {
+  it('should throw an error with a dropdown registration atribute set to null', async () => {
     // Arrange
     await resetDB(SeedScript.test);
     accessToken = await getAccessToken();
@@ -266,6 +282,76 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
+  it('should throw an error when a required fsp attribute is missing', async () => {
+    // Arrange
+    await resetDB(SeedScript.test);
+    accessToken = await getAccessToken();
+
+    // Removes whatsapp from original registration
+    const {
+      whatsappPhoneNumber: _whatsappPhoneNumber,
+      ...registrationWesteros1Copy
+    } = registrationWesteros1;
+    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
+      FinancialServiceProviders.intersolveVoucherWhatsapp;
+
+    const programIdWestoros = 1;
+
+    // Act
+    const response = await importRegistrations(
+      programIdWestoros,
+      [registrationWesteros1Copy],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body).toMatchSnapshot();
+
+    const result = await searchRegistrationByReferenceId(
+      registrationWesteros1Copy.referenceId,
+      programIdWestoros,
+      accessToken,
+    );
+
+    const registration = result.body.data;
+    expect(registration).toHaveLength(0);
+  });
+
+  it('should throw an error when uploading a non existing fsp', async () => {
+    // Arrange
+    await resetDB(SeedScript.testMultiple);
+    accessToken = await getAccessToken();
+
+    // Removes whatsapp from original registration
+    const {
+      whatsappPhoneNumber: _whatsappPhoneNumber,
+      ...registrationWesteros1Copy
+    } = registrationWesteros1;
+    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
+      'non-existing-fsp';
+
+    // Act
+    const response = await importRegistrations(
+      programIdWesteros,
+      [registrationWesteros1Copy],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body[0].error).toContain(
+      registrationWesteros1Copy.programFinancialServiceProviderConfigurationName,
+    );
+
+    const result = await searchRegistrationByReferenceId(
+      registrationWesteros1Copy.referenceId,
+      programIdWesteros,
+      accessToken,
+    );
+
+    const registration = result.body.data;
+    expect(registration).toHaveLength(0);
+  });
+
   it('should give me a CSV template when I request it', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple);
@@ -274,5 +360,44 @@ describe('Import a registration', () => {
     const response = await getImportRegistrationsTemplate(programIdOCW);
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.sort()).toMatchSnapshot();
+  });
+
+  it('should import registration with null values when all attributes are non-required attributes', async () => {
+    // Arrange
+    await resetDB(SeedScript.testMultiple);
+    accessToken = await getAccessToken();
+    const registrationWesterosEmpty = {
+      referenceId: 'registrationWesterosEmpty',
+      programFinancialServiceProviderConfigurationName: 'ironBank',
+    };
+
+    const programUpdate = {
+      allowEmptyPhoneNumber: true,
+    };
+    await patchProgram(programIdWesteros, programUpdate, accessToken);
+
+    // Patch all programRegistationAttributes to be non-required
+    await setAllProgramsRegistrationAttributesNonRequired(
+      programIdWesteros,
+      accessToken,
+    );
+
+    // Act
+    const response = await importRegistrations(
+      programIdPV,
+      [registrationWesterosEmpty],
+      accessToken,
+    );
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
+
+    const result = await searchRegistrationByReferenceId(
+      registrationWesterosEmpty.referenceId,
+      programIdPV,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    for (const key in registrationWesterosEmpty) {
+      expect(registration[key]).toBe(registrationWesterosEmpty[key]);
+    }
   });
 });

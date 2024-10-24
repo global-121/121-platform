@@ -1,8 +1,8 @@
 import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
-import FspName from '@121-portal/src/app/enums/fsp-name.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
@@ -16,12 +16,12 @@ import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.jso
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
-  updateFinancialServiceProvider,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -89,17 +89,15 @@ test.beforeEach(async ({ page }) => {
     Object.values(TransactionStatusEnum),
   );
 
-  await updateFinancialServiceProvider(
+  await updateRegistration(
     programIdVisa,
+    registrationVisa.referenceId,
+    {
+      programFinancialServiceProviderConfigurationName:
+        FinancialServiceProviders.intersolveVoucherWhatsapp,
+    },
+    'automated test',
     accessToken,
-    paymentReferenceIds,
-    FspName.intersolveVoucherPaper,
-    '31600000000',
-    'a',
-    '2',
-    '3',
-    '1234CH',
-    'Waddinxveen',
   );
 
   // Login

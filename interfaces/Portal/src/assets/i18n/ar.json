@@ -157,7 +157,6 @@
         "btn-text": "تعليمات دفع الصادرات",
         "confirm-message": "سيؤدي هذا إلى تنزيل ملف يحتوي على تعليمات الدفع لمزود الخدمة المالية.",
         "sub-message": {
-          "no-reconciliation": "يجب عليك استخدام هذا الملف <strong>مرة واحدة فقط لكل دفعة</strong> في بوابة مزود الخدمة المالية.",
           "reconciliation": "سيتضمن هذا التصدير فقط الأشخاص المتأثرين الذين <strong>تنتظرهم</strong> حالة المعاملة الحالية."
         },
         "timestamp": "آخر تصدير تم في: {{dateTime}}"
@@ -362,11 +361,8 @@
         },
         "choose-action": "اختر الإجراء...",
         "column": {
-          "custom-attribute-false": "لا",
-          "custom-attribute-true": "نعم",
           "dob": "تاريخ الميلاد",
           "failedPayment": "فشل الدفع #",
-          "fspDisplayName": "مزود الخدمات المالية",
           "hasNote": "لديه ملاحظة",
           "inclusionScore": "درجة التضمين",
           "lastMessageStatus": "آخر رسالة",
@@ -381,7 +377,10 @@
           "personAffectedSequence": "الشخص المتضرر",
           "phoneNumber": "رقم الهاتف",
           "preferredLanguage": "اللغة المفضلة",
+          "programFinancialServiceProviderConfigurationLabel": "مزود الخدمات المالية",
           "referenceId": "الرقم المرجعي",
+          "registration-attribute-false": "لا",
+          "registration-attribute-true": "نعم",
           "registrationCreated": "تم إنشاء التسجيل",
           "registrationCreatedDate": "تاريخ إنشاء التسجيل",
           "select": "اختار",
@@ -395,8 +394,6 @@
           "error-alert": {
             "invalid-date": "تنسيق التاريخ الذي أدخلته غير صالح. مثال تنسيق التاريخ الصالح هو 31-12-1970 والذي يتبع اليوم والشهر والسنة ، DD-MM-YYYY"
           },
-          "fspChangeWarning": "سيؤدي تحديد FSP هذا إلى حذف السمات التالية المتعلقة ب FSP القديم:",
-          "fspNewAttributesExplanation": "بالنسبة ل FSP هذا ، تكون السمات التالية مطلوبة:",
           "has-notes-title": "الملاحظات المتاحة",
           "popup-title": "{{pa}} معلومات مفصلة",
           "properties": {

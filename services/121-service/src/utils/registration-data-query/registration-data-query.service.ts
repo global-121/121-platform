@@ -6,8 +6,8 @@ import {
   RegistrationDataOptions,
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { GenericAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
@@ -24,9 +24,9 @@ export class RegistrationDataScopedQueryService {
       .createQueryBuilder('registration')
       .select([
         `registration.referenceId as "referenceId"`,
-        `registration."${GenericAttributes.phoneNumber}"`,
-        `registration."${GenericAttributes.preferredLanguage}"`,
-        `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
+        `registration."${GenericRegistrationAttributes.phoneNumber}"`,
+        `registration."${GenericRegistrationAttributes.preferredLanguage}"`,
+        `coalesce(registration."${GenericRegistrationAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
       ])
       .andWhere(`registration.referenceId IN (:...referenceIds)`, {
         referenceIds,
@@ -47,20 +47,13 @@ export class RegistrationDataScopedQueryService {
     const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
     subQuery = subQuery
       .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
-      .from(RegistrationDataEntity, uniqueSubQueryId);
-    if (relation?.programQuestionId) {
+      .from(RegistrationAttributeDataEntity, uniqueSubQueryId);
+    if (relation?.programRegistrationAttributeId) {
       subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
-      );
-    } else if (relation?.programCustomAttributeId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
-      );
-    } else if (relation?.fspQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
+        `"${uniqueSubQueryId}"."programRegistrationAttributeId" = ${relation.programRegistrationAttributeId}`,
       );
     }
+
     // Because of string_agg no distinction between multi-select and other is needed
     subQuery.addSelect(
       `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,

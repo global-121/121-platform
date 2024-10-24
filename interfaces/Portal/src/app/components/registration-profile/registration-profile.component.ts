@@ -65,7 +65,7 @@ export class RegistrationProfileComponent implements OnInit {
   }
 
   public fspHasPhysicalCardSupport(
-    fspName: Person['financialServiceProvider'],
+    fspName: Person['financialServiceProviderName'],
   ): boolean {
     return PaymentUtils.hasPhysicalCardSupport(fspName);
   }

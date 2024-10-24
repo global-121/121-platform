@@ -38,7 +38,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[28043] Update custom attributes successfully', async ({ page }) => {
+test('[28043] Update registration attributes successfully', async ({
+  page,
+}) => {
   const table = new TableModule(page);
   const homePage = new HomePage(page);
   const registration = new RegistrationDetails(page);
