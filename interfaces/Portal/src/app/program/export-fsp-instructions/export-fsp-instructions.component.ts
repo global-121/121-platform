@@ -109,7 +109,7 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
       .then(
         (res) => {
           this.isInProgress = false;
-          if (!res.data || res.data.length === 0) {
+          if (!res) {
             actionResult(
               this.alertController,
               this.translate,
@@ -117,13 +117,26 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
             );
             return;
           }
-          const exportFileName = `payment#${this.payment}-fsp-instructions`;
+          for (const fspInstructionPerProgramFspConfig of res) {
+            const exportFileName = `payment#${this.payment}-${fspInstructionPerProgramFspConfig.fileNamePrefix}-fsp-instructions`;
 
-          if (res.fileType === ExportFileType.csv) {
-            downloadAsCsv(res.data, exportFileName);
-          }
-          if (res.fileType === ExportFileType.excel) {
-            downloadAsXlsx(res.data, exportFileName);
+            if (
+              fspInstructionPerProgramFspConfig.fileType === ExportFileType.csv
+            ) {
+              downloadAsCsv(
+                fspInstructionPerProgramFspConfig.data,
+                exportFileName,
+              );
+            }
+            if (
+              fspInstructionPerProgramFspConfig.fileType ===
+              ExportFileType.excel
+            ) {
+              downloadAsXlsx(
+                fspInstructionPerProgramFspConfig.data,
+                exportFileName,
+              );
+            }
           }
 
           this.updateSubHeader();

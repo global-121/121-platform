@@ -126,7 +126,7 @@ export class TransactionJobProcessorsService {
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
     try {
       const intersolveVisaConfig =
-        await this.programFinancialServiceProviderConfigurationRepository.getPropertyValuesByNamesOrThrow(
+        await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
           {
             programFinancialServiceProviderConfigurationId:
               input.programFinancialServiceProviderConfigurationId,

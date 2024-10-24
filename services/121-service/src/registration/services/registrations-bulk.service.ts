@@ -300,6 +300,7 @@ export class RegistrationsBulkService {
       query.select.push('paymentAmountMultiplier');
       query.select.push('programFinancialServiceProviderConfigurationId');
       query.select.push('programFinancialServiceProviderConfigurationName');
+      query.select.push('financialServiceProviderName');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');

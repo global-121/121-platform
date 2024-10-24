@@ -4,6 +4,8 @@ import { FinancialServiceProviderIntegrationType } from '@121-service/src/financ
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
+import { Relation } from 'typeorm';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 export class TransactionReturnDto {
   @ApiProperty({
@@ -24,8 +26,11 @@ export class TransactionReturnDto {
   public errorMessage: string;
   @ApiProperty()
   public customData: any;
+  // FinancialServiceProviderName is used in the frontend to determine whether a transaction has a voucher
+  @ApiProperty({ example: FinancialServiceProviders.excel })
+  public financialServiceProviderName: Relation<FinancialServiceProviders>;
   @ApiProperty({ example: 'ironBank' })
-  public programFinancialServiceProviderConfigurationLabel: LocalizedString;
+  public programFinancialServiceProviderConfigurationLabel: Relation<LocalizedString>;
   @ApiProperty({ example: { en: 'Iron bank' }, type: 'string' })
   public programFinancialServiceProviderConfigurationName: string;
   @ApiProperty({

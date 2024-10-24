@@ -270,24 +270,6 @@ export class RegistrationsService {
     return registration;
   }
 
-  public async addFsp(
-    referenceId: string,
-    programFinancialServiceProviderConfigurationId: number,
-  ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-    });
-    const fspConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
-        {
-          where: { id: Equal(programFinancialServiceProviderConfigurationId) },
-          relations: ['questions'],
-        },
-      );
-    registration.programFinancialServiceProviderConfiguration = fspConfig;
-    return await this.registrationUtilsService.save(registration);
-  }
-
   public async addRegistrationDataBulk(
     dataArray: CustomDataDto[],
   ): Promise<RegistrationEntity[]> {
@@ -381,7 +363,7 @@ export class RegistrationsService {
   }
 
   public async importRegistrations(
-    csvFile,
+    csvFile: Express.Multer.File,
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
@@ -494,11 +476,9 @@ export class RegistrationsService {
 
     let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
-      relations: ['program', 'programFinancialServiceProviderConfiguration'],
+      relations: ['program'],
       programId,
     });
-
-    // ##TODO Also enable updating the FSP configuration in this function
 
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
@@ -516,7 +496,7 @@ export class RegistrationsService {
 
       if (String(oldValue) !== String(attributeValue)) {
         if (
-          attributeKey === 'maxPayments' &&
+          attributeKey === AdditionalAttributes.maxPayments &&
           Number(attributeValue) === registrationToUpdate.paymentCount
         ) {
           maxPaymentsMatchesPaymentCount = true;
@@ -598,6 +578,16 @@ export class RegistrationsService {
           }
         }
       }
+    }
+
+    if (
+      attribute ===
+      AdditionalAttributes.programFinancialServiceProviderConfigurationName
+    ) {
+      registration = await this.updateChosenFspConfiguration({
+        registration,
+        newFspConfigurationName: String(value),
+      });
     }
     const savedRegistration =
       await this.registrationUtilsService.save(registration);
@@ -779,25 +769,29 @@ export class RegistrationsService {
   }
 
   public async updateChosenFspConfiguration({
-    referenceId,
-    newFspConfigurationName: newFspConfigurationName,
-    userId,
+    registration,
+    newFspConfigurationName,
   }: {
-    referenceId: string;
+    registration: RegistrationEntity;
     newFspConfigurationName: string;
-    userId: number;
-  }) {
+  }): Promise<RegistrationEntity> {
     //Identify new FSP
     const newFspConfig =
       await this.programFinancialServiceProviderConfigurationRepository.findOne(
         {
-          where: { name: Equal(newFspConfigurationName) },
+          where: {
+            name: Equal(newFspConfigurationName),
+            programId: Equal(registration.programId),
+          },
         },
       );
     if (!newFspConfig) {
-      const errors = `FSP with this name not found`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      const error = `FSP with this name not found`;
+      throw new Error(error);
     }
+    registration.programFinancialServiceProviderConfigurationId =
+      newFspConfig.id;
+    return registration;
 
     // ###TODO: Use the new FSP configuration to check if required attributes are already stored with the registration
 
@@ -813,42 +807,17 @@ export class RegistrationsService {
     // });
 
     // Get registration by referenceId
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: ['programFinancialServiceProviderConfiguration'],
-    });
-    if (
-      registration.programFinancialServiceProviderConfigurationId ===
-      newFspConfig.id
-    ) {
-      const errors = `New FSP config id is the same as existing FSP config id for this Person Affected.`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-
-    // Get old registration to log
-    const oldViewRegistration =
-      await this.getPaginateRegistrationForReferenceId(
-        referenceId,
-        registration.programId,
-      );
-
-    // Update FSP
-    const updatedRegistration = await this.addFsp(referenceId, newFspConfig.id);
-    if (process.env.SYNC_WITH_THIRD_PARTIES) {
-      await this.sendContactInformationToIntersolve(updatedRegistration);
-    }
-
-    const newViewRegistration =
-      await this.getPaginateRegistrationForReferenceId(
-        referenceId,
-        registration.programId,
-      );
-    // Log change
-    await this.eventsService.log(oldViewRegistration, newViewRegistration, {
-      additionalLogAttributes: { reason: 'Financial service provider change' },
-    });
-
-    return newViewRegistration;
+    // const registration = await this.getRegistrationOrThrow({
+    //   referenceId,
+    //   relations: ['programFinancialServiceProviderConfiguration'],
+    // });
+    // if (
+    //   registration.programFinancialServiceProviderConfigurationId ===
+    //   newFspConfig.id
+    // ) {
+    //   const errors = `New FSP config id is the same as existing FSP config id for this Person Affected.`;
+    //   throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    // }
   }
 
   public async validateAttribute(
@@ -995,7 +964,7 @@ export class RegistrationsService {
     }
 
     const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValuesByNamesOrThrow(
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
           programFinancialServiceProviderConfigurationId:
             registration.programFinancialServiceProviderConfigurationId,

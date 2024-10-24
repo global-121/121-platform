@@ -11,7 +11,11 @@ import {
   PaginateConfigRegistrationViewWithPayments,
 } from '@121-service/src/registration/const/filter-operation.const';
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
-import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  Attribute,
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 
 @Injectable()
 export class ProgramAttributesService {
@@ -139,26 +143,26 @@ export class ProgramAttributesService {
     });
     const defaultAttributes: Attribute[] = [
       {
-        name: 'paymentAmountMultiplier',
-        type: 'numeric',
+        name: GenericRegistrationAttributes.paymentAmountMultiplier,
+        type: RegistrationAttributeTypes.numeric,
         label: null,
       },
       {
         // ##TODO: refactor this naming to something like programFinancialServiceProviderConfigurationName
-        name: 'programFinancialServiceProviderConfigurationLabel',
-        type: 'text',
+        name: GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+        type: RegistrationAttributeTypes.text,
         label: null,
       },
     ];
     if (hasMaxPayments?.enableMaxPayments) {
       defaultAttributes.push({
-        name: 'maxPayments',
-        type: 'numeric',
+        name: GenericRegistrationAttributes.maxPayments,
+        type: RegistrationAttributeTypes.numeric,
         label: null,
       });
       defaultAttributes.push({
-        name: 'paymentCountRemaining',
-        type: 'numeric',
+        name: GenericRegistrationAttributes.paymentCountRemaining,
+        type: RegistrationAttributeTypes.numeric,
         label: null,
       });
     }
