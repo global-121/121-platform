@@ -96,7 +96,7 @@ export class ProjectMonitoringPageComponent {
       return;
     }
 
-    return this.payments.data()[0].payment;
+    return this.payments.data()[this.payments.data().length - 1].payment;
   });
 
   projectDescription = computed(() =>
