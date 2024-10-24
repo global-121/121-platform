@@ -160,6 +160,9 @@
       <trans-unit id="8040367464671654118" datatype="html">
         <source>Reg. #</source>
         <target state="new">Reg. #</target>
+      <trans-unit id="9132374083993014120" datatype="html">
+        <source>Invalid email or password. Double-check your credentials and try again.</source>
+        <target state="translated">Ongeldig e-mailadres of wachtwoord. Dubbel-check uw gegevens en probeer opnieuw.</target>
       </trans-unit>
       <trans-unit id="350646349607555710" datatype="html">
         <source>Registered:</source>
@@ -1086,6 +1089,30 @@
       <trans-unit id="create-payment" datatype="html">
         <source>Create new payment</source>
         <target state="new">Create new payment</target>
+      </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+        <target state="new">Included reg.</target>
+      </trans-unit>
+      <trans-unit id="5004550577313573215" datatype="html">
+        <source>Total amount</source>
+        <target state="new">Total amount</target>
+      </trans-unit>
+      <trans-unit id="5836528780566781670" datatype="html">
+        <source>Successful transfers</source>
+        <target state="new">Successful transfers</target>
+      </trans-unit>
+      <trans-unit id="9023742269421706395" datatype="html">
+        <source>Failed transfers</source>
+        <target state="new">Failed transfers</target>
+      </trans-unit>
+      <trans-unit id="3307214558906712688" datatype="html">
+        <source>In progress</source>
+        <target state="new">In progress</target>
+      </trans-unit>
+      <trans-unit id="869382835948757583" datatype="html">
+        <source>pi pi-spinner</source>
+        <target state="new">pi pi-spinner</target>
       </trans-unit>
     </body>
   </file>

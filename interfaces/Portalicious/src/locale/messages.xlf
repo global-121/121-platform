@@ -11,6 +11,8 @@
       </trans-unit>
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
+      <trans-unit id="1061597182953948916" datatype="html">
+        <source>Use your work email to log in.</source>
       </trans-unit>
       <trans-unit id="generic-pending" datatype="html">
         <source>Pending</source>
@@ -817,6 +819,24 @@
       </trans-unit>
       <trans-unit id="create-payment" datatype="html">
         <source>Create new payment</source>
+      </trans-unit>
+      <trans-unit id="3307214558906712688" datatype="html">
+        <source>In progress</source>
+      </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+      </trans-unit>
+      <trans-unit id="5004550577313573215" datatype="html">
+        <source>Total amount</source>
+      </trans-unit>
+      <trans-unit id="5836528780566781670" datatype="html">
+        <source>Successful transfers</source>
+      </trans-unit>
+      <trans-unit id="869382835948757583" datatype="html">
+        <source>pi pi-spinner</source>
+      </trans-unit>
+      <trans-unit id="9023742269421706395" datatype="html">
+        <source>Failed transfers</source>
       </trans-unit>
     </body>
   </file>

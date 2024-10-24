@@ -13,4 +13,19 @@
     />
   </div>
   <p i18n>project-payments works!</p>
+  <ul
+    class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+    role="list"
+  >
+    @for (payment of payments(); track $index) {
+      <li>
+        <app-payment-summary-card
+          [projectId]="projectId()"
+          [paymentId]="payment.payment"
+          [cardIndex]="$index"
+          [paymentInProgress]="!!paymentStatus.data()?.inProgress"
+        ></app-payment-summary-card>
+      </li>
+    }
+  </ul>
 </app-page-layout>
