@@ -1,22 +1,20 @@
 INSERT
 	INTO
-	"121-service"."registration_data" (
+	"121-service"."registration_attribute_data" (
 	SELECT
 		id + (
 		SELECT
 			max(id)
 		FROM
-			"121-service"."registration_data") AS id,
+			"121-service"."registration_attribute_data") AS id,
 		created,
+		updated,
 		"registrationId" + (
 		SELECT
 			max("registrationId")
 		FROM
-			"121-service"."registration_data") AS "registrationId",
-		"programQuestionId",
-		"fspQuestionId",
-		"programCustomAttributeId",
-		value,
-		updated
+			"121-service"."registration_attribute_data") AS "registrationId",
+		"programRegistrationAttributeId",
+		value
 	FROM
-		"121-service"."registration_data");
+		"121-service"."registration_attribute_data");

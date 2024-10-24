@@ -2,12 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -41,7 +36,7 @@ interface ProcessTransactionResultInput {
   paymentNumber: number;
   userId: number;
   calculatedTransferAmountInMajorUnit: number;
-  financialServiceProviderId: number;
+  programFinancialServiceProviderConfigurationId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
   isRetry: boolean;
@@ -61,7 +56,6 @@ export class TransactionJobProcessorsService {
     private readonly queueMessageService: MessageQueuesService,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    private readonly financialServiceProviderRepository: FinancialServiceProviderRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
@@ -72,10 +66,6 @@ export class TransactionJobProcessorsService {
   ): Promise<void> {
     const registration = await this.getRegistrationOrThrow(input.referenceId);
     const oldRegistration = structuredClone(registration);
-    const financialServiceProvider =
-      await this.getFinancialServiceProviderOrThrow(
-        FinancialServiceProviderName.intersolveVisa,
-      );
 
     let transferAmountInMajorUnit: number;
     try {
@@ -94,7 +84,8 @@ export class TransactionJobProcessorsService {
           userId: input.userId,
           calculatedTransferAmountInMajorUnit:
             input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-          financialServiceProviderId: financialServiceProvider.id,
+          programFinancialServiceProviderConfigurationId:
+            input.programFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -107,41 +98,17 @@ export class TransactionJobProcessorsService {
       throw error;
     }
 
-    // Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(input)) {
-      if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
-
-      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
-      if (value === null || value === undefined || value === '') {
-        const errorText = `Property ${name} is undefined`;
-        await this.createTransactionAndUpdateRegistration({
-          programId: input.programId,
-          paymentNumber: input.paymentNumber,
-          userId: input.userId,
-          calculatedTransferAmountInMajorUnit: transferAmountInMajorUnit,
-          financialServiceProviderId: financialServiceProvider.id,
-          registration,
-          oldRegistration,
-          isRetry: input.isRetry,
-          status: TransactionStatusEnum.error,
-          errorText,
-        });
-        return;
-      }
-    }
-
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
     try {
       const intersolveVisaConfig =
-        await this.programFinancialServiceProviderConfigurationRepository.getValuesByNamesOrThrow(
+        await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
           {
-            programId: input.programId,
-            financialServiceProviderName:
-              FinancialServiceProviderName.intersolveVisa,
+            programFinancialServiceProviderConfigurationId:
+              input.programFinancialServiceProviderConfigurationId,
             names: [
-              FinancialServiceProviderConfigurationEnum.brandCode,
-              FinancialServiceProviderConfigurationEnum.coverLetterCode,
-              FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+              FinancialServiceProviderConfigurationProperties.brandCode,
+              FinancialServiceProviderConfigurationProperties.coverLetterCode,
+              FinancialServiceProviderConfigurationProperties.fundingTokenCode,
             ],
           },
         );
@@ -162,17 +129,18 @@ export class TransactionJobProcessorsService {
           transferAmountInMajorUnit,
           brandCode: intersolveVisaConfig.find(
             (c) =>
-              c.name === FinancialServiceProviderConfigurationEnum.brandCode,
+              c.name ===
+              FinancialServiceProviderConfigurationProperties.brandCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
           coverLetterCode: intersolveVisaConfig.find(
             (c) =>
               c.name ===
-              FinancialServiceProviderConfigurationEnum.coverLetterCode,
+              FinancialServiceProviderConfigurationProperties.coverLetterCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
           fundingTokenCode: intersolveVisaConfig.find(
             (c) =>
               c.name ===
-              FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+              FinancialServiceProviderConfigurationProperties.fundingTokenCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
@@ -182,7 +150,8 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           calculatedTransferAmountInMajorUnit: transferAmountInMajorUnit,
-          financialServiceProviderId: financialServiceProvider.id,
+          programFinancialServiceProviderConfigurationId:
+            input.programFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -218,7 +187,8 @@ export class TransactionJobProcessorsService {
       userId: input.userId,
       calculatedTransferAmountInMajorUnit:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-      financialServiceProviderId: financialServiceProvider.id,
+      programFinancialServiceProviderConfigurationId:
+        input.programFinancialServiceProviderConfigurationId,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
@@ -234,33 +204,8 @@ export class TransactionJobProcessorsService {
       transactionJob.referenceId,
     );
     const oldRegistration = structuredClone(registration);
-    const financialServiceProvider =
-      await this.getFinancialServiceProviderOrThrow(
-        FinancialServiceProviderName.safaricom,
-      );
 
-    // 2. Check if all required properties are present. If not, create a failed transaction and throw an error.
-    for (const [name, value] of Object.entries(transactionJob)) {
-      // Define "empty" based on your needs. Here, we check for null, undefined, or an empty string.
-      if (value === null || value === undefined || value === '') {
-        const errorText = `Property ${name} is undefined`;
-        await this.createTransactionAndUpdateRegistration({
-          programId: transactionJob.programId,
-          paymentNumber: transactionJob.paymentNumber,
-          userId: transactionJob.userId,
-          calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
-          financialServiceProviderId: financialServiceProvider.id,
-          registration,
-          oldRegistration,
-          isRetry: transactionJob.isRetry,
-          status: TransactionStatusEnum.error,
-          errorText,
-        });
-        return;
-      }
-    }
-
-    // 3. Check for existing Safaricom Transfer with the same originatorConversationId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
+    // 2. Check for existing Safaricom Transfer with the same originatorConversationId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
     let safaricomTransfer =
       await this.safaricomTransferScopedRepository.findOne({
         where: {
@@ -277,7 +222,8 @@ export class TransactionJobProcessorsService {
         paymentNumber: transactionJob.paymentNumber,
         userId: transactionJob.userId,
         calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
-        financialServiceProviderId: financialServiceProvider.id,
+        programFinancialServiceProviderConfigurationId:
+          transactionJob.programFinancialServiceProviderConfigurationId,
         registration,
         oldRegistration,
         isRetry: transactionJob.isRetry,
@@ -296,7 +242,7 @@ export class TransactionJobProcessorsService {
       transactionId = safaricomTransfer.transactionId;
     }
 
-    // 4. Start the transfer, if failure update to error transaction and return early
+    // 3. Start the transfer, if failure update to error transaction and return early
     try {
       await this.safaricomService.doTransfer({
         transferAmount: transactionJob.transactionAmount,
@@ -320,9 +266,9 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 5. No messages sent for safaricom
+    // 4. No messages sent for safaricom
 
-    // 6. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+    // 5. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   private async getRegistrationOrThrow(
@@ -340,23 +286,12 @@ export class TransactionJobProcessorsService {
     return registration;
   }
 
-  private async getFinancialServiceProviderOrThrow(
-    fspName: FinancialServiceProviderName,
-  ): Promise<FinancialServiceProviderEntity> {
-    const financialServiceProvider =
-      await this.financialServiceProviderRepository.getByName(fspName);
-    if (!financialServiceProvider) {
-      throw new Error('Financial Service Provider not found');
-    }
-    return financialServiceProvider;
-  }
-
   private async createTransactionAndUpdateRegistration({
     programId,
     paymentNumber,
     userId,
     calculatedTransferAmountInMajorUnit,
-    financialServiceProviderId,
+    programFinancialServiceProviderConfigurationId,
     registration,
     oldRegistration,
     isRetry,
@@ -366,7 +301,7 @@ export class TransactionJobProcessorsService {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
-      financialServiceProviderId,
+      programFinancialServiceProviderConfigurationId,
       programId,
       paymentNumber,
       userId,
@@ -431,7 +366,7 @@ export class TransactionJobProcessorsService {
   private async createTransaction({
     amount, // transaction entity are always in major unit
     registration,
-    financialServiceProviderId,
+    programFinancialServiceProviderConfigurationId,
     programId,
     paymentNumber,
     userId,
@@ -440,7 +375,7 @@ export class TransactionJobProcessorsService {
   }: {
     amount: number;
     registration: RegistrationEntity;
-    financialServiceProviderId: number;
+    programFinancialServiceProviderConfigurationId: number;
     programId: number;
     paymentNumber: number;
     userId: number;
@@ -451,7 +386,8 @@ export class TransactionJobProcessorsService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.financialServiceProviderId = financialServiceProviderId;
+    transaction.programFinancialServiceProviderConfigurationId =
+      programFinancialServiceProviderConfigurationId;
     transaction.programId = programId;
     transaction.payment = paymentNumber;
     transaction.userId = userId;

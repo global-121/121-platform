@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { ProgramQuestionOption } from 'src/app/models/program.model';
+import { ProgramRegistrationAttributeOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { AnswerType } from '../../models/fsp.model';
+import { RegistrationAttributeType } from '../../models/registration-attribute.model';
 import {
   InputProps,
   PromptType,
@@ -23,7 +23,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public explanation: string;
 
   @Input()
-  public type: AnswerType;
+  public type: RegistrationAttributeType;
 
   @Input()
   public pattern: string;
@@ -44,7 +44,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public showSubmit = true;
 
   @Input()
-  public options: ProgramQuestionOption[] = null;
+  public options: ProgramRegistrationAttributeOption[] = null;
 
   @Input()
   public prop = '';
@@ -55,7 +55,7 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
 
-  public answerType = AnswerType;
+  public registrationAttributeType = RegistrationAttributeType;
 
   public reasonInputProps: InputProps;
   public reasonSubheader: string;
@@ -66,7 +66,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.type === AnswerType.MultiSelect) {
+    if (this.type === RegistrationAttributeType.MultiSelect) {
       this.value = this.value.toString().split(',');
     }
     this.propertyModel = this.value;

@@ -167,7 +167,7 @@ export function cleanProgramForAssertions(originalProgram: any): any {
     { attribute: 'editableAttributes', key: 'name' },
     { attribute: 'paTableAttributes', key: 'name' },
     { attribute: 'financialServiceProviders', key: 'fsp' },
-    { attribute: 'programQuestions', key: 'name' },
+    { attribute: 'programRegistrationAttributes', key: 'name' },
     { attribute: 'filterableAttributes', key: 'group' },
   ];
 

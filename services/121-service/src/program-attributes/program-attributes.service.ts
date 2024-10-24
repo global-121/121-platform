@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
-import { Equal, In, Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
@@ -15,18 +13,16 @@ import {
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
 import {
   Attribute,
-  QuestionType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
+
 @Injectable()
 export class ProgramAttributesService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramQuestionEntity)
-  private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
-  @InjectRepository(FspQuestionEntity)
-  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
+  @InjectRepository(ProgramRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeEntity: Repository<ProgramRegistrationAttributeEntity>;
 
   public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [
@@ -110,31 +106,20 @@ export class ProgramAttributesService {
     return filterableAttributes;
   }
 
-  public async getAttributes(
-    programId: number,
-    includeCustomAttributes: boolean,
-    includeProgramQuestions: boolean,
-    includeFspQuestions: boolean,
-    includeTemplateDefaultAttributes: boolean,
-    filterShowInPeopleAffectedTable?: boolean,
-  ): Promise<Attribute[]> {
-    let customAttributes: Attribute[] = [];
-    if (includeCustomAttributes) {
-      customAttributes = await this.getAndMapProgramCustomAttributes(
-        programId,
-        filterShowInPeopleAffectedTable,
-      );
-    }
-    let programQuestions: Attribute[] = [];
-    if (includeProgramQuestions) {
-      programQuestions = await this.getAndMapProgramQuestions(
-        programId,
-        filterShowInPeopleAffectedTable,
-      );
-    }
-    let fspQuestions: Attribute[] = [];
-    if (includeFspQuestions) {
-      fspQuestions = await this.getAndMapProgramFspQuestions(
+  public async getAttributes({
+    programId,
+    includeProgramRegistrationAttributes,
+    includeTemplateDefaultAttributes,
+    filterShowInPeopleAffectedTable,
+  }: {
+    programId: number;
+    includeProgramRegistrationAttributes: boolean;
+    includeTemplateDefaultAttributes: boolean;
+    filterShowInPeopleAffectedTable?: boolean;
+  }): Promise<Attribute[]> {
+    let programAttributes: Attribute[] = [];
+    if (includeProgramRegistrationAttributes) {
+      programAttributes = await this.getAndMapProgramRegistrationAttributes(
         programId,
         filterShowInPeopleAffectedTable,
       );
@@ -146,12 +131,7 @@ export class ProgramAttributesService {
         await this.getMessageTemplateDefaultAttributes(programId);
     }
 
-    return [
-      ...customAttributes,
-      ...programQuestions,
-      ...fspQuestions,
-      ...templateDefaultAttributes,
-    ];
+    return [...programAttributes, ...templateDefaultAttributes];
   }
 
   private async getMessageTemplateDefaultAttributes(
@@ -163,25 +143,26 @@ export class ProgramAttributesService {
     });
     const defaultAttributes: Attribute[] = [
       {
-        name: 'paymentAmountMultiplier',
-        type: 'numeric',
+        name: GenericRegistrationAttributes.paymentAmountMultiplier,
+        type: RegistrationAttributeTypes.numeric,
         label: null,
       },
       {
-        name: 'fspDisplayName',
-        type: 'text',
+        // ##TODO: refactor this naming to something like programFinancialServiceProviderConfigurationName
+        name: GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+        type: RegistrationAttributeTypes.text,
         label: null,
       },
     ];
     if (hasMaxPayments?.enableMaxPayments) {
       defaultAttributes.push({
-        name: 'maxPayments',
-        type: 'numeric',
+        name: GenericRegistrationAttributes.maxPayments,
+        type: RegistrationAttributeTypes.numeric,
         label: null,
       });
       defaultAttributes.push({
-        name: 'paymentCountRemaining',
-        type: 'numeric',
+        name: GenericRegistrationAttributes.paymentCountRemaining,
+        type: RegistrationAttributeTypes.numeric,
         label: null,
       });
     }
@@ -191,8 +172,8 @@ export class ProgramAttributesService {
   public async getPaEditableAttributes(
     programId: number,
   ): Promise<Attribute[]> {
-    const customAttributes = (
-      await this.programCustomAttributeRepository.find({
+    const programRegistrationAttributes = (
+      await this.programRegistrationAttributeEntity.find({
         where: { program: { id: Equal(programId) } },
       })
     ).map((c) => {
@@ -202,102 +183,31 @@ export class ProgramAttributesService {
         label: c.label,
       };
     });
-    const programQuestions = (
-      await this.programQuestionRepository.find({
-        where: {
-          program: { id: Equal(programId) },
-          editableInPortal: Equal(true),
-        },
-      })
-    ).map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-      };
-    });
-
-    return [...customAttributes, ...programQuestions];
+    return programRegistrationAttributes;
   }
 
-  private async getAndMapProgramQuestions(
+  private async getAndMapProgramRegistrationAttributes(
     programId: number,
     filterShowInPeopleAffectedTable?: boolean,
   ): Promise<Attribute[]> {
-    let queryProgramQuestions = this.programQuestionRepository
-      .createQueryBuilder('programQuestion')
+    let queryRegistrationAttr = this.programRegistrationAttributeEntity
+      .createQueryBuilder('programRegistrationAttribute')
       .where({ program: { id: programId } });
 
     if (filterShowInPeopleAffectedTable) {
-      queryProgramQuestions = queryProgramQuestions.andWhere({
+      queryRegistrationAttr = queryRegistrationAttr.andWhere({
         showInPeopleAffectedTable: true,
       });
     }
-    const rawProgramQuestions = await queryProgramQuestions.getMany();
-    const programQuestions = rawProgramQuestions.map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        questionType: QuestionType.programQuestion,
-      };
-    });
-
-    return programQuestions;
-  }
-  private async getAndMapProgramCustomAttributes(
-    programId: number,
-    filterShowInPeopleAffectedTable?: boolean,
-  ): Promise<Attribute[]> {
-    let queryCustomAttr = this.programCustomAttributeRepository
-      .createQueryBuilder('programCustomAttribute')
-      .where({ program: { id: programId } });
-
-    if (filterShowInPeopleAffectedTable) {
-      queryCustomAttr = queryCustomAttr.andWhere({
-        showInPeopleAffectedTable: true,
-      });
-    }
-    const rawCustomAttributes = await queryCustomAttr.getMany();
-    const customAttributes = rawCustomAttributes.map((c) => {
+    const rawProgramAttributes = await queryRegistrationAttr.getMany();
+    const programAttributes = rawProgramAttributes.map((c) => {
       return {
         name: c.name,
         type: c.type,
         label: c.label,
-        questionType: QuestionType.programCustomAttribute,
       };
     });
 
-    return customAttributes;
-  }
-  private async getAndMapProgramFspQuestions(
-    programId: number,
-    filterShowInPeopleAffectedTable?: boolean,
-  ): Promise<Attribute[]> {
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['financialServiceProviders'],
-    });
-    const fspIds = program.financialServiceProviders.map((f) => f.id);
-
-    let queryFspAttributes = this.fspQuestionRepository
-      .createQueryBuilder('fspAttribute')
-      .where({ fspId: In(fspIds) });
-
-    if (filterShowInPeopleAffectedTable) {
-      queryFspAttributes = queryFspAttributes.andWhere({
-        showInPeopleAffectedTable: true,
-      });
-    }
-    const rawFspAttributes = await queryFspAttributes.getMany();
-    const fspAttributes = rawFspAttributes.map((c) => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-        questionType: QuestionType.fspQuestion,
-      };
-    });
-    return fspAttributes;
+    return programAttributes;
   }
 }
