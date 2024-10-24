@@ -9,6 +9,7 @@ import {
   RegistrationActivity,
   RegistrationActivityType,
 } from 'src/app/models/registration-activity.model';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { RegistrationActivityService } from 'src/app/services/registration-activity.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
@@ -17,8 +18,8 @@ import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import EventType from '../../enums/event-type.enum';
 import { Attribute } from '../../models/attribute.model';
-import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
+import { RegistrationAttributeType } from '../../models/registration-attribute.model';
 import { RegistrationActivityDetailAccordionComponent } from '../../program/registration-activity-detail-accordion/registration-activity-detail-accordion.component';
 import { EnumService } from '../../services/enum.service';
 import { MessagesService } from '../../services/messages.service';
@@ -199,13 +200,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
             (attr) => attr.name === change.attributes.fieldName,
           );
 
-          if (attribute?.type === AnswerType.Boolean) {
+          if (attribute?.type === RegistrationAttributeType.Boolean) {
             const booleanLabel = {
               true: this.translate.instant(
-                'page.program.program-people-affected.column.custom-attribute-true',
+                'page.program.program-people-affected.column.registration-attribute-true',
               ),
               false: this.translate.instant(
-                'page.program.program-people-affected.column.custom-attribute-false',
+                'page.program.program-people-affected.column.registration-attribute-false',
               ),
             };
             oldValue = booleanLabel[oldValue];
@@ -261,29 +262,17 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
         if (change.type === EventType.financialServiceProviderChange) {
           if (description.oldValue) {
-            try {
-              description.oldValue = JSON.parse(description.oldValue);
-              description.oldValue = this.translatableString.get(
-                description.oldValue,
-              );
-            } catch (error) {
-              description.oldValue = this.translatableString.get(
-                description.oldValue,
-              );
-            }
+            const label = this.getLabelForFspConfigChange(description.oldValue);
+            description.oldValue = label
+              ? this.translatableString.get(label)
+              : this.translatableString.get(description.oldValue);
           }
 
           if (description.newValue) {
-            try {
-              description.newValue = JSON.parse(description.newValue);
-              description.newValue = this.translatableString.get(
-                description.newValue,
-              );
-            } catch (error) {
-              description.newValue = this.translatableString.get(
-                description.newValue,
-              );
-            }
+            const label = this.getLabelForFspConfigChange(description.newValue);
+            description.newValue = label
+              ? this.translatableString.get(label)
+              : this.translatableString.get(description.newValue);
           }
 
           this.activityOverview.push({
@@ -310,6 +299,14 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
+  }
+
+  private getLabelForFspConfigChange(
+    name: string,
+  ): string | TranslatableString {
+    return this.program.financialServiceProviderConfigurations.find(
+      (fspConfig) => fspConfig.name === name,
+    )?.label;
   }
 
   private getSubLabelText(change: any, attribute: Attribute): string {

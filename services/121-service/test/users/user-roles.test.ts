@@ -27,11 +27,7 @@ describe('/ Users', () => {
           role: 'test-manager',
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
-          permissions: [
-            'program.update',
-            'program:custom-attribute.update',
-            'program:metrics.read',
-          ],
+          permissions: ['program.update', 'program:metrics.read'],
         });
 
       // Assert
@@ -50,11 +46,7 @@ describe('/ Users', () => {
           role: roleId,
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
-          permissions: [
-            'program.update',
-            'program:custom-attribute.update',
-            'program:metrics.read',
-          ],
+          permissions: ['program.update', 'program:metrics.read'],
         });
 
       // Assert
@@ -68,11 +60,7 @@ describe('/ Users', () => {
           role: roleId,
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
-          permissions: [
-            'program.update',
-            'program:custom-attribute.update',
-            'program:metrics.read',
-          ],
+          permissions: ['program.update', 'program:metrics.read'],
         });
 
       // Assert

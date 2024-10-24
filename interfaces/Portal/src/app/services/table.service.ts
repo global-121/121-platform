@@ -3,12 +3,12 @@ import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
 import Permission from '../auth/permission.enum';
-import { AnswerType } from '../models/fsp.model';
 import {
   PersonDefaultAttributes,
   PersonTableColumn,
 } from '../models/person.model';
 import { Program } from '../models/program.model';
+import { RegistrationAttributeType } from '../models/registration-attribute.model';
 import { TranslatableString } from '../models/translatable-string.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { TranslatableStringService } from './translatable-string.service';
@@ -18,14 +18,14 @@ import { TranslatableStringService } from './translatable-string.service';
 })
 export class TableService {
   private columnWidthPerType = {
-    [AnswerType.Number]: 90,
-    [AnswerType.Date]: 180,
-    [AnswerType.PhoneNumber]: 130,
-    [AnswerType.Text]: 150,
-    [AnswerType.Enum]: 160,
-    [AnswerType.Email]: 180,
-    [AnswerType.Boolean]: 90,
-    [AnswerType.MultiSelect]: 180,
+    [RegistrationAttributeType.Number]: 90,
+    [RegistrationAttributeType.Date]: 180,
+    [RegistrationAttributeType.PhoneNumber]: 130,
+    [RegistrationAttributeType.Text]: 150,
+    [RegistrationAttributeType.Enum]: 160,
+    [RegistrationAttributeType.Email]: 180,
+    [RegistrationAttributeType.Boolean]: 90,
+    [RegistrationAttributeType.MultiSelect]: 180,
   };
 
   private columnsWithSpecialFormatting = [
@@ -73,8 +73,9 @@ export class TableService {
         ...this.getColumnDefaults(),
         frozenLeft: this.platform.width() > 1280,
         permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.PhoneNumber],
-        width: this.columnWidthPerType[AnswerType.PhoneNumber],
+        minWidth:
+          this.columnWidthPerType[RegistrationAttributeType.PhoneNumber],
+        width: this.columnWidthPerType[RegistrationAttributeType.PhoneNumber],
       },
       {
         prop: 'preferredLanguage',
@@ -84,8 +85,8 @@ export class TableService {
         ...this.getColumnDefaults(),
         sortable: false, // TODO: disabled, because sorting in the backend is does on values (nl/en) instead of frontend labels (Dutch/English)
         permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.Text],
-        width: this.columnWidthPerType[AnswerType.Text],
+        minWidth: this.columnWidthPerType[RegistrationAttributeType.Text],
+        width: this.columnWidthPerType[RegistrationAttributeType.Text],
       },
       {
         prop: 'status',
@@ -103,8 +104,8 @@ export class TableService {
           'page.program.program-people-affected.column.registrationCreated',
         ),
         ...this.getColumnDefaults(),
-        minWidth: this.columnWidthPerType[AnswerType.Date],
-        width: this.columnWidthPerType[AnswerType.Date],
+        minWidth: this.columnWidthPerType[RegistrationAttributeType.Date],
+        width: this.columnWidthPerType[RegistrationAttributeType.Date],
       },
       {
         prop: 'paymentAmountMultiplier',
@@ -113,8 +114,8 @@ export class TableService {
         ),
         ...this.getColumnDefaults(),
         comparator: this.paComparator.bind(this),
-        minWidth: this.columnWidthPerType[AnswerType.Number],
-        width: this.columnWidthPerType[AnswerType.Number],
+        minWidth: this.columnWidthPerType[RegistrationAttributeType.Number],
+        width: this.columnWidthPerType[RegistrationAttributeType.Number],
       },
       {
         prop: 'maxPayments',
@@ -128,7 +129,7 @@ export class TableService {
       {
         prop: 'financialServiceProvider',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.fspDisplayName',
+          'page.program.program-people-affected.column.programFinancialServiceProviderConfigurationLabel',
         ),
         ...this.getColumnDefaults(),
         minWidth: 220,
@@ -227,23 +228,21 @@ export class TableService {
 
     if (canViewPersonalData) {
       for (const nameColumn of program.fullnameNamingConvention) {
-        const searchableColumns = [
-          ...program.programQuestions,
-          ...program.programCustomAttributes,
-        ];
+        const searchableColumns = program.programRegistrationAttributes;
 
-        const nameQuestion = searchableColumns.find(
-          (question) => question.name === nameColumn,
+        const nameAttribute = searchableColumns.find(
+          (attribute) => attribute.name === nameColumn,
         );
-        if (nameQuestion) {
+        if (nameAttribute) {
           const addCol = {
             prop: nameColumn,
-            name: this.translatableStringService.get(nameQuestion.label),
+            name: this.translatableStringService.get(nameAttribute.label),
             ...this.getColumnDefaults(),
             frozenLeft: this.platform.width() > 768,
             permissions: [Permission.RegistrationPersonalREAD],
-            minWidth: this.getColumnWidthPerType()[AnswerType.Text],
-            width: this.getColumnWidthPerType()[AnswerType.Text],
+            minWidth:
+              this.getColumnWidthPerType()[RegistrationAttributeType.Text],
+            width: this.getColumnWidthPerType()[RegistrationAttributeType.Text],
           };
           columns.push(addCol);
         }

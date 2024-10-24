@@ -48,7 +48,7 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Transaction);
 
       transactions =
-        await this.transactionScopedRepository.getManyByRegistrationIdAndProgramId(
+        await this.transactionScopedRepository.getLatestTransactionsByRegistrationIdAndProgramId(
           registrationId,
           programId,
         );

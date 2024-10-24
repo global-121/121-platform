@@ -13,7 +13,6 @@ import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 // Export status & data changes
-const paId = 4;
 const changedBy = 'admin@example.org';
 const type = 'registrationStatusChange';
 const newValue = 'included';
@@ -51,7 +50,7 @@ test('[29337] Export all People Affected data changes', async ({ page }) => {
       'Export status & data changes',
     );
     await registrations.exportAndAssertStatusAndDataChanges(0, {
-      paId,
+      referenceId: registrationsPV[0].referenceId, // Assert only the first registration
       changedBy,
       type,
       newValue,

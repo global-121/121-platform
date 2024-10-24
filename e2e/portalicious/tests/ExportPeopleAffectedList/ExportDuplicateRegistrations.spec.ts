@@ -15,7 +15,8 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 // Export duplicate registrations
 const id = 2;
 const status = 'included';
-const fsp = 'Albert Heijn voucher WhatsApp';
+const programFinancialServiceProviderConfigurationLabel =
+  'Albert Heijn voucher WhatsApp';
 const name = 'Jan Janssen';
 const duplicateWithIds = '3';
 
@@ -53,7 +54,7 @@ test('[29318] Export duplicate people affected list', async ({ page }) => {
     await registrations.exportAndAssertDuplicates(0, {
       id,
       status,
-      fsp,
+      programFinancialServiceProviderConfigurationLabel,
       name,
       duplicateWithIds,
     });

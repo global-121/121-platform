@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -48,9 +48,10 @@ describe('Get events', () => {
       addressStreet: 'updated street',
     };
     const expectedAttributesObject = {
-      oldValue: registrationVisa[CustomDataAttributes.phoneNumber],
+      oldValue:
+        registrationVisa[DefaultRegistrationDataAttributeNames.phoneNumber],
       newValue: updatePhoneNumber,
-      fieldName: CustomDataAttributes.phoneNumber,
+      fieldName: DefaultRegistrationDataAttributeNames.phoneNumber,
       reason,
     };
 
@@ -102,7 +103,8 @@ describe('Get events', () => {
     const event = eventsResult.body.find(
       (event) =>
         event.type === EventEnum.registrationDataChange &&
-        event.attributes.fieldName === CustomDataAttributes.phoneNumber,
+        event.attributes.fieldName ===
+          DefaultRegistrationDataAttributeNames.phoneNumber,
     );
     expect(event.attributes).toEqual(expectedAttributesObject);
   });
@@ -114,9 +116,10 @@ describe('Get events', () => {
       phoneNumber: updatePhoneNumber,
     };
     const expectedAttributesObject = {
-      oldValue: registrationVisa[CustomDataAttributes.phoneNumber],
+      oldValue:
+        registrationVisa[DefaultRegistrationDataAttributeNames.phoneNumber],
       newValue: updatePhoneNumber,
-      fieldName: CustomDataAttributes.phoneNumber,
+      fieldName: DefaultRegistrationDataAttributeNames.phoneNumber,
       reason,
     };
     const date = new Date();

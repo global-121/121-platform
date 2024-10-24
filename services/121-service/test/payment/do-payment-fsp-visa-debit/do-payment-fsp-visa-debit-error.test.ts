@@ -1,6 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderConfigurationEnum } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -13,12 +16,11 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  deleteFspConfiguration,
   doPayment,
-  getFspConfiguration,
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import { deleteProgramFinancialServiceProviderConfigurationProperty } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
 import {
   awaitChangePaStatus,
   importRegistrations,
@@ -291,7 +293,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
   });
 
-  it('should fail pay-out by visa debit if coverletterCode is not configured for the program', async () => {
+  it('should fail pay-out by visa debit if coverletterCode or fundingToken is not configured for the program', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangePaStatus(
@@ -302,17 +304,20 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
     const paymentReferenceIds = [registrationVisa.referenceId];
 
-    const fspConfig = await getFspConfiguration(programIdVisa, accessToken);
-    const coverLetterCodeForFspConfigRecord = fspConfig.body.find(
-      (fspConfig) =>
-        fspConfig.name ===
-        FinancialServiceProviderConfigurationEnum.coverLetterCode,
-    );
-    await deleteFspConfiguration(
-      programIdVisa,
-      coverLetterCodeForFspConfigRecord.id,
+    await deleteProgramFinancialServiceProviderConfigurationProperty({
+      programId: programIdVisa,
+      configName: FinancialServiceProviders.intersolveVisa,
+      propertyName:
+        FinancialServiceProviderConfigurationProperties.coverLetterCode,
       accessToken,
-    );
+    });
+    await deleteProgramFinancialServiceProviderConfigurationProperty({
+      programId: programIdVisa,
+      configName: FinancialServiceProviders.intersolveVisa,
+      propertyName:
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+      accessToken,
+    });
 
     // Act
     const doPaymentResponse = await doPayment(
@@ -324,6 +329,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    // Check if both properties are mentioned in the error message
+    expect(doPaymentResponse.body.message).toContain(
+      FinancialServiceProviderConfigurationProperties.coverLetterCode,
+    );
+    expect(doPaymentResponse.body.message).toContain(
+      FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+    );
   });
 
   it('should show a failed transaction if an idempotency key is duplicate', async () => {

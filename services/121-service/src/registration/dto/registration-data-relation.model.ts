@@ -1,7 +1,5 @@
 export class RegistrationDataRelation {
-  public programQuestionId?: number;
-  public fspQuestionId?: number;
-  public programCustomAttributeId?: number;
+  public programRegistrationAttributeId: number;
 }
 
 interface RegistrationDataOpionsWithRequiredRelation {
@@ -20,5 +18,4 @@ export class RegistrationDataInfo {
   public name: string;
   public relation: RegistrationDataRelation;
   public type: string;
-  public fspId?: number;
 }

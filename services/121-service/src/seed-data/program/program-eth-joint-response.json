@@ -15,25 +15,17 @@
   "distributionFrequency": "month",
   "distributionDuration": 6,
   "fixedTransferValue": 1,
-  "financialServiceProviders": [
-    {
-      "fsp": "Commercial-bank-ethiopia"
-    }
-  ],
   "targetNrRegistrations": 870,
   "tryWhatsAppFirst": false,
   "bankAccountNumberPlaceholder": "1000263499216",
-  "programCustomAttributes": [],
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "fullname",
       "label": {
         "en": "First name"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -44,8 +36,7 @@
       "label": {
         "en": "Gender"
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
+      "type": "dropdown",
       "options": [
         {
           "option": "Masculin ",
@@ -62,11 +53,24 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "bankAccountNumber",
+      "label": {
+        "en": "Bank Account Number"
+      },
+      "placeholder": {
+        "en": "Please type your bank account number"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "pattern": ".+",
+      "options": null,
+      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {
@@ -76,5 +80,10 @@
   "languages": ["en"],
   "enableMaxPayments": true,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Commercial-bank-ethiopia"
+    }
+  ]
 }

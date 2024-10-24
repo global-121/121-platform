@@ -17,7 +17,8 @@ const status = 'included';
 const id = 1;
 const paymentAmountMultiplier = 1;
 const preferredLanguage = 'nl';
-const fspDisplayName = 'Albert Heijn voucher WhatsApp';
+const programFinancialServiceProviderConfigurationLabel =
+  'Albert Heijn voucher WhatsApp';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -55,7 +56,7 @@ test('[29358] Export People Affected list', async ({ page }) => {
       status,
       paymentAmountMultiplier,
       preferredLanguage,
-      fspDisplayName,
+      programFinancialServiceProviderConfigurationLabel,
     });
   });
 });
