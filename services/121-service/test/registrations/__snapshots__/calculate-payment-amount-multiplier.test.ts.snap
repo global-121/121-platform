@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Set/calculate payment amount multiplier should error if paymentAmountMultiplier is set while program has a formula 1`] = `
+{
+  "data": [],
+  "links": {
+    "current": "http://localhost:3000/api/programs/2/registrations?page=1&limit=20&sortBy=id:ASC&",
+  },
+  "meta": {
+    "currentPage": 1,
+    "filter": {},
+    "itemsPerPage": 20,
+    "sortBy": [
+      [
+        "id",
+        "ASC",
+      ],
+    ],
+    "totalItems": 0,
+    "totalPages": 0,
+  },
+}
+`;

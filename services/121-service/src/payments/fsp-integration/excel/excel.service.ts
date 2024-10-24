@@ -313,7 +313,7 @@ export class ExcelService
     );
   }
 
-  private joinRegistrationsAndImportRecords(
+  public joinRegistrationsAndImportRecords(
     registrations: Awaited<
       ReturnType<ExcelService['getRegistrationsForReconciliation']>
     >,

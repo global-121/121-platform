@@ -1,7 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
@@ -22,19 +20,14 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
-import {
-  ImportRegistrationsDto,
-  ImportResult,
-} from '@121-service/src/registration/dto/bulk-import.dto';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
-import { CustomDataDto } from '@121-service/src/registration/dto/custom-data.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
 import {
   AdditionalAttributes,
   Attributes,
-  UpdateAttributeDto,
   UpdateRegistrationDto,
 } from '@121-service/src/registration/dto/update-registration.dto';
 import {
@@ -45,7 +38,10 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
+import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
+import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -56,6 +52,7 @@ import { RegistrationViewScopedRepository } from '@121-service/src/registration/
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
@@ -85,6 +82,7 @@ export class RegistrationsService {
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
+    private readonly registrationsInputValidator: RegistrationsInputValidator,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -270,46 +268,9 @@ export class RegistrationsService {
     return registration;
   }
 
-  public async addRegistrationDataBulk(
-    dataArray: CustomDataDto[],
-  ): Promise<RegistrationEntity[]> {
-    const registrations: RegistrationEntity[] = [];
-    for (const data of dataArray) {
-      const registration = await this.addRegistrationData(
-        data.referenceId,
-        data.key,
-        data.value,
-      );
-      registrations.push(registration);
-    }
-    return registrations;
-  }
-
-  public async addRegistrationData(
-    referenceId: string,
-    customDataKey: string,
-    customDataValueRaw: string | string[],
-  ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-    });
-    const customDataValue = await this.cleanCustomDataIfPhoneNr(
-      customDataKey,
-      customDataValueRaw,
-      registration.programId,
-    );
-    return await this.registrationDataService.saveData(
-      registration,
-      customDataValue,
-      {
-        name: customDataKey,
-      },
-    );
-  }
-
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
-    customDataValue: string | number | string[],
+    customDataValue: string | number | string[] | boolean | null,
     programId: number,
   ) {
     const allowEmptyPhoneNumber = (
@@ -362,13 +323,14 @@ export class RegistrationsService {
     );
   }
 
-  public async importRegistrations(
+  public async importRegistrationsFromCsv(
     csvFile: Express.Multer.File,
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.registrationsImportService.importRegistrations(
+    this.throwIfProgramIsNotPublished(program.published);
+    return await this.registrationsImportService.importRegistrationsFromCsv(
       csvFile,
       program,
       userId,
@@ -376,7 +338,7 @@ export class RegistrationsService {
   }
 
   public async patchBulk(
-    csvFile: any,
+    csvFile: Express.Multer.File,
     programId: number,
     userId: number,
     reason: string,
@@ -389,28 +351,26 @@ export class RegistrationsService {
     );
   }
 
-  public async importRegistrationFromJson(
-    validatedJsonData: ImportRegistrationsDto[],
+  public async importRegistrationsFromJson(
+    jsonData: Record<string, string | number | boolean>[],
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    if (!program?.published) {
+    this.throwIfProgramIsNotPublished(program.published);
+    return await this.registrationsImportService.importRegistrations(
+      jsonData,
+      program,
+      userId,
+    );
+  }
+
+  private throwIfProgramIsNotPublished(published: boolean): void {
+    if (!published) {
       const errors =
         'Registrations are not allowed for this program yet, try again later.';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    const validateRegistrationsInput =
-      await this.registrationsImportService.validateImportAsRegisteredInput(
-        validatedJsonData,
-        programId,
-        userId,
-      );
-    return await this.registrationsImportService.importValidatedRegistrations(
-      validateRegistrationsInput,
-      program,
-      userId,
-    );
   }
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
@@ -466,19 +426,96 @@ export class RegistrationsService {
     }
   }
 
-  public async updateRegistration(
-    programId: number,
-    referenceId: string,
-    updateRegistrationDto: UpdateRegistrationDto,
-  ) {
+  public async validateBodyAndUpdateRegistration({
+    programId,
+    referenceId,
+    updateRegistrationDto,
+    userId,
+  }: {
+    programId: number;
+    referenceId: string;
+    updateRegistrationDto: UpdateRegistrationDto;
+    userId: number;
+  }): Promise<MappedPaginatedRegistrationDto | undefined> {
+    const validationConfig: ValidationRegistrationConfig = {
+      validatePhoneNumberLookup: true,
+      validateUniqueReferenceId: false,
+      validateExistingReferenceId: false,
+    };
+    const updateDataWithReferenceId = {
+      referenceId,
+      ...updateRegistrationDto.data,
+    };
+
+    let validateRegistrationPatchData;
+    try {
+      validateRegistrationPatchData =
+        await this.registrationsInputValidator.validateAndCleanInput({
+          registrationInputArray: [updateDataWithReferenceId],
+          programId,
+          userId,
+          typeOfInput: RegistrationValidationInputType.update,
+          validationConfig,
+        });
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.processHttpExceptionOnRegistrationUpdate(error);
+      } else {
+        throw error;
+      }
+    }
+
+    // if all valid, process update
+    return await this.updateRegistration({
+      programId,
+      referenceId,
+      validatedRegistrationInput: validateRegistrationPatchData[0],
+      reason: updateRegistrationDto.reason,
+    });
+  }
+
+  // TODO: Refactor this, it works around the fact that registrationsInputValidator throws Http exception with line numbers and columns names
+  // May be better to solve this in the registrationsInputValidator depending on the type of validation
+  private processHttpExceptionOnRegistrationUpdate(
+    error: HttpException,
+  ): never {
+    if (error.getStatus() === 400) {
+      const errorResponse = error.getResponse();
+      let errorMessage: object | string = '';
+      if (Array.isArray(errorResponse)) {
+        errorMessage = errorResponse
+          .map((err) => `${err.column}: ${err.error}`)
+          .join(', ');
+      } else {
+        errorMessage = errorResponse;
+      }
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
+    } else {
+      throw error; // Re-throw the error if it's not an HttpException with status 400
+    }
+  }
+
+  public async updateRegistration({
+    programId,
+    referenceId,
+    validatedRegistrationInput,
+    reason,
+  }: {
+    programId: number;
+    referenceId: string;
+    validatedRegistrationInput: ValidatedRegistrationInput;
+    reason: string | undefined;
+  }) {
     let nrAttributesUpdated = 0;
-    const { data: partialRegistration } = updateRegistrationDto;
+    const { data: registrationDataInput, ...partialRegistrationInput } =
+      validatedRegistrationInput;
 
     let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
       relations: ['program'],
       programId,
     });
+    const program = registrationToUpdate.program;
 
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
@@ -486,11 +523,9 @@ export class RegistrationsService {
     // Track whether maxPayments has been updated to match paymentCount
     let maxPaymentsMatchesPaymentCount = false;
 
-    for (const attributeKey of Object.keys(partialRegistration)) {
-      const attributeValue: string | number | string[] =
-        typeof partialRegistration[attributeKey] === 'boolean'
-          ? String(partialRegistration[attributeKey])
-          : partialRegistration[attributeKey];
+    for (const attributeKey of Object.keys(partialRegistrationInput)) {
+      const attributeValue: string | number | string[] | boolean =
+        partialRegistrationInput[attributeKey];
 
       const oldValue = oldViewRegistration[attributeKey];
 
@@ -501,22 +536,43 @@ export class RegistrationsService {
         ) {
           maxPaymentsMatchesPaymentCount = true;
         }
-        registrationToUpdate = await this.updateAttribute(
-          attributeKey,
-          attributeValue,
-          registrationToUpdate,
-        );
+        registrationToUpdate = await this.updateAttribute({
+          attribute: attributeKey,
+          value: attributeValue,
+          registration: registrationToUpdate,
+          program,
+        });
+        nrAttributesUpdated++;
+      }
+    }
+
+    for (const attributeKey of Object.keys(registrationDataInput)) {
+      const attributeValue: string | number | string[] | boolean | null =
+        typeof registrationDataInput[attributeKey] === 'boolean'
+          ? String(registrationDataInput[attributeKey])
+          : registrationDataInput[attributeKey];
+
+      const oldValue = oldViewRegistration[attributeKey];
+
+      if (String(oldValue) !== String(attributeValue)) {
+        registrationToUpdate = await this.updateAttribute({
+          attribute: attributeKey,
+          value: attributeValue,
+          registration: registrationToUpdate,
+          program,
+        });
         nrAttributesUpdated++;
       }
     }
 
     if (maxPaymentsMatchesPaymentCount) {
-      registrationToUpdate = await this.updateAttribute(
-        'registrationStatus',
-        RegistrationStatusEnum.completed,
-        registrationToUpdate,
-      );
-      nrAttributesUpdated++; // Increment for registrationStatus update
+      registrationToUpdate = await this.updateAttribute({
+        attribute: 'registrationStatus',
+        value: RegistrationStatusEnum.completed,
+        registration: registrationToUpdate,
+        program,
+      });
+      nrAttributesUpdated++;
     }
 
     const newRegistration = await this.getPaginateRegistrationForReferenceId(
@@ -530,18 +586,24 @@ export class RegistrationsService {
         { ...oldViewRegistration },
         { ...newRegistration },
         {
-          additionalLogAttributes: { reason: updateRegistrationDto.reason },
+          additionalLogAttributes: { reason },
         },
       );
       return newRegistration;
     }
   }
 
-  private async updateAttribute(
-    attribute: Attributes | string,
-    value: string | number | string[],
-    registration: RegistrationEntity,
-  ): Promise<RegistrationEntity> {
+  private async updateAttribute({
+    attribute,
+    value,
+    registration,
+    program,
+  }: {
+    attribute: Attributes | string;
+    value: string | number | string[] | boolean | null;
+    registration: RegistrationEntity;
+    program: ProgramEntity;
+  }): Promise<RegistrationEntity> {
     value = await this.cleanCustomDataIfPhoneNr(
       attribute,
       value,
@@ -552,29 +614,32 @@ export class RegistrationsService {
       registration[attribute] = value;
     }
 
-    // This checks registration attributes (like paymentAmountMultiplier)
-    const errors = await validate(registration);
-    if (errors.length > 0) {
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-
     if (
       !Object.values(AdditionalAttributes).includes(
         attribute as AdditionalAttributes,
       )
     ) {
-      try {
-        await this.registrationDataService.saveData(registration, value, {
-          name: attribute,
-        });
-      } catch (error) {
-        // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
-        if (attribute === Attributes.phoneNumber) {
-          registration.phoneNumber = value.toString();
-          await this.registrationUtilsService.save(registration);
-        } else {
-          if (error.name !== ErrorEnum.RegistrationDataError) {
-            throw error;
+      if (value === null) {
+        await this.registrationDataService.deleteProgramRegistrationAttributeData(
+          registration,
+          {
+            name: attribute,
+          },
+        );
+      } else {
+        try {
+          await this.registrationDataService.saveData(registration, value, {
+            name: attribute,
+          });
+        } catch (error) {
+          // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
+          if (attribute === Attributes.phoneNumber) {
+            registration.phoneNumber = value.toString();
+            await this.registrationUtilsService.save(registration);
+          } else {
+            if (error.name !== ErrorEnum.RegistrationDataError) {
+              throw error;
+            }
           }
         }
       }
@@ -584,16 +649,17 @@ export class RegistrationsService {
       attribute ===
       AdditionalAttributes.programFinancialServiceProviderConfigurationName
     ) {
-      registration = await this.updateChosenFspConfiguration({
-        registration,
-        newFspConfigurationName: String(value),
-      });
+      registration.programFinancialServiceProviderConfigurationId =
+        await this.getChosenFspConfigurationId({
+          registration,
+          newFspConfigurationName: String(value),
+        });
     }
     const savedRegistration =
       await this.registrationUtilsService.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        registration.program,
+        program,
         registration.referenceId,
       );
     if (calculatedRegistration) {
@@ -768,13 +834,13 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  public async updateChosenFspConfiguration({
+  public async getChosenFspConfigurationId({
     registration,
     newFspConfigurationName,
   }: {
     registration: RegistrationEntity;
     newFspConfigurationName: string;
-  }): Promise<RegistrationEntity> {
+  }): Promise<number> {
     //Identify new FSP
     const newFspConfig =
       await this.programFinancialServiceProviderConfigurationRepository.findOne(
@@ -789,59 +855,7 @@ export class RegistrationsService {
       const error = `FSP with this name not found`;
       throw new Error(error);
     }
-    registration.programFinancialServiceProviderConfigurationId =
-      newFspConfig.id;
-    return registration;
-
-    // ###TODO: Use the new FSP configuration to check if required attributes are already stored with the registration
-
-    // Check if required attributes are present
-    // newFsp.questions.forEach((requiredAttribute) => {
-    //   if (!Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)) {
-    //     const requiredAttributes = newFsp.questions
-    //       .map((a) => a.name)
-    //       .join(', ');
-    //     const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
-    //     throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    //   }
-    // });
-
-    // Get registration by referenceId
-    // const registration = await this.getRegistrationOrThrow({
-    //   referenceId,
-    //   relations: ['programFinancialServiceProviderConfiguration'],
-    // });
-    // if (
-    //   registration.programFinancialServiceProviderConfigurationId ===
-    //   newFspConfig.id
-    // ) {
-    //   const errors = `New FSP config id is the same as existing FSP config id for this Person Affected.`;
-    //   throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    // }
-  }
-
-  public async validateAttribute(
-    referenceId: string,
-    attributeName: string,
-    value: any,
-    userId: number,
-  ): Promise<void> {
-    if (attributeName === 'referenceId') {
-      const errors = `Cannot update referenceId`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-    const attributeDto: UpdateAttributeDto = {
-      referenceId,
-      attribute: attributeName,
-      value,
-      userId,
-    };
-    const errors = await validate(
-      plainToClass(UpdateAttributeDto, attributeDto),
-    );
-    if (errors.length > 0) {
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
+    return newFspConfig.id;
   }
 
   public async getMessageHistoryRegistration(

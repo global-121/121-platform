@@ -6,18 +6,22 @@ import { Repository } from 'typeorm';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
-  AttributeWithOptionalLabel,
+  GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
+import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
 
 const programId = 1;
 const userId = 1;
-const dynamicAttributes: AttributeWithOptionalLabel[] = [
+const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
   {
     id: 8,
     name: 'addressStreet',
@@ -90,6 +94,12 @@ describe('RegistrationsInputValidator', () => {
     mockProgramRepository = {};
     mockRegistrationRepository = {};
 
+    const mockRegistrationViewScopedRepository = {
+      createQueryBuilder: jest.fn().mockReturnValue({
+        andWhere: jest.fn().mockReturnThis(),
+      }),
+      // other methods...
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RegistrationsInputValidator,
@@ -101,6 +111,7 @@ describe('RegistrationsInputValidator', () => {
           provide: getRepositoryToken(RegistrationEntity),
           useValue: mockRegistrationRepository,
         },
+
         {
           provide: UserService,
           useValue: {
@@ -112,6 +123,16 @@ describe('RegistrationsInputValidator', () => {
           useValue: {
             lookupAndCorrect: jest.fn().mockResolvedValue('1234567890'),
           },
+        },
+        {
+          provide: RegistrationsPaginationService,
+          useValue: {
+            getRegistrationsChunked: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: RegistrationViewScopedRepository,
+          useValue: mockRegistrationViewScopedRepository,
         },
       ],
     }).compile();
@@ -132,6 +153,7 @@ describe('RegistrationsInputValidator', () => {
           name: 'Intersolve-voucher-whatsapp',
         },
       ],
+      programRegistrationAttributes: dynamicAttributes,
     });
   });
 
@@ -154,13 +176,17 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanRegistrationsInput(
-      csvArray,
+    const result = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
       programId,
       userId,
-      dynamicAttributes,
-      RegistrationCsvValidationEnum.importAsRegistered,
-    );
+      typeOfInput: RegistrationValidationInputType.create,
+      validationConfig: {
+        validatePhoneNumberLookup: true,
+        validateUniqueReferenceId: true,
+        validateExistingReferenceId: true,
+      },
+    });
 
     expect(result).toBeInstanceOf(Array);
     expect(result.length).toBe(1);
@@ -195,13 +221,17 @@ describe('RegistrationsInputValidator', () => {
     ];
 
     await expect(
-      validator.validateAndCleanRegistrationsInput(
-        csvArray,
+      validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
         programId,
         userId,
-        dynamicAttributes,
-        RegistrationCsvValidationEnum.importAsRegistered,
-      ),
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validatePhoneNumberLookup: true,
+          validateUniqueReferenceId: true,
+          validateExistingReferenceId: true,
+        },
+      }),
     ).rejects.toThrow(HttpException);
   });
 
@@ -215,16 +245,19 @@ describe('RegistrationsInputValidator', () => {
     ];
     const programId = 1;
     const userId = 1;
-    const dynamicAttributes = [];
 
     await expect(
-      validator.validateAndCleanRegistrationsInput(
-        csvArray,
+      validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
         programId,
         userId,
-        dynamicAttributes,
-        RegistrationCsvValidationEnum.importAsRegistered,
-      ),
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validatePhoneNumberLookup: true,
+          validateUniqueReferenceId: true,
+          validateExistingReferenceId: true,
+        },
+      }),
     ).rejects.toThrow(HttpException);
   });
 
@@ -238,13 +271,55 @@ describe('RegistrationsInputValidator', () => {
     ];
 
     await expect(
-      validator.validateAndCleanRegistrationsInput(
-        csvArray,
+      validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
         programId,
         userId,
-        dynamicAttributes,
-        RegistrationCsvValidationEnum.bulkUpdate,
-      ),
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig: {
+          validateExistingReferenceId: false,
+          validatePhoneNumberLookup: false,
+          validateUniqueReferenceId: false,
+        },
+      }),
     ).rejects.toThrow(HttpException);
+  });
+
+  it('should report errors for a missing phonenumber when it is not allowed', async () => {
+    const csvArray = [
+      {
+        namePartnerOrganization: 'ABC',
+        preferredLanguage: LanguageEnum.en,
+        maxPayments: '5',
+        nameFirst: 'Test',
+        nameLast: 'Test',
+        programFinancialServiceProviderConfigurationName:
+          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        whatsappPhoneNumber: '1234567890',
+        scope: 'country',
+      },
+    ];
+
+    await expect(
+      validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validateExistingReferenceId: true,
+          validatePhoneNumberLookup: true,
+          validateUniqueReferenceId: true,
+        },
+      }),
+    ).rejects.toHaveProperty('response', [
+      {
+        lineNumber: 1,
+        column: GenericRegistrationAttributes.phoneNumber,
+        value: undefined,
+        error:
+          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+      },
+    ]);
   });
 });

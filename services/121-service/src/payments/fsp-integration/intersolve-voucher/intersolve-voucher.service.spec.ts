@@ -13,7 +13,6 @@ const programId = 3;
 const paymentNr = 5;
 const usernameValue = '1234';
 const passwordValue = '4567';
-const mockCredentials = { username: usernameValue, password: passwordValue };
 const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,

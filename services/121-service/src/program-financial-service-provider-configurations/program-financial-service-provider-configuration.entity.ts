@@ -9,11 +9,10 @@ import {
 } from 'typeorm';
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration-property.entity';
-
+import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @Unique('programFinancialServiceProviderConfigurationUnique', [

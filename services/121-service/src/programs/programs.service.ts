@@ -415,18 +415,18 @@ export class ProgramService {
 
   public async updateProgramRegistrationAttribute(
     programId: number,
-    programRegistrationAttributeId: number,
+    programRegistrationAttributeName: string,
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto,
   ): Promise<ProgramRegistrationAttributeEntity> {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: {
-          id: Equal(programRegistrationAttributeId),
+          name: Equal(programRegistrationAttributeName),
           programId: Equal(programId),
         },
       });
     if (!programRegistrationAttribute) {
-      const errors = `No programRegistrationAttribute found with id ${programRegistrationAttributeId} for program ${programId}`;
+      const errors = `No programRegistrationAttribute found with name ${programRegistrationAttributeName} for program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 

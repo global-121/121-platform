@@ -18,8 +18,8 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
@@ -582,9 +582,10 @@ export class RegistrationsPaginationService {
     >,
     registrationDataInfoArray: RegistrationDataInfo[],
   ) {
-    if (!registrationDataArray || registrationDataArray.length < 1) {
+    if (!registrationDataInfoArray || registrationDataInfoArray.length < 1) {
       return mappedRegistration;
     }
+
     const findRelation = (
       dataRelation: RegistrationDataRelation,
       data: RegistrationAttributeDataEntity,
@@ -600,14 +601,18 @@ export class RegistrationsPaginationService {
       }
       return false;
     };
-    for (const registrationData of registrationDataArray) {
-      const dataRelation = registrationDataInfoArray.find((x) =>
-        findRelation(x.relation, registrationData),
+
+    for (const dataRelation of registrationDataInfoArray) {
+      const registrationData = registrationDataArray.find((x) =>
+        findRelation(dataRelation.relation, x),
       );
-      if (dataRelation && dataRelation.name) {
+      if (registrationData) {
         mappedRegistration[dataRelation.name] = registrationData.value;
+      } else {
+        mappedRegistration[dataRelation.name] = null;
       }
     }
+
     return mappedRegistration;
   }
 
