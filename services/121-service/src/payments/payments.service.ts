@@ -135,6 +135,7 @@ export class PaymentsService {
         programId,
       })
       .groupBy('payment')
+      .orderBy('MIN(transaction.created)', 'ASC')
       .getRawMany();
     return payments;
   }
