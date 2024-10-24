@@ -3,6 +3,7 @@ export interface IntersolveVisaTransactionJobDto {
   readonly paymentNumber: number;
   readonly referenceId: string;
   readonly transactionAmountInMajorUnit: number; // This is in the major unit of the currency, for example whole euros
+  readonly programFinancialServiceProviderConfigurationId: number;
   readonly isRetry: boolean;
   readonly userId: number;
   readonly bulkSize: number;

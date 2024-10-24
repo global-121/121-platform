@@ -33,7 +33,7 @@ function createExportObject(
   const exportObject = {
     ...registration,
   };
-  delete exportObject.fspName;
+  delete exportObject.programFinancialServiceProviderConfigurationName;
   // remove empty values
   Object.keys(exportObject).forEach(
     (key) => !exportObject[key] && delete exportObject[key],

@@ -12,7 +12,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Put,
   Query,
   Req,
   UploadedFile,
@@ -50,7 +49,6 @@ import { MessageHistoryDto } from '@121-service/src/registration/dto/message-his
 import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
-import { UpdateChosenFspDto } from '@121-service/src/registration/dto/set-fsp.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -467,35 +465,6 @@ export class RegistrationsController {
       phonenumber,
       userId,
     );
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationFspUPDATE] })
-  @ApiOperation({
-    summary:
-      '[SCOPED] [EXTERNALLY USED] Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Updated fsp and attributes - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Put('programs/:programId/registrations/:referenceId/fsp')
-  public async updateChosenFsp(
-    @Param() params: { referenceId: string; programId: number },
-    @Body() data: UpdateChosenFspDto,
-    @Req() req: ScopedUserRequest,
-  ) {
-    const userId = RequestHelper.getUserId(req);
-
-    return await this.registrationsService.updateChosenFsp({
-      referenceId: params.referenceId,
-      newFspName: data.newFspName,
-      newFspAttributesRaw: data.newFspAttributes,
-      userId,
-    });
   }
 
   @ApiTags('programs/registrations')

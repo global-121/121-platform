@@ -4,6 +4,5 @@ export class IntersolveVoucherJobDto {
   paymentInfo: PaPaymentDataDto;
   useWhatsapp: boolean;
   payment: number;
-  credentials: { username: string; password: string };
   programId: number;
 }

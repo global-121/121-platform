@@ -24,34 +24,6 @@
   "distributionDuration": 8,
   "fixedTransferValue": 10,
   "paymentAmountMultiplierFormula": "1 + 1 * dragon",
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Excel",
-      "configuration": [
-        {
-          "name": "columnsToExport",
-          "value": ["name", "dob", "house", "phoneNumber"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 250,
   "programQuestions": [
     {
@@ -186,5 +158,33 @@
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "properties": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "dob", "house", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ]
 }

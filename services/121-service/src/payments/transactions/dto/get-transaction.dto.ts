@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 
 export class TransactionReturnDto {
@@ -23,10 +24,10 @@ export class TransactionReturnDto {
   public errorMessage: string;
   @ApiProperty()
   public customData: any;
-  @ApiProperty({ example: 'Visa debit card', type: 'string' })
-  public fspName: string;
-  @ApiProperty({ example: 'Intersolve-visa', type: 'string' })
-  public fsp: string;
+  @ApiProperty({ example: 'ironBank' })
+  public programFinancialServiceProviderConfigurationLabel: LocalizedString;
+  @ApiProperty({ example: { en: 'Iron bank' }, type: 'string' })
+  public programFinancialServiceProviderConfigurationName: string;
   @ApiProperty({
     example: FinancialServiceProviderIntegrationType.api,
     type: 'string',
