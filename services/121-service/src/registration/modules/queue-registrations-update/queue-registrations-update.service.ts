@@ -21,9 +21,16 @@ export class QueueRegistrationUpdateService {
   public async addRegistrationUpdateToQueue(
     job: RegistrationsUpdateJobDto,
   ): Promise<void> {
+    // UsedId has to be defined, else there would have been an auth error
+    if (!this.request.user || !this.request.user.id) {
+      throw new Error(
+        'User information is missing when processing registration update',
+      );
+    }
+
     job.request = {
-      userId: this.request.user?.id,
-      scope: this.request.user?.scope,
+      userId: this.request.user.id,
+      scope: this.request.user.scope,
     };
     await this.queueRegistrationUpdate.add(ProcessNameRegistration.update, job);
   }

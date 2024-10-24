@@ -20,40 +20,17 @@ export default class ProgramsModel {
     return res;
   }
 
-  updateCustomAttributes(programId, nameAttribute) {
-    const url = `${baseUrl}api/programs/${programId}/custom-attributes`;
-    const payload = JSON.stringify({
-      type: 'text',
-      label: {
-        en: 'District',
-        fr: 'Département',
-      },
-      showInPeopleAffectedTable: true,
-      duplicateCheck: true,
-      name: `${nameAttribute}`,
-    });
-    const params = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const res = http.post(url, payload, params);
-    return res;
-  }
-
-  getProgrammeById(programId) {
+  getProgramById(programId) {
     const url = `${baseUrl}api/programs/${programId}`;
     const res = http.get(url);
     return res;
   }
 
-  createProgramQuestion(programId, questionName) {
-    const url = `${baseUrl}api/programs/${programId}/program-questions`;
+  createProgramRegistrationAttribute(programId, attributeName) {
+    const url = `${baseUrl}api/programs/${programId}/registration-attributes`;
     const payload = JSON.stringify({
-      name: questionName,
       options: ['string'],
       scoring: {},
-      persistence: true,
       pattern: 'string',
       showInPeopleAffectedTable: false,
       editableInPortal: true,
@@ -62,12 +39,13 @@ export default class ProgramsModel {
         en: '+31 6 00 00 00 00',
       },
       duplicateCheck: false,
+      name: attributeName,
       label: {
-        en: questionName,
+        en: attributeName,
         fr: 'Remplissez votre nom, sil vous plaît:',
       },
-      answerType: 'text',
-      questionType: 'standard',
+      type: 'text',
+      isRequired: false,
     });
     const params = {
       headers: {

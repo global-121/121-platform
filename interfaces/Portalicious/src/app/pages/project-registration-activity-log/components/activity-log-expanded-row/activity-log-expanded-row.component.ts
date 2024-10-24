@@ -9,7 +9,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import {
   DataListComponent,
@@ -54,7 +54,7 @@ export class ActivityLogExpandedRowComponent
     return (
       activity.type === ActivityTypeEnum.Transaction &&
       activity.attributes.fsp ===
-        FinancialServiceProviderName.intersolveVoucherWhatsapp
+        FinancialServiceProviders.intersolveVoucherWhatsapp
     );
   });
 

@@ -1,6 +1,6 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import fspIntersolveJson from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
@@ -22,7 +22,8 @@ describe('Send custom message with placeholders', () => {
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',
     phoneNumber: '14155238886',
-    fspName: FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    programFinancialServiceProviderConfigurationName:
+      FinancialServiceProviders.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
     maxPayments: 2,
     paymentCountRemaining: 2,
@@ -40,7 +41,7 @@ describe('Send custom message with placeholders', () => {
   it('should send message with placeholder values processed', async () => {
     // Arrange
     const message =
-      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{fspDisplayName}} and {{fullName}} and {{paymentCountRemaining}}';
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{programFinancialServiceProviderConfigurationLabel}} and {{fullName}} and {{paymentCountRemaining}}';
 
     // Act
     await sendMessage(
@@ -73,9 +74,12 @@ describe('Send custom message with placeholders', () => {
       new RegExp('{{paymentAmountMultiplier}}', 'g'),
       String(registrationAh.paymentAmountMultiplier),
     );
+    const labelInPreferredLanguage = findFinancialServiceProviderByNameOrFail(
+      FinancialServiceProviders.intersolveVoucherPaper,
+    ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
-      new RegExp('{{fspDisplayName}}', 'g'),
-      fspIntersolveJson.displayName[registrationAh.preferredLanguage],
+      new RegExp('{{programFinancialServiceProviderConfigurationLabel}}', 'g'),
+      labelInPreferredLanguage!,
     );
     processedMessage = processedMessage.replace(
       new RegExp('{{fullName}}', 'g'),

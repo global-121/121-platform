@@ -10,7 +10,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -54,7 +54,7 @@ export class RegistrationMenuComponent {
       icon: 'pi pi-credit-card',
       visible:
         this.registration.data()?.financialServiceProvider ===
-        FinancialServiceProviderName.intersolveVisa,
+        FinancialServiceProviders.intersolveVisa,
     },
   ]);
 }

@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
@@ -50,30 +49,6 @@ describe('Update program', () => {
       program.fixedTransferValue,
     );
     expect(updateProgramResponse.body.budget).toBe(program.budget);
-  });
-
-  it('should add an fsp to a program', async () => {
-    // Arrange
-    const program = {
-      financialServiceProviders: JSON.parse(
-        JSON.stringify([{ fsp: FinancialServiceProviderName.excel }]),
-      ),
-    };
-
-    // Act
-    const updateProgramResponse = await patchProgram(
-      2,
-      program as UpdateProgramDto,
-      accessToken,
-    );
-
-    // Assert
-    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    const hasSpecificKeyValue =
-      updateProgramResponse.body.financialServiceProviders.some(
-        (fsp) => fsp.fsp === FinancialServiceProviderName.excel,
-      );
-    expect(hasSpecificKeyValue).toBeTruthy();
   });
 
   it('should not be able to add an fsp that does not exists to a program', async () => {

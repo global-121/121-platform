@@ -1,3 +1,4 @@
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   getRegistrations,
@@ -18,13 +19,15 @@ import {
 describe('Load PA table', () => {
   describe('getting registration using paginate', () => {
     let accessToken: string;
-    const attribute1 = 'whatsappPhoneNumber';
-    const attribute2 = 'addressCity';
+    const attribute1 = FinancialServiceProviderAttributes.whatsappPhoneNumber;
+    const attribute2 = FinancialServiceProviderAttributes.addressCity;
     const attribute3 = 'referenceId';
     const attributeName = 'name';
     const attributeFullName = 'fullName';
-    const attributeFspDisplayName = 'fspDisplayName';
-    const attributeFinancelServiceProvider = 'financialServiceProvider';
+    const attributeprogramFinancialServiceProviderConfigurationLabel =
+      'programFinancialServiceProviderConfigurationLabel';
+    const attributeProgramFinancialServiceProviderConfigurationName =
+      'programFinancialServiceProviderConfigurationName';
 
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
@@ -89,6 +92,7 @@ describe('Load PA table', () => {
       // Assert
       expect(data[0]).toHaveProperty(attributeName);
       expect(data[0]).toHaveProperty(attributeFullName);
+      expect(data[0]).not.toHaveProperty(attribute1);
     });
 
     it('should only return full name', async () => {
@@ -108,9 +112,11 @@ describe('Load PA table', () => {
       expect(data[0]).not.toHaveProperty(attributeFullName);
     });
 
-    it('should only return fspDisplayName', async () => {
+    it('should only return programFinancialServiceProviderConfigurationLabel', async () => {
       // Arrange
-      const requestedDynamicAttributes = [attributeFspDisplayName];
+      const requestedDynamicAttributes = [
+        attributeprogramFinancialServiceProviderConfigurationLabel,
+      ];
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
@@ -121,8 +127,12 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
 
       // Assert
-      expect(data[0]).toHaveProperty(attributeFspDisplayName);
-      expect(data[0]).not.toHaveProperty(attributeFinancelServiceProvider);
+      expect(data[0]).toHaveProperty(
+        attributeprogramFinancialServiceProviderConfigurationLabel,
+      );
+      expect(data[0]).not.toHaveProperty(
+        attributeProgramFinancialServiceProviderConfigurationName,
+      );
     });
 
     it('Should return specified amount of PA per page', async () => {

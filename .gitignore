@@ -13,3 +13,4 @@ node_modules
 # TS Build output logs
 *.tsbuildinfo
 
+**/.DS_Store

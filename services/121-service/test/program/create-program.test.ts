@@ -14,6 +14,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+// ##TODO: Enable these tests after FSP config endpoints are implemented (and the logic is reused in create program)
 describe('Create program', () => {
   let accessToken: string;
 
@@ -26,34 +27,36 @@ describe('Create program', () => {
     // Arrange
     const programOcwJson = JSON.parse(JSON.stringify(programOCW));
     const programEthJson = JSON.parse(JSON.stringify(programEth));
-    const programs = [programOcwJson, programEthJson];
+    const seedPrograms = [programOcwJson, programEthJson];
 
-    for (const program of programs) {
+    for (const seedProgram of seedPrograms) {
       // Act
-      const createProgramResponse = await postProgram(program, accessToken);
+      const createProgramResponse = await postProgram(seedProgram, accessToken);
 
       // Assert
       const programId = createProgramResponse.body.id;
       const getProgramResponse = await getProgram(programId, accessToken);
       expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
 
-      const cleanedProgram = cleanProgramForAssertions(program);
+      const cleanedSeedProgram = cleanProgramForAssertions(seedProgram);
       const cleanedProgramResponse = cleanProgramForAssertions(
         getProgramResponse.body,
       );
 
       expect(cleanedProgramResponse).toMatchSnapshot(
-        `Create program response for program: ${program.titlePortal.en}`,
+        `Create program response for program: ${seedProgram.titlePortal.en}`,
       );
 
-      expect(cleanedProgramResponse).toMatchObject(cleanedProgram);
+      expect(cleanedProgramResponse).toMatchObject(cleanedSeedProgram);
     }
   });
 
   it('should not be able to post a program with 2 of the same names', async () => {
     // Arrange
     const programEthJson = JSON.parse(JSON.stringify(programEth));
-    programEthJson.programQuestions[0].name = 'age';
+    programEthJson.programRegistrationAttributes.push(
+      programEthJson.programRegistrationAttributes[0],
+    );
     // Act
     const createProgramResponse = await postProgram(
       programEthJson,
@@ -64,6 +67,7 @@ describe('Create program', () => {
     // Assert
     // const programId = createProgramResponse.body.id;
     expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(createProgramResponse.body).toMatchSnapshot();
 
     // A new program should not have been created
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
@@ -83,35 +87,7 @@ describe('Create program', () => {
     // Assert
     // const programId = createProgramResponse.body.id;
     expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
-
-    // A new program should not have been created
-    expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
-  });
-
-  it('should not be able to post a program with double names', async () => {
-    // Arrange
-    const programEthJson = JSON.parse(JSON.stringify(programEth));
-    // Act
-    const attribute = {
-      name: 'gender',
-      type: 'text',
-      label: {
-        en: 'string',
-        fr: 'string',
-      },
-      showInPeopleAffectedTable: true,
-      duplicateCheck: true,
-    };
-    programEthJson.programCustomAttributes.push(attribute);
-    const createProgramResponse = await postProgram(
-      programEthJson,
-      accessToken,
-    );
-    const getProgramResponse = await getProgram(4, accessToken);
-
-    // Assert
-    // const programId = createProgramResponse.body.id;
-    expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(createProgramResponse.body).toMatchSnapshot();
 
     // A new program should not have been created
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);

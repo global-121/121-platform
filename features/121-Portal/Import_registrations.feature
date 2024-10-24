@@ -11,11 +11,10 @@ Feature: Import registrations with status registered
     Then a CSV-file is downloaded
     And it contains 1 row of column names
     And it contains the generic column names "phoneNumber", "preferredLanguage", "fspName", "paymentAmountMultiplier"
-    And it has dynamic "programCustomAttributes" of that program
-    And it has the dynamic columns for programQuestions of that program
+    And it has the dynamic columns for "programRegistrationAttributes" of that program
 
     When the program is not configured with a paymentAmountMultiplierFormula
-    Then it contains the column "paymentAmountMultiplier" after the "fspQuestions"
+    Then it contains the column "paymentAmountMultiplier"
 
     When the program has scope enabled
     Then it contains the column scope
@@ -24,8 +23,7 @@ Feature: Import registrations with status registered
     Given a valid import CSV file is prepared based on the template
     Given - if program and user have a scope - the file only contains records within the scope of the user
     And it has generic columns "preferredLanguage", "phoneNumber", "fspName"
-    And it has the dynamic columns for programQuestions of that program
-    And it has the dynamic "programCustomAttributes" of that program
+    And it has the dynamic columns for "programRegistrationAttributes" of that program
     And it has as delimiter ";" or ","
     And it has "X" rows
     And the input of each cell is valid

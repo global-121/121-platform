@@ -126,7 +126,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public canUpdateRegistrationAttributeFinancial: boolean;
   private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
-  private canUpdatePaFsp: boolean;
+  private canUpdatePaProgramFspConfig: boolean;
   private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
@@ -317,9 +317,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
       Permission.RegistrationAttributeUPDATE,
     ]);
-    this.canUpdatePaFsp = this.authService.hasAllPermissions(this.programId, [
-      Permission.RegistrationFspUPDATE,
-    ]);
+    this.canUpdatePaProgramFspConfig = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationFspConfigUPDATE],
+    );
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.programId,
       [Permission.RegistrationPersonalREAD],
@@ -562,11 +563,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
               : ''
           }`
         : '',
-      fsp: person.financialServiceProvider,
+      fsp: person.financialServiceProviderName,
       financialServiceProvider: this.translatableStringService.get(
-        this.program?.financialServiceProviders?.find(
-          (p) => p.fsp === person?.financialServiceProvider,
-        )?.displayName,
+        person.programFinancialServiceProviderConfigurationLabel,
       ),
       lastMessageStatus: person.lastMessageStatus,
       hasNote: !!person.note,
@@ -576,7 +575,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       personRow = this.fillPaymentHistoryColumn(personRow);
     }
 
-    // Custom attributes can be personal data or not personal data
+    // Program registration attributes can be personal data or not personal data
     // for now only users that view custom data can see it
     if (this.canViewPersonalData) {
       personRow = this.fillPaTableAttributeRows(person, personRow);
@@ -621,9 +620,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public showInclusionScore(): boolean {
     let show = false;
-    if (this.program?.programQuestions) {
-      for (const question of this.program.programQuestions) {
-        if (question['scoring']) {
+    if (this.program?.programRegistrationAttributes) {
+      for (const attribute of this.program.programRegistrationAttributes) {
+        if (attribute['scoring']) {
           show = true;
           break;
         }
@@ -643,7 +642,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         canUpdateRegistrationAttributeFinancial:
           this.canUpdateRegistrationAttributeFinancial,
         canUpdatePersonalData: this.canUpdatePersonalData,
-        canUpdatePaFsp: this.canUpdatePaFsp,
+        canUpdatePaProgramFspConfig: this.canUpdatePaProgramFspConfig,
         canViewMessageHistory: this.canViewMessageHistory,
         canViewPaymentData: this.canViewPaymentData,
       },

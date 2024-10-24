@@ -23,36 +23,8 @@
   "distributionFrequency": "month",
   "distributionDuration": 3,
   "fixedTransferValue": 10,
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Intersolve-voucher-paper",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 250,
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "nameFirst",
       "label": {
@@ -62,10 +34,8 @@
         "fr": "Prénom",
         "nl": "Voornaam"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -80,10 +50,8 @@
         "fr": "Nom de famille",
         "nl": "Achternaam"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -101,13 +69,26 @@
       "placeholder": {
         "en": "+31 6 00 00 00 00"
       },
-      "answerType": "tel",
-      "questionType": "standard",
+      "type": "tel",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {
@@ -118,5 +99,33 @@
     "nl": "[beschrijving van het programma]"
   },
   "fullnameNamingConvention": ["nameFirst", "nameLast"],
-  "languages": ["ar", "en", "es", "fr", "nl"]
+  "languages": ["ar", "en", "es", "fr", "nl"],
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Intersolve-voucher-paper",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    }
+  ]
 }

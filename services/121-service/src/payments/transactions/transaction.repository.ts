@@ -2,7 +2,6 @@ import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -42,14 +41,14 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     registrationId,
     referenceId,
     status,
-    fspName,
+    programFinancialServiceProviderConfigId,
   }: {
     programId: number;
     payment?: number;
     registrationId?: number;
     referenceId?: string;
     status?: TransactionStatusEnum;
-    fspName?: FinancialServiceProviderName;
+    programFinancialServiceProviderConfigId?: number;
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
@@ -60,11 +59,15 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-        'fsp.displayName as "fspName"',
-        'fsp.fsp as "fsp"',
-        'fsp.integrationType as "fspIntegrationType"',
+        'fspconfig.financialServiceProviderName as "financialServiceProviderName"',
+        'transaction.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
+        'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
+        'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
       ])
-      .leftJoin('transaction.financialServiceProvider', 'fsp')
+      .leftJoin(
+        'transaction.programFinancialServiceProviderConfiguration',
+        'fspconfig',
+      )
       .leftJoin('transaction.registration', 'r')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
@@ -93,10 +96,13 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         { status },
       );
     }
-    if (fspName) {
-      transactionQuery = transactionQuery.andWhere('fsp.fsp = :fspName', {
-        fspName,
-      });
+    if (programFinancialServiceProviderConfigId) {
+      transactionQuery = transactionQuery.andWhere(
+        'fspconfig.id = :programFinancialServiceProviderConfigId',
+        {
+          programFinancialServiceProviderConfigId,
+        },
+      );
     }
     return transactionQuery;
   }

@@ -24,36 +24,8 @@
   "distributionDuration": 8,
   "fixedTransferValue": 10,
   "paymentAmountMultiplierFormula": "1 + 1 * dragon",
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Excel",
-      "configuration": [
-        {
-          "name": "columnsToExport",
-          "value": ["name", "dob", "house", "phoneNumber"]
-        },
-        {
-          "name": "columnToMatch",
-          "value": "phoneNumber"
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 250,
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "name",
       "label": {
@@ -64,9 +36,7 @@
         "nl": "Naam"
       },
       "answerType": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -81,9 +51,7 @@
         "nl": "Geboortedatum"
       },
       "answerType": "date",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -99,7 +67,6 @@
         "nl": "Huis"
       },
       "answerType": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "lannister",
@@ -137,41 +104,12 @@
         "nl": "Aantal draken"
       },
       "answerType": "numeric",
-      "questionType": "standard",
       "options": null,
       "editableInPortal": true,
       "scoring": {
         "multiplier": 2
       },
       "showInPeopleAffectedTable": false
-    }
-  ],
-  "programCustomAttributes": [
-    {
-      "label": {
-        "ar": "لا يعرف شيئًا",
-        "en": "Knows nothing",
-        "es": "No sabe nada",
-        "fr": "Ne sait rien",
-        "nl": "Weet niets"
-      },
-      "name": "knowsNothing",
-      "type": "boolean",
-      "editableInPortal": true,
-      "showInPeopleAffectedTable": true
-    },
-    {
-      "label": {
-        "ar": "الشعار",
-        "en": "Motto",
-        "es": "Lema",
-        "fr": "Devise",
-        "nl": "Motto"
-      },
-      "name": "motto",
-      "type": "text",
-      "editableInPortal": true,
-      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {
@@ -186,5 +124,33 @@
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
   "enableScope": false,
-  "allowEmptyPhoneNumber": false
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "properties": [
+        {
+          "name": "columnsToExport",
+          "value": ["name", "dob", "house", "phoneNumber"]
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ]
 }

@@ -1,3 +1,4 @@
+// import { open } from 'k6';
 import http from 'k6/http';
 
 import config from './config.js'; // Import your configuration file
@@ -8,7 +9,7 @@ export default class RegistrationsModel {
   constructor() {}
 
   importRegistrations(programId, registrations) {
-    const url = `${baseUrl}api/programs/${programId}/registrations/import`;
+    const url = `${baseUrl}api/programs/${programId}/registrations`;
     const payload = JSON.stringify([registrations]);
     const params = {
       headers: {
@@ -17,6 +18,20 @@ export default class RegistrationsModel {
     };
 
     const res = http.post(url, payload, params);
+
+    return res;
+  }
+
+  importRegistrationsCsv(programId, csvFile) {
+    const url = `${baseUrl}api/programs/${programId}/registrations/import`;
+    const formData = {
+      file: http.file(csvFile, 'registrations.csv'),
+    };
+    const params = {
+      timeout: '1200s',
+    };
+
+    const res = http.post(url, formData, params);
 
     return res;
   }

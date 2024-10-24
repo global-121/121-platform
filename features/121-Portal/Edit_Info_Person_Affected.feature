@@ -22,8 +22,7 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" and "preferredLanguage" is shown
-    And an input-field for each Custom Attribute is shown
-    And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
+    And an input-field for each "program registration attribute" is shown
     And a dropdown-list with the current chosen FSP is shown
     And all input-fields have an accompanying "save" button which is disabled
     And there is an explanation, including PII-warning
@@ -68,7 +67,7 @@ Feature: Edit information on Person Affected
     And the "preferredLanguage" is updated
     And the data change is logged in the Profile page Activity overview > See 'View_PA_profile_page.feature' for details
 
-  Scenario: Update custom attributes successfully
+  Scenario: Update program registration attribute successfully
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown

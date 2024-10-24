@@ -13,18 +13,84 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
-import {
-  CreateProgramCustomAttributeDto,
-  CustomAttributeType,
-} from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
+// This declared at the top of the file because it is used in the dto class and else it is not defined yet
+// It's not defined inline because typing works more convient here
+const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
+  {
+    name: 'nameFirst',
+    type: RegistrationAttributeTypes.text,
+    options: undefined,
+    export: [ExportType.allPeopleAffected, ExportType.included],
+    scoring: {},
+    showInPeopleAffectedTable: true,
+    editableInPortal: false,
+    label: {
+      en: 'First Name',
+    },
+  },
+  {
+    name: 'nameLast',
+    type: RegistrationAttributeTypes.text,
+    options: undefined,
+    export: [ExportType.allPeopleAffected, ExportType.included],
+    scoring: {},
+    showInPeopleAffectedTable: true,
+    editableInPortal: false,
+    label: {
+      en: 'Last Name',
+    },
+  },
+  {
+    name: 'nr_of_children',
+    label: {
+      en: 'How many children do you have?',
+    },
+    type: RegistrationAttributeTypes.numeric,
+    options: undefined,
+    scoring: {
+      '0-18': 999,
+      '19-65': 0,
+      '65>': 6,
+    },
+    showInPeopleAffectedTable: true,
+    editableInPortal: false,
+  },
+  {
+    name: 'roof_type',
+    label: {
+      en: 'What type is your roof?',
+    },
+    type: RegistrationAttributeTypes.dropdown,
+    options: [
+      {
+        option: 'steel',
+        label: {
+          en: 'Steel',
+        },
+      },
+      {
+        option: 'tiles',
+        label: {
+          en: 'Tiles',
+        },
+      },
+    ],
+    scoring: {
+      '0': 3,
+      '1': 6,
+    },
+    showInPeopleAffectedTable: true,
+    editableInPortal: true,
+  },
+];
 export class ProgramReturnDto {
   @ApiProperty({ example: 1, type: 'number' })
   id: number;
@@ -98,24 +164,6 @@ export class ProgramReturnDto {
   @IsString()
   public readonly paymentAmountMultiplierFormula?: string;
 
-  @ApiProperty({
-    example: [
-      {
-        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
-      },
-      {
-        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
-      },
-    ],
-    description:
-      'Use the GET /financial-service-providers endpoint to find valid fspNames.',
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => ProgramFinancialServiceProviderDto)
-  public readonly financialServiceProviders: ProgramFinancialServiceProviderDto[];
-
   @ApiProperty({ example: 250 })
   @IsNumber()
   @IsOptional()
@@ -126,120 +174,13 @@ export class ProgramReturnDto {
   public readonly tryWhatsAppFirst: boolean;
 
   @ApiProperty({
-    example: [
-      {
-        name: 'nameParterOrganization',
-        type: CustomAttributeType.text,
-        label: { en: 'Name partner organization' },
-        export: [
-          ExportType.allPeopleAffected,
-          ExportType.included,
-          ExportType.payment,
-        ],
-        showInPeopleAffectedTable: true,
-      },
-      {
-        name: 'exampleBoolean',
-        type: CustomAttributeType.boolean,
-        label: { en: 'Example boolean' },
-        export: [
-          ExportType.allPeopleAffected,
-          ExportType.included,
-          ExportType.payment,
-        ],
-        showInPeopleAffectedTable: true,
-      },
-    ],
+    example: exampleAttributesReturn,
   })
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => CreateProgramCustomAttributeDto)
-  public readonly programCustomAttributes: CreateProgramCustomAttributeDto[];
-
-  @ApiProperty({
-    example: [
-      {
-        name: 'nameFirst',
-        answerType: 'text',
-        questionType: 'standard',
-        options: null,
-        persistence: true,
-        export: [ExportType.allPeopleAffected, ExportType.included],
-        scoring: {},
-        showInPeopleAffectedTable: true,
-        editableInPortal: false,
-        label: {
-          en: 'First Name',
-        },
-      },
-      {
-        name: 'nameLast',
-        answerType: 'text',
-        questionType: 'standard',
-        options: null,
-        persistence: true,
-        export: [ExportType.allPeopleAffected, ExportType.included],
-        scoring: {},
-        showInPeopleAffectedTable: true,
-        editableInPortal: false,
-        label: {
-          en: 'Last Name',
-        },
-      },
-      {
-        name: 'nr_of_children',
-        label: {
-          en: 'How many children do you have?',
-        },
-        answerType: 'numeric',
-        questionType: 'standard',
-        options: null,
-        scoring: {
-          '0-18': 999,
-          '19-65': 0,
-          '65>': 6,
-        },
-        showInPeopleAffectedTable: true,
-        editableInPortal: false,
-      },
-      {
-        name: 'roof_type',
-        label: {
-          en: 'What type is your roof?',
-        },
-        answerType: 'dropdown',
-        questionType: 'standard',
-        options: [
-          {
-            id: 0,
-            option: 'steel',
-            label: {
-              en: 'Steel',
-            },
-          },
-          {
-            id: 1,
-            option: 'tiles',
-            label: {
-              en: 'Tiles',
-            },
-          },
-        ],
-        scoring: {
-          '0': 3,
-          '1': 6,
-        },
-        showInPeopleAffectedTable: true,
-        editableInPortal: true,
-      },
-    ],
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => CreateProgramQuestionDto)
-  public readonly programQuestions: CreateProgramQuestionDto[];
+  @Type(() => ProgramRegistrationAttributeDto)
+  public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()
@@ -248,7 +189,8 @@ export class ProgramReturnDto {
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
-    description: 'Should be array of name-related program-questions.',
+    description:
+      'Should be array of name-related program-registration-attributes.',
   })
   @IsArray()
   @IsOptional()
@@ -269,6 +211,11 @@ export class ProgramReturnDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly allowEmptyPhoneNumber: boolean;
+
+  // ##TODO add proper API documentation
+  @ApiProperty()
+  @IsArray()
+  public readonly financialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationResponseDto[];
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()
