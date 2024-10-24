@@ -1,0 +1,74 @@
+<p-card
+  styleClass="[&_.p-card-content]:flex-end group relative h-full border border-transparent *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
+>
+  <ng-template pTemplate="title">
+    <a
+      [routerLink]=""
+      class="after:absolute after:inset-0 after:block group-focus-within:text-purple group-hover:text-purple"
+    >
+      @if (!paymentId()) {
+        <app-skeleton-inline />
+      } @else {
+        <span
+          class="line-clamp-2 text-ellipsis"
+          [title]="'Payment ' + paymentId() | translatableString"
+        >
+          {{ 'Payment ' + paymentId() | translatableString }}
+        </span>
+      }
+    </a>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <dl class="flex flex-wrap divide-y border-b border-grey-100">
+      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="includedRegistrations()"
+          label="Included reg."
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+      <div class="basis-1/2 border-s border-grey-100 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="totalAmount()"
+          label="Total amount"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="metrics.data()?.success?.count"
+          label="Successful transfers"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+      <div class="basis-1/2 border-s border-t border-grey-100 px-1 py-2">
+        <app-project-metric-container
+          [pending]="metrics.isPending()"
+          [value]="metrics.data()?.failed?.count"
+          label="Failed transfers"
+          i18n-label
+        ></app-project-metric-container>
+      </div>
+    </dl>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div>
+      @if (cardIndex() === 0 && paymentInProgress()) {
+        @if (metrics.isPending()) {
+          <app-skeleton-inline width="8rem" />
+        } @else {
+          <app-colored-chip
+            variant="orange"
+            label="In progress"
+            i18n-label
+            icon="pi pi-spinner"
+            i18n-icon
+          ></app-colored-chip>
+        }
+      }
+    </div>
+  </ng-template>
+</p-card>

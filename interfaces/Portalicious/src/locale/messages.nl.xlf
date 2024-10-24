@@ -139,10 +139,6 @@
         <source>Enter your password</source>
         <target state="translated">Vul een wachtwoord in</target>
       </trans-unit>
-      <trans-unit id="7596687906875795034" datatype="html">
-        <source>project-payments works!</source>
-        <target state="new">project-payments werkt!</target>
-      </trans-unit>
       <trans-unit id="9132374083993014120" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
         <target state="translated">Ongeldig e-mailadres of wachtwoord. Dubbel-check uw gegevens en probeer opnieuw.</target>
@@ -1066,6 +1062,30 @@
       <trans-unit id="3573847364103936169" datatype="html">
         <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
         <target state="new">Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</target>
+      </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+        <target state="new">Included reg.</target>
+      </trans-unit>
+      <trans-unit id="5004550577313573215" datatype="html">
+        <source>Total amount</source>
+        <target state="new">Total amount</target>
+      </trans-unit>
+      <trans-unit id="5836528780566781670" datatype="html">
+        <source>Successful transfers</source>
+        <target state="new">Successful transfers</target>
+      </trans-unit>
+      <trans-unit id="9023742269421706395" datatype="html">
+        <source>Failed transfers</source>
+        <target state="new">Failed transfers</target>
+      </trans-unit>
+      <trans-unit id="3307214558906712688" datatype="html">
+        <source>In progress</source>
+        <target state="new">In progress</target>
+      </trans-unit>
+      <trans-unit id="869382835948757583" datatype="html">
+        <source>pi pi-spinner</source>
+        <target state="new">pi pi-spinner</target>
       </trans-unit>
     </body>
   </file>
