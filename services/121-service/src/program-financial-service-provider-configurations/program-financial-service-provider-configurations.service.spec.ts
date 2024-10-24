@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from './entities/program-financial-service-provider-configuration.entity';
 
 describe('ProgramFinancialServiceProviderConfigurationsService', () => {
   let service: ProgramFinancialServiceProviderConfigurationsService;

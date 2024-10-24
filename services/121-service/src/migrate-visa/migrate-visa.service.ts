@@ -19,7 +19,7 @@ import {
 } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity';
 import { IntersolveBlockTokenReasonCodeEnum } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-block-token-reason-code.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
