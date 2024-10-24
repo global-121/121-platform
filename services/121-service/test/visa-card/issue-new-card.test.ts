@@ -125,7 +125,7 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Assert
-    expect(issueVisaCardResponseAttempt1.status).toBe(500);
+    expect(issueVisaCardResponseAttempt1.status).toBe(400);
     expect(issueVisaCardResponseAttempt1.text).toContain(
       IntersolveVisa121ErrorText.reissueCard,
     );
