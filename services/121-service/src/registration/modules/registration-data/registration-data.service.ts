@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Equal, Repository, SelectQueryBuilder } from 'typeorm';
+import { Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { AppDataSource } from '@121-service/src/appdatasource';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
@@ -12,10 +11,11 @@ import {
 import { RegistrationDataError } from '@121-service/src/registration/errors/registration-data.error';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
+// ## TODO see what be refactored in this service to live in a repository file
 @Injectable()
 export class RegistrationDataService {
   @InjectRepository(ProgramEntity)
@@ -59,32 +59,16 @@ export class RegistrationDataService {
   private getRegistrationDataQuery(
     registration: RegistrationEntity,
     name: string,
-  ): SelectQueryBuilder<RegistrationDataEntity> {
+  ): SelectQueryBuilder<RegistrationAttributeDataEntity> {
     return this.registrationDataScopedRepository
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
-      .leftJoin('registrationData.programQuestion', 'programQuestion')
-      .leftJoin('registrationData.fspQuestion', 'fspQuestion')
       .leftJoin(
-        'registrationData.programCustomAttribute',
-        'programCustomAttribute',
+        'registrationData.programRegistrationAttribute',
+        'programRegistrationAttribute',
       )
       .andWhere('registration.id = :id', { id: registration.id })
-      .andWhere(
-        new Brackets((qb) => {
-          qb.andWhere(`programQuestion.name = :name`, { name })
-            .orWhere(
-              `(fspQuestion.name = :name AND "fspQuestion"."fspId" = :fsp)`,
-              {
-                name,
-                fsp: registration.fspId,
-              },
-            )
-            .orWhere(`programCustomAttribute.name = :name`, {
-              name,
-            });
-        }),
-      );
+      .andWhere(`programRegistrationAttribute.name = :name`, { name });
   }
 
   public async getRegistrationDataByName(
@@ -92,14 +76,11 @@ export class RegistrationDataService {
     name: string,
   ): Promise<RegistrationDataByNameDto | null> {
     const query = this.getRegistrationDataQuery(registration, name);
-    const queryWithSelect = query.select(
-      `CASE
-          WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
-          WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
-          WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
-        END as name,
-        value, "registrationData".id`,
-    );
+    const queryWithSelect = query.select([
+      'programRegistrationAttribute.name as name',
+      'registrationData.value as value',
+      'registrationData.id as id',
+    ]);
     const result = queryWithSelect.getRawOne();
     return result;
   }
@@ -107,7 +88,7 @@ export class RegistrationDataService {
   public async getRegistrationDataEntityByName(
     registration: RegistrationEntity,
     name: string,
-  ): Promise<RegistrationDataEntity | null> {
+  ): Promise<RegistrationAttributeDataEntity | null> {
     const query = this.getRegistrationDataQuery(registration, name);
     return query.getOne();
   }
@@ -119,49 +100,24 @@ export class RegistrationDataService {
     const result = new RegistrationDataRelation();
     const query = this.programRepository
       .createQueryBuilder('program')
-      .leftJoin('program.programQuestions', 'programQuestion')
+      .leftJoin(
+        'program.programRegistrationAttributes',
+        'programRegistrationAttributes',
+      )
       .andWhere('program.id = :programId', {
         programId: registration.programId,
       })
-      .andWhere('programQuestion.name = :name', { name })
-      .select('"programQuestion".id', 'id');
+      .andWhere('programRegistrationAttributes.name = :name', { name })
+      .select('"programRegistrationAttributes".id', 'id');
 
     const resultProgramQuestion = await query.getRawOne();
 
     if (resultProgramQuestion) {
-      result.programQuestionId = resultProgramQuestion.id;
+      result.programRegistrationAttributeId = resultProgramQuestion.id;
       return result;
     }
 
-    const resultFspQuestion = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoin('registration.fsp', 'fsp')
-      .leftJoin('fsp.questions', 'question')
-      .andWhere('registration.id = :registration', {
-        registration: registration.id,
-      })
-      .andWhere('question.name = :name', { name })
-      .andWhere('question."fspId" = fsp.id')
-      .select('"question".id', 'id')
-      .getRawOne();
-    if (resultFspQuestion) {
-      result.fspQuestionId = resultFspQuestion.id;
-      return result;
-    }
-    const resultProgramCustomAttribute = await this.programRepository
-      .createQueryBuilder('program')
-      .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
-      .andWhere('program.id = :programId', {
-        programId: registration.programId,
-      })
-      .andWhere('programCustomAttribute.name = :name', { name })
-      .select('"programCustomAttribute".id', 'id')
-      .getRawOne();
-    if (resultProgramCustomAttribute) {
-      result.programCustomAttributeId = resultProgramCustomAttribute.id;
-      return result;
-    }
-    const errorMessage = `Cannot find registration data, name: '${name}' not found (In program questions, fsp questions, and program custom attributes)`;
+    const errorMessage = `Cannot find registration data, name: '${name}' not found (In program registration attributes)`;
     throw new RegistrationDataError(errorMessage);
   }
 
@@ -200,25 +156,11 @@ export class RegistrationDataService {
   ): Promise<void> {
     value = value === undefined || value === null ? '' : String(value);
 
-    if (relation.programQuestionId) {
-      await this.saveProgramQuestionData(
+    if (relation.programRegistrationAttributeId) {
+      await this.saveProgramRegistrationAttributeData(
         registration,
         value,
-        relation.programQuestionId,
-      );
-    }
-    if (relation.fspQuestionId) {
-      await this.saveFspQuestionData(
-        registration,
-        value,
-        relation.fspQuestionId,
-      );
-    }
-    if (relation.programCustomAttributeId) {
-      await this.saveProgramCustomAttributeData(
-        registration,
-        value,
-        relation.programCustomAttributeId,
+        relation.programRegistrationAttributeId,
       );
     }
   }
@@ -228,121 +170,16 @@ export class RegistrationDataService {
     value: string[],
     relation: RegistrationDataRelation,
   ): Promise<void> {
-    if (relation.programQuestionId) {
-      await this.saveProgramQuestionDataMultiSelect(
+    if (relation.programRegistrationAttributeId) {
+      await this.saveProgramRegistrationAttributeDataMultiSelect(
         registration,
         value,
-        relation.programQuestionId,
-      );
-    }
-    if (relation.fspQuestionId) {
-      await this.saveFspQuestionDataMultiSelect(
-        registration,
-        value,
-        relation.fspQuestionId,
-      );
-    }
-    if (relation.programCustomAttributeId) {
-      await this.saveProgramCustomAttributeDataMultiSelect(
-        registration,
-        value,
-        relation.programCustomAttributeId,
+        relation.programRegistrationAttributeId,
       );
     }
   }
 
-  private async saveProgramQuestionData(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    value: string,
-    id: number,
-  ): Promise<void> {
-    const existingEntry = await this.registrationDataScopedRepository
-      .createQueryBuilder('registrationData')
-      .andWhere('"registrationId" = :regId', { regId: registration.id })
-      .leftJoin('registrationData.programQuestion', 'programQuestion')
-      .andWhere('programQuestion.id = :id', { id })
-      .getOne();
-    if (existingEntry) {
-      existingEntry.value = value;
-      await this.registrationDataScopedRepository.save(existingEntry);
-    } else {
-      const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registrationId = registration.id;
-      newRegistrationData.value = value;
-      newRegistrationData.programQuestionId = id;
-      await this.registrationDataScopedRepository.save(newRegistrationData);
-    }
-  }
-
-  private async saveProgramQuestionDataMultiSelect(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    values: string[],
-    id: number,
-  ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-
-    await repoRegistrationData.delete({
-      registration: { id: registration.id },
-      programQuestion: { id },
-    });
-
-    for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registrationId = registration.id;
-      newRegistrationData.value = value;
-      newRegistrationData.programQuestionId = id;
-      await repoRegistrationData.save(newRegistrationData);
-    }
-  }
-
-  private async saveFspQuestionData(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    value: string,
-    id: number,
-  ): Promise<void> {
-    const repoRegistrationData = AppDataSource.getRepository(
-      RegistrationDataEntity,
-    );
-    const existingEntry = await repoRegistrationData
-      .createQueryBuilder('registrationData')
-      .andWhere('"registrationId" = :regId', { regId: registration.id })
-      .leftJoin('registrationData.fspQuestion', 'fspQuestion')
-      .andWhere('fspQuestion.id = :id', { id })
-      .getOne();
-    if (existingEntry) {
-      existingEntry.value = value;
-      await repoRegistrationData.save(existingEntry);
-    } else {
-      const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registrationId = registration.id;
-      newRegistrationData.value = value;
-      newRegistrationData.fspQuestionId = id;
-      await repoRegistrationData.save(newRegistrationData);
-    }
-  }
-
-  private async saveFspQuestionDataMultiSelect(
-    registration: RegistrationEntity | RegistrationViewEntity,
-    values: string[],
-    id: number,
-  ): Promise<void> {
-    await this.registrationDataScopedRepository.deleteUnscoped({
-      registration: { id: registration.id },
-      fspQuestion: { id },
-    });
-
-    for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
-      newRegistrationData.registrationId = registration.id;
-      newRegistrationData.value = value;
-      newRegistrationData.fspQuestionId = id;
-      await this.registrationDataScopedRepository.save(newRegistrationData);
-    }
-  }
-
-  private async saveProgramCustomAttributeData(
+  private async saveProgramRegistrationAttributeData(
     registration: RegistrationEntity | RegistrationViewEntity,
     value: string,
     id: number,
@@ -351,39 +188,61 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin(
-        'registrationData.programCustomAttribute',
-        'programCustomAttribute',
+        'registrationData.programRegistrationAttribute',
+        'programRegistrationAttribute',
       )
-      .andWhere('programCustomAttribute.id = :id', { id })
+      .andWhere('programRegistrationAttribute.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
       await this.registrationDataScopedRepository.save(existingEntry);
     } else {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
-      newRegistrationData.programCustomAttributeId = id;
+      newRegistrationData.programRegistrationAttributeId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
-  private async saveProgramCustomAttributeDataMultiSelect(
+  private async saveProgramRegistrationAttributeDataMultiSelect(
     registration: RegistrationEntity | RegistrationViewEntity,
     values: string[],
     id: number,
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      programCustomAttribute: { id },
+      programRegistrationAttribute: { id },
     });
 
     for await (const value of values) {
-      const newRegistrationData = new RegistrationDataEntity();
+      const newRegistrationData = new RegistrationAttributeDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
-      newRegistrationData.programCustomAttributeId = id;
+      newRegistrationData.programRegistrationAttributeId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
+    }
+  }
+
+  public async deleteProgramRegistrationAttributeData(
+    registration: RegistrationEntity,
+    options: RegistrationDataOptions,
+  ) {
+    let { relation } = options;
+    if (!relation && !options.name) {
+      const errors = `Cannot delete registration data, need either a dataRelation or a name`;
+      throw new Error(errors);
+    }
+    if (!relation) {
+      relation = await this.getRelationForName(registration, options.name!);
+    }
+    if (relation.programRegistrationAttributeId) {
+      await this.registrationDataScopedRepository.deleteUnscoped({
+        registrationId: Equal(registration.id),
+        programRegistrationAttribute: {
+          id: relation.programRegistrationAttributeId,
+        },
+      });
     }
   }
 }

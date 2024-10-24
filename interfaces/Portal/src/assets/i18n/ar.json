@@ -157,7 +157,6 @@
         "btn-text": "تعليمات دفع الصادرات",
         "confirm-message": "سيؤدي هذا إلى تنزيل ملف يحتوي على تعليمات الدفع لمزود الخدمة المالية.",
         "sub-message": {
-          "no-reconciliation": "يجب عليك استخدام هذا الملف <strong>مرة واحدة فقط لكل دفعة</strong> في بوابة مزود الخدمة المالية.",
           "reconciliation": "سيتضمن هذا التصدير فقط الأشخاص المتأثرين الذين <strong>تنتظرهم</strong> حالة المعاملة الحالية."
         },
         "timestamp": "آخر تصدير تم في: {{dateTime}}"
@@ -366,7 +365,6 @@
           "custom-attribute-true": "نعم",
           "dob": "تاريخ الميلاد",
           "failedPayment": "فشل الدفع #",
-          "fspDisplayName": "مزود الخدمات المالية",
           "hasNote": "لديه ملاحظة",
           "inclusionScore": "درجة التضمين",
           "lastMessageStatus": "آخر رسالة",
@@ -381,6 +379,7 @@
           "personAffectedSequence": "الشخص المتضرر",
           "phoneNumber": "رقم الهاتف",
           "preferredLanguage": "اللغة المفضلة",
+          "programFinancialServiceProviderConfigurationLabel": "مزود الخدمات المالية",
           "referenceId": "الرقم المرجعي",
           "registrationCreated": "تم إنشاء التسجيل",
           "registrationCreatedDate": "تاريخ إنشاء التسجيل",

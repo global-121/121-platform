@@ -24,6 +24,7 @@ const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
     addressPostalCode: '1234AB',
     addressCity: 'Den Haag',
     phoneNumber: '14155238886',
+    programFinancialServiceProviderConfigurationId: 1,
   },
 ];
 
@@ -39,6 +40,7 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
     phoneNumber: '254708374149',
     idNumber: 'nat-123',
     originatorConversationId: 'originator-id',
+    programFinancialServiceProviderConfigurationId: 1,
   },
 ];
 

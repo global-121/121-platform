@@ -1,3 +1,4 @@
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
@@ -13,7 +14,7 @@ import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { Event } from '../models/event.model';
 import { ExportType } from '../models/export-type.model';
-import { Fsp } from '../models/fsp.model';
+import { FinancialServiceProviderConfiguration } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { Wallet } from '../models/intersolve-visa-wallet.model';
 import { Message, MessageTemplate } from '../models/message.model';
@@ -127,18 +128,14 @@ export class ProgramsServiceApiService {
   getPaTableAttributes(
     programId: number | string,
     options?: {
-      includeCustomAttributes?: boolean;
-      includeProgramQuestions?: boolean;
-      includeFspQuestions?: boolean;
+      includeProgramRegistrationAttributes?: boolean;
       includeTemplateDefaultAttributes?: boolean;
       filterShowInPeopleAffectedTable?: boolean;
     },
   ): Promise<PaTableAttribute[]> {
     let params = new HttpParams();
     const defaultOptions = {
-      includeCustomAttributes: true,
-      includeProgramQuestions: true,
-      includeFspQuestions: true,
+      includeProgramRegistrationAttributes: true,
       includeTemplateDefaultAttributes: false,
       filterShowInPeopleAffectedTable: true,
     };
@@ -348,17 +345,20 @@ export class ProgramsServiceApiService {
     programId: number,
     type: ImportType,
   ): Promise<void> {
-    const downloadData: string[] = await this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/payments/fsp-reconciliation/import-template`,
-    );
+    const templates: { name: string; template: string[] }[] =
+      await this.apiService.get(
+        environment.url_121_service_api,
+        `/programs/${programId}/payments/fsp-reconciliation/import-template`,
+      );
 
-    const csvContents = downloadData.join(';') + '\r\n';
+    for (const template of templates) {
+      const csvContents = template.template.join(';') + '\r\n';
 
-    saveAs(
-      new Blob([csvContents], { type: 'text/csv' }),
-      `${type}-TEMPLATE.csv`,
-    );
+      saveAs(
+        new Blob([csvContents], { type: 'text/csv' }),
+        `${type}-${template.name}-TEMPLATE.csv`,
+      );
+    }
     return;
   }
 
@@ -809,23 +809,12 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getFspById(fspId: number): Promise<Fsp> {
+  getFspByName(
+    fspName: FinancialServiceProviders,
+  ): Promise<FinancialServiceProviderConfiguration> {
     return this.apiService.get(
       environment.url_121_service_api,
-      '/financial-service-providers/' + fspId,
-    );
-  }
-
-  updateChosenFsp(
-    referenceId: string,
-    programId: number,
-    newFspName: string,
-    newFspAttributes?: object,
-  ): Promise<Fsp> {
-    return this.apiService.put(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/${referenceId}/fsp`,
-      { newFspName, newFspAttributes },
+      '/financial-service-providers/' + fspName,
     );
   }
 
@@ -839,17 +828,8 @@ export class ProgramsServiceApiService {
 
   async getDuplicateCheckAttributes(programId: number): Promise<string[]> {
     const program = await this.getProgramById(programId);
-    const fspAttributes = program.financialServiceProviders
-      .filter((fsp) => !!fsp.questions)
-      .map((fsp) => fsp.questions)
-      .flat();
-
     const attributeNames: string[] = []
-      .concat(
-        program.programQuestions,
-        program.programCustomAttributes,
-        fspAttributes,
-      )
+      .concat(program.programRegistrationAttributes)
       .filter((attribute) => attribute.duplicateCheck === true)
       .map((attribute) => attribute.name);
 

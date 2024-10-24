@@ -7,8 +7,10 @@ import {
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
-import { CreateProgramCustomAttributeDto } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
-import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
+import {
+  ProgramRegistrationAttributeDto,
+  UpdateProgramRegistrationAttributeDto,
+} from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -55,26 +57,34 @@ export async function getProgram(
     .set('Cookie', [accessToken]);
 }
 
-export async function postProgramQuestion(
-  programQuestion: CreateProgramQuestionDto,
+export async function postProgramRegistrationAttribute(
+  programRegistrationAttribute: ProgramRegistrationAttributeDto,
   programId: number,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/program-questions`)
+    .post(`/programs/${programId}/registration-attributes`)
     .set('Cookie', [accessToken])
-    .send(programQuestion);
+    .send(programRegistrationAttribute);
 }
 
-export async function postCustomAttribute(
-  customAttribute: CreateProgramCustomAttributeDto,
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
+export async function patchProgramRegistrationAttribute({
+  programRegistrationAttributeName,
+  programRegistrationAttribute,
+  programId,
+  accessToken,
+}: {
+  programRegistrationAttributeName: string;
+  programRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/custom-attributes`)
+    .patch(
+      `/programs/${programId}/registration-attributes/${programRegistrationAttributeName}`,
+    )
     .set('Cookie', [accessToken])
-    .send(customAttribute);
+    .send(programRegistrationAttribute);
 }
 
 export async function unpublishProgram(
@@ -412,6 +422,8 @@ export async function waitForMessagesToComplete({
     referenceIdsWaitingForMessages = messageHistoriesWithoutMinimumMessages.map(
       ({ referenceId }) => referenceId,
     );
+    // To not overload the server and get 429
+    await waitFor(100);
   }
 
   if (referenceIdsWaitingForMessages.length > 0) {
@@ -513,4 +525,19 @@ export async function getMessageTemplates(
   return await getServer()
     .get(`/notifications/${programId}/message-templates`)
     .set('Cookie', [accessToken]);
+}
+
+export async function setAllProgramsRegistrationAttributesNonRequired(
+  programId: number,
+  accessToken: string,
+) {
+  const program = (await getProgram(programId, accessToken)).body;
+  for (const attribute of program.programRegistrationAttributes) {
+    await patchProgramRegistrationAttribute({
+      programRegistrationAttributeName: attribute.name,
+      programRegistrationAttribute: { isRequired: false },
+      programId,
+      accessToken,
+    });
+  }
 }

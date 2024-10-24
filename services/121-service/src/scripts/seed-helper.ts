@@ -1,19 +1,21 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
-import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
+import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration-property.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
@@ -25,7 +27,7 @@ export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
+    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
   public async addDefaultUsers(
     program: ProgramEntity,
@@ -232,112 +234,121 @@ export class SeedHelper {
     isApiTests: boolean,
   ): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);
-    const fspRepository = this.dataSource.getRepository(
-      FinancialServiceProviderEntity,
-    );
 
-    const programCustomAttributeRepository = this.dataSource.getRepository(
-      ProgramCustomAttributeEntity,
-    );
-    const programQuestionRepository = this.dataSource.getRepository(
-      ProgramQuestionEntity,
+    const programRegistrationAttributeRepo = this.dataSource.getRepository(
+      ProgramRegistrationAttributeEntity,
     );
 
     const programExampleDump = JSON.stringify(programExample);
-    const program = JSON.parse(programExampleDump);
+    const programFromJSON = JSON.parse(programExampleDump);
 
     if (DEBUG && !isApiTests) {
-      program.published = true;
+      programFromJSON.published = true;
     }
 
-    const programReturn = await programRepository.save(program);
-
-    // Remove original program custom attributes and add it to a separate variable
-    const programCustomAttributes = program.programCustomAttributes;
-    program.programCustomAttributes = [];
-    if (programCustomAttributes) {
-      for (const attribute of programCustomAttributes) {
-        attribute.program = programReturn;
-        await programCustomAttributeRepository.save(attribute);
-      }
-    }
+    const programReturn = await programRepository.save(programFromJSON);
 
     // Remove original program questions and add it to a separate variable
-    const programQuestions = program.programQuestions;
-    program.programQuestions = [];
-    for (const question of programQuestions) {
-      if (question.answerType === AnswerTypes.dropdown) {
-        const scoringKeys = Object.keys(question.scoring);
+    const programRegistrationAttributes =
+      programFromJSON.programRegistrationAttributes;
+    programFromJSON.programRegistrationAttibutes = [];
+    for (const attribute of programRegistrationAttributes) {
+      attribute.isRequired = attribute.isRequired || false;
+      if (attribute.answerType === RegistrationAttributeTypes.dropdown) {
+        const scoringKeys = Object.keys(attribute.scoring);
         if (scoringKeys.length > 0) {
-          const optionKeys = question.options.map(({ option }) => option);
+          const optionKeys = attribute.options.map(({ option }) => option);
           const areOptionScoringEqual =
             JSON.stringify(scoringKeys.sort()) ==
             JSON.stringify(optionKeys.sort());
           if (!areOptionScoringEqual) {
             throw new HttpException(
-              'Option and scoring is not equal of question  ' + question.name,
+              'Option and scoring is not equal of question  ' + attribute.name,
               404,
             );
           }
         }
-        // assert(optionsArray.includes(scoringkey));
       }
-      question.program = program;
-      await programQuestionRepository.save(question);
+      attribute.programId = programReturn.id;
+      await programRegistrationAttributeRepo.save(attribute);
     }
 
-    // Remove original fsp and add it to a separate variable
     const foundProgram = await programRepository.findOneOrFail({
       where: { id: Equal(programReturn.id) },
     });
-    const fsps = program.financialServiceProviders;
-    foundProgram.financialServiceProviders = [];
-    for (const fsp of fsps) {
-      const fspReturn = await fspRepository.findOneOrFail({
-        where: { fsp: Equal(fsp.fsp) },
-      });
-      foundProgram.financialServiceProviders.push(fspReturn);
-      if (fsp.configuration && fsp.configuration.length > 0) {
-        for (const config of fsp.configuration) {
-          let fspConfigValue = config.value;
-          if (typeof config.value === 'string') {
-            fspConfigValue = process.env[config.value] || config.value;
-          }
+    const fspConfigArrayFromJson =
+      programFromJSON.programFinancialServiceProviderConfigurations;
+    foundProgram.programFinancialServiceProviderConfigurations = [];
 
-          await this.programFspConfigurationService.create(programReturn.id, {
-            fspId: fspReturn.id,
-            name: config.name,
-            value: fspConfigValue,
-          });
-        }
+    // ##TODO use the fspConfigService later to create the fspConfigEntities after this has been implemented
+    for (const fspConfigFromJson of fspConfigArrayFromJson) {
+      const financialServiceProviderObject = FINANCIAL_SERVICE_PROVIDERS.find(
+        (fsp) => fsp.name === fspConfigFromJson.financialServiceProvider,
+      );
+      if (!financialServiceProviderObject) {
+        throw new HttpException(
+          `FSP with name ${fspConfigFromJson.financialServiceProvider} not found in FINANCIAL_SERVICE_PROVIDERS`,
+          HttpStatus.NOT_FOUND,
+        );
       }
+
+      const programFspConfig = this.createProgramFspConfiguration(
+        fspConfigFromJson,
+        financialServiceProviderObject,
+        foundProgram.id,
+      );
+      await this.programFspConfigurationRepository.save(programFspConfig);
     }
 
-    return await programRepository.save(foundProgram);
+    return programRepository.findOneByOrFail({ id: Equal(foundProgram.id) });
   }
 
-  public async addFsp(fspInput: any): Promise<void> {
-    const exampleDump = JSON.stringify(fspInput);
-    const fsp = JSON.parse(exampleDump);
-
-    const fspRepository = this.dataSource.getRepository(
-      FinancialServiceProviderEntity,
+  private createProgramFspConfiguration(
+    fspConfigFromJson: {
+      financialServiceProvider: FinancialServiceProviders;
+      properties: { name: string; value: string }[] | undefined;
+      name?: string;
+      label: LocalizedString;
+    },
+    financialServiceProviderObject: FinancialServiceProviderDto,
+    programId: number,
+  ): ProgramFinancialServiceProviderConfigurationEntity {
+    const fspConfigEntity =
+      new ProgramFinancialServiceProviderConfigurationEntity();
+    fspConfigEntity.financialServiceProviderName =
+      fspConfigFromJson.financialServiceProvider;
+    fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
+      fspConfigFromJson.properties ?? [],
     );
+    fspConfigEntity.label = fspConfigFromJson.label
+      ? fspConfigFromJson.label
+      : financialServiceProviderObject.defaultLabel;
+    fspConfigEntity.name = fspConfigFromJson.name
+      ? fspConfigFromJson.name
+      : financialServiceProviderObject.name;
+    fspConfigEntity.transactions = [];
+    fspConfigEntity.programId = programId;
+    return fspConfigEntity;
+  }
 
-    const fspQuestionRepository =
-      this.dataSource.getRepository(FspQuestionEntity);
+  private createProgramFspConfigurationProperties(
+    propertiesFromJSON: { name: string; value: string }[],
+  ): ProgramFinancialServiceProviderConfigurationPropertyEntity[] {
+    const fspConfigPropertyEntities: ProgramFinancialServiceProviderConfigurationPropertyEntity[] =
+      [];
 
-    // Remove original custom criteria and add it to a separate variable
-    const questions = fsp.questions;
-    fsp.questions = [];
-
-    const fspReturn = await fspRepository.save(fsp);
-
-    for (const question of questions) {
-      question.fsp = fspReturn;
-      const customReturn = await fspQuestionRepository.save(question);
-      fsp.questions.push(customReturn);
+    for (const property of propertiesFromJSON) {
+      let fspConfigPropertyValue = property.value;
+      if (typeof property.value === 'string') {
+        fspConfigPropertyValue = process.env[property.value] || property.value;
+      }
+      const fspConfigPropertyEntity =
+        new ProgramFinancialServiceProviderConfigurationPropertyEntity();
+      fspConfigPropertyEntity.name = property.name;
+      fspConfigPropertyEntity.value = fspConfigPropertyValue;
+      fspConfigPropertyEntities.push(fspConfigPropertyEntity);
     }
+    return fspConfigPropertyEntities;
   }
 
   public async assignAidworker(

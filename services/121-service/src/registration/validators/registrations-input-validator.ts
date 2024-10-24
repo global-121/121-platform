@@ -1,32 +1,31 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { Equal, Repository } from 'typeorm';
+import { Equal, Not, Repository } from 'typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import {
-  BulkImportDto,
-  ImportRegistrationsDto,
-} from '@121-service/src/registration/dto/bulk-import.dto';
-import { BulkUpdateDto } from '@121-service/src/registration/dto/bulk-update.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
-import { ValidationConfigDto } from '@121-service/src/registration/dto/validate-registration-config.dto';
-import { ValidateRegistrationErrorObjectDto } from '@121-service/src/registration/dto/validate-registration-error-object.dto';
 import {
-  AnswerTypes,
-  Attribute,
-  AttributeWithOptionalLabel,
-  CustomAttributeType,
-  GenericAttributes,
-  QuestionType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
-import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
+import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
+import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
+
+type InputAttributeType = string | boolean | number | undefined;
 
 @Injectable()
 export class RegistrationsInputValidator {
@@ -38,17 +37,36 @@ export class RegistrationsInputValidator {
   constructor(
     private readonly userService: UserService,
     private readonly lookupService: LookupService,
+    private readonly registrationPaginationService: RegistrationsPaginationService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
-  public async validateAndCleanRegistrationsInput(
-    csvArray: any[],
-    programId: number,
-    userId: number,
-    dynamicAttributes: AttributeWithOptionalLabel[],
-    typeOfInput: RegistrationCsvValidationEnum,
-    validationConfig: ValidationConfigDto = new ValidationConfigDto(),
-  ): Promise<ImportRegistrationsDto[] | BulkImportDto[]> {
-    const errors: ValidateRegistrationErrorObjectDto[] = [];
+  public async validateAndCleanInput({
+    registrationInputArray,
+    programId,
+    userId,
+    typeOfInput,
+    validationConfig,
+  }: {
+    registrationInputArray: Record<string, InputAttributeType>[];
+    programId: number;
+    userId: number;
+    typeOfInput: RegistrationValidationInputType;
+    validationConfig: ValidationRegistrationConfig;
+  }): Promise<ValidatedRegistrationInput[]> {
+    // empty map
+    let originalRegistrationsMap = new Map<
+      string,
+      MappedPaginatedRegistrationDto
+    >();
+    if (typeOfInput === RegistrationValidationInputType.update) {
+      originalRegistrationsMap = await this.getOriginalRegistrationsOrThrow(
+        registrationInputArray,
+        programId,
+      );
+    }
+
+    const errors: ValidateRegistrationErrorObject[] = [];
     const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
     const userScope = await this.userService.getUserScopeForProgram(
@@ -57,11 +75,15 @@ export class RegistrationsInputValidator {
     );
 
     if (validationConfig.validateUniqueReferenceId) {
-      this.validateUniqueReferenceIds(csvArray);
+      this.validateUniqueReferenceIds(registrationInputArray);
     }
 
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      relations: [
+        'programFinancialServiceProviderConfigurations',
+        'programRegistrationAttributes',
+      ],
     });
 
     const languageMapping = this.createLanguageMapping(
@@ -69,85 +91,152 @@ export class RegistrationsInputValidator {
     );
 
     const validatedArray: any = [];
-    const importRecordMap = {
-      [RegistrationCsvValidationEnum.importAsRegistered]:
-        ImportRegistrationsDto,
-      [RegistrationCsvValidationEnum.bulkUpdate]: BulkUpdateDto,
-    };
 
-    for (const [i, row] of csvArray.entries()) {
-      const importRecordClass = importRecordMap[typeOfInput];
-      const importRecord = importRecordClass
-        ? new importRecordClass()
-        : ({} as any);
+    for (const [i, row] of registrationInputArray.entries()) {
+      const originalRegistration =
+        typeOfInput === RegistrationValidationInputType.update
+          ? originalRegistrationsMap.get(row.referenceId as string)
+          : undefined;
+
+      const validatedRegistrationInput: ValidatedRegistrationInput = {
+        data: {},
+      };
 
       /*
        * =============================================================
        * Add default registration attributes without custom validation
        * =============================================================
        */
-      importRecord.fspName = row.fspName;
-      if (!program.paymentAmountMultiplierFormula) {
-        importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
-          ? +row.paymentAmountMultiplier
-          : null;
+      const {
+        errorOjb: errorObjPaymentAmountMultiplier,
+        validatedPaymentAmountMultiplier,
+      } = this.validatePaymentAmountMultiplier({
+        value: row.paymentAmountMultiplier,
+        programPaymentAmountMultiplierFormula:
+          program.paymentAmountMultiplierFormula,
+        i,
+      });
+      if (errorObjPaymentAmountMultiplier) {
+        errors.push(errorObjPaymentAmountMultiplier);
+      } else {
+        validatedRegistrationInput.paymentAmountMultiplier =
+          validatedPaymentAmountMultiplier;
       }
-
-      if (program.enableMaxPayments) {
-        importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
+      if (program.enableMaxPayments && row.maxPayments != null) {
+        const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
+          this.validateMaxPayments({
+            value: row.maxPayments,
+            originalRegistration,
+            i,
+          });
+        if (errorObjMaxPayments) {
+          errors.push(errorObjMaxPayments);
+        } else {
+          validatedRegistrationInput.maxPayments = validatedMaxPayments;
+        }
       }
 
       /*
        * ========================================
-       * Validate default registration attributes
+       * Validate default registration properties
        * ========================================
        */
-      const errorObjScope = this.validateRowScope(
+      const errorObjScope = this.validateRowScope({
         row,
         userScope,
         i,
-        validationConfig,
-      );
+        typeOfInput,
+      });
       if (errorObjScope) {
         errors.push(errorObjScope);
+      } else if (program.enableScope) {
+        // We know that scope is undefined or string, or an error would have occured
+        validatedRegistrationInput.scope = row[AdditionalAttributes.scope] as
+          | undefined
+          | string;
       }
 
-      if (program.enableScope) {
-        importRecord.scope = row[AdditionalAttributes.scope];
-      }
-      importRecord.referenceId = row.referenceId;
-
-      const { errorObj: errorObjLanguage, preferredLanguage: _ } =
-        this.validatePreferredLanguage(
-          row.preferredLanguage,
-          languageMapping,
-          i,
-          validationConfig,
-        );
+      const {
+        errorObj: errorObjLanguage,
+        preferredLanguage: preferredLanguage,
+      } = this.validatePreferredLanguage({
+        preferredLanguage: row.preferredLanguage,
+        languageMapping,
+        i,
+        typeOfInput,
+      });
       if (errorObjLanguage) {
         errors.push(errorObjLanguage);
       }
-      importRecord.preferredLanguage = this.updateLanguage(
-        row.preferredLanguage,
-        languageMapping,
-      );
+      if (preferredLanguage) {
+        validatedRegistrationInput.preferredLanguage = preferredLanguage;
+      }
 
-      const errorObjReferenceId = await this.validateReferenceId(
+      const errorObjReferenceId = await this.validateReferenceId({
         row,
         i,
         validationConfig,
-      );
+      });
       if (errorObjReferenceId) {
         errors.push(errorObjReferenceId);
+      } else if (row.referenceId != null) {
+        validatedRegistrationInput.referenceId = row.referenceId as string;
       }
-      importRecord.referenceId = row.referenceId;
 
-      const errorObj = this.validatePhoneNumberEmpty(row, i, validationConfig);
-      if (errorObj) {
-        errors.push(errorObj);
-      } else {
-        importRecord.phoneNumber = row.phoneNumber ? row.phoneNumber : ''; // If the phone number is empty use an empty string
+      const errorObjValidatePhoneNr = this.validatePhoneNumberEmpty({
+        row,
+        i,
+        program,
+        typeOfInput,
+      });
+      if (errorObjValidatePhoneNr) {
+        errors.push(errorObjValidatePhoneNr);
+      } else if (row.phoneNumber !== undefined) {
+        validatedRegistrationInput.phoneNumber = row.phoneNumber
+          ? String(row.phoneNumber)
+          : null;
       }
+
+      /*
+       * =============================================
+       * Validate fsp config related attributes
+       * =============================================
+       */
+      const errorObjFspConfig = this.validateProgramFspConfigurationName({
+        programFinancialServiceProviderConfigurationName:
+          row[
+            AdditionalAttributes
+              .programFinancialServiceProviderConfigurationName
+          ],
+        programFinancialServiceProviderConfigurations:
+          program.programFinancialServiceProviderConfigurations,
+        i,
+        typeOfInput,
+      });
+      if (errorObjFspConfig) {
+        errors.push(errorObjFspConfig);
+      } else if (
+        row[
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName
+        ] as string
+      ) {
+        validatedRegistrationInput[
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName
+        ] = row[
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName
+        ] as string;
+      }
+
+      const errorObjsFspRequiredAttributes = this.validateFspRequiredAttributes(
+        {
+          row,
+          originalRegistration,
+          programFinancialServiceProviderConfigurations:
+            program.programFinancialServiceProviderConfigurations,
+          i,
+        },
+      );
+      errors.push(...errorObjsFspRequiredAttributes);
 
       /*
        * =============================================
@@ -156,21 +245,21 @@ export class RegistrationsInputValidator {
        */
 
       // Filter dynamic atttributes that are not relevant for this fsp if question is only fsp specific
-      const dynamicAttributesForFsp = dynamicAttributes.filter((att) =>
-        this.isDynamicAttributeForFsp(att, row.fspName),
-      );
 
       await Promise.all(
-        dynamicAttributesForFsp.map(async (att) => {
+        program.programRegistrationAttributes.map(async (att) => {
           // Skip validation if the attribute is not present in the row and it is a bulk update because you do not have to update all attributes in a bulk update
           if (
-            typeOfInput === RegistrationCsvValidationEnum.bulkUpdate &&
-            row[att.name] == null
+            typeOfInput === RegistrationValidationInputType.update &&
+            row[att.name] === undefined
           ) {
             return;
           }
+          if (!att.isRequired && row[att.name] === undefined) {
+            return;
+          }
 
-          if (att.type === AnswerTypes.tel) {
+          if (att.type === RegistrationAttributeTypes.tel) {
             /*
              * ==================================================================
              * If an attribute is a phone number, validate it using Twilio lookup
@@ -179,31 +268,45 @@ export class RegistrationsInputValidator {
 
             if (row[att.name] && validationConfig.validatePhoneNumberLookup) {
               const { errorObj, sanitized } =
-                await this.validateLookupPhoneNumber(
-                  row[att.name],
+                await this.validateLookupPhoneNumber({
+                  value: row[att.name],
                   i,
                   phoneNumberLookupResults,
-                );
+                });
               if (errorObj) {
                 errors.push(errorObj);
-              } else {
-                phoneNumberLookupResults[row[att.name]] = sanitized;
-                importRecord[att.name] = sanitized;
+              } else if (row[att.name]) {
+                // we can assume here that the orginal value is a string else it would not have returned an error object
+                phoneNumberLookupResults[row[att.name] as string] = sanitized;
+                validatedRegistrationInput.data[att.name] = sanitized as string;
               }
             } else {
-              importRecord[att.name] = row[att.name] ? row[att.name] : ''; // If the phone number is empty use an empty string
+              validatedRegistrationInput.data[att.name] = row[att.name]
+                ? (row[att.name] as string)
+                : null;
             }
             return;
           }
 
-          if (att.type === AnswerTypes.dropdown) {
+          if (att.type === RegistrationAttributeTypes.dropdown) {
+            if (!att.isRequired) {
+              if (row[att.name] == null) {
+                return (validatedRegistrationInput.data[att.name] = null);
+              } else {
+                // Skip validation if the attribute is not present in the row and it is not required
+                return;
+              }
+            }
+
             const optionNames = att.options
               ? att.options?.map((option) => option.option)
               : [];
 
-            if (optionNames.includes(row[att.name])) {
+            if (optionNames.includes(String(row[att.name]))) {
               // Validation passed
-              importRecord[att.name] = row[att.name];
+              validatedRegistrationInput.data[att.name] = row[
+                att.name
+              ] as string;
               return;
             }
 
@@ -228,16 +331,23 @@ export class RegistrationsInputValidator {
            * If an attribute is anything else, validate it as such
            * ============================================================
            */
-          const errorObj = this.validateNonTelephoneDynamicAttribute(
-            row[att.name],
-            att.type,
-            att.name,
+          if (att.isRequired === false && row[att.name] == null) {
+            validatedRegistrationInput.data[att.name] = null;
+            return;
+          }
+          const errorObj = this.validateTypesNumericBoolTextDate({
+            value: row[att.name],
+            type: att.type,
+            attribute: att.name,
             i,
-          );
+          });
           if (errorObj && Object.keys(row).includes(att.name)) {
             errors.push(errorObj);
-          } else {
-            importRecord[att.name] = row[att.name];
+          } else if (row[att.name] !== undefined) {
+            validatedRegistrationInput.data[att.name] = row[att.name] as
+              | string
+              | number
+              | boolean;
           }
         }),
       );
@@ -247,24 +357,23 @@ export class RegistrationsInputValidator {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
 
-      if (validationConfig.validateClassValidator) {
-        const result = await validate(importRecord);
-        if (result.length > 0) {
-          let error = result[0].toString();
-          if (result[0]?.constraints) {
-            error = Object.values(result[0].constraints).join(', ');
-          }
-
-          const errorObj = {
-            lineNumber: i + 1,
-            column: result[0].property,
-            value: result[0].value,
-            error,
-          };
-          errors.push(errorObj);
+      const result = await validate(validatedRegistrationInput);
+      if (result.length > 0) {
+        let error = result[0].toString();
+        if (result[0]?.constraints) {
+          error = Object.values(result[0].constraints).join(', ');
         }
+
+        const errorObj = {
+          lineNumber: i + 1,
+          column: result[0].property,
+          value: result[0].value,
+          error,
+        };
+        errors.push(errorObj);
       }
-      validatedArray.push(importRecord);
+
+      validatedArray.push(validatedRegistrationInput);
     }
 
     // Throw the errors at once
@@ -275,10 +384,12 @@ export class RegistrationsInputValidator {
     return validatedArray;
   }
 
-  private validateUniqueReferenceIds(csvArray: any[]): void {
+  private validateUniqueReferenceIds(
+    csvArray: Record<string, InputAttributeType>[],
+  ): void {
     const allReferenceIds = csvArray
-      .filter((row) => row.referenceId)
-      .map((row) => row.referenceId);
+      .filter((row) => row[AdditionalAttributes.referenceId])
+      .map((row) => row[AdditionalAttributes.referenceId]);
     const uniqueReferenceIds = [...new Set(allReferenceIds)];
     if (uniqueReferenceIds.length < allReferenceIds.length) {
       throw new HttpException(
@@ -288,7 +399,9 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private createLanguageMapping(programLanguages: string[]): object {
+  private createLanguageMapping(
+    programLanguages: string[],
+  ): Record<string, string> {
     const languageNamesApi = new Intl.DisplayNames(['en'], {
       type: 'language',
     });
@@ -309,148 +422,242 @@ export class RegistrationsInputValidator {
     return mapping;
   }
 
-  private validatePreferredLanguage(
-    preferredLanguage: string,
-    languageMapping: any,
-    i: number,
-    validationConfig: ValidationConfigDto = new ValidationConfigDto(),
-  ): {
-    errorObj?: ValidateRegistrationErrorObjectDto;
-    preferredLanguage?: LanguageEnum;
-  } {
-    if (validationConfig.validatePreferredLanguage) {
-      const cleanedPreferredLanguage =
-        typeof preferredLanguage === 'string'
-          ? preferredLanguage.trim().toLowerCase()
-          : preferredLanguage;
-
-      const errorObj = this.checkLanguage(
-        cleanedPreferredLanguage,
-        languageMapping,
-        i,
-      );
-
-      if (errorObj) {
-        return { errorObj, preferredLanguage: undefined };
-      } else {
-        const value = this.updateLanguage(
-          cleanedPreferredLanguage,
-          languageMapping,
-        );
-        return { errorObj: undefined, preferredLanguage: value };
-      }
+  private validateProgramFspConfigurationName({
+    programFinancialServiceProviderConfigurationName,
+    programFinancialServiceProviderConfigurations,
+    i,
+    typeOfInput,
+  }: {
+    programFinancialServiceProviderConfigurationName: InputAttributeType;
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    i: number;
+    typeOfInput: RegistrationValidationInputType;
+  }): ValidateRegistrationErrorObject | undefined {
+    // The registration is being patched, and the programFinancialServiceProviderConfigurationName is not being updated so the validation can be skipped
+    if (
+      typeOfInput === RegistrationValidationInputType.update &&
+      (programFinancialServiceProviderConfigurationName == null ||
+        programFinancialServiceProviderConfigurationName === '')
+    ) {
+      return;
     }
-    return {
-      errorObj: undefined,
-      preferredLanguage: preferredLanguage as LanguageEnum,
-    };
+
+    if (
+      !programFinancialServiceProviderConfigurationName ||
+      !programFinancialServiceProviderConfigurations.some(
+        (fspConfig) =>
+          fspConfig.name === programFinancialServiceProviderConfigurationName,
+      )
+    ) {
+      return {
+        lineNumber: i,
+        value: programFinancialServiceProviderConfigurationName,
+        column:
+          AdditionalAttributes.programFinancialServiceProviderConfigurationName,
+        error: `FinancialServiceProviderConfigurationName ${programFinancialServiceProviderConfigurationName} not found in program. Allowed values: ${programFinancialServiceProviderConfigurations
+          .map((fspConfig) => fspConfig.name)
+          .join(', ')}`,
+      };
+    }
   }
 
-  private checkLanguage(
-    inPreferredLanguage: string,
-    programLanguageMapping: object,
-    i: number,
-  ): ValidateRegistrationErrorObjectDto | undefined {
+  private validatePreferredLanguage({
+    preferredLanguage,
+    languageMapping,
+    i,
+    typeOfInput,
+  }: {
+    preferredLanguage: InputAttributeType;
+    languageMapping: any;
+    i: number;
+    typeOfInput: RegistrationValidationInputType;
+  }): {
+    errorObj: ValidateRegistrationErrorObject | undefined;
+    preferredLanguage: LanguageEnum | undefined;
+  } {
+    const errorObj = this.checkLanguage({
+      preferredLanguage,
+      languageMapping,
+      i,
+      typeOfInput,
+    });
+
     const cleanedPreferredLanguage =
-      typeof inPreferredLanguage === 'string'
-        ? inPreferredLanguage.trim().toLowerCase()
-        : inPreferredLanguage;
-    if (!cleanedPreferredLanguage) {
+      typeof preferredLanguage === 'string'
+        ? preferredLanguage.trim().toLowerCase()
+        : String(preferredLanguage);
+    if (errorObj) {
+      return { errorObj, preferredLanguage: undefined };
+    }
+    const value = this.updateLanguage(
+      cleanedPreferredLanguage,
+      languageMapping,
+    );
+    return { errorObj: undefined, preferredLanguage: value };
+  }
+
+  private checkLanguage({
+    preferredLanguage,
+    languageMapping,
+    i,
+    typeOfInput,
+  }: {
+    preferredLanguage: InputAttributeType;
+    languageMapping: object;
+    i: number;
+    typeOfInput: RegistrationValidationInputType;
+  }): ValidateRegistrationErrorObject | undefined {
+    if (
+      typeOfInput === RegistrationValidationInputType.update &&
+      !preferredLanguage === undefined
+    ) {
+      return;
+    }
+    if (!preferredLanguage) {
       return;
     } else if (
-      !Object.keys(programLanguageMapping).includes(cleanedPreferredLanguage) &&
-      !Object.values(programLanguageMapping).some(
-        (x) => x.toLowerCase() == cleanedPreferredLanguage.toLowerCase(),
+      !Object.keys(languageMapping).includes(preferredLanguage.toString()) &&
+      !Object.values(languageMapping).some(
+        (x) => x.toLowerCase() == preferredLanguage.toString().toLowerCase(),
       )
     ) {
       return {
         lineNumber: i + 1,
         column: AdditionalAttributes.preferredLanguage,
-        value: inPreferredLanguage,
-        error: `Language error: Allowed values of this program for preferredLanguage: ${Object.values(
-          programLanguageMapping,
-        ).join(', ')}, ${Object.keys(programLanguageMapping).join(', ')}`,
+        value: preferredLanguage,
+        error: `Language error: Allowed values of this program for ${AdditionalAttributes.preferredLanguage}: ${Object.values(
+          languageMapping,
+        ).join(', ')}, ${Object.keys(languageMapping).join(', ')}`,
       };
     }
   }
 
   private updateLanguage(
-    inPreferredLanguage: string,
+    preferredLanguage: string | undefined,
     programLanguageMapping: object,
   ): LanguageEnum | undefined {
-    const cleanedPreferredLanguage =
-      typeof inPreferredLanguage === 'string'
-        ? inPreferredLanguage.trim().toLowerCase()
-        : inPreferredLanguage;
-    if (!cleanedPreferredLanguage) {
+    if (!preferredLanguage) {
       return LanguageEnum.en;
-    } else if (
-      Object.keys(programLanguageMapping).includes(cleanedPreferredLanguage)
-    ) {
-      return programLanguageMapping[cleanedPreferredLanguage];
+    }
+    if (Object.keys(programLanguageMapping).includes(preferredLanguage)) {
+      return programLanguageMapping[preferredLanguage];
     } else if (
       Object.values(programLanguageMapping).some(
-        (x) => x.toLowerCase() == cleanedPreferredLanguage.toLowerCase(),
+        (x) => x.toLowerCase() == preferredLanguage.toLowerCase(),
       )
     ) {
       for (const value of Object.values(programLanguageMapping)) {
-        if (value.toLowerCase() === cleanedPreferredLanguage) {
+        if (value.toLowerCase() === preferredLanguage) {
           return value;
         }
       }
     }
   }
 
-  private validateRowScope(
-    row: any,
-    userScope: string,
-    i: number,
-    validationConfig: ValidationConfigDto,
-  ): ValidateRegistrationErrorObjectDto | undefined {
-    if (validationConfig.validateScope) {
-      const correctScope = this.recordHasAllowedScope(row, userScope);
-      if (!correctScope) {
-        return {
-          lineNumber: i + 1,
-          column: AdditionalAttributes.scope,
-          value: row[AdditionalAttributes.scope],
-          error: `User has program scope ${userScope} and does not have access to registration scope ${
-            row[AdditionalAttributes.scope]
-          }`,
-        };
-      }
-    }
-  }
-
-  private recordHasAllowedScope(record: any, userScope: string): boolean {
-    return (
-      (userScope &&
-        record[AdditionalAttributes.scope]?.startsWith(userScope)) ||
-      !userScope
-    );
-  }
-
-  private async validateReferenceId(
-    row: any,
-    i: number,
-    validationConfig: ValidationConfigDto,
-  ): Promise<ValidateRegistrationErrorObjectDto | undefined> {
-    if (row.referenceId && row.referenceId.includes('$')) {
+  private validateRowScope({
+    row,
+    userScope,
+    i,
+    typeOfInput,
+  }: {
+    row: Record<string, InputAttributeType>;
+    userScope: string;
+    i: number;
+    typeOfInput: RegistrationValidationInputType;
+  }): ValidateRegistrationErrorObject | undefined {
+    const correctScope = this.rowHasAllowedScope({
+      row,
+      userScope,
+      typeOfInput,
+    });
+    if (!correctScope) {
       return {
         lineNumber: i + 1,
-        column: GenericAttributes.referenceId,
-        value: row.referenceId,
-        error: 'referenceId contains a $ character',
+        column: AdditionalAttributes.scope,
+        value: row[AdditionalAttributes.scope],
+        error: `User has program scope ${userScope} and does not have access to registration scope ${
+          row[AdditionalAttributes.scope]
+        }`,
       };
     }
-    if (validationConfig.validateExistingReferenceId && row.referenceId) {
+  }
+
+  private rowHasAllowedScope({
+    row,
+    userScope,
+    typeOfInput,
+  }: {
+    row: Record<string, InputAttributeType>;
+    userScope: string;
+    typeOfInput: RegistrationValidationInputType;
+  }): boolean {
+    const scopeOfInput = row[AdditionalAttributes.scope];
+
+    // Other types than string or null/undefined are not allowed
+    if (typeof scopeOfInput !== 'string' && scopeOfInput != null) {
+      return false;
+    }
+
+    // All scopes allowed for this user
+    if (userScope === '') {
+      return true;
+    }
+
+    // If scopeOfInput is null, return true for bulkUpdate, false otherwise
+    if (scopeOfInput == null) {
+      return typeOfInput === RegistrationValidationInputType.update;
+    }
+
+    // Check if scopeOfInput starts with userScope
+    return scopeOfInput.startsWith(userScope);
+  }
+
+  private async validateReferenceId({
+    row,
+    i,
+    validationConfig,
+  }: {
+    row: Record<string, InputAttributeType>;
+    i: number;
+    validationConfig: ValidationRegistrationConfig;
+  }): Promise<ValidateRegistrationErrorObject | undefined> {
+    if (!row.referenceId) {
+      return;
+    }
+    if (typeof row.referenceId !== 'string') {
+      return {
+        lineNumber: i + 1,
+        column: GenericRegistrationAttributes.referenceId,
+        value: row.referenceId,
+        error: 'referenceId must be a string',
+      };
+    }
+
+    if (row.referenceId.includes('$')) {
+      return {
+        lineNumber: i + 1,
+        column: GenericRegistrationAttributes.referenceId,
+        value: row.referenceId,
+        error: `${GenericRegistrationAttributes.referenceId} contains a $ character`,
+      };
+    }
+
+    if (row.referenceId.length < 5 || row.referenceId.length > 200) {
+      return {
+        lineNumber: i + 1,
+        column: GenericRegistrationAttributes.referenceId,
+        value: row.referenceId,
+        error: 'referenceId must be between 5 and 200 characters',
+      };
+    }
+    if (validationConfig.validateExistingReferenceId) {
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: Equal(row.referenceId) },
       });
       if (registration) {
         return {
           lineNumber: i + 1,
-          column: GenericAttributes.referenceId,
+          column: GenericRegistrationAttributes.referenceId,
           value: row.referenceId,
           error: 'referenceId already exists in database',
         };
@@ -458,68 +665,70 @@ export class RegistrationsInputValidator {
     }
   }
 
-  private validatePhoneNumberEmpty(
-    row: any,
-    i: number,
-    validationConfig: ValidationConfigDto,
-  ): ValidateRegistrationErrorObjectDto | undefined {
-    if (!row.phoneNumber && validationConfig.validatePhoneNumberEmpty) {
+  private validatePhoneNumberEmpty({
+    row,
+    i,
+    program,
+    typeOfInput,
+  }: {
+    row: any;
+    i: number;
+    program: ProgramEntity;
+    typeOfInput: RegistrationValidationInputType;
+  }): ValidateRegistrationErrorObject | undefined {
+    // If the program allows empty phone numbers, skip this validation
+    if (program.allowEmptyPhoneNumber) {
+      return;
+    }
+    if (
+      typeOfInput === RegistrationValidationInputType.create &&
+      !row.phoneNumber
+    ) {
       return {
         lineNumber: i + 1,
-        column: GenericAttributes.phoneNumber,
+        column: GenericRegistrationAttributes.phoneNumber,
+        value: undefined,
+        error:
+          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+      };
+    }
+
+    if (
+      typeOfInput === RegistrationValidationInputType.update &&
+      row.phoneNumber === ''
+    ) {
+      // on an update phonenumber can be empty if it is not being updated
+      return {
+        lineNumber: i + 1,
+        column: GenericRegistrationAttributes.phoneNumber,
         value: row.phoneNumber,
-        error: 'PhoneNumber is not allowed to be empty',
+        error:
+          'PhoneNumber is not allowed to be updated to an empty value. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
       };
     }
   }
 
-  private isDynamicAttributeForFsp(
-    attribute: Attribute | AttributeWithOptionalLabel,
-    fspName: FinancialServiceProviderName,
-  ): boolean {
-    // If the CSV does not have fspName all attributes may be relevant because a bulk PATCH may be for multiple FSPs
-    if (!fspName) {
-      return true;
-    }
-    if (
-      attribute.questionTypes &&
-      (attribute.questionTypes.length > 1 ||
-        attribute.questionTypes[0] !== QuestionType.fspQuestion)
-    ) {
-      // The attribute has multiple question types or is not FSP-specific
-      return true;
-    }
-
-    if (
-      attribute.questionTypes &&
-      attribute.questionTypes.length === 1 &&
-      attribute.questionTypes[0] === QuestionType.fspQuestion &&
-      attribute.fspNames?.includes(fspName)
-    ) {
-      // The attribute has a single question type that is FSP-specific and is relevant for the FSP of this registration
-      return true;
-    }
-
-    // The attribute is not relevant
-    return false;
-  }
-
-  private async validateLookupPhoneNumber(
-    value: string,
-    i: number,
-    phoneNumberLookupResults: Record<string, string | undefined>,
-  ): Promise<{
-    errorObj?: ValidateRegistrationErrorObjectDto;
+  private async validateLookupPhoneNumber({
+    value,
+    i,
+    phoneNumberLookupResults,
+  }: {
+    value: InputAttributeType;
+    i: number;
+    phoneNumberLookupResults: Record<string, string | undefined>;
+  }): Promise<{
+    errorObj?: ValidateRegistrationErrorObject;
     sanitized?: string;
   }> {
     let sanitized: string | undefined;
-    if (phoneNumberLookupResults[value]) {
-      sanitized = phoneNumberLookupResults[value];
+    const valueString = value ? value.toString() : '';
+    if (phoneNumberLookupResults[valueString]) {
+      sanitized = phoneNumberLookupResults[valueString];
     } else {
-      sanitized = await this.lookupService.lookupAndCorrect(value, true);
+      sanitized = await this.lookupService.lookupAndCorrect(valueString, true);
     }
     if (!sanitized && !!value) {
-      const errorObj = {
+      const errorObj: ValidateRegistrationErrorObject = {
         lineNumber: i + 1,
         column: 'phoneNumber',
         value,
@@ -530,12 +739,17 @@ export class RegistrationsInputValidator {
     return { errorObj: undefined, sanitized };
   }
 
-  private validateNonTelephoneDynamicAttribute(
-    value: string,
-    type: string,
-    columnName: string,
-    i: number,
-  ): ValidateRegistrationErrorObjectDto | undefined {
+  private validateNonTelephoneDynamicAttribute({
+    value,
+    type,
+    columnName,
+    i,
+  }: {
+    value: InputAttributeType;
+    type: string;
+    columnName: string;
+    i: number;
+  }): ValidateRegistrationErrorObject | undefined {
     const cleanedValue = this.cleanNonTelephoneDynamicAttribute(value, type);
     if (cleanedValue === null) {
       const errorObj = {
@@ -549,26 +763,321 @@ export class RegistrationsInputValidator {
   }
 
   private cleanNonTelephoneDynamicAttribute(
-    value: string,
+    value: InputAttributeType,
     type: string,
-  ): number | boolean | string | null {
+  ): InputAttributeType {
     switch (type) {
-      case AnswerTypes.numeric:
+      case RegistrationAttributeTypes.numeric:
         if (value == null) {
-          return null;
+          return undefined;
         }
         // Convert the value to a number and return it
         // If the value is not a number, return null
-        return isNaN(Number(value)) ? null : Number(value);
-      case CustomAttributeType.boolean:
+        return isNaN(Number(value)) ? undefined : Number(value);
+      case RegistrationAttributeTypes.boolean:
         // Convert the value to a boolean and return it
         // If the value is not a boolean, return null
         const convertedValue =
-          RegistrationsInputValidatorHelpers.stringToBoolean(value);
-        return convertedValue === undefined ? null : convertedValue;
+          RegistrationsInputValidatorHelpers.inputToBoolean(value);
+        return convertedValue === undefined ? undefined : convertedValue;
       default:
         // If the type is neither numeric nor boolean, return the original value
-        return value;
+        return value as string;
     }
+  }
+
+  private validateFspRequiredAttributes({
+    row,
+    originalRegistration,
+    programFinancialServiceProviderConfigurations,
+    i,
+  }: {
+    row: object;
+    originalRegistration: MappedPaginatedRegistrationDto | undefined;
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    i: number;
+  }): ValidateRegistrationErrorObject[] {
+    // Decide which required attributes to check
+    // If the updated row has a value a new fsp configuration name, check the required attributes for that fsp
+    // Otherwise, check the required attributes for the original registration that is in the database
+
+    const relevantFspConfigName =
+      row[
+        GenericRegistrationAttributes
+          .programFinancialServiceProviderConfigurationName
+      ] ??
+      originalRegistration?.programFinancialServiceProviderConfigurationName;
+    if (!relevantFspConfigName) {
+      // If the programFinancialServiceProviderConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
+      // Errors will be thrown in a different validation step
+      return [];
+    }
+
+    const requiredAttributes = this.getRequiredAttributesForFsp(
+      relevantFspConfigName,
+      programFinancialServiceProviderConfigurations,
+    );
+    const errors: ValidateRegistrationErrorObject[] = [];
+    for (const attribute of requiredAttributes) {
+      // Check if required attributes are not being deleted or set to nullable in the PATCH / POST request
+      if (row.hasOwnProperty(attribute)) {
+        if (row[attribute] == null || row[attribute] === '') {
+          errors.push({
+            lineNumber: i + 1,
+            column: attribute,
+            value: row[attribute],
+            error: `Cannot update/set ${attribute} with a nullable value as it is required for the FSP: ${relevantFspConfigName}`,
+          });
+          continue;
+        }
+      }
+
+      // If the programFinancialServiceProviderConfigurationName being updated / set in this request
+      // check if a combination orignal registration and new row has all required attributes
+      if (
+        row[
+          GenericRegistrationAttributes
+            .programFinancialServiceProviderConfigurationName
+        ]
+      ) {
+        // Check if the required attributes are present in the row
+        if (
+          !this.isRequiredAttributeInObject(attribute, row) &&
+          !this.isRequiredAttributeInObject(attribute, originalRegistration)
+        ) {
+          errors.push({
+            lineNumber: i + 1,
+            column: attribute,
+            value: undefined,
+            error: `Cannot update '${attribute}' is required for the FSP: '${relevantFspConfigName}'`,
+          });
+        }
+      }
+    }
+    return errors;
+  }
+
+  private isRequiredAttributeInObject(
+    attribute: string,
+    body: object | undefined,
+  ): boolean {
+    if (!body) {
+      return false;
+    }
+    return (
+      body.hasOwnProperty(attribute) &&
+      body[attribute] != null &&
+      body[attribute] !== ''
+    );
+  }
+
+  private getRequiredAttributesForFsp(
+    programFinancialServiceProviderConfigurationName: string,
+    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+  ): string[] {
+    const fspName = programFinancialServiceProviderConfigurations.find(
+      (programFspConfig) =>
+        programFspConfig.name ===
+        programFinancialServiceProviderConfigurationName,
+    )?.financialServiceProviderName;
+    const foundFsp = FINANCIAL_SERVICE_PROVIDERS.find(
+      (fsp) => fsp.name === fspName,
+    );
+    if (!foundFsp) {
+      return [];
+    }
+    const requiredAttributes = foundFsp.attributes.filter(
+      (attribute) => attribute.isRequired,
+    );
+    return requiredAttributes.map((attribute) => attribute.name);
+  }
+
+  private async getOriginalRegistrationsOrThrow(
+    csvArray: object[],
+    programId: number,
+  ): Promise<Map<string, MappedPaginatedRegistrationDto>> {
+    const referenceIds = csvArray
+      .filter((row) => row[GenericRegistrationAttributes.referenceId])
+      .map((row) => row[GenericRegistrationAttributes.referenceId]);
+    let qb = this.registrationViewScopedRepository
+      .createQueryBuilder('registration')
+      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
+    if (referenceIds.length > 0) {
+      qb = qb.andWhere('registration.referenceId IN (:...referenceIds)', {
+        referenceIds,
+      });
+    }
+    const originalRegistrations =
+      await this.registrationPaginationService.getRegistrationsChunked(
+        programId,
+        { limit: 10000, path: '' },
+        10000,
+        qb,
+      );
+    const originalRegistrationsMap = new Map(
+      originalRegistrations.map((reg) => [reg.referenceId, reg]),
+    );
+    const notFoundIds = referenceIds.filter(
+      (id) => !originalRegistrationsMap.has(id),
+    );
+    if (notFoundIds.length > 0) {
+      throw new HttpException(
+        `The following referenceIds were not found in the database: ${notFoundIds.join(', ')}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return originalRegistrationsMap;
+  }
+
+  // Basic here mean anything that is not a telephone number or a dropdown
+  private validateTypesNumericBoolTextDate({
+    value,
+    type,
+    attribute,
+    i,
+  }: {
+    value: string[] | string | number | boolean | undefined;
+    type: string;
+    attribute: string;
+    i: number;
+  }): ValidateRegistrationErrorObject | undefined {
+    let isValid: boolean | null = false;
+    let message = '';
+    if (type === RegistrationAttributeTypes.date) {
+      const datePattern =
+        /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
+      isValid = typeof value === 'string' && datePattern.test(value);
+    } else if (type === RegistrationAttributeTypes.numeric) {
+      isValid = value != null && !isNaN(+value);
+    } else if (type === RegistrationAttributeTypes.numericNullable) {
+      isValid = value == null || !isNaN(+value);
+    } else if (type === RegistrationAttributeTypes.text) {
+      isValid = typeof value === 'string';
+    } else if (type === RegistrationAttributeTypes.boolean) {
+      isValid = this.valueIsBool(value);
+    } else {
+      message = `Type '${type}' is unknown'`;
+    }
+    if (!isValid) {
+      return {
+        lineNumber: i + 1,
+        column: attribute,
+        value: Array.isArray(value) ? value.toString() : value,
+        error: message
+          ? message
+          : this.createErrorMessageInvalidAttributeType({
+              type,
+              value,
+              attribute,
+            }),
+      };
+    }
+  }
+
+  private createErrorMessageInvalidAttributeType({
+    type,
+    value,
+    attribute,
+  }: {
+    type: string;
+    value: string[] | string | number | boolean | undefined;
+    attribute: string;
+  }): string {
+    const valueString = Array.isArray(value) ? JSON.stringify(value) : value;
+    return `The value '${valueString}' given for the attribute '${attribute}' does not have the correct format for type '${type}'`;
+  }
+
+  private valueIsBool(
+    value: string[] | string | number | boolean | undefined,
+  ): boolean {
+    if (typeof value === 'boolean') {
+      return true;
+    }
+    if (typeof value !== 'string') {
+      return false;
+    }
+    const allowedValues = ['true', 'yes', '1', 'false', '0', 'no', null];
+    return allowedValues.includes(value);
+  }
+
+  private validatePaymentAmountMultiplier({
+    value,
+    programPaymentAmountMultiplierFormula,
+    i,
+  }: {
+    value: InputAttributeType;
+    programPaymentAmountMultiplierFormula: string | null;
+    i: number;
+  }): {
+    errorOjb?: ValidateRegistrationErrorObject | undefined;
+    validatedPaymentAmountMultiplier?: number | undefined;
+  } {
+    if (programPaymentAmountMultiplierFormula && value != null) {
+      return {
+        errorOjb: {
+          lineNumber: i + 1,
+          column: GenericRegistrationAttributes.paymentAmountMultiplier,
+          value,
+          error:
+            'Program has a paymentAmountMultiplierFormula, so the paymentAmountMultiplier should not be set as it will be calculated',
+        },
+      };
+    }
+    if (value == null) {
+      // The value is not set, so no further validation is needed and the value will later be stored as 1
+      return {
+        validatedPaymentAmountMultiplier: undefined,
+      };
+    }
+    if (isNaN(+value) || +value <= 0) {
+      return {
+        errorOjb: {
+          lineNumber: i + 1,
+          column: GenericRegistrationAttributes.paymentAmountMultiplier,
+          value,
+          error: 'PaymentAmountMultiplier must be a positive number',
+        },
+      };
+    }
+    return { validatedPaymentAmountMultiplier: +value };
+  }
+
+  private validateMaxPayments({
+    value,
+    originalRegistration,
+    i,
+  }: {
+    value: InputAttributeType;
+    originalRegistration: MappedPaginatedRegistrationDto | undefined;
+    i: number;
+  }): {
+    errorObj?: ValidateRegistrationErrorObject | undefined;
+    validatedMaxPayments?: number | undefined;
+  } {
+    // It's always allowed to remove the maxPayments value
+    if (value == null) {
+      return { validatedMaxPayments: value };
+    }
+    if (isNaN(+value) || +value <= 0) {
+      return {
+        errorObj: {
+          lineNumber: i + 1,
+          column: GenericRegistrationAttributes.maxPayments,
+          value,
+          error: 'MaxPayments must be a positive number',
+        },
+      };
+    }
+    if (originalRegistration && +value < originalRegistration.paymentCount) {
+      return {
+        errorObj: {
+          lineNumber: i + 1,
+          column: GenericRegistrationAttributes.maxPayments,
+          value,
+          error: `MaxPayments cannot be lower than the current paymentCount (${originalRegistration.paymentCount})`,
+        },
+      };
+    }
+    return { validatedMaxPayments: +value };
   }
 }

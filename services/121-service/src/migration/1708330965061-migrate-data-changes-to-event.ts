@@ -31,7 +31,6 @@ export class MigrateDataChangesToEvent1708330965061
     await queryRunner.query(
       `DROP INDEX "121-service"."IDX_5c7356500932acbd5f76a787ce"`,
     );
-    console.time('migrateData');
     const manager = queryRunner.manager;
     const eventRepo = manager.getRepository(EventEntity);
     const keysToMigrate = ['fieldName', 'oldValue', 'newValue', 'reason'];
@@ -70,6 +69,5 @@ export class MigrateDataChangesToEvent1708330965061
     await queryRunner.query(
       `DROP TABLE IF EXISTS "121-service".registration_change_log `,
     );
-    console.timeEnd('migrateData');
   }
 }
