@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -26,14 +26,8 @@
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
       </trans-unit>
-      <trans-unit id="2098810202835058127" datatype="html">
-        <source>The 121 Platform makes CVA (Cash and Voucher Assistance) easier, safer and faster which enables humanitarian organizations to maximize their impact and provide adequate response during a disaster or conflict.</source>
-      </trans-unit>
       <trans-unit id="2233560223291461480" datatype="html">
         <source>Manual</source>
-      </trans-unit>
-      <trans-unit id="2256818646333052039" datatype="html">
-        <source>User Manual</source>
       </trans-unit>
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
@@ -44,9 +38,6 @@
       <trans-unit id="2772023564304193657" datatype="html">
         <source>Enter your password</source>
       </trans-unit>
-      <trans-unit id="3008354540074404323" datatype="html">
-        <source>Open Source Code</source>
-      </trans-unit>
       <trans-unit id="page-title-project-team" datatype="html">
         <source>Team</source>
       </trans-unit>
@@ -54,20 +45,11 @@
         <source>Logout</source>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="4242007306199259869" datatype="html">
-        <source>Helpful links</source>
-      </trans-unit>
-      <trans-unit id="4371726377430146531" datatype="html">
-        <source>Questions or feedback? Contact us</source>
-      </trans-unit>
       <trans-unit id="generic-opens-in-new-window" datatype="html">
         <source>Opens in a new window</source>
       </trans-unit>
       <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
-      </trans-unit>
-      <trans-unit id="4829177270839953752" datatype="html">
-        <source>Find out more</source>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -92,9 +74,6 @@
       </trans-unit>
       <trans-unit id="7218347871480825149" datatype="html">
         <source>Read our Privacy Policy</source>
-      </trans-unit>
-      <trans-unit id="7807685431509530550" datatype="html">
-        <source>API Documentation</source>
       </trans-unit>
       <trans-unit id="888507803757257524" datatype="html">
         <source>API Version:</source>
@@ -216,9 +195,6 @@
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
-      </trans-unit>
-      <trans-unit id="5901643806193916083" datatype="html">
-        <source>About 121 Portal</source>
       </trans-unit>
       <trans-unit id="7476141645378496788" datatype="html">
         <source>No payments yet</source>
@@ -823,6 +799,9 @@
       </trans-unit>
       <trans-unit id="loading" datatype="html">
         <source>Loading...</source>
+      </trans-unit>
+      <trans-unit id="1336542143746897548" datatype="html">
+        <source>Email Support</source>
       </trans-unit>
     </body>
   </file>
