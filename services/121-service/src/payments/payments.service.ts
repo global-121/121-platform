@@ -6,6 +6,7 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { DataSource, Equal, In, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import { ImportTemplateResponseDto } from '@121-service/services/121-service/src/payments/dto/import-template-response.dto';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
@@ -1001,7 +1002,7 @@ export class PaymentsService {
 
   public async getImportInstructionsTemplate(
     programId: number,
-  ): Promise<string[]> {
+  ): Promise<ImportTemplateResponseDto[]> {
     const programWithReconciliationFsps = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
@@ -1017,7 +1018,7 @@ export class PaymentsService {
       throw new HttpException('Program or FSP not found', HttpStatus.NOT_FOUND);
     }
 
-    const matchColumns: string[] = [];
+    const templates: ImportTemplateResponseDto[] = [];
     for (const fspConfig of programWithReconciliationFsps.programFinancialServiceProviderConfigurations) {
       if (
         fspConfig.financialServiceProviderName ===
@@ -1026,13 +1027,14 @@ export class PaymentsService {
         const matchColumn = await this.excelService.getImportMatchColumn(
           fspConfig.id,
         );
-        if (!matchColumns.includes(matchColumn)) {
-          matchColumns.push(matchColumn);
-        }
+        templates.push({
+          name: fspConfig.name,
+          template: [matchColumn, 'status'],
+        });
       }
     }
 
-    return [...matchColumns, 'status'];
+    return templates;
   }
 
   public async getFspInstructions(

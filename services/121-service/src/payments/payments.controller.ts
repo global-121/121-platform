@@ -27,6 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
+import { ImportTemplateResponseDto } from '@121-service/services/121-service/src/payments/dto/import-template-response.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
@@ -275,7 +276,7 @@ export class PaymentsController {
   public async getImportFspReconciliationTemplate(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<string[]> {
+  ): Promise<ImportTemplateResponseDto[]> {
     return await this.paymentsService.getImportInstructionsTemplate(
       Number(programId),
     );
