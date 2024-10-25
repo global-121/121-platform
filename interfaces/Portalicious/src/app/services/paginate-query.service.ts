@@ -23,10 +23,11 @@ export interface PaginateQuery {
   select?: string[];
 }
 
-export interface ActionDataWithPaginateQuery {
+export interface ActionDataWithPaginateQuery<T> {
   query: PaginateQuery;
   count: number;
   selectAll: boolean;
+  previewItem: T;
 }
 
 @Injectable({
@@ -206,14 +207,14 @@ export class PaginateQueryService {
     fieldForFilter,
     totalCount,
     currentPaginateQuery = {},
-    onEmptySelection,
+    previewItemForSelectAll,
   }: {
     selection: QueryTableSelectionEvent<TData>;
     fieldForFilter: keyof TData & string;
     totalCount: number;
     currentPaginateQuery?: PaginateQuery;
-    onEmptySelection: () => void;
-  }): ActionDataWithPaginateQuery | undefined {
+    previewItemForSelectAll: TData;
+  }): ActionDataWithPaginateQuery<TData> | undefined {
     if ('selectAll' in selection) {
       // Apply action to all items...
       return {
@@ -225,12 +226,8 @@ export class PaginateQueryService {
         },
         count: totalCount,
         selectAll: true,
+        previewItem: previewItemForSelectAll,
       };
-    }
-
-    if (selection.length === 0) {
-      onEmptySelection();
-      return;
     }
 
     return {
@@ -241,6 +238,7 @@ export class PaginateQueryService {
       },
       count: selection.length,
       selectAll: false,
+      previewItem: selection[0],
     };
   }
 }

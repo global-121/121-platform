@@ -21,9 +21,16 @@
       @let previewMessageData = previewData();
 
       @if (!previewMessageData) {
-        <p i18n>
-          You've selected {{ actionData()?.count }} registration(s).<br />Select
-          a message from the template messages or write a custom message.
+        <p>
+          <ng-container i18n="@@send-message-dialog-preview"
+            >You're about to <strong>send a message</strong> to
+            {{ actionData()?.count }} registration(s).</ng-container
+          >
+          <br />
+          <ng-container i18n
+            >Select a message from the template messages or write a custom
+            message.</ng-container
+          >
         </p>
 
         <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
@@ -93,16 +100,15 @@
           />
         </div>
       } @else {
-        <p
-          i18n
-          class="mb-7"
-        >
-          You are about to send a message to
-          {{ actionData()?.count }} registration(s).
+        <p class="mb-7">
+          <ng-container i18n="@@send-message-dialog-preview"
+            >You're about to <strong>send a message</strong> to
+            {{ actionData()?.count }} registration(s).</ng-container
+          >
         </p>
         <app-custom-message-preview
           [projectId]="projectId()"
-          [previewRegistration]="previewRegistration()"
+          [previewRegistration]="this.actionData()?.previewItem"
           [messageData]="previewMessageData"
         ></app-custom-message-preview>
         <p

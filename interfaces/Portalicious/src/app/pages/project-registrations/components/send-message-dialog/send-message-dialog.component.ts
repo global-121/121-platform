@@ -62,14 +62,15 @@ type SendMessageFormGroup =
 })
 export class SendMessageDialogComponent {
   readonly projectId = input.required<number>();
-  readonly previewRegistration = input.required<Registration>();
 
   private messagingService = inject(MessagingService);
   private notificationApiService = inject(NotificationApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  actionData = signal<ActionDataWithPaginateQuery | undefined>(undefined);
+  actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
+    undefined,
+  );
   dialogVisible = model<boolean>(false);
   previewData = signal<Partial<MessageInputData> | undefined>(undefined);
 
@@ -129,7 +130,7 @@ export class SendMessageDialogComponent {
     });
   }
 
-  triggerAction(actionData: ActionDataWithPaginateQuery) {
+  triggerAction(actionData: ActionDataWithPaginateQuery<Registration>) {
     this.actionData.set(actionData);
     this.formGroup.reset();
     this.previewData.set(undefined);
