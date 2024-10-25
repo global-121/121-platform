@@ -26,8 +26,6 @@ updates:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
-      - dependency-name: '@nestjs/throttler'
-        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'bwip-js'
@@ -77,6 +75,9 @@ updates:
           - '*eslint*'
           - '*prettier*'
         exclude-patterns: ['@angular-eslint/*']
+      azureSSO:
+        patterns:
+          - '@azure/msal*'
     ignore:
       # Dependencies below are ordered alphabetically!
       # Most/all Angular-related dependencies are ignored for all versions

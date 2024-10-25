@@ -50,7 +50,7 @@
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/terminus": "^10.2.3",
     "@nestjs/testing": "^10.4.5",
-    "@nestjs/throttler": "^4.2.1",
+    "@nestjs/throttler": "^6.2.1",
     "@nestjs/typeorm": "^10.0.2",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",
