@@ -1110,10 +1110,6 @@
         <source>In progress</source>
         <target state="new">In progress</target>
       </trans-unit>
-      <trans-unit id="869382835948757583" datatype="html">
-        <source>pi pi-spinner</source>
-        <target state="new">pi pi-spinner</target>
-      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -832,9 +832,6 @@
       <trans-unit id="5836528780566781670" datatype="html">
         <source>Successful transfers</source>
       </trans-unit>
-      <trans-unit id="869382835948757583" datatype="html">
-        <source>pi pi-spinner</source>
-      </trans-unit>
       <trans-unit id="9023742269421706395" datatype="html">
         <source>Failed transfers</source>
       </trans-unit>
