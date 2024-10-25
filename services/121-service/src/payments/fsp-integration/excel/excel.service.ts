@@ -23,6 +23,7 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
@@ -291,11 +292,18 @@ export class ExcelService
         fspConfig,
         matchColumn,
       });
+      // Convert the array into a map for increased performace (hashmap lookup)
+      const importResultForFspConfigMap = new Map(
+        importResultForFspConfig.map((item) => [
+          item.feedback[matchColumn],
+          item,
+        ]),
+      );
 
       // .. then loop over each row of the original import to update if a match has been found with this fspConfig
       crossFspConfigImportResults.forEach((row, index) => {
-        const importResultForFspConfigRow = importResultForFspConfig.find(
-          (r) => r.feedback[matchColumn] === row.feedback[matchColumn],
+        const importResultForFspConfigRow = importResultForFspConfigMap.get(
+          row.feedback[matchColumn],
         );
         if (
           importResultForFspConfigRow?.feedback.importStatus !==
@@ -353,7 +361,7 @@ export class ExcelService
     payment: number,
     matchColumn: string,
     programFinancialServiceProviderConfigurationId: number,
-  ) {
+  ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
       this.registrationsPaginationService.getQueryBuilderForFspInstructions({
         programId,

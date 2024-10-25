@@ -1215,12 +1215,15 @@ export class PaymentsService {
         )
         .map((r) => r.transaction)
         .filter((t) => t !== undefined);
-      await this.transactionsService.storeAllTransactionsBulk(transactions, {
-        programId,
-        paymentNr: payment,
-        userId,
-        programFinancialServiceProviderConfigurationId: fspConfig.id,
-      });
+      await this.transactionsService.storeReconciliationTransactionsBulk(
+        transactions,
+        {
+          programId,
+          paymentNr: payment,
+          userId,
+          programFinancialServiceProviderConfigurationId: fspConfig.id,
+        },
+      );
     }
 
     const feedback: ReconciliationFeedbackDto[] = importResults.map(
