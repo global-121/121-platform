@@ -11,16 +11,22 @@
       } @else {
         <span
           class="line-clamp-2 text-ellipsis"
-          [title]="'Payment ' + paymentId() | translatableString"
+          [title]="
+            'Payment ' + (paymentDate() | date: 'dd-MM-yyyy, hh:mm')
+              | translatableString
+          "
         >
-          {{ 'Payment ' + paymentId() | translatableString }}
+          {{
+            'Payment ' + (paymentDate() | date: 'dd-MM-yyyy, hh:mm')
+              | translatableString
+          }}
         </span>
       }
     </a>
   </ng-template>
   <ng-template pTemplate="content">
-    <dl class="flex flex-wrap divide-y border-b border-grey-100">
-      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
+    <dl class="flex flex-wrap divide-y border-b border-grey-300">
+      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="includedRegistrations()"
@@ -28,7 +34,7 @@
           i18n-label
         ></app-project-metric-container>
       </div>
-      <div class="basis-1/2 border-s border-grey-100 px-1 py-2">
+      <div class="basis-1/2 border-s border-grey-300 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="totalAmount()"
@@ -36,7 +42,7 @@
           i18n-label
         ></app-project-metric-container>
       </div>
-      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
+      <div class="basis-1/2 border-t border-grey-300 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="metrics.data()?.success?.count"
@@ -44,10 +50,11 @@
           i18n-label
         ></app-project-metric-container>
       </div>
-      <div class="basis-1/2 border-s border-t border-grey-100 px-1 py-2">
+      <div class="basis-1/2 border-s border-t border-grey-300 px-1 py-2">
         <app-project-metric-container
           [pending]="metrics.isPending()"
           [value]="metrics.data()?.failed?.count"
+          [showAlert]="showFailedAlert()"
           label="Failed transfers"
           i18n-label
         ></app-project-metric-container>
@@ -55,7 +62,7 @@
     </dl>
   </ng-template>
   <ng-template pTemplate="footer">
-    <div>
+    <div class="min-h-8">
       @if (cardIndex() === 0 && paymentInProgress()) {
         @if (metrics.isPending()) {
           <app-skeleton-inline width="8rem" />

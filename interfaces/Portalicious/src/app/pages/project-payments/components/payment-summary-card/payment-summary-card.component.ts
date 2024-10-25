@@ -41,6 +41,7 @@ export class PaymentSummaryCardComponent {
 
   public projectId = input.required<number>();
   public paymentId = input.required<number>();
+  public paymentDate = input.required<string>();
   public cardIndex = input.required<number>();
   public paymentInProgress = input.required<boolean>();
 
@@ -65,5 +66,18 @@ export class PaymentSummaryCardComponent {
     return successAmount + waitingAmount + failedAmount;
   });
 
+  public showFailedAlert = computed(() => {
+    if (!this.metrics.data()?.failed.count) {
+      return false;
+    }
+
+    if (this.metrics.data()?.failed.count === 0) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // TODO: add link once payment page is implemented
   // paymentLink = (projectId: number) => ['/', AppRoutes.project, projectId];
 }

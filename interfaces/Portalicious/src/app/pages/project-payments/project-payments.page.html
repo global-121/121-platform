@@ -22,6 +22,7 @@
         <app-payment-summary-card
           [projectId]="projectId()"
           [paymentId]="payment.payment"
+          [paymentDate]="payment.paymentDate"
           [cardIndex]="$index"
           [paymentInProgress]="!!paymentStatus.data()?.inProgress"
         ></app-payment-summary-card>
