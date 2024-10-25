@@ -51,7 +51,7 @@ class UsersPage extends BasePage {
     email,
     textContent,
   }: {
-    email?: string;
+    email: string;
     textContent: string;
   }) {
     const rowText = await this.page
