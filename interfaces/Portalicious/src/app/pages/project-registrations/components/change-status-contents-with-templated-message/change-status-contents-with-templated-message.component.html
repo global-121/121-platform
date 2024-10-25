@@ -1,0 +1,31 @@
+@if (enableSendMessage()) {
+  <p
+    i18n
+    class="my-5"
+  >
+    The following message will be sent to each registration in their language.
+  </p>
+  <app-custom-message-preview
+    [projectId]="projectId()"
+    [previewRegistration]="previewRegistration()"
+    [messageData]="this.formGroup().getRawValue()"
+  ></app-custom-message-preview>
+}
+<div class="mt-6 flex justify-end space-x-2">
+  <p-button
+    label="Cancel"
+    i18n-label="@@generic-cancel"
+    outlined
+    rounded
+    severity="contrast"
+    (onClick)="cancelClick()"
+  />
+  <p-button
+    label="Approve"
+    i18n-label="@@generic-approve"
+    rounded
+    [disabled]="isMutating()"
+    [loading]="isMutating()"
+    type="submit"
+  />
+</div>

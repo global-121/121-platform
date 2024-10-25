@@ -1223,6 +1223,58 @@
         <source>There are no payments for this project yet.</source>
         <target state="new">There are no payments for this project yet.</target>
       </trans-unit>
+      <trans-unit id="6909842392958829581" datatype="html">
+        <source><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</source>
+        <target state="new"><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</target>
+      </trans-unit>
+      <trans-unit id="6289725856045829997" datatype="html">
+        <source>Send a message to registration(s)</source>
+        <target state="new">Send a message to registration(s)</target>
+      </trans-unit>
+      <trans-unit id="generic-approve" datatype="html">
+        <source>Approve</source>
+        <target state="new">Approve</target>
+      </trans-unit>
+      <trans-unit id="3301086086650990787" datatype="html">
+        <source>Register</source>
+        <target state="new">Register</target>
+      </trans-unit>
+      <trans-unit id="8384225360105280028" datatype="html">
+        <source>Complete</source>
+        <target state="new">Complete</target>
+      </trans-unit>
+      <trans-unit id="2301617863328425684" datatype="html">
+        <source>The following message will be sent to each registration in their language.</source>
+        <target state="new">The following message will be sent to each registration in their language.</target>
+      </trans-unit>
+      <trans-unit id="8670091824036050972" datatype="html">
+        <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
+        <target state="new">You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</target>
+      </trans-unit>
+      <trans-unit id="7252523896790377067" datatype="html">
+        <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations to your project. This means that they can be included in payments.</source>
+        <target state="new">You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations to your project. This means that they can be included in payments.</target>
+      </trans-unit>
+      <trans-unit id="622955001354035993" datatype="html">
+        <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations. They will not be included in payments.</source>
+        <target state="new">You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations. They will not be included in payments.</target>
+      </trans-unit>
+      <trans-unit id="7350238100996755312" datatype="html">
+        <source>You’re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations to your project. This means that they will not included in payments.</source>
+        <target state="new">You’re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations to your project. This means that they will not included in payments.</target>
+      </trans-unit>
+      <trans-unit id="8227544507650475275" datatype="html">
+        <source>You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registration(s), <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
+        <target state="new">You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registration(s), <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</target>
+      </trans-unit>
+      <trans-unit id="4648900870671159218" datatype="html">
+        <source>Success</source>
+        <target state="new">Success</target>
+      </trans-unit>
+      <trans-unit id="6152539934186307221" datatype="html">
+        <source><x equiv-text="data.applicableCount" id="PH"/> registration(s) were <x equiv-text="this.status()?.toLowerCase()" id="PH_1"/> successfully.</source>
+        <target state="new"><x equiv-text="data.applicableCount" id="PH"/> registration(s) were <x equiv-text="this.status()?.toLowerCase()" id="PH_1"/> successfully.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

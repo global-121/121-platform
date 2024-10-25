@@ -1,0 +1,130 @@
+<p-dialog
+  #dialog
+  closeOnEscape
+  styleClass="md:min-w-[46rem]"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i
+        class="pi me-2"
+        [class]="icon()"
+      ></i>
+      <ng-container i18n>{{ statusVerb() }} registration(s)</ng-container>
+    </h3>
+  </ng-template>
+
+  <form
+    class="block w-full"
+    [formGroup]="formGroup"
+    (ngSubmit)="onFormSubmit()"
+  >
+    <div class="space-y-4">
+      @switch (status()) {
+        @case (RegistrationStatusEnum.validated) {
+          <p i18n>
+            You're about to <b>{{ statusVerb() | lowercase }}</b>
+            {{ actionData()?.count }} registrations.
+          </p>
+        }
+        @case (RegistrationStatusEnum.included) {
+          <p i18n>
+            You're about to <b>{{ statusVerb() | lowercase }}</b>
+            {{ actionData()?.count }} registrations to your project. This means
+            that they can be included in payments.
+          </p>
+        }
+        @case (RegistrationStatusEnum.paused) {
+          <p i18n>
+            You're about to <b>{{ statusVerb() | lowercase }}</b>
+            {{ actionData()?.count }} registrations. They will not be included
+            in payments.
+          </p>
+        }
+        @case (RegistrationStatusEnum.declined) {
+          <p i18n>
+            You’re about to <b>{{ statusVerb() | lowercase }}</b>
+            {{ actionData()?.count }} registrations to your project. This means
+            that they will not included in payments.
+          </p>
+        }
+        @case (RegistrationStatusEnum.deleted) {
+          <p i18n>
+            You are about to <b>{{ statusVerb() | lowercase }}</b>
+            {{ actionData()?.count }} registration(s),
+            <b>this action can not be undone.</b>
+            <br />
+            Are you sure you want to delete these registrations?
+          </p>
+        }
+      }
+
+      @if (!canSendMessage()) {
+        <app-change-status-contents-without-message
+          (onCancel)="dialogVisible.set(false)"
+          (onSubmit)="onFormSubmit()"
+        />
+      } @else {
+        @if (messageTemplates.isLoading()) {
+          <p-skeleton
+            width="100%"
+            height="2rem"
+          ></p-skeleton>
+        } @else {
+          <div class="mt-1.5 flex justify-items-center">
+            <p-inputSwitch
+              inputId="enableSendMessage"
+              [(ngModel)]="enableSendMessage"
+              [ngModelOptions]="{ standalone: true }"
+            />
+            <label
+              class="ms-2"
+              for="enableSendMessage"
+              i18n
+              >Send a message to registration(s)</label
+            >
+          </div>
+          @if (hasTemplate()) {
+            <app-change-status-contents-with-templated-message
+              [projectId]="projectId()"
+              [enableSendMessage]="enableSendMessage()"
+              [formGroup]="formGroup"
+              [previewRegistration]="actionData()?.previewItem"
+              [isMutating]="messageTemplates.isLoading()"
+              (onCancel)="dialogVisible.set(false)"
+              (onSubmit)="onFormSubmit()"
+            />
+          } @else {
+            <app-change-status-contents-with-custom-message
+              [projectId]="projectId()"
+              [enableSendMessage]="enableSendMessage()"
+              [formGroup]="formGroup"
+              [previewRegistration]="actionData()?.previewItem"
+              [isMutating]="messageTemplates.isLoading()"
+              (onCancel)="dialogVisible.set(false)"
+              (onSubmit)="onFormSubmit()"
+            />
+          }
+        }
+      }
+    </div>
+  </form>
+</p-dialog>
+<!-- <app-confirmation-dialog
+  #dryRunWarningDialog
+  [header]="headerText()"
+  headerIcon="pi pi-excalamation-triangle"
+  acceptLabel="Proceed"
+  [mutation]="changeStatusMutation"
+  [mutationData]="{
+    dryRun: false,
+  }"
+>
+  <p>TODO: AB#30987 Display warning that action is not applicable to all</p>
+</app-confirmation-dialog> -->
+
+<!-- <p-dialog [(visible)]="dryRunFailure">
+  <p>TODO: AB#30987 Display error that action is not applicable to anyone</p>
+</p-dialog> -->
