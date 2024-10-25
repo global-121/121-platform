@@ -14,4 +14,5 @@ export class ProjectMetricContainerComponent {
   public pending = input.required<boolean>();
   public value = input<null | number | string>();
   public label = input.required<string>();
+  public showAlert = input<boolean>(false);
 }
