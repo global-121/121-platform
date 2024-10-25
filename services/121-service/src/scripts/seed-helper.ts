@@ -307,8 +307,10 @@ export class SeedHelper {
     fspConfigFromJson: {
       financialServiceProvider: FinancialServiceProviders;
       properties: { name: string; value: string }[] | undefined;
+      name?: string;
+      label: LocalizedString;
     },
-    financialServicePeoviderObject: FinancialServiceProviderDto,
+    financialServiceProviderObject: FinancialServiceProviderDto,
     programId: number,
   ): ProgramFinancialServiceProviderConfigurationEntity {
     const fspConfigEntity =
@@ -318,8 +320,12 @@ export class SeedHelper {
     fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
       fspConfigFromJson.properties ?? [],
     );
-    fspConfigEntity.label = financialServicePeoviderObject.defaultLabel;
-    fspConfigEntity.name = financialServicePeoviderObject.name;
+    fspConfigEntity.label = fspConfigFromJson.label
+      ? fspConfigFromJson.label
+      : financialServiceProviderObject.defaultLabel;
+    fspConfigEntity.name = fspConfigFromJson.name
+      ? fspConfigFromJson.name
+      : financialServiceProviderObject.name;
     fspConfigEntity.transactions = [];
     fspConfigEntity.programId = programId;
     return fspConfigEntity;

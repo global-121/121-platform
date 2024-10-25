@@ -1,3 +1,4 @@
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
@@ -344,17 +345,20 @@ export class ProgramsServiceApiService {
     programId: number,
     type: ImportType,
   ): Promise<void> {
-    const downloadData: string[] = await this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/payments/fsp-reconciliation/import-template`,
-    );
+    const templates: { name: string; template: string[] }[] =
+      await this.apiService.get(
+        environment.url_121_service_api,
+        `/programs/${programId}/payments/fsp-reconciliation/import-template`,
+      );
 
-    const csvContents = downloadData.join(';') + '\r\n';
+    for (const template of templates) {
+      const csvContents = template.template.join(';') + '\r\n';
 
-    saveAs(
-      new Blob([csvContents], { type: 'text/csv' }),
-      `${type}-TEMPLATE.csv`,
-    );
+      saveAs(
+        new Blob([csvContents], { type: 'text/csv' }),
+        `${type}-${template.name}-TEMPLATE.csv`,
+      );
+    }
     return;
   }
 
@@ -805,10 +809,12 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getFspById(fspId: number): Promise<FinancialServiceProviderConfiguration> {
+  getFspByName(
+    fspName: FinancialServiceProviders,
+  ): Promise<FinancialServiceProviderConfiguration> {
     return this.apiService.get(
       environment.url_121_service_api,
-      '/financial-service-providers/' + fspId,
+      '/financial-service-providers/' + fspName,
     );
   }
 

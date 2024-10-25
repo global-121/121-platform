@@ -6,7 +6,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.excel,
     integrationType: FinancialServiceProviderIntegrationType.csv,
-    hasReconciliation: false,
     defaultLabel: {
       en: 'Excel Payment Instructions',
     },
@@ -16,7 +15,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: 'fsp_no_attributes',
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       ar: 'FSP - لا توجد سمات',
       en: 'FSP - no attributes',
@@ -30,7 +28,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.intersolveVoucherPaper,
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       en: 'Albert Heijn voucher paper',
     },
@@ -40,7 +37,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.safaricom,
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       en: 'Safaricom',
     },
@@ -57,28 +53,8 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
-    name: FinancialServiceProviders.vodacash,
-    integrationType: FinancialServiceProviderIntegrationType.xml,
-    hasReconciliation: false,
-    defaultLabel: {
-      en: 'Vodacash',
-    },
-    notifyOnTransaction: false,
-    attributes: [
-      {
-        name: 'phoneNumber',
-        isRequired: true,
-      },
-      {
-        name: 'healthArea',
-        isRequired: true,
-      },
-    ],
-  },
-  {
     name: 'bank_a',
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       ar: 'البنك أ',
       en: 'Bank A',
@@ -97,7 +73,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.intersolveVisa,
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       en: 'Visa debit card',
     },
@@ -136,7 +111,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: 'fsp_all_attributes',
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
 
     defaultLabel: {
       ar: 'FSP - جميع الصفات',
@@ -172,7 +146,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.commercialBankEthiopia,
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       en: 'Commercial Bank of Ethiopia',
     },
@@ -187,7 +160,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
   {
     name: FinancialServiceProviders.intersolveVoucherWhatsapp,
     integrationType: FinancialServiceProviderIntegrationType.api,
-    hasReconciliation: false,
     defaultLabel: {
       en: 'Albert Heijn voucher WhatsApp',
     },

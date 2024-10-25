@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
-  IsIn,
   IsInt,
   IsNumber,
   IsOptional,
@@ -65,11 +64,11 @@ export class BulkImportResult extends BulkImportDto {
 }
 
 export class ImportResult {
-  public aggregateImportResult: AggregateImportResult;
+  public aggregateImportResult: AggregateImportResultDto;
   public importResult?: BulkImportResult[];
 }
 
-class AggregateImportResult {
+export class AggregateImportResultDto {
   public countImported?: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
@@ -79,10 +78,9 @@ class AggregateImportResult {
 }
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({
-    enum: fspArray,
     example: fspArray.join(' | '),
   })
-  @IsIn(fspArray)
+  @IsString()
   // Should we change this to a more specific name?
   // It could also be programFinancialServiceProviderConfigurationName (which is a good name for us programmers)
   // However this name is also used by users in the csv file, so it should be a name that is understandable for them

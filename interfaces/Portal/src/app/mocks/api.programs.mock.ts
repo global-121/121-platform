@@ -34,7 +34,7 @@ const programsArray: Program[] = [
       {
         id: 1,
         name: 'phoneNumber',
-        answerType: 'tel',
+        registrationAttributeType: 'tel',
         label: {
           en: 'Phone Number',
         },
