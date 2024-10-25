@@ -10,6 +10,8 @@ class UsersPage extends BasePage {
   readonly fullNameInput: Locator;
   readonly emailInput: Locator;
   readonly submitButton: Locator;
+  readonly resetPasswordButton: Locator;
+  readonly genericButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -23,6 +25,10 @@ class UsersPage extends BasePage {
       .filter({ hasText: 'Full name' });
     this.emailInput = this.page.locator('label').filter({ hasText: 'E-mail' });
     this.submitButton = this.page.getByRole('button', { name: 'Submit' });
+    this.resetPasswordButton = this.page
+      .getByRole('button')
+      .filter({ hasText: 'Reset password' });
+    this.genericButton = this.page.getByRole('button');
   }
 
   async validateAssignedUsersNames(expectedAssignedUsers: string[]) {
@@ -94,6 +100,28 @@ class UsersPage extends BasePage {
       email,
       textContent: `${fullName} ${email}`,
     });
+  }
+
+  async selectUsersMenuItem({
+    email,
+    menuItem,
+  }: {
+    email?: string;
+    menuItem: string;
+  }) {
+    const selectUser = this.page.getByRole('row', {
+      name: email,
+    });
+    await selectUser.getByRole('button').click();
+    await this.page.getByRole('menuitem', { name: menuItem }).click();
+  }
+
+  async resetUsersPassword(email?: string) {
+    // Act
+    await this.selectUsersMenuItem({ email, menuItem: 'Reset password' });
+    await this.resetPasswordButton.click();
+    // Assert
+    await this.validateToastMessage('Password reset');
   }
 }
 
