@@ -999,14 +999,6 @@
         <source>Message:</source>
         <target state="new">Message:</target>
       </trans-unit>
-      <trans-unit id="1214152571980875649" datatype="html">
-        <source>Use @ to add personalized fields. <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot;&gt;" id="START_LINK"/>Learn more<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
-        <target state="new">Use @ to add personalized fields. <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot;&gt;" id="START_LINK"/>Learn more<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></target>
-      </trans-unit>
-      <trans-unit id="6356396558080396957" datatype="html">
-        <source>(&gt;20) characters.</source>
-        <target state="new">(&gt;20) characters.</target>
-      </trans-unit>
       <trans-unit id="3900182075447065445" datatype="html">
         <source>*Please make sure registration data is available for all used personalized fields.</source>
         <target state="new">*Please make sure registration data is available for all used personalized fields.</target>
@@ -1094,6 +1086,26 @@
       <trans-unit id="6655432650609946987" datatype="html">
         <source>Are you sure you want to send this message?</source>
         <target state="new">Are you sure you want to send this message?</target>
+      </trans-unit>
+      <trans-unit id="7781301631011863993" datatype="html">
+        <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
+        <target state="new">(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</target>
+      </trans-unit>
+      <trans-unit id="2221378397919016725" datatype="html">
+        <source>characters.</source>
+        <target state="new">characters.</target>
+      </trans-unit>
+      <trans-unit id="7022070615528435141" datatype="html">
+        <source>Delete</source>
+        <target state="new">Delete</target>
+      </trans-unit>
+      <trans-unit id="3273287482679757457" datatype="html">
+        <source>Use @ to add personalized fields.</source>
+        <target state="new">Use @ to add personalized fields.</target>
+      </trans-unit>
+      <trans-unit id="819996403327805209" datatype="html">
+        <source>Learn more</source>
+        <target state="new">Learn more</target>
       </trans-unit>
     </body>
   </file>
