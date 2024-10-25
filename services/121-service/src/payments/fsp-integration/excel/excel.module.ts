@@ -9,6 +9,7 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
   providers: [
     ExcelService,
     LookupService,
+    FileImportService,
     ProgramFinancialServiceProviderConfigurationRepository,
   ],
   controllers: [],

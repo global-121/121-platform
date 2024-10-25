@@ -5,22 +5,7 @@ Feature: Manage payment via import and export
     Given an FSP of integration type "csv"
     Given at least 1 payment is done for the program
 
-  Scenario: Export payment instructions for FSP without reconciliation
-    Given an FSP with "hasReconciliation=false"
-    Given a logged-in user with "PaymentFspInstructionREAD" permissions
-    When the user selects a "closed" payment from the dropdown-list
-    Then the "export payment instructions" button is enabled
-    When the user clicks the "export payment instructions" button
-    Then an confirm popup opens with a description
-    And it shows an 'action done last on' timestamp if available
-    When the user confirms
-    Then an Excel-file is dowloaded
-    And it shows a list of the registrations that were "included" for this payment
-    And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
-    And all data as programmed for this FSP
-
-  Scenario: Export payment instructions for FSP with reconciliation
-    Given an FSP with "hasReconciliation=true"
+  Scenario: Export payment instructions
     Given everything the same as in previous scenario
     When the user clicks the "export payment instructions" button
     Then a difference is that only 'waiting' transactions are included, instead of all

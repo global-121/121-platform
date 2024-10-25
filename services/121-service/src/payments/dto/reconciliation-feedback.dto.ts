@@ -1,17 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
-import { StatusEnum } from '@121-service/src/shared/enum/status.enum';
 
 export class ReconciliationFeedbackDto {
+  // ##TODO align wigh guidelines: use the dto only for the endpoint response, and don't pass it along multiple methods > create new interfaces for that + split in files where appropriate
   @ApiProperty({ example: '1234', description: 'The reference ID' })
   referenceId?: string | null;
 
   @ApiProperty({
-    example: StatusEnum.success,
-    enum: StatusEnum,
+    example: TransactionStatusEnum.success,
+    enum: TransactionStatusEnum,
   })
-  status?: StatusEnum | null;
+  status?: TransactionStatusEnum | null;
 
   @ApiProperty({ example: 'Success', description: 'The message' })
   message?: string | null;

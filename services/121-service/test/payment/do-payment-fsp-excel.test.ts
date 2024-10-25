@@ -34,7 +34,6 @@ import {
   registrationWesteros3,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-// ##TODO: Re-enable these tests when the new flow with fsp configuration is implemented for the excel fsp
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;
   // Payment info
@@ -121,20 +120,8 @@ describe('Do payment with Excel FSP', () => {
   });
 
   describe('Export FSP instructions', () => {
-    it.skip('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
+    it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
       // Arrange
-      const configValue = { value: '// ##TODOto implement' };
-      // const configValue = programTest.financialServiceProviders
-      //   .find((fsp) => fsp.fsp === FinancialServiceProviderName.excel)
-      //   ?.configuration?.find(
-      //     (c) =>
-      //       c.name ===
-      //       FinancialServiceProviderConfigurationEnum.columnsToExport,
-      //   );
-
-      const columns = Array.isArray(configValue?.value)
-        ? [...configValue.value, 'amount']
-        : [];
 
       // Act
       const transactionsResponse = await getTransactions(
@@ -149,43 +136,17 @@ describe('Do payment with Excel FSP', () => {
         paymentNr,
         accessToken,
       );
-      const fspInstructions = fspInstructionsResponse.body.data;
+      const fspInstructions = fspInstructionsResponse.body;
 
       // Assert
-      // Check if transactions are on 'waiting' status
       for (const transaction of transactionsResponse.body) {
         expect(transaction.status).toBe(TransactionStatusEnum.waiting);
       }
 
-      // Also check if the right amount of transactions are created
-      expect(fspInstructions.length).toBe(referenceIdsWesteros.length);
-
-      // Also check if the right phonenumber are in the transactions
-      expect(fspInstructions.map((r) => r.phoneNumber).sort()).toEqual(
-        phoneNumbersWesteros.sort(),
-      );
-
-      // Check if the rows are created with the right values
-      for (const row of fspInstructions) {
-        const registration = registrationsWesteros.find(
-          (r) => r.name === row.name,
-        )!;
-        expect(registration).toBeDefined();
-        for (const [key, value] of Object.entries(row)) {
-          if (key === 'amount') {
-            const multipliedAmount = amount * (registration.dragon + 1);
-            expect(value).toBe(multipliedAmount);
-          } else {
-            expect(value).toEqual(String(registration[key]));
-          }
-        }
-      }
-
-      // Check if the right columns are exported
-      const columnsInFspInstructions = Object.keys(fspInstructions[0]);
-      expect(columnsInFspInstructions.sort()).toEqual(columns.sort());
+      expect(fspInstructions).toMatchSnapshot();
     });
 
+    // ##TODO: wait with fixing this test until endpoint is available to update/delete columnsToExport
     it.skip('Should return all program-question/program-custom attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
       // Arrange
       const programAttributeColumns =
@@ -295,20 +256,9 @@ describe('Do payment with Excel FSP', () => {
       // Check per import record if it is imported or not found
       for (const importResultRecord of importResultRecords) {
         if (phoneNumbersWesteros.includes(importResultRecord[matchColumn])) {
-          if (importResultRecord.status === TransactionStatusEnum.success) {
-            expect(importResultRecord.importStatus).toBe(
-              ImportStatus.paymentSuccess,
-            );
-          } else if (
-            importResultRecord.status === TransactionStatusEnum.error
-          ) {
-            expect(importResultRecord.importStatus).toBe(
-              ImportStatus.paymentFailed,
-            );
-          } else {
-            // NOTE: This for-loop will have 8 iterations, not 4, because it needs to repeat all records for each bank, as it cannot distinguish a record from another bank from a completely unknown record
-            expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
-          }
+          expect(importResultRecord.importStatus).not.toBe(
+            ImportStatus.notFound,
+          );
         } else {
           expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
         }

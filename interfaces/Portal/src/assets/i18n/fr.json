@@ -178,7 +178,6 @@
         "btn-text": "Exporter les instructions de paiement",
         "confirm-message": "Cela téléchargera un fichier contenant les instructions de paiement pour le prestataire de services financiers.",
         "sub-message": {
-          "no-reconciliation": "Vous ne devez utiliser ce fichier <strong>qu’une seule fois par paiement</strong> sur le portail du prestataire de services financiers.",
           "reconciliation": "Cet export n’inclura que les Personnes Affectées pour lesquelles le statut actuel de la transaction est <strong>en attente</strong>."
         },
         "timestamp": "Dernier export effectué le : {{dateTime}}"

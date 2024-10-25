@@ -28,9 +28,6 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
   public lastPaymentId: number;
 
   @Input()
-  private hasFspWithReconciliation: boolean;
-
-  @Input()
   public paymentInProgress: boolean;
 
   public disabled: boolean;
@@ -64,11 +61,8 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
     this.subHeader = this.translate.instant(
       'page.program.export-fsp-intructions.confirm-message',
     );
-    // This shows the 'reconciliation' variant if there is at least one FSP with reconciliation (not 100% correct, but good enough for now)
     this.message = this.translate.instant(
-      this.hasFspWithReconciliation
-        ? 'page.program.export-fsp-intructions.sub-message.reconciliation'
-        : 'page.program.export-fsp-intructions.sub-message.no-reconciliation',
+      'page.program.export-fsp-intructions.sub-message.reconciliation',
     );
     if (
       await this.authService.hasPermission(
