@@ -130,6 +130,7 @@ module.exports = tseslint.config(
             'p-sidebar[position]',
             'p-table[stateKey]',
             'p-table[stateStorage]',
+            'p-inputSwitch[inputId]',
             'styleClass',
             'severity',
             'th[pSortableColumn]',

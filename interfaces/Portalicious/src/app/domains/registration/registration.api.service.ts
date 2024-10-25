@@ -3,7 +3,9 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
 
+import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
@@ -97,6 +99,45 @@ export class RegistrationApiService extends DomainApiService {
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
         'message',
+      ]).join('/'),
+      body,
+      params:
+        this.paginateQueryService.paginateQueryToHttpParams(paginateQuery),
+    });
+  }
+
+  changeStatus({
+    projectId,
+    paginateQuery,
+    status,
+    messageData,
+  }: {
+    projectId: Signal<number>;
+    paginateQuery: PaginateQuery | undefined;
+    status: RegistrationStatusEnum;
+    messageData?: SendMessageData | undefined;
+  }) {
+    let body: Partial<RegistrationStatusPatchDto>;
+    body = {
+      status,
+    };
+    if (messageData && 'customMessage' in messageData) {
+      body = {
+        ...body,
+        status,
+      };
+    } else if (messageData) {
+      body = {
+        ...body,
+        messageTemplateKey: messageData.messageTemplateKey,
+      };
+    }
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'status',
       ]).join('/'),
       body,
       params:

@@ -815,6 +815,24 @@
       <trans-unit id="send-message-dialog-preview" datatype="html">
         <source>You&apos;re about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>send a message<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
       </trans-unit>
+      <trans-unit id="6909842392958829581" datatype="html">
+        <source><x equiv-text="{{ headerText() }}" id="INTERPOLATION"/> registration(s)</source>
+      </trans-unit>
+      <trans-unit id="6289725856045829997" datatype="html">
+        <source>Send a message to registration(s)</source>
+      </trans-unit>
+      <trans-unit id="722717441766220011" datatype="html">
+        <source>You&apos;re about to include <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registrations to your project. This means that they can be included in payments.</source>
+      </trans-unit>
+      <trans-unit id="approve" datatype="html">
+        <source>Approve</source>
+      </trans-unit>
+      <trans-unit id="3301086086650990787" datatype="html">
+        <source>Register</source>
+      </trans-unit>
+      <trans-unit id="8384225360105280028" datatype="html">
+        <source>Complete</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

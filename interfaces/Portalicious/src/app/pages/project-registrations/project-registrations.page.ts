@@ -31,6 +31,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { ChangeStatusDialogComponent } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
 import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import {
@@ -49,6 +50,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     ButtonGroupModule,
     SendMessageDialogComponent,
+    ChangeStatusDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
@@ -70,6 +72,8 @@ export class ProjectRegistrationsPageComponent {
 
   @ViewChild('sendMessageDialog')
   private sendMessageDialog: SendMessageDialogComponent;
+  @ViewChild('changeStatusDialog')
+  private changeStatusDialog: ChangeStatusDialogComponent;
 
   RegistrationStatusEnum = RegistrationStatusEnum;
   paginateQuery = signal<PaginateQuery | undefined>(undefined);
@@ -198,14 +202,7 @@ export class ProjectRegistrationsPageComponent {
       return;
     }
 
-    // TODO: Instead of showing a toast, do something with the data
-    console.log(actionData);
-    this.toastService.showToast({
-      severity: 'info',
-      detail: actionData.selectAll
-        ? `Applying status: ${status} on all filtered registrations (${actionData.count.toString()})`
-        : `Applying status: ${status} on the ${actionData.count.toString()} selected registration(s)`,
-    });
+    this.changeStatusDialog.triggerAction(actionData, status);
   }
 
   canChangeStatus(
