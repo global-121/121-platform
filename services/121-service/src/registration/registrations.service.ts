@@ -1112,7 +1112,7 @@ export class RegistrationsService {
       if (error instanceof IntersolveVisaApiError) {
         throw new HttpException(
           `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.BAD_REQUEST,
         );
       } else {
         throw error;
