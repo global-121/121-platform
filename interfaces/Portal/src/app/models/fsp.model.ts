@@ -13,7 +13,6 @@ export class FinancialServiceProviderConfiguration {
 
 export class FinancialServiceProvider {
   integrationType: FspIntegrationType;
-  hasReconciliation: boolean;
   notifyOnTransaction: boolean;
   attributes: { name: string; required: boolean }[];
 }

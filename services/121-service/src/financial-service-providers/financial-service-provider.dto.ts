@@ -11,9 +11,6 @@ export class FinancialServiceProviderDto {
   @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })
   readonly integrationType: WrapperType<FinancialServiceProviderIntegrationType>;
 
-  @ApiProperty({ example: true })
-  readonly hasReconciliation: boolean;
-
   @ApiProperty({ example: { en: 'default label' } })
   readonly defaultLabel: LocalizedString;
 

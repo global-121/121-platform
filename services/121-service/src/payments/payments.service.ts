@@ -1003,7 +1003,7 @@ export class PaymentsService {
   public async getImportInstructionsTemplate(
     programId: number,
   ): Promise<ImportTemplateResponseDto[]> {
-    const programWithReconciliationFsps = await this.programRepository.findOne({
+    const programWithExcelFspConfigs = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
         programFinancialServiceProviderConfigurations: {
@@ -1014,24 +1014,22 @@ export class PaymentsService {
       select: ['id'],
     });
 
-    if (!programWithReconciliationFsps) {
-      throw new HttpException('Program or FSP not found', HttpStatus.NOT_FOUND);
+    if (!programWithExcelFspConfigs) {
+      throw new HttpException(
+        'No program with `Excel` FSP found',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const templates: ImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithReconciliationFsps.programFinancialServiceProviderConfigurations) {
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.excel
-      ) {
-        const matchColumn = await this.excelService.getImportMatchColumn(
-          fspConfig.id,
-        );
-        templates.push({
-          name: fspConfig.name,
-          template: [matchColumn, 'status'],
-        });
-      }
+    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
+      const matchColumn = await this.excelService.getImportMatchColumn(
+        fspConfig.id,
+      );
+      templates.push({
+        name: fspConfig.name,
+        template: [matchColumn, 'status'],
+      });
     }
 
     return templates;
@@ -1124,48 +1122,13 @@ export class PaymentsService {
     const result: TransactionReturnDto[] = [];
     for (const transaction of transactionsWithFspInstruction) {
       if (
-        // For fsp's with reconciliation export only export waiting transactions
-        this.fspHasReconciliation(
-          transaction.programFinancialServiceProviderConfigurationName,
-          programFspConfigEntitiesWithFspInstruction,
-        ) &&
+        // Only export waiting transactions, as others have already been reconciliated
         transaction.status === TransactionStatusEnum.waiting
-      ) {
-        result.push(transaction);
-      }
-
-      if (
-        // For fsp's without reconciliation export only export success transactions
-        !this.fspHasReconciliation(
-          transaction.programFinancialServiceProviderConfigurationName,
-          programFspConfigEntitiesWithFspInstruction,
-        ) &&
-        transaction.status === TransactionStatusEnum.success
       ) {
         result.push(transaction);
       }
     }
     return result;
-  }
-
-  // ##TODO: Consider removing the hasReconciliation related code, as all our FSP with instructions have reconciliation
-  private fspHasReconciliation(
-    programFinancialServiceProviderConfigurationName: string,
-    programFinancialServiceProviderConfigurationEntities: ProgramFinancialServiceProviderConfigurationEntity[],
-  ): boolean {
-    const programFinancialServiceProviderConfigurationEntity =
-      programFinancialServiceProviderConfigurationEntities.find(
-        (p) => p.name === programFinancialServiceProviderConfigurationName,
-      );
-    if (!programFinancialServiceProviderConfigurationEntity) {
-      throw Error(
-        `ProgramFinancialServiceProviderConfigurationEntity with name ${programFinancialServiceProviderConfigurationName} not found`,
-      );
-    }
-    const financialServiceProvider = findFinancialServiceProviderByNameOrFail(
-      programFinancialServiceProviderConfigurationEntity.financialServiceProviderName,
-    );
-    return financialServiceProvider.hasReconciliation;
   }
 
   private async getFspInstructionsPerProgramFspConfiguration({
@@ -1220,51 +1183,44 @@ export class PaymentsService {
       },
       relations: ['programFinancialServiceProviderConfigurations'],
     });
-    const fspConfigsWithReconciliation: ProgramFinancialServiceProviderConfigurationEntity[] =
+    const fspConfigsExcel: ProgramFinancialServiceProviderConfigurationEntity[] =
       [];
     for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      const fsp = findFinancialServiceProviderByNameOrFail(
-        fspConfig.financialServiceProviderName,
-      );
-      if (fsp.hasReconciliation) {
-        fspConfigsWithReconciliation.push(fspConfig);
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviders.excel
+      ) {
+        fspConfigsExcel.push(fspConfig);
       }
     }
-    if (!fspConfigsWithReconciliation.length) {
+    if (!fspConfigsExcel.length) {
       throw new HttpException(
-        'No FSPs with reconciliation found for this program',
+        'Other reconciliation FSPs than `Excel` are currently not supported.',
         HttpStatus.NOT_FOUND,
       );
     }
 
-    const fspConfigsExcel = fspConfigsWithReconciliation.filter(
-      (c) => c.financialServiceProviderName === FinancialServiceProviders.excel,
-    );
-    let importResults;
-    if (fspConfigsExcel.length) {
-      importResults = await this.excelService.processReconciliationData({
-        file,
-        payment,
-        programId,
-        fspConfigs: fspConfigsExcel,
-      });
-    }
+    const importResults = await this.excelService.processReconciliationData({
+      file,
+      payment,
+      programId,
+      fspConfigs: fspConfigsExcel,
+    });
 
-    for (const fspConfig of fspConfigsWithReconciliation) {
-      await this.transactionsService.storeAllTransactionsBulk(
-        importResults
-          .filter(
-            (r) =>
-              r.programFinancialServiceProviderConfigurationId === fspConfig.id,
-          )
-          .map((r) => r.transaction),
-        {
-          programId,
-          paymentNr: payment,
-          userId,
-          programFinancialServiceProviderConfigurationId: fspConfig.id,
-        },
-      );
+    for (const fspConfig of fspConfigsExcel) {
+      const transactions = importResults
+        .filter(
+          (r) =>
+            r.programFinancialServiceProviderConfigurationId === fspConfig.id,
+        )
+        .map((r) => r.transaction)
+        .filter((t) => t !== undefined);
+      await this.transactionsService.storeAllTransactionsBulk(transactions, {
+        programId,
+        paymentNr: payment,
+        userId,
+        programFinancialServiceProviderConfigurationId: fspConfig.id,
+      });
     }
 
     const feedback: ReconciliationFeedbackDto[] = importResults.map(

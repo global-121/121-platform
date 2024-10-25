@@ -165,7 +165,6 @@
         "btn-text": "Betaalinstructies exporteren",
         "confirm-message": "Hiermee downloadt u een bestand met betalingsinstructies voor de financiële dienstverlener.",
         "sub-message": {
-          "no-reconciliation": "U dient dit bestand slechts <strong> één keer per betaling </strong> te gebruiken in het portaal van de Financiële Dienstverlener.",
           "reconciliation": "Deze export omvat alleen hulpvragers waarvoor de huidige transactiestatus <strong> wachtend </strong> is."
         },
         "timestamp": "Laatste export is uitgevoerd op: {{dateTime}}"
