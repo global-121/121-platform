@@ -43,7 +43,19 @@ exports[`Do payment with Excel FSP Export FSP instructions Should return specifi
 
 exports[`Do payment with Excel FSP Import FSP reconciliation data should give me a CSV template when I request it 1`] = `
 [
-  "phoneNumber",
-  "status",
+  {
+    "name": "ironBank",
+    "template": [
+      "phoneNumber",
+      "status",
+    ],
+  },
+  {
+    "name": "gringotts",
+    "template": [
+      "phoneNumber",
+      "status",
+    ],
+  },
 ]
 `;
