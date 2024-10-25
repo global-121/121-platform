@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -814,6 +814,15 @@
       </trans-unit>
       <trans-unit id="9042260521669277115" datatype="html">
         <source>Pause</source>
+      </trans-unit>
+      <trans-unit id="4026691210548476882" datatype="html">
+        <source>Failed to load options</source>
+      </trans-unit>
+      <trans-unit id="6655432650609946987" datatype="html">
+        <source>Are you sure you want to send this message?</source>
+      </trans-unit>
+      <trans-unit id="loading" datatype="html">
+        <source>Loading...</source>
       </trans-unit>
     </body>
   </file>

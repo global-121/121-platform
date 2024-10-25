@@ -80,7 +80,7 @@ export class CreateProjectFormComponent {
     mutationFn: ({
       token,
       assetId,
-    }: Required<CreateProjectFormGroup['value']>) =>
+    }: ReturnType<CreateProjectFormGroup['getRawValue']>) =>
       this.projectApiService.createProjectFromKobo({ token, assetId }),
     onSuccess: (project) => {
       if (!project?.id) {
