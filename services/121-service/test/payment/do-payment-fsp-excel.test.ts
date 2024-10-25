@@ -139,69 +139,11 @@ describe('Do payment with Excel FSP', () => {
       const fspInstructions = fspInstructionsResponse.body;
 
       // Assert
-      // Check if transactions are on 'waiting' status
       for (const transaction of transactionsResponse.body) {
         expect(transaction.status).toBe(TransactionStatusEnum.waiting);
       }
 
-      // Check if the right amount of response files are created
-      expect(fspInstructions.length).toBe(2); // 2 different fspConfigs in this program (make this dynamic?)
-
-      // Then assert per fspConfig
-      for (const fspConfigInstructions of fspInstructions) {
-        // Check if the right amount of transactions are created
-        const registrationsFspConfig = registrationsWesteros.filter(
-          (r) =>
-            r.programFinancialServiceProviderConfigurationName ===
-            fspConfigInstructions.fileNamePrefix,
-        );
-        expect(fspConfigInstructions.data.length).toBe(
-          registrationsFspConfig.length,
-        );
-
-        // Check if the right phonenumber are in the transactions
-        const phoneNumbersFspConfig = registrationsFspConfig.map(
-          (r) => r.phoneNumber,
-        );
-        expect(
-          fspConfigInstructions.data.map((r) => r.phoneNumber).sort(),
-        ).toEqual(phoneNumbersFspConfig.sort());
-
-        // Check if the rows are created with the right values
-        for (const row of fspConfigInstructions.data) {
-          const registration = registrationsWesteros.find(
-            (r) => r.name === row.name,
-          )!;
-          expect(registration).toBeDefined();
-          for (const [key, value] of Object.entries(row)) {
-            if (key === 'amount') {
-              const multipliedAmount = amount * (registration.dragon + 1);
-              expect(value).toBe(multipliedAmount);
-            } else {
-              expect(value).toEqual(String(registration[key]));
-            }
-          }
-        }
-
-        // Check if the right columns are exported
-        const fspConfig =
-          programTest.programFinancialServiceProviderConfigurations?.find(
-            (fspConfig) =>
-              fspConfig.name === fspConfigInstructions.fileNamePrefix,
-          );
-        const columnsToExport =
-          fspConfig?.properties?.find(
-            (p) =>
-              p.name ===
-              FinancialServiceProviderConfigurationProperties.columnsToExport,
-          )?.value || [];
-        const columns = [...columnsToExport, 'amount', 'referenceId'];
-
-        const columnsInFspInstructions = Object.keys(
-          fspConfigInstructions.data[0],
-        );
-        expect(columnsInFspInstructions.sort()).toEqual(columns.sort());
-      }
+      expect(fspInstructions).toMatchSnapshot();
     });
 
     // ##TODO: wait with fixing this test until endpoint is available to update/delete columnsToExport
