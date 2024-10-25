@@ -1223,6 +1223,30 @@
         <source>There are no payments for this project yet.</source>
         <target state="new">There are no payments for this project yet.</target>
       </trans-unit>
+      <trans-unit id="6909842392958829581" datatype="html">
+        <source><x equiv-text="{{ headerText() }}" id="INTERPOLATION"/> registration(s)</source>
+        <target state="new"><x equiv-text="{{ headerText() }}" id="INTERPOLATION"/> registration(s)</target>
+      </trans-unit>
+      <trans-unit id="722717441766220011" datatype="html">
+        <source>You&apos;re about to include <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registrations to your project. This means that they can be included in payments.</source>
+        <target state="new">You&apos;re about to include <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registrations to your project. This means that they can be included in payments.</target>
+      </trans-unit>
+      <trans-unit id="6289725856045829997" datatype="html">
+        <source>Send a message to registration(s)</source>
+        <target state="new">Send a message to registration(s)</target>
+      </trans-unit>
+      <trans-unit id="approve" datatype="html">
+        <source>Approve</source>
+        <target state="new">Approve</target>
+      </trans-unit>
+      <trans-unit id="3301086086650990787" datatype="html">
+        <source>Register</source>
+        <target state="new">Register</target>
+      </trans-unit>
+      <trans-unit id="8384225360105280028" datatype="html">
+        <source>Complete</source>
+        <target state="new">Complete</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

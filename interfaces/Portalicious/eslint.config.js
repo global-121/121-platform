@@ -132,6 +132,7 @@ module.exports = tseslint.config(
             'p-table[stateStorage]',
             'appendTo',
             'inputId',
+            'p-inputSwitch[inputId]',
             'styleClass',
             'severity',
             'th[pSortableColumn]',

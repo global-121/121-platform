@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -919,6 +919,24 @@
       </trans-unit>
       <trans-unit id="page-title-project-payment" datatype="html">
         <source>Payment</source>
+      </trans-unit>
+      <trans-unit id="6909842392958829581" datatype="html">
+        <source><x equiv-text="{{ headerText() }}" id="INTERPOLATION"/> registration(s)</source>
+      </trans-unit>
+      <trans-unit id="6289725856045829997" datatype="html">
+        <source>Send a message to registration(s)</source>
+      </trans-unit>
+      <trans-unit id="722717441766220011" datatype="html">
+        <source>You&apos;re about to include <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registrations to your project. This means that they can be included in payments.</source>
+      </trans-unit>
+      <trans-unit id="approve" datatype="html">
+        <source>Approve</source>
+      </trans-unit>
+      <trans-unit id="3301086086650990787" datatype="html">
+        <source>Register</source>
+      </trans-unit>
+      <trans-unit id="8384225360105280028" datatype="html">
+        <source>Complete</source>
       </trans-unit>
     </body>
   </file>

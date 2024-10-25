@@ -125,4 +125,17 @@ export class MessagingService {
       );
     }, messageText);
   }
+
+  public async getTemplateByType({
+    type,
+    projectId,
+  }: {
+    type?: string;
+    projectId: Signal<number>;
+  }) {
+    const templates = await this.queryClient.fetchQuery(
+      this.notificationApiService.getMessageTemplates(projectId)(),
+    );
+    return templates.find((template) => template.type === type);
+  }
 }
