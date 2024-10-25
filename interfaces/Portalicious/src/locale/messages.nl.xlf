@@ -1110,6 +1110,34 @@
         <source>In progress</source>
         <target state="new">In progress</target>
       </trans-unit>
+      <trans-unit id="6057281094654962766" datatype="html">
+        <source>Validate</source>
+        <target state="new">Validate</target>
+      </trans-unit>
+      <trans-unit id="6381578200008167206" datatype="html">
+        <source>Include</source>
+        <target state="new">Include</target>
+      </trans-unit>
+      <trans-unit id="8116175184239166510" datatype="html">
+        <source>Decline</source>
+        <target state="new">Decline</target>
+      </trans-unit>
+      <trans-unit id="9042260521669277115" datatype="html">
+        <source>Pause</source>
+        <target state="new">Pause</target>
+      </trans-unit>
+      <trans-unit id="4026691210548476882" datatype="html">
+        <source>Failed to load options</source>
+        <target state="new">Failed to load options</target>
+      </trans-unit>
+      <trans-unit id="loading" datatype="html">
+        <source>Loading...</source>
+        <target state="new">Loading...</target>
+      </trans-unit>
+      <trans-unit id="6655432650609946987" datatype="html">
+        <source>Are you sure you want to send this message?</source>
+        <target state="new">Are you sure you want to send this message?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

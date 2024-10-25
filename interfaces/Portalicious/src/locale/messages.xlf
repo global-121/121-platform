@@ -835,6 +835,27 @@
       <trans-unit id="9023742269421706395" datatype="html">
         <source>Failed transfers</source>
       </trans-unit>
+      <trans-unit id="6057281094654962766" datatype="html">
+        <source>Validate</source>
+      </trans-unit>
+      <trans-unit id="6381578200008167206" datatype="html">
+        <source>Include</source>
+      </trans-unit>
+      <trans-unit id="8116175184239166510" datatype="html">
+        <source>Decline</source>
+      </trans-unit>
+      <trans-unit id="9042260521669277115" datatype="html">
+        <source>Pause</source>
+      </trans-unit>
+      <trans-unit id="4026691210548476882" datatype="html">
+        <source>Failed to load options</source>
+      </trans-unit>
+      <trans-unit id="6655432650609946987" datatype="html">
+        <source>Are you sure you want to send this message?</source>
+      </trans-unit>
+      <trans-unit id="loading" datatype="html">
+        <source>Loading...</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
