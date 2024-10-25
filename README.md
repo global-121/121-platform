@@ -199,6 +199,15 @@ NOTE: if you're making many data-model changes at once, or are doing a lot of tr
    - generate migration-script (see above)
    - restart 121-service (like above, to run the new migration-script)
 
+To test the migrations you are creating you can use this .sh script (unix only) `./services/121-service/src/migration/test-migration.sh` example usage `./services/121-service/src/migration/test-migration.sh main feat.new-awesome-entity`
+
+This script performs the following steps:
+
+1. Checks out the old branch and stops the specified Docker containers.
+2. Starts the Docker containers to apply the migration and load some data.
+3. Waits for the service to be up and running, then resets the database with mock data.
+4. Checks out the new branch, applies any stashed changes, and restarts the Docker containers to run the migrations again.
+
 ### Authentication
 
 All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request by the browser via an `access_token` cookie. The JWT authentication middleware handles the validation and authentication of the token.
