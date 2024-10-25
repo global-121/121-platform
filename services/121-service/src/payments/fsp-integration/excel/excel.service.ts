@@ -11,13 +11,11 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import {
-  ReconciliationDto,
-  ReconciliationFeedbackDto,
-} from '@121-service/src/payments/dto/reconciliation-feedback.dto';
+import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { ReconciliationReturnType } from '@121-service/src/payments/interfaces/reconciliation-return-type.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -260,7 +258,7 @@ export class ExcelService
     payment: number;
     programId: number;
     fspConfigs: ProgramFinancialServiceProviderConfigurationEntity[];
-  }): Promise<ReconciliationDto[]> {
+  }): Promise<ReconciliationReturnType[]> {
     const maxRecords = 10000;
     const validatedExcelImport = await this.fileImportService.validateCsv(
       file,
@@ -268,9 +266,9 @@ export class ExcelService
     );
 
     // First set up unfilled feedback object based on import rows ..
-    const crossFspConfigImportResults: ReconciliationDto[] = [];
+    const crossFspConfigImportResults: ReconciliationReturnType[] = [];
     for (const row of validatedExcelImport) {
-      const resultRow = new ReconciliationDto();
+      const resultRow = new ReconciliationReturnType();
       resultRow.feedback = new ReconciliationFeedbackDto();
       resultRow.feedback = {
         ...row,
@@ -322,7 +320,7 @@ export class ExcelService
     validatedExcelImport: object[];
     fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
     matchColumn: string;
-  }): Promise<ReconciliationDto[]> {
+  }): Promise<ReconciliationReturnType[]> {
     const registrationsForReconciliation =
       await this.getRegistrationsForReconciliation(
         programId,
@@ -384,7 +382,7 @@ export class ExcelService
     matchColumn: string,
     existingTransactions: TransactionReturnDto[],
     fspConfigId: number,
-  ): ReconciliationDto[] {
+  ): ReconciliationReturnType[] {
     // First order registrations by referenceId to join amount from transactions
     const registrationsOrderedByReferenceId = registrations.sort((a, b) =>
       a.referenceId.localeCompare(b.referenceId),
@@ -403,7 +401,7 @@ export class ExcelService
       (a[matchColumn] as string).localeCompare(b[matchColumn] as string),
     );
 
-    const resultFeedback: ReconciliationDto[] = [];
+    const resultFeedback: ReconciliationReturnType[] = [];
     for (const record of importRecordsOrdered) {
       let transaction: PaTransactionResultDto | null = null;
       let importStatus = ImportStatus.notFound;

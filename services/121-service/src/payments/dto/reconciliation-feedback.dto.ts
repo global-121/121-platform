@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 
@@ -25,12 +24,4 @@ export class ReconciliationFeedbackDto {
   importStatus: ImportStatus;
 
   [key: string]: string | undefined | null | ImportStatus;
-}
-
-export class ReconciliationDto {
-  feedback: ReconciliationFeedbackDto;
-
-  programFinancialServiceProviderConfigurationId?: number;
-
-  transaction?: PaTransactionResultDto;
 }

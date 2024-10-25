@@ -27,13 +27,13 @@ import {
 } from '@nestjs/swagger';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
-import { ImportTemplateResponseDto } from '@121-service/services/121-service/src/payments/dto/import-template-response.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
 import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
+import { ImportTemplateResponseDto } from '@121-service/src/payments/dto/import-template-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
