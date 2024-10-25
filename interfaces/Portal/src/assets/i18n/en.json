@@ -174,7 +174,6 @@
         "btn-text": "Export Payment Instructions",
         "confirm-message": "This will download a file with payment instructions for the Financial Service Provider.",
         "sub-message": {
-          "no-reconciliation": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider.",
           "reconciliation": "This export will only include People Affected for which the current transaction status is <strong>waiting</strong>."
         },
         "timestamp": "Latest export has been done on: {{dateTime}}"
@@ -346,7 +345,6 @@
           "dob": "Date of birth",
           "failedPayment": "Failed for payment #",
           "financialServiceProvider": "Financial Service Provider",
-          "fspDisplayName": "Financial Service Provider",
           "hasNote": "Has Note",
           "inclusionScore": "Inclusion score",
           "lastMessageStatus": "Last message",
@@ -361,6 +359,7 @@
           "personAffectedSequence": "Person Affected",
           "phoneNumber": "Phonenumber",
           "preferredLanguage": "Preferred language",
+          "programFinancialServiceProviderConfigurationLabel": "Financial Service Provider",
           "referenceId": "Reference ID",
           "registrationCreated": "Registration created",
           "registrationCreatedDate": "Registration created date",

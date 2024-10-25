@@ -6,7 +6,10 @@ import { Repository } from 'typeorm';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { AttributeWithOptionalLabel } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  AttributeWithOptionalLabel,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationCsvValidationEnum } from '@121-service/src/registration/enum/registration-csv-validation.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -18,74 +21,62 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
   {
     id: 8,
     name: 'addressStreet',
-    type: 'text',
-    fspNames: [FinancialServiceProviders.intersolveVisa],
+    type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 9,
     name: 'addressHouseNumber',
-    type: 'numeric',
-    fspNames: [FinancialServiceProviders.intersolveVisa],
+    type: RegistrationAttributeTypes.numeric,
     isRequired: false,
   },
   {
     id: 10,
     name: 'addressHouseNumberAddition',
-    type: 'text',
-    fspNames: [FinancialServiceProviders.intersolveVisa],
+    type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 11,
     name: 'addressPostalCode',
-    type: 'text',
-    fspNames: [FinancialServiceProviders.intersolveVisa],
+    type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 12,
     name: 'addressCity',
-    type: 'text',
-    fspNames: [FinancialServiceProviders.intersolveVisa],
+    type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 13,
     name: 'whatsappPhoneNumber',
-    type: 'tel',
-    fspNames: [
-      FinancialServiceProviders.intersolveVisa,
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
-    ],
+    type: RegistrationAttributeTypes.tel,
     isRequired: false,
   },
   {
     id: 3,
     name: 'fullName',
-    type: 'text',
+    type: RegistrationAttributeTypes.text,
     options: null,
-    fspNames: [],
     isRequired: false,
   },
   {
     id: 4,
     name: 'phoneNumber',
-    type: 'tel',
+    type: RegistrationAttributeTypes.tel,
     options: null,
-    fspNames: [],
     isRequired: false,
   },
   {
     id: 5,
     name: 'house',
-    type: 'dropdown',
+    type: RegistrationAttributeTypes.dropdown,
     options: [
       { option: 'lannister', label: { en: 'Lannister' } },
       { option: 'stark', label: { en: 'Stark' } },
       { option: 'greyjoy', label: { en: 'Greyjoy' } },
     ],
-    fspNames: [],
     isRequired: false,
   },
 ];

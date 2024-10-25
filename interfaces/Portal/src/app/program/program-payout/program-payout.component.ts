@@ -41,7 +41,6 @@ export class ProgramPayoutComponent implements OnInit {
   public payments: Payment[];
   public programHasVoucherSupport: boolean;
   public hasFspWithExportFileIntegration: boolean;
-  public hasFspWithReconciliation: boolean;
   public canMakeFspInstructions: boolean;
   public canImportFspReconciliation: boolean;
 
@@ -90,10 +89,6 @@ export class ProgramPayoutComponent implements OnInit {
         (fspConfig) =>
           fspConfig.financialServiceProvider.integrationType ===
           FspIntegrationType.csv,
-      );
-    this.hasFspWithReconciliation =
-      this.program.financialServiceProviderConfigurations.some(
-        (fspConfig) => fspConfig.financialServiceProvider.hasReconciliation,
       );
 
     this.canMakePayment = this.checkCanMakePayment();
@@ -338,10 +333,13 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkProgramHasVoucherSupport(
-    fsps: Program['financialServiceProviderConfigurations'],
+    fspConfigs: Program['financialServiceProviderConfigurations'],
   ): boolean {
-    for (const fsp of fsps || []) {
-      if (fsp && PaymentUtils.hasVoucherSupport(fsp.name)) {
+    for (const fspConfig of fspConfigs || []) {
+      if (
+        fspConfig &&
+        PaymentUtils.hasVoucherSupport(fspConfig.financialServiceProviderName)
+      ) {
         return true;
       }
     }

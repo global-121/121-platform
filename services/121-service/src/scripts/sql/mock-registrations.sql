@@ -16,7 +16,7 @@ INSERT
         "paymentAmountMultiplier",
         "programId",
         "userId",
-        "fspId",
+        "programFinancialServiceProviderConfigurationId",
         updated,
         "registrationProgramId" + (
         SELECT
