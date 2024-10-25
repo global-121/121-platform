@@ -45,7 +45,7 @@ test('[30866] [Admin] View last login', async ({ page }) => {
   await test.step('Validate last login', async () => {
     await basePage.navigateToPage('Users');
     await users.validateRowTextContent({
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW!,
       textContent: loginTimeStamp,
     });
   });
