@@ -12,6 +12,7 @@ import {
   IntersolveVisaCardStatus,
   IntersolveVisaTokenStatus,
   Registration,
+  SendMessageData,
   VisaCard121Status,
   VisaCardAction,
   WalletWithCards,
@@ -26,10 +27,6 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   projectId,
   'registrations',
 ];
-
-export type SendMessageData =
-  | { customMessage: string }
-  | { messageTemplateKey: string };
 
 @Injectable({
   providedIn: 'root',
