@@ -28,3 +28,8 @@ export type ProjectUserWithRolesLabel = {
 export type Attribute = ArrayElement<
   Dto121Service<ProgramController['getAttributes']>
 >;
+
+export type AttributeWithTranslatedLabel = { label: string } & Omit<
+  Attribute,
+  'label'
+>;
