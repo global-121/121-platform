@@ -12,4 +12,3 @@ import { ToolbarModule } from 'primeng/toolbar';
 export class FooterComponent {
   currentYear: number = new Date().getFullYear();
 }
-
