@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { ToolbarModule } from 'primeng/toolbar';
-
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [ToolbarModule],
+  imports: [],
   templateUrl: './footer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
