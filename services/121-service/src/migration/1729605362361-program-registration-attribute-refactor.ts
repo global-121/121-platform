@@ -308,7 +308,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
         updated,
         name,
         label,
-        "questionType" AS type,
+        "answerType" as type,
         false AS "isRequired",
         placeholder,
         options,
