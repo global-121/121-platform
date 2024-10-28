@@ -722,9 +722,6 @@
       <trans-unit id="activity-log-item-type-fsp-change" datatype="html">
         <source>FSP change</source>
       </trans-unit>
-      <trans-unit id="1214152571980875649" datatype="html">
-        <source>Use @ to add personalized fields. <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot;&gt;" id="START_LINK"/>Learn more<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
-      </trans-unit>
       <trans-unit id="2290401575085388784" datatype="html">
         <source>You are about to send a message to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
       </trans-unit>
@@ -748,9 +745,6 @@
       </trans-unit>
       <trans-unit id="5397829192667702490" datatype="html">
         <source>Sending messages</source>
-      </trans-unit>
-      <trans-unit id="6356396558080396957" datatype="html">
-        <source>(&gt;20) characters.</source>
       </trans-unit>
       <trans-unit id="6562860910125244453" datatype="html">
         <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
@@ -802,6 +796,20 @@
       </trans-unit>
       <trans-unit id="1336542143746897548" datatype="html">
         <source>Email Support</source>
+      <trans-unit id="2221378397919016725" datatype="html">
+        <source>characters.</source>
+      </trans-unit>
+      <trans-unit id="7022070615528435141" datatype="html">
+        <source>Delete</source>
+      </trans-unit>
+      <trans-unit id="7781301631011863993" datatype="html">
+        <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
+      </trans-unit>
+      <trans-unit id="3273287482679757457" datatype="html">
+        <source>Use @ to add personalized fields.</source>
+      </trans-unit>
+      <trans-unit id="819996403327805209" datatype="html">
+        <source>Learn more</source>
       </trans-unit>
     </body>
   </file>

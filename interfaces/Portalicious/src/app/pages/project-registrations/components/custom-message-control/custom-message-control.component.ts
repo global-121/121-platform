@@ -53,8 +53,8 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   customMessageInternalModel = model<string>('');
   customMessageDisabled = model<boolean>(false);
 
-  writeValue(value: string) {
-    this.customMessageInternalModel.set(value);
+  writeValue(value: string | undefined) {
+    this.customMessageInternalModel.set(value ?? '');
   }
 
   registerOnChange(fn: (value: string) => void) {
