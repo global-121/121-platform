@@ -7,6 +7,9 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import UsersPage from '@121-e2e/portalicious/pages/UsersPage';
 
+const newUSerFullName = 'New User';
+const newUserEmail = 'email@example.example';
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.oneAdmin);
 
@@ -23,11 +26,15 @@ test('[30867] [Admin] Add a user', async ({ page }) => {
   const basePage = new BasePage(page);
   const users = new UsersPage(page);
 
-  await test.step('Validate last login', async () => {
+  await test.step('Add user new user', async () => {
     await basePage.navigateToPage('Users');
     await users.addNewUser({
-      fullName: 'New User',
-      email: 'email@example.example',
+      fullName: newUSerFullName,
+      email: newUserEmail,
+    });
+    await users.validateNewUserAdded({
+      fullName: newUSerFullName,
+      email: newUserEmail,
     });
   });
 });

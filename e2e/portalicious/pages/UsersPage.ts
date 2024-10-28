@@ -89,12 +89,19 @@ class UsersPage extends BasePage {
   }
 
   async addNewUser({ fullName, email }: { fullName: string; email: string }) {
-    // Act
     await this.newUserButton.click();
     await this.fullNameInput.fill(fullName);
     await this.emailInput.fill(email);
     await this.submitButton.click();
-    // Assert
+  }
+
+  async validateNewUserAdded({
+    fullName,
+    email,
+  }: {
+    fullName: string;
+    email: string;
+  }) {
     await this.validateToastMessage('User added');
     await this.validateRowTextContent({
       email,
@@ -117,11 +124,8 @@ class UsersPage extends BasePage {
   }
 
   async resetUsersPassword(email: string) {
-    // Act
     await this.selectUsersMenuItem({ email, menuItem: 'Reset password' });
     await this.resetPasswordButton.click();
-    // Assert
-    await this.validateToastMessage('Password reset');
   }
 }
 

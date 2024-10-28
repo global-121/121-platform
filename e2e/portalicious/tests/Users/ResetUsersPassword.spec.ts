@@ -28,5 +28,7 @@ test('[30868] [Admin] Reset users password', async ({ page }) => {
     await users.resetUsersPassword(
       process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW!,
     );
+    // Assert
+    await users.validateToastMessage('Password reset');
   });
 });
