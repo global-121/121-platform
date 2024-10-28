@@ -58,7 +58,6 @@ export class ProgramFspConfigurationController {
       'The programFspConfigurationEntity has been successfully created.',
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
-  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Post(':programId/fsp-configuration')
   public async create(
     @Body() programFspConfigurationData: CreateProgramFspConfigurationDto,
@@ -85,7 +84,6 @@ export class ProgramFspConfigurationController {
       'The programFspConfigurationEntity has been successfully updated.',
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
-  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Put(':programId/fsp-configuration/:programFspConfigurationId')
   public async update(
     @Body() programFspConfigurationData: UpdateProgramFspConfigurationDto,
@@ -115,7 +113,6 @@ export class ProgramFspConfigurationController {
       'The programFspConfigurationEntity has been successfully updated.',
   })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request.' })
-  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Delete(':programId/fsp-configuration/:programFspConfigurationId')
   public async delete(
     @Param('programId', ParseIntPipe)

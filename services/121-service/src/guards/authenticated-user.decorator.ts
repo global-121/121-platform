@@ -1,4 +1,5 @@
-import { SetMetadata } from '@nestjs/common';
+import { applyDecorators, HttpStatus, SetMetadata } from '@nestjs/common';
+import { ApiResponse } from '@nestjs/swagger';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -9,10 +10,20 @@ export interface AuthenticatedUserParameters {
   readonly isGuarded?: boolean;
 }
 
-export const AuthenticatedUser = (
-  parameters?: AuthenticatedUserParameters,
-): ReturnType<typeof SetMetadata> =>
-  SetMetadata('authenticationParameters', {
-    ...parameters,
-    isGuarded: true,
-  });
+export const AuthenticatedUser = (parameters?: AuthenticatedUserParameters) => {
+  return applyDecorators(
+    SetMetadata('authenticationParameters', {
+      ...parameters,
+      isGuarded: true,
+    }),
+    ApiResponse({
+      status: HttpStatus.FORBIDDEN,
+      description:
+        'User does not have the right permission to access this endpoint.',
+    }),
+    ApiResponse({
+      status: HttpStatus.UNAUTHORIZED,
+      description: 'Not authenticated.',
+    }),
+  );
+};
