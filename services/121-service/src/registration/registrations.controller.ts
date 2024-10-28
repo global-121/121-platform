@@ -437,10 +437,6 @@ export class RegistrationsController {
     description:
       'Return registrations that match the exact phone-number - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
   @ApiQuery({
     name: 'phonenumber',
     required: true,
