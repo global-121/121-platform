@@ -184,6 +184,7 @@ export class ProjectRegistrationsPageComponent {
   canChangeStatus(
     status:
       | RegistrationStatusEnum.declined
+      | RegistrationStatusEnum.deleted
       | RegistrationStatusEnum.included
       | RegistrationStatusEnum.paused
       | RegistrationStatusEnum.validated,
@@ -195,6 +196,7 @@ export class ProjectRegistrationsPageComponent {
         PermissionEnum.RegistrationStatusIncludedUPDATE,
       [RegistrationStatusEnum.declined]:
         PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+      [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
       [RegistrationStatusEnum.paused]:
         PermissionEnum.RegistrationStatusPausedUPDATE,
     };
@@ -203,4 +205,11 @@ export class ProjectRegistrationsPageComponent {
       requiredPermission: statusToPermissionMap[status],
     });
   }
+
+  canSendMessage = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
+    }),
+  );
 }
