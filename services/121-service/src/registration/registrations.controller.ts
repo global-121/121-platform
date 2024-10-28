@@ -408,7 +408,7 @@ export class RegistrationsController {
       }
     }
 
-    return await this.registrationsService.validateBodyAndUpdateRegistration({
+    return await this.registrationsService.validateInputAndUpdateRegistration({
       programId,
       referenceId,
       updateRegistrationDto,

@@ -23,11 +23,11 @@ export class RegistrationUpdateProcessor {
       data: jobData.data,
       reason: jobData.reason,
     };
-    await this.registrationsService.validateBodyAndUpdateRegistration({
+    await this.registrationsService.validateInputAndUpdateRegistration({
       programId: jobData.programId,
       referenceId: jobData.referenceId,
       updateRegistrationDto: dto,
-      userId: jobData?.request?.userId,
+      userId: jobData.request.userId,
     });
   }
 }

@@ -9,7 +9,6 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
-import { ValidateRegistrationErrorObject } from '@121-service/src/registration/dto/validate-registration-error-object.dto';
 import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
@@ -17,6 +16,7 @@ import {
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';

@@ -426,7 +426,7 @@ export class RegistrationsService {
     }
   }
 
-  public async validateBodyAndUpdateRegistration({
+  public async validateInputAndUpdateRegistration({
     programId,
     referenceId,
     updateRegistrationDto,

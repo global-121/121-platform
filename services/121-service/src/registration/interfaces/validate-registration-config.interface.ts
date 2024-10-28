@@ -1,5 +1,5 @@
-export class ValidationRegistrationConfig {
-  validateUniqueReferenceId: boolean;
-  validateExistingReferenceId: boolean;
-  validatePhoneNumberLookup: boolean;
+export interface ValidationRegistrationConfig {
+  readonly validateUniqueReferenceId: boolean;
+  readonly validateExistingReferenceId: boolean;
+  readonly validatePhoneNumberLookup: boolean;
 }

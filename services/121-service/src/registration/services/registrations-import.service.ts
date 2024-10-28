@@ -74,7 +74,6 @@ export class RegistrationsImportService {
     // Prepare the job array to push to the queue
     const updateJobs: RegistrationUpdateJobDto[] = bulkUpdateRecords.map(
       (record) => {
-        // const updateData = { ...registration, ...registration.data };
         const referenceId = record['referenceId'];
         delete record['referenceId'];
         return {
