@@ -190,16 +190,26 @@ export class ChangeStatusDialogComponent {
 
         if (!foundMessageTemplate) {
           messageTypeField.setValue('custom');
+          customMessageField.setValidators([
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            Validators.required,
+            Validators.minLength(20),
+          ]);
+          messageTemplateKeyField.clearValidators();
           messageTemplateKeyField.setValue(undefined);
           customMessageField.setValue(undefined);
           this.previewData.set(undefined);
-          return;
+        } else {
+          messageTypeField.setValue('template');
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          messageTemplateKeyField.setValidators([Validators.required]);
+          customMessageField.clearValidators();
+          messageTemplateKeyField.setValue(foundMessageTemplate.type);
+          customMessageField.setValue(undefined);
+          this.previewData.set(this.formGroup.getRawValue());
         }
-
-        messageTypeField.setValue('template');
-        messageTemplateKeyField.setValue(foundMessageTemplate.type);
-        customMessageField.setValue(undefined);
-        this.previewData.set(this.formGroup.getRawValue());
+        messageTemplateKeyField.updateValueAndValidity();
+        customMessageField.updateValueAndValidity();
       },
       {
         allowSignalWrites: true,
