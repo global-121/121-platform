@@ -128,6 +128,8 @@ module.exports = tseslint.config(
             'p-dropdown[appendTo]',
             'p-iconField[iconPosition]',
             'p-sidebar[position]',
+            'p-splitButton[icon]',
+            'p-splitButton[menuStyleClass]',
             'p-table[stateKey]',
             'p-table[stateStorage]',
             'styleClass',

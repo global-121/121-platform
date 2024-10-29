@@ -3,19 +3,22 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import { uniqBy } from 'lodash';
 
+import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import { ATTRIBUTE_LABELS } from '~/domains/project/project.helper';
 import {
   Attribute,
   AttributeWithTranslatedLabel,
   Project,
-  ProjectMetrics,
   ProjectUser,
   ProjectUserAssignment,
   ProjectUserWithRolesLabel,
 } from '~/domains/project/project.model';
 import { Role } from '~/domains/role/role.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = 'programs';
 
@@ -51,12 +54,6 @@ export class ProjectApiService extends DomainApiService {
     return this.generateQueryOptions<Project>({
       path: [BASE_ENDPOINT, projectId],
       enabled: () => !!projectId(),
-    });
-  }
-
-  getProjectSummaryMetrics(projectId: Signal<number>) {
-    return this.generateQueryOptions<ProjectMetrics>({
-      path: [BASE_ENDPOINT, projectId, 'metrics/program-stats-summary'],
     });
   }
 
@@ -254,6 +251,26 @@ export class ProjectApiService extends DomainApiService {
         projectId,
         'financial-service-providers/intersolve-voucher/vouchers/balance',
       ],
+      requestOptions: {
+        params,
+      },
+    });
+  }
+
+  getLatestAction({
+    projectId,
+    actionType,
+  }: {
+    projectId: Signal<number>;
+    actionType: ExportType;
+  }) {
+    const params = new HttpParams({
+      fromObject: {
+        actionType,
+      },
+    });
+    return this.generateQueryOptions<Dto<ActionReturnDto>>({
+      path: [BASE_ENDPOINT, projectId, 'actions'],
       requestOptions: {
         params,
       },

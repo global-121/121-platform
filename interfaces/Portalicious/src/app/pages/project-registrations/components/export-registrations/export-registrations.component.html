@@ -1,0 +1,46 @@
+<p-splitButton
+  label="Export"
+  i18n-label="@@export"
+  icon="pi pi-upload"
+  rounded
+  outlined
+  [model]="exportOptions"
+  (onClick)="exportSelectedRegistrations()"
+  menuStyleClass="!left-auto right-0 w-auto [&_.p-menuitem-text]:whitespace-nowrap"
+/>
+<app-confirmation-dialog
+  #exportSelectedDialog
+  header="Export selected registrations"
+  i18n-header="@@export-selected"
+  headerIcon="pi pi-upload"
+  [mutation]="exportRegistrationsMutation"
+  [mutationData]="{
+    type: ExportType.allPeopleAffected,
+    paginateQuery: exportSelectedActionData()?.query,
+  }"
+>
+  <p i18n>
+    You're about to download an Excel file for
+    {{ exportSelectedActionData()?.count }} selected registrations.
+  </p>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.allPeopleAffected"
+  />
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  #exportAllDialog
+  header="Export all registrations"
+  i18n-header="@@export-all"
+  headerIcon="pi pi-upload"
+  [mutation]="exportRegistrationsMutation"
+  [mutationData]="{
+    type: ExportType.allPeopleAffected,
+  }"
+>
+  <p i18n>You're about to download an Excel file for all registrations.</p>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.allPeopleAffected"
+  />
+</app-confirmation-dialog>

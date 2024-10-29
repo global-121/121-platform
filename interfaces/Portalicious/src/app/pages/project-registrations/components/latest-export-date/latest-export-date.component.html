@@ -1,0 +1,14 @@
+@if (canSeeLastExportTime()) {
+  <p class="mt-2">
+    @if (latestExport.isPending()) {
+      <app-skeleton-inline />
+    } @else if (latestExport.data()?.created) {
+      <ng-container i18n
+        >Latest export has been done on:
+        {{ latestExport.data()?.created | date: 'medium' }}</ng-container
+      >
+    } @else {
+      <ng-container i18n>There has been no export yet.</ng-container>
+    }
+  </p>
+}

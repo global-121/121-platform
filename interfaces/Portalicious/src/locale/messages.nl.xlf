@@ -1083,6 +1083,58 @@
         <source>Select a message from the template messages or write a custom message.</source>
         <target state="new">Select a message from the template messages or write a custom message.</target>
       </trans-unit>
+      <trans-unit id="export" datatype="html">
+        <source>Export</source>
+        <target state="new">Export</target>
+      </trans-unit>
+      <trans-unit id="export-duplicate" datatype="html">
+        <source>Export duplicate registrations</source>
+        <target state="new">Export duplicate registrations</target>
+      </trans-unit>
+      <trans-unit id="export-changes" datatype="html">
+        <source>Export status &amp; data changes</source>
+        <target state="new">Export status &amp; data changes</target>
+      </trans-unit>
+      <trans-unit id="export-verification" datatype="html">
+        <source>Export Account number verification</source>
+        <target state="new">Export Account number verification</target>
+      </trans-unit>
+      <trans-unit id="export-selected" datatype="html">
+        <source>Export selected registrations</source>
+        <target state="new">Export selected registrations</target>
+      </trans-unit>
+      <trans-unit id="5701571628417198513" datatype="html">
+        <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
+        <target state="new">You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</target>
+      </trans-unit>
+      <trans-unit id="export-all" datatype="html">
+        <source>Export all registrations</source>
+        <target state="new">Export all registrations</target>
+      </trans-unit>
+      <trans-unit id="1206208686212846412" datatype="html">
+        <source>Preparing export</source>
+        <target state="new">Preparing export</target>
+      </trans-unit>
+      <trans-unit id="2511966165374777397" datatype="html">
+        <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
+        <target state="new">This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</target>
+      </trans-unit>
+      <trans-unit id="5181778936643802059" datatype="html">
+        <source>You&apos;re about to download an Excel file for all registrations.</source>
+        <target state="new">You&apos;re about to download an Excel file for all registrations.</target>
+      </trans-unit>
+      <trans-unit id="7945700064012172493" datatype="html">
+        <source>Export downloaded.</source>
+        <target state="new">Export downloaded.</target>
+      </trans-unit>
+      <trans-unit id="4452017686076766931" datatype="html">
+        <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
+        <target state="new">Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="1543931596742881836" datatype="html">
+        <source>There has been no export yet.</source>
+        <target state="new">There has been no export yet.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
