@@ -71,7 +71,10 @@
         } @else {
           @if (messageTemplates.isPending()) {
             <!-- We don't know if it will be template or custom yet -->
-            <p>XXX: add skeleton</p>
+            <p-skeleton
+              width="100%"
+              height="2rem"
+            ></p-skeleton>
           } @else if (formGroup.value.messageType === 'template') {
             <!-- Template message -->
             @if (previewMessageData) {

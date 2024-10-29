@@ -25,6 +25,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -65,6 +66,7 @@ type ChangeStatusFormGroup =
     CustomMessagePreviewComponent,
     InputSwitchModule,
     NgTemplateOutlet,
+    SkeletonModule,
   ],
   providers: [ToastService],
   templateUrl: './change-status-dialog.component.html',
