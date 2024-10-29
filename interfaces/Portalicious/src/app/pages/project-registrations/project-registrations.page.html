@@ -3,6 +3,14 @@
   i18n-pageTitle="@@page-title-project-registrations"
   [projectId]="projectId()"
 >
+  <div header-actions>
+    @if (canExport()) {
+      <app-export-registrations
+        [projectId]="projectId()"
+        [getActionData]="getActionData.bind(this)"
+      />
+    }
+  </div>
   <p-card>
     <app-query-table
       [items]="registrations()"

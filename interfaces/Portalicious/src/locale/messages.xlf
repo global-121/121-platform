@@ -818,6 +818,60 @@
       <trans-unit id="create-payment" datatype="html">
         <source>Create new payment</source>
       </trans-unit>
+      <trans-unit id="1206208686212846412" datatype="html">
+        <source>Preparing export</source>
+      </trans-unit>
+      <trans-unit id="1543931596742881836" datatype="html">
+        <source>There has been no export yet.</source>
+      </trans-unit>
+      <trans-unit id="2511966165374777397" datatype="html">
+        <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
+      </trans-unit>
+      <trans-unit id="4452017686076766931" datatype="html">
+        <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="5701571628417198513" datatype="html">
+        <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
+      </trans-unit>
+      <trans-unit id="771623267264728975" datatype="html">
+        <source>You&apos;re about to download an Excel file for all duplicate registrations.</source>
+      </trans-unit>
+      <trans-unit id="7945700064012172493" datatype="html">
+        <source>Export downloaded.</source>
+      </trans-unit>
+      <trans-unit id="9109328074966219188" datatype="html">
+        <source>Checking duplicates is based on:</source>
+      </trans-unit>
+      <trans-unit id="export" datatype="html">
+        <source>Export</source>
+      </trans-unit>
+      <trans-unit id="export-changes" datatype="html">
+        <source>Export status &amp; data changes</source>
+      </trans-unit>
+      <trans-unit id="export-duplicate" datatype="html">
+        <source>Export duplicate registrations</source>
+      </trans-unit>
+      <trans-unit id="export-selected" datatype="html">
+        <source>Export selected registrations</source>
+      </trans-unit>
+      <trans-unit id="export-verification" datatype="html">
+        <source>Export account number verification</source>
+      </trans-unit>
+      <trans-unit id="3604386807230411192" datatype="html">
+        <source>Start Date</source>
+      </trans-unit>
+      <trans-unit id="5035732150329518917" datatype="html">
+        <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
+      </trans-unit>
+      <trans-unit id="7379726829888309084" datatype="html">
+        <source>End Date</source>
+      </trans-unit>
+      <trans-unit id="7675424950942601762" datatype="html">
+        <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>
+      </trans-unit>
+      <trans-unit id="7463196084306840699" datatype="html">
+        <source>The data in this report is based on data that is imported every night from CBE. If you changed data today this will not be reflected in the report.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

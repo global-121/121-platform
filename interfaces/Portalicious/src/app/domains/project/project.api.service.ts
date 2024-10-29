@@ -2,6 +2,10 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import { uniqBy } from 'lodash';
 
+import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
+import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import { ATTRIBUTE_LABELS } from '~/domains/project/project.helper';
 import {
@@ -14,6 +18,7 @@ import {
 } from '~/domains/project/project.model';
 import { Role } from '~/domains/role/role.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = 'programs';
 
@@ -240,6 +245,35 @@ export class ProjectApiService extends DomainApiService {
         params: {
           referenceId: registrationReferenceId,
           payment: paymentId,
+        },
+      },
+    });
+  }
+
+  getCbeVerificationReport(projectId: Signal<number>) {
+    return this.generateQueryOptions<
+      Dto<CommercialBankEthiopiaValidationReportDto>
+    >({
+      path: [
+        BASE_ENDPOINT,
+        projectId,
+        'financial-service-providers/commercial-bank-ethiopia/account-enquiries',
+      ],
+    });
+  }
+
+  getLatestAction({
+    projectId,
+    actionType,
+  }: {
+    projectId: Signal<number>;
+    actionType: ExportType;
+  }) {
+    return this.generateQueryOptions<Dto<ActionReturnDto>>({
+      path: [BASE_ENDPOINT, projectId, 'actions'],
+      requestOptions: {
+        params: {
+          actionType,
         },
       },
     });

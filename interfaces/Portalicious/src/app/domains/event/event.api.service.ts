@@ -1,38 +1,27 @@
 import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-
 import { DomainApiService } from '~/domains/domain-api.service';
-import { ProjectMetrics } from '~/domains/metric/metric.model';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
   projectId,
-  'metrics',
+  'events',
 ];
 
 @Injectable({
   providedIn: 'root',
 })
-export class MetricApiService extends DomainApiService {
-  getProjectSummaryMetrics(projectId: Signal<number>) {
-    return this.generateQueryOptions<ProjectMetrics>({
-      path: [...BASE_ENDPOINT(projectId), 'program-stats-summary'],
-    });
-  }
-
-  exportMetrics({
+export class EventApiService extends DomainApiService {
+  getEvents({
     projectId,
-    type,
     params,
   }: {
     projectId: Signal<number>;
-    type: ExportType;
     params: HttpParamsOptions['fromObject'];
   }) {
     return this.generateQueryOptions<Blob>({
-      path: [...BASE_ENDPOINT(projectId), 'export-list', type],
+      path: BASE_ENDPOINT(projectId),
       requestOptions: {
         params,
         responseAsBlob: true,
