@@ -71,14 +71,15 @@ type ChangeStatusFormGroup =
 })
 export class ChangeStatusDialogComponent {
   projectId = input.required<number>();
-  readonly previewRegistration = input.required<Registration>();
 
   private messagingService = inject(MessagingService);
   private notificationApiService = inject(NotificationApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  actionData = signal<ActionDataWithPaginateQuery | undefined>(undefined);
+  actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
+    undefined,
+  );
   dialogVisible = model<boolean>(false);
   previewData = signal<Partial<MessageInputData> | undefined>(undefined);
   status = signal<RegistrationStatusEnum | undefined>(undefined);
@@ -174,17 +175,19 @@ export class ChangeStatusDialogComponent {
     const customMessageField = this.formGroup.controls.customMessage;
     effect(
       () => {
-        if (!this.messageTemplates.isSuccess()) {
+        const status = this.status();
+        if (!this.messageTemplates.isSuccess() || !status) {
           return;
         }
         const foundMessageTemplate = this.messageTemplates
           .data()
-          .find((template) => template.type === this.status()?.toLowerCase());
+          .find((template) => template.type === status.toLowerCase());
 
         if (!foundMessageTemplate) {
           messageTypeField.setValue('custom');
           messageTemplateKeyField.setValue(undefined);
           customMessageField.setValue(undefined);
+          this.previewData.set(undefined);
           return;
         }
 
@@ -200,18 +203,17 @@ export class ChangeStatusDialogComponent {
   }
 
   triggerAction(
-    actionData: ActionDataWithPaginateQuery,
+    actionData: ActionDataWithPaginateQuery<Registration>,
     status: RegistrationStatusEnum,
   ) {
     this.actionData.set(actionData);
-    this.dialogVisible.set(true);
-    if (this.status() === status) {
-      this.formGroup.patchValue({ checked: false });
-      return;
-    }
-    this.status.set(status);
     this.formGroup.reset();
-    this.previewData.set(undefined);
+
+    // Doing this to trigger the effect
+    this.status.set(undefined);
+    this.status.set(status);
+
+    this.dialogVisible.set(true);
   }
 
   private getSendMessageData(
