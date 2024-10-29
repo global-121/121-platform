@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MessageInstance } from 'twilio/lib/rest/api/v2010/account/message';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -73,51 +74,74 @@ export class WhatsappService {
       payload['messageContentType'] = messageContentType;
     }
 
-    let errorOccurred = false;
-    let messageToStore;
     try {
-      messageToStore = await twilioClient.messages.create(payload);
-      return messageToStore.sid;
-    } catch (error) {
-      errorOccurred = true;
-      messageToStore = {
-        accountSid: process.env.TWILIO_SID,
-        body: payload.body,
-        mediaUrl,
-        to: payload.to,
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        dateCreated: new Date().toISOString(),
-        sid: `failed-${uuid()}`,
-        status: 'failed',
-        errorCode: error.code,
-      };
-      throw error;
-    } finally {
-      messageToStore.userId = userId;
-      await this.storeSendWhatsapp(
-        messageToStore,
+      const messageToStore = await twilioClient.messages.create(payload);
+      await this.storeSendWhatsapp({
+        message: messageToStore,
+        userId,
         registrationId,
         mediaUrl,
         messageContentType,
         messageProcessType,
-        errorOccurred ? undefined : existingSidToUpdate,
-      );
+      });
+      return messageToStore.sid;
+    } catch (error) {
+      await this.storeSendWhatsapp({
+        message: {
+          accountSid: process.env.TWILIO_SID ?? '',
+          body: payload.body ?? '',
+          to: payload.to,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SID ?? '',
+          dateCreated: new Date(),
+          sid: `failed-${uuid()}`,
+          status: 'failed',
+          errorCode: error.code,
+          errorMessage: error.message,
+        },
+        userId,
+        registrationId,
+        mediaUrl,
+        messageContentType,
+        messageProcessType,
+        existingSidToUpdateDueToFailure: existingSidToUpdate,
+      });
+      throw error;
     }
   }
 
-  public async storeSendWhatsapp(
+  public async storeSendWhatsapp({
     message,
-    registrationId: number | undefined,
-    mediaUrl: string | null | undefined,
-    messageContentType?: MessageContentType,
-    messageProcessType?: MessageProcessType,
-    existingSidToUpdate?: string,
-  ): Promise<void> {
+    userId,
+    registrationId,
+    mediaUrl,
+    messageContentType,
+    messageProcessType,
+    existingSidToUpdateDueToFailure,
+  }: {
+    message: Pick<
+      MessageInstance,
+      | 'accountSid'
+      | 'body'
+      | 'to'
+      | 'messagingServiceSid'
+      | 'sid'
+      | 'status'
+      | 'errorCode'
+      | 'errorMessage'
+      | 'dateCreated'
+    >;
+    userId: number;
+    registrationId?: number;
+    mediaUrl?: string | null;
+    messageContentType?: MessageContentType;
+    messageProcessType?: MessageProcessType;
+    existingSidToUpdateDueToFailure?: string;
+  }): Promise<void> {
     // If the message failed due to a faulty template error
     // we have to update the existing entry to keep sid the same
-    if (existingSidToUpdate) {
+    if (existingSidToUpdateDueToFailure) {
       await this.twilioMessageRepository.update(
-        { sid: existingSidToUpdate },
+        { sid: existingSidToUpdateDueToFailure },
         {
           status: message.status,
           sid: message.sid,
@@ -140,9 +164,9 @@ export class WhatsappService {
       twilioMessage.contentType =
         messageContentType ?? MessageContentType.custom;
       twilioMessage.processType = messageProcessType ?? null;
-      twilioMessage.userId = message.userId;
+      twilioMessage.userId = userId;
       if (message.errorCode) {
-        twilioMessage.errorCode = message.errorCode;
+        twilioMessage.errorCode = message.errorCode.toString();
       }
       if (message.errorMessage) {
         twilioMessage.errorMessage = message.errorMessage;
@@ -189,15 +213,13 @@ export class WhatsappService {
         statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
         to: formatWhatsAppNumber(TWILIO_SANDBOX_WHATSAPP_NUMBER),
       };
-      await twilioClient.messages.create(payload).then(async (message) => {
-        await this.whatsappTemplateTestRepository.save({
-          sid: message.sid,
-          language: messageTemplate.language,
-          programId: messageTemplate.programId,
-          messageKey: messageTemplate.type,
-          sessionId,
-        });
-        return 'Succes';
+      const message = await twilioClient.messages.create(payload);
+      await this.whatsappTemplateTestRepository.save({
+        sid: message.sid,
+        language: messageTemplate.language,
+        programId: messageTemplate.programId,
+        messageKey: messageTemplate.type,
+        sessionId,
       });
       // Wait 2 seconds to prevent Twilio from exceeded Rate limit for Channel
       await new Promise((resolve) => setTimeout(resolve, 2000));

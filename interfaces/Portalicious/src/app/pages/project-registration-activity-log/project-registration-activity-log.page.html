@@ -1,0 +1,19 @@
+<app-page-layout
+  pageTitle=""
+  i18n-pageTitle="@@page-title-project-registration-activity-log"
+  [projectId]="projectId()"
+  [registrationId]="registrationId()"
+>
+  <div registration-page>
+    <app-query-table
+      [items]="activities()"
+      [isPending]="activityLog.isPending()"
+      [columns]="columns()"
+      localStorageKey="activity-log-table"
+      [expandableRowTemplate]="expandableRowTemplate"
+      [tableCellContext]="tableCellContext()"
+      [globalFilterFields]="globalFilterFields()"
+      [initialSortField]="'created'"
+    />
+  </div>
+</app-page-layout>

@@ -80,8 +80,6 @@ export class FilePickerPromptComponent implements OnInit {
       switch (type.trim().toLowerCase()) {
         case 'csv':
           return '.csv,text/csv,text/comma-separated-values,application/csv';
-        case 'xml':
-          return '.xml,application/xml,application/xhtml+xml';
         default:
           console.warn(`Unsupported file type: ${type}`);
           return '';

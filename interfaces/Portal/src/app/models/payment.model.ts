@@ -12,7 +12,7 @@ export class Payment extends PaymentData {
 }
 
 export class LastPaymentResults {
-  error: number;
+  failed: number;
   success: number;
   waiting: number;
 }

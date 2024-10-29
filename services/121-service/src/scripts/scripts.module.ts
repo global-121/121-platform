@@ -16,7 +16,6 @@ import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
-import { SeedProgramDrc } from '@121-service/src/scripts/seed-program-drc';
 import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
 import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
@@ -44,7 +43,6 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     SeedMultipleKRCS,
     SeedMultipleNLRC,
     SeedMultipleNLRCMockData,
-    SeedProgramDrc,
     SeedTestProgram,
     SeedTestOneAdmin,
     SeedTestMultipleProgram,

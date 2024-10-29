@@ -8,7 +8,6 @@ exports[`Create program should post a program: Create program response for progr
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "ETB",
-  "deprecatedCustomDataKeys": [],
   "description": {
     "en": "",
   },
@@ -472,7 +471,7 @@ exports[`Create program should post a program: Create program response for progr
       },
       "fsp": "Commercial-bank-ethiopia",
       "hasReconciliation": false,
-      "id": 6,
+      "id": 5,
       "integrationType": "api",
       "notifyOnTransaction": false,
       "questions": [
@@ -483,8 +482,8 @@ exports[`Create program should post a program: Create program response for progr
             "all-people-affected",
             "included",
           ],
-          "fspId": 6,
-          "id": 11,
+          "fspId": 5,
+          "id": 9,
           "label": {
             "en": "Bank Account Number",
           },
@@ -1071,7 +1070,6 @@ exports[`Create program should post a program: Create program response for progr
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "EUR",
-  "deprecatedCustomDataKeys": [],
   "description": {
     "en": "",
   },

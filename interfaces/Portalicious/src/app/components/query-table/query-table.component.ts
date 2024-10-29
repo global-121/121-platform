@@ -17,6 +17,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { UrlTree } from '@angular/router';
 
+import { get } from 'lodash';
 import {
   FilterMatchMode,
   FilterMetadata,
@@ -25,6 +26,7 @@ import {
 } from 'primeng/api';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -32,7 +34,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
+import {
+  Table,
+  TableLazyLoadEvent,
+  TableModule,
+  TableSelectAllChangeEvent,
+} from 'primeng/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
@@ -51,9 +58,10 @@ export enum QueryTableColumnType {
   TEXT = 'text',
 }
 
+// TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
 export type QueryTableColumn<TData, TField = keyof TData & string> = {
   header: string;
-  field: TField;
+  field?: TField;
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
   disableSorting?: boolean;
@@ -79,6 +87,8 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     }
 );
 
+export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
+
 @Component({
   selector: 'app-query-table',
   standalone: true,
@@ -98,6 +108,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
     SkeletonInlineComponent,
     ColoredChipComponent,
     AutoFocusModule,
+    CheckboxModule,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -118,8 +129,10 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   serverSideFiltering = input<boolean>(false);
   serverSideTotalRecords = input<number>();
   initialSortField = input<keyof TData & string>();
+  enableSelection = input<boolean>(false);
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();
+  readonly onUpdateSelection = output<QueryTableSelectionEvent<TData>>();
 
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
@@ -174,7 +187,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     () =>
       this.columns().length +
       (this.contextMenuItems() ? 1 : 0) +
-      (this.expandableRowTemplate() ? 1 : 0),
+      (this.expandableRowTemplate() ? 1 : 0) +
+      (this.enableSelection() ? 1 : 0),
   );
 
   getCellText(column: QueryTableColumn<TData>, item: TData) {
@@ -185,12 +199,33 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return column.getCellText(item);
     }
 
-    const text = item[column.field];
+    if (!column.field) {
+      return;
+    }
 
-    if (text && column.type === QueryTableColumnType.DATE) {
-      return new DatePipe(this.locale).transform(
-        new Date(text as string),
-        'short',
+    // We're using lodash.get here to support "leaves" such as "user.username"
+    const text = get(item, column.field);
+
+    if (!text) {
+      return;
+    }
+
+    if (column.type === QueryTableColumnType.DATE) {
+      if (
+        !(text instanceof Date) &&
+        typeof text !== 'string' &&
+        typeof text !== 'number'
+      ) {
+        throw new Error(
+          `Expected field ${column.field} to be a Date or string, but got ${typeof text}`,
+        );
+      }
+      return new DatePipe(this.locale).transform(new Date(text), 'short');
+    }
+
+    if (typeof text !== 'string') {
+      throw new Error(
+        `Expected field ${column.field} to be a string, but got ${typeof text}`,
       );
     }
 
@@ -211,6 +246,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     localStorage.removeItem(this.localStorageKey());
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
+    this.selectAll.set(false);
   }
 
   globalFilterValue = computed(() => {
@@ -313,6 +349,37 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   });
 
   /**
+   * ROW SELECTION
+   */
+
+  selectedItems = model<TData[]>([]);
+  selectAll = model<boolean>(false);
+
+  onSelectionChange(items: TData[]) {
+    this.selectedItems.set(items);
+    this.onUpdateSelection.emit(items);
+  }
+
+  onSelectAllChange(event: TableSelectAllChangeEvent) {
+    const checked = event.checked;
+
+    this.selectedItems.set([]);
+    this.selectAll.set(checked);
+
+    if (checked) {
+      this.onUpdateSelection.emit({ selectAll: true });
+    } else {
+      this.onUpdateSelection.emit([]);
+    }
+  }
+
+  selectedItemsCount = computed(() =>
+    this.selectAll()
+      ? this.serverSideTotalRecords()
+      : this.selectedItems().length,
+  );
+
+  /**
    *  EXPANDABLE ROWS
    */
   expandAll() {
@@ -334,9 +401,23 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    *  PAGINATION
    */
-  currentPageReportTemplate =
-    $localize`:The contents of the square brackets should not be touched/changed:Showing [first] to [last] of [totalRecords] records`
-      // this is a workaround because the i18n compiler does not support curly braces in the template
-      .replaceAll('[', '{')
-      .replaceAll(']', '}');
+  currentPageReportTemplate = computed(() => {
+    const baseTemplate =
+      $localize`:The contents of the square brackets should not be touched/changed:Showing [first] to [last] of [totalRecords] records`
+        // this is a workaround because the i18n compiler does not support curly braces in the template
+        .replaceAll('[', '{')
+        .replaceAll(']', '}');
+
+    const selectedItemsCount = this.selectedItemsCount();
+
+    if (!selectedItemsCount) {
+      return baseTemplate;
+    }
+
+    return (
+      baseTemplate +
+      ' ' +
+      $localize`(${selectedItemsCount.toString()} selected)`
+    );
+  });
 }

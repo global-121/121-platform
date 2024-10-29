@@ -21,10 +21,10 @@ import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/p
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { VodacashService } from '@121-service/src/payments/fsp-integration/vodacash/vodacash.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
@@ -78,7 +78,6 @@ export class PaymentsService {
     private readonly transactionsService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
-    private readonly vodacashService: VodacashService,
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
@@ -86,6 +85,7 @@ export class PaymentsService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
     private readonly dataSource: DataSource,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {
     this.fspWithQueueServiceMapping = {
       [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
@@ -111,7 +111,6 @@ export class PaymentsService {
       [FinancialServiceProviderName.intersolveVisa]: [
         this.intersolveVisaService,
       ],
-      [FinancialServiceProviderName.vodacash]: [this.vodacashService],
       [FinancialServiceProviderName.safaricom]: [this.safaricomService],
       [FinancialServiceProviderName.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
@@ -136,6 +135,7 @@ export class PaymentsService {
         programId,
       })
       .groupBy('payment')
+      .orderBy('MIN(transaction.created)', 'ASC')
       .getRawMany();
     return payments;
   }
@@ -146,18 +146,18 @@ export class PaymentsService {
   ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
-      .select(['status', 'COUNT(*) as count'])
+      .select(['status', 'COUNT(*) as count', 'SUM(amount) as totalAmount'])
       .from(
         '(' +
-          this.transactionsService
-            .getLastTransactionsQuery(programId, payment)
+          this.transactionScopedRepository
+            .getLastTransactionsQuery({ programId, payment })
             .getQuery() +
           ')',
         'transactions',
       )
       .setParameters(
-        this.transactionsService
-          .getLastTransactionsQuery(programId, payment)
+        this.transactionScopedRepository
+          .getLastTransactionsQuery({ programId, payment })
           .getParameters(),
       )
       .groupBy('status')
@@ -173,19 +173,30 @@ export class PaymentsService {
       programId,
       payment,
     );
+    const totalAmountPerStatus = statusAggregation.reduce(
+      (acc, row) => {
+        acc[row.status] = {
+          count: (acc[row.status]?.count || 0) + Number(row.count || 0),
+          amount: (acc[row.status]?.amount || 0) + (row.totalamount || 0),
+        };
+        return acc;
+      },
+      {} as Record<string, { count: number; amount: number }>,
+    );
+
     return {
-      nrSuccess:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.success,
-        )?.count || 0,
-      nrWaiting:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.waiting,
-        )?.count || 0,
-      nrError:
-        statusAggregation.find(
-          (row) => row.status === TransactionStatusEnum.error,
-        )?.count || 0,
+      success: totalAmountPerStatus[TransactionStatusEnum.success] || {
+        count: 0,
+        amount: 0,
+      },
+      waiting: totalAmountPerStatus[TransactionStatusEnum.waiting] || {
+        count: 0,
+        amount: 0,
+      },
+      failed: totalAmountPerStatus[TransactionStatusEnum.error] || {
+        count: 0,
+        amount: 0,
+      },
     };
   }
 
@@ -733,7 +744,6 @@ export class PaymentsService {
     }
 
     let csvInstructions: CsvInstructions = [];
-    let xmlInstructions: string | undefined;
     let fileType: ExportFileType | undefined;
 
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
@@ -753,17 +763,6 @@ export class PaymentsService {
         transaction.status !== TransactionStatusEnum.waiting
       ) {
         continue;
-      }
-
-      if (registration.fsp.fsp === FinancialServiceProviderName.vodacash) {
-        xmlInstructions = await this.vodacashService.getFspInstructions(
-          registration,
-          transaction,
-          xmlInstructions,
-        );
-        if (!fileType) {
-          fileType = ExportFileType.xml;
-        }
       }
     }
 
@@ -789,7 +788,7 @@ export class PaymentsService {
     );
 
     return {
-      data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
+      data: csvInstructions,
       fileType,
     };
   }
@@ -812,37 +811,6 @@ export class PaymentsService {
 
     let importResponseRecords: any[] = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.vodacash) {
-        const vodacashRegistrations =
-          await this.vodacashService.getRegistrationsForReconciliation(
-            programId,
-            payment,
-          );
-        if (!vodacashRegistrations?.length) {
-          continue;
-        }
-        const validatedVodacashImport =
-          await this.vodacashService.xmlToValidatedFspReconciliation(file);
-        for (const record of validatedVodacashImport) {
-          const matchedRegistration =
-            await this.vodacashService.findReconciliationRegistration(
-              record,
-              vodacashRegistrations,
-            );
-          if (matchedRegistration) {
-            record['paTransactionResult'] =
-              await this.vodacashService.createTransactionResult(
-                matchedRegistration.id,
-                matchedRegistration.referenceId,
-                record,
-                programId,
-                payment,
-              );
-          }
-          importResponseRecords.push(record);
-        }
-      }
-
       if (fsp.fsp === FinancialServiceProviderName.excel) {
         const maxRecords = 10000;
         const matchColumn =

@@ -29,6 +29,6 @@ export abstract class FormComponent<T extends FormGroup> {
     if (!this.formGroup().valid) {
       return;
     }
-    this.mutation().mutate(this.formGroup().value);
+    this.mutation().mutate(this.formGroup().getRawValue());
   }
 }

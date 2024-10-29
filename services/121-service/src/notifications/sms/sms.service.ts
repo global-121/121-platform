@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MessageInstance } from 'twilio/lib/rest/api/v2010/account/message';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -33,44 +34,68 @@ export class SmsService {
       ? formatPhoneNumber(recipientPhoneNr)
       : 'not available'; // When allowEmptyPhoneNumber is true in a program, the to number can be empty and an error will be stored
 
-    let messageToStore;
     try {
-      messageToStore = await twilioClient.messages.create({
+      const messageToStore = await twilioClient.messages.create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
         to,
       });
-    } catch (error) {
-      console.log('Error from Twilio:', error);
-      messageToStore = {
-        accountSid: process.env.TWILIO_SID,
-        body: message,
-        to,
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        dateCreated: new Date().toISOString(),
-        sid: `failed-${uuid()}`,
-        status: 'failed',
-        errorCode: error.code,
-      };
-      throw error;
-    } finally {
-      messageToStore.userId = userId;
-      await this.storeSendSms(
-        messageToStore,
+
+      await this.storeSendSms({
+        message: messageToStore,
+        userId,
         registrationId,
         messageContentType,
         messageProcessType,
-      );
+      });
+    } catch (error) {
+      console.log('Error from Twilio:', error);
+      await this.storeSendSms({
+        message: {
+          accountSid: process.env.TWILIO_SID ?? '',
+          body: message,
+          to,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SID ?? '',
+          dateCreated: new Date(),
+          sid: `failed-${uuid()}`,
+          status: 'failed',
+          errorCode: error.code,
+          errorMessage: error.message,
+        },
+        userId,
+        registrationId,
+        messageContentType,
+        messageProcessType,
+      });
+      throw error;
     }
   }
 
-  private async storeSendSms(
+  private async storeSendSms({
     message,
-    registrationId?: number,
-    messageContentType?: MessageContentType,
-    messageProcessType?: MessageProcessType,
-  ): Promise<void> {
+    userId,
+    registrationId,
+    messageContentType,
+    messageProcessType,
+  }: {
+    message: Pick<
+      MessageInstance,
+      | 'accountSid'
+      | 'body'
+      | 'to'
+      | 'messagingServiceSid'
+      | 'sid'
+      | 'status'
+      | 'errorCode'
+      | 'errorMessage'
+      | 'dateCreated'
+    >;
+    userId: number;
+    registrationId?: number;
+    messageContentType?: MessageContentType;
+    messageProcessType?: MessageProcessType;
+  }): Promise<void> {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
@@ -83,9 +108,9 @@ export class SmsService {
     twilioMessage.registrationId = registrationId ?? null;
     twilioMessage.contentType = messageContentType ?? MessageContentType.custom;
     twilioMessage.processType = messageProcessType ?? null;
-    twilioMessage.userId = message.userId;
+    twilioMessage.userId = userId;
     if (message.errorCode) {
-      twilioMessage.errorCode = message.errorCode;
+      twilioMessage.errorCode = message.errorCode.toString();
     }
     if (message.errorMessage) {
       twilioMessage.errorMessage = message.errorMessage;

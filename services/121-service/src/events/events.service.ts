@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
-import { Between, FindOptionsWhere } from 'typeorm';
 
 import { EventLogOptionsDto } from '@121-service/src/events/dto/event-log-options.dto';
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
@@ -13,14 +12,13 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 type LogEntity = Partial<RegistrationViewEntity> & {
   id: number;
@@ -30,8 +28,7 @@ type LogEntity = Partial<RegistrationViewEntity> & {
 @Injectable()
 export class EventsService {
   constructor(
-    @Inject(getScopedRepositoryProviderName(EventEntity))
-    private eventScopedRepository: ScopedRepository<EventEntity>,
+    private eventRepository: EventScopedRepository,
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
@@ -57,50 +54,10 @@ export class EventsService {
     programId: number,
     searchOptions: EventSearchOptionsDto,
   ): Promise<EventEntity[]> {
-    const exportLimit = 500000;
-    const events = await this.eventScopedRepository.find({
-      where: this.createWhereClause(programId, searchOptions),
-      relations: ['registration', 'user', 'attributes'],
-      order: { created: 'DESC' },
-      take: exportLimit,
-    });
-    return events;
-  }
-
-  private createWhereClause(
-    programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): FindOptionsWhere<EventEntity> {
-    const { registrationId, queryParams } = searchOptions;
-
-    const whereStatement: FindOptionsWhere<EventEntity> & {
-      registration: {
-        programId: number;
-        id?: number;
-        referenceId?: string;
-      };
-    } = {
-      registration: {
-        programId,
-      },
-    };
-
-    if (registrationId) {
-      whereStatement.registration.id = registrationId;
-    }
-    if (queryParams) {
-      if (queryParams['referenceId']) {
-        whereStatement.registration.referenceId = queryParams['referenceId'];
-      }
-
-      whereStatement.created = Between(
-        queryParams['fromDate']
-          ? new Date(queryParams['fromDate'])
-          : new Date(2000, 1, 1),
-        queryParams['toDate'] ? new Date(queryParams['toDate']) : new Date(),
-      );
-    }
-    return whereStatement;
+    return await this.eventRepository.getManyByProgramIdAndSearchOptions(
+      programId,
+      searchOptions,
+    );
   }
 
   public async log(
@@ -144,7 +101,7 @@ export class EventsService {
       eventLogOptions?.additionalLogAttributes,
     );
 
-    await this.eventScopedRepository.save(events, { chunk: 2000 });
+    await this.eventRepository.save(events, { chunk: 2000 });
   }
 
   private addAdditionalAttributesToEvents(

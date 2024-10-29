@@ -16,9 +16,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  fail_immediately:
+    name: 'Fail Immediately'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Set Error Message'
+        run: |
+          echo "Error: This workflow is intentionally failing because we do not deploy to Help a Child any more, after the removal of Vodacash FSP. If you want to bypass this, comment out this step temporarily."
+          exit 1
+
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
+    needs: fail_immediately
     environment: 'client-helpachild'
     steps:
       - uses: actions/checkout@v4

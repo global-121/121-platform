@@ -38,7 +38,7 @@ export default class paymentsModel {
       const responseBody = JSON.parse(res.body);
       const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
       successPercentage =
-        (parseInt(responseBody.nrSuccess) / totalPayments) * 100;
+        (parseInt(responseBody.success.count) / totalPayments) * 100;
 
       if (successPercentage >= passRate) {
         console.log(

@@ -23,6 +23,7 @@ module.exports = tseslint.config(
     files: ['**/*.ts'],
     plugins: {
       'no-relative-import-paths': eslintPluginNoRelativePaths,
+      // @ts-ignore-next-line - `perfectionist` package does have correct shape; maybe not correct type definition.
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
       'simple-import-sort': eslintPluginSimpleSort,
@@ -32,6 +33,7 @@ module.exports = tseslint.config(
       ...tseslint.configs.strictTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
       ...angular.configs.tsRecommended,
+      // @ts-ignore-next-line - `configs` DOES exist.
       ...eslintPluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
@@ -123,6 +125,7 @@ module.exports = tseslint.config(
             'p-button[iconPos]',
             'p-columnFilter[display]',
             'p-contextMenu[appendTo]',
+            'p-dropdown[appendTo]',
             'p-iconField[iconPosition]',
             'p-sidebar[position]',
             'p-table[stateKey]',

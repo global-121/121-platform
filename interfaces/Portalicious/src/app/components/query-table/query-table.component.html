@@ -9,6 +9,7 @@
   [totalRecords]="totalRecords()"
   [filterDelay]="serverSideFiltering() ? 500 : 0"
   [filterLocale]="locale"
+  (onFilter)="selectAll.set(false)"
   [rowHover]="contextMenuItems()"
   [sortField]="initialSortField()"
   [contextMenu]="contextMenu"
@@ -19,14 +20,21 @@
   [rows]="10"
   [rowsPerPageOptions]="[10, 20, 40, 80, 100]"
   [showCurrentPageReport]="true"
-  [currentPageReportTemplate]="currentPageReportTemplate"
+  [currentPageReportTemplate]="currentPageReportTemplate()"
   stateStorage="local"
   [stateKey]="localStorageKey()"
   [expandedRowKeys]="expandedRowKeys()"
+  [selection]="selectedItems()"
+  [selectAll]="selectAll()"
+  [selectionMode]="enableSelection() ? 'multiple' : null"
+  (selectionChange)="onSelectionChange($event)"
+  (selectAllChange)="onSelectAllChange($event)"
   [dataKey]="'id'"
 >
   <ng-template pTemplate="caption">
-    <div class="flex items-center justify-end gap-4">
+    <div class="flex items-center gap-4">
+      <ng-content select="[table-actions]"></ng-content>
+      <span class="ms-auto"></span>
       @if (isFiltered()) {
         <p-button
           label="Clear all filters"
@@ -83,6 +91,11 @@
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
+      @if (enableSelection()) {
+        <th style="width: 0">
+          <p-tableHeaderCheckbox />
+        </th>
+      }
       @if (expandableRowTemplate()) {
         <th style="width: 0">
           <p-button
@@ -177,6 +190,20 @@
     let-expanded="expanded"
   >
     <tr [pContextMenuRow]="item">
+      @if (enableSelection()) {
+        <td style="width: 0">
+          @if (selectAll()) {
+            <p-checkbox
+              [value]="true"
+              [binary]="true"
+              [ngModel]="true"
+              [disabled]="true"
+            />
+          } @else {
+            <p-tableCheckbox [value]="item" />
+          }
+        </td>
+      }
       @if (expandableRowTemplate()) {
         <td style="width: 0">
           <p-button
@@ -202,6 +229,7 @@
               "
             />
           } @else {
+            @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
               @if (column.getCellChipData) {
                 @let chipData = column.getCellChipData(item);
@@ -209,14 +237,13 @@
                   [label]="chipData.chipLabel"
                   [variant]="chipData.chipVariant"
                 />
-              } @else {
+              } @else if (cellText) {
                 <app-colored-chip
-                  [label]="item[column.field]"
+                  [label]="cellText"
                   [variant]="'grey'"
                 />
               }
             } @else {
-              @let cellText = getCellText(column, item);
               @let routerLink =
                 column.getCellRouterLink
                   ? column.getCellRouterLink(item)
@@ -253,10 +280,24 @@
   <ng-template pTemplate="loadingbody">
     @for (row of [].constructor(table.rows); track $index) {
       <tr>
-        @for (column of [].constructor(totalColumnCount()); track $index) {
+        @if (enableSelection()) {
+          <td style="width: 0">
+            <p-checkbox [disabled]="true" />
+          </td>
+        }
+
+        @if (expandableRowTemplate()) {
+          <td style="width: 0"></td>
+        }
+
+        @for (column of [].constructor(columns().length); track $index) {
           <td>
             <app-skeleton-inline />
           </td>
+        }
+
+        @if (contextMenuItems()) {
+          <td style="width: 0"></td>
         }
       </tr>
     }

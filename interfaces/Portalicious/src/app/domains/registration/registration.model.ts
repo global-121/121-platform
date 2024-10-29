@@ -1,8 +1,12 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
+import { DataChangeActivity } from '@121-service/src/activities/interfaces/data-change-activity.interface';
+import { FinancialServiceProviderChangeActivity } from '@121-service/src/activities/interfaces/financial-service-provider.interface';
+import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
+import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
+import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
+import { TransactionActivity } from '@121-service/src/activities/interfaces/transaction-activity.interface';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { Dto } from '~/utils/dto-type';
 
@@ -11,92 +15,18 @@ export type Registration = Dto<MappedPaginatedRegistrationDto>;
 // TODO: AB#30152 This type should be refactored to use Dto121Service
 export type FindAllRegistrationsResult = Dto<FindAllRegistrationsResultDto>;
 
-// We add the overview property to the ActivityLogItem type to be able to
-// display a summary of the activity log item in the activity log table and make it searchable/filterable
-export type ActivityLogItemWithOverview = {
-  overview: string;
-} & ActivityLogItem;
+// The discriminated union type doesn't play well with our Dto utility type, so we need to define the Activity type manually
+export type Activity =
+  | Dto<DataChangeActivity>
+  | Dto<FinancialServiceProviderChangeActivity>
+  | Dto<MessageActivity>
+  | Dto<NoteActivity>
+  | Dto<StatusChangeActivity>
+  | Dto<TransactionActivity>;
 
-// TODO: AB#29984 Everything below should be defined in the 121-service
-export enum ActivityLogItemType {
-  DataChange = 'data-change',
-  Message = 'message',
-  Note = 'note',
-  StatusUpdate = 'status-update',
-  Transfer = 'transfer',
-}
-
-export type ActivityLogItem =
-  | DataChangeActivity
-  | MessageActivity
-  | NoteActivity
-  | StatusUpdateActivity
-  | TransferActivity;
-
-interface BaseActivity {
-  author: string;
-  date: Date;
-  id: string;
-  activityType: ActivityLogItemType;
-  contents: Record<string, unknown>;
-}
-
-export interface TransferActivity extends BaseActivity {
-  activityType: ActivityLogItemType.Transfer;
-  contents: {
-    referenceId: string; // e.g., "123456"
-    payment: number;
-    totalTransfers: number;
-    status: TransactionStatusEnum;
-    amount: number;
-    sent: Date;
-    received?: Date;
-    fsp: FinancialServiceProviderName;
-    used?: string; // e.g., "Partly used"
-    approvedBy: string; // e.g., "Samer@financial"
-  };
-}
-
-export interface NoteActivity extends BaseActivity {
-  activityType: ActivityLogItemType.Note;
-  contents: {
-    note: string; // The note content
-  };
-}
-
-export interface MessageActivity extends BaseActivity {
-  activityType: ActivityLogItemType.Message;
-  contents: {
-    messageType: string; // Type of message, e.g., "Custom Message" or "Registration"
-    message: string; // Message content
-  };
-}
-
-export interface StatusUpdateActivity extends BaseActivity {
-  activityType: ActivityLogItemType.StatusUpdate;
-  contents: {
-    oldStatus: RegistrationStatusEnum;
-    newStatus: RegistrationStatusEnum;
-  };
-}
-
-export interface DataChangeActivity extends BaseActivity {
-  activityType: ActivityLogItemType.DataChange;
-  contents: {
-    dataType: string; // Type of data being changed, e.g., "Phone number"
-    oldData: string;
-    newData: string;
-    changeReason: string; // Reason for the data change
-  };
-}
-
-export interface ActivityLogItemDto {
-  data: ActivityLogItem[];
-  meta: {
-    // if a key is missing in this object, it means the user does not have permission to see it
-    count: Partial<Record<ActivityLogItemType, number>>;
-  };
-}
+export type ActitivitiesResponse = {
+  data: Activity[];
+} & Dto<Omit<ActivitiesDto, 'data'>>;
 
 // TODO: AB#30525 all of the stuff below should be removed and we should just reference the "IntersolveVisaWalletDto" from the 121-service
 export enum VisaCard121Status {
@@ -164,3 +94,7 @@ class IntersolveVisaWalletDto {
 
 // TODO: AB#30152 This type should be refactored to use Dto121Service
 export type WalletWithCards = Dto<IntersolveVisaWalletDto>;
+
+export type SendMessageData =
+  | { customMessage: string }
+  | { messageTemplateKey: string };

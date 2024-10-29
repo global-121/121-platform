@@ -1,11 +1,12 @@
 {
-  "[xml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.removeUnusedImports": "explicit"
+  },
   "eslint.enable": true,
   "eslint.format.enable": true,
-  "prettier.configPath": ".prettierrc.yml",
+  "css.customData": [".vscode/tailwind.json"],
   "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.showPixelEquivalents": false,
   "tailwindCSS.classAttributes": [
@@ -15,8 +16,8 @@
     "ngClass",
     "class:list"
   ],
-  "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "XLF: State": true,
   "XLF: Xml Format": "prettify-xml"
 }

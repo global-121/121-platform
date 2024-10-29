@@ -26,8 +26,6 @@ updates:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
-      - dependency-name: '@nestjs/throttler'
-        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'bwip-js'
@@ -35,6 +33,7 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'jimp'
       - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: '/services/mock-service'
@@ -60,6 +59,7 @@ updates:
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: '/interfaces/Portal'
@@ -75,6 +75,9 @@ updates:
           - '*eslint*'
           - '*prettier*'
         exclude-patterns: ['@angular-eslint/*']
+      azureSSO:
+        patterns:
+          - '@azure/msal*'
     ignore:
       # Dependencies below are ordered alphabetically!
       # Most/all Angular-related dependencies are ignored for all versions
@@ -84,8 +87,7 @@ updates:
       - dependency-name: '@ionic/angular'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ionic/cli'
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-patch']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/core'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
@@ -93,16 +95,16 @@ updates:
       - dependency-name: '@swimlane/ngx-datatable'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/*'
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-patch']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@typescript-eslint/*'
-        update-types: ['version-update:semver-patch']
+        update-types: ['version-update:semver-major']
       - dependency-name: core-js
       - dependency-name: eslint
         update-types: ['version-update:semver-major']
       - dependency-name: karma
       - dependency-name: tslib
       - dependency-name: typescript
+        update-types: ['version-update:semver-major']
       - dependency-name: rxjs
         update-types:
           ['version-update:semver-major', 'version-update:semver-minor']
@@ -124,6 +126,13 @@ updates:
       dependencies:
         patterns:
           - '*'
+    ignore:
+      # Dependencies below are ordered alphabetically!
+      # Most/all Angular-related dependencies are ignored for all versions
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: '/e2e'
@@ -136,6 +145,11 @@ updates:
       dependencies:
         patterns:
           - '*'
+    ignore:
+      # Dependencies below are ordered alphabetically!
+      # Most/all Angular-related dependencies are ignored for all versions
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: '/k6'

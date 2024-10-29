@@ -1,0 +1,29 @@
+<p-card
+  class="h-full [&_.p-card-body]:h-full [&_.p-card-content]:flex [&_.p-card-content]:h-full [&_.p-card-content]:flex-col [&_.p-card]:h-full"
+>
+  @if (chipLabel() && !pending()) {
+    <app-colored-chip
+      [label]="chipLabel()!"
+      [variant]="chipVariant()!"
+      [icon]="chipIcon()"
+      [tooltip]="chipTooltip()"
+      class="ml-auto"
+    />
+  }
+  <dt class="mb-2 mt-auto pt-11 text-grey-700 txt-body-m">
+    {{ metricLabel() }}
+    @if (metricTooltip()) {
+      <app-info-tooltip [message]="metricTooltip()!" />
+    }
+  </dt>
+  <dd
+    class="txt-system-bold-l"
+    data-testid="metric-tile-component"
+  >
+    @if (pending()) {
+      <app-skeleton-inline />
+    } @else {
+      {{ metricValue() ?? '—' }}
+    }
+  </dd>
+</p-card>

@@ -15,6 +15,7 @@ export class ToastService {
   showToast(message: Message) {
     this.messageService.add({
       ...message,
+      life: message.life ?? 5000,
       severity: message.severity ?? 'success',
       summary: message.summary
         ? message.summary
