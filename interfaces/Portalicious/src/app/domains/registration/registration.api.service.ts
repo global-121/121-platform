@@ -92,11 +92,13 @@ export class RegistrationApiService extends DomainApiService {
     paginateQuery,
     status,
     messageData,
+    dryRun = true,
   }: {
     projectId: Signal<number>;
     paginateQuery: PaginateQuery | undefined;
     status: RegistrationStatusEnum;
     messageData?: SendMessageData | undefined;
+    dryRun: boolean;
   }) {
     let body: Partial<RegistrationStatusPatchDto>;
     body = {
@@ -113,16 +115,25 @@ export class RegistrationApiService extends DomainApiService {
         messageTemplateKey: messageData.messageTemplateKey,
       };
     }
+    let params =
+      this.paginateQueryService.paginateQueryToHttpParamsObject(paginateQuery);
+    params = {
+      ...params,
+      dryRun,
+    };
 
-    return this.httpWrapperService.perform121ServiceRequest({
+    return this.httpWrapperService.perform121ServiceRequest<{
+      totalFilterCount: number;
+      applicableCount: number;
+      nonApplicableCount: number;
+    }>({
       method: 'PATCH',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
         'status',
       ]).join('/'),
       body,
-      params:
-        this.paginateQueryService.paginateQueryToHttpParams(paginateQuery),
+      params,
     });
   }
 
