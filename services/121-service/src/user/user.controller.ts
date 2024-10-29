@@ -171,10 +171,7 @@ export class UserController {
     return this.userService.createUsers(userData);
   }
 
-  @Throttle(
-    THROTTLING_LIMIT_HIGH.default.limit,
-    THROTTLING_LIMIT_HIGH.default.ttl,
-  )
+  @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
@@ -236,10 +233,7 @@ export class UserController {
     }
   }
 
-  @Throttle(
-    THROTTLING_LIMIT_HIGH.default.limit,
-    THROTTLING_LIMIT_HIGH.default.ttl,
-  )
+  @Throttle(THROTTLING_LIMIT_HIGH)
   @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })

@@ -42,19 +42,20 @@
         @if (formGroup.value.checked) {
           @if (messageTemplates.isPending()) {
             <p>add skeleton</p>
-          } @else if (
-            formGroup.value.messageType === 'template' && previewMessageData
-          ) {
+          } @else if (formGroup.value.messageType === 'template') {
             <div>
-              <app-custom-message-preview
-                [projectId]="projectId()"
-                [previewRegistration]="previewRegistration()"
-                [messageData]="previewMessageData"
-              ></app-custom-message-preview>
+              @if (previewMessageData) {
+                <app-custom-message-preview
+                  [projectId]="projectId()"
+                  [previewRegistration]="actionData()?.previewItem"
+                  [messageData]="previewMessageData"
+                ></app-custom-message-preview>
+              }
             </div>
-          } @else if (formGroup.value.messageType === 'custom') {
-            <!-- Custom message without any input yet -->
+          } @else {
+            <!-- Custom message -->
             @if (!previewMessageData) {
+              <!-- Custom message without any input yet -->
               <div>
                 <app-custom-message-control
                   formControlName="customMessage"
@@ -79,10 +80,11 @@
                 </div>
               </div>
             } @else {
+              <!-- Custom message with input -->
               <div>
                 <app-custom-message-preview
                   [projectId]="projectId()"
-                  [previewRegistration]="previewRegistration()"
+                  [previewRegistration]="actionData()?.previewItem"
                   [messageData]="previewMessageData"
                 ></app-custom-message-preview>
                 <app-form-error
