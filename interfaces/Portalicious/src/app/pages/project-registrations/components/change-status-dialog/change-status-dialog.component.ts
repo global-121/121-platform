@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -63,6 +64,7 @@ type ChangeStatusFormGroup =
     CustomMessageControlComponent,
     CustomMessagePreviewComponent,
     InputSwitchModule,
+    NgTemplateOutlet,
   ],
   providers: [ToastService],
   templateUrl: './change-status-dialog.component.html',
@@ -88,7 +90,7 @@ export class ChangeStatusDialogComponent {
   );
 
   formGroup = new FormGroup({
-    shouldSendMessage: new FormControl<boolean>(false, {
+    enableSendMessage: new FormControl<boolean>(false, {
       nonNullable: true,
     }),
     messageType: new FormControl<'custom' | 'template'>('template', {
@@ -117,7 +119,7 @@ export class ChangeStatusDialogComponent {
       return;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    shouldSendMessage: (_control) => {
+    enableSendMessage: (_control) => {
       return undefined;
     },
   });
@@ -156,7 +158,8 @@ export class ChangeStatusDialogComponent {
     };
     return textMap[status];
   });
-  enableSendMessage = computed(() => {
+
+  canSendMessage = computed(() => {
     const status = this.status();
     if (!status) {
       return false;

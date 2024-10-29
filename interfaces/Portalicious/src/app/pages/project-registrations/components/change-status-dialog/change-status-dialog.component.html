@@ -1,3 +1,28 @@
+<ng-template #defaultFooterButtons>
+  <div class="flex justify-end space-x-2">
+    <p-button
+      label="Cancel"
+      i18n-label="@@generic-cancel"
+      outlined
+      rounded
+      severity="contrast"
+      (click)="dialogVisible.set(false)"
+    />
+    <p-button
+      label="Approve"
+      i18n-label="@@approve"
+      rounded
+      [disabled]="
+        canSendMessage() &&
+        formGroup.value.enableSendMessage &&
+        messageTemplates.isPending()
+      "
+      [loading]="changeStatusMutation.isPending()"
+      type="submit"
+    />
+  </div>
+</ng-template>
+
 <p-dialog
   #dialog
   closeOnEscape
@@ -29,29 +54,36 @@
         project. This means that they can be included in payments.
       </p>
 
-      @if (enableSendMessage()) {
+      @if (!canSendMessage()) {
+        <ng-template [ngTemplateOutlet]="defaultFooterButtons"></ng-template>
+      } @else {
         <p-inputSwitch
-          inputId="sendMessage"
-          formControlName="shouldSendMessage"
+          inputId="enableSendMessage"
+          formControlName="enableSendMessage"
         />
         <label
-          for="sendMessage"
+          for="enableSendMessage"
           i18n
           >Send a message to registration(s)</label
         >
-        @if (formGroup.value.shouldSendMessage) {
+        @if (!formGroup.value.enableSendMessage) {
+          <ng-template [ngTemplateOutlet]="defaultFooterButtons"></ng-template>
+        } @else {
           @if (messageTemplates.isPending()) {
-            <p>add skeleton</p>
+            <!-- We don't know if it will be template or custom yet -->
+            <p>XXX: add skeleton</p>
           } @else if (formGroup.value.messageType === 'template') {
-            <div>
-              @if (previewMessageData) {
-                <app-custom-message-preview
-                  [projectId]="projectId()"
-                  [previewRegistration]="actionData()?.previewItem"
-                  [messageData]="previewMessageData"
-                ></app-custom-message-preview>
-              }
-            </div>
+            <!-- Template message -->
+            @if (previewMessageData) {
+              <app-custom-message-preview
+                [projectId]="projectId()"
+                [previewRegistration]="actionData()?.previewItem"
+                [messageData]="previewMessageData"
+              ></app-custom-message-preview>
+            }
+            <ng-template
+              [ngTemplateOutlet]="defaultFooterButtons"
+            ></ng-template>
           } @else {
             <!-- Custom message -->
             @if (!previewMessageData) {
@@ -111,30 +143,6 @@
             }
           }
         }
-      }
-      @if (
-        !enableSendMessage() ||
-        (messageTemplates.isSuccess() &&
-          (formGroup.value.messageType === 'template' ||
-            !formGroup.value.shouldSendMessage))
-      ) {
-        <div class="flex justify-end space-x-2">
-          <p-button
-            label="Cancel"
-            i18n-label="@@generic-cancel"
-            outlined
-            rounded
-            severity="contrast"
-            (click)="dialogVisible.set(false)"
-          />
-          <p-button
-            label="Approve"
-            i18n-label="@@approve"
-            rounded
-            [loading]="changeStatusMutation.isPending()"
-            type="submit"
-          />
-        </div>
       }
     </div>
   </form>
