@@ -26,7 +26,7 @@ import {
 })
 export class CustomMessagePreviewComponent {
   readonly projectId = input.required<number>();
-  readonly previewRegistration = input.required<Registration>();
+  readonly previewRegistration = input.required<Registration | undefined>();
   readonly messageData = input.required<Partial<MessageInputData>>();
 
   private messagingService = inject(MessagingService);

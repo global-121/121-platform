@@ -795,10 +795,6 @@
         <source>Send message</source>
         <target state="new">Send message</target>
       </trans-unit>
-      <trans-unit id="8535306348336143714" datatype="html">
-        <source>You&apos;ve selected <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>Select a message from the template messages or write a custom message.</source>
-        <target state="new">You&apos;ve selected <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>Select a message from the template messages or write a custom message.</target>
-      </trans-unit>
       <trans-unit id="7613791439001735010" datatype="html">
         <source>Template message</source>
         <target state="new">Template message</target>
@@ -814,10 +810,6 @@
       <trans-unit id="8411698505854313639" datatype="html">
         <source>Continue to preview</source>
         <target state="new">Continue to preview</target>
-      </trans-unit>
-      <trans-unit id="2290401575085388784" datatype="html">
-        <source>You are about to send a message to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
-        <target state="new">You are about to send a message to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</target>
       </trans-unit>
       <trans-unit id="6655432650609946987" datatype="html">
         <source>Are you sure you want to send this message?</source>
@@ -1078,6 +1070,18 @@
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
         <target state="new">Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></target>
+      </trans-unit>
+      <trans-unit id="5635594227422805947" datatype="html">
+        <source>Go to profile</source>
+        <target state="new">Go to profile</target>
+      </trans-unit>
+      <trans-unit id="send-message-dialog-preview" datatype="html">
+        <source>You&apos;re about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>send a message<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
+        <target state="new">You&apos;re about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>send a message<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</target>
+      </trans-unit>
+      <trans-unit id="1070128073768279969" datatype="html">
+        <source>Select a message from the template messages or write a custom message.</source>
+        <target state="new">Select a message from the template messages or write a custom message.</target>
       </trans-unit>
     </body>
   </file>
