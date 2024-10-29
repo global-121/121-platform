@@ -14,7 +14,7 @@ import {
 } from 'class-validator';
 
 import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   CreateProgramCustomAttributeDto,

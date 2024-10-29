@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CreateProgramQuestionDto } from '@121-service/src/programs/dto/program-question.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { postProgramQuestion } from '@121-service/test/helpers/program.helper';

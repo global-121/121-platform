@@ -2,17 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export enum ExportType {
-  allPeopleAffected = 'all-people-affected',
-  included = 'included',
-  payment = 'payment',
-  unusedVouchers = 'unused-vouchers',
-  vouchersWithBalance = 'vouchers-with-balance',
-  toCancelVouchers = 'to-cancel-vouchers',
-  duplicates = 'duplicates',
-  cardBalances = 'card-balances',
-}
-
 export class ExportDetailsQueryParamsDto {
   @ApiProperty()
   @IsNumber()

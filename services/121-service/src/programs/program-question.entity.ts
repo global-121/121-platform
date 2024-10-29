@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';

@@ -22,15 +22,13 @@ import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import {
-  ExportDetailsQueryParamsDto,
-  ExportType,
-} from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportDetailsQueryParamsDto } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
