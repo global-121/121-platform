@@ -32,14 +32,14 @@
       @if (enableSendMessage()) {
         <p-inputSwitch
           inputId="sendMessage"
-          formControlName="checked"
+          formControlName="shouldSendMessage"
         />
         <label
           for="sendMessage"
           i18n
           >Send a message to registration(s)</label
         >
-        @if (formGroup.value.checked) {
+        @if (formGroup.value.shouldSendMessage) {
           @if (messageTemplates.isPending()) {
             <p>add skeleton</p>
           } @else if (formGroup.value.messageType === 'template') {
@@ -116,7 +116,7 @@
         !enableSendMessage() ||
         (messageTemplates.isSuccess() &&
           (formGroup.value.messageType === 'template' ||
-            !formGroup.value.checked))
+            !formGroup.value.shouldSendMessage))
       ) {
         <div class="flex justify-end space-x-2">
           <p-button

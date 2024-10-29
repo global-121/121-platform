@@ -88,6 +88,9 @@ export class ChangeStatusDialogComponent {
   );
 
   formGroup = new FormGroup({
+    shouldSendMessage: new FormControl<boolean>(false, {
+      nonNullable: true,
+    }),
     messageType: new FormControl<'custom' | 'template'>('template', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -97,9 +100,6 @@ export class ChangeStatusDialogComponent {
       nonNullable: true,
     }),
     customMessage: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    checked: new FormControl<boolean>(false, {
       nonNullable: true,
     }),
   });
@@ -117,7 +117,7 @@ export class ChangeStatusDialogComponent {
       return;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    checked: (_control) => {
+    shouldSendMessage: (_control) => {
       return undefined;
     },
   });
