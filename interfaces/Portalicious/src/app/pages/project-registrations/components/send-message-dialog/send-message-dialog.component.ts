@@ -4,6 +4,7 @@ import {
   inject,
   input,
   model,
+  OnDestroy,
   signal,
 } from '@angular/core';
 import {
@@ -21,6 +22,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { Subscription } from 'rxjs';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { NotificationApiService } from '~/domains/notification/notification.api.service';
@@ -60,13 +62,15 @@ type SendMessageFormGroup =
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SendMessageDialogComponent {
+export class SendMessageDialogComponent implements OnDestroy {
   readonly projectId = input.required<number>();
 
   private messagingService = inject(MessagingService);
   private notificationApiService = inject(NotificationApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+
+  private messageTypeFieldSubscription: Subscription;
 
   actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
     undefined,
@@ -111,23 +115,25 @@ export class SendMessageDialogComponent {
     const messageTemplateKeyField = this.formGroup.controls.messageTemplateKey;
     const customMessageField = this.formGroup.controls.customMessage;
 
-    messageTypeField.valueChanges.subscribe((type) => {
-      if (type === 'template') {
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        messageTemplateKeyField.setValidators([Validators.required]);
-        customMessageField.clearValidators();
-      } else {
-        customMessageField.setValidators([
+    this.messageTypeFieldSubscription = messageTypeField.valueChanges.subscribe(
+      (type) => {
+        if (type === 'template') {
           // eslint-disable-next-line @typescript-eslint/unbound-method
-          Validators.required,
-          Validators.minLength(20),
-        ]);
-        messageTemplateKeyField.clearValidators();
-      }
+          messageTemplateKeyField.setValidators([Validators.required]);
+          customMessageField.clearValidators();
+        } else {
+          customMessageField.setValidators([
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            Validators.required,
+            Validators.minLength(20),
+          ]);
+          messageTemplateKeyField.clearValidators();
+        }
 
-      messageTemplateKeyField.updateValueAndValidity();
-      customMessageField.updateValueAndValidity();
-    });
+        messageTemplateKeyField.updateValueAndValidity();
+        customMessageField.updateValueAndValidity();
+      },
+    );
   }
 
   triggerAction(actionData: ActionDataWithPaginateQuery<Registration>) {
@@ -180,5 +186,9 @@ export class SendMessageDialogComponent {
 
   onFormSubmit(): void {
     this.sendMessageMutation.mutate(this.formGroup.getRawValue());
+  }
+
+  ngOnDestroy(): void {
+    this.messageTypeFieldSubscription.unsubscribe();
   }
 }
