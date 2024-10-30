@@ -10,7 +10,7 @@
     />
     <p-button
       label="Approve"
-      i18n-label="@@approve"
+      i18n-label="@@generic-approve"
       rounded
       [disabled]="
         canSendMessage() &&
@@ -53,6 +53,39 @@
         You're about to include {{ actionData()?.count }} registrations to your
         project. This means that they can be included in payments.
       </p>
+
+      @if (delete; or: validate) {
+        <app-change-status-contents
+          [status]
+          [formGroup]
+          [isMutating]
+          (onCancel)="dialogVisible.set(false)"
+          (onSubmit)="onFormSubmit()"
+        />
+      } @else {
+        @if (isLoadingTemplates) {
+          <skeleton />
+        } @else {
+          @if (hasTemplate) {
+            <app-change-status-contents-with-template
+              [status]
+              [formGroup]
+              [isMutating]
+              (onCancel)="dialogVisible.set(false)"
+              (onSubmit)="onFormSubmit()"
+              [templateKey]
+            />
+          } @else {
+            <app-change-status-contents-with-custom-message
+              [status]
+              [formGroup]
+              [isMutating]
+              (onCancel)="dialogVisible.set(false)"
+              (onSubmit)="onFormSubmit()"
+            />
+          }
+        }
+      }
 
       @if (!canSendMessage()) {
         <ng-template [ngTemplateOutlet]="defaultFooterButtons"></ng-template>
@@ -149,4 +182,20 @@
       }
     </div>
   </form>
+</p-dialog>
+<app-confirmation-dialog
+  #dryRunWarningDialog
+  [header]="headerText()"
+  headerIcon="pi pi-excalamation-triangle"
+  acceptLabel="Proceed"
+  [mutation]="changeStatusMutation"
+  [mutationData]="{
+    dryRun: false,
+  }"
+>
+  <!-- warning based on successful count -->
+</app-confirmation-dialog>
+
+<p-dialog [(visible)]="dryRunFailure">
+  <!-- error based on successful count -->
 </p-dialog>

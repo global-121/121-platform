@@ -29,6 +29,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
+import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { NotificationApiService } from '~/domains/notification/notification.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -67,6 +68,7 @@ type ChangeStatusFormGroup =
     InputSwitchModule,
     NgTemplateOutlet,
     SkeletonModule,
+    ConfirmationDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './change-status-dialog.component.html',
@@ -108,6 +110,7 @@ export class ChangeStatusDialogComponent {
     }),
   });
 
+  // XXX: only defined this in the custom message case
   formFieldErrors = generateFieldErrors<ChangeStatusFormGroup>(this.formGroup, {
     messageType: genericFieldIsRequiredValidationMessage,
     messageTemplateKey: genericFieldIsRequiredValidationMessage,
@@ -238,9 +241,8 @@ export class ChangeStatusDialogComponent {
   }
 
   changeStatusMutation = injectMutation(() => ({
-    mutationFn: (
-      formValues: ReturnType<ChangeStatusFormGroup['getRawValue']>,
-    ) => {
+    mutationFn: ({ dryRun }: { dryRun: boolean }) => {
+      const formValues = this.formGroup.getRawValue();
       const messageData = this.getSendMessageData(formValues);
 
       return this.registrationApiService.changeStatus({
@@ -250,6 +252,15 @@ export class ChangeStatusDialogComponent {
         status: this.status()!,
         messageData,
       });
+    },
+    onError: (error) => {
+      // decide which dialog to show based on error
+
+      if (error.successfulCount > 0) {
+        this.dryRunWarningDialog.askForConfirmation();
+      } else {
+        this.dryRunFailure.set(true);
+      }
     },
     onSuccess: () => {
       this.dialogVisible.set(false);
@@ -272,6 +283,6 @@ export class ChangeStatusDialogComponent {
   }
 
   onFormSubmit(): void {
-    this.changeStatusMutation.mutate(this.formGroup.getRawValue());
+    this.changeStatusMutation.mutate({ dryRun: true });
   }
 }

@@ -1,0 +1,17 @@
+<app-change-status-dialog
+  #changeStatusDialog
+  [projectId]="projectId()"
+  status="delete"
+  i18n-status
+>
+  <app-change-status-form />
+</app-change-status-dialog>
+
+<app-change-status-dialog
+  #changeStatusDialog
+  [projectId]="projectId()"
+  status="include"
+  i18n-status
+>
+  <app-change-status-form-with-message />
+</app-change-status-dialog>
