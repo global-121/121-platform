@@ -267,7 +267,15 @@ export class SeedMockHelper {
     for (const table of tables) {
       const tableName = table.table_name;
       if (!['custom_migration', 'typeorm_metadata'].includes(tableName)) {
-        const sequenceName = `${tableName}_id_seq`;
+        let sequenceName = `${tableName}_id_seq`;
+        // this sequences is created with an abbreviated name automatically, so this exception is needed here
+        if (
+          tableName ===
+          'program_financial_service_provider_configuration_property'
+        ) {
+          sequenceName = 'program_financial_service_pro_id_seq';
+        }
+
         const maxIdQuery = `SELECT MAX(id) FROM "121-service"."${tableName}"`;
 
         const maxIdResult = await this.dataSource.query(maxIdQuery);
