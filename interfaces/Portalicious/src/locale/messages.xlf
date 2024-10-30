@@ -815,6 +815,9 @@
       <trans-unit id="send-message-dialog-preview" datatype="html">
         <source>You&apos;re about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>send a message<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
       </trans-unit>
+      <trans-unit id="create-payment" datatype="html">
+        <source>Create new payment</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
