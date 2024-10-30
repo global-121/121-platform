@@ -14,6 +14,8 @@
       (onUpdatePaginateQuery)="paginateQuery.set($event)"
       [enableSelection]="true"
       (onUpdateSelection)="tableSelection.set($event)"
+      [contextMenuItems]="contextMenuItems()"
+      (onUpdateContextMenuItem)="contextMenuRegistration.set($event)"
     >
       <div table-actions>
         <p-buttonGroup>
@@ -27,7 +29,9 @@
               icon="pi pi-check-circle"
               rounded
               outlined
-              (click)="changeStatus(RegistrationStatusEnum.validated)"
+              (click)="
+                changeStatus({ status: RegistrationStatusEnum.validated })
+              "
             />
           }
           @if (canChangeStatus(RegistrationStatusEnum.included)) {
@@ -37,7 +41,9 @@
               icon="pi pi-check"
               rounded
               outlined
-              (click)="changeStatus(RegistrationStatusEnum.included)"
+              (click)="
+                changeStatus({ status: RegistrationStatusEnum.included })
+              "
             />
           }
           @if (canChangeStatus(RegistrationStatusEnum.declined)) {
@@ -47,7 +53,9 @@
               icon="pi pi-times"
               rounded
               outlined
-              (click)="changeStatus(RegistrationStatusEnum.declined)"
+              (click)="
+                changeStatus({ status: RegistrationStatusEnum.declined })
+              "
             />
           }
           @if (canChangeStatus(RegistrationStatusEnum.paused)) {
@@ -57,15 +65,10 @@
               icon="pi pi-pause"
               rounded
               outlined
-              (click)="changeStatus(RegistrationStatusEnum.paused)"
+              (click)="changeStatus({ status: RegistrationStatusEnum.paused })"
             />
           }
-          @if (
-            authService.hasPermission({
-              projectId: projectId(),
-              requiredPermission: PermissionEnum.RegistrationNotificationREAD,
-            })
-          ) {
+          @if (canSendMessage()) {
             <p-button
               label="Message"
               i18n-label
@@ -75,12 +78,16 @@
               (click)="sendMessage()"
             />
           }
-          <p-button
-            i18n-label
-            icon="pi pi-ellipsis-v"
-            outlined
-            rounded
-          />
+          @if (canChangeStatus(RegistrationStatusEnum.deleted)) {
+            <p-button
+              label="Delete"
+              i18n-label
+              icon="pi pi-trash"
+              rounded
+              outlined
+              (click)="changeStatus({ status: RegistrationStatusEnum.deleted })"
+            />
+          }
         </p-buttonGroup>
       </div>
     </app-query-table>
@@ -90,5 +97,4 @@
 <app-send-message-dialog
   #sendMessageDialog
   [projectId]="projectId()"
-  [previewRegistration]="previewRegistration()"
 />

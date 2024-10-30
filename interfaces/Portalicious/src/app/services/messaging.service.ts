@@ -91,7 +91,7 @@ export class MessagingService {
   public async getMessagePreview(
     input: Partial<MessageInputData>,
     projectId: Signal<number>,
-    previewRegistration: Registration,
+    previewRegistration?: Registration,
   ): Promise<string | undefined> {
     const messageText = await this.getMessageText(input, projectId);
 
@@ -103,7 +103,7 @@ export class MessagingService {
       this.getMessagePlaceholders(projectId)(),
     );
 
-    if (placeholders.length === 0) {
+    if (placeholders.length === 0 || !previewRegistration) {
       return messageText;
     }
 

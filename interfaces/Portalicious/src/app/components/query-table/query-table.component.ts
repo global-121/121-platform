@@ -246,6 +246,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     localStorage.removeItem(this.localStorageKey());
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
+    this.selectAll.set(false);
   }
 
   globalFilterValue = computed(() => {
@@ -372,6 +373,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     }
   }
 
+  selectedItemsCount = computed(() =>
+    this.selectAll()
+      ? this.serverSideTotalRecords()
+      : this.selectedItems().length,
+  );
+
   /**
    *  EXPANDABLE ROWS
    */
@@ -394,9 +401,23 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    *  PAGINATION
    */
-  currentPageReportTemplate =
-    $localize`:The contents of the square brackets should not be touched/changed:Showing [first] to [last] of [totalRecords] records`
-      // this is a workaround because the i18n compiler does not support curly braces in the template
-      .replaceAll('[', '{')
-      .replaceAll(']', '}');
+  currentPageReportTemplate = computed(() => {
+    const baseTemplate =
+      $localize`:The contents of the square brackets should not be touched/changed:Showing [first] to [last] of [totalRecords] records`
+        // this is a workaround because the i18n compiler does not support curly braces in the template
+        .replaceAll('[', '{')
+        .replaceAll(']', '}');
+
+    const selectedItemsCount = this.selectedItemsCount();
+
+    if (!selectedItemsCount) {
+      return baseTemplate;
+    }
+
+    return (
+      baseTemplate +
+      ' ' +
+      $localize`(${selectedItemsCount.toString()} selected)`
+    );
+  });
 }

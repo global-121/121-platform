@@ -10,6 +10,7 @@ import { DataSource } from 'typeorm';
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
+import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { HealthModule } from '@121-service/src/health/health.module';
@@ -40,10 +41,13 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     MulterModule.register({
       dest: './files',
     }),
-    ThrottlerModule.forRoot({
-      ttl: parseInt(process.env.GENERIC_THROTTLING_TTL ?? '60'),
-      limit: parseInt(process.env.GENERIC_THROTTLING_LIMIT ?? '3000'),
-    }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        limit: THROTTLING_LIMIT_GENERIC.default.limit,
+        ttl: THROTTLING_LIMIT_GENERIC.default.ttl,
+      },
+    ]),
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST,

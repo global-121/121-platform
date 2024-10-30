@@ -64,7 +64,9 @@ class BasePage {
   async validateToastMessage(message: string) {
     await expect(this.toast).toBeVisible();
     expect(await this.toast.textContent()).toContain(message);
-    await expect(this.toast).toBeHidden();
+    await expect(this.toast).toBeHidden({
+      timeout: 6000, // by default, toasts are visible for 5s
+    });
   }
 
   async validateFormError({ errorText }: { errorText: string }) {

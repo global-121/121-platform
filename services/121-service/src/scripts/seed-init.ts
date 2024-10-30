@@ -133,7 +133,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationAttributeFinancialUPDATE,
           PermissionEnum.RegistrationNotificationCREATE,

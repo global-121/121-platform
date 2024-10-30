@@ -26,6 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
+import { THROTTLING_LIMIT_HIGH } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -170,10 +171,7 @@ export class UserController {
     return this.userService.createUsers(userData);
   }
 
-  @Throttle(
-    parseInt(process.env.HIGH_THROTTLING_LIMIT ?? '30'),
-    parseInt(process.env.HIGH_THROTTLING_TTL ?? '60'),
-  )
+  @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiTags('users')
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
@@ -235,6 +233,7 @@ export class UserController {
     }
   }
 
+  @Throttle(THROTTLING_LIMIT_HIGH)
   @AuthenticatedUser()
   @ApiTags('users')
   @ApiOperation({ summary: 'Change password of logged in user' })

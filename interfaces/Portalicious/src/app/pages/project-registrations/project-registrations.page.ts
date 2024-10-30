@@ -7,8 +7,10 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { CardModule } from 'primeng/card';
@@ -58,6 +60,7 @@ export class ProjectRegistrationsPageComponent {
   projectId = input.required<number>();
 
   public authService = inject(AuthService);
+  private router = inject(Router);
   private paginateQueryService = inject(PaginateQueryService);
   private registrationApiService = inject(RegistrationApiService);
   private projectApiService = inject(ProjectApiService);
@@ -71,6 +74,7 @@ export class ProjectRegistrationsPageComponent {
   RegistrationStatusEnum = RegistrationStatusEnum;
   paginateQuery = signal<PaginateQuery | undefined>(undefined);
   tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
+  contextMenuRegistration = signal<Registration | undefined>(undefined);
 
   registrationsResponse = injectQuery(
     this.registrationApiService.getManyByQuery(
@@ -129,33 +133,48 @@ export class ProjectRegistrationsPageComponent {
     registrationId,
   ];
 
-  private getActionData() {
-    return this.paginateQueryService.selectionEventToActionData({
-      selection: this.tableSelection(),
-      fieldForFilter: 'referenceId',
-      totalCount: this.totalRegistrations(),
-      currentPaginateQuery: this.paginateQuery(),
-      onEmptySelection: () => {
+  private getActionData({
+    triggeredFromContextMenu,
+  }: {
+    // registration to be used if no selection is made
+    triggeredFromContextMenu: boolean;
+  }) {
+    const selection = this.tableSelection();
+
+    if (Array.isArray(selection) && selection.length === 0) {
+      if (triggeredFromContextMenu) {
+        const contextMenuRegistration = this.contextMenuRegistration();
+        if (!contextMenuRegistration) {
+          this.toastService.showGenericError();
+          return;
+        }
+        selection.push(contextMenuRegistration);
+      } else {
         this.toastService.showToast({
           severity: 'error',
           detail: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
         });
-      },
+        return;
+      }
+    }
+
+    return this.paginateQueryService.selectionEventToActionData({
+      selection,
+      fieldForFilter: 'referenceId',
+      totalCount: this.totalRegistrations(),
+      currentPaginateQuery: this.paginateQuery(),
+      previewItemForSelectAll: this.registrations()[0],
     });
   }
 
-  previewRegistration = computed(() => {
-    const tableSelection = this.tableSelection();
-
-    if ('selectAll' in tableSelection) {
-      return this.registrations()[0];
-    }
-
-    return tableSelection[0];
-  });
-
-  sendMessage() {
-    const actionData = this.getActionData();
+  sendMessage({
+    triggeredFromContextMenu = false,
+  }: {
+    triggeredFromContextMenu?: boolean;
+  } = {}) {
+    const actionData = this.getActionData({
+      triggeredFromContextMenu,
+    });
 
     if (!actionData) {
       return;
@@ -164,8 +183,16 @@ export class ProjectRegistrationsPageComponent {
     this.sendMessageDialog.triggerAction(actionData);
   }
 
-  changeStatus(status: RegistrationStatusEnum) {
-    const actionData = this.getActionData();
+  changeStatus({
+    status,
+    triggeredFromContextMenu = false,
+  }: {
+    status: RegistrationStatusEnum;
+    triggeredFromContextMenu?: boolean;
+  }) {
+    const actionData = this.getActionData({
+      triggeredFromContextMenu,
+    });
 
     if (!actionData) {
       return;
@@ -184,6 +211,7 @@ export class ProjectRegistrationsPageComponent {
   canChangeStatus(
     status:
       | RegistrationStatusEnum.declined
+      | RegistrationStatusEnum.deleted
       | RegistrationStatusEnum.included
       | RegistrationStatusEnum.paused
       | RegistrationStatusEnum.validated,
@@ -195,6 +223,7 @@ export class ProjectRegistrationsPageComponent {
         PermissionEnum.RegistrationStatusIncludedUPDATE,
       [RegistrationStatusEnum.declined]:
         PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+      [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
       [RegistrationStatusEnum.paused]:
         PermissionEnum.RegistrationStatusPausedUPDATE,
     };
@@ -203,4 +232,82 @@ export class ProjectRegistrationsPageComponent {
       requiredPermission: statusToPermissionMap[status],
     });
   }
+
+  canSendMessage = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
+    }),
+  );
+
+  contextMenuItems = computed<MenuItem[]>(() => {
+    return [
+      {
+        label: $localize`Go to profile`,
+        icon: 'pi pi-user',
+        command: () => {
+          const registration = this.contextMenuRegistration();
+          if (!registration) {
+            this.toastService.showGenericError();
+            return;
+          }
+          void this.router.navigate(this.registrationLink(registration.id));
+        },
+      },
+      {
+        label: $localize`Validate`,
+        icon: 'pi pi-check-circle',
+        visible: this.canChangeStatus(RegistrationStatusEnum.validated),
+        command: () => {
+          this.changeStatus({
+            status: RegistrationStatusEnum.validated,
+            triggeredFromContextMenu: true,
+          });
+        },
+      },
+      {
+        label: $localize`Include`,
+        icon: 'pi pi-check',
+        visible: this.canChangeStatus(RegistrationStatusEnum.included),
+        command: () => {
+          this.changeStatus({
+            status: RegistrationStatusEnum.included,
+            triggeredFromContextMenu: true,
+          });
+        },
+      },
+      {
+        label: $localize`Decline`,
+        icon: 'pi pi-times',
+        visible: this.canChangeStatus(RegistrationStatusEnum.declined),
+        command: () => {
+          this.changeStatus({
+            status: RegistrationStatusEnum.declined,
+            triggeredFromContextMenu: true,
+          });
+        },
+      },
+      {
+        label: $localize`Message`,
+        icon: 'pi pi-envelope',
+        visible: this.canSendMessage(),
+        command: () => {
+          this.sendMessage({
+            triggeredFromContextMenu: true,
+          });
+        },
+      },
+      {
+        label: $localize`Delete`,
+        icon: 'pi pi-trash',
+        visible: this.canChangeStatus(RegistrationStatusEnum.deleted),
+        command: () => {
+          this.changeStatus({
+            status: RegistrationStatusEnum.deleted,
+            triggeredFromContextMenu: true,
+          });
+        },
+      },
+    ];
+  });
 }
