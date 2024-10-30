@@ -244,10 +244,6 @@ export class UserController {
     description: 'Changed password of user',
     type: UpdateUserDto,
   })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
-  })
   public async update(
     @Body() userPasswordData: UpdateUserPasswordDto,
   ): Promise<any> {
@@ -278,10 +274,6 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'User returned',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'No user detectable from cookie or no cookie present',
   })
   public async findMe(@Req() req): Promise<UserRO> {
     if (!req.user || !req.user.username) {

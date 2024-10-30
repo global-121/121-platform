@@ -115,10 +115,6 @@ export class FinancialServiceProvidersController {
     type: FspQuestionEntity,
   })
   @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'Attribute with given name already exists for given FSP',
-  })
-  @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No Financial Service Provicer found with given id',
   })

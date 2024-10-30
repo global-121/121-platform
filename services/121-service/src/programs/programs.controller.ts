@@ -108,9 +108,6 @@ export class ProgramController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
   })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-  })
   @ApiQuery({
     name: 'importFromKobo',
     required: false,
@@ -199,9 +196,6 @@ You can also leave the body empty.`,
     name: 'programId',
     required: true,
     type: 'integer',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
   })
   @Delete(':programId')
   public async delete(
