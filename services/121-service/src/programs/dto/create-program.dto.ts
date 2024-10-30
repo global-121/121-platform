@@ -18,7 +18,7 @@ import {
   FinancialServiceProviderConfigurationEnum,
   FinancialServiceProviderName,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
