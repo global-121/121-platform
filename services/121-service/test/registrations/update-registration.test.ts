@@ -49,7 +49,7 @@ describe('Update attribute of PA', () => {
     await importRegistrations(programIdPv, [registrationPvScoped], accessToken);
   });
 
-  it.skip('should not update unknown registration', async () => {
+  it('should not update unknown registration', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const wrongReferenceId = registrationVisa.referenceId + '-fail-test';
@@ -71,7 +71,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it.skip('should succesfully update multiple fields', async () => {
+  it('should succesfully update multiple fields', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const reason = 'automated test';
@@ -112,7 +112,7 @@ describe('Update attribute of PA', () => {
     );
   });
 
-  it.skip('should fail on wrong phonenumber', async () => {
+  it('should fail on wrong phonenumber', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     // Uses MockPhoneNumbers.LookupFail phonenumber
@@ -148,7 +148,7 @@ describe('Update attribute of PA', () => {
     expect(registration.fullName).toBe(registrationVisa.fullName);
   });
 
-  it.skip('should fail on updating financial data without the right permission', async () => {
+  it('should fail on updating financial data without the right permission', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const dataUpdateFinanancialFail = {
@@ -185,7 +185,7 @@ describe('Update attribute of PA', () => {
     );
   });
 
-  it.skip('should fail on updating non financial data without the right permission', async () => {
+  it('should fail on updating non financial data without the right permission', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const dataUpdateNonFinanancialFail = {
@@ -220,7 +220,7 @@ describe('Update attribute of PA', () => {
     expect(registration.phoneNumber).toBe(registrationVisa.phoneNumber);
   });
 
-  it.skip('should update scope within current users scope', async () => {
+  it('should update scope within current users scope', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const newScope = 'utrecht.houten';
@@ -250,7 +250,7 @@ describe('Update attribute of PA', () => {
     expect(registration.scope).toBe(newScope);
   });
 
-  it.skip('should not update scope outside current users scope', async () => {
+  it('should not update scope outside current users scope', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const oldScope = registrationPvScoped.scope;
@@ -281,7 +281,7 @@ describe('Update attribute of PA', () => {
     expect(registration.scope).toBe(oldScope);
   });
 
-  it.skip('should fail on removing a program registration attribute which is part of the fsp config and required', async () => {
+  it('should fail on removing a program registration attribute which is part of the fsp config and required', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const dataUpdateStreetFail = {
@@ -313,7 +313,7 @@ describe('Update attribute of PA', () => {
     expect(registration.addressCity).toBe(registrationVisa.addressCity);
   });
 
-  it.skip('should succeed on removing a program registration attribute which is part of the fsp config but not-required', async () => {
+  it('should succeed on removing a program registration attribute which is part of the fsp config but not-required', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const dataUpdateAdditionSuccess = {
@@ -342,7 +342,7 @@ describe('Update attribute of PA', () => {
     expect(registration.addressHouseNumberAddition == null).toBe(true);
   });
 
-  it.skip('should succeed on removing all program registration attributes of test program', async () => {
+  it('should succeed on removing all program registration attributes of test program', async () => {
     // Arrange
     await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
@@ -406,13 +406,12 @@ describe('Update attribute of PA', () => {
       accessToken,
     );
 
-    const patchResult = await patchProgramRegistrationAttribute({
+    await patchProgramRegistrationAttribute({
       programRegistrationAttributeName: 'motto',
       programRegistrationAttribute: { isRequired: true },
       programId: programIdWesteros,
       accessToken,
     });
-    console.log(patchResult.body);
 
     const dataUpdateToEmpty = {
       motto: null,

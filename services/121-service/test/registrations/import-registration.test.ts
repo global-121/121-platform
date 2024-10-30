@@ -59,7 +59,7 @@ describe('Import a registration', () => {
     }
   });
 
-  it('should import registration with mixed attributed (dropdown, boolean, string, numeric)', async () => {
+  it('should import registration with mixed attributes (dropdown, boolean, string, numeric)', async () => {
     // Arrange
     await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
@@ -282,7 +282,7 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
-  it('should throw an error when a required a fsp attribute is missing', async () => {
+  it('should throw an error when a required fsp attribute is missing', async () => {
     // Arrange
     await resetDB(SeedScript.test);
     accessToken = await getAccessToken();
@@ -296,8 +296,6 @@ describe('Import a registration', () => {
       FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     const programIdWestoros = 1;
-    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
-      FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     // Act
     const response = await importRegistrations(

@@ -108,7 +108,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     );
   });
 
-  it('Should bulk update if phoneNumber column is empty and program is configured as not allowing empty phone number', async () => {
+  it('Should bulk update if phoneNumber column is empty and program is configured as allowing empty phone number', async () => {
     const registrationDataThatWillChangePa1 = {
       fullName: 'updated name1',
       addressStreet: 'newStreet1',
