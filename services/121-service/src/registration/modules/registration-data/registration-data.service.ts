@@ -223,4 +223,26 @@ export class RegistrationDataService {
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
+
+  public async deleteProgramRegistrationAttributeData(
+    registration: RegistrationEntity,
+    options: RegistrationDataOptions,
+  ) {
+    let { relation } = options;
+    if (!relation && !options.name) {
+      const errors = `Cannot delete registration data, need either a dataRelation or a name`;
+      throw new Error(errors);
+    }
+    if (!relation) {
+      relation = await this.getRelationForName(registration, options.name!);
+    }
+    if (relation.programRegistrationAttributeId) {
+      await this.registrationDataScopedRepository.deleteUnscoped({
+        registrationId: Equal(registration.id),
+        programRegistrationAttribute: {
+          id: relation.programRegistrationAttributeId,
+        },
+      });
+    }
+  }
 }

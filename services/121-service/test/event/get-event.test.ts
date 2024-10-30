@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -14,7 +15,6 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 const updatePhoneNumber = '15005550099';
 

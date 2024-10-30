@@ -209,10 +209,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         reason,
       )
       .then((response: Person) => {
-        console.log(
-          '🚀 ~ file: edit-person-affected-popup.component.ts:197 ~ EditPersonAffectedPopupComponent ~ .then ~ response:',
-          response,
-        );
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = valueToStore;
         this.attributeValues.paymentAmountMultiplier =

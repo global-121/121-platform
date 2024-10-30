@@ -97,17 +97,12 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].errorMessage).toBe(null);
     });
 
-    it('should give error about phoneNumber', async () => {
-      const program = {
-        allowEmptyPhoneNumber: true,
-      };
-
+    it('should give error the initial safaricom api call', async () => {
       // Act
       // Call the update function
-      await patchProgram(2, program as UpdateProgramDto, accessToken);
 
       // Arrange
-      registrationSafaricom.phoneNumber = '';
+      registrationSafaricom.phoneNumber = '254000000000';
       await importRegistrations(
         programId,
         [registrationSafaricom],
@@ -154,21 +149,16 @@ describe('Do payment to 1 PA', () => {
         TransactionStatusEnum.error,
       );
       expect(getTransactionsBody.body[0].errorMessage).toBe(
-        'Property phoneNumber is undefined',
+        '401.002.01 - Error Occurred - Invalid Access Token - mocked_access_token',
       );
     });
 
-    it('should successfully retry pay-out after empty phoneNumber error', async () => {
-      const program = {
-        allowEmptyPhoneNumber: true,
-      };
-
+    it('should successfully retry pay-out after an initial failure', async () => {
       // Act
       // Call the update function
-      await patchProgram(2, program as UpdateProgramDto, accessToken);
 
       // Arrange
-      registrationSafaricom.phoneNumber = '';
+      registrationSafaricom.phoneNumber = '254000000000';
       await importRegistrations(
         programId,
         [registrationSafaricom],
