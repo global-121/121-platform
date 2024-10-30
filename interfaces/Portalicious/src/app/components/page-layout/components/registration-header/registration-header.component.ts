@@ -14,6 +14,7 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TabMenuModule } from 'primeng/tabmenu';
 
+import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -59,6 +60,13 @@ export class RegistrationHeaderComponent {
       this.registrationId,
     ),
   );
+  referenceId = computed(() => this.registration.data()?.referenceId);
+  walletWithCards = injectQuery(
+    this.registrationApiService.getWalletWithCardsByReferenceId(
+      this.projectId,
+      this.referenceId,
+    ),
+  );
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
   registrationData = computed(() => {
@@ -92,6 +100,16 @@ export class RegistrationHeaderComponent {
         label: $localize`:@@registration-scope:Scope`,
         value: registrationRawData?.scope,
         type: 'text',
+      });
+    }
+    if (
+      this.registration.data()?.financialServiceProvider ===
+      FinancialServiceProviderName.intersolveVisa
+    ) {
+      listData.push({
+        label: $localize`:@@debit-card-balance:Current balance`,
+        value: this.walletWithCards.data()?.balance,
+        type: 'currency',
       });
     }
 
