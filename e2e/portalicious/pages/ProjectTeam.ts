@@ -34,12 +34,21 @@ class ProjectTeam extends BasePage {
   }
 
   async validateAssignedTeamMembers(expectedAssignedUsers: string[]) {
+    // Wait for the first row to appear to tackle the flakiness when the table is still loading
+    await expect(
+      this.page
+        .getByRole('row', {
+          name: expectedAssignedUsers[0],
+        })
+        .nth(0),
+    ).toBeVisible();
+    // Act
     const actualAssignedUsers = await this.tableRows.evaluateAll((rows) =>
       rows.map((row) =>
         row.querySelector('td:nth-child(1)').textContent.trim(),
       ),
     );
-
+    // Assert
     const sortedActualUsers = [...actualAssignedUsers].sort((a, b) =>
       a.localeCompare(b),
     );
