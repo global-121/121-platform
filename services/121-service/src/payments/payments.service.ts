@@ -745,14 +745,14 @@ export class PaymentsService {
             )!,
             isRetry,
             bulkSize: referenceIdsTransactionAmounts.length,
-            name: registrationView['fullName'],
+            name: registrationView['fullName']!, // Fullname is a required field if a registration has visa as FSP
             addressStreet: registrationView['addressStreet'],
             addressHouseNumber: registrationView['addressHouseNumber'],
             addressHouseNumberAddition:
               registrationView['addressHouseNumberAddition'],
             addressPostalCode: registrationView['addressPostalCode'],
             addressCity: registrationView['addressCity'],
-            phoneNumber: registrationView.phoneNumber,
+            phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
           };
         },
       );
@@ -815,7 +815,7 @@ export class PaymentsService {
           isRetry,
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
-          phoneNumber: registrationView.phoneNumber,
+          phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
           idNumber: registrationView['nationalId'],
           originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
         };

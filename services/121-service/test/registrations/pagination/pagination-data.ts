@@ -2,7 +2,7 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 interface RegistrationWithFspName extends RegistrationEntity {
-  fspName?: string;
+  programFinancialServiceProviderConfigurationName?: string;
 }
 
 export function createExpectedValueObject(
@@ -14,7 +14,6 @@ export function createExpectedValueObject(
     registrationProgramId: sequenceNumber,
     personAffectedSequence: `PA #${sequenceNumber}`,
   };
-  delete expectedValueObject.fspName;
 
   return expectedValueObject;
 }
@@ -182,7 +181,7 @@ export const registrationWesteros1 = {
   referenceId: 'westeros123456789',
   preferredLanguage: 'en',
   name: 'John Snow',
-  dob: '283-12-31',
+  dob: '31-08-1990',
   house: 'stark',
   dragon: 1,
   knowsNothing: true,
@@ -196,7 +195,7 @@ export const registrationWesteros2 = {
   referenceId: 'westeros987654321',
   preferredLanguage: 'en',
   name: 'Arya Stark',
-  dob: '288-12-31',
+  dob: '31-08-1990',
   house: 'stark',
   dragon: 0,
   knowsNothing: false,
@@ -210,7 +209,7 @@ export const registrationWesteros3 = {
   referenceId: 'westeros987654322',
   preferredLanguage: 'en',
   name: 'Jaime Lannister',
-  dob: '287-12-31',
+  dob: '31-08-1990',
   house: 'lannister',
   dragon: 0,
   knowsNothing: false,
@@ -242,13 +241,13 @@ export const registrationSafaricom = {
   county: 'ethiopia',
   subCounty: 'ethiopia',
   ward: 'dsa',
-  location: 21,
-  subLocation: 2113,
+  location: '21',
+  subLocation: '2113',
   village: 'adis abea',
-  nearestSchool: 213321,
+  nearestSchool: '213321',
   areaType: 'urban',
   mainSourceLivelihood: 'salary_from_formal_employment',
-  mainSourceLivelihoodOther: 213,
+  mainSourceLivelihoodOther: '213',
   Male05: 1,
   Female05: 0,
   Male612: 0,
@@ -270,24 +269,24 @@ export const registrationSafaricom = {
   habitableRooms: 0,
   tenureStatusOfDwelling: 'Owner occupied',
   ownerOccupiedState: 'purchased',
-  ownerOccupiedStateOther: 0,
+  ownerOccupiedStateOther: '0',
   rentedFrom: 'individual',
-  rentedFromOther: 0,
+  rentedFromOther: '0',
   constructionMaterialRoof: 'tin',
-  ifRoofOtherSpecify: 31213,
+  ifRoofOtherSpecify: '31213',
   constructionMaterialWall: 'tiles',
-  ifWallOtherSpecify: 231312,
+  ifWallOtherSpecify: '231312',
   constructionMaterialFloor: 'cement',
   ifFloorOtherSpecify: 'asdsd',
   dwellingRisk: 'fire',
-  ifRiskOtherSpecify: 123213,
+  ifRiskOtherSpecify: '123213',
   mainSourceOfWater: 'lake',
   ifWaterOtherSpecify: 'dasdas',
   pigs: 'no',
   ifYesPigs: 123123,
   chicken: 'no',
   mainModeHumanWasteDisposal: 'septic_tank',
-  ifHumanWasteOtherSpecify: 31213,
+  ifHumanWasteOtherSpecify: '31213',
   cookingFuel: 'electricity',
   ifFuelOtherSpecify: 'asdsda',
   Lighting: 'electricity',
@@ -310,19 +309,19 @@ export const registrationSafaricom = {
   howManyDeaths: 0,
   householdConditions: 'poor',
   skipMeals: 'no',
-  receivingBenefits: 0,
-  ifYesNameProgramme: 0,
+  receivingBenefits: '0',
+  ifYesNameProgramme: '0',
   typeOfBenefit: 'in_kind',
-  ifOtherBenefit: 2123312,
+  ifOtherBenefit: '2123312',
   ifCash: 12312,
-  ifInKind: 132132,
+  ifInKind: '132132',
   feedbackOnRespons: 'no',
-  ifYesFeedback: 312123,
+  ifYesFeedback: '312123',
   whoDecidesHowToSpend: 'male_household_head',
   possibilityForConflicts: 'no',
   genderedDivision: 'no',
   ifYesElaborate: 'asddas',
-  geopoint: 123231,
+  geopoint: '123231',
 };
 
 export const registrationsSafaricom = [registrationSafaricom];

@@ -17,6 +17,7 @@ export class ProgramFinancialServiceProviderConfigurationResponseDto {
   @ApiProperty({ type: 'object' })
   public label: LocalizedString;
 
+  /// Can sometimes be undefined if the financial service provider has been removed from the codebase
   @ApiProperty({ type: 'object' })
-  public financialServiceProvider: FinancialServiceProviderDto;
+  public financialServiceProvider?: FinancialServiceProviderDto;
 }

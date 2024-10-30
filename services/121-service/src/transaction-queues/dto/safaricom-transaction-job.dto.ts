@@ -8,6 +8,6 @@ export interface SafaricomTransactionJobDto {
   readonly userId: number;
   readonly bulkSize: number;
   readonly originatorConversationId: string;
-  readonly phoneNumber?: string;
-  readonly idNumber?: string;
+  readonly phoneNumber: string;
+  readonly idNumber: string;
 }

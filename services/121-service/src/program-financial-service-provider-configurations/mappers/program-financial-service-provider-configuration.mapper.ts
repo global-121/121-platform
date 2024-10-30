@@ -23,11 +23,6 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
     const financialServiceProvider = FINANCIAL_SERVICE_PROVIDERS.find(
       (fsp) => fsp.name === entity.financialServiceProviderName,
     );
-    if (!financialServiceProvider) {
-      throw new Error(
-        'Financial service provider assigned to program not found in the list of available financial service providers',
-      );
-    }
     dto.financialServiceProvider = financialServiceProvider;
     return dto;
   }

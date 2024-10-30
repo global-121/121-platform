@@ -818,19 +818,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  updateChosenFsp(
-    referenceId: string,
-    programId: number,
-    newFspName: string,
-    newFspAttributes?: object,
-  ): Promise<FinancialServiceProviderConfiguration> {
-    return this.apiService.put(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/${referenceId}/fsp`,
-      { newFspName, newFspAttributes },
-    );
-  }
-
   updateProgram(programId: number, updateBody: object): Promise<Program> {
     return this.apiService.patch(
       environment.url_121_service_api,
