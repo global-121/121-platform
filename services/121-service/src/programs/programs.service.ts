@@ -5,7 +5,7 @@ import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {

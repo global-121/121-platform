@@ -11,7 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { AnswerTypes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
