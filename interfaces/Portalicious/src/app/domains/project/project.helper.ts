@@ -5,7 +5,14 @@ import {
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { DataListItem } from '~/components/data-list/data-list.component';
-import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
+import {
+  FSPS_WITH_PHYSICAL_CARD_SUPPORT,
+  FSPS_WITH_VOUCHER_SUPPORT,
+} from '~/domains/payment/payment.helpers';
+import {
+  AttributeWithTranslatedLabel,
+  Project,
+} from '~/domains/project/project.model';
 
 export const ATTRIBUTE_LABELS: Record<string, string | undefined> = {
   fspDisplayName: $localize`:@@attribute-label-fspDisplayName:FSP Display Name`,
@@ -64,3 +71,15 @@ export const attributeToDataListItem = (
       };
   }
 };
+
+export function projectHasVoucherSupport(project?: Project) {
+  return project?.financialServiceProviders.some((fsp) =>
+    FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.fsp),
+  );
+}
+
+export function projectHasPhysicalCardSupport(project?: Project) {
+  return project?.financialServiceProviders.some((fsp) =>
+    FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.fsp),
+  );
+}
