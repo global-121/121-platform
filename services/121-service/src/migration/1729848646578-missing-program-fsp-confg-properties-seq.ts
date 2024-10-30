@@ -9,10 +9,10 @@ export class MissingProgramFspConfgPropertiesSeq1729848646578
     // These queries are also present in src/migration/1729605362361-program-registration-attribute-refactor.ts for some reason however typeorm still generates
     // this migration file. Could not find a way around this. So leaving it as is.
     await queryRunner.query(
-      `CREATE SEQUENCE IF NOT EXISTS "121-service"."program_financial_service_provider_configuration_property_id_seq" OWNED BY "121-service"."program_financial_service_provider_configuration_property"."id"`,
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."program_financial_service_pro_id_seq" OWNED BY "121-service"."program_financial_service_provider_configuration_property"."id"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_financial_service_provider_configuration_property" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."program_financial_service_provider_configuration_property_id_seq"')`,
+      `ALTER TABLE "121-service"."program_financial_service_provider_configuration_property" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."program_financial_service_pro_id_seq"')`,
     );
   }
 
