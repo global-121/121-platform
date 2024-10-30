@@ -6,6 +6,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { EventApiService } from '~/domains/event/event.api.service';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import {
   PaginateQuery,
   PaginateQueryService,
@@ -20,6 +21,7 @@ export class ExportService {
   private paginateQueryService = inject(PaginateQueryService);
   private eventApiService = inject(EventApiService);
   private metricApiService = inject(MetricApiService);
+  private projectApiService = inject(ProjectApiService);
 
   private generateExportParams({
     type,
@@ -116,5 +118,44 @@ export class ExportService {
     const filename = this.toExportFileName(type);
 
     return { exportResult, filename };
+  }
+
+  private toAtributesForDuplicateCheckFilter(
+    attributes: {
+      name: string;
+      duplicateCheck: boolean;
+    }[],
+  ) {
+    return attributes
+      .filter((attribute) => attribute.duplicateCheck)
+      .map((attribute) => attribute.name);
+  }
+
+  async getDuplicateCheckAttributes(
+    projectId: Signal<number>,
+  ): Promise<string[]> {
+    // TODO: AB#30519 This is a temporary solution until we have a better way to get all project attribute with the `duplicateCheck` flag included.
+    // Ideally we will delete this function and just replace the call to `getDuplicateCheckAttributes` with a call to `getProjectAttributes`.
+    const project = await this.queryClient.fetchQuery(
+      this.projectApiService.getProject(projectId)(),
+    );
+
+    const {
+      programQuestions,
+      programCustomAttributes,
+      financialServiceProviders,
+    } = project;
+
+    const fspAttributes = financialServiceProviders
+      .map((fsp) => fsp.questions)
+      .flat();
+
+    const allAttributeNames: string[] = [
+      ...this.toAtributesForDuplicateCheckFilter(programQuestions),
+      ...this.toAtributesForDuplicateCheckFilter(programCustomAttributes),
+      ...this.toAtributesForDuplicateCheckFilter(fspAttributes),
+    ];
+
+    return [...new Set(allAttributeNames)].sort((a, b) => a.localeCompare(b));
   }
 }

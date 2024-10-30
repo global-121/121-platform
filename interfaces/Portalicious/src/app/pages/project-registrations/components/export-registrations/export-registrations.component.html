@@ -44,3 +44,32 @@
     [exportType]="ExportType.allPeopleAffected"
   />
 </app-confirmation-dialog>
+<app-confirmation-dialog
+  #exportDuplicatesDialog
+  header="Export duplicate registrations"
+  i18n-header="@@export-duplicate"
+  headerIcon="pi pi-upload"
+  [mutation]="exportRegistrationsMutation"
+  [mutationData]="{
+    type: ExportType.duplicates,
+  }"
+>
+  <p i18n>
+    You're about to download an Excel file for all duplicate registrations.
+  </p>
+  <p
+    i18n
+    class="mt-2"
+  >
+    Checking duplicates is based on:
+  </p>
+  <ul class="mt-1 list-disc pl-4">
+    @for (attribute of duplicateExportAttributes.data(); track attribute) {
+      <li>{{ attribute }}</li>
+    }
+  </ul>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.allPeopleAffected"
+  />
+</app-confirmation-dialog>

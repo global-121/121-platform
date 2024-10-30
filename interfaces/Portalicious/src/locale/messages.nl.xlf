@@ -1135,6 +1135,14 @@
         <source>There has been no export yet.</source>
         <target state="new">There has been no export yet.</target>
       </trans-unit>
+      <trans-unit id="771623267264728975" datatype="html">
+        <source>You&apos;re about to download an Excel file for all duplicate registrations.</source>
+        <target state="new">You&apos;re about to download an Excel file for all duplicate registrations.</target>
+      </trans-unit>
+      <trans-unit id="9109328074966219188" datatype="html">
+        <source>Checking duplicates is based on:</source>
+        <target state="new">Checking duplicates is based on:</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

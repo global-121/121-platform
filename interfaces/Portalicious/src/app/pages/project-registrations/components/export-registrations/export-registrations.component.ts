@@ -7,7 +7,10 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';
 
@@ -50,12 +53,20 @@ export class ExportRegistrationsComponent {
   private exportSelectedDialog: ConfirmationDialogComponent;
   @ViewChild('exportAllDialog')
   private exportAllDialog: ConfirmationDialogComponent;
+  @ViewChild('exportDuplicatesDialog')
+  private exportDuplicatesDialog: ConfirmationDialogComponent;
 
   exportSelectedActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
   >(undefined);
 
   ExportType = ExportType;
+
+  duplicateExportAttributes = injectQuery(() => ({
+    queryKey: [this.projectId],
+    queryFn: () =>
+      this.exportService.getDuplicateCheckAttributes(this.projectId),
+  }));
 
   exportRegistrationsMutation = injectMutation(() => ({
     mutationFn: async (exportOptions: {
@@ -111,10 +122,7 @@ export class ExportRegistrationsComponent {
     {
       label: $localize`:@@export-duplicate:Export duplicate registrations`,
       command: () => {
-        this.toastService.showToast({
-          detail: 'That has not been implemented yet...',
-          severity: 'warn',
-        });
+        this.exportDuplicatesDialog.askForConfirmation();
       },
     },
     {

@@ -854,6 +854,12 @@
       <trans-unit id="4452017686076766931" datatype="html">
         <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
       </trans-unit>
+      <trans-unit id="771623267264728975" datatype="html">
+        <source>You&apos;re about to download an Excel file for all duplicate registrations.</source>
+      </trans-unit>
+      <trans-unit id="9109328074966219188" datatype="html">
+        <source>Checking duplicates is based on:</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
