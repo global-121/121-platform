@@ -19,6 +19,7 @@ import {
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
@@ -52,13 +53,14 @@ export class ProjectMonitoringPageComponent {
   projectId = input.required<number>();
 
   readonly locale = inject(LOCALE_ID);
+  readonly metricApiService = inject(MetricApiService);
   readonly projectApiService = inject(ProjectApiService);
   readonly paymentApiService = inject(PaymentApiService);
   readonly translatableStringService = inject(TranslatableStringService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   metrics = injectQuery(() => ({
-    ...this.projectApiService.getProjectSummaryMetrics(this.projectId)(),
+    ...this.metricApiService.getProjectSummaryMetrics(this.projectId)(),
     enabled: !!this.project.data()?.id,
   }));
   payments = injectQuery(() => ({
