@@ -252,27 +252,6 @@ function jsonArrayToCsv(json: object[]): string {
   return csv.join('\r\n');
 }
 
-export async function getFspConfiguration(
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .get(`/programs/${programId}/fsp-configuration`)
-    .set('Cookie', [accessToken]);
-}
-
-export async function deleteFspConfiguration(
-  programId: number,
-  programFspConfigurationId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .delete(
-      `/programs/${programId}/fsp-configuration/${programFspConfigurationId}`,
-    )
-    .set('Cookie', [accessToken]);
-}
-
 export async function exportList(
   programId: number,
   exportType: string,

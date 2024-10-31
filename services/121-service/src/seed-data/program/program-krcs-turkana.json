@@ -25,9 +25,7 @@
         "en": "First Name"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -39,7 +37,6 @@
         "en": "Gender"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "male",
@@ -55,7 +52,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -69,10 +65,8 @@
         "en": "Age"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -86,7 +80,6 @@
         "en": "Marital status of beneficiary"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "married",
@@ -114,7 +107,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -128,7 +120,6 @@
         "en": "Registration Type"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "self",
@@ -144,7 +135,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -158,10 +148,8 @@
         "en": "ID number (MPESA)"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -175,10 +163,8 @@
         "en": "Name of Alternate"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -192,10 +178,8 @@
         "en": "Total household size"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -209,10 +193,8 @@
         "en": "Total household <5"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -226,10 +208,8 @@
         "en": "Total household >60"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -243,7 +223,6 @@
         "en": "Receiving other Social Assistance?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -259,7 +238,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -273,10 +251,8 @@
         "en": "County"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -290,10 +266,8 @@
         "en": "Sub County"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -307,10 +281,8 @@
         "en": "Ward"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -324,10 +296,8 @@
         "en": "Location"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -341,10 +311,8 @@
         "en": "Sub location"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -358,10 +326,8 @@
         "en": "Village"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -375,10 +341,8 @@
         "en": "Nearest school"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -392,7 +356,6 @@
         "en": "Area type"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "rural",
@@ -408,7 +371,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -422,7 +384,6 @@
         "en": "What are the main livelihood sources for the household?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "salary_from_formal_employment",
@@ -462,7 +423,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -476,10 +436,8 @@
         "en": "If other, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -493,10 +451,8 @@
         "en": "How many males 0 - 5 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -510,10 +466,8 @@
         "en": "How many females 0 - 5 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -527,10 +481,8 @@
         "en": "How many males 6 - 12 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -544,10 +496,8 @@
         "en": "How many females 6 - 12 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -561,10 +511,8 @@
         "en": "How many males 13 - 24 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -578,10 +526,8 @@
         "en": "How many females 13 - 24 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -595,10 +541,8 @@
         "en": "How many males 25 - 59 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -612,10 +556,8 @@
         "en": "How many females 25 - 59 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -629,10 +571,8 @@
         "en": "How many males over 60 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -646,10 +586,8 @@
         "en": "How many females over 60 years?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -663,10 +601,8 @@
         "en": "Total males in household"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -680,10 +616,8 @@
         "en": "Total females in household"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -697,7 +631,6 @@
         "en": "Do you have household members living with disability?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -713,7 +646,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -727,10 +659,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -744,7 +674,6 @@
         "en": "Do you have household members living with chronic illness?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -760,7 +689,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -774,10 +702,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -791,7 +717,6 @@
         "en": "Do you have any pregnant or lactating woman in your household?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -807,7 +732,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -821,10 +745,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -838,10 +760,8 @@
         "en": "How many habitable ROOMS does this dwelling unit contain?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -855,7 +775,6 @@
         "en": "What is the TENURE status of the dwelling unit and/or surrounding terrain/land?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "Owner occupied",
@@ -871,7 +790,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -885,7 +803,6 @@
         "en": "If owner occupied, state whether:"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "purchased",
@@ -913,7 +830,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -927,10 +843,8 @@
         "en": "If other, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -944,7 +858,6 @@
         "en": "If rented or provided, stated whether:"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "government",
@@ -990,7 +903,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1004,10 +916,8 @@
         "en": "If other, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1021,7 +931,6 @@
         "en": "What is the main construction material used for the ROOF?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "Corrugated iron sheets",
@@ -1079,7 +988,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1093,10 +1001,8 @@
         "en": "If other ROOFING material state"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1110,7 +1016,6 @@
         "en": "What is the main construction material used for the WALL?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "corrugated_iron_sheets",
@@ -1174,7 +1079,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1188,10 +1092,8 @@
         "en": "If other type of WALL state"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1205,7 +1107,6 @@
         "en": "What is the main construction material used for the FLOOR?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "cement",
@@ -1239,7 +1140,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1253,10 +1153,8 @@
         "en": "If other type of FLOOR state"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1270,7 +1168,6 @@
         "en": "The dwelling unit is at RISK of:"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "landslide",
@@ -1304,7 +1201,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1318,10 +1214,8 @@
         "en": "If other type of RISK, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1335,7 +1229,6 @@
         "en": "What is the main source of WATER?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "pond",
@@ -1429,7 +1322,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1443,10 +1335,8 @@
         "en": "Any other source of WATER, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1460,7 +1350,6 @@
         "en": "Does your household own pigs?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1476,7 +1365,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1490,10 +1378,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1507,7 +1393,6 @@
         "en": "Does your household own chicken?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1523,7 +1408,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1537,7 +1421,6 @@
         "en": "What is the MAIN mode of HUMAN WASTE Disposal?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "main_sewer",
@@ -1595,7 +1478,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1609,10 +1491,8 @@
         "en": "If any other HUMAN WASTER Disposal mode, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1626,7 +1506,6 @@
         "en": "What is the MAIN type of COOKING Fuel?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "electricity",
@@ -1678,7 +1557,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1692,10 +1570,8 @@
         "en": "Specify other type of COOKING Fuel"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1709,7 +1585,6 @@
         "en": "What is the MAIN type of LIGHTING?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "electricity",
@@ -1761,7 +1636,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1775,10 +1649,8 @@
         "en": "Specify other type of LIGHTING"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1792,7 +1664,6 @@
         "en": "Does your household OWN any of the following ITEMS?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "television__tv",
@@ -1844,7 +1715,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1858,7 +1728,6 @@
         "en": "Does your household own exotic cattle?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1874,7 +1743,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1888,10 +1756,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1905,7 +1771,6 @@
         "en": "Does your household own indigenous cattle?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1921,7 +1786,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1935,10 +1799,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1952,7 +1814,6 @@
         "en": "Does your household own sheep?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1968,7 +1829,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1982,10 +1842,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -1999,7 +1857,6 @@
         "en": "Does your household own goats?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2015,7 +1872,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2029,10 +1885,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2046,7 +1900,6 @@
         "en": "Does your household own camels?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2062,7 +1915,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2076,10 +1928,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2093,7 +1943,6 @@
         "en": "Does your household own donkeys?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2109,7 +1958,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2123,10 +1971,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2140,10 +1986,8 @@
         "en": "If yes, how many?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2157,10 +2001,8 @@
         "en": "How many LIVE BIRTHS have occured in this household in the last 12 months (1 year)?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2174,10 +2016,8 @@
         "en": "How many DEATHS have occured in this household in the last 12 months (1 year)?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2191,7 +2031,6 @@
         "en": "Currently, the CONDITIONS of your household are?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "poor",
@@ -2219,7 +2058,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2233,7 +2071,6 @@
         "en": "Did anyone reduce or skip meals?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2249,7 +2086,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2263,10 +2099,8 @@
         "en": "Receiving benefits from any National Safety Net Programmes?"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2280,10 +2114,8 @@
         "en": "If Yes, Name the PROGRAMME and AGENCY"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2297,7 +2129,6 @@
         "en": "What type of BENEFIT do you receive?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "cash",
@@ -2319,7 +2150,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2333,10 +2163,8 @@
         "en": "If other, specify"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2350,10 +2178,8 @@
         "en": "If Cash, how much (in Ksh) was the benefit in the last receipt?"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2367,10 +2193,8 @@
         "en": "If in-kind specify the kind of benefit"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2384,7 +2208,6 @@
         "en": "Do you have any feedback on response we are currently carrying out?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2400,7 +2223,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2414,10 +2236,8 @@
         "en": "If yes, share your feedback on response process"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2431,7 +2251,6 @@
         "en": "Who in your family decides on how to spend the money?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "male_household_head",
@@ -2459,7 +2278,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2473,7 +2291,6 @@
         "en": "Are there posibility of conflicts in the households over who receives Cash?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2489,7 +2306,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2503,7 +2319,6 @@
         "en": "Do you have a gendered division of labour/roles, work, activities, responsibilities of women and men in this household?"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -2519,7 +2334,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2533,10 +2347,8 @@
         "en": "Kindly elaborate"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -2550,10 +2362,8 @@
         "en": "GPS location"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],

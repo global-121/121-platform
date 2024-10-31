@@ -25,9 +25,7 @@
         "en": "First name"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -39,7 +37,6 @@
         "en": "Gender"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "Masculin ",
@@ -56,7 +53,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,

@@ -27,9 +27,7 @@
         "et_AM": "ስም"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -44,10 +42,8 @@
         "et_AM": "ስልክ ቁጥር"
       },
       "type": "tel",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -62,10 +58,8 @@
         "et_AM": "የመታውቂያ ቁጥር"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -80,10 +74,8 @@
         "et_AM": "እድሜ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -98,7 +90,6 @@
         "et_AM": "ጾታ"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "male",
@@ -116,7 +107,6 @@
         }
       ],
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -131,10 +121,8 @@
         "et_AM": "ሴት አባላት"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -149,10 +137,8 @@
         "et_AM": "ወንድ አባላት"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -167,10 +153,8 @@
         "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -185,10 +169,8 @@
         "et_AM": "ሴት ከ18 ዓመት በታች"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -203,10 +185,8 @@
         "et_AM": "ወንድ ከ18 ዓመት በታች"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -221,10 +201,8 @@
         "et_AM": "ሴት ከ18 ዓመት በላይ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -239,10 +217,8 @@
         "et_AM": "ወንድ ከ18 ዓመት በላይ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -257,10 +233,8 @@
         "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -275,10 +249,8 @@
         "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -293,10 +265,8 @@
         "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],
@@ -311,10 +281,8 @@
         "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "scoring": {},
-      "persistence": true,
       "pattern": null,
       "editableInPortal": true,
       "export": ["all-people-affected", "included"],

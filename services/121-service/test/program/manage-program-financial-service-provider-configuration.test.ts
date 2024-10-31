@@ -139,6 +139,7 @@ describe('Manage financial service provider configurations', () => {
     const getResultConfig = getResult.body.find(
       (config) => config.name === name,
     );
+
     // Assert
     expect(result.statusCode).toBe(HttpStatus.OK);
     expect(result.body).toEqual(

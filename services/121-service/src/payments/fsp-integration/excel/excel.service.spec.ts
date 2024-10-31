@@ -81,7 +81,7 @@ describe('ExcelService', () => {
     excelService = moduleRef.get<ExcelService>(ExcelService);
   });
 
-  it.skip('should find and return the matching reconciliation record for a given registration', async () => {
+  it('should find and return the matching reconciliation record for a given registration', async () => {
     // Arrange
     const importRecords = [
       { [matchColumn]: phoneNumber, status: transactionStatus },
@@ -107,13 +107,14 @@ describe('ExcelService', () => {
       importRecords,
       matchColumn,
       transactions,
+      1,
     );
 
     // Assert
     expect(result).toEqual(expectedResult);
   });
 
-  it.skip('should return no paTransactionResult when no phone number matches', async () => {
+  it('should return no paTransactionResult when no phone number matches', async () => {
     // Arrange
     const wrongPhoneNumber = '1234567890';
     const importRecords = [
@@ -129,13 +130,14 @@ describe('ExcelService', () => {
       importRecords,
       matchColumn,
       transactions,
+      1,
     );
 
     // Assert
     expect(result[0]['paTransactionResult']).toBeUndefined();
   });
 
-  it.skip('should throw an error when import record lacks a status column', async () => {
+  it('should throw an error when import record lacks a status column', async () => {
     // Arrange
     const importRecords = [{ [matchColumn]: phoneNumber }];
 
@@ -146,6 +148,7 @@ describe('ExcelService', () => {
         importRecords,
         matchColumn,
         transactions,
+        1,
       );
       // eslint-disable-next-line jest/no-jasmine-globals
       fail('Expected error to be thrown');

@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
@@ -50,31 +49,6 @@ describe('Update program', () => {
       program.fixedTransferValue,
     );
     expect(updateProgramResponse.body.budget).toBe(program.budget);
-  });
-
-  // ##TODO Enable/Refacetor/Remove this test after FSP config endpoints are implemented (and the logic is reused in update program). This test should than check if it is possible to add FSP config to a program if that is not aldreaddy covered by some other test
-  it.skip('should add an fsp to a program', async () => {
-    // Arrange
-    const program = {
-      financialServiceProviders: JSON.parse(
-        JSON.stringify([{ fsp: FinancialServiceProviders.excel }]),
-      ),
-    };
-
-    // Act
-    const updateProgramResponse = await patchProgram(
-      2,
-      program as UpdateProgramDto,
-      accessToken,
-    );
-
-    // Assert
-    expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    const hasSpecificKeyValue =
-      updateProgramResponse.body.financialServiceProviders.some(
-        (fsp) => fsp.fsp === FinancialServiceProviders.excel,
-      );
-    expect(hasSpecificKeyValue).toBeTruthy();
   });
 
   it('should not be able to add an fsp that does not exists to a program', async () => {
