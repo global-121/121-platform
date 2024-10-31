@@ -36,7 +36,7 @@
     "knip:fix": "knip --fix-type files,exports,types",
     "typecheck": "tsc --noEmit",
     "typecheck:dev": "tsc --noEmit --watch",
-    "install:dependencies-for-portal": "npm install --omit=dev --no-fund --no-audit"
+    "install:dependencies-for-portal": "npm install --no-fund --no-audit"
   },
   "private": true,
   "dependencies": {
