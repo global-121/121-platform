@@ -12,7 +12,7 @@
   <ng-template pTemplate>
     <span class="inline-flex items-center gap-2">
       @if (icon()) {
-        <span [class]="icon()"></span>
+        <span [class]="'p-button-icon ' + icon()"></span>
       }
       <span class="p-button-label">{{ label() }}</span>
     </span>

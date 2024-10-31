@@ -24,7 +24,7 @@ export class ButtonMenuComponent {
   outlined = input<boolean>(false);
   plain = input<boolean>(false);
   text = input<boolean>(false);
-  size = input<'large' | 'small'>('large');
+  size = input<'large' | 'small'>();
 
   menuOpen = model(false);
 }
