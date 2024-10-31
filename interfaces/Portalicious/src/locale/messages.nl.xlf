@@ -1083,6 +1083,10 @@
         <source>Select a message from the template messages or write a custom message.</source>
         <target state="new">Select a message from the template messages or write a custom message.</target>
       </trans-unit>
+      <trans-unit id="create-payment" datatype="html">
+        <source>Create new payment</source>
+        <target state="new">Create new payment</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

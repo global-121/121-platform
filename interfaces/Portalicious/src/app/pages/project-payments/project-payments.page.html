@@ -3,5 +3,14 @@
   i18n-pageTitle="@@page-title-project-payments"
   [projectId]="projectId()"
 >
+  <div header-actions>
+    <p-button
+      label="Create new payment"
+      i18n-label="@@create-payment"
+      rounded
+      icon="pi pi-money-bill"
+      (click)="onCreatePayment()"
+    />
+  </div>
   <p i18n>project-payments works!</p>
 </app-page-layout>
