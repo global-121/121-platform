@@ -1,13 +1,20 @@
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDefined,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { v4 as uuid } from 'uuid';
+
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class CreateProgramFinancialServiceProviderConfigurationDto {
-  // TODO: Do we accept spaces in the name? Any other naming criteria? Special characters? All lowercase?
   @ApiProperty({ example: 'VisaDebitCards' })
   @IsNotEmpty()
   @IsString()
@@ -23,10 +30,23 @@ export class CreateProgramFinancialServiceProviderConfigurationDto {
   public readonly label: LocalizedString;
 
   @ApiProperty({
-    enum: FinancialServiceProviderName,
+    enum: FinancialServiceProviders,
     type: 'enum',
-    example: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    example: FinancialServiceProviders.intersolveVoucherWhatsapp,
   })
   @IsNotEmpty()
-  public readonly financialServiceProviderName: FinancialServiceProviderName;
+  public readonly financialServiceProviderName: FinancialServiceProviders;
+
+  @IsArray()
+  @ValidateNested()
+  @IsDefined()
+  @IsOptional()
+  @Type(() => CreateProgramFinancialServiceProviderConfigurationPropertyDto)
+  @ApiProperty({
+    example: [
+      { name: 'username', value: 'user123' },
+      { name: 'password', value: `password-${uuid()}` },
+    ],
+  })
+  public readonly properties?: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
 }

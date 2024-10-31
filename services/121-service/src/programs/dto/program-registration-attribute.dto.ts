@@ -106,6 +106,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     required: false,
   })
   @IsBoolean()
+  @IsOptional()
   public readonly isRequired: boolean;
 }
 

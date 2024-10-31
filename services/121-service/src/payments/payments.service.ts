@@ -10,9 +10,11 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { RequiredFinancialServiceProviderConfigurations } from '@121-service/src/financial-service-providers/financial-service-provider-configuration.mapping';
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
-import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import {
+  findFinancialServiceProviderByNameOrFail,
+  findRequiredConfigurationProperties,
+} from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import {
   ExportFileType,
   FspInstructions,
@@ -331,10 +333,9 @@ export class PaymentsService {
         },
       );
 
-    const requiredConfigurations =
-      RequiredFinancialServiceProviderConfigurations[
-        config.financialServiceProviderName
-      ];
+    const requiredConfigurations = findRequiredConfigurationProperties(
+      config.financialServiceProviderName,
+    );
     // Early return for FSP that don't have required configurarions
     if (!requiredConfigurations) {
       return;

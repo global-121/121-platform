@@ -30,7 +30,7 @@ export class ProgramFinancialServiceProviderDto {
   @IsArray()
   @IsOptional()
   configuration?: {
-    name: WrapperType<FinancialServiceProviderConfigurationEnum>;
+    name: WrapperType<FinancialServiceProviders>;
     value: string | string[] | Record<string, string>;
   }[];
 }
@@ -96,24 +96,6 @@ export class CreateProgramDto {
   @IsString()
   public readonly paymentAmountMultiplierFormula?: string;
 
-  @ApiProperty({
-    example: [
-      {
-        fsp: FinancialServiceProviders.intersolveVoucherWhatsapp,
-      },
-      {
-        fsp: FinancialServiceProviders.intersolveVoucherPaper,
-      },
-    ],
-    description:
-      'Use the GET /financial-service-providers endpoint to find valid fspNames.',
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => ProgramFinancialServiceProviderDto)
-  public readonly programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderDto[];
-
   @ApiProperty({ example: 250 })
   @IsNumber()
   public readonly targetNrRegistrations: number;
@@ -126,8 +108,7 @@ export class CreateProgramDto {
     example: [
       {
         name: 'nameFirst',
-        answerType: 'text',
-        questionType: 'standard',
+        type: 'text',
         options: null,
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
@@ -140,8 +121,7 @@ export class CreateProgramDto {
       },
       {
         name: 'nameLast',
-        answerType: 'text',
-        questionType: 'standard',
+        type: 'text',
         options: null,
         persistence: true,
         export: [ExportType.allPeopleAffected, ExportType.included],
@@ -157,8 +137,7 @@ export class CreateProgramDto {
         label: {
           en: 'How many children do you have?',
         },
-        answerType: 'numeric',
-        questionType: 'standard',
+        type: 'numeric',
         options: null,
         scoring: {
           '0-18': 999,
@@ -167,14 +146,14 @@ export class CreateProgramDto {
         },
         showInPeopleAffectedTable: false,
         editableInPortal: false,
+        isRequied: true,
       },
       {
         name: 'roof_type',
         label: {
           en: 'What type is your roof?',
         },
-        answerType: 'dropdown',
-        questionType: 'standard',
+        type: 'dropdown',
         options: [
           {
             id: 0,

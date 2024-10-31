@@ -3,12 +3,17 @@ import crypto from 'crypto';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
@@ -19,8 +24,6 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '../program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '../program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 
 @Injectable()
 export class SeedHelper {
@@ -344,7 +347,8 @@ export class SeedHelper {
       }
       const fspConfigPropertyEntity =
         new ProgramFinancialServiceProviderConfigurationPropertyEntity();
-      fspConfigPropertyEntity.name = property.name;
+      fspConfigPropertyEntity.name =
+        property.name as FinancialServiceProviderConfigurationProperties;
       fspConfigPropertyEntity.value = fspConfigPropertyValue;
       fspConfigPropertyEntities.push(fspConfigPropertyEntity);
     }

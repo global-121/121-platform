@@ -1,4 +1,7 @@
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 
@@ -11,6 +14,16 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     },
     notifyOnTransaction: false,
     attributes: [],
+    configurationProperties: [
+      {
+        name: FinancialServiceProviderConfigurationProperties.columnsToExport,
+        isRequired: false,
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.columnToMatch,
+        isRequired: true,
+      },
+    ],
   },
   {
     name: 'fsp_no_attributes',
@@ -24,6 +37,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     },
     notifyOnTransaction: false,
     attributes: [],
+    configurationProperties: [],
   },
   {
     name: FinancialServiceProviders.intersolveVoucherPaper,
@@ -33,6 +47,16 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     },
     notifyOnTransaction: false,
     attributes: [],
+    configurationProperties: [
+      {
+        name: FinancialServiceProviderConfigurationProperties.password,
+        isRequired: true,
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.username,
+        isRequired: true,
+      },
+    ],
   },
   {
     name: FinancialServiceProviders.safaricom,
@@ -51,6 +75,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
         isRequired: true,
       },
     ],
+    configurationProperties: [],
   },
   {
     name: 'bank_a',
@@ -69,6 +94,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
         isRequired: true,
       },
     ],
+    configurationProperties: [],
   },
   {
     name: FinancialServiceProviders.intersolveVisa,
@@ -107,6 +133,20 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
         isRequired: true,
       },
     ],
+    configurationProperties: [
+      {
+        name: FinancialServiceProviderConfigurationProperties.brandCode,
+        isRequired: true,
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.coverLetterCode,
+        isRequired: true,
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+        isRequired: true,
+      },
+    ],
   },
   {
     name: 'fsp_all_attributes',
@@ -142,6 +182,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
         isRequired: true,
       },
     ],
+    configurationProperties: [],
   },
   {
     name: FinancialServiceProviders.commercialBankEthiopia,
@@ -156,6 +197,16 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
         isRequired: true,
       },
     ],
+    configurationProperties: [
+      {
+        name: FinancialServiceProviderConfigurationProperties.password,
+        isRequired: true,
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.username,
+        isRequired: true,
+      },
+    ],
   },
   {
     name: FinancialServiceProviders.intersolveVoucherWhatsapp,
@@ -167,6 +218,16 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     attributes: [
       {
         name: 'whatsappPhoneNumber',
+        isRequired: true,
+      },
+    ],
+    configurationProperties: [
+      {
+        name: FinancialServiceProviderConfigurationProperties.password,
+        isRequired: true,
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.username,
         isRequired: true,
       },
     ],

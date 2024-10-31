@@ -532,12 +532,14 @@ export class RegistrationsPaginationService {
         select,
         hasPersonalReadPermission,
       );
-      // Add personal data permission check here
-      const mappedRegistration = this.mapRegistrationData(
-        registration.data,
-        mappedRootRegistration,
-        registrationDataRelations,
-      );
+
+      const mappedRegistration = hasPersonalReadPermission
+        ? this.mapRegistrationData(
+            registration.data,
+            mappedRootRegistration,
+            registrationDataRelations,
+          )
+        : mappedRootRegistration;
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
         return this.mapRegistrationName({

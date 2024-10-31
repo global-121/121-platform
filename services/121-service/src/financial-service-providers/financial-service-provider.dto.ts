@@ -24,4 +24,12 @@ export class FinancialServiceProviderDto {
     ],
   })
   readonly attributes: { name: string; isRequired: boolean }[];
+
+  @ApiProperty({
+    example: [
+      { name: 'columnsToExport', isRequired: true },
+      { name: 'columnToMatch', isRequired: true },
+    ],
+  })
+  readonly configurationProperties: { name: string; isRequired: boolean }[];
 }
