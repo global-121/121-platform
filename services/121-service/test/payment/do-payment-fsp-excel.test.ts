@@ -8,14 +8,16 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import {
-  deleteFspConfiguration,
   doPayment,
-  getFspConfiguration,
   getFspInstructions,
   getTransactions,
   importFspReconciliationData,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import {
+  deleteProgramFinancialServiceProviderConfigurationProperty,
+  getProgramFinancialServiceProviderConfigurations,
+} from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
 import {
   awaitChangePaStatus,
   getImportFspReconciliationTemplate,
@@ -147,30 +149,27 @@ describe('Do payment with Excel FSP', () => {
     });
 
     // ##TODO: wait with fixing this test until endpoint is available to update/delete columnsToExport
-    it.skip('Should return all program-question/program-custom attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
+    it('Should return all program-question/program-custom attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
       // Arrange
       const programAttributeColumns =
         programTest.programRegistrationAttributes.map((pa) => pa.name);
-      const programQuestionColumns =
-        programTest.programRegistrationAttributes.map((pq) => pq.name);
-      const columns = programAttributeColumns
-        .concat(programQuestionColumns)
-        .concat(['amount']);
+      programAttributeColumns.concat(['amount']);
 
-      const fspConfig = await getFspConfiguration(
-        programIdWesteros,
-        accessToken,
-      );
-      const columnsToExportFspConfigRecord = fspConfig.body.find(
-        (c) =>
-          c.name ===
-          FinancialServiceProviderConfigurationProperties.columnsToExport,
-      );
-      await deleteFspConfiguration(
-        programIdWesteros,
-        columnsToExportFspConfigRecord.id,
-        accessToken,
-      );
+      const fspConfigurations =
+        await getProgramFinancialServiceProviderConfigurations({
+          programId: programIdWesteros,
+          accessToken,
+        });
+
+      for (const fspConfiguration of fspConfigurations.body) {
+        await deleteProgramFinancialServiceProviderConfigurationProperty({
+          programId: programIdWesteros,
+          configName: fspConfiguration.name,
+          propertyName:
+            FinancialServiceProviderConfigurationProperties.columnsToExport,
+          accessToken,
+        });
+      }
 
       // Act
       const fspInstructionsResponse = await getFspInstructions(
@@ -178,33 +177,11 @@ describe('Do payment with Excel FSP', () => {
         paymentNr,
         accessToken,
       );
-      const fspInstructions = fspInstructionsResponse.body.data;
+      // Assert
+      expect(fspInstructionsResponse.statusCode).toBe(HttpStatus.OK);
 
-      const namesWesteros = registrationsWesteros.map((r) => r.name);
-      // Also check if the right names are in the transactions
-      expect(fspInstructions.map((r) => r.name).sort()).toEqual(
-        namesWesteros.sort(),
-      );
-
-      // Check if the right columns are exported
-      const columnsInFspInstructions = Object.keys(fspInstructions[0]);
-      expect(columnsInFspInstructions.sort()).toEqual(columns.sort());
-
-      // Assert if the values are correct
-      for (const row of fspInstructions) {
-        const registration = registrationsWesteros.find(
-          (r) => r.name === row.name,
-        )!;
-        for (const [key, value] of Object.entries(row)) {
-          expect(registration).toBeDefined();
-          if (key === 'amount') {
-            const multipliedAmount = amount * (registration.dragon + 1);
-            expect(value).toBe(multipliedAmount);
-          } else {
-            expect(value).toEqual(String(registration[key]));
-          }
-        }
-      }
+      const fspInstructions = fspInstructionsResponse.body;
+      expect(fspInstructions).toMatchSnapshot();
     });
   });
 

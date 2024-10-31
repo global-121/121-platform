@@ -144,9 +144,9 @@ export class ProgramService {
       (item, index) => programAttributeNames.indexOf(item) !== index,
     );
     if (duplicateNames.length > 0) {
-      const errors = `The names ${duplicateNames.join(
+      const errors = `The following names: '${duplicateNames.join(
         ', ',
-      )} are used more than once program question, custom attribute or fsp attribute`;
+      )}' are used more than once program registration attributes`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -402,6 +402,8 @@ export class ProgramService {
     programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
     programRegistrationAttribute.placeholder = dto.placeholder ?? null;
     programRegistrationAttribute.isRequired = dto.isRequired ?? false;
+    programRegistrationAttribute.showInPeopleAffectedTable =
+      dto.showInPeopleAffectedTable ?? false;
     return programRegistrationAttribute;
   }
 

@@ -36,9 +36,7 @@
         "nl": "Naam"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -54,9 +52,7 @@
         "nl": "Tweede naam"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -72,9 +68,7 @@
         "nl": "Voornaam"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -90,7 +84,6 @@
         "nl": "Geslacht"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "M",
@@ -123,7 +116,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -139,9 +131,7 @@
         "nl": "Geboortedatum"
       },
       "type": "date",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -157,9 +147,7 @@
         "nl": "Document ID"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
@@ -176,7 +164,6 @@
         "nl": "Hoofd huishouden"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "Oui",
@@ -199,7 +186,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -215,9 +201,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -233,9 +217,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -253,9 +235,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -271,9 +251,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -291,7 +269,6 @@
         "nl": ""
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "returnee",
@@ -334,7 +311,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "returnee": 2,
@@ -355,7 +331,6 @@
         "nl": ""
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "widowed",
@@ -418,7 +393,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "widowed": 1,
@@ -441,9 +415,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -461,9 +433,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -481,9 +451,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -501,9 +469,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -521,9 +487,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -541,9 +505,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -561,9 +523,7 @@
         "nl": ""
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -581,7 +541,6 @@
         "nl": ""
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "Oui",
@@ -604,7 +563,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
