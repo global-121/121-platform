@@ -17,37 +17,24 @@
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex items-center lg:px-20">
-      <p-button
+      <app-button-menu
         label="Account"
         i18n-label="Top-right user-menu@@header-user-menu"
-        (click)="userMenu.toggle($event)"
-        icon="pi pi-chevron-down"
-        iconPos="right"
-        plain
-        rounded
-        text
+        [icon]="'pi pi-user'"
+        [menuItems]="userMenuOptions"
+        class="[&_.p-button-label]:duration-0 [&_button:not(:hover)]:text-white"
+        [plain]="true"
+        [text]="true"
         [size]="'small'"
-        class="[&_button:not(:hover)]:text-white"
       >
-        <ng-template pTemplate>
-          <span class="inline-flex gap-2">
-            <span class="pi pi-user"></span>
-            <span i18n="Top-right user-menu@@header-user-menu">Account</span>
-          </span>
-        </ng-template>
-      </p-button>
-      <p-menu
-        [model]="userMenuOptions"
-        #userMenu
-        [popup]="true"
-      >
-        <ng-template pTemplate="start">
-          <p class="mb-2 border-b border-b-grey-300 px-3 py-2">
-            <ng-container i18n>Logged in as:</ng-container><br />
-            <strong>{{ userName() }}</strong>
-          </p>
-        </ng-template>
-      </p-menu>
+        <p
+          menu-start
+          class="mb-2 border-b border-b-grey-300 px-3 py-2"
+        >
+          <ng-container i18n>Logged in as:</ng-container><br />
+          <strong>{{ userName() }}</strong>
+        </p>
+      </app-button-menu>
     </div>
   </ng-template>
 </p-toolbar>
