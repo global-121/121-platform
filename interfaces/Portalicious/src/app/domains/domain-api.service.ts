@@ -10,9 +10,14 @@ import {
   HttpWrapperService,
   Perform121ServiceRequestParams,
 } from '~/services/http-wrapper.service';
+import {
+  PaginateQuery,
+  PaginateQueryService,
+} from '~/services/paginate-query.service';
 
 export abstract class DomainApiService {
   protected httpWrapperService = inject(HttpWrapperService);
+  protected paginateQueryService = inject(PaginateQueryService);
   protected queryClient = injectQueryClient();
 
   protected pathToQueryKey = (
@@ -28,6 +33,7 @@ export abstract class DomainApiService {
     processResponse,
     requestOptions = {},
     method = 'GET',
+    paginateQuery,
     ...opts
   }: {
     path: Parameters<typeof DomainApiService.prototype.pathToQueryKey>[0];
@@ -37,6 +43,7 @@ export abstract class DomainApiService {
       'endpoint' | 'method'
     >;
     method?: Perform121ServiceRequestParams['method'];
+    paginateQuery?: Signal<PaginateQuery | undefined>;
   } & Partial<UndefinedInitialDataOptions<ProcessedResponseShape>>) {
     return () => {
       const queryKey = this.pathToQueryKey(path);
@@ -44,9 +51,28 @@ export abstract class DomainApiService {
 
       return queryOptions({
         ...opts,
-        // eslint-disable-next-line @tanstack/query/exhaustive-deps
-        queryKey,
+        queryKey: [
+          ...queryKey,
+          method,
+          endpoint,
+          JSON.stringify(requestOptions),
+          paginateQuery && paginateQuery(),
+          processResponse,
+        ],
         queryFn: async () => {
+          if (paginateQuery) {
+            const { params } = requestOptions;
+            const paginateQueryParams =
+              this.paginateQueryService.paginateQueryToHttpParamsObject(
+                paginateQuery(),
+              );
+
+            requestOptions.params = {
+              ...params,
+              ...paginateQueryParams,
+            };
+          }
+
           const response =
             await this.httpWrapperService.perform121ServiceRequest<BackendDataShape>(
               {

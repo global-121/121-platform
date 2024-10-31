@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 
 import { uniqBy } from 'lodash';
@@ -9,7 +8,6 @@ import {
   Attribute,
   AttributeWithTranslatedLabel,
   Project,
-  ProjectMetrics,
   ProjectUser,
   ProjectUserAssignment,
   ProjectUserWithRolesLabel,
@@ -54,12 +52,6 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
-  getProjectSummaryMetrics(projectId: Signal<number>) {
-    return this.generateQueryOptions<ProjectMetrics>({
-      path: [BASE_ENDPOINT, projectId, 'metrics/program-stats-summary'],
-    });
-  }
-
   getProjectUsers(projectId: Signal<number>) {
     return this.generateQueryOptions<
       ProjectUser[],
@@ -95,23 +87,19 @@ export class ProjectApiService extends DomainApiService {
     includeTemplateDefaultAttributes?: boolean;
     filterShowInPeopleAffectedTable?: boolean;
   }) {
-    const params = new HttpParams({
-      fromObject: {
-        includeCustomAttributes,
-        includeProgramQuestions,
-        includeFspQuestions,
-        includeTemplateDefaultAttributes,
-        filterShowInPeopleAffectedTable,
-      },
-    });
-
     return this.generateQueryOptions<
       Attribute[],
       AttributeWithTranslatedLabel[]
     >({
       path: [BASE_ENDPOINT, projectId, 'attributes'],
       requestOptions: {
-        params,
+        params: {
+          includeCustomAttributes,
+          includeProgramQuestions,
+          includeFspQuestions,
+          includeTemplateDefaultAttributes,
+          filterShowInPeopleAffectedTable,
+        },
       },
       processResponse: (attributes) => {
         return uniqBy(attributes, 'name').map((attribute) => {
@@ -224,12 +212,10 @@ export class ProjectApiService extends DomainApiService {
         'financial-service-providers/intersolve-voucher/vouchers',
       ],
       requestOptions: {
-        params: new HttpParams({
-          fromObject: {
-            referenceId: voucherReferenceId,
-            payment: paymentId.toString(),
-          },
-        }),
+        params: {
+          referenceId: voucherReferenceId,
+          payment: paymentId.toString(),
+        },
         responseAsBlob: true,
       },
     });
@@ -244,10 +230,6 @@ export class ProjectApiService extends DomainApiService {
     registrationReferenceId: string;
     paymentId: number;
   }) {
-    let params = new HttpParams();
-    params = params.append('referenceId', registrationReferenceId);
-    params = params.append('payment', paymentId);
-
     return this.generateQueryOptions<number>({
       path: [
         BASE_ENDPOINT,
@@ -255,7 +237,10 @@ export class ProjectApiService extends DomainApiService {
         'financial-service-providers/intersolve-voucher/vouchers/balance',
       ],
       requestOptions: {
-        params,
+        params: {
+          referenceId: registrationReferenceId,
+          payment: paymentId,
+        },
       },
     });
   }

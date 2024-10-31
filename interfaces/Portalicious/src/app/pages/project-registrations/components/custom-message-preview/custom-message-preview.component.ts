@@ -32,7 +32,11 @@ export class CustomMessagePreviewComponent {
   private messagingService = inject(MessagingService);
 
   messagePreview = injectQuery(() => ({
-    queryKey: [this.messageData(), this.projectId, this.previewRegistration],
+    queryKey: [
+      this.messageData(),
+      this.projectId(),
+      this.previewRegistration(),
+    ],
     queryFn: () =>
       this.messagingService.getMessagePreview(
         this.messageData(),
