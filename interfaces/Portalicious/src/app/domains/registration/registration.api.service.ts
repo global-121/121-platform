@@ -1,5 +1,4 @@
-import { HttpParams } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
 
@@ -17,10 +16,7 @@ import {
   VisaCardAction,
   WalletWithCards,
 } from '~/domains/registration/registration.model';
-import {
-  PaginateQuery,
-  PaginateQueryService,
-} from '~/services/paginate-query.service';
+import { PaginateQuery } from '~/services/paginate-query.service';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
@@ -32,31 +28,14 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   providedIn: 'root',
 })
 export class RegistrationApiService extends DomainApiService {
-  paginateQueryService = inject(PaginateQueryService);
-
   getManyByQuery(
     projectId: Signal<number>,
     paginateQuery: Signal<PaginateQuery | undefined>,
   ) {
-    return () => {
-      const path = [...BASE_ENDPOINT(projectId)];
-
-      return queryOptions({
-        queryKey: [path, paginateQuery()],
-        queryFn: async () =>
-          this.httpWrapperService.perform121ServiceRequest<FindAllRegistrationsResult>(
-            {
-              method: 'GET',
-              endpoint: this.pathToQueryKey(path).join('/'),
-              params:
-                this.paginateQueryService.paginateQueryToHttpParams(
-                  paginateQuery(),
-                ),
-            },
-          ),
-        enabled: () => !!paginateQuery(),
-      });
-    };
+    return this.generateQueryOptions<FindAllRegistrationsResult>({
+      path: [...BASE_ENDPOINT(projectId)],
+      paginateQuery,
+    });
   }
 
   getRegistrationById(
@@ -100,7 +79,9 @@ export class RegistrationApiService extends DomainApiService {
       ]).join('/'),
       body,
       params:
-        this.paginateQueryService.paginateQueryToHttpParams(paginateQuery),
+        this.paginateQueryService.paginateQueryToHttpParamsObject(
+          paginateQuery,
+        ),
     });
   }
 
@@ -223,11 +204,9 @@ export class RegistrationApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'PATCH',
       endpoint,
-      params: new HttpParams({
-        fromObject: {
-          pause: pauseStatus,
-        },
-      }),
+      params: {
+        pause: pauseStatus,
+      },
     });
   }
 

@@ -14,6 +14,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 import { AppRoutes } from '~/app.routes';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectMetricContainerComponent } from '~/pages/projects-overview/components/project-metric-container/project-metric-container.component';
@@ -37,6 +38,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSummaryCardComponent {
+  private metricApiService = inject(MetricApiService);
   private projectApiService = inject(ProjectApiService);
   private paymentApiService = inject(PaymentApiService);
 
@@ -44,7 +46,7 @@ export class ProjectSummaryCardComponent {
 
   public project = injectQuery(this.projectApiService.getProject(this.id));
   public metrics = injectQuery(() => ({
-    ...this.projectApiService.getProjectSummaryMetrics(this.id)(),
+    ...this.metricApiService.getProjectSummaryMetrics(this.id)(),
     enabled: !!this.project.data()?.id,
   }));
   public payments = injectQuery(() => ({

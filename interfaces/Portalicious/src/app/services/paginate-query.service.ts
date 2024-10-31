@@ -1,4 +1,4 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
@@ -156,47 +156,45 @@ export class PaginateQueryService {
     };
   }
 
-  public paginateQueryToHttpParams(query?: PaginateQuery) {
-    let params = new HttpParams();
+  public paginateQueryToHttpParamsObject(
+    query?: PaginateQuery,
+  ): Exclude<HttpParamsOptions['fromObject'], undefined> {
+    const params: HttpParamsOptions['fromObject'] = {};
 
     if (!query) {
       return params;
     }
 
     if (query.page) {
-      params = params.set('page', query.page);
+      params.page = query.page.toString();
     }
 
     if (query.limit) {
-      params = params.set('limit', query.limit);
+      params.limit = query.limit.toString();
     }
 
     if (query.sortBy) {
-      query.sortBy.forEach(([column, direction]) => {
-        params = params.set(`sortBy`, `${column}:${direction}`);
-      });
+      params.sortBy = query.sortBy.map(
+        ([column, direction]) => `${column}:${direction}`,
+      );
     }
 
     if (query.search) {
-      params = params.set('search', query.search);
+      params.search = query.search;
     }
 
     if (query.filter) {
       Object.entries(query.filter).forEach(([column, value]) => {
         if (Array.isArray(value)) {
-          value.forEach((v) => {
-            params = params.append(`filter.${column}`, v);
-          });
+          params[`filter.${column}`] = value.join(',');
         } else {
-          params = params.set(`filter.${column}`, value);
+          params[`filter.${column}`] = value;
         }
       });
     }
 
     if (query.select) {
-      query.select.forEach((column) => {
-        params = params.append('select', column);
-      });
+      params.select = query.select.join(',');
     }
 
     return params;

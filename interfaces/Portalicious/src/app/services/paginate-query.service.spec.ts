@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
@@ -128,56 +129,62 @@ describe('PaginateQueryService', () => {
     });
   });
 
-  describe('paginateQueryToHttpParams', () => {
-    it('should convert an empty query to HttpParams', () => {
-      const result = service.paginateQueryToHttpParams();
-      expect(result.toString()).toBe('');
+  describe('paginateQueryToHttpParamsObject', () => {
+    it('should convert an empty query to HttpParamsObject', () => {
+      const result = service.paginateQueryToHttpParamsObject();
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('');
     });
 
-    it('should convert a query with page and limit to HttpParams', () => {
+    it('should convert a query with page and limit to HttpParamsObject', () => {
       const query: PaginateQuery = {
         page: 1,
         limit: 10,
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe('page=1&limit=10');
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('page=1&limit=10');
     });
 
-    it('should convert a query with sortBy to HttpParams', () => {
+    it('should convert a query with sortBy to HttpParamsObject', () => {
       const query: PaginateQuery = {
         sortBy: [['name', 'ASC']],
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe('sortBy=name:ASC');
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('sortBy=name:ASC');
     });
 
-    it('should convert a query with search to HttpParams', () => {
+    it('should convert a query with search to HttpParamsObject', () => {
       const query: PaginateQuery = {
         search: 'test',
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe('search=test');
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('search=test');
     });
 
-    it('should convert a query with filter to HttpParams', () => {
+    it('should convert a query with filter to HttpParamsObject', () => {
       const query: PaginateQuery = {
         filter: {
           name: '$ilike:test',
         },
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe('filter.name=$ilike:test');
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('filter.name=$ilike:test');
     });
 
-    it('should convert a query with select to HttpParams', () => {
+    it('should convert a query with select to HttpParamsObject', () => {
       const query: PaginateQuery = {
         select: ['name', 'age'],
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe('select=name&select=age');
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('select=name,age');
     });
 
-    it('should convert a complex query to HttpParams', () => {
+    it('should convert a complex query to HttpParamsObject', () => {
       const query: PaginateQuery = {
         page: 1,
         limit: 10,
@@ -188,9 +195,10 @@ describe('PaginateQueryService', () => {
         },
         select: ['name', 'age'],
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe(
-        'page=1&limit=10&sortBy=name:ASC&search=test&filter.name=$ilike:test&select=name&select=age',
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe(
+        'page=1&limit=10&sortBy=name:ASC&search=test&filter.name=$ilike:test&select=name,age',
       );
     });
 
@@ -200,10 +208,9 @@ describe('PaginateQueryService', () => {
           name: ['$ilike:test1', '$ilike:test2'],
         },
       };
-      const result = service.paginateQueryToHttpParams(query);
-      expect(result.toString()).toBe(
-        'filter.name=$ilike:test1&filter.name=$ilike:test2',
-      );
+      const result = service.paginateQueryToHttpParamsObject(query);
+      const params = new HttpParams({ fromObject: result });
+      expect(params.toString()).toBe('filter.name=$ilike:test1,$ilike:test2');
     });
   });
 });

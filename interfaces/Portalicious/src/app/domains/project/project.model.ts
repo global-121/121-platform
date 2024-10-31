@@ -1,4 +1,3 @@
-import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { UserController } from '@121-service/src/user/user.controller';
@@ -8,9 +7,6 @@ import { ArrayElement } from '~/utils/type-helpers';
 
 // TODO: AB#30152 This type should be refactored to use Dto121Service
 export type Project = Dto<FoundProgramDto>;
-
-// TODO: AB#30152 This type should be refactored to use Dto121Service
-export type ProjectMetrics = Dto<ProgramStats>;
 
 export type ProjectUser = ArrayElement<
   Dto121Service<UserController['getUsersInProgram']>

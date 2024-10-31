@@ -3,6 +3,7 @@ import {
   HttpErrorResponse,
   HttpHeaders,
   HttpParams,
+  HttpParamsOptions,
   HttpStatusCode,
 } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -22,12 +23,7 @@ interface PerformRequestParams {
   body?: unknown;
   responseAsBlob?: boolean;
   isUpload?: boolean;
-  params?:
-    | HttpParams
-    | Record<
-        string,
-        boolean | number | readonly (boolean | number | string)[] | string
-      >;
+  params?: HttpParamsOptions['fromObject'];
 }
 
 export type Perform121ServiceRequestParams = { endpoint: string } & Omit<
@@ -158,7 +154,7 @@ export class HttpWrapperService {
             headers: this.createHeaders(isUpload),
             responseType: responseAsBlob ? 'blob' : undefined,
             withCredentials: true,
-            params,
+            params: new HttpParams({ fromObject: params }),
             body,
           })
           .pipe(
