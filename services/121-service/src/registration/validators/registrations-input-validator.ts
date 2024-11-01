@@ -953,10 +953,7 @@ export class RegistrationsInputValidator {
       isValid = value == null || !isNaN(+value);
     } else if (type === RegistrationAttributeTypes.text) {
       isValid = typeof value === 'string';
-    } else if (
-      type === RegistrationAttributeTypes.boolean &&
-      typeof value === 'boolean'
-    ) {
+    } else if (type === RegistrationAttributeTypes.boolean) {
       isValid = this.valueIsBool(value);
     } else {
       message = `Type '${type}' is unknown'`;
@@ -990,9 +987,14 @@ export class RegistrationsInputValidator {
     return `The value '${valueString}' given for the attribute '${attribute}' does not have the correct format for type '${type}'`;
   }
 
-  private valueIsBool(value: string | boolean): boolean {
+  private valueIsBool(
+    value: string[] | string | number | boolean | undefined,
+  ): boolean {
     if (typeof value === 'boolean') {
       return true;
+    }
+    if (typeof value !== 'string') {
+      return false;
     }
     const allowedValues = ['true', 'yes', '1', 'false', '0', 'no', null];
     return allowedValues.includes(value);
