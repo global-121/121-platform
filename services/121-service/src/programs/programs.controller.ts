@@ -244,10 +244,10 @@ You can also leave the body empty.`,
     programId: number,
   ): Promise<ProgramRegistrationAttributeEntity | undefined> {
     // ##TODO: Return a dto in instead of entity
-    return await this.programService.createProgramRegistrationAttribute(
+    return await this.programService.createProgramRegistrationAttribute({
       programId,
-      programRegistrationAttribute,
-    );
+      createProgramRegistrationAttributeDto: programRegistrationAttribute,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })

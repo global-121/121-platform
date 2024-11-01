@@ -73,7 +73,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
       `CREATE INDEX "IDX_d8a56a1864ef40e1551833430b" ON "121-service"."transaction" ("programFinancialServiceProviderConfigurationId") `,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_financial_service_provider_configuration_property" ADD CONSTRAINT "FK_5e40569627925419cd94db0da36" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."program_financial_service_provider_configuration_property" ADD CONSTRAINT "FK_5e40569627925419cd94db0da36" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_provider_configuration" ADD CONSTRAINT "FK_f7400125e09c4d8fec5747ec588" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,

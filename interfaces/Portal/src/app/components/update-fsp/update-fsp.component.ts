@@ -88,7 +88,7 @@ export class UpdateFspComponent implements OnInit {
       .updatePaAttribute(
         this.programId,
         this.referenceId,
-        programFspConfigName, // Not sure how this should be done in a strongly typed way in our Portal way of working
+        programFspConfigName,
         this.selectedFspName,
         this.reason,
       )

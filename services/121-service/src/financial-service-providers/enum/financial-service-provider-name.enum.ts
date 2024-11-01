@@ -13,7 +13,6 @@ export enum FinancialServiceProviderConfigurationProperties {
   columnsToExport = 'columnsToExport',
   columnToMatch = 'columnToMatch',
   brandCode = 'brandCode',
-  displayName = 'displayName',
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
 }

@@ -10,9 +10,8 @@ import {
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
@@ -122,13 +121,11 @@ export class ProgramService {
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
     if (
-      !programData.programFinancialServiceProviderConfigurations ||
       !programData.programRegistrationAttributes ||
-      !programData.fullnameNamingConvention ||
-      !programData.programFinancialServiceProviderConfigurations
+      !programData.fullnameNamingConvention
     ) {
       const errors =
-        'Required properties missing: `financialServiceProviders`, `programRegistrationAttributes`, `programFinancialServiceProviderConfigurations` or `fullnameNamingConvention`';
+        'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
@@ -142,9 +139,6 @@ export class ProgramService {
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }
-
-    // ##TODO: Refactor this to check if programAttributeNames contain all the required attributes from the FSPs you want to use
-
     // Check if programAttributeNames has duplicate values
     const duplicateNames = programAttributeNames.filter(
       (item, index) => programAttributeNames.indexOf(item) !== index,
@@ -205,40 +199,29 @@ export class ProgramService {
 
       savedProgram.programRegistrationAttributes = [];
       for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
-        const programRegistrationAttributeDataToSave = {
-          ...programRegistrationAttribute,
-          ...{ programId: savedProgram.id },
-        };
-        const attributeReturn =
-          await programRegistrationAttributeRepository.save(
-            programRegistrationAttributeDataToSave,
-          );
-        savedProgram.programRegistrationAttributes.push(attributeReturn);
+        const attributeReturn = await this.createProgramRegistrationAttribute({
+          programId: savedProgram.id,
+          createProgramRegistrationAttributeDto: programRegistrationAttribute,
+          repository: programRegistrationAttributeRepository,
+        });
+        if (attributeReturn) {
+          savedProgram.programRegistrationAttributes.push(attributeReturn);
+        }
       }
-
-      // ##TODO Refactor this to work with financial service provider configuration in the new structure also check if program has all the right required attributes
-      // savedProgram.financialServiceProviders = [];
-      // for (const fspItem of programData.financialServiceProviders) {
-      //   const fsp = await this.financialServiceProviderRepository.findOne({
-      //     where: { fsp: Equal(fspItem.fsp) },
-      //   });
-      //   if (!fsp) {
-      //     const errors = `Create program error: No fsp found with name ${fspItem.fsp}`;
-      //     await queryRunner.rollbackTransaction();
-      //     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      //   }
-      //   savedProgram.financialServiceProviders.push(fsp);
-      // }
 
       newProgram = await programRepository.save(savedProgram);
       await queryRunner.commitTransaction();
     } catch (err) {
       console.log('Error creating new program ', err);
       await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        'Error creating new program',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (err instanceof HttpException) {
+        throw err;
+      } else {
+        throw new HttpException(
+          'Error creating new program',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     } finally {
       await queryRunner.release();
     }
@@ -366,10 +349,15 @@ export class ProgramService {
     }
   }
 
-  public async createProgramRegistrationAttribute(
-    programId: number,
-    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto,
-  ) {
+  public async createProgramRegistrationAttribute({
+    programId,
+    createProgramRegistrationAttributeDto,
+    repository,
+  }: {
+    programId: number;
+    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
+    repository?: Repository<ProgramRegistrationAttributeEntity>;
+  }) {
     await this.validateAttributeName(
       programId,
       createProgramRegistrationAttributeDto.name,
@@ -381,9 +369,13 @@ export class ProgramService {
     programRegistrationAttribute.programId = programId;
 
     try {
-      return await this.programRegistrationAttributeRepository.save(
-        programRegistrationAttribute,
-      );
+      if (repository) {
+        return await repository.save(programRegistrationAttribute);
+      } else {
+        return await this.programRegistrationAttributeRepository.save(
+          programRegistrationAttribute,
+        );
+      }
     } catch (error) {
       if (error instanceof QueryFailedError) {
         const errorMessage = error.message; // Get the error message from QueryFailedError
@@ -493,22 +485,6 @@ export class ProgramService {
     );
   }
 
-  public async getFspConfigurations(
-    programId: number,
-    configName: string[],
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
-    let programFspConfigurations =
-      await this.programFspConfigurationService.findByProgramId(programId);
-    if (configName.length > 0) {
-      programFspConfigurations = programFspConfigurations.filter(
-        (programFspConfiguration) =>
-          configName.includes(programFspConfiguration.name),
-      );
-    }
-
-    return programFspConfigurations;
-  }
-
   public async getFundingWallet(programId: number) {
     // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =
@@ -552,7 +528,10 @@ export class ProgramService {
     // loop over all properties and return all wallets as an array
     const wallets: GetTokenReturnType[] = [];
     for (const property of properties) {
-      if (property.name === 'wallet') {
+      if (
+        property.name ===
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode
+      ) {
         const wallet = await this.intersolveVisaService.getWallet(
           property.value as string,
         );

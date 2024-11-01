@@ -1,6 +1,6 @@
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import fspIntersolveJson from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
@@ -74,9 +74,12 @@ describe('Send custom message with placeholders', () => {
       new RegExp('{{paymentAmountMultiplier}}', 'g'),
       String(registrationAh.paymentAmountMultiplier),
     );
+    const labelInPreferredLanguage = findFinancialServiceProviderByNameOrFail(
+      FinancialServiceProviders.intersolveVoucherPaper,
+    ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
       new RegExp('{{programFinancialServiceProviderConfigurationLabel}}', 'g'),
-      fspIntersolveJson.displayName[registrationAh.preferredLanguage],
+      labelInPreferredLanguage!,
     );
     processedMessage = processedMessage.replace(
       new RegExp('{{fullName}}', 'g'),

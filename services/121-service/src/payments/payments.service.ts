@@ -10,9 +10,11 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { RequiredFinancialServiceProviderConfigurations } from '@121-service/src/financial-service-providers/financial-service-provider-configuration.mapping';
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
-import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import {
+  findFinancialServiceProviderByNameOrFail,
+  findRequiredConfigurationProperties,
+} from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import {
   ExportFileType,
   FspInstructions,
@@ -41,7 +43,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
@@ -331,10 +333,9 @@ export class PaymentsService {
         },
       );
 
-    const requiredConfigurations =
-      RequiredFinancialServiceProviderConfigurations[
-        config.financialServiceProviderName
-      ];
+    const requiredConfigurations = findRequiredConfigurationProperties(
+      config.financialServiceProviderName,
+    );
     // Early return for FSP that don't have required configurarions
     if (!requiredConfigurations) {
       return;

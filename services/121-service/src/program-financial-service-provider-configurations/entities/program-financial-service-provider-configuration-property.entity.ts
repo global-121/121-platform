@@ -9,7 +9,8 @@ import {
 } from 'typeorm';
 
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 
 @Unique('programFinancialServiceProviderConfigurationPropertyUnique', [
   'programFinancialServiceProviderConfigurationId',
@@ -17,8 +18,8 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 ])
 @Entity('program_financial_service_provider_configuration_property')
 export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends CascadeDeleteEntity {
-  @Column()
-  public name: string;
+  @Column({ type: 'character varying' })
+  public name: FinancialServiceProviderConfigurationProperties;
 
   @Column({
     type: 'varchar',
@@ -50,6 +51,7 @@ export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends 
     (_type) => ProgramFinancialServiceProviderConfigurationEntity,
     (programFinancialServiceProviderConfiguration) =>
       programFinancialServiceProviderConfiguration.properties,
+    { cascade: true, onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'programFinancialServiceProviderConfigurationId' })
   public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
