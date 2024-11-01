@@ -3,14 +3,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 
 @Component({
-  selector: 'app-project-metric-container',
+  selector: 'app-metric-container',
   standalone: true,
   imports: [SkeletonInlineComponent],
-  templateUrl: './project-metric-container.component.html',
+  templateUrl: './metric-container.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMetricContainerComponent {
+export class MetricContainerComponent {
   public pending = input.required<boolean>();
   public value = input<null | number | string>();
   public label = input.required<string>();

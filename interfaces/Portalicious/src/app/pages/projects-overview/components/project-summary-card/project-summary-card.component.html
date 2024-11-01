@@ -21,23 +21,23 @@
   <ng-template pTemplate="content">
     <dl class="flex flex-wrap divide-y border-b border-grey-100">
       <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
-        <app-project-metric-container
+        <app-metric-container
           [pending]="metrics.isPending()"
           [value]="metrics.data()?.targetedPeople"
           label="Target registrations"
           i18n-label
-        ></app-project-metric-container>
+        ></app-metric-container>
       </div>
       <div class="basis-1/2 border-s border-grey-100 px-1 py-2">
-        <app-project-metric-container
+        <app-metric-container
           [pending]="metrics.isPending()"
           [value]="metrics.data()?.includedPeople"
           label="Included registrations"
           i18n-label
-        ></app-project-metric-container>
+        ></app-metric-container>
       </div>
       <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
-        <app-project-metric-container
+        <app-metric-container
           [pending]="metrics.isPending()"
           [value]="
             metrics.data()?.totalBudget
@@ -48,10 +48,10 @@
           "
           label="Budget"
           i18n-label
-        ></app-project-metric-container>
+        ></app-metric-container>
       </div>
       <div class="basis-1/2 border-s border-t border-grey-100 px-1 py-2">
-        <app-project-metric-container
+        <app-metric-container
           [pending]="metrics.isPending()"
           [value]="
             metrics.data()?.spentMoney
@@ -62,7 +62,7 @@
           "
           label="Cash disbursed"
           i18n-label
-        ></app-project-metric-container>
+        ></app-metric-container>
       </div>
     </dl>
   </ng-template>

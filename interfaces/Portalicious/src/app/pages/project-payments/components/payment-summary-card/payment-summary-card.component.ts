@@ -14,9 +14,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { ProjectMetricContainerComponent } from '~/pages/projects-overview/components/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
@@ -29,7 +29,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     RouterLink,
     CommonModule,
     CurrencyPipe,
-    ProjectMetricContainerComponent,
+    MetricContainerComponent,
     SkeletonInlineComponent,
     ColoredChipComponent,
   ],
