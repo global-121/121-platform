@@ -250,11 +250,12 @@ export class PaymentsService {
     const fspConfigIdsInPayment: number[] = [];
     const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
-    if (!dryRun) {
+
+    for (const registration of registrationsForPayment) {
+      totalMultiplierSum =
+        totalMultiplierSum + registration.paymentAmountMultiplier;
       // This is only needed in actual doPayment call
-      for (const registration of registrationsForPayment) {
-        totalMultiplierSum =
-          totalMultiplierSum + registration.paymentAmountMultiplier;
+      if (!dryRun) {
         if (
           registration.programFinancialServiceProviderConfigurationId &&
           !fspConfigIdsInPayment.includes(
