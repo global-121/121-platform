@@ -44,7 +44,7 @@ export class CreateProgramFinancialServiceProviderConfigurationDto {
   @Type(() => CreateProgramFinancialServiceProviderConfigurationPropertyDto)
   @ApiProperty({
     example: [
-      { name: 'username', value: 'user123' },
+      { name: 'username', value: `username-${uuid()}` },
       { name: 'password', value: `password-${uuid()}` },
     ],
   })

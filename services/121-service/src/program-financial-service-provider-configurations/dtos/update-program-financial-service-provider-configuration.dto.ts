@@ -20,6 +20,7 @@ export class UpdateProgramFinancialServiceProviderConfigurationDto {
   @ValidateNested()
   @IsDefined()
   @IsOptional()
+  // The CreateProgramFinancialServiceProviderConfigurationPropertyDto is used here instead of the update one because properties are first deleted and than created instead of updated
   @Type(() => CreateProgramFinancialServiceProviderConfigurationPropertyDto)
   public readonly properties?: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
 }

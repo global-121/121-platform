@@ -58,7 +58,7 @@ const createProgramFspConfigurationDto: CreateProgramFinancialServiceProviderCon
     ],
   };
 
-describe('Create financial service provider configurations', () => {
+describe('Manage financial service provider configurations', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -139,7 +139,6 @@ describe('Create financial service provider configurations', () => {
     const getResultConfig = getResult.body.find(
       (config) => config.name === name,
     );
-    console.log('🚀 ~ it ~ result:', result.body);
     // Assert
     expect(result.statusCode).toBe(HttpStatus.OK);
     expect(result.body).toEqual(

@@ -16,7 +16,6 @@
   "distributionDuration": 46,
   "fixedTransferValue": 25,
   "targetNrRegistrations": 100000,
-  "programCustomAttributes": [],
   "tryWhatsAppFirst": true,
   "programRegistrationAttributes": [
     {

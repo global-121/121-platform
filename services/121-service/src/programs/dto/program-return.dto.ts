@@ -1,5 +1,3 @@
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
-
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -17,10 +15,84 @@ import {
 
 import { ExportType } from '@121-service/src/metrics/dto/export-details.dto';
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
+// This declared at the top of the file because it is used in the dto class and else it is not defined yet
+// It's not defined inline because typing works more convient here
+const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
+  {
+    name: 'nameFirst',
+    type: RegistrationAttributeTypes.text,
+    options: undefined,
+    persistence: true,
+    export: [ExportType.allPeopleAffected, ExportType.included],
+    scoring: {},
+    showInPeopleAffectedTable: true,
+    editableInPortal: false,
+    label: {
+      en: 'First Name',
+    },
+  },
+  {
+    name: 'nameLast',
+    type: RegistrationAttributeTypes.text,
+    options: undefined,
+    persistence: true,
+    export: [ExportType.allPeopleAffected, ExportType.included],
+    scoring: {},
+    showInPeopleAffectedTable: true,
+    editableInPortal: false,
+    label: {
+      en: 'Last Name',
+    },
+  },
+  {
+    name: 'nr_of_children',
+    label: {
+      en: 'How many children do you have?',
+    },
+    type: RegistrationAttributeTypes.numeric,
+    options: undefined,
+    scoring: {
+      '0-18': 999,
+      '19-65': 0,
+      '65>': 6,
+    },
+    showInPeopleAffectedTable: true,
+    editableInPortal: false,
+  },
+  {
+    name: 'roof_type',
+    label: {
+      en: 'What type is your roof?',
+    },
+    type: RegistrationAttributeTypes.dropdown,
+    options: [
+      {
+        option: 'steel',
+        label: {
+          en: 'Steel',
+        },
+      },
+      {
+        option: 'tiles',
+        label: {
+          en: 'Tiles',
+        },
+      },
+    ],
+    scoring: {
+      '0': 3,
+      '1': 6,
+    },
+    showInPeopleAffectedTable: true,
+    editableInPortal: true,
+  },
+];
 export class ProgramReturnDto {
   @ApiProperty({ example: 1, type: 'number' })
   id: number;
@@ -104,82 +176,7 @@ export class ProgramReturnDto {
   public readonly tryWhatsAppFirst: boolean;
 
   @ApiProperty({
-    example: [
-      {
-        name: 'nameFirst',
-        answerType: 'text',
-        questionType: 'standard',
-        options: null,
-        persistence: true,
-        export: [ExportType.allPeopleAffected, ExportType.included],
-        scoring: {},
-        showInPeopleAffectedTable: true,
-        editableInPortal: false,
-        label: {
-          en: 'First Name',
-        },
-      },
-      {
-        name: 'nameLast',
-        answerType: 'text',
-        questionType: 'standard',
-        options: null,
-        persistence: true,
-        export: [ExportType.allPeopleAffected, ExportType.included],
-        scoring: {},
-        showInPeopleAffectedTable: true,
-        editableInPortal: false,
-        label: {
-          en: 'Last Name',
-        },
-      },
-      {
-        name: 'nr_of_children',
-        label: {
-          en: 'How many children do you have?',
-        },
-        answerType: 'numeric',
-        questionType: 'standard',
-        options: null,
-        scoring: {
-          '0-18': 999,
-          '19-65': 0,
-          '65>': 6,
-        },
-        showInPeopleAffectedTable: true,
-        editableInPortal: false,
-      },
-      {
-        name: 'roof_type',
-        label: {
-          en: 'What type is your roof?',
-        },
-        answerType: 'dropdown',
-        questionType: 'standard',
-        options: [
-          {
-            id: 0,
-            option: 'steel',
-            label: {
-              en: 'Steel',
-            },
-          },
-          {
-            id: 1,
-            option: 'tiles',
-            label: {
-              en: 'Tiles',
-            },
-          },
-        ],
-        scoring: {
-          '0': 3,
-          '1': 6,
-        },
-        showInPeopleAffectedTable: true,
-        editableInPortal: true,
-      },
-    ],
+    example: exampleAttributesReturn,
   })
   @IsArray()
   @ValidateNested()

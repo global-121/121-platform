@@ -20,7 +20,7 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 class BaseProgramRegistrationAttributeDto {
   @ApiProperty({ required: false })
-  @ValidateIf((o) => o.answerType === RegistrationAttributeTypes.dropdown)
+  @ValidateIf((o) => o.type === RegistrationAttributeTypes.dropdown)
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
@@ -107,7 +107,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   })
   @IsBoolean()
   @IsOptional()
-  public readonly isRequired: boolean;
+  public readonly isRequired?: boolean;
 }
 
 export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {

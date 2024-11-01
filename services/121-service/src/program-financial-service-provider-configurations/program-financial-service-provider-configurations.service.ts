@@ -10,7 +10,7 @@ import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-
 import { findConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationResponsePropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration-property.dto';
@@ -53,7 +53,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     return this.create(programId, programFspConfigurationDto);
   }
 
-  public async validate(
+  private async validate(
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<void> {
@@ -203,7 +203,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programFspConfigurationName: string;
     properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
   }): Promise<
-    ProgramFinancialServiceProviderConfigurationResponsePropertyDto[]
+    ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
   > {
     await this.validateProgramExists(programId);
     const config = await this.getProgramFspConfigurationOrThrow(
@@ -292,7 +292,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programFspConfigurationName: string;
     propertyName: FinancialServiceProviderConfigurationProperties;
     property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
-  }): Promise<ProgramFinancialServiceProviderConfigurationResponsePropertyDto> {
+  }): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
     // Find the configuration
     await this.validateProgramExists(programId);
     const config = await this.getProgramFspConfigurationOrThrow(

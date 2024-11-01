@@ -47,9 +47,17 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       const expectedFinancialServiceProvider = FINANCIAL_SERVICE_PROVIDERS.find(
         (fsp) => fsp.name === testEntity.financialServiceProviderName,
-      );
+      )!;
+      // Remove unnecessary properties from the financialServiceProvider object
+      const {
+        configurationProperties: _configurationProperties,
+        defaultLabel: _defaultLabel,
+        ...expectedFinancialServiceProviderWithoutProps
+      } = expectedFinancialServiceProvider;
+
+      // Now use expectedFinancialServiceProviderWithoutProps in your test
       expect(result.financialServiceProvider).toEqual(
-        expectedFinancialServiceProvider,
+        expectedFinancialServiceProviderWithoutProps,
       );
 
       expect(result.properties).toHaveLength(testEntity.properties.length);
@@ -83,10 +91,17 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       );
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
+      const expectedFinancialServiceProvider = FINANCIAL_SERVICE_PROVIDERS.find(
+        (fsp) => fsp.name === testEntity.financialServiceProviderName,
+      )!;
+      // Remove unnecessary properties from the financialServiceProvider object
+      const {
+        configurationProperties: _configurationProperties,
+        defaultLabel: _defaultLabel,
+        ...expectedFinancialServiceProviderWithoutProps
+      } = expectedFinancialServiceProvider;
       expect(result.financialServiceProvider).toEqual(
-        FINANCIAL_SERVICE_PROVIDERS.find(
-          (fsp) => fsp.name === testEntity.financialServiceProviderName,
-        ),
+        expectedFinancialServiceProviderWithoutProps,
       );
       expect(result.properties).toEqual([]);
     });
@@ -119,7 +134,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
     });
   });
 
-  describe('mapPropertyDtoToEntity', () => {
+  describe('mapPropertyDtoToEntities', () => {
     it('should correctly map CreateProgramFinancialServiceProviderConfigurationPropertyDto to ProgramFinancialServiceProviderConfigurationPropertyEntity', () => {
       // Arrange
       const dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
@@ -130,12 +145,12 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       const programFinancialServiceProviderConfigurationId = 1;
 
       // Act
-      const entity =
-        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtoToEntity(
-          dto,
+      const entities =
+        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
+          [dto],
           programFinancialServiceProviderConfigurationId,
         );
-
+      const entity = entities[0];
       // Assert
       expect(entity.name).toBe(dto.name);
       expect(entity.programFinancialServiceProviderConfigurationId).toBe(
@@ -154,11 +169,12 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       const programFinancialServiceProviderConfigurationId = 2;
 
       // Act
-      const entity =
-        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtoToEntity(
-          dto,
+      const entities =
+        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
+          [dto],
           programFinancialServiceProviderConfigurationId,
         );
+      const entity = entities[0];
 
       // Assert
       expect(entity.name).toBe(dto.name);

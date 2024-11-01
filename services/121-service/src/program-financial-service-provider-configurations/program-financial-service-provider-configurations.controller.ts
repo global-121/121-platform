@@ -1,4 +1,9 @@
-import { Controller, ParseArrayPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  ParseArrayPipe,
+  UseGuards,
+} from '@nestjs/common';
 import {
   Body,
   Delete,
@@ -18,7 +23,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationResponsePropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration-property.dto';
@@ -27,7 +32,7 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 // ##TODO add status codes
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('programs')
+@ApiTags('programs/financial-service-provider-configurations')
 @Controller('programs')
 export class ProgramFinancialServiceProviderConfigurationsController {
   public constructor(
@@ -98,11 +103,11 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an empty array of properties will delete all properties.',
+      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an empty array of properties will delete all properties. It is recommand to use this endpoint for adding properties /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
-    name: 'programFinancialServiceProviderConfigrationName',
+    name: 'name',
     required: true,
     type: 'string',
   })
@@ -141,8 +146,9 @@ export class ProgramFinancialServiceProviderConfigurationsController {
       'Delete a Financial Service Provider Configuration for a Program. Program Financial Service Provider Configurations cannot be deleted if they are associated with any transactions.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @HttpCode(204)
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.NO_CONTENT,
     description:
       'The Financial Service Provider Configuration has been successfully deleted.',
   })
@@ -167,7 +173,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     @Param('name')
     name: string,
   ): Promise<void> {
-    return await this.programFinancialServiceProviderConfigurationsService.delete(
+    await this.programFinancialServiceProviderConfigurationsService.delete(
       programId,
       name,
     );
@@ -214,7 +220,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     @Param('name')
     name: string,
   ): Promise<
-    ProgramFinancialServiceProviderConfigurationResponsePropertyDto[]
+    ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
   > {
     // Should this work with an array of properties or just a single property?
     return await this.programFinancialServiceProviderConfigurationsService.validateAndCreateProperties(
@@ -233,6 +239,11 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
     name: 'name',
+    required: true,
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'propertyName',
     required: true,
     type: 'string',
   })
@@ -262,7 +273,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     name: string,
     @Param('propertyName')
     propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
-  ): Promise<ProgramFinancialServiceProviderConfigurationResponsePropertyDto> {
+  ): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
     return await this.programFinancialServiceProviderConfigurationsService.updateProperty(
       {
         programId,
@@ -288,8 +299,9 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     required: true,
     type: 'string',
   })
+  @HttpCode(204)
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.NO_CONTENT,
     description:
       'The Financial Service Provider Configuration property is successfully deleted.',
   })
@@ -313,7 +325,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     @Param('propertyName')
     propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
   ): Promise<void> {
-    return await this.programFinancialServiceProviderConfigurationsService.deleteProperty(
+    await this.programFinancialServiceProviderConfigurationsService.deleteProperty(
       {
         programId,
         programFspConfigurationName: name,

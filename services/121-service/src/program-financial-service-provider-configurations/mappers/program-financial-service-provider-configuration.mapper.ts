@@ -2,7 +2,7 @@ import { FinancialServiceProviderConfigurationProperties } from '@121-service/sr
 import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationResponsePropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
@@ -19,9 +19,15 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   public static mapEntitytoDto(
     entity: ProgramFinancialServiceProviderConfigurationEntity,
   ): ProgramFinancialServiceProviderConfigurationResponseDto {
-    const financialServiceProvider = findFinancialServiceProviderByNameOrFail(
+    // Remove unnecessary properties from the financialServiceProvider object
+    const {
+      configurationProperties: _configurationProperties,
+      defaultLabel: _defaultLabel,
+      ...financialServiceProvider
+    } = findFinancialServiceProviderByNameOrFail(
       entity.financialServiceProviderName,
     );
+
     const dto: ProgramFinancialServiceProviderConfigurationResponseDto = {
       programId: entity.programId,
       financialServiceProviderName: entity.financialServiceProviderName,
@@ -50,7 +56,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
 
   public static mapPropertyEntitiesToDtos(
     properties?: ProgramFinancialServiceProviderConfigurationPropertyEntity[],
-  ): ProgramFinancialServiceProviderConfigurationResponsePropertyDto[] {
+  ): ProgramFinancialServiceProviderConfigurationPropertyResponseDto[] {
     if (!properties) {
       return [];
     }
@@ -63,7 +69,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
 
   public static mapPropertyEntityToDto(
     property: ProgramFinancialServiceProviderConfigurationPropertyEntity,
-  ): ProgramFinancialServiceProviderConfigurationResponsePropertyDto {
+  ): ProgramFinancialServiceProviderConfigurationPropertyResponseDto {
     return {
       name: property.name,
       updated: property.updated,
@@ -82,7 +88,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
     );
   }
 
-  public static mapPropertyDtoToEntity(
+  private static mapPropertyDtoToEntity(
     dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
     programFinancialServiceProviderConfigurationId: number,
   ): ProgramFinancialServiceProviderConfigurationPropertyEntity {

@@ -74,12 +74,12 @@ describe('Send custom message with placeholders', () => {
       new RegExp('{{paymentAmountMultiplier}}', 'g'),
       String(registrationAh.paymentAmountMultiplier),
     );
-    const labelVoucher = findFinancialServiceProviderByNameOrFail(
+    const labelInPreferredLanguage = findFinancialServiceProviderByNameOrFail(
       FinancialServiceProviders.intersolveVoucherPaper,
     ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
       new RegExp('{{programFinancialServiceProviderConfigurationLabel}}', 'g'),
-      labelVoucher!,
+      labelInPreferredLanguage!,
     );
     processedMessage = processedMessage.replace(
       new RegExp('{{fullName}}', 'g'),

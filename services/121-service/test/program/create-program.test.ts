@@ -23,7 +23,7 @@ describe('Create program', () => {
     accessToken = await getAccessToken();
   });
 
-  it.skip('should post a program', async () => {
+  it('should post a program', async () => {
     // Arrange
     const programOcwJson = JSON.parse(JSON.stringify(programOCW));
     const programEthJson = JSON.parse(JSON.stringify(programEth));

@@ -3,7 +3,7 @@ import * as request from 'supertest';
 import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationResponsePropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration-property.dto';
@@ -95,7 +95,7 @@ export async function postProgramFinancialServiceProviderConfigurationProperties
   accessToken: string;
 }): Promise<
   Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationResponsePropertyDto[];
+    body: ProgramFinancialServiceProviderConfigurationPropertyResponseDto[];
   }
 > {
   return await getServer()
@@ -120,7 +120,7 @@ export async function patchProgramFinancialServiceProviderConfigurationProperty(
   accessToken: string;
 }): Promise<
   Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationResponsePropertyDto;
+    body: ProgramFinancialServiceProviderConfigurationPropertyResponseDto;
   }
 > {
   return await getServer()
