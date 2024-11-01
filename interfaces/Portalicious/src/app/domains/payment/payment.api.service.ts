@@ -31,8 +31,11 @@ export class PaymentApiService extends DomainApiService {
   }
 
   getPaymentStatus(projectId: Signal<number>) {
-    return this.generateQueryOptions<PaymentStatus>({
+    return this.generateQueryOptions<PaymentStatus, boolean>({
       path: [...BASE_ENDPOINT(projectId), 'status'],
+      processResponse: (response) => {
+        return !!response.inProgress;
+      },
       enabled: () => !!projectId(),
     });
   }

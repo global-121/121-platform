@@ -12,6 +12,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -43,7 +44,6 @@ export class PaymentSummaryCardComponent {
   public paymentId = input.required<number>();
   public paymentDate = input.required<string>();
   public cardIndex = input.required<number>();
-  public paymentInProgress = input.required<boolean>();
 
   public metrics = injectQuery(() => ({
     ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
@@ -67,17 +67,29 @@ export class PaymentSummaryCardComponent {
   });
 
   public showFailedAlert = computed(() => {
-    if (!this.metrics.data()?.failed.count) {
-      return false;
-    }
-
-    if (this.metrics.data()?.failed.count === 0) {
+    if (
+      !this.metrics.data()?.failed.count ||
+      this.metrics.data()?.failed.count === 0
+    ) {
       return false;
     }
 
     return true;
   });
 
-  // TODO: add link once payment page is implemented
-  // paymentLink = (projectId: number) => ['/', AppRoutes.project, projectId];
+  private paymentInProgress = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
+  );
+
+  public showPaymentInProgressChip = computed(() => {
+    return this.paymentInProgress.data() && this.cardIndex() === 0;
+  });
+
+  paymentLink = (projectId: number, paymentId: number) => [
+    '/',
+    AppRoutes.project,
+    projectId,
+    AppRoutes.projectPayments,
+    paymentId,
+  ];
 }

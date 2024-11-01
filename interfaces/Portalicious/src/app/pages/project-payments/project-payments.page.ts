@@ -24,7 +24,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentsPageComponent {
-  private paymentService = inject(PaymentApiService);
+  private paymentApiService = inject(PaymentApiService);
 
   // this is injected by the router
   projectId = input.required<number>();
@@ -38,7 +38,7 @@ export class ProjectPaymentsPageComponent {
     });
   }
   private paymentsQuery = injectQuery(
-    this.paymentService.getPayments(this.projectId),
+    this.paymentApiService.getPayments(this.projectId),
   );
 
   payments = computed(() =>
@@ -46,6 +46,6 @@ export class ProjectPaymentsPageComponent {
   );
 
   paymentStatus = injectQuery(
-    this.paymentService.getPaymentStatus(this.projectId),
+    this.paymentApiService.getPaymentStatus(this.projectId),
   );
 }

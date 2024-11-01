@@ -12,21 +12,39 @@
       (click)="onCreatePayment()"
     />
   </div>
-  <p i18n>project-payments works!</p>
-  <ul
-    class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
-    role="list"
-  >
-    @for (payment of payments(); track $index) {
-      <li>
-        <app-payment-summary-card
-          [projectId]="projectId()"
-          [paymentId]="payment.payment"
-          [paymentDate]="payment.paymentDate"
-          [cardIndex]="$index"
-          [paymentInProgress]="!!paymentStatus.data()?.inProgress"
-        ></app-payment-summary-card>
-      </li>
-    }
-  </ul>
+
+  @if (payments()?.length === 0) {
+    <div class="rounded-lg bg-white pb-8 pt-6 text-center drop-shadow-md">
+      <img
+        src="assets/projects-empty.svg"
+        alt=""
+        class="mb-6 inline-block h-16"
+      />
+
+      <h2
+        i18n
+        class="mb-4 text-base"
+      >
+        No Payments found
+      </h2>
+
+      <p i18n>There are no payments for this project yet.</p>
+    </div>
+  } @else {
+    <ul
+      class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+      role="list"
+    >
+      @for (payment of payments(); track $index) {
+        <li>
+          <app-payment-summary-card
+            [projectId]="projectId()"
+            [paymentId]="payment.payment"
+            [paymentDate]="payment.paymentDate"
+            [cardIndex]="$index"
+          ></app-payment-summary-card>
+        </li>
+      }
+    </ul>
+  }
 </app-page-layout>

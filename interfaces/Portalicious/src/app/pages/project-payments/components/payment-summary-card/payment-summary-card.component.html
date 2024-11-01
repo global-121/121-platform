@@ -3,7 +3,7 @@
 >
   <ng-template pTemplate="title">
     <a
-      [routerLink]=""
+      [routerLink]="paymentLink(projectId(), paymentId())"
       class="after:absolute after:inset-0 after:block group-focus-within:text-purple group-hover:text-purple"
     >
       @if (!paymentId()) {
@@ -63,7 +63,7 @@
   </ng-template>
   <ng-template pTemplate="footer">
     <div class="min-h-8">
-      @if (cardIndex() === 0 && paymentInProgress()) {
+      @if (showPaymentInProgressChip()) {
         @if (metrics.isPending()) {
           <app-skeleton-inline width="8rem" />
         } @else {
