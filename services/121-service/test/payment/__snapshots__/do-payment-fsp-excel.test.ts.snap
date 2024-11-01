@@ -6,7 +6,7 @@ exports[`Do payment with Excel FSP Export FSP instructions Should return specifi
     "data": [
       {
         "amount": 20,
-        "dob": "283-12-31",
+        "dob": "31-08-1990",
         "dragon": "1",
         "name": "John Snow",
         "phoneNumber": "14155235554",
@@ -14,7 +14,7 @@ exports[`Do payment with Excel FSP Export FSP instructions Should return specifi
       },
       {
         "amount": 10,
-        "dob": "288-12-31",
+        "dob": "31-08-1990",
         "dragon": "0",
         "name": "Arya Stark",
         "phoneNumber": "14155235555",
@@ -28,7 +28,7 @@ exports[`Do payment with Excel FSP Export FSP instructions Should return specifi
     "data": [
       {
         "amount": 10,
-        "dob": "287-12-31",
+        "dob": "31-08-1990",
         "dragon": "0",
         "name": "Jaime Lannister",
         "phoneNumber": "14155235556",
