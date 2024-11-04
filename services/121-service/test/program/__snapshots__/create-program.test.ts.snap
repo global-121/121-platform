@@ -1322,7 +1322,6 @@ exports[`Create program should post a program: Create program response for progr
       "group": "payments",
     },
   ],
-  "financialServiceProviderConfigurations": [],
   "fixedTransferValue": 25,
   "fullnameNamingConvention": [
     "fullName",
@@ -1396,7 +1395,6 @@ exports[`Create program should post a program: Create program response for progr
     },
   ],
   "paymentAmountMultiplierFormula": null,
-  "programFinancialServiceProviderConfigurations": [],
   "programRegistrationAttributes": [
     {
       "duplicateCheck": false,

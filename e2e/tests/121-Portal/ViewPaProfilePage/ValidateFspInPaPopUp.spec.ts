@@ -2,8 +2,9 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -19,7 +20,9 @@ import TableModule from '../../../pages/Table/TableModule';
 
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const pageTitle = englishTranslations['registration-details'].pageTitle;
-const visaFspName = visaFspIntersolve.displayName.en;
+const visaFspName = findFinancialServiceProviderByNameOrFail(
+  FinancialServiceProviders.intersolveVisa,
+).defaultLabel.en;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -59,6 +62,6 @@ test('[27659][27611] Open the edit PA popup', async ({ page }) => {
     await registration.validateHeaderToContainText(pageTitle);
     await registration.openEditPaPopUp();
     await registration.validateEditPaPopUpOpened();
-    await piiPopUp.validateFspNamePresentInEditPopUp(visaFspName);
+    await piiPopUp.validateFspNamePresentInEditPopUp(visaFspName!);
   });
 });

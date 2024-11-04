@@ -6,10 +6,12 @@ import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/ex
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 // ##TODO: tests should be reenabled when the excel service is refactored to the new fsp config structure
 
@@ -19,6 +21,14 @@ const mockTransactionService = {
 
 const mockRegistrationsPaginationService = {
   retrieveRegistrationsPaginationService: jest.fn(),
+};
+
+const mockFileImportService = {
+  importFile: jest.fn(),
+};
+
+const mockProgramFinancialServiceProviderConfigurationRepository = {
+  retrieveProgramFinancialServiceProviderConfigurationRepository: jest.fn(),
 };
 
 const mockRegistrationViewScopedRepository = {
@@ -75,6 +85,14 @@ describe('ExcelService', () => {
           provide: RegistrationViewScopedRepository,
           useValue: mockRegistrationViewScopedRepository,
         },
+        {
+          provide: ProgramFinancialServiceProviderConfigurationRepository,
+          useValue: mockProgramFinancialServiceProviderConfigurationRepository,
+        },
+        {
+          provide: FileImportService,
+          useValue: mockFileImportService,
+        },
       ],
     }).compile();
 
@@ -89,15 +107,22 @@ describe('ExcelService', () => {
 
     const expectedResult = [
       {
-        paTransactionResult: {
+        feedback: {
+          importStatus: 'paymentSuccess',
+          message: null,
+          phoneNumber: '27883373741',
+          referenceId: 'referenceId1234',
+          status: 'success',
+        },
+        programFinancialServiceProviderConfigurationId: 1,
+        transaction: {
           calculatedAmount: transactionAmount,
           fspName: FinancialServiceProviders.excel,
+          message: null,
           referenceId: referenceid,
           registrationId,
           status: transactionStatus,
         },
-        phoneNumber,
-        status: transactionStatus,
       },
     ];
 

@@ -43,8 +43,8 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
   const homePage = new HomePage(page);
   const piiPopUp = new PersonalInformationPopUp(page);
 
-  function createAlertMessage(pattern: string, phoneNumber: string): string {
-    const error = `The value '${phoneNumber}' given for the attribute 'phoneNumber' does not have the correct format for type 'tel'`;
+  function createAlertMessage(pattern: string): string {
+    const error = `phoneNumber: This value is not a valid phonenumber according to Twilio lookup`;
     return pattern.replace('{{error}}', error);
   }
 
@@ -66,20 +66,9 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
     });
   });
 
-  await test.step('Update phone number with longer(18 digit) number', async () => {
-    const phoneNumber = '123456789012345678';
-    const alertMessage = createAlertMessage(alertPattern, phoneNumber);
-    await piiPopUp.updatePhoneNumber({
-      phoneNumber,
-      saveButtonName: save,
-      okButtonName: ok,
-      alert: alertMessage,
-    });
-  });
-
-  await test.step('Update phone number with shorter(7 digit) number', async () => {
-    const phoneNumber = '1234567';
-    const alertMessage = createAlertMessage(alertPattern, phoneNumber);
+  await test.step('Update phone number with invalid lookup number', async () => {
+    const phoneNumber = '16005550005';
+    const alertMessage = createAlertMessage(alertPattern);
     await piiPopUp.updatePhoneNumber({
       phoneNumber,
       saveButtonName: save,

@@ -409,8 +409,6 @@
           "error-alert": {
             "invalid-date": "De datumnotatie die u hebt ingevoerd, is niet geldig. Een geldig voorbeeld van een datumnotatie is 31-12-1970. Dus: dag-maand-jaar, DD-MM-JJJJ"
           },
-          "fspChangeWarning": "Als u deze FSP selecteert, wordt de volgende informatie verwijderd die verband houden met de oude FSP:",
-          "fspNewAttributesExplanation": "Voor deze FSP is de volgende informatie vereist:",
           "has-notes-title": "Notities beschikbaar",
           "popup-title": "{{pa}} meer info",
           "properties": {
