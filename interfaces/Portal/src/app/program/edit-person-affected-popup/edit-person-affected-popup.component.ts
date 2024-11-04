@@ -113,16 +113,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.preferredLanguage = this.person?.preferredLanguage;
 
     if (this.program && this.program.editableAttributes) {
-      this.paTableAttributesInput = this.program.editableAttributes;
-
-      const fspObject = this.programFspConfigList.find(
-        (f) => f.name === this.person?.financialServiceProviderName,
+      // Filter out the phoneNumber attribute here, because it always added to the edit PA popup, regardless of the program configuration as it is also a field in the RegistrationEntity
+      this.paTableAttributesInput = this.program.editableAttributes.filter(
+        (attribute) => attribute.name !== 'phoneNumber',
       );
-      if (fspObject && fspObject.editableAttributes) {
-        this.paTableAttributesInput = fspObject.editableAttributes.concat(
-          this.paTableAttributesInput,
-        );
-      }
     }
 
     if (this.canViewPersonalData) {

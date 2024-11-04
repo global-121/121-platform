@@ -21,7 +21,6 @@ import { ValidatedRegistrationInput } from '@121-service/src/registration/interf
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
 
@@ -732,58 +731,12 @@ export class RegistrationsInputValidator {
         lineNumber: i + 1,
         column: 'phoneNumber',
         value,
-        error: 'PhoneNumber is not valid according to Twilio lookup',
+        error:
+          'This value is not a valid phonenumber according to Twilio lookup',
       };
       return { errorObj, sanitized };
     }
     return { errorObj: undefined, sanitized };
-  }
-
-  private validateNonTelephoneDynamicAttribute({
-    value,
-    type,
-    columnName,
-    i,
-  }: {
-    value: InputAttributeType;
-    type: string;
-    columnName: string;
-    i: number;
-  }): ValidateRegistrationErrorObject | undefined {
-    const cleanedValue = this.cleanNonTelephoneDynamicAttribute(value, type);
-    if (cleanedValue === null) {
-      const errorObj = {
-        lineNumber: i + 1,
-        column: columnName,
-        value,
-        error: `Value is not a valid ${type}`,
-      };
-      return errorObj;
-    }
-  }
-
-  private cleanNonTelephoneDynamicAttribute(
-    value: InputAttributeType,
-    type: string,
-  ): InputAttributeType {
-    switch (type) {
-      case RegistrationAttributeTypes.numeric:
-        if (value == null) {
-          return undefined;
-        }
-        // Convert the value to a number and return it
-        // If the value is not a number, return null
-        return isNaN(Number(value)) ? undefined : Number(value);
-      case RegistrationAttributeTypes.boolean:
-        // Convert the value to a boolean and return it
-        // If the value is not a boolean, return null
-        const convertedValue =
-          RegistrationsInputValidatorHelpers.inputToBoolean(value);
-        return convertedValue === undefined ? undefined : convertedValue;
-      default:
-        // If the type is neither numeric nor boolean, return the original value
-        return value as string;
-    }
   }
 
   private validateFspRequiredAttributes({
@@ -1035,7 +988,7 @@ export class RegistrationsInputValidator {
           lineNumber: i + 1,
           column: GenericRegistrationAttributes.paymentAmountMultiplier,
           value,
-          error: 'PaymentAmountMultiplier must be a positive number',
+          error: 'this field must be a positive number',
         },
       };
     }
@@ -1055,8 +1008,9 @@ export class RegistrationsInputValidator {
     validatedMaxPayments?: number | undefined;
   } {
     // It's always allowed to remove the maxPayments value
-    if (value == null) {
-      return { validatedMaxPayments: value };
+    // When you upload a csv file, the value is an empty string
+    if (value == null || value === '') {
+      return { validatedMaxPayments: undefined };
     }
     if (isNaN(+value) || +value <= 0) {
       return {
@@ -1064,7 +1018,7 @@ export class RegistrationsInputValidator {
           lineNumber: i + 1,
           column: GenericRegistrationAttributes.maxPayments,
           value,
-          error: 'MaxPayments must be a positive number',
+          error: 'MaxPayments must be a positive number or left empty',
         },
       };
     }

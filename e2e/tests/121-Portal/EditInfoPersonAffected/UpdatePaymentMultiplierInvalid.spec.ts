@@ -56,7 +56,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
       okButtonName: ok,
       alert: alertPattern.replace(
         '{{error}}',
-        'paymentAmountMultiplier must be a positive number',
+        'paymentAmountMultiplier: this field must be a positive number',
       ),
     });
   });
@@ -68,7 +68,7 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
       okButtonName: ok,
       alert: alertPattern.replace(
         '{{error}}',
-        'paymentAmountMultiplier must be a positive number',
+        'paymentAmountMultiplier: this field must be a positive number',
       ),
     });
   });

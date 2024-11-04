@@ -25,7 +25,7 @@ const fspArray = Object.values(FinancialServiceProviders).map((item) =>
   String(item),
 );
 const languageArray = Object.values(LanguageEnum).map((item) => String(item));
-export class BulkImportDto {
+class BulkImportDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
@@ -58,7 +58,7 @@ export class BulkImportDto {
   public scope?: string;
 }
 
-export class BulkImportResult extends BulkImportDto {
+class BulkImportResult extends BulkImportDto {
   public importStatus: ImportStatus;
   public registrationStatus: RegistrationStatusEnum | string;
 }

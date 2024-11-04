@@ -25,13 +25,14 @@ const paymentStatus = englishTranslations.entity.payment.status.error;
 const paymentFilter =
   englishTranslations['registration-details']['activity-overview'].filters
     .payment;
-const paymentErrorMessages = 'Property idNumber is undefined';
+const paymentErrorMessages =
+  'Error Occurred - Invalid Access Token - mocked_access_token';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.krcsMultiple);
   const programIdBHA = 2;
   const bhaProgramId = programIdBHA;
-  registrationsSafaricom[0].nationalId = '';
+  registrationsSafaricom[0].phoneNumber = '254000000000';
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
@@ -49,9 +50,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[30262] Safaricom: Error because of missing National ID', async ({
-  page,
-}) => {
+test('[30262] Safaricom: Make failed payment', async ({ page }) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);

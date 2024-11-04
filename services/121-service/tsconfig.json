@@ -25,7 +25,7 @@
     "checkJs": true,
     "incremental": true,
     "outDir": "./dist",
-    "types": ["express", "node", "Multer", "jest"],
+    "types": ["express", "node", "jest"],
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
     "baseUrl": "./",

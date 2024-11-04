@@ -394,8 +394,6 @@
           "error-alert": {
             "invalid-date": "El formato de fecha que ingresó no es válido. Un ejemplo de formato de fecha válido es 31-12-1970 que sigue día-mes-año, DD-MM-AAAA"
           },
-          "fspChangeWarning": "Al seleccionar este FSP, se eliminarán los siguientes atributos relacionados con el FSP anterior:",
-          "fspNewAttributesExplanation": "Para este FSP se requieren los siguientes atributos:",
           "has-notes-title": "Notas disponibles",
           "popup-title": "{{pa}} información detallada",
           "properties": {

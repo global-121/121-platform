@@ -374,8 +374,6 @@
           "error-alert": {
             "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
           },
-          "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
-          "fspNewAttributesExplanation": "For this FSP the following attributes are required:",
           "has-notes-title": "Notes available",
           "popup-title": "{{pa}} detailed info",
           "properties": {
