@@ -32,11 +32,6 @@ class BaseProgramRegistrationAttributeDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsBoolean()
-  public readonly persistence?: boolean;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
   public pattern?: string;
 
   @ApiProperty({

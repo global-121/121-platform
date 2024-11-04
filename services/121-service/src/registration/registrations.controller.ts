@@ -82,11 +82,11 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from CSV',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations')
+  @Post('programs/:programId/registrations/import-csv')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
-  public async importRegistrations(
+  public async importRegistrationsFromCsv(
     @UploadedFile() csvFile: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,

@@ -317,7 +317,7 @@ export class ProgramsServiceApiService {
   import(programId: number, file: File): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
-    const path = `/programs/${programId}/registrations/import-registrations`;
+    const path = `/programs/${programId}/registrations/import-csv`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService
