@@ -5,7 +5,15 @@ export class CheckAttributeInputUtils {
     type: RegistrationAttributeType,
     pattern: string,
     value: string,
+    isRequired: boolean,
   ): boolean {
+    if (value == null || value === '') {
+      if (isRequired) {
+        return false;
+      }
+      return true;
+    }
+
     if (type === RegistrationAttributeType.Text) {
       if (pattern) {
         if (new RegExp(pattern).test(value || '')) {

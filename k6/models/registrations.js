@@ -9,7 +9,7 @@ export default class RegistrationsModel {
   constructor() {}
 
   importRegistrations(programId, registrations) {
-    const url = `${baseUrl}api/programs/${programId}/registrations/import`;
+    const url = `${baseUrl}api/programs/${programId}/registrations`;
     const payload = JSON.stringify([registrations]);
     const params = {
       headers: {
@@ -23,7 +23,7 @@ export default class RegistrationsModel {
   }
 
   importRegistrationsCsv(programId, csvFile) {
-    const url = `${baseUrl}api/programs/${programId}/registrations/import-csv`;
+    const url = `${baseUrl}api/programs/${programId}/registrations/import`;
     const formData = {
       file: http.file(csvFile, 'registrations.csv'),
     };

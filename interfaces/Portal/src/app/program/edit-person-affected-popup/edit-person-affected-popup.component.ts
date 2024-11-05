@@ -142,15 +142,16 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     attribute: string,
     value: string | number | string[],
     reason: string,
-    isPaTableAttribute: boolean,
+    isProgramRegistrationAttribute: boolean,
   ): Promise<void> {
     let valueToStore: string | number | string[];
 
     valueToStore = value;
 
-    if (isPaTableAttribute && !Array.isArray(value)) {
-      valueToStore = String(value);
+    if (isProgramRegistrationAttribute && value === '') {
+      valueToStore = null;
     }
+
     this.inProgress[attribute] = true;
 
     if (attribute === PersonDefaultAttributes.paymentAmountMultiplier) {
@@ -272,6 +273,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         return {
           name: paTableAttribute.name,
           type: paTableAttribute.type,
+          isRequired: paTableAttribute.isRequired,
           label,
           value: this.person[paTableAttribute.name],
           options,

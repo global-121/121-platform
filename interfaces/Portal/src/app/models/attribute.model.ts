@@ -5,5 +5,6 @@ export class Attribute {
   name: string;
   type: RegistrationAttributeType;
   label: TranslatableString;
+  isRequired: boolean;
   pattern?: string;
 }

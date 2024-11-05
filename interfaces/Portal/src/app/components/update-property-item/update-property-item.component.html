@@ -12,7 +12,7 @@
       [multiple]="type === registrationAttributeType.MultiSelect"
     >
       <ion-select-option
-        *ngFor="let option of translatedOptions()"
+        *ngFor="let option of getTranslatedOptions()"
         value="{{ option.option }}"
       >
         {{ option.label }}

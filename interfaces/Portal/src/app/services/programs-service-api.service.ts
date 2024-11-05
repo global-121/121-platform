@@ -301,7 +301,7 @@ export class ProgramsServiceApiService {
   ): Promise<void> {
     const downloadData: string[] = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/import-template`,
+      `/programs/${programId}/registrations/import/template`,
       false,
     );
 
@@ -317,7 +317,7 @@ export class ProgramsServiceApiService {
   import(programId: number, file: File): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
-    const path = `/programs/${programId}/registrations/import-csv`;
+    const path = `/programs/${programId}/registrations/import`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService

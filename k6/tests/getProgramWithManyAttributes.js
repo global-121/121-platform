@@ -66,6 +66,7 @@ export default function () {
     programId,
     registrationVisa,
   );
+  console.log('registrationImport', registrationImport.body);
   check(registrationImport, {
     'Import of registration successful status was 201': (r) => r.status == 201,
   });
