@@ -30,6 +30,7 @@ export const options = {
 };
 
 export default function () {
+  // REFACTOR: this test requires the same setup as getProgramWithManyAttributes.js. Move setup code to shared place.
   // reset db
   const reset = resetPage.resetDB(resetScript);
   check(reset, {
@@ -50,35 +51,20 @@ export default function () {
 
   // add 50 program questions to generate a bigger load
   for (let i = 1; i <= 50; i++) {
-    const questionName = `question${i}`;
-    const programQuestions = programsPage.createProgramQuestion(
-      programId,
-      questionName,
-    );
-    registrationVisa[questionName] = 'bla';
+    const attributeName = `attribute${i}`;
+    const programRegistrationAttributes =
+      programsPage.createProgramRegistrationAttribute(programId, attributeName);
+    registrationVisa[attributeName] = 'bla';
 
-    check(programQuestions, {
-      'Program questions added successfully status was 201': (r) => {
+    check(programRegistrationAttributes, {
+      'Program registration attributes added successfully status was 201': (
+        r,
+      ) => {
         if (r.status != 201) {
           console.log(r.body);
         }
         return r.status == 201;
       },
-    });
-  }
-
-  // add 15 custom attributes to generate bigger load
-  for (let i = 1; i <= 15; i++) {
-    const cutstomAttributeName = `nameAttribute${i}`;
-    const customAttributes = programsPage.updateCustomAttributes(
-      programId,
-      cutstomAttributeName,
-    );
-    registrationVisa[cutstomAttributeName] = 'bla';
-
-    check(customAttributes, {
-      'Custom attribute added successful status was 201': (r) =>
-        r.status == 201,
     });
   }
 
@@ -99,7 +85,7 @@ export default function () {
   });
 
   // get program by id and validate load time is less than 200ms
-  const program = programsPage.getProgrammeById(programId);
+  const program = programsPage.getProgramById(programId);
   check(program, {
     'Programme loaded successfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {

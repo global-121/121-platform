@@ -177,6 +177,13 @@ export class RegistrationsImportService {
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     const registrations: RegistrationEntity[] = [];
     const customDataList: Record<string, unknown>[] = [];
+
+    const programFinancialServiceProviderConfigurations =
+      await this.getProgramFinancialServiceProviderConfigurations(
+        validatedImportRecords,
+        program,
+      );
+
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = record.referenceId || uuid();
@@ -208,20 +215,11 @@ export class RegistrationsImportService {
         }
       }
 
-      // ##TODO: Should this be moved out of the loop for performance?
-      const programFinancialServiceProviderConfiguration =
-        await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
-          {
-            where: {
-              name: Equal(
-                record.programFinancialServiceProviderConfigurationName ?? '',
-              ),
-              programId: Equal(program.id),
-            },
-          },
-        );
       registration.programFinancialServiceProviderConfiguration =
-        programFinancialServiceProviderConfiguration;
+        programFinancialServiceProviderConfigurations[
+          record.programFinancialServiceProviderConfigurationName!
+        ];
+
       registrations.push(registration);
       customDataList.push(customData);
     }
@@ -291,6 +289,42 @@ export class RegistrationsImportService {
     );
 
     return { aggregateImportResult: { countImported } };
+  }
+
+  private async getProgramFinancialServiceProviderConfigurations(
+    validatedImportRecords: ValidatedRegistrationInput[],
+    program: ProgramEntity,
+  ) {
+    const programFinancialServiceProviderConfigurations = {};
+    const uniqueConfigNames = Array.from(
+      new Set(
+        validatedImportRecords
+          .filter(
+            (record) =>
+              record.programFinancialServiceProviderConfigurationName !==
+              undefined,
+          )
+          .map(
+            (record) => record.programFinancialServiceProviderConfigurationName,
+          ),
+      ),
+    );
+    for (const programFinancialServiceProviderConfigurationName of uniqueConfigNames) {
+      programFinancialServiceProviderConfigurations[
+        programFinancialServiceProviderConfigurationName!
+      ] =
+        await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+          {
+            where: {
+              name: Equal(
+                programFinancialServiceProviderConfigurationName ?? '',
+              ),
+              programId: Equal(program.id),
+            },
+          },
+        );
+    }
+    return programFinancialServiceProviderConfigurations;
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {

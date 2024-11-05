@@ -28,7 +28,7 @@ export function importRegistrationsCSV(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/import-registrations`)
+    .post(`/programs/${programId}/registrations/import-csv`)
     .set('Cookie', [accessToken])
     .attach('file', filePath);
 }
