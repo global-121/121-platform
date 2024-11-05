@@ -3,7 +3,13 @@
   i18n-pageTitle="@@page-title-project-payments"
   [projectId]="projectId()"
 >
-  <div header-actions>
+  <div
+    header-actions
+    class="space-x-2"
+  >
+    @if (canExport()) {
+      <app-export-payments [projectId]="projectId()" />
+    }
     <p-button
       label="Create new payment"
       i18n-label="@@create-payment"

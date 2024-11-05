@@ -872,6 +872,30 @@
       <trans-unit id="7463196084306840699" datatype="html">
         <source>The data in this report is based on data that is imported every night from CBE. If you changed data today this will not be reflected in the report.</source>
       </trans-unit>
+      <trans-unit id="330884522576296166" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
+      </trans-unit>
+      <trans-unit id="5408686534414832538" datatype="html">
+        <source>This will download an Excel file showing the balance of every card from the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
+      </trans-unit>
+      <trans-unit id="8158073155076214675" datatype="html">
+        <source>Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher&apos;s last external update.</source>
+      </trans-unit>
+      <trans-unit id="8390249546875631537" datatype="html">
+        <source>Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card&apos;s last external update.</source>
+      </trans-unit>
+      <trans-unit id="8733206904097373941" datatype="html">
+        <source>This will download an Excel file with all unused voucher(s).</source>
+      </trans-unit>
+      <trans-unit id="export-payments-debit-card-usage" datatype="html">
+        <source>Export debit card usage</source>
+      </trans-unit>
+      <trans-unit id="export-payments-last" datatype="html">
+        <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
+      </trans-unit>
+      <trans-unit id="export-payments-unused-vouchers" datatype="html">
+        <source>Export unused vouchers</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
