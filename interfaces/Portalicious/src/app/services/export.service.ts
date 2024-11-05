@@ -1,4 +1,8 @@
-import { HttpParamsOptions } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpParamsOptions,
+  HttpStatusCode,
+} from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 
 import { injectQueryClient } from '@tanstack/angular-query-experimental';
@@ -113,6 +117,7 @@ export class ExportService {
         maxPayment,
       });
 
+      try {
       let exportResult: Blob;
 
       if (type === 'pa-data-changes') {
@@ -135,14 +140,16 @@ export class ExportService {
       const filename = this.toExportFileName(type);
 
       return { exportResult, filename };
+      } catch (error) {
+        if (
+          error instanceof HttpErrorResponse &&
+          error.status === (HttpStatusCode.NotFound as number)
+        ) {
+          throw new Error($localize`There is currently no data to export`);
+        }
+        throw error;
+      }
     };
-  }
-
-  private showSuccessfulExportToast(toastService: ToastService) {
-    toastService.showToast({
-      detail: $localize`Export downloaded.`,
-      severity: 'success',
-    });
   }
 
   downloadArrayToXlsx(toastService: ToastService) {
