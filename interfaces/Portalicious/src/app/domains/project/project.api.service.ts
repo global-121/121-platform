@@ -79,16 +79,12 @@ export class ProjectApiService extends DomainApiService {
 
   getProjectAttributes({
     projectId,
-    includeCustomAttributes = false,
-    includeProgramQuestions = false,
-    includeFspQuestions = false,
+    includeProgramRegistrationAttributes = false,
     includeTemplateDefaultAttributes = false,
     filterShowInPeopleAffectedTable = false,
   }: {
     projectId: Signal<number>;
-    includeCustomAttributes?: boolean;
-    includeProgramQuestions?: boolean;
-    includeFspQuestions?: boolean;
+    includeProgramRegistrationAttributes?: boolean;
     includeTemplateDefaultAttributes?: boolean;
     filterShowInPeopleAffectedTable?: boolean;
   }) {
@@ -99,9 +95,7 @@ export class ProjectApiService extends DomainApiService {
       path: [BASE_ENDPOINT, projectId, 'attributes'],
       requestOptions: {
         params: {
-          includeCustomAttributes,
-          includeProgramQuestions,
-          includeFspQuestions,
+          includeProgramRegistrationAttributes,
           includeTemplateDefaultAttributes,
           filterShowInPeopleAffectedTable,
         },

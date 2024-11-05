@@ -147,8 +147,10 @@ export class ExportRegistrationsComponent {
   isCBEProject = computed(() =>
     this.project
       .data()
-      ?.financialServiceProviders.some(
-        ({ fsp }) => fsp === FinancialServiceProviders.commercialBankEthiopia,
+      ?.programFinancialServiceProviderConfigurations.some(
+        (fsp) =>
+          fsp.financialServiceProviderName ===
+          FinancialServiceProviders.commercialBankEthiopia,
       ),
   );
 }

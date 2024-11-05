@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class FinancialServiceProviderDto {
   @ApiProperty({ example: 'fspName' })
-  readonly name: string;
+  readonly name: WrapperType<FinancialServiceProviders>;
 
   @ApiProperty({ example: FinancialServiceProviderIntegrationType.api })
   readonly integrationType: WrapperType<FinancialServiceProviderIntegrationType>;

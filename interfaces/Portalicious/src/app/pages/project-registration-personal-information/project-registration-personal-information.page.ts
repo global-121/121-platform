@@ -14,8 +14,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TabMenuModule } from 'primeng/tabmenu';
 
-import { QuestionType } from '@121-service/src/registration/enum/custom-data-attributes';
-
 import {
   DataListComponent,
   DataListItem,
@@ -58,9 +56,7 @@ export class ProjectRegistrationPersonalInformationPageComponent {
   projectAttributes = injectQuery(
     this.projectApiService.getProjectAttributes({
       projectId: this.projectId,
-      includeCustomAttributes: true,
-      includeFspQuestions: true,
-      includeProgramQuestions: true,
+      includeProgramRegistrationAttributes: true,
       includeTemplateDefaultAttributes: true,
     }),
   );
@@ -74,7 +70,7 @@ export class ProjectRegistrationPersonalInformationPageComponent {
 
   selectedFspQuestionList = injectQuery(() => ({
     ...this.fspApiService.getFinancialServiceProviderQuestions(
-      this.registration.data()?.financialServiceProvider,
+      this.registration.data()?.financialServiceProviderName,
     )(),
     enabled:
       this.registration.isSuccess() && this.projectAttributes.isSuccess(),
@@ -87,12 +83,13 @@ export class ProjectRegistrationPersonalInformationPageComponent {
     }
 
     for (const attribute of this.projectAttributes.data()) {
-      if (
-        attribute.questionType === QuestionType.fspQuestion &&
-        !this.selectedFspQuestionList.data()?.includes(attribute.name)
-      ) {
-        continue;
-      }
+      // TODO: AB#30601 this commented code does not work after the refactor of the registration data. TBD whether we still need it
+      // if (
+      //   attribute.questionType === QuestionType.fspQuestion &&
+      //   !this.selectedFspQuestionList.data()?.includes(attribute.name)
+      // ) {
+      //   continue;
+      // }
 
       const value = this.registration.data()[attribute.name] as unknown;
       const dataListItem = attributeToDataListItem(attribute, value);
