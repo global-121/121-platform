@@ -1,0 +1,117 @@
+<app-button-menu
+  label="Export"
+  i18n-label="@@export"
+  [menuItems]="exportOptions()"
+  [icon]="'pi pi-upload'"
+  [outlined]="true"
+/>
+
+<app-confirmation-dialog
+  #exportSelectedDialog
+  header="Export selected registrations"
+  i18n-header="@@export-selected"
+  headerIcon="pi pi-upload"
+  [mutation]="exportRegistrationsMutation"
+  [mutationData]="{
+    type: ExportType.allPeopleAffected,
+    paginateQuery: exportSelectedActionData()?.query,
+  }"
+>
+  <p i18n>
+    You're about to download an Excel file for
+    {{ exportSelectedActionData()?.count }} selected registrations.
+  </p>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.allPeopleAffected"
+  />
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  #exportDuplicatesDialog
+  header="Export duplicate registrations"
+  i18n-header="@@export-duplicate"
+  headerIcon="pi pi-upload"
+  [mutation]="exportRegistrationsMutation"
+  [mutationData]="{
+    type: ExportType.duplicates,
+  }"
+>
+  <p i18n>
+    You're about to download an Excel file for all duplicate registrations.
+  </p>
+  <p
+    i18n
+    class="mt-2"
+  >
+    Checking duplicates is based on:
+  </p>
+  <ul class="mt-1 list-disc pl-4">
+    @for (attribute of duplicateExportAttributes.data(); track attribute) {
+      <li>{{ attribute }}</li>
+    }
+  </ul>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.allPeopleAffected"
+  />
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  #exportDataChangesDialog
+  header="Export status & data changes"
+  i18n-header="@@export-changes"
+  headerIcon="pi pi-upload"
+  [mutation]="exportRegistrationsMutation"
+  [mutationData]="{
+    type: 'pa-data-changes',
+    fromDate: fromDateExport(),
+    toDate: toDateExport(),
+  }"
+>
+  <p i18n>
+    You're about to download an Excel file for all status & data changes.
+  </p>
+  <p
+    i18n
+    class="mt-2"
+  >
+    Optionally pass a start date and/or an end date to filter the data changes.
+    The export is limited to 100,000 data changes. Adapt your dates if needed.
+  </p>
+
+  <div class="mt-4 flex w-full flex-row gap-4 [&>*]:w-1/2">
+    <app-form-field-wrapper
+      label="Start Date"
+      i18n-label
+    >
+      <p-calendar
+        [(ngModel)]="fromDateExport"
+        [showClear]="true"
+        appendTo="body"
+      />
+    </app-form-field-wrapper>
+
+    <app-form-field-wrapper
+      label="End Date"
+      i18n-label
+    >
+      <p-calendar
+        [(ngModel)]="toDateExport"
+        [showClear]="true"
+        appendTo="body"
+      />
+    </app-form-field-wrapper>
+  </div>
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  #exportAccountVerificationDialog
+  header="Export account number verification"
+  i18n-header="@@export-verification"
+  headerIcon="pi pi-upload"
+  [mutation]="exportCBEVerificationReportMutation"
+  [mutationData]="undefined"
+>
+  <p i18n>
+    The data in this report is based on data that is imported every night from
+    CBE. If you changed data today this will not be reflected in the report.
+  </p>
+</app-confirmation-dialog>

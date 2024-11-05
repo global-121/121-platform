@@ -12,7 +12,7 @@ export class ToastService {
 
   private messageService = inject(MessageService);
 
-  showToast(message: Message) {
+  showToast(message: { showSpinner?: boolean } & Omit<Message, 'key'>) {
     this.messageService.add({
       ...message,
       life: message.life ?? 5000,
@@ -24,6 +24,10 @@ export class ToastService {
           : $localize`:@@generic-success:Success`,
       detail: message.detail,
       key: ToastService.TOAST_KEY,
+      icon: message.showSpinner ? 'pi pi-spinner' : message.icon,
+      styleClass: message.showSpinner
+        ? '[&_.p-toast-message-icon]:animate-spin'
+        : message.styleClass,
     });
   }
 

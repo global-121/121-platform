@@ -25,8 +25,8 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 export class ConfirmationDialogComponent<TMutationData = unknown> {
   private confirmationService = inject(ConfirmationService);
 
-  mutation =
-    input.required<CreateMutationResult<unknown, Error, TMutationData>>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mutation = input.required<CreateMutationResult<any, Error, TMutationData>>();
   mutationData = input.required<TMutationData>();
   header = input($localize`:@@confirmation-dialog-header:Are you sure?`);
   headerIcon = input<string>('pi pi-question');
