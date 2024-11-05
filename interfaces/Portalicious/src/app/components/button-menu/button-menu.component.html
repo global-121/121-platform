@@ -1,0 +1,32 @@
+<p-button
+  (click)="menu.toggle($event)"
+  [label]="label()"
+  [icon]="menuOpen() ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+  iconPos="right"
+  rounded
+  [outlined]="outlined()"
+  [plain]="plain()"
+  [text]="text()"
+  [size]="size()"
+>
+  <ng-template pTemplate>
+    <span class="inline-flex items-center gap-2">
+      @if (icon()) {
+        <span [class]="'p-button-icon ' + icon()"></span>
+      }
+      <span class="p-button-label">{{ label() }}</span>
+    </span>
+  </ng-template>
+</p-button>
+<p-menu
+  #menu
+  [model]="menuItems()"
+  [popup]="true"
+  styleClass="w-auto [&_.p-menuitem-text]:whitespace-nowrap"
+  (onShow)="menuOpen.set(true)"
+  (onHide)="menuOpen.set(false)"
+>
+  <ng-template pTemplate="start">
+    <ng-content select="[menu-start]"></ng-content>
+  </ng-template>
+</p-menu>
