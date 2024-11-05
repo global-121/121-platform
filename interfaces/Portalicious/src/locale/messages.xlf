@@ -818,9 +818,6 @@
       <trans-unit id="create-payment" datatype="html">
         <source>Create new payment</source>
       </trans-unit>
-      <trans-unit id="1206208686212846412" datatype="html">
-        <source>Preparing export</source>
-      </trans-unit>
       <trans-unit id="1543931596742881836" datatype="html">
         <source>There has been no export yet.</source>
       </trans-unit>
@@ -835,9 +832,6 @@
       </trans-unit>
       <trans-unit id="771623267264728975" datatype="html">
         <source>You&apos;re about to download an Excel file for all duplicate registrations.</source>
-      </trans-unit>
-      <trans-unit id="7945700064012172493" datatype="html">
-        <source>Export downloaded.</source>
       </trans-unit>
       <trans-unit id="9109328074966219188" datatype="html">
         <source>Checking duplicates is based on:</source>
@@ -895,6 +889,12 @@
       </trans-unit>
       <trans-unit id="export-payments-unused-vouchers" datatype="html">
         <source>Export unused vouchers</source>
+      </trans-unit>
+      <trans-unit id="1692337501325731003" datatype="html">
+        <source>There is currently no data to export</source>
+      </trans-unit>
+      <trans-unit id="721179600254881872" datatype="html">
+        <source>Exporting</source>
       </trans-unit>
     </body>
   </file>
