@@ -53,9 +53,7 @@
       } @else {
         <ng-container i18n>Registered: </ng-container>
         @if (registration.data()?.registrationCreatedDate) {
-          {{
-            registration.data()?.registrationCreatedDate | date: 'dd-MM-yyyy'
-          }}
+          {{ registration.data()?.registrationCreatedDate | date: 'shortDate' }}
         } @else {
           —
         }
