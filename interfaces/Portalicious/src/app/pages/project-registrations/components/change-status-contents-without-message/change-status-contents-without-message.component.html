@@ -1,16 +1,37 @@
-<div class="mt-6 flex justify-end space-x-2">
-  <p-button
-    label="Cancel"
-    i18n-label="@@generic-cancel"
-    outlined
-    rounded
-    severity="contrast"
-    (onClick)="cancelClick()"
-  />
-  <p-button
-    label="Approve"
-    i18n-label="@@generic-approve"
-    rounded
-    type="submit"
-  />
-</div>
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  @if (showAreYouSureCheckbox()) {
+    <div class="align-items-center flex gap-1 pt-4">
+      <p-checkbox
+        formControlName="confirmAction"
+        inputId="areYouSure"
+        [binary]="true"
+        i18n-inputId
+      />
+      <label
+        i18n
+        for="areYouSure"
+        >I understand this action can not be undone.</label
+      >
+    </div>
+  }
+  <app-form-error [error]="formFieldErrors()('confirmAction')" />
+  <div class="mt-6 flex justify-end space-x-2">
+    <p-button
+      label="Cancel"
+      i18n-label="@@generic-cancel"
+      outlined
+      rounded
+      severity="contrast"
+      (onClick)="cancelClick()"
+    />
+    <p-button
+      label="Approve"
+      i18n-label="@@generic-approve"
+      rounded
+      type="submit"
+    />
+  </div>
+</form>

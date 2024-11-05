@@ -9,6 +9,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
   ActitivitiesResponse,
+  ChangeStatusResult,
   FindAllRegistrationsResult,
   IntersolveVisaCardStatus,
   IntersolveVisaTokenStatus,
@@ -107,6 +108,7 @@ export class RegistrationApiService extends DomainApiService {
     if (messageData && 'customMessage' in messageData) {
       body = {
         ...body,
+        message: messageData.customMessage,
         status,
       };
     } else if (messageData) {
@@ -122,19 +124,31 @@ export class RegistrationApiService extends DomainApiService {
       dryRun,
     };
 
-    return this.httpWrapperService.perform121ServiceRequest<{
-      totalFilterCount: number;
-      applicableCount: number;
-      nonApplicableCount: number;
-    }>({
-      method: 'PATCH',
-      endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
-        'status',
-      ]).join('/'),
-      body,
-      params,
-    });
+    if (status === RegistrationStatusEnum.deleted) {
+      return this.httpWrapperService.perform121ServiceRequest<ChangeStatusResult>(
+        {
+          method: 'DELETE',
+          endpoint: this.pathToQueryKey([
+            ...BASE_ENDPOINT(projectId),
+            'status',
+          ]).join('/'),
+          body,
+          params,
+        },
+      );
+    }
+
+    return this.httpWrapperService.perform121ServiceRequest<ChangeStatusResult>(
+      {
+        method: 'PATCH',
+        endpoint: this.pathToQueryKey([
+          ...BASE_ENDPOINT(projectId),
+          'status',
+        ]).join('/'),
+        body,
+        params,
+      },
+    );
   }
 
   getActivityLog(projectId: Signal<number>, registrationId: Signal<number>) {

@@ -18,53 +18,47 @@
 
   <form
     class="block w-full"
-    [formGroup]="formGroup"
     (ngSubmit)="onFormSubmit()"
   >
     <div class="space-y-4">
-      @switch (status()) {
-        @case (RegistrationStatusEnum.validated) {
-          <p i18n>
-            You're about to <b>{{ statusVerb() | lowercase }}</b>
-            {{ actionData()?.count }} registrations.
-          </p>
+      <p>
+        <ng-container i18n>
+          You're about to <b>{{ statusVerb() | lowercase }}</b>
+          {{ actionData()?.count }} registrations.
+        </ng-container>
+        @switch (status()) {
+          @case (RegistrationStatusEnum.included) {
+            <ng-container i18n
+              >This means that they can be included in payments.</ng-container
+            >
+          }
+          @case (RegistrationStatusEnum.paused) {
+            <ng-container i18n
+              >They will not be included in payments.
+            </ng-container>
+          }
+          @case (RegistrationStatusEnum.declined) {
+            <ng-container i18n>
+              This means that they will not included in payments.
+            </ng-container>
+          }
+          @case (RegistrationStatusEnum.deleted) {
+            <ng-container i18n>
+              <b>This action can not be undone.</b>
+              <br />
+              Are you sure you want to delete these registrations?
+            </ng-container>
+          }
         }
-        @case (RegistrationStatusEnum.included) {
-          <p i18n>
-            You're about to <b>{{ statusVerb() | lowercase }}</b>
-            {{ actionData()?.count }} registrations to your project. This means
-            that they can be included in payments.
-          </p>
-        }
-        @case (RegistrationStatusEnum.paused) {
-          <p i18n>
-            You're about to <b>{{ statusVerb() | lowercase }}</b>
-            {{ actionData()?.count }} registrations. They will not be included
-            in payments.
-          </p>
-        }
-        @case (RegistrationStatusEnum.declined) {
-          <p i18n>
-            You’re about to <b>{{ statusVerb() | lowercase }}</b>
-            {{ actionData()?.count }} registrations to your project. This means
-            that they will not included in payments.
-          </p>
-        }
-        @case (RegistrationStatusEnum.deleted) {
-          <p i18n>
-            You are about to <b>{{ statusVerb() | lowercase }}</b>
-            {{ actionData()?.count }} registration(s),
-            <b>this action can not be undone.</b>
-            <br />
-            Are you sure you want to delete these registrations?
-          </p>
-        }
-      }
+      </p>
+
+      <app-form-error [error]="changeStatusMutation.error()?.message" />
 
       @if (!canSendMessage()) {
         <app-change-status-contents-without-message
-          (onCancel)="dialogVisible.set(false)"
-          (onSubmit)="onFormSubmit()"
+          (onCancel)="dialogVisible.set(false); changeStatusMutation.reset()"
+          (onConfirm)="onFormSubmit()"
+          [showAreYouSureCheckbox]="status() === RegistrationStatusEnum.deleted"
         />
       } @else {
         @if (messageTemplates.isLoading()) {
@@ -86,25 +80,27 @@
               >Send a message to registration(s)</label
             >
           </div>
-          @if (hasTemplate()) {
+          @if (foundTemplateKey()) {
             <app-change-status-contents-with-templated-message
               [projectId]="projectId()"
               [enableSendMessage]="enableSendMessage()"
-              [formGroup]="formGroup"
+              [messageData]="getSendMessageInputData()"
               [previewRegistration]="actionData()?.previewItem"
               [isMutating]="messageTemplates.isLoading()"
-              (onCancel)="dialogVisible.set(false)"
-              (onSubmit)="onFormSubmit()"
+              (onCancel)="
+                dialogVisible.set(false); changeStatusMutation.reset()
+              "
             />
           } @else {
             <app-change-status-contents-with-custom-message
               [projectId]="projectId()"
               [enableSendMessage]="enableSendMessage()"
-              [formGroup]="formGroup"
               [previewRegistration]="actionData()?.previewItem"
-              [isMutating]="messageTemplates.isLoading()"
-              (onCancel)="dialogVisible.set(false)"
-              (onSubmit)="onFormSubmit()"
+              [isMutating]="changeStatusMutation.isPending()"
+              (onCancel)="
+                dialogVisible.set(false); changeStatusMutation.reset()
+              "
+              (onSubmit)="customMessage.set($event)"
             />
           }
         }
@@ -112,19 +108,196 @@
     </div>
   </form>
 </p-dialog>
-<!-- <app-confirmation-dialog
+<app-confirmation-dialog
   #dryRunWarningDialog
-  [header]="headerText()"
-  headerIcon="pi pi-excalamation-triangle"
+  header="Warning"
+  i18n-header
+  headerIcon="pi pi-exclamation-triangle"
   acceptLabel="Proceed"
+  i18n-acceptLabel
   [mutation]="changeStatusMutation"
   [mutationData]="{
     dryRun: false,
   }"
 >
-  <p>TODO: AB#30987 Display warning that action is not applicable to all</p>
-</app-confirmation-dialog> -->
+  <b i18n
+    >There are
+    {{ changeStatusMutation.data()?.nonApplicableCount }}
+    registrations that don't support this action</b
+  >
+  @switch (status()) {
+    @case (RegistrationStatusEnum.validated) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Validate" can only be applied to registrations with the
+        "Registered" status. Registrations with other statuses will remain with
+        their current status.
+      </p>
+    }
+    @case (RegistrationStatusEnum.included) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Include" can only be applied to registrations who’s
+        “Payments left” is larger than 0. Registrations with 0 payments left
+        will remain with their current status.
+      </p>
+    }
+    @case (RegistrationStatusEnum.paused) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Pause" can only be applied to registrations with the
+        "Included" status. Registrations with other statuses will remain with
+        their current status.
+      </p>
+    }
+    @case (RegistrationStatusEnum.declined) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Decline" can not be applied to registrations with the
+        "Completed" status. Registrations with “completed” status will remain
+        with their current status.
+      </p>
+    }
+    @case (RegistrationStatusEnum.deleted) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Delete" can not be applied to registrations with the
+        "Completed" status. Registrations with “completed” status will remain
+        with their current status.
+      </p>
+    }
+  }
+  <p
+    i18n
+    class="pt-2"
+  >
+    Would you like to proceed with
+    {{ changeStatusMutation.data()?.applicableCount }}
+    registration(s)?
+  </p>
+</app-confirmation-dialog>
 
-<!-- <p-dialog [(visible)]="dryRunFailure">
-  <p>TODO: AB#30987 Display error that action is not applicable to anyone</p>
-</p-dialog> -->
+<p-dialog
+  i18n-header
+  [(visible)]="dryRunFailure"
+  [modal]="true"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n>Error</ng-container>
+    </h3>
+  </ng-template>
+  <b i18n>0 selected registrations support this action. </b>
+  @switch (status()) {
+    @case (RegistrationStatusEnum.validated) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Validate" can only be applied to registrations with the
+        "Registered" status.
+      </p>
+      <p
+        i18n
+        class="pt-2"
+      >
+        Select registrations with the status “Registered” and try again.
+      </p>
+    }
+    @case (RegistrationStatusEnum.included) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Include" can only be applied to registrations who's
+        “Payments left” is larger than 0.
+      </p>
+      <p
+        i18n
+        class="pt-2"
+      >
+        Select registrations who's “Payments left” is larger than 0 and try
+        again.
+      </p>
+    }
+    @case (RegistrationStatusEnum.paused) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Pause" can only be applied to registrations with the
+        "Included" status.
+      </p>
+      <p
+        i18n
+        class="pt-2"
+      >
+        Select registrations with the status “included” and try again.
+      </p>
+    }
+    @case (RegistrationStatusEnum.declined) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Decline" can not be applied to registrations with the
+        "Completed" status.
+      </p>
+      <p
+        i18n
+        class="pt-2"
+      >
+        Select registrations with other status and try again.
+      </p>
+    }
+    @case (RegistrationStatusEnum.deleted) {
+      <p
+        i18n
+        class="pt-2"
+      >
+        The action "Delete" can not be applied to registrations with the
+        "Completed" status.
+      </p>
+      <p
+        i18n
+        class="pt-2"
+      >
+        Select registrations with other status and try again.
+      </p>
+    }
+    @default {
+      <p
+        i18n
+        class="pt-2"
+      >
+        This action can not be applied to the registrations you have selected.
+      </p>
+      <p
+        i18n
+        class="pt-2"
+      >
+        Select registrations with another status and try again.
+      </p>
+    }
+  }
+  <div class="mt-6 flex justify-end space-x-2">
+    <p-button
+      label="OK"
+      i18n-label="@@generic-ok"
+      rounded
+      (onClick)="dryRunFailure.set(false)"
+    />
+  </div>
+</p-dialog>

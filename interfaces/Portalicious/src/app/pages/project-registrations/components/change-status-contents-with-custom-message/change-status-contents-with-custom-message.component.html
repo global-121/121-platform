@@ -4,9 +4,8 @@
       <app-custom-message-preview
         [projectId]="projectId()"
         [previewRegistration]="previewRegistration()"
-        [messageData]="this.formGroup().getRawValue()"
+        [messageData]="getMessageData()"
       ></app-custom-message-preview>
-      <!-- <app-form-error [error]="changeStatusMutation.error()?.message" /> -->
       <div class="mt-6 flex justify-end space-x-2">
         <p-button
           label="Go back"
@@ -27,13 +26,13 @@
       </div>
     </div>
   } @else {
-    <form [formGroup]="formGroup()">
+    <form [formGroup]="formGroup">
       <div>
         <app-custom-message-control
           formControlName="customMessage"
           [projectId]="projectId()"
+          [error]="formFieldErrors()('customMessage')"
         />
-        <!-- [error]="formFieldErrors()('customMessage')" -->
         <div class="flex justify-end space-x-2">
           <p-button
             label="Cancel"

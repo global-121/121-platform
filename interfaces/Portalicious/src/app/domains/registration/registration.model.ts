@@ -5,6 +5,7 @@ import { MessageActivity } from '@121-service/src/activities/interfaces/message-
 import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
 import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
 import { TransactionActivity } from '@121-service/src/activities/interfaces/transaction-activity.interface';
+import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 
@@ -14,6 +15,7 @@ import { Dto } from '~/utils/dto-type';
 export type Registration = Dto<MappedPaginatedRegistrationDto>;
 // TODO: AB#30152 This type should be refactored to use Dto121Service
 export type FindAllRegistrationsResult = Dto<FindAllRegistrationsResultDto>;
+export type ChangeStatusResult = Dto<BulkActionResultDto>;
 
 // The discriminated union type doesn't play well with our Dto utility type, so we need to define the Activity type manually
 export type Activity =

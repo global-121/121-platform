@@ -8,14 +8,9 @@ import {
   input,
   model,
   signal,
+  ViewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
   injectMutation,
@@ -53,13 +48,6 @@ import {
 } from '~/services/messaging.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-export type ChangeStatusFormGroup =
-  (typeof ChangeStatusDialogComponent)['prototype']['formGroup'];
 
 @Component({
   selector: 'app-change-status-dialog',
@@ -96,44 +84,22 @@ export class ChangeStatusDialogComponent {
   private notificationApiService = inject(NotificationApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+  @ViewChild('dryRunWarningDialog')
+  private dryRunWarningDialog: ConfirmationDialogComponent;
 
   actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
     undefined,
   );
   dialogVisible = model<boolean>(false);
+  dryRunFailure = model<boolean>(false);
   enableSendMessage = model<boolean>(false);
+  customMessage = model<string>();
   previewData = signal<Partial<MessageInputData> | undefined>(undefined);
   status = signal<RegistrationStatusEnum | undefined>(undefined);
   messageTemplates = injectQuery(
     this.notificationApiService.getMessageTemplates(this.projectId),
   );
-  hasTemplate = signal<boolean>(false);
-  formGroup = new FormGroup({
-    messageType: new FormControl<'custom' | 'template'>('template', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      validators: [Validators.required],
-    }),
-    messageTemplateKey: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    customMessage: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-  });
-  formFieldErrors = generateFieldErrors<ChangeStatusFormGroup>(this.formGroup, {
-    messageType: genericFieldIsRequiredValidationMessage,
-    messageTemplateKey: genericFieldIsRequiredValidationMessage,
-    customMessage: (control) => {
-      if (control.errors?.required) {
-        return $localize`:@@generic-required-field:This field is required.`;
-      }
-      if (control.errors?.minlength) {
-        return $localize`The message must be at least 20 characters long.`;
-      }
-      return;
-    },
-  });
+  foundTemplateKey = signal<string | undefined>(undefined);
   icon = computed(() => {
     const status = this.status();
     if (!status) {
@@ -162,8 +128,6 @@ export class ChangeStatusDialogComponent {
   });
 
   constructor() {
-    const messageTemplateKeyField = this.formGroup.controls.messageTemplateKey;
-    const customMessageField = this.formGroup.controls.customMessage;
     effect(
       () => {
         const status = this.status();
@@ -175,35 +139,14 @@ export class ChangeStatusDialogComponent {
           .find((template) => template.type === status.toLowerCase());
 
         if (!foundMessageTemplate) {
-          this.hasTemplate.set(false);
-          customMessageField.setValidators([
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            Validators.required,
-            Validators.minLength(20),
-          ]);
-          messageTemplateKeyField.clearValidators();
-          this.formGroup.reset({
-            messageType: 'custom',
-            messageTemplateKey: undefined,
-            customMessage: undefined,
-          });
           this.enableSendMessage.set(false);
           this.previewData.set(undefined);
         } else {
-          this.hasTemplate.set(true);
-          // eslint-disable-next-line @typescript-eslint/unbound-method
-          messageTemplateKeyField.setValidators([Validators.required]);
-          customMessageField.clearValidators();
-          this.formGroup.reset({
-            messageType: 'template',
-            messageTemplateKey: foundMessageTemplate.type,
-            customMessage: undefined,
-          });
+          this.foundTemplateKey.set(foundMessageTemplate.type);
+
           this.enableSendMessage.set(false);
-          this.previewData.set(this.formGroup.getRawValue());
+          this.previewData.set(this.getSendMessageData());
         }
-        messageTemplateKeyField.updateValueAndValidity();
-        customMessageField.updateValueAndValidity();
       },
       {
         allowSignalWrites: true,
@@ -223,16 +166,34 @@ export class ChangeStatusDialogComponent {
     this.dialogVisible.set(true);
   }
 
-  private getSendMessageData(
-    formValues: ReturnType<ChangeStatusFormGroup['getRawValue']>,
-  ): SendMessageData | undefined {
-    return this.messagingService.getSendMessageData(formValues);
+  getSendMessageInputData(): Partial<MessageInputData> {
+    const foundTemplateKey = this.foundTemplateKey();
+
+    if (foundTemplateKey) {
+      return {
+        messageType: 'template',
+        messageTemplateKey: foundTemplateKey,
+      };
+    }
+
+    return {
+      messageType: 'custom',
+      customMessage: this.customMessage(),
+    };
+  }
+
+  private getSendMessageData(): SendMessageData | undefined {
+    if (!this.enableSendMessage()) {
+      return undefined;
+    }
+
+    const messageInputData = this.getSendMessageInputData();
+    return this.messagingService.getSendMessageData(messageInputData);
   }
 
   changeStatusMutation = injectMutation(() => ({
     mutationFn: ({ dryRun }: { dryRun: boolean }) => {
-      const formValues = this.formGroup.getRawValue();
-      const messageData = this.getSendMessageData(formValues);
+      const messageData = this.getSendMessageData();
 
       return this.registrationApiService.changeStatus({
         projectId: this.projectId,
@@ -243,43 +204,37 @@ export class ChangeStatusDialogComponent {
         dryRun,
       });
     },
-    onError: () => {
-      // TODO: AB#30987 Should not happen, lets show error dialog anyway
-    },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       // decide which dialog to show based on count
       if (data.nonApplicableCount === 0) {
+        if (variables.dryRun) {
+          this.changeStatusMutation.mutate({ dryRun: false });
+          return;
+        }
         this.dialogVisible.set(false);
         this.toastService.showToast({
           summary: $localize`Success`,
-          detail: $localize`${data.applicableCount} registration(s) were ${this.status()?.toLowerCase()} successfully.`,
+          detail: $localize`${data.applicableCount} registration(s) were ${this.statusVerb().toLowerCase()} successfully. The status change can take up to a minute to process.`,
           severity: 'success',
         });
-      } else {
-        if (data.applicableCount === 0) {
-          // TODO: AB#30987 Show error, not applicable to anyone
-          // this.dryRunFailure.set(true);
-        } else {
-          // TODO: AB#30987 Show warning, only applicable to <applicableCount>
-          // this.dryRunWarningDialog.askForConfirmation();
-        }
+        void this.registrationApiService.invalidateCache(this.projectId);
+        return;
       }
+
+      if (data.applicableCount === 0) {
+        this.dialogVisible.set(false);
+        this.dryRunFailure.set(true);
+        return;
+      }
+
+      this.dialogVisible.set(false);
+      this.dryRunWarningDialog.askForConfirmation({
+        resetMutation: false,
+      });
     },
   }));
 
-  onProceedToPreview(): void {
-    this.formGroup.markAllAsTouched();
-    if (!this.formGroup.valid) {
-      return;
-    }
-    this.previewData.set(this.formGroup.getRawValue());
-  }
-
-  onFormSubmit(event?: unknown): void {
-    console.log(
-      '🚀 ~ ChangeStatusDialogComponent ~ onFormSubmit ~ event:',
-      event,
-    );
+  onFormSubmit(): void {
     this.changeStatusMutation.mutate({ dryRun: true });
   }
 }
