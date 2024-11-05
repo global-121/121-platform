@@ -9,7 +9,7 @@
     },
     {
       "route": "/.well-known/change-password",
-      "redirect": "/en/change-password",
+      "redirect": "/en-GB/change-password",
       "statusCode": 302
     },
     {
@@ -20,11 +20,11 @@
     },
     {
       "route": "/index.html",
-      "redirect": "/en/index.html"
+      "redirect": "/en-GB/index.html"
     },
     {
-      "route": "/en/*",
-      "rewrite": "/en/index.html"
+      "route": "/en-GB/*",
+      "rewrite": "/en-GB/index.html"
     },
     {
       "route": "/nl/*",

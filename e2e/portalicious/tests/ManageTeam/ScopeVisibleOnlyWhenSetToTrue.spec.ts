@@ -26,16 +26,16 @@ test('[29761] "Scope" column should only be loaded when "enableScope": is set to
   const manageTeam = new ProjectTeam(page);
 
   await test.step('Navigate to Manage team in PV program and validate scope column is hidden per configuration', async () => {
-    await page.goto('/en/project/2/team');
+    await page.goto('/en-GB/project/2/team');
     await basePage.navigateToProgramPage('Team');
-    await page.waitForURL('/en/project/2/team');
+    await page.waitForURL('/en-GB/project/2/team');
     await manageTeam.validateScopeColumnIsVisible();
   });
 
   await test.step('Navigate to Manage team in OCW program and validate scope column is hidden per configuration', async () => {
-    await page.goto('/en/project/3/team');
+    await page.goto('/en-GB/project/3/team');
     await basePage.navigateToProgramPage('Team');
-    await page.waitForURL('/en/project/3/team');
+    await page.waitForURL('/en-GB/project/3/team');
     await manageTeam.validateScopeColumnIsHidden();
   });
 });

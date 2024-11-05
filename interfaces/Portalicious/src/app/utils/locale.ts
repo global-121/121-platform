@@ -5,7 +5,8 @@ import { environment } from '~environment';
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 export enum Locale {
-  en = 'en',
+  // this has to be en-GB otherwise angular locale stuff doesn't work
+  en = 'en-GB',
   nl = 'nl',
 }
 

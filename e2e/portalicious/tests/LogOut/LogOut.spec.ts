@@ -34,12 +34,12 @@ test('Log Out via manual log-out URL', async ({ page }) => {
     await page.goto('/logout');
 
     // Actually logging-out takes at least 1 second...
-    await page.waitForURL((url) => url.pathname.startsWith('/en/login'));
+    await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
 
     // Try to access a protected page
-    await page.goto('/en/users');
+    await page.goto('/en-GB/users');
 
-    await expect(page).not.toHaveURL(/.*\/en\/users/);
-    await expect(page).toHaveURL(/.*\/en\/login/);
+    await expect(page).not.toHaveURL(/.*\/en-GB\/users/);
+    await expect(page).toHaveURL(/.*\/en-GB\/login/);
   });
 });

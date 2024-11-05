@@ -31,7 +31,7 @@ class LoginPage extends BasePage {
     }
 
     await this.page.waitForURL((url) =>
-      url.pathname.startsWith('/en/projects'),
+      url.pathname.startsWith('/en-GB/projects'),
     );
   }
 
