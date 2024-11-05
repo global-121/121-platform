@@ -178,18 +178,18 @@ export class CommercialBankEthiopiaService
       .select([
         'registration.referenceId AS "referenceId"',
         'data.value AS value',
-        '"programRegistrationAttributes".name AS "fieldName"',
+        '"programRegistrationAttribute".name AS "fieldName"',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds,
       })
-      .andWhere('(programRegistrationAttributes.name IN (:...names))', {
+      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
         names: ['fullName', 'bankAccountNumber'],
       })
       .leftJoin('registration.data', 'data')
       .leftJoin(
-        'data.programRegistrationAttributes',
-        'programRegistrationAttributes',
+        'data.programRegistrationAttribute',
+        'programRegistrationAttribute',
       )
       .getRawMany();
 

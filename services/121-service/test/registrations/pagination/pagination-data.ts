@@ -219,6 +219,32 @@ export const registrationWesteros3 = {
   motto: 'A lanister always pays his debts',
 };
 
+export const registrationCbe = {
+  referenceId: 'registration-cbe-1',
+  phoneNumber: '14155238886',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.commercialBankEthiopia,
+  maxPayments: 3,
+  fullName: 'ANDUALEM MOHAMMED YIMER',
+  idNumber: '39231855170',
+  age: '48',
+  gender: 'male',
+  howManyFemale: '1',
+  howManyMale: '2',
+  totalFamilyMembers: '3',
+  howManyFemaleUnder18: '1',
+  howManyMaleUnder18: '2',
+  howManyFemaleOver18: '1',
+  howManyMaleOver18: '1',
+  howManyFemaleDisabilityUnder18: '2',
+  howManyMaleDisabilityUnder18: '1',
+  howManyFemaleDisabilityOver18: '1',
+  howManyMaleDisabilityOver18: '2',
+  bankAccountNumber: '407951684723597',
+};
+
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
   programFinancialServiceProviderConfigurationName:
