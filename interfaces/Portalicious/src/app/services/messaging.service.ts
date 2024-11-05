@@ -36,8 +36,7 @@ export class MessagingService {
     return this.projectApiService.getProjectAttributes({
       projectId,
       // This is the same combo used in the 121-service -> QueueMessageService.getPlaceholdersInMessageText
-      includeCustomAttributes: true,
-      includeProgramQuestions: true,
+      includeProgramRegistrationAttributes: true,
       includeTemplateDefaultAttributes: true,
     });
   }

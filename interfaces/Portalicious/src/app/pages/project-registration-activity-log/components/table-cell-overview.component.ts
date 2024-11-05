@@ -9,7 +9,7 @@ import {
 import { ChipModule } from 'primeng/chip';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
@@ -115,7 +115,7 @@ export class TableCellOverviewComponent
     if (
       item.type !== ActivityTypeEnum.Transaction ||
       item.attributes.fsp !==
-        FinancialServiceProviderName.intersolveVoucherWhatsapp
+        FinancialServiceProviders.intersolveVoucherWhatsapp
     ) {
       return;
     }
