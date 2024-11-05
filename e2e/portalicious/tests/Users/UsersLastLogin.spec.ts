@@ -10,7 +10,7 @@ import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import UsersPage from '@121-e2e/portalicious/pages/UsersPage';
 
 const date = new Date();
-const formattedDate = format(date, 'MM/dd/yy,');
+const formattedDate = format(date, 'MM/d/yy,');
 const formattedTime = format(date, 'h:mm a');
 const loginTimeStamp = `${formattedDate} ${formattedTime}`;
 
