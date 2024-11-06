@@ -206,7 +206,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     ]);
     this.canUpdatePaProgramFspConfig = this.authService.hasAllPermissions(
       this.program.id,
-      [Permission.RegistrationFspUPDATE],
+      [Permission.RegistrationFspConfigUPDATE],
     );
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,

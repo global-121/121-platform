@@ -319,7 +319,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     ]);
     this.canUpdatePaProgramFspConfig = this.authService.hasAllPermissions(
       this.programId,
-      [Permission.RegistrationFspUPDATE],
+      [Permission.RegistrationFspConfigUPDATE],
     );
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.programId,

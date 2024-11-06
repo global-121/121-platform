@@ -16,7 +16,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
     await this.checkRegistrationFspConfigMigrations(queryRunner);
     await this.checkTransactionFspConfigMigrations(queryRunner);
 
-    await this.removePermissions(queryRunner);
+    await this.adjustPermissions(queryRunner);
 
     await this.dropOldTablesAndViews(queryRunner);
     console.timeEnd('Migration');
@@ -115,7 +115,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
     );
   }
 
-  private async removePermissions(queryRunner: QueryRunner) {
+  private async adjustPermissions(queryRunner: QueryRunner) {
     // Step 1: Select the IDs of the permissions to be deleted
     const permissionIds = await queryRunner.query(`
       SELECT id FROM "121-service".permission WHERE "name" IN ('program:question.update', 'program:question.delete', 'program:custom-attribute.update')
@@ -136,6 +136,13 @@ export class ProgramRegistrationAttributeRefactor1729605362361
         DELETE FROM "121-service".permission WHERE "id" IN (${ids})
       `);
     }
+
+    // Step 4: Rename the permission 'registration:fsp.update' to 'registration:fsp-config.update'
+    await queryRunner.query(`
+      UPDATE "121-service".permission
+      SET "name" = 'registration:fsp-config.update'
+      WHERE "name" = 'registration:fsp.update'
+    `);
   }
 
   private async migrateFspConig(queryRunner: QueryRunner) {
