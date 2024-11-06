@@ -599,9 +599,9 @@
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
         <target state="new">The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</target>
       </trans-unit>
-      <trans-unit id="7596687906875795034" datatype="html">
-        <source>project-payments works!</source>
-        <target state="new">project-payments works!</target>
+      <trans-unit id="1709815007411996759" datatype="html">
+        <source>project-payment works!</source>
+        <target state="new">project-payment works!</target>
       </trans-unit>
       <trans-unit id="3054018033337101957" datatype="html">
         <source>Old data</source>
@@ -995,11 +995,11 @@
         <source>No payments yet</source>
         <target state="new">No payments yet</target>
       </trans-unit>
-      <trans-unit id="3010710400268626539" datatype="html">
+      <trans-unit id="7935811228673267610" datatype="html">
         <source>No Projects found</source>
         <target state="new">No Projects found</target>
       </trans-unit>
-      <trans-unit id="8550882715313062083" datatype="html">
+      <trans-unit id="8561412171255849133" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
         <target state="new">You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</target>
       </trans-unit>
@@ -1190,6 +1190,38 @@
       <trans-unit id="1692337501325731003" datatype="html">
         <source>There is currently no data to export</source>
         <target state="new">There is currently no data to export</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-payment" datatype="html">
+        <source>Payment</source>
+        <target state="new">Payment</target>
+      </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+        <target state="new">Included reg.</target>
+      </trans-unit>
+      <trans-unit id="5004550577313573215" datatype="html">
+        <source>Total amount</source>
+        <target state="new">Total amount</target>
+      </trans-unit>
+      <trans-unit id="5836528780566781670" datatype="html">
+        <source>Successful transfers</source>
+        <target state="new">Successful transfers</target>
+      </trans-unit>
+      <trans-unit id="9023742269421706395" datatype="html">
+        <source>Failed transfers</source>
+        <target state="new">Failed transfers</target>
+      </trans-unit>
+      <trans-unit id="3307214558906712688" datatype="html">
+        <source>In progress</source>
+        <target state="new">In progress</target>
+      </trans-unit>
+      <trans-unit id="1105070151875122157" datatype="html">
+        <source>No Payments found</source>
+        <target state="new">No Payments found</target>
+      </trans-unit>
+      <trans-unit id="5847820864343475107" datatype="html">
+        <source>There are no payments for this project yet.</source>
+        <target state="new">There are no payments for this project yet.</target>
       </trans-unit>
     </body>
   </file>

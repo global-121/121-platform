@@ -8,6 +8,7 @@ import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 import { ChangePasswordPageComponent } from '~/pages/change-password/change-password.page';
 import { LoginPageComponent } from '~/pages/login/login.page';
 import { ProjectMonitoringPageComponent } from '~/pages/project-monitoring/project-monitoring.page';
+import { ProjectPaymentPageComponent } from '~/pages/project-payment/project-payment.page';
 import { ProjectPaymentsPageComponent } from '~/pages/project-payments/project-payments.page';
 import { ProjectRegistrationActivityLogPageComponent } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { ProjectRegistrationDebitCardsPageComponent } from '~/pages/project-registration-debit-cards/project-registration-debit-cards.page';
@@ -106,7 +107,17 @@ export const routes: Routes = [
       },
       {
         path: AppRoutes.projectPayments,
-        component: ProjectPaymentsPageComponent,
+        children: [
+          {
+            path: ``,
+            component: ProjectPaymentsPageComponent,
+          },
+          {
+            path: `:paymentId`,
+            pathMatch: 'full',
+            component: ProjectPaymentPageComponent,
+          },
+        ],
       },
       {
         path: '',
