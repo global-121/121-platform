@@ -251,7 +251,7 @@ export class SeedHelper {
 
     const programReturn = await programRepository.save(programFromJSON);
 
-    // Remove original program questions and add it to a separate variable
+    // Remove original program registration attributes and add it to a separate variable
     const programRegistrationAttributes =
       programFromJSON.programRegistrationAttributes;
     programFromJSON.programRegistrationAttibutes = [];

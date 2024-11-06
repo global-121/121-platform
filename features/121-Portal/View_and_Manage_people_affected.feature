@@ -45,14 +45,12 @@ Feature: View and manage people affected (generic features)
     And for each person the columns that make up the "name" are shown
     And for each person a "phone number" is shown
     And all above columns are fixed when scrolling horizontally
-    And "custom attribute" columns are shown if configured to be showing for that phase
-    And "program questions" are shown if configured to be showing for that phase
-    And "fsp questions" are shown if configured to be showing for that phase
+    And "program registration attribrutes" are shown if configured to be showing for that phase
 
-  Scenario: Edit boolean custom attributes in PA table
+  Scenario: Edit boolean program registration attribute in PA table
     Given the logged-in user also has "RegistrationAttributeUPDATE" permission
-    When the user clicks one of the "custom attribute" columns with type 'boolean'
-    Then the clicked "custom attribute" is updated
+    When the user clicks one of the "program registration attribute" columns with type 'boolean'
+    Then the clicked "program registration attribute" is updated
     And a popup with 'update successful' appears
 
   Scenario: Filter rows of PA-table by People Affected status

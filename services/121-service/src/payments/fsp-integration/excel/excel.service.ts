@@ -161,7 +161,7 @@ export class ExcelService
       where: { id: Equal(programId) },
       relations: ['programRegistrationAttributes'],
     });
-    // Default to using all program questions & attributes names if columnsToExport is not specified
+    // Default to using all program registration attributes names if columnsToExport is not specified
     // So generic fields must be specified in the programFspConfiguration
     return programWithAttributes.programRegistrationAttributes.map(
       (q) => q.name,

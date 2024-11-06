@@ -135,7 +135,7 @@ export class ProgramService {
 
     for (const name of Object.values(programData.fullnameNamingConvention)) {
       if (!programAttributeNames.includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions or custom attributes`;
+        const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }
@@ -336,13 +336,13 @@ export class ProgramService {
       return attr.name;
     });
     if (existingNames.includes(name)) {
-      const errors = `Unable to create program question/attribute with name ${name}. The names ${existingNames.join(
+      const errors = `Unable to create program registration attribute with name ${name}. The names ${existingNames.join(
         ', ',
       )} are already in use`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
     if (nameConstraintQuestionsArray.includes(name)) {
-      const errors = `Unable to create program question/attribute with name ${name}. The names ${nameConstraintQuestionsArray.join(
+      const errors = `Unable to create program registration attribute with name ${name}. The names ${nameConstraintQuestionsArray.join(
         ', ',
       )} are forbidden to use`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
@@ -446,7 +446,7 @@ export class ProgramService {
         where: { id: Number(programRegistrationAttributeId) },
       });
     if (!programRegistrationAttribute) {
-      const errors = `Program question with id: '${programRegistrationAttributeId}' not found.'`;
+      const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found.'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return await this.programRegistrationAttributeRepository.remove(
