@@ -293,8 +293,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
   });
 
-  // ##TODO: Re-enable this test when the new API for FSP configuration is implemented
-  it('should fail pay-out by visa debit if coverletterCode is not configured for the program', async () => {
+  it('should fail pay-out by visa debit if coverletterCode or fundingToken is not configured for the program', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangePaStatus(
@@ -312,6 +311,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
         FinancialServiceProviderConfigurationProperties.coverLetterCode,
       accessToken,
     });
+    await deleteProgramFinancialServiceProviderConfigurationProperty({
+      programId: programIdVisa,
+      configName: FinancialServiceProviders.intersolveVisa,
+      propertyName:
+        FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+      accessToken,
+    });
 
     // Act
     const doPaymentResponse = await doPayment(
@@ -323,6 +329,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
 
     expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    // Check if both properties are mentioned in the error message
+    expect(doPaymentResponse.body.message).toContain(
+      FinancialServiceProviderConfigurationProperties.coverLetterCode,
+    );
+    expect(doPaymentResponse.body.message).toContain(
+      FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+    );
   });
 
   it('should show a failed transaction if an idempotency key is duplicate', async () => {
