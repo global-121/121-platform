@@ -149,7 +149,7 @@ describe('Do payment with Excel FSP', () => {
     });
 
     // ##TODO: wait with fixing this test until endpoint is available to update/delete columnsToExport
-    it('Should return all program-question/program-custom attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
+    it('Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
       // Arrange
       const programAttributeColumns =
         programTest.programRegistrationAttributes.map((pa) => pa.name);
@@ -259,6 +259,27 @@ describe('Do payment with Excel FSP', () => {
         await getImportFspReconciliationTemplate(programIdWesteros);
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.body.sort()).toMatchSnapshot();
+    });
+
+    it('Should give an error when status column is missing', async () => {
+      // Arrange
+      const matchColumn = 'phoneNumber';
+      // construct reconciliation-file here
+      const reconciliationData = [
+        {
+          [matchColumn]: registrationWesteros1.phoneNumber,
+        },
+      ];
+
+      // Act
+      const importResult = await importFspReconciliationData(
+        programIdWesteros,
+        paymentNr,
+        accessToken,
+        reconciliationData,
+      );
+      expect(importResult.statusCode).toBe(HttpStatus.NOT_FOUND);
+      expect(importResult.body).toMatchSnapshot();
     });
   });
 });

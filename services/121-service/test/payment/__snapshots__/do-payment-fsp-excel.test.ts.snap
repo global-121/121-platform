@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Do payment with Excel FSP Export FSP instructions Should return all program-question/program-custom attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set 1`] = `
+exports[`Do payment with Excel FSP Export FSP instructions Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set 1`] = `
 [
   {
     "data": [
@@ -110,6 +110,12 @@ exports[`Do payment with Excel FSP Export FSP instructions Should return specifi
     "fileType": "excel",
   },
 ]
+`;
+
+exports[`Do payment with Excel FSP Import FSP reconciliation data Should give an error when status column is missing 1`] = `
+{
+  "errors": "The 'status' column is either missing or contains unexpected values. It should only contain 'success' or 'error'.",
+}
 `;
 
 exports[`Do payment with Excel FSP Import FSP reconciliation data should give me a CSV template when I request it 1`] = `

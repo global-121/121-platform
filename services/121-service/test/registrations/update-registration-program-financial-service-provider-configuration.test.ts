@@ -37,14 +37,14 @@ async function setupNlrcEnvironment() {
   return accessToken;
 }
 
-describe('Update chosen FSP of PA', () => {
+describe('Update program financial servce provider configuration of PA', () => {
   let accessToken: string;
 
   beforeEach(async () => {
     accessToken = await setupNlrcEnvironment();
   });
 
-  it('should succeed when updating chosen FSP when all required properties of new FSP are already present', async () => {
+  it('should succeed when updating program financial servce provider configuration when all required properties of new FSP are already present', async () => {
     // Arrange
     await setupNlrcEnvironment();
 
@@ -73,7 +73,7 @@ describe('Update chosen FSP of PA', () => {
     );
   });
 
-  it('should fail when updating chosen FSP when a required property of new FSP is not yet present', async () => {
+  it('should fail when updating program financial servce provider configuration when a required property of new FSP is not yet present', async () => {
     // Arrange
     await setupNlrcEnvironment();
 
@@ -100,7 +100,7 @@ describe('Update chosen FSP of PA', () => {
     expect(response.body).toMatchSnapshot();
   });
 
-  it('should succeed when updating chosen FSP when missing required properties of new FSP are passed along with the request', async () => {
+  it('should succeed when updating program financial servce provider configuration when missing required properties of new FSP are passed along with the request', async () => {
     // Arrange
     await setupNlrcEnvironment();
 
