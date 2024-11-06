@@ -49,18 +49,6 @@ test('[28040] Update paymentAmountMultiplier with invalid value', async ({
     await table.selectFspPaPii({ shouldSelectVisa: true });
   });
 
-  await test.step('Update payment amount multiplier with empty string', async () => {
-    await piiPopUp.updatepaymentAmountMultiplier({
-      amount: '',
-      saveButtonName: save,
-      okButtonName: ok,
-      alert: alertPattern.replace(
-        '{{error}}',
-        'paymentAmountMultiplier: this field must be a positive number',
-      ),
-    });
-  });
-
   await test.step('Update payment amount multiplier with negative number', async () => {
     await piiPopUp.updatepaymentAmountMultiplier({
       amount: '-1',

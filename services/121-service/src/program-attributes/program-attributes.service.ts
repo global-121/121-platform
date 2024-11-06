@@ -181,6 +181,7 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.type,
         label: c.label,
+        isRequired: c.isRequired,
       };
     });
     return programRegistrationAttributes;
@@ -205,6 +206,7 @@ export class ProgramAttributesService {
         name: c.name,
         type: c.type,
         label: c.label,
+        isRequired: c.isRequired,
       };
     });
 

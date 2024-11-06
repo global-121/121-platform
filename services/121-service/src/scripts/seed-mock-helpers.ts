@@ -294,7 +294,7 @@ export class SeedMockHelper {
     registrations: object[],
     accessToken: string,
   ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/import`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations`;
     const body = registrations;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
 

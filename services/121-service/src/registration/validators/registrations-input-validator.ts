@@ -254,8 +254,16 @@ export class RegistrationsInputValidator {
           ) {
             return;
           }
-          if (!att.isRequired && row[att.name] === undefined) {
-            return;
+
+          // If attribute is not required skip in case of undefined and on null add to validatedRegistrationInput so it will be removed later on
+          if (!att.isRequired) {
+            if (row[att.name] === undefined) {
+              return;
+            }
+            if (row[att.name] == null) {
+              validatedRegistrationInput.data[att.name] = null;
+              return;
+            }
           }
 
           if (att.type === RegistrationAttributeTypes.tel) {
@@ -288,15 +296,6 @@ export class RegistrationsInputValidator {
           }
 
           if (att.type === RegistrationAttributeTypes.dropdown) {
-            if (!att.isRequired) {
-              if (row[att.name] == null) {
-                return (validatedRegistrationInput.data[att.name] = null);
-              } else {
-                // Skip validation if the attribute is not present in the row and it is not required
-                return;
-              }
-            }
-
             const optionNames = att.options
               ? att.options?.map((option) => option.option)
               : [];
