@@ -3,7 +3,7 @@ import { inject, Injectable, LOCALE_ID } from '@angular/core';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-import { Locale } from '~/utils/locale';
+import { getLanguageEnumFromLocale, Locale } from '~/utils/locale';
 
 @Injectable({
   providedIn: 'root',
@@ -26,16 +26,7 @@ export class TranslatableStringService {
       return value.toString();
     }
 
-    let languageEnumLocale: LanguageEnum;
-
-    switch (this.currentLocale) {
-      case Locale.en:
-        languageEnumLocale = LanguageEnum.en;
-        break;
-      default:
-        languageEnumLocale = LanguageEnum[this.currentLocale];
-        break;
-    }
+    const languageEnumLocale = getLanguageEnumFromLocale(this.currentLocale);
 
     if (value[languageEnumLocale]) {
       return value[languageEnumLocale];
