@@ -25,9 +25,7 @@
     {
       "name": "enumeratorName",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -35,9 +33,7 @@
     {
       "name": "nrOfHouseHoldMembers",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -45,9 +41,7 @@
     {
       "name": "nrOfMaleAdults",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -55,9 +49,7 @@
     {
       "name": "nrOFemaleAdults",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -65,9 +57,7 @@
     {
       "name": "nrOfMaleElderly",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -75,9 +65,7 @@
     {
       "name": "nrOFemaleElderly",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -85,9 +73,7 @@
     {
       "name": "nrOfBoys",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -95,9 +81,7 @@
     {
       "name": "nrOfGirls",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -105,9 +89,7 @@
     {
       "name": "nrOfIllnessInHousehold",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -115,9 +97,7 @@
     {
       "name": "nrOfDisabilitiesInHousehold",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -125,9 +105,7 @@
     {
       "name": "nrOfPregnantInHousehold",
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -135,7 +113,6 @@
     {
       "name": "householdSituation",
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "residingConflictedArea",
@@ -170,7 +147,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -183,9 +159,7 @@
         "ru": "+380 000 000 000"
       },
       "type": "tel",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -193,7 +167,6 @@
     {
       "name": "gender",
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "male",
@@ -220,7 +193,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -228,9 +200,7 @@
     {
       "name": "dateOfBirth",
       "type": "date",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -238,9 +208,7 @@
     {
       "name": "taxNumberAdult1",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
@@ -249,9 +217,7 @@
     {
       "name": "taxNumberAdult2",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
@@ -260,9 +226,7 @@
     {
       "name": "taxNumberAdult3",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
@@ -271,9 +235,7 @@
     {
       "name": "taxNumberAdult4",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "duplicateCheck": true,
@@ -282,9 +244,7 @@
     {
       "name": "commentsFromEnumerator",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false

@@ -21,7 +21,6 @@
     {
       "name": "invited-by-dorcas",
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -31,7 +30,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -43,9 +41,7 @@
         "en": "Name"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -57,9 +53,7 @@
         "en": "Age"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -71,7 +65,6 @@
         "en": "Gender"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "male",
@@ -88,7 +81,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -100,7 +92,6 @@
         "en": "Nationality"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "lebanese",
@@ -124,7 +115,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -133,9 +123,7 @@
     {
       "name": "address-city",
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -146,9 +134,7 @@
         "en": "City"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -160,9 +146,7 @@
         "en": "Building"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -174,9 +158,7 @@
         "en": "Floor"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -188,9 +170,7 @@
         "en": "Social registry number"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -202,7 +182,6 @@
         "en": "Family status"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "married",
@@ -233,7 +212,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "married": 0,
@@ -250,9 +228,7 @@
         "en": "Men 60+"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 3
@@ -266,9 +242,7 @@
         "en": "Women 60+"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 3
@@ -282,9 +256,7 @@
         "en": "Men 18-59"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -298,9 +270,7 @@
         "en": "Women 18-59"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 1
@@ -314,9 +284,7 @@
         "en": "Men 0-18"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -330,9 +298,7 @@
         "en": "Women 0-18"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "multiplier": 2
@@ -346,7 +312,6 @@
         "en": "Women pregnant"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -363,7 +328,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -378,7 +342,6 @@
         "en": "Children"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -395,7 +358,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -410,7 +372,6 @@
         "en": "Beirut blast"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -427,7 +388,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -442,7 +402,6 @@
         "en": "Forced moved"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -459,7 +418,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -474,7 +432,6 @@
         "en": "Foster family"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -491,7 +448,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -506,7 +462,6 @@
         "en": "Children hospital"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -523,7 +478,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 4,
@@ -538,7 +492,6 @@
         "en": "Adult hospital"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -555,7 +508,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -570,7 +522,6 @@
         "en": "Disability seeing"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -601,7 +552,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
@@ -618,7 +568,6 @@
         "en": "Disability hearing"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -649,7 +598,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
@@ -666,7 +614,6 @@
         "en": "Disability walking"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -697,7 +644,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
@@ -714,7 +660,6 @@
         "en": "Disability remembering"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -745,7 +690,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
@@ -762,7 +706,6 @@
         "en": "Disability self-care"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -793,7 +736,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
@@ -810,7 +752,6 @@
         "en": "Disability communicating"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -841,7 +782,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 0,
@@ -858,7 +798,6 @@
         "en": "Children chronic disease"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -875,7 +814,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 4,
@@ -890,7 +828,6 @@
         "en": "Adult chronic disease"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -907,7 +844,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 2,
@@ -922,7 +858,6 @@
         "en": "Health expenses"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "below-500000",
@@ -946,7 +881,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "below-500000": 0,
@@ -962,7 +896,6 @@
         "en": "Shelter expenses"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "below-1000000",
@@ -993,7 +926,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 2,
@@ -1010,7 +942,6 @@
         "en": "Food expenses"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "below-1000000",
@@ -1041,7 +972,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 2,
@@ -1058,7 +988,6 @@
         "en": "Sold household goods"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1075,7 +1004,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1090,7 +1018,6 @@
         "en": "Spend savings"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1107,7 +1034,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1122,7 +1048,6 @@
         "en": "Borrowed money"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1139,7 +1064,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1154,7 +1078,6 @@
         "en": "Reduced expenses"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1171,7 +1094,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1186,7 +1108,6 @@
         "en": "Withdraw food"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1203,7 +1124,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1218,7 +1138,6 @@
         "en": "Child labor"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1235,7 +1154,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1250,7 +1168,6 @@
         "en": "Household migrated"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1267,7 +1184,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1282,7 +1198,6 @@
         "en": "Sold real estate"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1299,7 +1214,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 1,
@@ -1314,7 +1228,6 @@
         "en": "Eating less"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "never",
@@ -1352,7 +1265,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
@@ -1370,7 +1282,6 @@
         "en": "Borrowed food"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "never",
@@ -1408,7 +1319,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
@@ -1426,7 +1336,6 @@
         "en": "Reduced portions"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "never",
@@ -1464,7 +1373,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
@@ -1482,7 +1390,6 @@
         "en": "Reduced intake adults"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "never",
@@ -1520,7 +1427,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
@@ -1538,7 +1444,6 @@
         "en": "Reduced meals"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "never",
@@ -1576,7 +1481,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "never": 0,
@@ -1594,7 +1498,6 @@
         "en": "Household income"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "below-1000000",
@@ -1625,7 +1528,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 4,
@@ -1642,7 +1544,6 @@
         "en": "Income source"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "salary-regular",
@@ -1701,7 +1602,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "salary-regular": 1,
@@ -1722,7 +1622,6 @@
         "en": "Debt"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "no",
@@ -1760,7 +1659,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "below-1000000": 1,
@@ -1778,7 +1676,6 @@
         "en": "Other help"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -1795,7 +1692,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "no": 4,
@@ -1810,7 +1706,6 @@
         "en": "Where registered"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "at-centre",
@@ -1827,7 +1722,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -1839,9 +1733,7 @@
         "en": "Social worker"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,

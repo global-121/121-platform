@@ -35,9 +35,7 @@
         "nl": "Voornaam"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -53,9 +51,7 @@
         "nl": "Achternaam"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -74,9 +70,7 @@
         "en": "+31 6 00 00 00 00"
       },
       "type": "tel",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false

@@ -193,34 +193,6 @@ export async function getFspInstructions(
     .query({ format: 'json' });
 }
 
-export async function updateFinancialServiceProvider(
-  programId: number,
-  accessToken: string,
-  paymentReferenceIds: string[],
-  newFspName: string,
-  whatsappPhoneNumber: string,
-  addressStreet: string,
-  addressHouseNumber: string,
-  addressHouseNumberAddition: string,
-  addressPostalCode: string,
-  addressCity: string,
-): Promise<request.Response> {
-  return await getServer()
-    .put(`/programs/${programId}/registrations/${paymentReferenceIds}/fsp`)
-    .set('Cookie', [accessToken])
-    .send({
-      newFspName,
-      newFspAttributes: {
-        whatsappPhoneNumber,
-        addressStreet,
-        addressHouseNumber,
-        addressHouseNumberAddition,
-        addressPostalCode,
-        addressCity,
-      },
-    });
-}
-
 export async function importFspReconciliationData(
   programId: number,
   paymentNr: number,
@@ -250,27 +222,6 @@ function jsonArrayToCsv(json: object[]): string {
   });
   csv.unshift(fields.join(',')); // add header column
   return csv.join('\r\n');
-}
-
-export async function getFspConfiguration(
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .get(`/programs/${programId}/fsp-configuration`)
-    .set('Cookie', [accessToken]);
-}
-
-export async function deleteFspConfiguration(
-  programId: number,
-  programFspConfigurationId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .delete(
-      `/programs/${programId}/fsp-configuration/${programFspConfigurationId}`,
-    )
-    .set('Cookie', [accessToken]);
 }
 
 export async function exportList(

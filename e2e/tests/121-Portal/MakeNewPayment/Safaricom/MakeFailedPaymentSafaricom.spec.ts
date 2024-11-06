@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -25,17 +26,22 @@ const paymentStatus = englishTranslations.entity.payment.status.error;
 const paymentFilter =
   englishTranslations['registration-details']['activity-overview'].filters
     .payment;
-const paymentErrorMessages = 'Property idNumber is undefined';
+const paymentErrorMessages =
+  'Error Occurred - Invalid Access Token - mocked_access_token';
 
+const registrationsSafaricomFailed = structuredClone(
+  registrationsSafaricom,
+) as unknown as MappedPaginatedRegistrationDto[];
+registrationsSafaricomFailed[0].phoneNumber = '254000000000';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.krcsMultiple);
   const programIdBHA = 2;
   const bhaProgramId = programIdBHA;
-  registrationsSafaricom[0].nationalId = '';
+  // make shallow copy
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    registrationsSafaricom,
+    registrationsSafaricomFailed,
     bhaProgramId,
     accessToken,
   );
@@ -49,18 +55,16 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[30262] Safaricom: Error because of missing National ID', async ({
-  page,
-}) => {
+test('[30262] Safaricom: Make failed payment', async ({ page }) => {
   const table = new TableModule(page);
   const navigationModule = new NavigationModule(page);
   const homePage = new HomePage(page);
   const registrationPage = new RegistrationDetails(page);
   const paymentsPage = new PaymentsPage(page);
 
-  const numberOfPas = registrationsSafaricom.length;
+  const numberOfPas = registrationsSafaricomFailed.length;
   const defaultTransferValue = KRCSProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsSafaricom.reduce(
+  const defaultMaxTransferValue = registrationsSafaricomFailed.reduce(
     (output, pa) => {
       return output + pa.paymentAmountMultiplier * defaultTransferValue;
     },

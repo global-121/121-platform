@@ -298,7 +298,7 @@ export class PaymentsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importFspReconciliationData(
-    @UploadedFile() file: Blob,
+    @UploadedFile() file: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('payment', ParseIntPipe)

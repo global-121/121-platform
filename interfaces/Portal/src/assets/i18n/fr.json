@@ -405,8 +405,6 @@
           "error-alert": {
             "invalid-date": "Le format de date que vous avez saisi n’est pas valide. Un exemple de format de date valide est 31-12-1970 qui suit jour-mois-année, JJ-MM-AAAA"
           },
-          "fspChangeWarning": "La sélection de ce PSF supprimera les attributs suivants liés à l’ancien PSF :",
-          "fspNewAttributesExplanation": "Pour ce PSF, les attributs suivants sont requis :",
           "has-notes-title": "Notes disponibles",
           "popup-title": "{{pa}} info détaillée",
           "properties": {

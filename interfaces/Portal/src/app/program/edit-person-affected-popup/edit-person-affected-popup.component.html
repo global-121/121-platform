@@ -59,6 +59,7 @@
               | translate
           "
           [value]="attributeValues?.paymentAmountMultiplier"
+          [isRequired]="true"
           (updated)="
             updatePaAttribute(
               'paymentAmountMultiplier',
@@ -99,6 +100,7 @@
                 | translate
             "
             [value]="attributeValues?.maxPayments"
+            [isRequired]="false"
             (updated)="
               updatePaAttribute(
                 'maxPayments',
@@ -129,6 +131,7 @@
                 | translate
             "
             [value]="attributeValues?.phoneNumber"
+            [isRequired]="!program.allowEmptyPhoneNumber"
             (updated)="
               updatePaAttribute(
                 'phoneNumber',
@@ -156,6 +159,7 @@
                 | translate
             "
             [value]="attributeValues?.scope"
+            [isRequired]="false"
             (updated)="
               updatePaAttribute(
                 'scope',
@@ -180,6 +184,7 @@
                 | translate
             "
             [value]="attributeValues.preferredLanguage"
+            [isRequired]="true"
             [options]="availableLanguages"
             (updated)="
               updatePaAttribute(
@@ -242,6 +247,7 @@
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
             [options]="paTableAttribute.options"
             [pattern]="paTableAttribute.pattern"
+            [isRequired]="paTableAttribute.isRequired"
             [explanation]="paTableAttribute.explanation"
             (updated)="
               updatePaAttribute(

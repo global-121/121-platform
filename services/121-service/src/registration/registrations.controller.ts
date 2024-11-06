@@ -82,11 +82,11 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from CSV',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations')
+  @Post('programs/:programId/registrations/import')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
-  public async importRegistrations(
+  public async importRegistrationsFromCsv(
     @UploadedFile() csvFile: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -109,7 +109,7 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiBody({ isArray: true, type: ImportRegistrationsDto })
-  @Post('programs/:programId/registrations/import')
+  @Post('programs/:programId/registrations')
   public async importRegistrationsJSON(
     @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
     data: ImportRegistrationsDto[],
@@ -203,7 +203,7 @@ export class RegistrationsController {
     summary: 'Get a CSV template for importing registrations',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('programs/:programId/registrations/import-template')
+  @Get('programs/:programId/registrations/import/template')
   public async getImportRegistrationsTemplate(
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<string[]> {

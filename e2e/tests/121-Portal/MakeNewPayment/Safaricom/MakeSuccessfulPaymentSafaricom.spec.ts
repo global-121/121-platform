@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -99,7 +99,7 @@ test('[30259] Safaricom: "Make Successful payment"', async ({ page }) => {
     });
     await registrationPage.validatePaymentDetails({
       transferAmount: formattedValue,
-      fspName: FinancialServiceProviderName.safaricom,
+      fspName: FinancialServiceProviders.safaricom,
       currency,
     });
   });

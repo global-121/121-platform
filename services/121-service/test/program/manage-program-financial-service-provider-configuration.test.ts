@@ -139,6 +139,7 @@ describe('Manage financial service provider configurations', () => {
     const getResultConfig = getResult.body.find(
       (config) => config.name === name,
     );
+
     // Assert
     expect(result.statusCode).toBe(HttpStatus.OK);
     expect(result.body).toEqual(
@@ -184,7 +185,7 @@ describe('Manage financial service provider configurations', () => {
       (config) => config.name === name,
     );
     // Assert
-    expect(result.statusCode).toBe(HttpStatus.OK);
+    expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
     expect(getResultConfig).toBeUndefined();
   });
 
@@ -347,7 +348,7 @@ describe('Manage financial service provider configurations', () => {
     );
 
     // Assert
-    expect(deleteResult.statusCode).toBe(HttpStatus.OK);
+    expect(deleteResult.statusCode).toBe(HttpStatus.NO_CONTENT);
     expect(usernamePropertyAfter).toBeUndefined();
     expect(config?.properties.length).toBe(
       seededFspConfigVoucher.properties.length - 1,

@@ -161,6 +161,8 @@ export function cleanProgramForAssertions(originalProgram: any): any {
     'endDate',
     'updated',
     'created',
+    'programFinancialServiceProviderConfigurations',
+    'financialServiceProviderConfigurations',
   ]);
 
   const attributesToSort = [
@@ -183,23 +185,6 @@ export function cleanProgramForAssertions(originalProgram: any): any {
         return {
           ...filterableAttribute,
           filters: filterableAttribute.filters.sort(sortByAttribute('name')),
-        };
-      },
-    );
-  }
-
-  if (program.financialServiceProviders) {
-    program.financialServiceProviders = program.financialServiceProviders.map(
-      (financialServiceProvider: any) => {
-        if (!financialServiceProvider.questions) {
-          return financialServiceProvider;
-        }
-
-        return {
-          ...financialServiceProvider,
-          questions: financialServiceProvider.questions.sort(
-            sortByAttribute('name'),
-          ),
         };
       },
     );

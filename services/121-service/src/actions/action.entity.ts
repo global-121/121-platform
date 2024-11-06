@@ -18,7 +18,6 @@ export class ActionEntity extends Base121AuditedEntity {
 }
 
 export enum AdditionalActionType {
-  importPeopleAffected = 'import-people-affected',
   importRegistrations = 'import-registrations',
   paymentFinished = 'payment-finished',
   paymentStarted = 'payment-started',

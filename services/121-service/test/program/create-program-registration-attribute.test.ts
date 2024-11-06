@@ -19,7 +19,6 @@ describe('Create program', () => {
     name: 'string',
     options: [],
     scoring: {},
-    persistence: true,
     pattern: 'string',
     showInPeopleAffectedTable: true,
     editableInPortal: true,

@@ -5,7 +5,14 @@ import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
-import visaFspIntersolve from '@121-service/src/seed-data/fsp/fsp-intersolve-visa.json';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
+
+const fsp = FINANCIAL_SERVICE_PROVIDERS.find(
+  (fsp) => fsp.name === FinancialServiceProviders.intersolveVisa,
+);
+
+const labelVisaEn = fsp ? fsp.defaultLabel.en : undefined;
 
 const paymentLabel =
   englishTranslations.page.program['program-people-affected'].actions.doPayment;
@@ -472,7 +479,7 @@ class TableModule {
 
     // Assert the values of the row
     Object.entries(assertionData).forEach(([key, value]) => {
-      expect(rowToAssert[key]).toBe(value);
+      expect(rowToAssert![key]).toBe(value);
     });
   }
 
@@ -483,7 +490,7 @@ class TableModule {
     for (let i = 1; i <= count; i++) {
       const fsp = this.page.locator(TableModule.getRow(i));
       const fspText = (await fsp.textContent())?.trim();
-      const isVisaFsp = fspText?.includes(visaFspIntersolve.displayName.en);
+      const isVisaFsp = fspText?.includes(labelVisaEn!);
 
       if (
         (shouldSelectVisa && isVisaFsp) ||
@@ -503,7 +510,7 @@ class TableModule {
     for (let i = 1; i <= count; i++) {
       const fsp = this.page.locator(TableModule.getRow(i));
       const fspText = (await fsp.textContent())?.trim();
-      const isVisaFsp = fspText?.includes(visaFspIntersolve.displayName.en);
+      const isVisaFsp = fspText?.includes(labelVisaEn!);
 
       if (
         (shouldIncludeVisa && isVisaFsp) ||

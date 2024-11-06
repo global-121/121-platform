@@ -36,9 +36,7 @@
         "nl": "Naam"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false
@@ -53,9 +51,7 @@
         "nl": "Geboortedatum"
       },
       "type": "date",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -71,7 +67,6 @@
         "nl": "Huis"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "isRequired": true,
       "options": [
         {
@@ -110,7 +105,6 @@
         "nl": "Aantal draken"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
       "editableInPortal": true,
       "scoring": {
@@ -271,7 +265,6 @@
       },
       "type": "text",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "showInPeopleAffectedTable": false
     }

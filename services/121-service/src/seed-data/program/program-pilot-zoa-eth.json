@@ -45,9 +45,7 @@
         "en": "Full name"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -59,7 +57,6 @@
         "en": "Age"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "0-17",
@@ -83,7 +80,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "0-17": 0,
@@ -99,7 +95,6 @@
         "en": "Education level"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "primary",
@@ -130,7 +125,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -142,9 +136,7 @@
         "en": "National ID"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -156,9 +148,7 @@
         "en": "Family members"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -170,9 +160,7 @@
         "en": "Nr. of females"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -184,9 +172,7 @@
         "en": "Nr. of males"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -198,7 +184,6 @@
         "en": "Has husband"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -215,7 +200,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -227,7 +211,6 @@
         "en": "Returnee"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "noReturnee",
@@ -258,7 +241,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "noReturnee": 0,
@@ -275,7 +257,6 @@
         "en": "Household leader"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -292,7 +273,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 3,
@@ -307,7 +287,6 @@
         "en": "Owns business"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -324,7 +303,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 5,
@@ -339,7 +317,6 @@
         "en": "Business license"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -356,7 +333,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 5,
@@ -371,7 +347,6 @@
         "en": "Business type"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "restaurant",
@@ -423,7 +398,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -435,9 +409,7 @@
         "en": "Other business type"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -449,7 +421,6 @@
         "en": "Business goal"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -473,7 +444,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 5,
@@ -489,9 +459,7 @@
         "en": "Business plan"
       },
       "type": "text",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -503,7 +471,6 @@
         "en": "Age business"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "1year-",
@@ -534,7 +501,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "1year-": 0,
@@ -551,9 +517,7 @@
         "en": "Income business"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -565,9 +529,7 @@
         "en": "Cost business"
       },
       "type": "numeric",
-      "questionType": "standard",
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -579,7 +541,6 @@
         "en": "Training"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "yes",
@@ -603,7 +564,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "yes": 5,
@@ -619,7 +579,6 @@
         "en": "Courses"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "specificAlign",
@@ -650,7 +609,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {
         "specificAlign": 4,
@@ -667,7 +625,6 @@
         "en": "Saving method"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "homeSaving",
@@ -705,7 +662,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": false,
@@ -731,7 +687,6 @@
         "en": "Phone Type"
       },
       "type": "dropdown",
-      "questionType": "standard",
       "options": [
         {
           "option": "ownSmartPhone",
@@ -755,7 +710,6 @@
           }
         }
       ],
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false

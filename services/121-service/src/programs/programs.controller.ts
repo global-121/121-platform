@@ -250,7 +250,9 @@ You can also leave the body empty.`,
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionUPDATE] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramUPDATE],
+  })
   @ApiOperation({ summary: 'Update program registration attribute' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -279,7 +281,9 @@ You can also leave the body empty.`,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramQuestionDELETE] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramUPDATE],
+  })
   @ApiOperation({
     summary:
       'Delete Registration Attribute for a Program. Also deletes the data of this Attribute for the Registrations in this Program.',

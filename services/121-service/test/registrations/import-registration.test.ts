@@ -338,7 +338,9 @@ describe('Import a registration', () => {
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body).toMatchSnapshot();
+    expect(response.body[0].error).toContain(
+      registrationWesteros1Copy.programFinancialServiceProviderConfigurationName,
+    );
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
