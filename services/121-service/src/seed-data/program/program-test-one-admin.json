@@ -25,7 +25,7 @@
   "fixedTransferValue": 10,
   "paymentAmountMultiplierFormula": "1 + 1 * dragon",
   "targetNrRegistrations": 250,
-  "programQuestions": [
+  "programRegistrationAttributes": [
     {
       "name": "name",
       "label": {
@@ -110,34 +110,6 @@
         "multiplier": 2
       },
       "showInPeopleAffectedTable": false
-    }
-  ],
-  "programCustomAttributes": [
-    {
-      "label": {
-        "ar": "لا يعرف شيئًا",
-        "en": "Knows nothing",
-        "es": "No sabe nada",
-        "fr": "Ne sait rien",
-        "nl": "Weet niets"
-      },
-      "name": "knowsNothing",
-      "type": "boolean",
-      "editableInPortal": true,
-      "showInPeopleAffectedTable": true
-    },
-    {
-      "label": {
-        "ar": "الشعار",
-        "en": "Motto",
-        "es": "Lema",
-        "fr": "Devise",
-        "nl": "Motto"
-      },
-      "name": "motto",
-      "type": "text",
-      "editableInPortal": true,
-      "showInPeopleAffectedTable": true
     }
   ],
   "aboutProgram": {

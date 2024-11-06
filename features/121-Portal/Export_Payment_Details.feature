@@ -33,7 +33,7 @@ Feature: Export payment data
     And it shows a list of the registrations that have been paid out
     And - if program and user have scope - then it shows only the PAs within the scope of the user
     And "transaction" data: "payment", "timestamp", "amount" (multiplication of "paymentAmountMultiplier" and "transfer value"), "status", "errorMessage", "financialServiceProvider"
-    And "registration" data: "referenceId", "phoneNumber" and any defined program-questions, fsp-questions and program-custom-attributes that have "payment" as part of the "export" attribute
+    And "registration" data: "referenceId", "phoneNumber" and any defined registration attributes that have "payment" as part of the "export" attribute
 
   Scenario: Viewing the export options without permission
     Given a logged-in user without "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions

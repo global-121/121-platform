@@ -253,11 +253,15 @@ You can also leave the body empty.`,
     description: 'Return program registration attribute',
     type: ProgramRegistrationAttributeEntity,
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Providede program registration attribute name not found',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
-    name: 'programRegistrationAttributeId',
+    name: 'programRegistrationAttributeName',
     required: true,
-    type: 'integer',
+    type: 'string',
   })
   @Patch(':programId/registration-attributes/:programRegistrationAttributeName')
   public async updateProgramRegistrationAttribute(
