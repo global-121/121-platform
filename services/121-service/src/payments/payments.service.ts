@@ -21,6 +21,7 @@ import {
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { ImportTemplateResponseDto } from '@121-service/src/payments/dto/import-template-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
@@ -277,10 +278,7 @@ export class PaymentsService {
       }
     }
 
-    // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
-    for (const id of fspConfigIdsInPayment) {
-      await this.validateRequiredFinancialServiceProviderConfigurations(id);
-    }
+    await this.checkFspConfigurationsOrThrow(fspConfigIdsInPayment);
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
     const bulkActionResultPaymentDto = {
@@ -319,10 +317,26 @@ export class PaymentsService {
     return bulkActionResultPaymentDto;
   }
 
-  // ##TODO needs to be refactored to work with programFspConfigProperties
-  async validateRequiredFinancialServiceProviderConfigurations(
+  private async checkFspConfigurationsOrThrow(
+    programFinancialServiceProviderConfigurationIds: number[],
+  ): Promise<void> {
+    const validationResults = await Promise.all(
+      programFinancialServiceProviderConfigurationIds.map((id) =>
+        this.validateMissingFspConfigurations(id),
+      ),
+    );
+    const errorMessages = validationResults.flat();
+    if (errorMessages.length > 0) {
+      throw new HttpException(
+        `${errorMessages.join(', ')}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private async validateMissingFspConfigurations(
     programFinancialServiceProviderConfigurationId: number,
-  ) {
+  ): Promise<string[]> {
     const config =
       await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
         {
@@ -336,23 +350,24 @@ export class PaymentsService {
     const requiredConfigurations = findRequiredConfigurationProperties(
       config.financialServiceProviderName,
     );
-    // Early return for FSP that don't have required configurarions
+    // Early return for FSP that don't have required configurations
     if (!requiredConfigurations) {
-      return;
+      return [];
     }
+
+    const errorMessages: string[] = [];
     for (const requiredConfiguration of requiredConfigurations) {
       const foundConfig = config.properties.find(
         (c) => c.name === requiredConfiguration,
       );
       if (!foundConfig) {
-        throw new HttpException(
-          {
-            errors: `Missing required configuration ${requiredConfiguration} for FSP ${config.financialServiceProviderName}`,
-          },
-          HttpStatus.BAD_REQUEST,
+        errorMessages.push(
+          `Missing required configuration ${requiredConfiguration} for FSP ${config.financialServiceProviderName}`,
         );
       }
     }
+
+    return errorMessages;
   }
 
   private async getRegistrationsForPaymentChunked(
@@ -1216,7 +1231,8 @@ export class PaymentsService {
             r.programFinancialServiceProviderConfigurationId === fspConfig.id,
         )
         .map((r) => r.transaction)
-        .filter((t) => t !== undefined);
+        .filter((t): t is PaTransactionResultDto => t !== undefined);
+
       await this.transactionsService.storeReconciliationTransactionsBulk(
         transactions,
         {

@@ -194,8 +194,12 @@ export class MakePaymentComponent implements OnInit, OnDestroy {
   }
 
   private onPaymentError(error) {
-    if (error && error.error && error.error.errors) {
-      actionResult(this.alertController, this.translate, error.error.errors);
+    if (error && error.error && (error.error.errors || error.error.message)) {
+      actionResult(
+        this.alertController,
+        this.translate,
+        error.error.errors || error.error.message,
+      );
     } else {
       actionResult(
         this.alertController,
