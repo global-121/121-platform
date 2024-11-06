@@ -56,8 +56,7 @@ export class MigrateVisaService {
     // await this.COMMENT_OUT_THIS_FUNCTION_FOR_TESTING_ONLY_CLEAR_DATA(
     //   queryRunner,
     // );
-    const programIds =
-      await this.selectProgramIdsForInstanceWithVisa(queryRunner);
+    const programIds = await this.selectProgramIdsForInstanceWithVisa();
     for (const programId of programIds) {
       await this.migrateProgramData(
         queryRunner,
@@ -434,17 +433,13 @@ export class MigrateVisaService {
     return brandCodeConfig[0]?.value as string;
   }
 
-  private async selectProgramIdsForInstanceWithVisa(
-    queryRunner: QueryRunner,
-  ): Promise<number[]> {
+  private async selectProgramIdsForInstanceWithVisa(): Promise<number[]> {
     // if intersolve_visa is not enabled, return empty array
     if (!process.env.INTERSOLVE_VISA_API_URL) {
       return [];
     }
-    const queryResult = await queryRunner.query(
-      `SELECT id FROM "121-service"."program"`,
-    );
-    return queryResult.map((row: { id: number }) => row.id);
+    // We know that program 2 and 3 are the programs with intersolve_visa on the NLRC instance.
+    return [2, 3];
   }
 
   private async selectVisaCustomers(
