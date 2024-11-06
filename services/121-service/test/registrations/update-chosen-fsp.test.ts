@@ -1,9 +1,21 @@
 import { HttpStatus } from '@nestjs/common';
 
+import {
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
+  doPayment,
+  getTransactions,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
+import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
+import {
   importRegistrations,
+  seedIncludedRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -117,8 +129,93 @@ describe('Update chosen FSP of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.financialServiceProviderName).toBe(
+    expect(response.body.programFinancialServiceProviderConfigurationName).toBe(
       newProgramFinancialServiceProviderConfigurationName,
+    );
+  });
+
+  it('should succeed updating registration to a newly added FSP config of which the name is not the same as the FSP and doing a payment', async () => {
+    // Arrange
+    const payment = 1;
+    await resetDB(SeedScript.nlrcMultiple);
+    await seedIncludedRegistrations(
+      [registrationPvScoped],
+      programIdPv,
+      accessToken,
+    );
+
+    const newProgramFinancialServiceProviderConfigurationName =
+      'VoucherNumberTwo';
+    const fspConfigBody: CreateProgramFinancialServiceProviderConfigurationDto =
+      {
+        name: newProgramFinancialServiceProviderConfigurationName,
+        financialServiceProviderName:
+          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        label: { en: 'Voucher number 2' },
+        properties: [
+          {
+            name: FinancialServiceProviderConfigurationProperties.password,
+            value: 'password',
+          },
+          {
+            name: FinancialServiceProviderConfigurationProperties.username,
+            value: 'username',
+          },
+        ],
+      };
+    await postProgramFinancialServiceProviderConfiguration({
+      programId: programIdPv,
+      body: fspConfigBody,
+      accessToken,
+    });
+
+    const dataUpdate = {
+      programFinancialServiceProviderConfigurationName:
+        newProgramFinancialServiceProviderConfigurationName,
+    };
+    const reason = 'automated test';
+
+    // Act
+    const response = await updateRegistration(
+      programIdPv,
+      registrationPvScoped.referenceId,
+      dataUpdate,
+      reason,
+      accessToken,
+    );
+    await doPayment(
+      programIdPv,
+      payment,
+      15,
+      [registrationPvScoped.referenceId],
+      accessToken,
+    );
+    await waitForPaymentTransactionsToComplete(
+      programIdPv,
+      [registrationPvScoped.referenceId],
+      accessToken,
+      30_000,
+    );
+
+    const transactionsResponse = await getTransactions(
+      programIdPv,
+      payment,
+      registrationPvScoped.referenceId,
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.programFinancialServiceProviderConfigurationName).toBe(
+      newProgramFinancialServiceProviderConfigurationName,
+    );
+    expect(transactionsResponse.text).toContain('success');
+    expect(
+      transactionsResponse.body[0]
+        .programFinancialServiceProviderConfigurationName,
+    ).toBe(newProgramFinancialServiceProviderConfigurationName);
+    expect(transactionsResponse.body[0].financialServiceProviderName).toBe(
+      FinancialServiceProviders.intersolveVoucherWhatsapp,
     );
   });
 });
