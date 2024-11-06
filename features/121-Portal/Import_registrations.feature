@@ -14,7 +14,7 @@ Feature: Import registrations with status registered
     And it has the dynamic columns for "programRegistrationAttributes" of that program
 
     When the program is not configured with a paymentAmountMultiplierFormula
-    Then it contains the column "paymentAmountMultiplier" after the "fspQuestions"
+    Then it contains the column "paymentAmountMultiplier"
 
     When the program has scope enabled
     Then it contains the column scope

@@ -49,7 +49,7 @@ export default function () {
     },
   });
 
-  // add 50 program questions to generate a bigger load
+  // add 50 program registration attributes to generate a bigger load
   for (let i = 1; i <= 50; i++) {
     const attributeName = `attribute${i}`;
     const programRegistrationAttributes =

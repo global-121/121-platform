@@ -575,7 +575,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       personRow = this.fillPaymentHistoryColumn(personRow);
     }
 
-    // Custom attributes can be personal data or not personal data
+    // Program registration attributes can be personal data or not personal data
     // for now only users that view custom data can see it
     if (this.canViewPersonalData) {
       personRow = this.fillPaTableAttributeRows(person, personRow);
