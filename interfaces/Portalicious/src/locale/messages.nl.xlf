@@ -1127,17 +1127,9 @@
         <source>There has been no export yet.</source>
         <target state="new">There has been no export yet.</target>
       </trans-unit>
-      <trans-unit id="1206208686212846412" datatype="html">
-        <source>Preparing export</source>
-        <target state="new">Preparing export</target>
-      </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
         <target state="new">This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</target>
-      </trans-unit>
-      <trans-unit id="7945700064012172493" datatype="html">
-        <source>Export downloaded.</source>
-        <target state="new">Export downloaded.</target>
       </trans-unit>
       <trans-unit id="5035732150329518917" datatype="html">
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
@@ -1190,6 +1182,14 @@
       <trans-unit id="export-payments-last" datatype="html">
         <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
         <target state="new">Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</target>
+      </trans-unit>
+      <trans-unit id="721179600254881872" datatype="html">
+        <source>Exporting</source>
+        <target state="new">Exporting</target>
+      </trans-unit>
+      <trans-unit id="1692337501325731003" datatype="html">
+        <source>There is currently no data to export</source>
+        <target state="new">There is currently no data to export</target>
       </trans-unit>
     </body>
   </file>

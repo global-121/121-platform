@@ -105,7 +105,7 @@ export class ExportPaymentsComponent {
       this.projectId,
       this.toastService,
     ),
-    onSuccess: this.exportService.downloadExport(this.toastService),
+    onSuccess: this.exportService.downloadExport(),
   }));
 
   exportOptions = computed<MenuItem[]>(() => [

@@ -1,4 +1,8 @@
-import { HttpParamsOptions } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpParamsOptions,
+  HttpStatusCode,
+} from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 
 import { injectQueryClient } from '@tanstack/angular-query-experimental';
@@ -98,7 +102,7 @@ export class ExportService {
       maxPayment?: number;
     }) => {
       toastService.showToast({
-        summary: $localize`Preparing export`,
+        summary: $localize`Exporting`,
         detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
         severity: 'info',
         showSpinner: true,
@@ -113,39 +117,42 @@ export class ExportService {
         maxPayment,
       });
 
-      let exportResult: Blob;
+      try {
+        let exportResult: Blob;
 
-      if (type === 'pa-data-changes') {
-        exportResult = await this.queryClient.fetchQuery(
-          this.eventApiService.getEvents({
-            projectId,
-            params,
-          })(),
-        );
-      } else {
-        exportResult = await this.queryClient.fetchQuery(
-          this.metricApiService.exportMetrics({
-            projectId,
-            type,
-            params,
-          })(),
-        );
+        if (type === 'pa-data-changes') {
+          exportResult = await this.queryClient.fetchQuery(
+            this.eventApiService.getEvents({
+              projectId,
+              params,
+            })(),
+          );
+        } else {
+          exportResult = await this.queryClient.fetchQuery(
+            this.metricApiService.exportMetrics({
+              projectId,
+              type,
+              params,
+            })(),
+          );
+        }
+
+        const filename = this.toExportFileName(type);
+
+        return { exportResult, filename };
+      } catch (error) {
+        if (
+          error instanceof HttpErrorResponse &&
+          error.status === (HttpStatusCode.NotFound as number)
+        ) {
+          throw new Error($localize`There is currently no data to export`);
+        }
+        throw error;
       }
-
-      const filename = this.toExportFileName(type);
-
-      return { exportResult, filename };
     };
   }
 
-  private showSuccessfulExportToast(toastService: ToastService) {
-    toastService.showToast({
-      detail: $localize`Export downloaded.`,
-      severity: 'success',
-    });
-  }
-
-  downloadArrayToXlsx(toastService: ToastService) {
+  downloadArrayToXlsx() {
     return ({ data, fileName }: { data: unknown[]; fileName: string }) => {
       const worksheet = XLSX.utils.json_to_sheet(data);
       const workbook: XLSX.WorkBook = {
@@ -153,11 +160,10 @@ export class ExportService {
         SheetNames: ['data'],
       };
       XLSX.writeFile(workbook, this.toExportFileName(fileName));
-      this.showSuccessfulExportToast(toastService);
     };
   }
 
-  downloadExport(toastService: ToastService) {
+  downloadExport() {
     return ({
       exportResult,
       filename,
@@ -170,7 +176,6 @@ export class ExportService {
       link.href = downloadURL;
       link.download = filename;
       link.click();
-      this.showSuccessfulExportToast(toastService);
     };
   }
 

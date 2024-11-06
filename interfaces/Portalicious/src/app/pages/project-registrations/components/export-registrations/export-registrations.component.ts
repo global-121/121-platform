@@ -93,7 +93,7 @@ export class ExportRegistrationsComponent {
       this.projectId,
       this.toastService,
     ),
-    onSuccess: this.exportService.downloadExport(this.toastService),
+    onSuccess: this.exportService.downloadExport(),
   }));
 
   exportCBEVerificationReportMutation = injectMutation((queryClient) => ({
@@ -101,7 +101,7 @@ export class ExportRegistrationsComponent {
       queryClient.fetchQuery(
         this.projectApiService.getCbeVerificationReport(this.projectId)(),
       ),
-    onSuccess: this.exportService.downloadArrayToXlsx(this.toastService),
+    onSuccess: this.exportService.downloadArrayToXlsx(),
   }));
 
   exportOptions = computed<MenuItem[]>(() => [
