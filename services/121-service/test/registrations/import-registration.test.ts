@@ -338,7 +338,6 @@ describe('Import a registration', () => {
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    console.log('🚀 ~ it ~ response.bod:', response.body);
     expect(response.body[0].error).toContain(
       registrationWesteros1Copy.programFinancialServiceProviderConfigurationName,
     );
