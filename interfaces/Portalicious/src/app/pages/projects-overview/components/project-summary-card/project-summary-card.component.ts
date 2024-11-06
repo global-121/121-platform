@@ -6,32 +6,28 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CardModule } from 'primeng/card';
-import { SkeletonModule } from 'primeng/skeleton';
 
 import { AppRoutes } from '~/app.routes';
+import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { ProjectMetricContainerComponent } from '~/pages/projects-overview/components/project-metric-container/project-metric-container.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
   selector: 'app-project-summary-card',
   standalone: true,
   imports: [
-    CardModule,
-    SkeletonModule,
     TranslatableStringPipe,
-    RouterLink,
     CommonModule,
     CurrencyPipe,
-    ProjectMetricContainerComponent,
+    MetricContainerComponent,
     SkeletonInlineComponent,
+    CardWithLinkComponent,
   ],
   templateUrl: './project-summary-card.component.html',
   styles: ``,

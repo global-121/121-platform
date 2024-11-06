@@ -1,0 +1,27 @@
+<p-card
+  styleClass="[&_.p-card-content]:flex-end group relative h-full border border-transparent *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
+>
+  <ng-template pTemplate="title">
+    <a
+      [routerLink]="href()"
+      class="after:absolute after:inset-0 after:block group-focus-within:text-purple group-hover:text-purple"
+    >
+      @if (loading()) {
+        <app-skeleton-inline />
+      } @else {
+        <span
+          class="line-clamp-2 text-ellipsis"
+          [title]="title()"
+        >
+          {{ title() }}
+        </span>
+      }
+    </a>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <ng-content select="[card-content]"></ng-content>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <ng-content select="[card-footer]"></ng-content>
+  </ng-template>
+</p-card>
