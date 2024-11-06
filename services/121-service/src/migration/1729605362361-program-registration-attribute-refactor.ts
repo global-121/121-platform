@@ -16,6 +16,8 @@ export class ProgramRegistrationAttributeRefactor1729605362361
     await this.checkRegistrationFspConfigMigrations(queryRunner);
     await this.checkTransactionFspConfigMigrations(queryRunner);
 
+    await this.removePermissions(queryRunner);
+
     await this.dropOldTablesAndViews(queryRunner);
     console.timeEnd('Migration');
     // throw new Error('You shall not pass! Use this to prevent the migration from passing');
@@ -111,6 +113,29 @@ export class ProgramRegistrationAttributeRefactor1729605362361
         'SELECT "registration"."id" AS "id", "registration"."created" AS "registrationCreated", "registration"."programId" AS "programId", "registration"."registrationStatus" AS "status", "registration"."referenceId" AS "referenceId", "registration"."phoneNumber" AS "phoneNumber", "registration"."preferredLanguage" AS "preferredLanguage", "registration"."inclusionScore" AS "inclusionScore", "registration"."paymentAmountMultiplier" AS "paymentAmountMultiplier", "registration"."maxPayments" AS "maxPayments", "registration"."paymentCount" AS "paymentCount", "registration"."scope" AS "scope", "fspconfig"."label" AS "programFinancialServiceProviderConfigurationLabel", CAST(CONCAT(\'PA #\',registration."registrationProgramId") as VARCHAR) AS "personAffectedSequence", registration."registrationProgramId" AS "registrationProgramId", TO_CHAR("registration"."created",\'yyyy-mm-dd\') AS "registrationCreatedDate", fspconfig."name" AS "programFinancialServiceProviderConfigurationName", fspconfig."id" AS "programFinancialServiceProviderConfigurationId", fspconfig."financialServiceProviderName" AS "financialServiceProviderName", "registration"."maxPayments" - "registration"."paymentCount" AS "paymentCountRemaining", COALESCE("message"."type" || \': \' || "message"."status",\'no messages yet\') AS "lastMessageStatus" FROM "121-service"."registration" "registration" LEFT JOIN "121-service"."program_financial_service_provider_configuration" "fspconfig" ON "fspconfig"."id"="registration"."programFinancialServiceProviderConfigurationId"  LEFT JOIN "121-service"."latest_message" "latestMessage" ON "latestMessage"."registrationId"="registration"."id"  LEFT JOIN "121-service"."twilio_message" "message" ON "message"."id"="latestMessage"."messageId" ORDER BY "registration"."registrationProgramId" ASC',
       ],
     );
+  }
+
+  private async removePermissions(queryRunner: QueryRunner) {
+    // Step 1: Select the IDs of the permissions to be deleted
+    const permissionIds = await queryRunner.query(`
+      SELECT id FROM "121-service".permission WHERE "name" IN ('program:question.update', 'program:question.delete', 'program:custom-attribute.update')
+    `);
+
+    if (permissionIds.length > 0) {
+      const ids = permissionIds
+        .map((permission: { id: number }) => permission.id)
+        .join(',');
+
+      // Step 2: Delete entries from user_role_permissions_permission table
+      await queryRunner.query(`
+        DELETE FROM "121-service".user_role_permissions_permission WHERE "permissionId" IN (${ids})
+      `);
+
+      // Step 3: Delete the permissions from the permission table
+      await queryRunner.query(`
+        DELETE FROM "121-service".permission WHERE "id" IN (${ids})
+      `);
+    }
   }
 
   private async migrateFspConig(queryRunner: QueryRunner) {
