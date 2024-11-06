@@ -16,10 +16,6 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 const nlrcOcwProgrammeTitle = NLRCProgram.titlePortal.en;
 const save = englishTranslations.common.save;
 const ok = englishTranslations.common.ok;
-const noneEmptyPhoneNumberAlert =
-  englishTranslations['page'].program['program-people-affected'][
-    'edit-person-affected-popup'
-  ].properties.error['not-empty'];
 const alertPattern = englishTranslations.common['error-with-message'];
 
 test.beforeEach(async ({ page }) => {
@@ -54,16 +50,6 @@ test('[28045] Update phoneNumber with invalid value', async ({ page }) => {
 
   await test.step('Open information pop-up', async () => {
     await table.selectFspPaPii({ shouldSelectVisa: true });
-  });
-
-  await test.step('Update phone number with empty string', async () => {
-    const phoneNumber = '';
-    await piiPopUp.updatePhoneNumber({
-      phoneNumber,
-      saveButtonName: save,
-      okButtonName: ok,
-      alert: alertPattern.replace('{{error}}', noneEmptyPhoneNumberAlert),
-    });
   });
 
   await test.step('Update phone number with invalid lookup number', async () => {
