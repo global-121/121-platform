@@ -452,8 +452,8 @@
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
       </trans-unit>
-      <trans-unit id="7596687906875795034" datatype="html">
-        <source>project-payments works!</source>
+      <trans-unit id="1709815007411996759" datatype="html">
+        <source>project-payment works!</source>
       </trans-unit>
       <trans-unit id="3054018033337101957" datatype="html">
         <source>Old data</source>
@@ -749,10 +749,10 @@
       <trans-unit id="7476141645378496788" datatype="html">
         <source>No payments yet</source>
       </trans-unit>
-      <trans-unit id="3010710400268626539" datatype="html">
+      <trans-unit id="7935811228673267610" datatype="html">
         <source>No Projects found</source>
       </trans-unit>
-      <trans-unit id="8550882715313062083" datatype="html">
+      <trans-unit id="8561412171255849133" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
       </trans-unit>
       <trans-unit id="4145496584631696119" datatype="html">
@@ -895,6 +895,30 @@
       </trans-unit>
       <trans-unit id="721179600254881872" datatype="html">
         <source>Exporting</source>
+      </trans-unit>
+      <trans-unit id="1105070151875122157" datatype="html">
+        <source>No Payments found</source>
+      </trans-unit>
+      <trans-unit id="3307214558906712688" datatype="html">
+        <source>In progress</source>
+      </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+      </trans-unit>
+      <trans-unit id="5004550577313573215" datatype="html">
+        <source>Total amount</source>
+      </trans-unit>
+      <trans-unit id="5836528780566781670" datatype="html">
+        <source>Successful transfers</source>
+      </trans-unit>
+      <trans-unit id="5847820864343475107" datatype="html">
+        <source>There are no payments for this project yet.</source>
+      </trans-unit>
+      <trans-unit id="9023742269421706395" datatype="html">
+        <source>Failed transfers</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-payment" datatype="html">
+        <source>Payment</source>
       </trans-unit>
     </body>
   </file>

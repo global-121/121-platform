@@ -152,7 +152,9 @@ export class ExportPaymentsComponent {
     },
   ]);
 
-  hasExportOptions = computed(() =>
-    this.exportOptions().some((option) => option.visible),
+  hasExportOptions = computed(
+    () =>
+      this.exportOptions().some((option) => option.visible) &&
+      (this.payments.data() ?? []).length > 0,
   );
 }
