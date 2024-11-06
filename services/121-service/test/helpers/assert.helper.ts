@@ -22,7 +22,10 @@ export function processMessagePlaceholders(
 }
 
 export function assertRegistrationBulkUpdate(
-  patchData: Record<string, string | undefined | boolean | number | null>,
+  patchData: Record<
+    string,
+    string | undefined | boolean | number | null | object
+  >,
   updatedRegistration: Record<
     string,
     string | undefined | boolean | number | null
@@ -33,7 +36,9 @@ export function assertRegistrationBulkUpdate(
   >,
 ): void {
   for (const key in patchData) {
-    expect(updatedRegistration[key]).toBe(patchData[key]);
+    expect(JSON.stringify(updatedRegistration[key])).toBe(
+      JSON.stringify(patchData[key]),
+    );
   }
   for (const key in originalRegistration) {
     if (patchData[key] === undefined && key !== 'name') {
