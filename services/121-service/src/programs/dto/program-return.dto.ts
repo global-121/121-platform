@@ -189,7 +189,8 @@ export class ProgramReturnDto {
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
-    description: 'Should be array of name-related program-questions.',
+    description:
+      'Should be array of name-related program-registration-attributes.',
   })
   @IsArray()
   @IsOptional()

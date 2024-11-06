@@ -71,11 +71,13 @@ describe('Create program', () => {
     // Arrange
     const requiredAttributes = ['name', 'type', 'label'];
     for (const attribute of requiredAttributes) {
-      const programCustomAttributeCopy = { ...programRegistrationAttribute };
-      delete programCustomAttributeCopy[attribute];
+      const programRegistrationAttributeCopy = {
+        ...programRegistrationAttribute,
+      };
+      delete programRegistrationAttributeCopy[attribute];
 
       const createResponse = await postProgramRegistrationAttribute(
-        programCustomAttributeCopy as any,
+        programRegistrationAttributeCopy as any,
         programIdPV,
         accessToken,
       );
@@ -88,12 +90,14 @@ describe('Create program', () => {
     // Arrange
     const names = ['namePartnerOrganization', 'whatsappPhoneNumber'];
     for (const name of names) {
-      const programCustomAttributeCopy = { ...programRegistrationAttribute };
-      programCustomAttributeCopy.name = name;
+      const programRegistrationAttributeCopy = {
+        ...programRegistrationAttribute,
+      };
+      programRegistrationAttributeCopy.name = name;
 
       // Act
       const createReponse = await postProgramRegistrationAttribute(
-        programCustomAttributeCopy,
+        programRegistrationAttributeCopy,
         programIdPV,
         accessToken,
       );

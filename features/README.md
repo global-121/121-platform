@@ -85,8 +85,7 @@ Using application such as EspoCRM to call our API
 #### Using Swagger UI
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
-- [Add and Update program custom attribute](Admin-user/Add_And_Update_program_custom_attribute.feature)
-- [Update program question](Admin-user/Update_program_question.feature)
+- [Update program registration attribute](Admin-user/Update_program_registration_attribute.feature)
 - [Update program](Admin-user/Update_program.feature)
 - [Export Intersolve vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
 - [Sync Intersolve Visa Customer](Admin-user/Sync_Intersolve_Visa_Customer.feature)

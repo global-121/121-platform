@@ -19,17 +19,6 @@ const programsArray: Program[] = [
     author: {},
     published: true,
     notifications: { en: 'Notification text' },
-    programCustomAttributes: [
-      {
-        id: 1,
-        name: 'namePartnerOrganization',
-        type: 'string',
-        programId: 1,
-        label: {
-          en: 'Partner Organization',
-        },
-      },
-    ],
     programRegistrationAttributes: [
       {
         id: 1,

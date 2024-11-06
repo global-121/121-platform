@@ -371,8 +371,6 @@
         },
         "choose-action": "Sélectionner une action...",
         "column": {
-          "custom-attribute-false": "Non",
-          "custom-attribute-true": "Oui",
           "dob": "Date de naissance",
           "failedPayment": "Échec du paiement #",
           "financialServiceProvider": "Prestataire de Services Financiers",
@@ -392,6 +390,8 @@
           "preferredLanguage": "Langue préférée",
           "programFinancialServiceProviderConfigurationLabel": "Prestataire de Services Financiers",
           "referenceId": "Identifiant de référence",
+          "registration-attribute-false": "Non",
+          "registration-attribute-true": "Oui",
           "registrationCreated": "Création d’un enregistrement",
           "registrationCreatedDate": "Date de création de l'enregistrement",
           "select": "Sélectionner",
