@@ -9,7 +9,7 @@ import { Locale } from '~/utils/locale';
   providedIn: 'root',
 })
 export class TranslatableStringService {
-  private currentLocale = inject(LOCALE_ID);
+  private currentLocale = inject<Locale>(LOCALE_ID);
 
   translate(
     value: LocalizedString | null | number | string | undefined,
@@ -26,16 +26,25 @@ export class TranslatableStringService {
       return value.toString();
     }
 
-    const locale = this.currentLocale as LanguageEnum;
+    let languageEnumLocale: LanguageEnum;
 
-    if (value[locale]) {
-      return value[locale];
+    switch (this.currentLocale) {
+      case Locale.en:
+        languageEnumLocale = LanguageEnum.en;
+        break;
+      default:
+        languageEnumLocale = LanguageEnum[this.currentLocale];
+        break;
     }
 
-    const fallbackLocale = Locale.en;
+    if (value[languageEnumLocale]) {
+      return value[languageEnumLocale];
+    }
 
-    if (value[fallbackLocale]) {
-      return value[fallbackLocale];
+    const fallbackLocaleValue = value[LanguageEnum.en];
+
+    if (fallbackLocaleValue) {
+      return fallbackLocaleValue;
     }
 
     // If even the fallback-language is not available, return any other language's value

@@ -59,7 +59,7 @@ jobs:
             font-src 'self' https://fonts.gstatic.com;
         env:
           NG_ENV_NAME: 'test'
-          NG_LOCALES: 'en,nl'
+          NG_LOCALES: 'en-GB,nl'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
           APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}

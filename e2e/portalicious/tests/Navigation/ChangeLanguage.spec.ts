@@ -20,11 +20,11 @@ test.beforeEach(async ({ page }) => {
 
 test('Change Language', async ({ page }) => {
   const homePage = new HomePage(page);
-  await page.waitForURL((url) => url.pathname.startsWith('/en/'));
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/'));
 
   await homePage.changeLanguage('Nederlands');
   await page.waitForURL((url) => url.pathname.startsWith('/nl/'));
 
   await homePage.changeLanguage('English');
-  await page.waitForURL((url) => url.pathname.startsWith('/en/'));
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/'));
 });

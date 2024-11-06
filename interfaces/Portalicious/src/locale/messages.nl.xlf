@@ -1055,7 +1055,7 @@
         <source>Password reset successful</source>
         <target state="new">Password reset successful</target>
       </trans-unit>
-      <trans-unit id="9132374083993014120" datatype="html">
+      <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
         <target state="new">Invalid email or password. Double-check your credentials and try again.</target>
       </trans-unit>

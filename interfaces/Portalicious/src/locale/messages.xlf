@@ -794,7 +794,7 @@
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
       </trans-unit>
-      <trans-unit id="9132374083993014120" datatype="html">
+      <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
       </trans-unit>
       <trans-unit id="error-rate-limit" datatype="html">

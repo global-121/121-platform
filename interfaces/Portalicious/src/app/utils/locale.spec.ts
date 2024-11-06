@@ -11,7 +11,7 @@ describe('getLocaleForInitialization', () => {
     expect(function () {
       getLocaleForInitialization({
         defaultLocale: 'nonsense',
-        urlLocale: 'en',
+        urlLocale: 'en-GB',
       });
     }).toThrowError('Invalid default locale "nonsense" found in environment.');
   });
@@ -19,7 +19,7 @@ describe('getLocaleForInitialization', () => {
   it('should throw an error when an invalid url locale is passed in', () => {
     expect(function () {
       getLocaleForInitialization({
-        defaultLocale: 'en',
+        defaultLocale: 'en-GB',
         urlLocale: 'nonsense',
       });
     }).toThrowError('Invalid locale "nonsense" found in URL: /context.html');
@@ -29,7 +29,7 @@ describe('getLocaleForInitialization', () => {
     spyOn(window.localStorage, 'getItem').and.callFake(() => 'nonsense');
 
     const localeInfo = getLocaleForInitialization({
-      defaultLocale: 'en',
+      defaultLocale: 'en-GB',
       urlLocale: 'nl',
     });
 
@@ -40,8 +40,8 @@ describe('getLocaleForInitialization', () => {
     spyOn(window.localStorage, 'getItem').and.callFake(() => null);
 
     let localeInfo = getLocaleForInitialization({
-      defaultLocale: 'en',
-      urlLocale: 'en',
+      defaultLocale: 'en-GB',
+      urlLocale: 'en-GB',
     });
 
     expect(localeInfo).toEqual({ locale: Locale.en });
@@ -58,8 +58,8 @@ describe('getLocaleForInitialization', () => {
     spyOn(window.localStorage, 'getItem').and.callFake(() => 'nl');
 
     const localeInfo = getLocaleForInitialization({
-      defaultLocale: 'en',
-      urlLocale: 'en',
+      defaultLocale: 'en-GB',
+      urlLocale: 'en-GB',
     });
 
     expect(localeInfo).toEqual({
@@ -73,7 +73,7 @@ describe('getLocaleForInitialization', () => {
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'nl',
-      urlLocale: 'en',
+      urlLocale: 'en-GB',
     });
 
     expect(localeInfo).toEqual({

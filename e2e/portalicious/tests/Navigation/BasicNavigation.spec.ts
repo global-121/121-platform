@@ -23,10 +23,10 @@ test('Navigation from sidebar', async ({ page }) => {
 
   const homePage = new HomePage(page);
   await homePage.navigateToPage('Users');
-  await page.waitForURL((url) => url.pathname.startsWith('/en/users'));
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/users'));
 
   await homePage.navigateToPage('User roles');
-  await page.waitForURL((url) => url.pathname.startsWith('/en/user-roles'));
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/user-roles'));
 });
 
 test('Navigation from program header', async ({ page }) => {
@@ -34,15 +34,15 @@ test('Navigation from program header', async ({ page }) => {
 
   const projectTitle = 'Cash program Westeros';
 
-  await page.goto('/en/projects');
+  await page.goto('/en-GB/projects');
   await page.getByRole('link', { name: projectTitle }).click();
   await page.waitForURL((url) =>
-    url.pathname.startsWith('/en/project/1/registrations'),
+    url.pathname.startsWith('/en-GB/project/1/registrations'),
   );
   await expect(await homePage.logo).toHaveText(`121 Portal${projectTitle}`);
 
   await homePage.navigateToProgramPage('Monitoring');
   await page.waitForURL((url) =>
-    url.pathname.startsWith('/en/project/1/monitoring'),
+    url.pathname.startsWith('/en-GB/project/1/monitoring'),
   );
 });
