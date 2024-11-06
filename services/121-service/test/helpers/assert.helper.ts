@@ -1,6 +1,7 @@
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export function processMessagePlaceholders(
   messageTemplates: MessageTemplateEntity[],
@@ -24,7 +25,7 @@ export function processMessagePlaceholders(
 export function assertRegistrationBulkUpdate(
   patchData: Record<
     string,
-    string | undefined | boolean | number | null | object
+    string | undefined | boolean | number | null | LocalizedString
   >,
   updatedRegistration: Record<
     string,

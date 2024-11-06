@@ -151,7 +151,6 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       accessToken,
       'test-reason',
     );
-    console.log('bulkUpdateResult: ', bulkUpdateResult.body);
     expect(bulkUpdateResult.statusCode).toBe(200);
     await waitFor(2000);
 

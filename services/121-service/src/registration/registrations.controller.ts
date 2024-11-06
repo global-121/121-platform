@@ -365,7 +365,7 @@ export class RegistrationsController {
   ) {
     const userId = RequestHelper.getUserId(req);
 
-    const hasRegistrationUpdatePermission =
+    const hasUpdateRegistrationPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
         programId,
@@ -377,17 +377,17 @@ export class RegistrationsController {
         programId,
         PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
-    const hasUpdateFspPermission =
+    const hasUpdateFspConfigPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
         programId,
-        PermissionEnum.RegistrationFspUPDATE,
+        PermissionEnum.RegistrationFspConfigUPDATE,
       );
 
     if (
-      !hasRegistrationUpdatePermission &&
+      !hasUpdateRegistrationPermission &&
       !hasUpdateFinancialPermission &&
-      !hasUpdateFspPermission
+      !hasUpdateFspConfigPermission
     ) {
       const errors = `User does not have permission to update attributes`;
       throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
@@ -407,12 +407,12 @@ export class RegistrationsController {
         attributeKey ===
         GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
       ) {
-        if (!hasUpdateFspPermission) {
+        if (!hasUpdateFspConfigPermission) {
           const errors = `User does not have permission to update chosen program financial service provider configuration`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       } else {
-        if (!hasRegistrationUpdatePermission) {
+        if (!hasUpdateRegistrationPermission) {
           const errors = `User does not have permission to update attributes`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
