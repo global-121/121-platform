@@ -8,6 +8,7 @@ import { registrationsPV } from '@121-service/test/registrations/pagination/pagi
 
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
+import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
@@ -31,6 +32,7 @@ test.beforeEach(async ({ page }) => {
 test('[31077] Send custom message', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
+  const activityLog = new RegistrationActivityLogPage(page);
   const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
@@ -41,7 +43,7 @@ test('[31077] Send custom message', async ({ page }) => {
 
   await test.step('Send custom message', async () => {
     const registrationFullName =
-      await table.getFirstRegistrationNameFromTable();
+      await registrations.getFirstRegistrationNameFromTable();
     if (!registrationFullName) {
       throw new Error('Registration full name is undefined');
     }
@@ -51,7 +53,7 @@ test('[31077] Send custom message', async ({ page }) => {
     const sendingMessageToast =
       'Closing this notification will not cancel message sending.';
 
-    await registrations.selectAllRegistrations();
+    await table.selectAll();
     await registrations.selectBulkAction('Message');
     await registrations.selectCustomMessage();
     await registrations.typeCustomMessage(customMessageText);
@@ -60,9 +62,10 @@ test('[31077] Send custom message', async ({ page }) => {
     await registrations.sendMessage();
 
     await registrations.validateToastMessage(sendingMessageToast);
-    await table.selectRegistrationByName({
+    await registrations.selectRegistrationByName({
       registrationName: registrationFullName,
     });
-    await registrations.validateLastMessageSent(customMessagePreview);
+
+    await activityLog.validateLastMessageSent(customMessagePreview);
   });
 });

@@ -6,20 +6,14 @@ import TableComponent from './TableComponent';
 
 class RegistrationsPage extends BasePage {
   readonly page: Page;
-  readonly tableRows: Locator;
-  readonly selectAllRegistrationsCheckbox: Locator;
+  readonly table: TableComponent;
+  readonly goToProfileOption: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.tableRows = this.page.locator('table tbody tr');
-    this.selectAllRegistrationsCheckbox = this.page.getByRole('cell', {
-      name: 'All items unselected',
-    });
-  }
-
-  async selectAllRegistrations() {
-    await this.selectAllRegistrationsCheckbox.click();
+    this.table = new TableComponent(page);
+    this.goToProfileOption = this.page.getByText('Go to profile');
   }
 
   async selectBulkAction(action: string) {
@@ -62,19 +56,45 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('button', { name: 'Send message' }).click();
   }
 
-  async validateLastMessageSent(message: string) {
-    const table = new TableComponent(this.page);
+  async getFirstRegistrationNameFromTable() {
+    await this.page.waitForTimeout(200);
+    await this.page.waitForSelector('table tbody tr td');
+    const fullName = await this.table.getCell(0, 2);
+    const fullNameText = (await fullName.textContent())?.trim();
+    return fullNameText;
+  }
 
-    const dropdownButton = await table.getCell(0, 0);
-    const lastMessage = (await table.getCell(0, 1)).getByText('Message');
-    const lastMessageText = await lastMessage.innerText();
+  async selectRegistrationByName({
+    registrationName,
+  }: {
+    registrationName: string;
+  }) {
+    const rowCount = await this.table.tableRows.count();
+    for (let i = 0; i <= rowCount; i++) {
+      const fullName = await this.table.getCell(i, 2);
+      const fullNameText = (await fullName.textContent())?.trim();
+      const isRequestedFullName = fullNameText?.includes(registrationName);
 
-    if (lastMessageText === 'Message') {
-      await dropdownButton.click();
+      if (
+        (registrationName && isRequestedFullName) ||
+        (!registrationName && !isRequestedFullName)
+      ) {
+        await fullName.click({ button: 'right' });
+        await this.goToProfileOption.click();
+        return i;
+      }
     }
+    return -1;
+  }
 
-    const sentMessaggeText = await this.page.getByText(message).innerText();
-    expect(sentMessaggeText).toBe(message);
+  async selectRandomRegistration() {
+    const rowCount = await this.table.tableRows.count();
+    const randomIndex = Math.floor(Math.random() * rowCount);
+    const fullName = await this.table.getCell(randomIndex, 2);
+
+    await fullName.click({ button: 'right' });
+    await this.goToProfileOption.click();
+    return randomIndex;
   }
 }
 
