@@ -47,7 +47,7 @@ test('[31076] Send templated message', async ({ page }) => {
   });
 
   await test.step('Send templated message', async () => {
-    await table.selectAll();
+    await table.selectAllCheckbox();
     await registrations.selectBulkAction('Message');
     await registrations.selectTemplatedMessage('Include');
     await registrations.clickContinueToPreview();
@@ -57,7 +57,7 @@ test('[31076] Send templated message', async ({ page }) => {
     await registrations.sendMessage();
 
     await registrations.validateToastMessage(sendingMessageToast);
-    await registrations.selectRandomRegistration();
+    await registrations.goToRandomRegistration();
     await activityLog.validateLastMessageSent(includeMessageTemplate);
   });
 });

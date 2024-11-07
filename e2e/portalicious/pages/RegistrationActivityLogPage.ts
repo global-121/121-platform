@@ -15,18 +15,16 @@ class RegistrationActivityLogPage extends BasePage {
   }
 
   async validateLastMessageSent(message: string) {
-    const table = new TableComponent(this.page);
-
-    const dropdownButton = await table.getCell(0, 0);
-    const lastMessage = (await table.getCell(0, 1)).getByText('Message');
+    const dropdownButton = await this.table.getCell(0, 0);
+    const lastMessage = (await this.table.getCell(0, 1)).getByText('Message');
     const lastMessageText = await lastMessage.innerText();
 
     if (lastMessageText === 'Message') {
       await dropdownButton.click();
     }
 
-    const sentMessaggeText = await this.page.getByText(message).innerText();
-    expect(sentMessaggeText).toBe(message);
+    const sentMessageText = await this.page.getByText(message).innerText();
+    expect(sentMessageText).toBe(message);
   }
 }
 

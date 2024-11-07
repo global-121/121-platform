@@ -53,7 +53,7 @@ test('[31077] Send custom message', async ({ page }) => {
     const sendingMessageToast =
       'Closing this notification will not cancel message sending.';
 
-    await table.selectAll();
+    await table.selectAllCheckbox();
     await registrations.selectBulkAction('Message');
     await registrations.selectCustomMessage();
     await registrations.typeCustomMessage(customMessageText);
@@ -62,7 +62,7 @@ test('[31077] Send custom message', async ({ page }) => {
     await registrations.sendMessage();
 
     await registrations.validateToastMessage(sendingMessageToast);
-    await registrations.selectRegistrationByName({
+    await registrations.goToRegistrationByName({
       registrationName: registrationFullName,
     });
 

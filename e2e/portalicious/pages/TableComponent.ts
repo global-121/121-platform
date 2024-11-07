@@ -21,7 +21,7 @@ class TableComponent extends BasePage {
     return this.tableRows.nth(row).locator('td').nth(column);
   }
 
-  async selectAll() {
+  async selectAllCheckbox() {
     await this.selectAllRegistrationsCheckbox.click();
   }
 }

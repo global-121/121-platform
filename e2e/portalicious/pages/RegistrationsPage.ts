@@ -64,7 +64,7 @@ class RegistrationsPage extends BasePage {
     return fullNameText;
   }
 
-  async selectRegistrationByName({
+  async goToRegistrationByName({
     registrationName,
   }: {
     registrationName: string;
@@ -81,13 +81,13 @@ class RegistrationsPage extends BasePage {
       ) {
         await fullName.click({ button: 'right' });
         await this.goToProfileOption.click();
-        return i;
+        return;
       }
     }
-    return -1;
+    throw new Error('Registration not found');
   }
 
-  async selectRandomRegistration() {
+  async goToRandomRegistration() {
     const rowCount = await this.table.tableRows.count();
     const randomIndex = Math.floor(Math.random() * rowCount);
     const fullName = await this.table.getCell(randomIndex, 2);
