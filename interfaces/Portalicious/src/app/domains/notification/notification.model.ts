@@ -1,11 +1,8 @@
-import { MessageTemplateController } from '@121-service/src/notifications/message-template/message-template.controller';
+import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 
-import { Dto121Service } from '~/utils/dto-type';
-import { ArrayElement } from '~/utils/type-helpers';
+import { Dto } from '~/utils/dto-type';
 
-export type MessageTemplate = ArrayElement<
-  Dto121Service<MessageTemplateController['getMessageTemplatesByProgramId']>
->;
+export type MessageTemplate = Dto<MessageTemplateEntity>;
 
 export type MessageTemplateWithTranslatedLabel = {
   label: string;

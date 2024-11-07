@@ -10,9 +10,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 
 import { Dto } from '~/utils/dto-type';
 
-// TODO: AB#30152 This type should be refactored to use Dto121Service
 export type Registration = Dto<MappedPaginatedRegistrationDto>;
-// TODO: AB#30152 This type should be refactored to use Dto121Service
 export type FindAllRegistrationsResult = Dto<FindAllRegistrationsResultDto>;
 
 // The discriminated union type doesn't play well with our Dto utility type, so we need to define the Activity type manually
@@ -92,7 +90,6 @@ class IntersolveVisaWalletDto {
   public cards: IntersolveVisaCardDto[];
 }
 
-// TODO: AB#30152 This type should be refactored to use Dto121Service
 export type WalletWithCards = Dto<IntersolveVisaWalletDto>;
 
 export type SendMessageData =

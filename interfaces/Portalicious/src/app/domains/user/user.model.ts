@@ -1,5 +1,5 @@
-import { UserController } from '@121-service/src/user/user.controller';
+import { UserRO } from '@121-service/src/user/user.interface';
 
-import { Dto121Service } from '~/utils/dto-type';
+import { Dto } from '~/utils/dto-type';
 
-export type User = Dto121Service<UserController['login']>['user'];
+export type User = Dto<UserRO>['user'];
