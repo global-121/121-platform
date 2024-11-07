@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { authGuard } from '~/guards/auth.guard';
-import { organizationAdminGuard } from '~/guards/organization-admin.guard';
+import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 import { ChangePasswordPageComponent } from '~/pages/change-password/change-password.page';
 import { LoginPageComponent } from '~/pages/login/login.page';
@@ -44,7 +44,13 @@ export const routes: Routes = [
     path: AppRoutes.changePassword,
     title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
     component: ChangePasswordPageComponent,
-    canActivate: [authGuard],
+    canActivate: [
+      authGuard,
+      authCapabilitiesGuard(
+        // only enable this if the authService has a ChangePasswordComponent
+        (authService) => !!authService.ChangePasswordComponent,
+      ),
+    ],
   },
   {
     path: AppRoutes.projects,
@@ -54,12 +60,18 @@ export const routes: Routes = [
   {
     path: AppRoutes.users,
     component: UsersPageComponent,
-    canActivate: [authGuard, organizationAdminGuard],
+    canActivate: [
+      authGuard,
+      authCapabilitiesGuard((authService) => authService.isOrganizationAdmin),
+    ],
   },
   {
     path: AppRoutes.userRoles,
     component: UserRolesPageComponent,
-    canActivate: [authGuard, organizationAdminGuard],
+    canActivate: [
+      authGuard,
+      authCapabilitiesGuard((authService) => authService.isOrganizationAdmin),
+    ],
   },
   {
     path: `${AppRoutes.project}/:projectId`,
