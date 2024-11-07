@@ -8,6 +8,7 @@ import {
 } from '@nestjs/terminus';
 
 import { APP_VERSION } from '@121-service/src/config';
+import { GetVersionDto } from '@121-service/src/health/dto/get-version.dto';
 
 @ApiTags('instance')
 // TODO: REFACTOR: rename to instance
@@ -29,12 +30,7 @@ export class HealthController {
 
   @ApiOperation({ summary: 'Get version of instance' })
   @Get('version')
-  public version(): {
-    schemaVersion: number;
-    label: string;
-    message: string;
-    isError?: boolean;
-  } {
+  public version(): GetVersionDto {
     const version = APP_VERSION;
 
     // See: https://shields.io/endpoint

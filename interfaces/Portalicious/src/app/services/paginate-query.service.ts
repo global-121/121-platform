@@ -12,8 +12,6 @@ export enum FilterOperator {
   IN = '$in',
 }
 
-// TODO: AB#30152 This type could be taken from the 121-service
-// export type PaginateQuery = Parameters<RegistrationsController['findAll']>[0];
 export interface PaginateQuery {
   page?: number;
   limit?: number;

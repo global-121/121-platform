@@ -1,5 +1,5 @@
-import { HealthController } from '@121-service/src/health/health.controller';
+import { GetVersionDto } from '@121-service/src/health/dto/get-version.dto';
 
-import { Dto121Service } from '~/utils/dto-type';
+import { Dto } from '~/utils/dto-type';
 
-export type VersionInfo = Dto121Service<HealthController['version']>;
+export type VersionInfo = Dto<GetVersionDto>;

@@ -59,17 +59,3 @@ export type Dto<T> =
       : Dtoified<T>;
 
 export type Serializable<T> = { serialize(): Dto<T> } & T;
-
-/**
- * CUSTOM DTO UTILITY TYPES
- */
-
-// This type is used to convert a DTO type from a service controller method,
-// to a type that can be used in the frontend.
-// Example:
-// import { UserController } from '@121-service/src/user/user.controller';
-// import { Dto121Service } from '../shared/utils/dto-type';
-// export type User = Dto121Service<UserController['login']>['user'];
-export type Dto121Service<
-  ServiceControllerMethod extends (...args: any) => any,
-> = Dto<Awaited<ReturnType<ServiceControllerMethod>>>;

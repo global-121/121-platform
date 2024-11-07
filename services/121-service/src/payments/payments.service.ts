@@ -119,15 +119,12 @@ export class PaymentsService {
     };
   }
 
-  public async getPayments(programId: number): Promise<
-    {
+  public async getPayments(programId: number) {
+    // Use unscoped repository, as you might not be able to select the correct payment in the portal otherwise
+    const payments: {
       payment: number;
       paymentDate: Date | string;
-      amount: number;
-    }[]
-  > {
-    // Use unscoped repository, as you might not be able to select the correct payment in the portal otherwise
-    const payments = await this.transactionRepository
+    }[] = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
