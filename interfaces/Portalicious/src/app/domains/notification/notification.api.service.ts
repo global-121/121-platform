@@ -6,7 +6,7 @@ import {
   MessageTemplateWithTranslatedLabel,
 } from '~/domains/notification/notification.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-import { Locale } from '~/utils/locale';
+import { getLanguageEnumFromLocale, Locale } from '~/utils/locale';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'notifications',
@@ -36,7 +36,8 @@ export class NotificationApiService extends DomainApiService {
           .filter(
             (template) =>
               template.isSendMessageTemplate &&
-              template.language === (this.locale as string),
+              template.language ===
+                getLanguageEnumFromLocale(this.locale).toString(),
           )
           .map((template) => {
             return {
