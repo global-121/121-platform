@@ -44,5 +44,6 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [{ "path": "./../../services/121-service" }]
 }

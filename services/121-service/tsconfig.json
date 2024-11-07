@@ -15,7 +15,6 @@
     // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27718
     "useUnknownInCatchVariables": false,
     "moduleResolution": "node",
-    "declaration": false,
     "removeComments": true,
     "noLib": false,
     "emitDecoratorMetadata": true,
@@ -31,12 +30,14 @@
     "baseUrl": "./",
     "paths": {
       "@121-service/*": ["./*"]
-    }
+    },
+    // This is necessary because the Portalicious project references this project
+    "composite": true
   },
   "watchOptions": {
     "watchFile": "fixedPollingInterval",
     "excludeDirectories": ["node_modules", "dist"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.json"],
   "exclude": ["node_modules", "test"]
 }
