@@ -140,7 +140,7 @@ export class ProjectRegistrationsPageComponent {
   }: {
     triggeredFromContextMenu?: boolean;
   } = {}) {
-    const selection = this.tableSelection();
+    let selection = this.tableSelection();
 
     if (Array.isArray(selection) && selection.length === 0) {
       if (triggeredFromContextMenu) {
@@ -149,7 +149,7 @@ export class ProjectRegistrationsPageComponent {
           this.toastService.showGenericError();
           return;
         }
-        selection.push(contextMenuRegistration);
+        selection = [contextMenuRegistration];
       } else {
         this.toastService.showToast({
           severity: 'error',
