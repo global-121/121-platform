@@ -8,7 +8,7 @@ class RegistrationsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
   readonly goToProfileOption: Locator;
-  readonly sendMessageDialog: Locator;
+  readonly sendMessageDialogPreview: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -124,7 +124,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async validateSendMessagePaCount(count: number) {
-    const dialogText = await this.sendMessageDialog.innerText();
+    const dialogText = await this.sendMessageDialogPreview.innerText();
 
     // Extract the number from the dialog text
     const regex = /(\d+)/;
