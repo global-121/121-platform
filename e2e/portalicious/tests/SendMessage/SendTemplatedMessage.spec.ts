@@ -14,8 +14,10 @@ import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 const sendingMessageToast =
   'Closing this notification will not cancel message sending.';
-const includeMessageTemplate =
+const englishMessageTemplate =
   'This is a message from the Red Cross. Thanks for registering. From now on you will receive an Albert Heijn voucher via WhatsApp every Tuesday. You will receive the vouchers as long as you are on the list of . The Red Cross can also provide you with information about, for example, medical assistance, food or safety. Check out our website: https://helpfulinformation.redcross.nl/ or ask your question via WhatsApp: https://wa.me/3197010286964';
+const dutchMessageTemplate =
+  'Dit is een bericht van het Rode Kruis. Bedankt voor je inschrijving. Je ontvangt vanaf nu elke dinsdag een Albert Heijn waardebon via WhatsApp. Je ontvangt de waardebonnen zo lang je op de lijst staat van . Het Rode Kruis kan je ook informatie geven over bijvoorbeeld medische hulp, voedsel of veiligheid. Kijk op onze website: https://helpfulinformation.redcross.nl/ of stel je vraag via WhatsApp: https://wa.me/3197010286964';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -57,7 +59,17 @@ test('[31076] Send templated message', async ({ page }) => {
     await registrations.sendMessage();
 
     await registrations.validateToastMessage(sendingMessageToast);
-    await registrations.goToRandomRegistration();
-    await activityLog.validateLastMessageSent(includeMessageTemplate);
+    // Validate English message
+    await registrations.goToRegistrationByName({
+      registrationName: 'Jack Strong',
+    });
+    await activityLog.validateLastMessageSent(englishMessageTemplate);
+    // Validate Dutch message
+    await page.goto('/');
+    await basePage.selectProgram(projectTitle);
+    await registrations.goToRegistrationByName({
+      registrationName: 'Gemma Houtenbos',
+    });
+    await activityLog.validateLastMessageSent(dutchMessageTemplate);
   });
 });

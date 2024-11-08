@@ -137,10 +137,26 @@ export const registrationPV7 = {
   addressCity: 'Stad',
 };
 
+export const registrationPV8 = {
+  referenceId: 'asdf234f4gg4ag64567',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Jack Strong',
+  phoneNumber: '14155235557',
+  fspName: FinancialServiceProviderName.intersolveVisa,
+  whatsappPhoneNumber: '14155235557',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
 export const registrationsPV = [
   registrationPV5,
   registrationPV6,
   registrationPV7,
+  registrationPV8,
 ];
 
 export const registrationPvScoped = {

@@ -69,6 +69,8 @@ class RegistrationsPage extends BasePage {
   }: {
     registrationName: string;
   }) {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
     const rowCount = await this.table.tableRows.count();
     for (let i = 0; i <= rowCount; i++) {
       const fullName = await this.table.getCell(i, 2);

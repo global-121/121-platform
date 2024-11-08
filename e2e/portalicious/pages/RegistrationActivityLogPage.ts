@@ -25,6 +25,7 @@ class RegistrationActivityLogPage extends BasePage {
 
     const sentMessageText = await this.page.getByText(message).innerText();
     expect(sentMessageText).toBe(message);
+    await dropdownButton.click();
   }
 }
 
