@@ -40,6 +40,10 @@ test('[31196] Selection should show correct PA count for bulk action (Single PA)
   });
 
   await test.step('Apply bulk action on one PA', async () => {
-    await registrations.selectBulkAction('Message');
+    await registrations.performActionOnRegistrationByName({
+      registrationName: 'Gemma Houtenbos',
+      action: 'Message',
+    });
+    await registrations.validateSendMessagePaCount(1);
   });
 });

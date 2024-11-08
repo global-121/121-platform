@@ -8,12 +8,16 @@ class RegistrationsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
   readonly goToProfileOption: Locator;
+  readonly sendMessageDialog: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
     this.table = new TableComponent(page);
     this.goToProfileOption = this.page.getByText('Go to profile');
+    this.sendMessageDialog = this.page.getByTestId(
+      'send-message-dialog-preview',
+    );
   }
 
   async selectBulkAction(action: string) {
@@ -87,6 +91,53 @@ class RegistrationsPage extends BasePage {
       }
     }
     throw new Error('Registration not found');
+  }
+
+  async performActionOnRegistrationByName({
+    registrationName,
+    action,
+  }: {
+    registrationName: string;
+    action: string;
+  }) {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
+    const rowCount = await this.table.tableRows.count();
+    for (let i = 0; i <= rowCount; i++) {
+      const fullName = await this.table.getCell(i, 2);
+      const fullNameText = (await fullName.textContent())?.trim();
+      const isRequestedFullName = fullNameText?.includes(registrationName);
+
+      if (
+        (registrationName && isRequestedFullName) ||
+        (!registrationName && !isRequestedFullName)
+      ) {
+        await fullName.click({ button: 'right' });
+        await this.page.getByLabel(action).click();
+        return;
+      }
+    }
+    throw new Error('Registration not found');
+  }
+
+  async validateSendMessagePaCount(count: number) {
+    const dialogText = await this.sendMessageDialog.innerText();
+
+    // Extract the number from the dialog text
+    const regex = /(\d+)/;
+    const match = regex.exec(dialogText);
+    if (!match) {
+      throw new Error('Dialog text does not match expected format');
+    }
+
+    const actualCount = parseInt(match[1], 10);
+
+    // Validate the count
+    if (actualCount !== count) {
+      throw new Error(
+        `Expected ${count} registrations, but found ${actualCount}`,
+      );
+    }
   }
 
   async goToRandomRegistration() {
