@@ -129,6 +129,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   serverSideFiltering = input<boolean>(false);
   serverSideTotalRecords = input<number>();
   initialSortField = input<keyof TData & string>();
+  initialSortOrder = input<-1 | 1>(1);
   enableSelection = input<boolean>(false);
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();

@@ -1,0 +1,75 @@
+import { test } from '@playwright/test';
+
+import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
+import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
+
+import BasePage from '@121-e2e/portalicious/pages/BasePage';
+import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
+import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
+import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
+import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
+
+const sendingMessageToast =
+  'Closing this notification will not cancel message sending.';
+const englishMessageTemplate =
+  'This is a message from the Red Cross. Thanks for registering. From now on you will receive an Albert Heijn voucher via WhatsApp every Tuesday. You will receive the vouchers as long as you are on the list of . The Red Cross can also provide you with information about, for example, medical assistance, food or safety. Check out our website: https://helpfulinformation.redcross.nl/ or ask your question via WhatsApp: https://wa.me/3197010286964';
+const dutchMessageTemplate =
+  'Dit is een bericht van het Rode Kruis. Bedankt voor je inschrijving. Je ontvangt vanaf nu elke dinsdag een Albert Heijn waardebon via WhatsApp. Je ontvangt de waardebonnen zo lang je op de lijst staat van . Het Rode Kruis kan je ook informatie geven over bijvoorbeeld medische hulp, voedsel of veiligheid. Kijk op onze website: https://helpfulinformation.redcross.nl/ of stel je vraag via WhatsApp: https://wa.me/3197010286964';
+
+test.beforeEach(async ({ page }) => {
+  await resetDB(SeedScript.nlrcMultiple);
+  const programIdPV = 2;
+  const pvProgramId = programIdPV;
+
+  const accessToken = await getAccessToken();
+  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+
+  // Login
+  const loginPage = new LoginPage(page);
+  await page.goto('/');
+  await loginPage.login(
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  );
+});
+
+test('[31076] Send templated message', async ({ page }) => {
+  const basePage = new BasePage(page);
+  const registrations = new RegistrationsPage(page);
+  const table = new TableComponent(page);
+  const activityLog = new RegistrationActivityLogPage(page);
+
+  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+
+  await test.step('Select program', async () => {
+    await basePage.selectProgram(projectTitle);
+  });
+
+  await test.step('Send templated message', async () => {
+    await table.selectAllCheckbox();
+    await registrations.selectBulkAction('Message');
+    await registrations.selectTemplatedMessage('Include');
+    await registrations.clickContinueToPreview();
+    await registrations.validateMessagePresent(
+      'This is a message from the Red Cross.',
+    );
+    await registrations.sendMessage();
+
+    await registrations.validateToastMessage(sendingMessageToast);
+    // Validate English message
+    await registrations.goToRegistrationByName({
+      registrationName: 'Jack Strong',
+    });
+    await activityLog.validateLastMessageSent(englishMessageTemplate);
+    // Validate Dutch message
+    await page.goto('/');
+    await basePage.selectProgram(projectTitle);
+    await registrations.goToRegistrationByName({
+      registrationName: 'Gemma Houtenbos',
+    });
+    await activityLog.validateLastMessageSent(dutchMessageTemplate);
+  });
+});
