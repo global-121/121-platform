@@ -7,6 +7,7 @@ import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 
 export enum AppRoutes {
+  authCallback = 'auth-callback',
   changePassword = 'change-password',
   login = 'login',
   project = 'project',

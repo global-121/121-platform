@@ -12,6 +12,8 @@ import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/b
 export class BasicAuthStrategy implements IAuthStrategy {
   private readonly userApiService = inject(UserApiService);
 
+  static readonly APP_PROVIDERS = [];
+
   public LoginComponent = BasicAuthLoginComponent;
   public ChangePasswordComponent = BasicAuthChangePasswordComponent;
 

@@ -42,10 +42,16 @@ export function getUserFromLocalStorage(): LocalStorageUser | null {
   return user;
 }
 
+const AuthStrategy = environment.use_sso_azure_entra
+  ? MsalAuthStrategy
+  : BasicAuthStrategy;
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  public static APP_PROVIDERS = AuthStrategy.APP_PROVIDERS;
+
   private readonly logService = inject(LogService);
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
@@ -53,11 +59,7 @@ export class AuthService {
   private readonly authStrategy: IAuthStrategy;
 
   constructor() {
-    const AuthStrategy = environment.use_sso_azure_entra
-      ? MsalAuthStrategy
-      : BasicAuthStrategy;
-
-    this.authStrategy = this.injector.get(AuthStrategy);
+    this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
   }
 
   public get isLoggedIn(): boolean {
@@ -113,7 +115,7 @@ export class AuthService {
   }
 
   public async login(
-    credentials: { username: string; password?: string },
+    credentials?: { username: string; password?: string },
     returnUrl?: string,
   ) {
     this.logService.logEvent(LogEvent.userLogin);

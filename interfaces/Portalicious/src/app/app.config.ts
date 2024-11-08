@@ -16,6 +16,7 @@ import {
 } from '@tanstack/angular-query-experimental';
 
 import { routes } from '~/app.routes';
+import { AuthService } from '~/services/auth.service';
 import { Locale } from '~/utils/locale';
 
 export function getAppConfig(locale: Locale): ApplicationConfig {
@@ -34,6 +35,7 @@ export function getAppConfig(locale: Locale): ApplicationConfig {
           },
         }),
       ),
+      ...AuthService.APP_PROVIDERS,
       { provide: LOCALE_ID, useValue: locale },
     ],
   };
