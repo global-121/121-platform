@@ -4,22 +4,22 @@ import {
   input,
   OnInit,
   output,
-  Signal,
   signal,
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 
 import { Registration } from '~/domains/registration/registration.model';
-import { ChangeStatusFormGroup } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
 import { CustomMessageControlComponent } from '~/pages/project-registrations/components/custom-message-control/custom-message-control.component';
 import { CustomMessagePreviewComponent } from '~/pages/project-registrations/components/custom-message-preview/custom-message-preview.component';
 import { MessageInputData } from '~/services/messaging.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-change-status-contents-with-custom-message',
@@ -36,33 +36,38 @@ import {
 })
 export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   projectId = input.required<number>();
-  formGroup = input.required<ChangeStatusFormGroup>();
   previewRegistration = input.required<Registration | undefined>();
   enableSendMessage = input.required<boolean>();
   isMutating = input<boolean>(false);
   readonly onCancel = output();
-  // TODO: This is no bueno
-  formFieldErrors: Signal<unknown>;
+  readonly onSubmit = output<string>();
+
+  formGroup = new FormGroup({
+    customMessage: new FormControl<string | undefined>(undefined, {
+      nonNullable: true,
+      validators: [
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        Validators.required,
+        Validators.minLength(20),
+      ],
+    }),
+  });
   previewData = signal<Partial<MessageInputData> | undefined>(undefined);
+  formFieldErrors = generateFieldErrors(this.formGroup, {
+    customMessage: (control) => {
+      if (control.errors?.required) {
+        return $localize`:@@generic-required-field:This field is required.`;
+      }
+
+      if (control.errors?.minlength) {
+        return $localize`The message must be at least 20 characters long.`;
+      }
+      return;
+    },
+  });
 
   ngOnInit(): void {
     this.previewData.set(undefined);
-    this.formFieldErrors = generateFieldErrors<ChangeStatusFormGroup>(
-      this.formGroup(),
-      {
-        messageType: genericFieldIsRequiredValidationMessage,
-        messageTemplateKey: genericFieldIsRequiredValidationMessage,
-        customMessage: (control) => {
-          if (control.errors?.required) {
-            return $localize`:@@generic-required-field:This field is required.`;
-          }
-          if (control.errors?.minlength) {
-            return $localize`The message must be at least 20 characters long.`;
-          }
-          return;
-        },
-      },
-    );
   }
 
   cancelClick() {
@@ -71,10 +76,21 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   }
 
   onProceedToPreview() {
-    this.formGroup().markAllAsTouched();
-    if (!this.formGroup().valid) {
+    this.formGroup.markAllAsTouched();
+    if (!this.formGroup.valid || !this.formGroup.value.customMessage) {
       return;
     }
-    this.previewData.set(this.formGroup().getRawValue());
+    this.previewData.set({
+      messageType: 'custom',
+      customMessage: this.formGroup.value.customMessage,
+    });
+    this.onSubmit.emit(this.formGroup.value.customMessage);
+  }
+
+  getMessageData(): Partial<MessageInputData> {
+    return {
+      messageType: 'custom',
+      customMessage: this.formGroup.value.customMessage,
+    };
   }
 }

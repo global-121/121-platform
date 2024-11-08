@@ -8,8 +8,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 
 import { Registration } from '~/domains/registration/registration.model';
-import { ChangeStatusFormGroup } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
 import { CustomMessagePreviewComponent } from '~/pages/project-registrations/components/custom-message-preview/custom-message-preview.component';
+import { MessageInputData } from '~/services/messaging.service';
 
 @Component({
   selector: 'app-change-status-contents-with-templated-message',
@@ -21,7 +21,7 @@ import { CustomMessagePreviewComponent } from '~/pages/project-registrations/com
 })
 export class ChangeStatusContentsWithTemplatedMessageComponent {
   projectId = input.required<number>();
-  formGroup = input.required<ChangeStatusFormGroup>();
+  readonly messageData = input.required<Partial<MessageInputData>>();
   previewRegistration = input.required<Registration | undefined>();
   enableSendMessage = input.required<boolean>();
   isMutating = input<boolean>(false);
