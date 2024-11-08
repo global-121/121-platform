@@ -158,8 +158,8 @@ class RegistrationsPage extends BasePage {
     }
   }
 
-  async performActionWithRightClick(action: string) {
-    await this.table.tableRows.nth(0).click({ button: 'right' });
+  async performActionWithRightClick(action: string, row = 0) {
+    await this.table.tableRows.nth(row).click({ button: 'right' });
     await this.page.getByLabel(action).click();
   }
 }
