@@ -941,23 +941,101 @@
       <trans-unit id="4648900870671159218" datatype="html">
         <source>Success</source>
       </trans-unit>
-      <trans-unit id="622955001354035993" datatype="html">
-        <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations. They will not be included in payments.</source>
-      </trans-unit>
-      <trans-unit id="7252523896790377067" datatype="html">
-        <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations to your project. This means that they can be included in payments.</source>
-      </trans-unit>
-      <trans-unit id="7350238100996755312" datatype="html">
-        <source>You’re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations to your project. This means that they will not included in payments.</source>
-      </trans-unit>
-      <trans-unit id="8227544507650475275" datatype="html">
-        <source>You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registration(s), <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
-      </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
       </trans-unit>
-      <trans-unit id="6152539934186307221" datatype="html">
-        <source><x equiv-text="data.applicableCount" id="PH"/> registration(s) were <x equiv-text="this.status()?.toLowerCase()" id="PH_1"/> successfully.</source>
+      <trans-unit id="1130540455223752082" datatype="html">
+        <source><x equiv-text="data.applicableCount" id="PH"/> registration(s) were <x equiv-text="this.statusVerb().toLowerCase()" id="PH_1"/> successfully. The status change can take up to a minute to process.</source>
+      </trans-unit>
+      <trans-unit id="1181910457994920507" datatype="html">
+        <source>Proceed</source>
+      </trans-unit>
+      <trans-unit id="1519954996184640001" datatype="html">
+        <source>Error</source>
+      </trans-unit>
+      <trans-unit id="1545154351045585819" datatype="html">
+        <source>The checkbox should be checked.</source>
+      </trans-unit>
+      <trans-unit id="1670560559011171681" datatype="html">
+        <source>I understand this action can not be undone.</source>
+      </trans-unit>
+      <trans-unit id="2493163619975494520" datatype="html">
+        <source>The action &quot;Include&quot; can only be applied to registrations who’s “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
+      </trans-unit>
+      <trans-unit id="276843485197819536" datatype="html">
+        <source>Select registrations with the status “included” and try again.</source>
+      </trans-unit>
+      <trans-unit id="3302381073867974185" datatype="html">
+        <source><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
+      </trans-unit>
+      <trans-unit id="3523288603730580118" datatype="html">
+        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
+      </trans-unit>
+      <trans-unit id="3626484707935812949" datatype="html">
+        <source>0 selected registrations support this action.</source>
+      </trans-unit>
+      <trans-unit id="428968768517674095" datatype="html">
+        <source>Would you like to proceed with <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
+      </trans-unit>
+      <trans-unit id="4312602966433764881" datatype="html">
+        <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status. Registrations with other statuses will remain with their current status.</source>
+      </trans-unit>
+      <trans-unit id="4547875681494013767" datatype="html">
+        <source>This action can not be applied to the registrations you have selected.</source>
+      </trans-unit>
+      <trans-unit id="5160533170184115769" datatype="html">
+        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
+      </trans-unit>
+      <trans-unit id="5209857233936409392" datatype="html">
+        <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
+      </trans-unit>
+      <trans-unit id="6345542796169013745" datatype="html">
+        <source>Select registrations who&apos;s “Payments left” is larger than 0 and try again.</source>
+      </trans-unit>
+      <trans-unit id="6435091265262989307" datatype="html">
+        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status. Registrations with other statuses will remain with their current status.</source>
+      </trans-unit>
+      <trans-unit id="652725573989033199" datatype="html">
+        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status.</source>
+      </trans-unit>
+      <trans-unit id="653013313068345643" datatype="html">
+        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
+      </trans-unit>
+      <trans-unit id="6666596645491746994" datatype="html">
+        <source>This means that they will not included in payments.</source>
+      </trans-unit>
+      <trans-unit id="6759205696902713848" datatype="html">
+        <source>Warning</source>
+      </trans-unit>
+      <trans-unit id="680137431344473981" datatype="html">
+        <source>areYouSure</source>
+      </trans-unit>
+      <trans-unit id="684272908201420787" datatype="html">
+        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
+      </trans-unit>
+      <trans-unit id="6927608648168305465" datatype="html">
+        <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registrations that don&apos;t support this action</source>
+      </trans-unit>
+      <trans-unit id="7461594294922045071" datatype="html">
+        <source>This means that they can be included in payments.</source>
+      </trans-unit>
+      <trans-unit id="7483364924749111553" datatype="html">
+        <source>They will not be included in payments.</source>
+      </trans-unit>
+      <trans-unit id="7582384076029482676" datatype="html">
+        <source>Select registrations with other status and try again.</source>
+      </trans-unit>
+      <trans-unit id="8563473409467586384" datatype="html">
+        <source>Select registrations with another status and try again.</source>
+      </trans-unit>
+      <trans-unit id="8668090925608056170" datatype="html">
+        <source>The action &quot;Include&quot; can only be applied to registrations who&apos;s “Payments left” is larger than 0.</source>
+      </trans-unit>
+      <trans-unit id="8967125351109863286" datatype="html">
+        <source>Select registrations with the status “Registered” and try again.</source>
+      </trans-unit>
+      <trans-unit id="generic-ok" datatype="html">
+        <source>OK</source>
       </trans-unit>
     </body>
   </file>
