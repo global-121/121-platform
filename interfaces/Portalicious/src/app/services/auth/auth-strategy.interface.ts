@@ -1,13 +1,15 @@
-import { Type } from '@angular/core';
+import { EnvironmentProviders, Provider, Type } from '@angular/core';
 
 import { User } from '~/domains/user/user.model';
 import { LocalStorageUser } from '~/services/auth.service';
 
 export abstract class IAuthStrategy {
+  public static readonly APP_PROVIDERS: (EnvironmentProviders | Provider)[];
+
   LoginComponent: Type<unknown>;
   ChangePasswordComponent: null | Type<unknown>;
 
-  public abstract login(credentials: {
+  public abstract login(credentials?: {
     username: string;
     password?: string;
   }): Promise<User>;

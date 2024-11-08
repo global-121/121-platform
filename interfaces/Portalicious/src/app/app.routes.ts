@@ -20,6 +20,7 @@ import { UserRolesPageComponent } from '~/pages/user-roles/user-roles.page';
 import { UsersPageComponent } from '~/pages/users/users.page';
 
 export enum AppRoutes {
+  authCallback = 'auth-callback',
   changePassword = 'change-password',
   login = 'login',
   project = 'project',
