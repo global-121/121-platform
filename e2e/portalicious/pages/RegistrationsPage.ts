@@ -112,8 +112,7 @@ class RegistrationsPage extends BasePage {
         (registrationName && isRequestedFullName) ||
         (!registrationName && !isRequestedFullName)
       ) {
-        await fullName.click({ button: 'right' });
-        await this.page.getByLabel(action).click();
+        await this.performActionWithRightClick(action, i);
         return;
       }
     }
