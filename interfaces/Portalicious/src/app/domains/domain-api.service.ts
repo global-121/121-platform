@@ -43,7 +43,7 @@ export abstract class DomainApiService {
       'endpoint' | 'method'
     >;
     method?: Perform121ServiceRequestParams['method'];
-    paginateQuery?: Signal<PaginateQuery | undefined>;
+    paginateQuery?: Signal<PaginateQuery>;
   } & Partial<UndefinedInitialDataOptions<ProcessedResponseShape>>) {
     return () => {
       const queryKey = this.pathToQueryKey(path);
@@ -60,14 +60,16 @@ export abstract class DomainApiService {
           processResponse,
         ],
         queryFn: async () => {
+          // eslint-disable-next-line prefer-const
+          let { params, ...options } = requestOptions;
+
           if (paginateQuery) {
-            const { params } = requestOptions;
             const paginateQueryParams =
               this.paginateQueryService.paginateQueryToHttpParamsObject(
                 paginateQuery(),
               );
 
-            requestOptions.params = {
+            params = {
               ...params,
               ...paginateQueryParams,
             };
@@ -76,7 +78,8 @@ export abstract class DomainApiService {
           const response =
             await this.httpWrapperService.perform121ServiceRequest<BackendDataShape>(
               {
-                ...requestOptions,
+                ...options,
+                params,
                 method,
                 endpoint,
               },

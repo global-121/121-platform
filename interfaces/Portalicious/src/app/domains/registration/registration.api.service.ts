@@ -34,7 +34,8 @@ export class RegistrationApiService extends DomainApiService {
   ) {
     return this.generateQueryOptions<FindAllRegistrationsResult>({
       path: [...BASE_ENDPOINT(projectId)],
-      paginateQuery,
+      paginateQuery: paginateQuery as Signal<PaginateQuery>,
+      enabled: () => !!paginateQuery(),
     });
   }
 
