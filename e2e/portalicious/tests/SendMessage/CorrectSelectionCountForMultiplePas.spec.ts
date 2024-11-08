@@ -8,9 +8,7 @@ import { registrationsPV } from '@121-service/test/registrations/pagination/pagi
 
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
-import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -29,11 +27,11 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31077] Send custom message', async ({ page }) => {
+test('[31197] Selection should show correct PA count for bulk action (Multiple PAs)', async ({
+  page,
+}) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
-  const activityLog = new RegistrationActivityLogPage(page);
-  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -41,31 +39,17 @@ test('[31077] Send custom message', async ({ page }) => {
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Send custom message', async () => {
-    const registrationFullName =
-      await registrations.getFirstRegistrationNameFromTable();
-    if (!registrationFullName) {
-      throw new Error('Registration full name is undefined');
-    }
-    const customMessageText =
-      'This is {{fullName}} custom message from the Red Cross.';
-    const customMessagePreview = `This is ${registrationFullName} custom message from the Red Cross.`;
-    const sendingMessageToast =
-      'Closing this notification will not cancel message sending.';
-
-    await table.selectAllCheckbox();
-    await registrations.selectBulkAction('Message');
-    await registrations.selectCustomMessage();
-    await registrations.typeCustomMessage(customMessageText);
-    await registrations.clickContinueToPreview();
-    await registrations.validateMessagePresent(customMessagePreview);
-    await registrations.sendMessage();
-
-    await registrations.validateToastMessage(sendingMessageToast);
-    await registrations.goToRegistrationByName({
-      registrationName: registrationFullName,
+  await test.step('Apply bulk action on multiple PAs', async () => {
+    // Select on to trigger the first count of bulk action
+    await registrations.performActionOnRegistrationByName({
+      registrationName: 'Gemma Houtenbos',
+      action: 'Message',
     });
-
-    await activityLog.validateLastMessageSent(customMessagePreview);
+    await registrations.validateSendMessagePaCount(1);
+    await registrations.cancelSendMessageBulkAction();
+    // Select couple of PAs to trigger the second count of bulk action
+    await registrations.selectMultipleRegistrations(2);
+    await registrations.performActionWithRightClick('Message');
+    await registrations.validateSendMessagePaCount(2);
   });
 });

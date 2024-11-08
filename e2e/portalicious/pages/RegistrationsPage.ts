@@ -120,6 +120,10 @@ class RegistrationsPage extends BasePage {
     throw new Error('Registration not found');
   }
 
+  async cancelSendMessageBulkAction() {
+    await this.page.getByRole('button', { name: 'Cancel' }).click();
+  }
+
   async validateSendMessagePaCount(count: number) {
     const dialogText = await this.sendMessageDialog.innerText();
 
@@ -131,13 +135,8 @@ class RegistrationsPage extends BasePage {
     }
 
     const actualCount = parseInt(match[1], 10);
-
     // Validate the count
-    if (actualCount !== count) {
-      throw new Error(
-        `Expected ${count} registrations, but found ${actualCount}`,
-      );
-    }
+    expect(actualCount).toBe(count);
   }
 
   async goToRandomRegistration() {
@@ -148,6 +147,20 @@ class RegistrationsPage extends BasePage {
     await fullName.click({ button: 'right' });
     await this.goToProfileOption.click();
     return randomIndex;
+  }
+
+  async selectMultipleRegistrations(selectionCount: number) {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
+    for (let i = 1; i <= selectionCount; i++) {
+      const rowCheckbox = await this.table.getCell(i, 0);
+      await rowCheckbox.click();
+    }
+  }
+
+  async performActionWithRightClick(action: string) {
+    await this.table.tableRows.nth(0).click({ button: 'right' });
+    await this.page.getByLabel(action).click();
   }
 }
 
