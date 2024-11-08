@@ -7,6 +7,5 @@
     "source.removeUnusedImports": "explicit"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "vsicons.presets.angular": true
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }
