@@ -6,7 +6,7 @@ import { DataSource, Equal, Repository } from 'typeorm';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   CsvInstructions,
   ExportFileType,
@@ -58,7 +58,7 @@ export class PaymentsService {
 
   private fspWithQueueServiceMapping: Partial<
     Record<
-      FinancialServiceProviderName,
+      FinancialServiceProviders,
       | IntersolveVoucherService
       | IntersolveVisaService
       | SafaricomService
@@ -67,7 +67,7 @@ export class PaymentsService {
   >;
 
   private financialServiceProviderNameToServiceMap: Record<
-    FinancialServiceProviderName,
+    FinancialServiceProviders,
     [FinancialServiceProviderIntegrationInterface, useWhatsapp?: boolean]
   >;
 
@@ -88,34 +88,32 @@ export class PaymentsService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {
     this.fspWithQueueServiceMapping = {
-      [FinancialServiceProviderName.intersolveVisa]: this.intersolveVisaService,
-      [FinancialServiceProviderName.intersolveVoucherPaper]:
+      [FinancialServiceProviders.intersolveVisa]: this.intersolveVisaService,
+      [FinancialServiceProviders.intersolveVoucherPaper]:
         this.intersolveVoucherService,
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]:
+      [FinancialServiceProviders.intersolveVoucherWhatsapp]:
         this.intersolveVoucherService,
-      [FinancialServiceProviderName.safaricom]: this.safaricomService,
-      [FinancialServiceProviderName.commercialBankEthiopia]:
+      [FinancialServiceProviders.safaricom]: this.safaricomService,
+      [FinancialServiceProviders.commercialBankEthiopia]:
         this.commercialBankEthiopiaService,
       // Add more FSP mappings if they work queue-based
     };
 
     this.financialServiceProviderNameToServiceMap = {
-      [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+      [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
         this.intersolveVoucherService,
         true,
       ],
-      [FinancialServiceProviderName.intersolveVoucherPaper]: [
+      [FinancialServiceProviders.intersolveVoucherPaper]: [
         this.intersolveVoucherService,
         false,
       ],
-      [FinancialServiceProviderName.intersolveVisa]: [
-        this.intersolveVisaService,
-      ],
-      [FinancialServiceProviderName.safaricom]: [this.safaricomService],
-      [FinancialServiceProviderName.commercialBankEthiopia]: [
+      [FinancialServiceProviders.intersolveVisa]: [this.intersolveVisaService],
+      [FinancialServiceProviders.safaricom]: [this.safaricomService],
+      [FinancialServiceProviders.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
       ],
-      [FinancialServiceProviderName.excel]: [this.excelService],
+      [FinancialServiceProviders.excel]: [this.excelService],
     };
   }
 
@@ -236,7 +234,7 @@ export class PaymentsService {
 
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspsInPayment: FinancialServiceProviderName[] = [];
+    const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
@@ -390,7 +388,7 @@ export class PaymentsService {
         );
       });
 
-    const fspsInPayment: FinancialServiceProviderName[] = [];
+    const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
       if (!fspsInPayment.includes(registration.fspName)) {
@@ -501,7 +499,7 @@ export class PaymentsService {
   }
 
   private async checkFspQueueProgress(
-    fsp: FinancialServiceProviderName,
+    fsp: FinancialServiceProviders,
     programId: number,
   ): Promise<boolean> {
     const service = this.fspWithQueueServiceMapping[fsp];
@@ -706,7 +704,7 @@ export class PaymentsService {
       where: {
         id: Equal(programId),
         financialServiceProviders: {
-          fsp: Equal(FinancialServiceProviderName.excel),
+          fsp: Equal(FinancialServiceProviders.excel),
         },
       },
       relations: ['financialServiceProviders'],
@@ -746,7 +744,7 @@ export class PaymentsService {
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
     for await (const transaction of exportPaymentTransactions.filter(
-      (t) => t.fsp !== FinancialServiceProviderName.excel,
+      (t) => t.fsp !== FinancialServiceProviders.excel,
     )) {
       const registration =
         await this.registrationScopedRepository.findOneOrFail({
@@ -766,7 +764,7 @@ export class PaymentsService {
     // It is assumed the Excel FSP is not combined with other non-api FSPs above, and they are overwritten
     const excelTransactions = exportPaymentTransactions.filter(
       (t) =>
-        t.fsp === FinancialServiceProviderName.excel &&
+        t.fsp === FinancialServiceProviders.excel &&
         t.status === TransactionStatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
@@ -808,7 +806,7 @@ export class PaymentsService {
 
     let importResponseRecords: any[] = [];
     for await (const fsp of programWithReconciliationFsps.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.excel) {
+      if (fsp.fsp === FinancialServiceProviders.excel) {
         const maxRecords = 10000;
         const matchColumn =
           await this.excelService.getImportMatchColumn(programId);
@@ -830,7 +828,7 @@ export class PaymentsService {
           payment,
           undefined,
           undefined,
-          FinancialServiceProviderName.excel,
+          FinancialServiceProviders.excel,
         );
         importResponseRecords =
           this.excelService.joinRegistrationsAndImportRecords(

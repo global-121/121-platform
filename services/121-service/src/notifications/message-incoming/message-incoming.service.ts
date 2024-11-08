@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   MessageContentType,
   TemplatedMessages,
@@ -311,7 +311,7 @@ export class MessageIncomingService {
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(
         (fsp) => {
           return (fsp.fsp =
-            FinancialServiceProviderName.intersolveVoucherWhatsapp);
+            FinancialServiceProviders.intersolveVoucherWhatsapp);
         },
       )!;
       tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;

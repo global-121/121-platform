@@ -3,7 +3,7 @@ import { Queue } from 'bull';
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -23,7 +23,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+    fspName: FinancialServiceProviders.intersolveVoucherWhatsapp,
     bulkSize: 1,
     userId: 1,
   },

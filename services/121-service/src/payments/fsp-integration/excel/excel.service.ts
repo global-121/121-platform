@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -49,11 +49,11 @@ export class ExcelService
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FinancialServiceProviderName.excel;
+    fspTransactionResult.fspName = FinancialServiceProviders.excel;
     for (const paPayment of paPaymentList) {
       const transactionResult = new PaTransactionResultDto();
       transactionResult.calculatedAmount = paPayment.transactionAmount;
-      transactionResult.fspName = FinancialServiceProviderName.excel;
+      transactionResult.fspName = FinancialServiceProviders.excel;
       transactionResult.referenceId = paPayment.referenceId;
       transactionResult.status = TransactionStatusEnum.waiting;
       fspTransactionResult.paList.push(transactionResult);
@@ -81,7 +81,7 @@ export class ExcelService
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
-      FinancialServiceProviderName.excel,
+      FinancialServiceProviders.excel,
       TransactionStatusEnum.waiting,
     );
     const chunkSize = 400000;
@@ -223,7 +223,7 @@ export class ExcelService
     const qb = this.registrationsPaginationService.getQueryBuilderForFsp(
       programId,
       payment,
-      FinancialServiceProviderName.excel,
+      FinancialServiceProviders.excel,
     );
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
@@ -301,7 +301,7 @@ export class ExcelService
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = registrationWithAmount.referenceId;
     paTransactionResult.registrationId = registrationWithAmount.id;
-    paTransactionResult.fspName = FinancialServiceProviderName.excel;
+    paTransactionResult.fspName = FinancialServiceProviders.excel;
     paTransactionResult.status = importResponseRecord[
       this.statusColumnName
     ]?.toLowerCase() as TransactionStatusEnum;

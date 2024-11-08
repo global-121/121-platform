@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -53,7 +53,7 @@ export class Attribute {
   public label: LocalizedString | null;
   public options?: QuestionOption[] | null;
   public questionType?: QuestionType; // TODO: remove this in after implementing pagination
-  public fspNames?: FinancialServiceProviderName[];
+  public fspNames?: FinancialServiceProviders[];
   public questionTypes?: QuestionType[];
   public pattern?: string | null;
 }

@@ -6,7 +6,7 @@ import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import {
@@ -192,7 +192,7 @@ export class SafaricomService
     referenceId: string,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FinancialServiceProviderName.safaricom;
+    paTransactionResult.fspName = FinancialServiceProviders.safaricom;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.Amount;

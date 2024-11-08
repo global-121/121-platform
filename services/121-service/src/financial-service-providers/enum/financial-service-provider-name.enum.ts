@@ -1,4 +1,4 @@
-export enum FinancialServiceProviderName {
+export enum FinancialServiceProviders {
   intersolveVoucherWhatsapp = 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
@@ -18,33 +18,33 @@ export enum FinancialServiceProviderConfigurationEnum {
 }
 
 export const FinancialServiceProviderConfigurationMapping: Record<
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
   FinancialServiceProviderConfigurationEnum[]
 > = {
-  [FinancialServiceProviderName.intersolveVoucherWhatsapp]: [
+  [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
     FinancialServiceProviderConfigurationEnum.password,
     FinancialServiceProviderConfigurationEnum.username,
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.intersolveVoucherPaper]: [
+  [FinancialServiceProviders.intersolveVoucherPaper]: [
     FinancialServiceProviderConfigurationEnum.password,
     FinancialServiceProviderConfigurationEnum.username,
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.intersolveVisa]: [
+  [FinancialServiceProviders.intersolveVisa]: [
     FinancialServiceProviderConfigurationEnum.brandCode,
     FinancialServiceProviderConfigurationEnum.coverLetterCode,
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.safaricom]: [
+  [FinancialServiceProviders.safaricom]: [
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.commercialBankEthiopia]: [
+  [FinancialServiceProviders.commercialBankEthiopia]: [
     FinancialServiceProviderConfigurationEnum.password,
     FinancialServiceProviderConfigurationEnum.username,
     FinancialServiceProviderConfigurationEnum.displayName,
   ],
-  [FinancialServiceProviderName.excel]: [
+  [FinancialServiceProviders.excel]: [
     FinancialServiceProviderConfigurationEnum.columnsToExport,
     FinancialServiceProviderConfigurationEnum.columnToMatch,
     FinancialServiceProviderConfigurationEnum.displayName,

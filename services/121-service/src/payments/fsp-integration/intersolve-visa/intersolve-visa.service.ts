@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -364,7 +364,7 @@ export class IntersolveVisaService
     paTransactionResult.referenceId = paymentDetails.referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = calculatedAmount;
-    paTransactionResult.fspName = FinancialServiceProviderName.intersolveVisa;
+    paTransactionResult.fspName = FinancialServiceProviders.intersolveVisa;
 
     const transactionNotifications: TransactionNotificationObject[] = [];
 
@@ -653,7 +653,7 @@ export class IntersolveVisaService
         where: {
           programId: Equal(programId),
           name: Equal(FinancialServiceProviderConfigurationEnum.brandCode),
-          fsp: { fsp: Equal(FinancialServiceProviderName.intersolveVisa) },
+          fsp: { fsp: Equal(FinancialServiceProviders.intersolveVisa) },
         },
         relations: ['fsp'],
       });
@@ -676,7 +676,7 @@ export class IntersolveVisaService
           name: Equal(
             FinancialServiceProviderConfigurationEnum.coverLetterCode,
           ),
-          fsp: { fsp: Equal(FinancialServiceProviderName.intersolveVisa) },
+          fsp: { fsp: Equal(FinancialServiceProviders.intersolveVisa) },
         },
         relations: ['fsp'],
       });
@@ -972,7 +972,7 @@ export class IntersolveVisaService
     }
 
     const visaCustomer = await this.getCustomerEntity(registration.id);
-    if (registration.fsp.fsp !== FinancialServiceProviderName.intersolveVisa) {
+    if (registration.fsp.fsp !== FinancialServiceProviders.intersolveVisa) {
       const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }

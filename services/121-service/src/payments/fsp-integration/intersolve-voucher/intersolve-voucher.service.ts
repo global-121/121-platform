@@ -8,7 +8,7 @@ import { Equal, Repository } from 'typeorm';
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -609,8 +609,8 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<number> {
     const fspName = intersolveVoucher.whatsappPhoneNumber
-      ? FinancialServiceProviderName.intersolveVoucherWhatsapp
-      : FinancialServiceProviderName.intersolveVoucherPaper;
+      ? FinancialServiceProviders.intersolveVoucherWhatsapp
+      : FinancialServiceProviders.intersolveVoucherPaper;
 
     const configQuery = await this.programFspConfigurationRepository
       .createQueryBuilder('fspConfig')
@@ -835,7 +835,7 @@ export class IntersolveVoucherService
     }
     if (
       registration.fsp.fsp ===
-      FinancialServiceProviderName.intersolveVoucherWhatsapp
+      FinancialServiceProviders.intersolveVoucherWhatsapp
     ) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
@@ -847,17 +847,16 @@ export class IntersolveVoucherService
 
     if (
       registration.fsp.fsp ===
-      FinancialServiceProviderName.intersolveVoucherWhatsapp
+      FinancialServiceProviders.intersolveVoucherWhatsapp
     ) {
       transactionResult.fspName =
-        FinancialServiceProviderName.intersolveVoucherWhatsapp;
+        FinancialServiceProviders.intersolveVoucherWhatsapp;
     }
     if (
-      registration.fsp.fsp ===
-      FinancialServiceProviderName.intersolveVoucherPaper
+      registration.fsp.fsp === FinancialServiceProviders.intersolveVoucherPaper
     ) {
       transactionResult.fspName =
-        FinancialServiceProviderName.intersolveVoucherPaper;
+        FinancialServiceProviders.intersolveVoucherPaper;
     }
     return transactionResult;
   }

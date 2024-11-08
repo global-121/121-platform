@@ -16,7 +16,7 @@ import {
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import {
@@ -30,8 +30,8 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class ProgramFinancialServiceProviderDto {
   @ApiProperty()
-  @IsEnum(FinancialServiceProviderName)
-  fsp: WrapperType<FinancialServiceProviderName>;
+  @IsEnum(FinancialServiceProviders)
+  fsp: WrapperType<FinancialServiceProviders>;
 
   @ApiProperty()
   @IsArray()
@@ -106,10 +106,10 @@ export class CreateProgramDto {
   @ApiProperty({
     example: [
       {
-        fsp: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fsp: FinancialServiceProviders.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FinancialServiceProviderName.intersolveVoucherPaper,
+        fsp: FinancialServiceProviders.intersolveVoucherPaper,
       },
     ],
     description:

@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
@@ -12,7 +12,7 @@ export const registrationVisa = {
   paymentAmountMultiplier: 1,
   fullName: 'Jane Doe',
   [CustomDataAttributes.phoneNumber]: '14155238887',
-  fspName: FinancialServiceProviderName.intersolveVisa,
+  fspName: FinancialServiceProviders.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',

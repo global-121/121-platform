@@ -4,7 +4,7 @@ import { Between, Equal, Repository } from 'typeorm';
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -72,7 +72,7 @@ export class IntersolveVoucherCronService {
       .select('name')
       .addSelect('value')
       .andWhere('fsp.fsp = :fspName', {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviders.intersolveVoucherWhatsapp,
       })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
