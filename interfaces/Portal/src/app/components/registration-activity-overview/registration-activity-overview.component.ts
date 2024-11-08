@@ -202,10 +202,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           if (attribute?.type === RegistrationAttributeType.Boolean) {
             const booleanLabel = {
               true: this.translate.instant(
-                'page.program.program-people-affected.column.custom-attribute-true',
+                'page.program.program-people-affected.column.registration-attribute-true',
               ),
               false: this.translate.instant(
-                'page.program.program-people-affected.column.custom-attribute-false',
+                'page.program.program-people-affected.column.registration-attribute-false',
               ),
             };
             oldValue = booleanLabel[oldValue];

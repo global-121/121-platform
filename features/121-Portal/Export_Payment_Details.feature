@@ -18,8 +18,7 @@ Feature: Export payment data
     And - if program and user have scope - then it shows only the PAs within the scope of the user
     And it shows the "name" and other program-attributes to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards inclusion
-    And it shows all program questions which have "included" as "export" attribute
-    And it shows all program custom attributes which have "included" as "export" attribute
+    And it shows all program registration attributes which have "included" as "export" attribute
     And the "export inclusion list" button remains enabled, so the action can be repeated infinitely
     And if no "included" registrations then an alert is shown that "no data can be downloaded"
 
@@ -33,7 +32,7 @@ Feature: Export payment data
     And it shows a list of the registrations that have been paid out
     And - if program and user have scope - then it shows only the PAs within the scope of the user
     And "transaction" data: "payment", "timestamp", "amount" (multiplication of "paymentAmountMultiplier" and "transfer value"), "status", "errorMessage", "financialServiceProvider"
-    And "registration" data: "referenceId", "phoneNumber" and any defined program-questions, fsp-questions and program-custom-attributes that have "payment" as part of the "export" attribute
+    And "registration" data: "referenceId", "phoneNumber" and any defined registration attributes that have "payment" as part of the "export" attribute
 
   Scenario: Viewing the export options without permission
     Given a logged-in user without "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions

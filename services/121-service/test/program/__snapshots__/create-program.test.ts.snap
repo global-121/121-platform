@@ -8,7 +8,7 @@ exports[`Create program should not be able to post a program with 2 of the same 
 
 exports[`Create program should not be able to post a program with missing names of full name naming convention 1`] = `
 {
-  "errors": "Element 'middle_name' of fullnameNamingConvention is not found in program questions or custom attributes",
+  "errors": "Element 'middle_name' of fullnameNamingConvention is not found in program registration attributes",
 }
 `;
 

@@ -7,6 +7,8 @@ import {
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import {
   doPayment,
   getTransactions,
@@ -20,6 +22,7 @@ import {
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  removePermissionsFromRole,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
@@ -132,6 +135,37 @@ describe('Update program financial servce provider configuration of PA', () => {
     expect(response.body.programFinancialServiceProviderConfigurationName).toBe(
       newProgramFinancialServiceProviderConfigurationName,
     );
+  });
+
+  it('should fail when updating program financial servce provider configuration without right permission', async () => {
+    // Arrange
+    await setupNlrcEnvironment();
+
+    await removePermissionsFromRole(DefaultUserRole.Admin, [
+      PermissionEnum.RegistrationFspConfigUPDATE,
+    ]);
+    accessToken = await getAccessToken();
+
+    // Intersolve-visa and Intersolve-voucher-whatsapp both have 'whatsappPhoneNumber' as required, so this would succeed apart from the permission
+    const newProgramFinancialServiceProviderConfigurationName =
+      'Intersolve-voucher-whatsapp';
+    const dataUpdate = {
+      programFinancialServiceProviderConfigurationName:
+        newProgramFinancialServiceProviderConfigurationName,
+    };
+    const reason = 'automated test';
+
+    // Act
+    const response = await updateRegistration(
+      programIdOcw,
+      registrationVisa.referenceId,
+      dataUpdate,
+      reason,
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
   });
 
   it('should succeed updating registration to a newly added FSP config of which the name is not the same as the FSP and doing a payment', async () => {

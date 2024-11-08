@@ -361,8 +361,6 @@
         },
         "choose-action": "اختر الإجراء...",
         "column": {
-          "custom-attribute-false": "لا",
-          "custom-attribute-true": "نعم",
           "dob": "تاريخ الميلاد",
           "failedPayment": "فشل الدفع #",
           "hasNote": "لديه ملاحظة",
@@ -381,6 +379,8 @@
           "preferredLanguage": "اللغة المفضلة",
           "programFinancialServiceProviderConfigurationLabel": "مزود الخدمات المالية",
           "referenceId": "الرقم المرجعي",
+          "registration-attribute-false": "لا",
+          "registration-attribute-true": "نعم",
           "registrationCreated": "تم إنشاء التسجيل",
           "registrationCreatedDate": "تاريخ إنشاء التسجيل",
           "select": "اختار",

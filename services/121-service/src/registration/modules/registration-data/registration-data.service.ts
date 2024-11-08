@@ -110,10 +110,11 @@ export class RegistrationDataService {
       .andWhere('programRegistrationAttributes.name = :name', { name })
       .select('"programRegistrationAttributes".id', 'id');
 
-    const resultProgramQuestion = await query.getRawOne();
+    const resultProgramRegistrationAttribute = await query.getRawOne();
 
-    if (resultProgramQuestion) {
-      result.programRegistrationAttributeId = resultProgramQuestion.id;
+    if (resultProgramRegistrationAttribute) {
+      result.programRegistrationAttributeId =
+        resultProgramRegistrationAttribute.id;
       return result;
     }
 

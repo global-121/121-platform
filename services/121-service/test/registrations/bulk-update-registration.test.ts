@@ -108,6 +108,83 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     );
   });
 
+  it('Should bulk update chosen FSP and validate changed records', async () => {
+    const registrationDataThatWillChangePa1 = {
+      financialServiceProviderName: 'Intersolve-voucher-whatsapp',
+      programFinancialServiceProviderConfigurationId: 5,
+      programFinancialServiceProviderConfigurationName:
+        'Intersolve-voucher-whatsapp',
+      programFinancialServiceProviderConfigurationLabel: {
+        en: 'Albert Heijn voucher WhatsApp',
+      },
+    };
+    const registrationDataThatWillChangePa2 = {
+      financialServiceProviderName: 'Intersolve-visa',
+      programFinancialServiceProviderConfigurationId: 6,
+      programFinancialServiceProviderConfigurationName: 'Intersolve-visa',
+      programFinancialServiceProviderConfigurationLabel: {
+        en: 'Visa debit card',
+      },
+    };
+
+    // Registration before patch
+    const searchByReferenceIdBeforePatchPa1 =
+      await searchRegistrationByReferenceId(
+        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
+    const pa1BeforePatch = searchByReferenceIdBeforePatchPa1.body.data[0];
+
+    const searchByReferenceIdBeforePatchPa2 =
+      await searchRegistrationByReferenceId(
+        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
+    const pa2BeforePatch = searchByReferenceIdBeforePatchPa2.body.data[0];
+
+    // Act
+    const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
+      programIdOcw,
+      './test-registration-data/test-registrations-patch-OCW-chosen-FSP.csv',
+      accessToken,
+      'test-reason',
+    );
+    expect(bulkUpdateResult.statusCode).toBe(200);
+    await waitFor(2000);
+
+    const searchByReferenceIdAfterPatchPa1 =
+      await searchRegistrationByReferenceId(
+        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
+
+    const pa1AfterPatch = searchByReferenceIdAfterPatchPa1.body.data[0];
+
+    const searchByReferenceIdAfterPatchPa2 =
+      await searchRegistrationByReferenceId(
+        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        programIdOcw,
+        accessToken,
+      );
+
+    const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
+
+    // Assert
+    assertRegistrationBulkUpdate(
+      registrationDataThatWillChangePa1,
+      pa1AfterPatch,
+      pa1BeforePatch,
+    );
+    assertRegistrationBulkUpdate(
+      registrationDataThatWillChangePa2,
+      pa2AfterPatch,
+      pa2BeforePatch,
+    );
+  });
+
   it('Should bulk update if phoneNumber column is empty and program is configured as allowing empty phone number', async () => {
     const registrationDataThatWillChangePa1 = {
       fullName: 'updated name1',

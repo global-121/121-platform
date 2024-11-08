@@ -88,7 +88,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public tryWhatsAppFirst: boolean;
 
   // TODO: This can be refactored into 'nameField' so that this can be 1 field name that maps to the 'Name' column in the Portal.
-  // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
+  // This is an array of ProgramRegistrationAttributeEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
   public fullnameNamingConvention: string[] | null;
 

@@ -50,6 +50,7 @@ import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.d
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -129,7 +130,7 @@ export class RegistrationsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary:
-      '[SCOPED] Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program-specific fields, like program questions, fsp questions, and custom attributes, even though not specified in the Swagger Docs.',
+      '[SCOPED] Get paginated registrations. Below you will find all the default paginate options, including filtering on any generic fields. NOTE: additionally you can filter on program registration attributes, even though not specified in the Swagger Docs.',
   })
   @ApiParam({
     name: 'programId',
@@ -364,7 +365,7 @@ export class RegistrationsController {
   ) {
     const userId = RequestHelper.getUserId(req);
 
-    const hasRegistrationUpdatePermission =
+    const hasUpdateRegistrationPermission =
       await this.registrationsPaginateService.userHasPermissionForProgram(
         userId,
         programId,
@@ -376,32 +377,42 @@ export class RegistrationsController {
         programId,
         PermissionEnum.RegistrationAttributeFinancialUPDATE,
       );
+    const hasUpdateFspConfigPermission =
+      await this.registrationsPaginateService.userHasPermissionForProgram(
+        userId,
+        programId,
+        PermissionEnum.RegistrationFspConfigUPDATE,
+      );
 
-    if (!hasRegistrationUpdatePermission && !hasUpdateFinancialPermission) {
+    if (
+      !hasUpdateRegistrationPermission &&
+      !hasUpdateFinancialPermission &&
+      !hasUpdateFspConfigPermission
+    ) {
       const errors = `User does not have permission to update attributes`;
       throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
     }
 
     const partialRegistration = updateRegistrationDto.data;
 
-    if (!hasUpdateFinancialPermission && hasRegistrationUpdatePermission) {
-      for (const attributeKey of Object.keys(partialRegistration)) {
-        if (
-          FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
-        ) {
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      if (
+        FinancialAttributes.includes(attributeKey as keyof RegistrationEntity)
+      ) {
+        if (!hasUpdateFinancialPermission) {
           const errors = `User does not have permission to update financial attributes`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
-      }
-    }
-
-    if (hasUpdateFinancialPermission && !hasRegistrationUpdatePermission) {
-      for (const attributeKey of Object.keys(partialRegistration)) {
-        if (
-          !FinancialAttributes.includes(
-            attributeKey as keyof RegistrationEntity,
-          )
-        ) {
+      } else if (
+        attributeKey ===
+        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
+      ) {
+        if (!hasUpdateFspConfigPermission) {
+          const errors = `User does not have permission to update chosen program financial service provider configuration`;
+          throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
+        }
+      } else {
+        if (!hasUpdateRegistrationPermission) {
           const errors = `User does not have permission to update attributes`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }

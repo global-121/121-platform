@@ -340,8 +340,6 @@
         },
         "choose-action": "Choose action...",
         "column": {
-          "custom-attribute-false": "No",
-          "custom-attribute-true": "Yes",
           "dob": "Date of birth",
           "failedPayment": "Failed for payment #",
           "financialServiceProvider": "Financial Service Provider",
@@ -361,6 +359,8 @@
           "preferredLanguage": "Preferred language",
           "programFinancialServiceProviderConfigurationLabel": "Financial Service Provider",
           "referenceId": "Reference ID",
+          "registration-attribute-false": "No",
+          "registration-attribute-true": "Yes",
           "registrationCreated": "Registration created",
           "registrationCreatedDate": "Registration created date",
           "select": "Select",

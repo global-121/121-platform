@@ -741,7 +741,7 @@ export class RegistrationsService {
       return [];
     }
 
-    const customAttributesPhoneNumberNames = [
+    const registrationAttributesPhoneNumberNames = [
       DefaultRegistrationDataAttributeNames.phoneNumber as string,
       DefaultRegistrationDataAttributeNames.whatsappPhoneNumber as string,
     ];
@@ -767,7 +767,10 @@ export class RegistrationsService {
 
     for (const d of matchingRegistrationData) {
       const dataName = await d.getDataName();
-      if (dataName && customAttributesPhoneNumberNames.includes(dataName)) {
+      if (
+        dataName &&
+        registrationAttributesPhoneNumberNames.includes(dataName)
+      ) {
         matchingRegistrations.push({
           programId: d.registration.programId,
           referenceId: d.registration.referenceId,
