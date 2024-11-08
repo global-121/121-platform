@@ -1,15 +1,17 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
+import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
+import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
+import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
 import { LogEvent, LogService } from '~/services/log.service';
 import { environment } from '~environment';
 
-type LocalStorageUser = Pick<
+export type LocalStorageUser = Pick<
   User,
   | 'expires'
   | 'isAdmin'
@@ -44,9 +46,19 @@ export function getUserFromLocalStorage(): LocalStorageUser | null {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly userApiService = inject(UserApiService);
   private readonly logService = inject(LogService);
+  private readonly injector = inject(Injector);
   private readonly router = inject(Router);
+
+  private readonly authStrategy: IAuthStrategy;
+
+  constructor() {
+    const AuthStrategy = environment.use_sso_azure_entra
+      ? MsalAuthStrategy
+      : BasicAuthStrategy;
+
+    this.authStrategy = this.injector.get(AuthStrategy);
+  }
 
   public get isLoggedIn(): boolean {
     return this.user !== null;
@@ -60,6 +72,14 @@ export class AuthService {
     return this.user?.isOrganizationAdmin ?? false;
   }
 
+  public get ChangePasswordComponent() {
+    return this.authStrategy.ChangePasswordComponent;
+  }
+
+  public get LoginComponent() {
+    return this.authStrategy.LoginComponent;
+  }
+
   private setUserInStorage(user: User): void {
     const userToStore: LocalStorageUser = {
       username: user.username,
@@ -67,7 +87,7 @@ export class AuthService {
       isAdmin: user.isAdmin,
       isOrganizationAdmin: user.isOrganizationAdmin,
       isEntraUser: user.isEntraUser,
-      expires: user.expires ?? undefined,
+      expires: user.expires,
     };
 
     localStorage.setItem(
@@ -84,11 +104,7 @@ export class AuthService {
       return null;
     }
 
-    if (
-      // Only check for non-SSO users
-      !environment.use_sso_azure_entra &&
-      (!user.expires || Date.parse(user.expires) < Date.now())
-    ) {
+    if (this.authStrategy.isUserExpired(user)) {
       console.warn('AuthService: Expired token');
       return null;
     }
@@ -96,46 +112,30 @@ export class AuthService {
     return user;
   }
 
-  public async login({
-    username,
-    password,
-  }: {
-    username: string;
-    password: string;
-  }) {
+  public async login(
+    credentials: { username: string; password?: string },
+    returnUrl?: string,
+  ) {
     this.logService.logEvent(LogEvent.userLogin);
+    const user = await this.authStrategy.login(credentials);
+    this.setUserInStorage(user);
 
-    try {
-      const user = await this.userApiService.login({ username, password });
-      this.setUserInStorage(user);
-    } catch (error) {
-      console.error('AuthService: login error: ', error);
+    if (returnUrl) {
+      return this.router.navigate([returnUrl]);
     }
 
-    if (!this.user) {
-      throw new Error(
-        $localize`Invalid email or password. Double-check your credentials and try again.`,
-      );
-    }
+    return this.router.navigate(['/']);
   }
 
   public async logout() {
     this.logService.logEvent(LogEvent.userLogout);
 
-    if (!this.user?.username) {
-      await this.router.navigate(['/', AppRoutes.login]);
-      return;
-    }
+    await this.authStrategy.logout(this.user);
 
     // Cleanup local state, to leave no trace of the user.
     localStorage.removeItem(LOCAL_STORAGE_AUTH_USER_KEY);
 
-    await this.userApiService.logout();
     await this.router.navigate(['/', AppRoutes.login]);
-  }
-
-  public getAssignedProjectIds(): number[] {
-    return this.user ? Object.keys(this.user.permissions).map(Number) : [];
   }
 
   public async changePassword({
@@ -145,19 +145,15 @@ export class AuthService {
     password: string;
     newPassword: string;
   }) {
-    const username = this.user?.username;
-
-    if (!username) {
-      throw new Error(
-        $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
-      );
-    }
-
-    return await this.userApiService.changePassword({
-      username,
+    return await this.authStrategy.changePassword({
+      user: this.user,
       password,
       newPassword,
     });
+  }
+
+  public getAssignedProjectIds(): number[] {
+    return this.user ? Object.keys(this.user.permissions).map(Number) : [];
   }
 
   private isAssignedToProject({
