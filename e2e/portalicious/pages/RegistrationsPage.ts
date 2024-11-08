@@ -8,12 +8,16 @@ class RegistrationsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
   readonly goToProfileOption: Locator;
+  readonly sendMessageDialogPreview: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
     this.table = new TableComponent(page);
     this.goToProfileOption = this.page.getByText('Go to profile');
+    this.sendMessageDialogPreview = this.page.getByTestId(
+      'send-message-dialog-preview',
+    );
   }
 
   async selectBulkAction(action: string) {
@@ -89,6 +93,51 @@ class RegistrationsPage extends BasePage {
     throw new Error('Registration not found');
   }
 
+  async performActionOnRegistrationByName({
+    registrationName,
+    action,
+  }: {
+    registrationName: string;
+    action: string;
+  }) {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
+    const rowCount = await this.table.tableRows.count();
+    for (let i = 0; i <= rowCount; i++) {
+      const fullName = await this.table.getCell(i, 2);
+      const fullNameText = (await fullName.textContent())?.trim();
+      const isRequestedFullName = fullNameText?.includes(registrationName);
+
+      if (
+        (registrationName && isRequestedFullName) ||
+        (!registrationName && !isRequestedFullName)
+      ) {
+        await this.performActionWithRightClick(action, i);
+        return;
+      }
+    }
+    throw new Error('Registration not found');
+  }
+
+  async cancelSendMessageBulkAction() {
+    await this.page.getByRole('button', { name: 'Cancel' }).click();
+  }
+
+  async validateSendMessagePaCount(count: number) {
+    const dialogText = await this.sendMessageDialogPreview.innerText();
+
+    // Extract the number from the dialog text
+    const regex = /(\d+)/;
+    const match = regex.exec(dialogText);
+    if (!match) {
+      throw new Error('Dialog text does not match expected format');
+    }
+
+    const actualCount = parseInt(match[1], 10);
+    // Validate the count
+    expect(actualCount).toBe(count);
+  }
+
   async goToRandomRegistration() {
     const rowCount = await this.table.tableRows.count();
     const randomIndex = Math.floor(Math.random() * rowCount);
@@ -97,6 +146,20 @@ class RegistrationsPage extends BasePage {
     await fullName.click({ button: 'right' });
     await this.goToProfileOption.click();
     return randomIndex;
+  }
+
+  async selectMultipleRegistrations(selectionCount: number) {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
+    for (let i = 1; i <= selectionCount; i++) {
+      const rowCheckbox = await this.table.getCell(i, 0);
+      await rowCheckbox.click();
+    }
+  }
+
+  async performActionWithRightClick(action: string, row = 0) {
+    await this.table.tableRows.nth(row).click({ button: 'right' });
+    await this.page.getByLabel(action).click();
   }
 }
 

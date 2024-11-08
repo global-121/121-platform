@@ -21,7 +21,7 @@
       @let previewMessageData = previewData();
 
       @if (!previewMessageData) {
-        <p>
+        <p data-testid="send-message-dialog-preview">
           <ng-container i18n="@@send-message-dialog-preview"
             >You're about to <strong>send a message</strong> to
             {{ actionData()?.count }} registration(s).</ng-container
