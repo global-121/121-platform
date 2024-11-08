@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -88,7 +89,10 @@ describe('Create program', () => {
 
   it('should not be able to post a registration attributes with an attribute name that exists', async () => {
     // Arrange
-    const names = ['namePartnerOrganization', 'whatsappPhoneNumber'];
+    const names = [
+      'namePartnerOrganization',
+      FinancialServiceProviderAttributes.whatsappPhoneNumber,
+    ];
     for (const name of names) {
       const programRegistrationAttributeCopy = {
         ...programRegistrationAttribute,

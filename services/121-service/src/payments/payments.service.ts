@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
@@ -725,8 +726,8 @@ export class PaymentsService {
       (q) => q.name,
     );
     const dataFieldNames = [
-      'fullName',
-      'phoneNumber',
+      FinancialServiceProviderAttributes.fullName,
+      FinancialServiceProviderAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
     const registrationViews = await this.getRegistrationViews(
@@ -759,13 +760,27 @@ export class PaymentsService {
             )!,
             isRetry,
             bulkSize: referenceIdsTransactionAmounts.length,
-            name: registrationView['fullName']!, // Fullname is a required field if a registration has visa as FSP
-            addressStreet: registrationView['addressStreet'],
-            addressHouseNumber: registrationView['addressHouseNumber'],
+            name: registrationView[
+              FinancialServiceProviderAttributes.fullName
+            ]!, // Fullname is a required field if a registration has visa as FSP
+            addressStreet:
+              registrationView[
+                FinancialServiceProviderAttributes.addressStreet
+              ],
+            addressHouseNumber:
+              registrationView[
+                FinancialServiceProviderAttributes.addressHouseNumber
+              ],
             addressHouseNumberAddition:
-              registrationView['addressHouseNumberAddition'],
-            addressPostalCode: registrationView['addressPostalCode'],
-            addressCity: registrationView['addressCity'],
+              registrationView[
+                FinancialServiceProviderAttributes.addressHouseNumberAddition
+              ],
+            addressPostalCode:
+              registrationView[
+                FinancialServiceProviderAttributes.addressPostalCode
+              ],
+            addressCity:
+              registrationView[FinancialServiceProviderAttributes.addressCity],
             phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
           };
         },
@@ -830,7 +845,8 @@ export class PaymentsService {
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
           phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
-          idNumber: registrationView['nationalId'],
+          idNumber:
+            registrationView[FinancialServiceProviderAttributes.nationalId],
           originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
         };
       });

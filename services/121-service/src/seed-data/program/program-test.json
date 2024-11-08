@@ -300,9 +300,6 @@
       "financialServiceProvider": "bank_a"
     },
     {
-      "financialServiceProvider": "fsp_all_attributes"
-    },
-    {
       "financialServiceProvider": "fsp_no_attributes"
     },
     {

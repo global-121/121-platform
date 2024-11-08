@@ -3,11 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
+  DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -24,50 +26,50 @@ const userId = 1;
 const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
   {
     id: 8,
-    name: 'addressStreet',
+    name: FinancialServiceProviderAttributes.addressStreet,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 9,
-    name: 'addressHouseNumber',
+    name: FinancialServiceProviderAttributes.addressHouseNumber,
     type: RegistrationAttributeTypes.numeric,
     isRequired: false,
   },
   {
     id: 10,
-    name: 'addressHouseNumberAddition',
+    name: FinancialServiceProviderAttributes.addressHouseNumberAddition,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 11,
-    name: 'addressPostalCode',
+    name: FinancialServiceProviderAttributes.addressPostalCode,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 12,
-    name: 'addressCity',
+    name: FinancialServiceProviderAttributes.addressCity,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 13,
-    name: 'whatsappPhoneNumber',
+    name: FinancialServiceProviderAttributes.whatsappPhoneNumber,
     type: RegistrationAttributeTypes.tel,
     isRequired: false,
   },
   {
     id: 3,
-    name: 'fullName',
+    name: FinancialServiceProviderAttributes.fullName,
     type: RegistrationAttributeTypes.text,
     options: null,
     isRequired: false,
   },
   {
     id: 4,
-    name: 'phoneNumber',
+    name: DefaultRegistrationDataAttributeNames.phoneNumber,
     type: RegistrationAttributeTypes.tel,
     options: null,
     isRequired: false,

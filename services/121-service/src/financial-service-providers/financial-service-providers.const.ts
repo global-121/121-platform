@@ -1,3 +1,4 @@
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
@@ -67,11 +68,11 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     notifyOnTransaction: false,
     attributes: [
       {
-        name: 'phoneNumber',
+        name: FinancialServiceProviderAttributes.phoneNumber,
         isRequired: true,
       },
       {
-        name: 'nationalId',
+        name: FinancialServiceProviderAttributes.nationalId,
         isRequired: true,
       },
     ],
@@ -90,7 +91,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     notifyOnTransaction: false,
     attributes: [
       {
-        name: 'personalId',
+        name: FinancialServiceProviderAttributes.nationalId,
         isRequired: true,
       },
     ],
@@ -105,31 +106,31 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     notifyOnTransaction: true,
     attributes: [
       {
-        name: 'fullName',
+        name: FinancialServiceProviderAttributes.fullName,
         isRequired: true,
       },
       {
-        name: 'addressStreet',
+        name: FinancialServiceProviderAttributes.addressCity,
         isRequired: true,
       },
       {
-        name: 'addressHouseNumber',
+        name: FinancialServiceProviderAttributes.addressHouseNumber,
         isRequired: true,
       },
       {
-        name: 'addressHouseNumberAddition',
+        name: FinancialServiceProviderAttributes.addressHouseNumberAddition,
         isRequired: false,
       },
       {
-        name: 'addressPostalCode',
+        name: FinancialServiceProviderAttributes.addressPostalCode,
         isRequired: true,
       },
       {
-        name: 'addressCity',
+        name: FinancialServiceProviderAttributes.addressStreet,
         isRequired: true,
       },
       {
-        name: 'phoneNumber',
+        name: FinancialServiceProviderAttributes.phoneNumber,
         isRequired: true,
       },
     ],
@@ -149,42 +150,6 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
-    name: 'fsp_all_attributes',
-    integrationType: FinancialServiceProviderIntegrationType.api,
-
-    defaultLabel: {
-      ar: 'FSP - جميع الصفات',
-      en: 'FSP - all attributes',
-      es: 'FSP - todos los atributos',
-      fr: 'FSP - tous les attribut',
-      nl: 'FSP - alle attributen',
-    },
-    notifyOnTransaction: false,
-    attributes: [
-      {
-        name: 'phoneNumber',
-        isRequired: true,
-      },
-      {
-        name: 'accountId',
-        isRequired: true,
-      },
-      {
-        name: 'date',
-        isRequired: true,
-      },
-      {
-        name: 'openAnswer',
-        isRequired: true,
-      },
-      {
-        name: 'fixedChoice',
-        isRequired: true,
-      },
-    ],
-    configurationProperties: [],
-  },
-  {
     name: FinancialServiceProviders.commercialBankEthiopia,
     integrationType: FinancialServiceProviderIntegrationType.api,
     defaultLabel: {
@@ -193,7 +158,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     notifyOnTransaction: false,
     attributes: [
       {
-        name: 'bankAccountNumber',
+        name: FinancialServiceProviderAttributes.bankAccountNumber,
         isRequired: true,
       },
     ],
@@ -217,7 +182,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     notifyOnTransaction: false,
     attributes: [
       {
-        name: 'whatsappPhoneNumber',
+        name: FinancialServiceProviderAttributes.whatsappPhoneNumber,
         isRequired: true,
       },
     ],

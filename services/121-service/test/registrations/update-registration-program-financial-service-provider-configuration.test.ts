@@ -51,7 +51,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     // Arrange
     await setupNlrcEnvironment();
 
-    // Intersolve-visa and Intersolve-voucher-whatsapp both have 'whatsappPhoneNumber' as required
+    // Intersolve-visa and Intersolve-voucher-whatsapp both have whatsappPhoneNumber as required
     const newProgramFinancialServiceProviderConfigurationName =
       'Intersolve-voucher-whatsapp';
     const dataUpdate = {

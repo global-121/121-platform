@@ -4,6 +4,7 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -26,7 +27,7 @@ const attributeEntityNewValue = {
 
 const attributeEntityFieldName = {
   key: 'fieldName',
-  value: 'whatsappPhoneNumber',
+  value: FinancialServiceProviderAttributes.whatsappPhoneNumber,
 };
 
 const mockFindEventResult: EventEntity[] = [
@@ -197,15 +198,25 @@ describe('EventsService', () => {
 
   it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
-    newViewRegistration['whatsappPhoneNumber'] = '1234567890';
+    newViewRegistration[
+      FinancialServiceProviderAttributes.whatsappPhoneNumber
+    ] = '1234567890';
     newViewRegistration['programFinancialServiceProviderConfigurationLabel'] = {
       en: 'Albert Heijn voucher WhatsApp',
     };
-    delete newViewRegistration['addressCity'];
-    delete newViewRegistration['addressPostalCode'];
-    delete newViewRegistration['addressHouseNumberAddition'];
-    delete newViewRegistration['addressHouseNumber'];
-    delete newViewRegistration['addressStreet'];
+    delete newViewRegistration[FinancialServiceProviderAttributes.addressCity];
+    delete newViewRegistration[
+      FinancialServiceProviderAttributes.addressPostalCode
+    ];
+    delete newViewRegistration[
+      FinancialServiceProviderAttributes.addressHouseNumberAddition
+    ];
+    delete newViewRegistration[
+      FinancialServiceProviderAttributes.addressHouseNumber
+    ];
+    delete newViewRegistration[
+      FinancialServiceProviderAttributes.addressStreet
+    ];
 
     // Changes that should not be logged
     newViewRegistration.programFinancialServiceProviderConfigurationName =
@@ -244,13 +255,22 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value: oldViewRegistration['whatsappPhoneNumber'],
+            value:
+              oldViewRegistration[
+                FinancialServiceProviderAttributes.whatsappPhoneNumber
+              ],
           },
           {
             key: 'newValue',
-            value: newViewRegistration['whatsappPhoneNumber'],
+            value:
+              newViewRegistration[
+                FinancialServiceProviderAttributes.whatsappPhoneNumber
+              ],
           },
-          { key: 'fieldName', value: 'whatsappPhoneNumber' },
+          {
+            key: 'fieldName',
+            value: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+          },
         ],
         userId: 2,
       },
@@ -258,8 +278,17 @@ describe('EventsService', () => {
         registrationId: oldViewRegistration.id,
         type: EventEnum.registrationDataChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration['addressCity'] },
-          { key: 'fieldName', value: 'addressCity' },
+          {
+            key: 'oldValue',
+            value:
+              oldViewRegistration[
+                FinancialServiceProviderAttributes.addressCity
+              ],
+          },
+          {
+            key: 'fieldName',
+            value: FinancialServiceProviderAttributes.addressCity,
+          },
         ],
         userId: 2,
       },
@@ -267,23 +296,17 @@ describe('EventsService', () => {
         registrationId: oldViewRegistration.id,
         type: EventEnum.registrationDataChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration['addressPostalCode'] },
-          { key: 'fieldName', value: 'addressPostalCode' },
-        ],
-        userId: 2,
-      },
-      {
-        registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
-        attributes: [{ key: 'fieldName', value: 'addressHouseNumberAddition' }],
-        userId: 2,
-      },
-      {
-        registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
-        attributes: [
-          { key: 'oldValue', value: oldViewRegistration['addressHouseNumber'] },
-          { key: 'fieldName', value: 'addressHouseNumber' },
+          {
+            key: 'oldValue',
+            value:
+              oldViewRegistration[
+                FinancialServiceProviderAttributes.addressPostalCode
+              ],
+          },
+          {
+            key: 'fieldName',
+            value: FinancialServiceProviderAttributes.addressPostalCode,
+          },
         ],
         userId: 2,
       },
@@ -291,8 +314,47 @@ describe('EventsService', () => {
         registrationId: oldViewRegistration.id,
         type: EventEnum.registrationDataChange,
         attributes: [
-          { key: 'oldValue', value: oldViewRegistration['addressStreet'] },
-          { key: 'fieldName', value: 'addressStreet' },
+          {
+            key: 'fieldName',
+            value:
+              FinancialServiceProviderAttributes.addressHouseNumberAddition,
+          },
+        ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [
+          {
+            key: 'oldValue',
+            value:
+              oldViewRegistration[
+                FinancialServiceProviderAttributes.addressHouseNumber
+              ],
+          },
+          {
+            key: 'fieldName',
+            value: FinancialServiceProviderAttributes.addressHouseNumber,
+          },
+        ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [
+          {
+            key: 'oldValue',
+            value:
+              oldViewRegistration[
+                FinancialServiceProviderAttributes.addressStreet
+              ],
+          },
+          {
+            key: 'fieldName',
+            value: FinancialServiceProviderAttributes.addressStreet,
+          },
         ],
         userId: 2,
       },

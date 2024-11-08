@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -23,7 +24,10 @@ export class FinancialServiceProviderDto {
       { name: 'houseNumberAddition', isRequired: false },
     ],
   })
-  readonly attributes: { name: string; isRequired: boolean }[];
+  readonly attributes: {
+    name: FinancialServiceProviderAttributes;
+    isRequired: boolean;
+  }[];
 
   @ApiProperty({
     example: [

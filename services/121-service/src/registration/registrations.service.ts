@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
@@ -686,15 +687,14 @@ export class RegistrationsService {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      // TODO: REFACTOR: Find a way to not have the data fields hardcoded in this function. -> can be implemented in registration data refeactor
       type ContactInformationKeys = keyof ContactInformation;
       const fieldNames: ContactInformationKeys[] = [
-        'addressStreet',
-        'addressHouseNumber',
-        'addressHouseNumberAddition',
-        'addressPostalCode',
-        'addressCity',
-        'phoneNumber',
+        FinancialServiceProviderAttributes.addressStreet,
+        FinancialServiceProviderAttributes.addressHouseNumber,
+        FinancialServiceProviderAttributes.addressHouseNumberAddition,
+        FinancialServiceProviderAttributes.addressPostalCode,
+        FinancialServiceProviderAttributes.addressCity,
+        FinancialServiceProviderAttributes.phoneNumber,
       ];
       const registrationData =
         await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
@@ -1003,8 +1003,8 @@ export class RegistrationsService {
       (q) => q.name,
     );
     const dataFieldNames = [
-      'fullName',
-      'phoneNumber',
+      FinancialServiceProviderAttributes.fullName,
+      FinancialServiceProviderAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
 
@@ -1030,7 +1030,10 @@ export class RegistrationsService {
     );
 
     for (const name of dataFieldNames) {
-      if (name === 'addressHouseNumberAddition') continue; // Skip non-required property
+      if (
+        name === FinancialServiceProviderAttributes.addressHouseNumberAddition
+      )
+        continue; // Skip non-required property
       if (
         mappedRegistrationData[name] === null ||
         mappedRegistrationData[name] === undefined ||
@@ -1049,15 +1052,34 @@ export class RegistrationsService {
         registrationId: registration.id,
         // Why do we need this?
         reference: registration.referenceId,
-        name: mappedRegistrationData['fullName'],
+        name: mappedRegistrationData[
+          FinancialServiceProviderAttributes.fullName
+        ],
         contactInformation: {
-          addressStreet: mappedRegistrationData['addressStreet'],
-          addressHouseNumber: mappedRegistrationData['addressHouseNumber'],
+          addressStreet:
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.addressStreet
+            ],
+          addressHouseNumber:
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.addressHouseNumber
+            ],
           addressHouseNumberAddition:
-            mappedRegistrationData['addressHouseNumberAddition'],
-          addressPostalCode: mappedRegistrationData['addressPostalCode'],
-          addressCity: mappedRegistrationData['addressCity'],
-          phoneNumber: mappedRegistrationData['phoneNumber'], // In the above for loop it is checked that this is not undefined or empty
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.addressHouseNumberAddition
+            ],
+          addressPostalCode:
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.addressPostalCode
+            ],
+          addressCity:
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.addressCity
+            ],
+          phoneNumber:
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.phoneNumber
+            ], // In the above for loop it is checked that this is not undefined or empty
         },
         brandCode: intersolveVisaConfig.find(
           (c) =>

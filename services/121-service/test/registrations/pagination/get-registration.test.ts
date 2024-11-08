@@ -1,3 +1,4 @@
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   getRegistrations,
@@ -18,8 +19,8 @@ import {
 describe('Load PA table', () => {
   describe('getting registration using paginate', () => {
     let accessToken: string;
-    const attribute1 = 'whatsappPhoneNumber';
-    const attribute2 = 'addressCity';
+    const attribute1 = FinancialServiceProviderAttributes.whatsappPhoneNumber;
+    const attribute2 = FinancialServiceProviderAttributes.addressCity;
     const attribute3 = 'referenceId';
     const attributeName = 'name';
     const attributeFullName = 'fullName';

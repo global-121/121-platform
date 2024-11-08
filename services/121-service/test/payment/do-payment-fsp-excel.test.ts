@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
@@ -188,7 +189,7 @@ describe('Do payment with Excel FSP', () => {
   describe('Import FSP reconciliation data', () => {
     it('Should update transaction status based on imported reconciliation data', async () => {
       // Arrange
-      const matchColumn = 'phoneNumber';
+      const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
       // construct reconciliation-file here
       const reconciliationData = [
         {
@@ -263,7 +264,7 @@ describe('Do payment with Excel FSP', () => {
 
     it('Should give an error when status column is missing', async () => {
       // Arrange
-      const matchColumn = 'phoneNumber';
+      const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
       // construct reconciliation-file here
       const reconciliationData = [
         {

@@ -6,6 +6,7 @@ import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
+import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -184,7 +185,10 @@ export class CommercialBankEthiopiaService
         referenceIds,
       })
       .andWhere('(programRegistrationAttribute.name IN (:...names))', {
-        names: ['fullName', 'bankAccountNumber'],
+        names: [
+          FinancialServiceProviderAttributes.fullName,
+          FinancialServiceProviderAttributes.bankAccountNumber,
+        ],
       })
       .leftJoin('registration.data', 'data')
       .leftJoin(
@@ -221,9 +225,11 @@ export class CommercialBankEthiopiaService
     let debitTheIrRefRetry;
 
     paRegistrationData.forEach((data) => {
-      if (data.fieldName === 'fullName') {
+      if (data.fieldName === FinancialServiceProviderAttributes.fullName) {
         fullName = data.value;
-      } else if (data.fieldName === 'bankAccountNumber') {
+      } else if (
+        data.fieldName === FinancialServiceProviderAttributes.bankAccountNumber
+      ) {
         bankAccountNumber = data.value;
       } else if ((data.fieldName = 'debitTheIrRef')) {
         debitTheIrRefRetry = data.value;
@@ -409,7 +415,10 @@ export class CommercialBankEthiopiaService
       ])
       .where('registration.programId = :programId', { programId })
       .andWhere('(programRegistrationAttribute.name IN (:...names))', {
-        names: ['fullName', 'bankAccountNumber'],
+        names: [
+          FinancialServiceProviderAttributes.fullName,
+          FinancialServiceProviderAttributes.bankAccountNumber,
+        ],
       })
       .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
         statusValues: ['deleted', 'paused'],
