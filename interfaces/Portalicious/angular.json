@@ -15,10 +15,6 @@
       "i18n": {
         "sourceLocale": "en-GB",
         "locales": {
-          "en": {
-            "translation": "src/locale/messages.xlf",
-            "baseHref": "/en/"
-          },
           "nl": {
             "translation": "src/locale/messages.nl.xlf",
             "baseHref": "/nl/"
@@ -60,8 +56,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1MB",
-                  "maximumError": "2MB"
+                  "maximumWarning": "3MB",
+                  "maximumError": "5MB"
                 },
                 {
                   "type": "anyComponentStyle",

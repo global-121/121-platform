@@ -114,7 +114,7 @@ export class AuthService {
 
     if (!this.user) {
       throw new Error(
-        $localize`Invalid email or password.  Double-check your credentials and try again.`,
+        $localize`Invalid email or password. Double-check your credentials and try again.`,
       );
     }
   }

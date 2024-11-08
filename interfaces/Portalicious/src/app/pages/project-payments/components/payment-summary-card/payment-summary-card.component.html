@@ -1,0 +1,58 @@
+<app-card-with-link
+  [href]="paymentLink(projectId(), paymentId())"
+  [title]="paymentTitle()"
+>
+  <ng-container card-content>
+    <dl class="flex flex-wrap divide-y border-b border-grey-100">
+      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
+        <app-metric-container
+          [pending]="metrics.isPending()"
+          [value]="includedRegistrations()"
+          label="Included reg."
+          i18n-label
+        ></app-metric-container>
+      </div>
+      <div class="basis-1/2 border-s border-grey-100 px-1 py-2">
+        <app-metric-container
+          [pending]="metrics.isPending()"
+          [value]="totalAmount()"
+          label="Total amount"
+          i18n-label
+        ></app-metric-container>
+      </div>
+      <div class="basis-1/2 border-t border-grey-100 px-1 py-2">
+        <app-metric-container
+          [pending]="metrics.isPending()"
+          [value]="metrics.data()?.success?.count"
+          label="Successful transfers"
+          i18n-label
+        ></app-metric-container>
+      </div>
+      <div class="basis-1/2 border-s border-t border-grey-100 px-1 py-2">
+        <app-metric-container
+          [pending]="metrics.isPending()"
+          [value]="metrics.data()?.failed?.count"
+          [showAlert]="showFailedAlert()"
+          label="Failed transfers"
+          i18n-label
+        ></app-metric-container>
+      </div>
+    </dl>
+  </ng-container>
+  <ng-container card-footer>
+    <div class="min-h-8 text-end">
+      @if (cardIndex() === 0) {
+        @if (paymentInProgress.isPending()) {
+          <app-skeleton-inline width="8rem" />
+        } @else if (paymentInProgress.data()?.inProgress) {
+          <app-colored-chip
+            variant="orange"
+            label="In progress"
+            i18n-label
+            [icon]="'pi pi-spinner animate-spin'"
+          ></app-colored-chip>
+        }
+      }
+    </div>
+  </ng-container>
+</app-card-with-link>

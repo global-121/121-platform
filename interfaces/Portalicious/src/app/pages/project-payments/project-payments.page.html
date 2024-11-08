@@ -3,7 +3,13 @@
   i18n-pageTitle="@@page-title-project-payments"
   [projectId]="projectId()"
 >
-  <div header-actions>
+  <div
+    header-actions
+    class="space-x-2"
+  >
+    @if (canExport()) {
+      <app-export-payments [projectId]="projectId()" />
+    }
     <p-button
       label="Create new payment"
       i18n-label="@@create-payment"
@@ -12,5 +18,24 @@
       (click)="onCreatePayment()"
     />
   </div>
-  <p i18n>project-payments works!</p>
+
+  <app-card-grid
+    [empty]="paymentsSorted()?.length === 0"
+    emptyTitle="No Payments found"
+    i18n-emptyTitle
+    emptySubtitle="There are no payments for this project yet."
+    i18n-emptySubtitle
+    [loading]="payments.isPending()"
+  >
+    @for (payment of paymentsSorted(); track $index) {
+      <li>
+        <app-payment-summary-card
+          [projectId]="projectId()"
+          [paymentId]="payment.payment"
+          [paymentDate]="payment.paymentDate"
+          [cardIndex]="$index"
+        ></app-payment-summary-card>
+      </li>
+    }
+  </app-card-grid>
 </app-page-layout>

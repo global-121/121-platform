@@ -39,7 +39,7 @@ test('[29635] Create project successfully', async ({ page }) => {
     await createProject.submitForm();
     await createProject.assertCreateProjectSuccessPopUp();
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en/project/2/registrations'),
+      url.pathname.startsWith('/en-GB/project/2/registrations'),
     );
   });
 });

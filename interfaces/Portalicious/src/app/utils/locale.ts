@@ -1,11 +1,14 @@
 import { isDevMode } from '@angular/core';
 
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+
 import { environment } from '~environment';
 
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 export enum Locale {
-  en = 'en',
+  // this has to be en-GB otherwise angular locale stuff doesn't work
+  en = 'en-GB',
   nl = 'nl',
 }
 
@@ -27,6 +30,15 @@ export function getAvailableLanguages() {
       label: getLocaleLabel(locale),
       value: locale,
     }));
+}
+
+export function getLanguageEnumFromLocale(locale: Locale): LanguageEnum {
+  switch (locale) {
+    case Locale.en:
+      return LanguageEnum.en;
+    default:
+      return LanguageEnum[locale];
+  }
 }
 
 function isValidLocale(locale: string): locale is Locale {

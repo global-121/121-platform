@@ -10,8 +10,8 @@ import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import UsersPage from '@121-e2e/portalicious/pages/UsersPage';
 
 const date = new Date();
-const formattedDate = format(date, 'MM/d/yy,');
-const formattedTime = format(date, 'h:mm a');
+const formattedDate = format(date, 'dd/MM/y,');
+const formattedTime = format(date, 'HH:mm');
 const loginTimeStamp = `${formattedDate} ${formattedTime}`;
 
 test.beforeEach(async ({ page }) => {

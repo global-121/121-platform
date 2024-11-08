@@ -32,6 +32,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
+import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
@@ -69,14 +70,7 @@ export class PaymentsController {
   public async getPayments(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<
-    {
-      payment: number;
-      paymentDate: Date | string;
-      amount: number;
-    }[]
-  > {
-    // TODO: REFACTOR: use a DTO to define stable structure of result body
+  ): Promise<GetPaymentsDto[]> {
     return await this.paymentsService.getPayments(programId);
   }
 

@@ -31,6 +31,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { ExportRegistrationsComponent } from '~/pages/project-registrations/components/export-registrations/export-registrations.component';
 import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import {
@@ -49,6 +50,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     ButtonGroupModule,
     SendMessageDialogComponent,
+    ExportRegistrationsComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
@@ -133,12 +135,11 @@ export class ProjectRegistrationsPageComponent {
     registrationId,
   ];
 
-  private getActionData({
-    triggeredFromContextMenu,
+  getActionData({
+    triggeredFromContextMenu = false,
   }: {
-    // registration to be used if no selection is made
-    triggeredFromContextMenu: boolean;
-  }) {
+    triggeredFromContextMenu?: boolean;
+  } = {}) {
     const selection = this.tableSelection();
 
     if (Array.isArray(selection) && selection.length === 0) {
@@ -237,6 +238,13 @@ export class ProjectRegistrationsPageComponent {
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
+    }),
+  );
+
+  canExport = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationPersonalEXPORT,
     }),
   );
 

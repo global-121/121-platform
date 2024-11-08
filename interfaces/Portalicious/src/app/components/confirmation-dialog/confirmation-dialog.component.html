@@ -1,6 +1,7 @@
 <p-confirmDialog
   #confirmDialog
-  closeOnEscape
+  [closeOnEscape]="true"
+  [dismissableMask]="true"
   class="[&_.p-dialog-content]:max-w-[632px]"
 >
   <ng-template pTemplate="header">

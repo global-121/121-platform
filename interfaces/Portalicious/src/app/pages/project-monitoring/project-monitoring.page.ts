@@ -26,6 +26,7 @@ import { MetricTileComponent } from '~/pages/project-monitoring/components/metri
 import { DashboardIframeComponent } from '~/pages/project-monitoring/components/monitoring-iframe/monitoring-iframe.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-project-monitoring',
@@ -52,7 +53,7 @@ export class ProjectMonitoringPageComponent {
   // this is injected by the router
   projectId = input.required<number>();
 
-  readonly locale = inject(LOCALE_ID);
+  readonly locale = inject<Locale>(LOCALE_ID);
   readonly metricApiService = inject(MetricApiService);
   readonly projectApiService = inject(ProjectApiService);
   readonly paymentApiService = inject(PaymentApiService);

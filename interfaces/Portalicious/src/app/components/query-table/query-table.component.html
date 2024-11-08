@@ -12,6 +12,7 @@
   (onFilter)="selectAll.set(false)"
   [rowHover]="contextMenuItems()"
   [sortField]="initialSortField()"
+  [sortOrder]="initialSortOrder()"
   [contextMenu]="contextMenu"
   (contextMenuSelectionChange)="onUpdateContextMenuItem.emit($event)"
   [globalFilterFields]="globalFilterFields()"

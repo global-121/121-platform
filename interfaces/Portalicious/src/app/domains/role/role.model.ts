@@ -1,5 +1,5 @@
-import { UserController } from '@121-service/src/user/user.controller';
+import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
 
-import { Dto121Service } from '~/utils/dto-type';
+import { Dto } from '~/utils/dto-type';
 
-export type Role = Dto121Service<UserController['getUserRoles']>[0];
+export type Role = Dto<UserRoleResponseDTO>;

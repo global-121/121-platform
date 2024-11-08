@@ -1,8 +1,5 @@
-import { FinancialServiceProvidersController } from '@121-service/src/financial-service-providers/financial-service-provider.controller';
+import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 
-import { Dto121Service } from '~/utils/dto-type';
-import { ArrayElement } from '~/utils/type-helpers';
+import { Dto } from '~/utils/dto-type';
 
-export type FinancialServiceProvider = ArrayElement<
-  Dto121Service<FinancialServiceProvidersController['getAllFsps']>
->;
+export type FinancialServiceProvider = Dto<FinancialServiceProviderEntity>;

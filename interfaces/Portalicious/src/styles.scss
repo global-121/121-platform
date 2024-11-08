@@ -242,4 +242,14 @@ body {
       border-color: theme('colors.red.500') !important;
     }
   }
+
+  .p-menu {
+    .p-menuitem {
+      &:not(.p-highlight):not(.p-disabled) {
+        > .p-menuitem-content:hover {
+          @apply bg-purple-100 text-purple-700;
+        }
+      }
+    }
+  }
 }

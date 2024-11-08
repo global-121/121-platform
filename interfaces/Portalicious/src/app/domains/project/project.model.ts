@@ -1,29 +1,22 @@
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
-import { ProgramController } from '@121-service/src/programs/programs.controller';
-import { UserController } from '@121-service/src/user/user.controller';
+import { Attribute as AttributeFromBackend } from '@121-service/src/registration/enum/custom-data-attributes';
+import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
+import { AssignmentResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
 
-import { Dto, Dto121Service } from '~/utils/dto-type';
-import { ArrayElement } from '~/utils/type-helpers';
+import { Dto } from '~/utils/dto-type';
 
-// TODO: AB#30152 This type should be refactored to use Dto121Service
 export type Project = Dto<FoundProgramDto>;
 
-export type ProjectUser = ArrayElement<
-  Dto121Service<UserController['getUsersInProgram']>
->;
+export type ProjectUser = Dto<GetUserReponseDto>;
 
-export type ProjectUserAssignment = Dto121Service<
-  UserController['assignAidworkerToProgram']
->;
+export type ProjectUserAssignment = Dto<AssignmentResponseDTO>;
 
 export type ProjectUserWithRolesLabel = {
   allRolesLabel: string;
   lastLogin?: Date;
 } & Omit<ProjectUser, 'lastLogin'>;
 
-export type Attribute = ArrayElement<
-  Dto121Service<ProgramController['getAttributes']>
->;
+export type Attribute = Dto<AttributeFromBackend>;
 
 export type AttributeWithTranslatedLabel = { label: string } & Omit<
   Attribute,
