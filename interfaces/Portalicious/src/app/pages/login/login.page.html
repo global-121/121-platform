@@ -16,52 +16,7 @@
         >
           Use your work email to log in.
         </p>
-        <app-form-default
-          [formGroup]="formGroup"
-          submitButtonText="Log in"
-          i18n-submitButtonText
-          [mutation]="loginMutation"
-        >
-          <app-form-field-wrapper
-            label="E-mail"
-            i18n-label
-            [errorMessage]="formFieldErrors()('email')"
-          >
-            <!-- eslint-disable @angular-eslint/template/no-autofocus -->
-            <input
-              pInputText
-              type="email"
-              formControlName="email"
-              autocomplete="email username"
-              placeholder="yourname@example.org"
-              i18n-placeholder
-              pAutoFocus
-              autofocus
-            />
-          </app-form-field-wrapper>
-          <app-form-field-wrapper
-            label="Password"
-            i18n-label
-            [errorMessage]="formFieldErrors()('password')"
-          >
-            <p-password
-              formControlName="password"
-              autocomplete="current-password"
-              [toggleMask]="true"
-              [feedback]="false"
-            />
-          </app-form-field-wrapper>
-        </app-form-default>
-        <p class="mt-4">
-          <span i18n>Forgot your password?</span>&nbsp;
-
-          <a
-            i18n
-            href="mailto:support@510.global?subject=Request Password reset for 121 Platform"
-            target="_blank"
-            >Request a password reset</a
-          >
-        </p>
+        <ng-container *ngComponentOutlet="LoginComponent"></ng-container>
         <p class="mt-2">
           <a
             href="https://manual.121.global/privacy-policy/"

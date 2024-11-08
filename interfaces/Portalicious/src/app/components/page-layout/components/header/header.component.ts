@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { FocusTrapModule } from 'primeng/focustrap';
@@ -47,11 +48,12 @@ export class HeaderComponent {
 
   userName = computed(() => this.authService.user?.username);
 
-  userMenuOptions = [
+  userMenuOptions = computed<MenuItem[]>(() => [
     {
       label: $localize`:Menu-item:Change password`,
       icon: 'pi pi-cog',
       routerLink: `/${AppRoutes.changePassword}`,
+      visible: !!this.authService.ChangePasswordComponent,
     },
     {
       label: $localize`:Menu-item:Logout`,
@@ -60,7 +62,7 @@ export class HeaderComponent {
         void this.authService.logout();
       },
     },
-  ];
+  ]);
 
   sidebarVisible = false;
 
