@@ -11,6 +11,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { AppRoutes } from '~/app.routes';
+import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
@@ -30,6 +31,7 @@ import { Locale } from '~/utils/locale';
     SkeletonInlineComponent,
     ColoredChipComponent,
     CardWithLinkComponent,
+    CardSummaryMetricsContainerComponent,
   ],
   templateUrl: './payment-summary-card.component.html',
   styles: ``,
@@ -86,4 +88,30 @@ export class PaymentSummaryCardComponent {
       ' ' +
       (new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? ''),
   );
+
+  public summaryMetrics = computed(() => {
+    if (this.metrics.isPending() || !this.metrics.data()) {
+      return [];
+    }
+
+    return [
+      {
+        value: this.includedRegistrations(),
+        label: $localize`Included reg.`,
+      },
+      {
+        value: this.totalAmount(),
+        label: $localize`Total amount`,
+      },
+      {
+        value: this.metrics.data()?.success.count,
+        label: $localize`Successful transfers`,
+      },
+      {
+        value: this.metrics.data()?.failed.count,
+        label: $localize`Failed transfers`,
+        showAlert: this.showFailedAlert(),
+      },
+    ];
+  });
 }
