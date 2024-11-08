@@ -15,7 +15,7 @@ class RegistrationsPage extends BasePage {
     this.page = page;
     this.table = new TableComponent(page);
     this.goToProfileOption = this.page.getByText('Go to profile');
-    this.sendMessageDialog = this.page.getByTestId(
+    this.sendMessageDialogPreview = this.page.getByTestId(
       'send-message-dialog-preview',
     );
   }
