@@ -1,6 +1,6 @@
 import { BullModule } from '@nestjs/bull';
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -21,7 +21,9 @@ import { MessageModule } from '@121-service/src/notifications/message.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { OrganizationModule } from '@121-service/src/organization/organization.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
+import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
@@ -35,6 +37,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     CronjobModule,
     ScriptsModule,
     OrganizationModule,
+    ProgramModule,
     MessageModule,
     MetricsModule,
     MessageIncomingModule,
@@ -74,6 +77,10 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ProgramExistenceInterceptor,
     },
   ],
 })

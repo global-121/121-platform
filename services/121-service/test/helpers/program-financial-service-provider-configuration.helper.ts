@@ -17,11 +17,7 @@ export async function postProgramFinancialServiceProviderConfiguration({
   programId: number;
   body: CreateProgramFinancialServiceProviderConfigurationDto;
   accessToken: string;
-}): Promise<
-  Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationResponseDto;
-  }
-> {
+}): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/financial-service-provider-configurations`)
     .set('Cookie', [accessToken])
