@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
@@ -121,7 +121,7 @@ describe('Do payment with Excel FSP', () => {
     it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
       // Arrange
       const configValue = programTest.financialServiceProviders
-        .find((fsp) => fsp.fsp === FinancialServiceProviderName.excel)
+        .find((fsp) => fsp.fsp === FinancialServiceProviders.excel)
         ?.configuration?.find(
           (c) =>
             c.name ===

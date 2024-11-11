@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -29,7 +29,7 @@ describe('Export Visa debit card report', () => {
     firstName: 'Jane',
     lastName: 'Doe',
     phoneNumber: '14155238887',
-    fspName: FinancialServiceProviderName.intersolveVisa,
+    fspName: FinancialServiceProviders.intersolveVisa,
     whatsappPhoneNumber: '14155238887',
     addressStreet: 'Teststraat',
     addressHouseNumber: '1',

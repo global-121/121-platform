@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import fspIntersolveJson from '@121-service/src/seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -22,7 +22,7 @@ describe('Send custom message with placeholders', () => {
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',
     phoneNumber: '14155238886',
-    fspName: FinancialServiceProviderName.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    fspName: FinancialServiceProviders.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
     maxPayments: 2,
     paymentCountRemaining: 2,

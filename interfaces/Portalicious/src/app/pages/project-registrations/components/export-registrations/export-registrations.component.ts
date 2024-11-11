@@ -18,7 +18,7 @@ import { MenuItem } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { FloatLabelModule } from 'primeng/floatlabel';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -148,8 +148,7 @@ export class ExportRegistrationsComponent {
     this.project
       .data()
       ?.financialServiceProviders.some(
-        ({ fsp }) =>
-          fsp === FinancialServiceProviderName.commercialBankEthiopia,
+        ({ fsp }) => fsp === FinancialServiceProviders.commercialBankEthiopia,
       ),
   );
 }
