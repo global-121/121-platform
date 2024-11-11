@@ -25,7 +25,7 @@ export const CustomDataAttributes = {
   addressCity: 'addressCity',
 };
 
-export const FinancialServiceProviderName = {
+export const FinancialServiceProviders = {
   intersolveVoucherWhatsapp: 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper: 'Intersolve-voucher-paper',
   intersolveVisa: 'Intersolve-visa',

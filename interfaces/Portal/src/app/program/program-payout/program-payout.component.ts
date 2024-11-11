@@ -1,4 +1,4 @@
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -180,7 +180,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   async checkShowCbeValidation(): Promise<boolean> {
     const hasCbeProvider = this.program?.financialServiceProviders?.some(
-      (fsp) => fsp.fsp === FinancialServiceProviderName.commercialBankEthiopia,
+      (fsp) => fsp.fsp === FinancialServiceProviders.commercialBankEthiopia,
     );
     const hasPermission = await this.authService.hasPermission(
       this.program.id,

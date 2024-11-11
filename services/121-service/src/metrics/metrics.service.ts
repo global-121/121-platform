@@ -6,7 +6,7 @@ import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
@@ -1026,7 +1026,7 @@ export class MetricsService {
     });
     let fields: string[] = [];
     for (const fsp of program.financialServiceProviders) {
-      if (fsp.fsp === FinancialServiceProviderName.safaricom) {
+      if (fsp.fsp === FinancialServiceProviders.safaricom) {
         fields = [...fields, ...['requestResult.OriginatorConversationID']];
       }
     }

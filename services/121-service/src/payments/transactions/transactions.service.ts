@@ -4,7 +4,7 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -83,7 +83,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviderName,
+    fspName?: FinancialServiceProviders,
   ): Promise<TransactionReturnDto[]> {
     return this.transactionScopedRepository
       .getLastTransactionsQuery({

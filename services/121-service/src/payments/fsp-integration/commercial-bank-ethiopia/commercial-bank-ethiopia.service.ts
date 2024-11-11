@@ -8,7 +8,7 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 
 import {
   FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -85,7 +85,7 @@ export class CommercialBankEthiopiaService
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName =
-      FinancialServiceProviderName.commercialBankEthiopia;
+      FinancialServiceProviders.commercialBankEthiopia;
 
     const referenceIds = paPaymentList.map(
       (paPayment) => paPayment.referenceId,
@@ -279,7 +279,7 @@ export class CommercialBankEthiopiaService
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName =
-      FinancialServiceProviderName.commercialBankEthiopia;
+      FinancialServiceProviders.commercialBankEthiopia;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
@@ -456,7 +456,7 @@ export class CommercialBankEthiopiaService
       .addSelect('value')
       .where('fspConfig.programId = :programId', { programId })
       .andWhere('fsp.fsp = :fspName', {
-        fspName: FinancialServiceProviderName.commercialBankEthiopia,
+        fspName: FinancialServiceProviders.commercialBankEthiopia,
       })
       .leftJoin('fspConfig.fsp', 'fsp')
       .getRawMany();
@@ -482,7 +482,7 @@ export class CommercialBankEthiopiaService
         'financialServiceProviders',
       )
       .where('financialServiceProviders.fsp = :fsp', {
-        fsp: FinancialServiceProviderName.commercialBankEthiopia,
+        fsp: FinancialServiceProviders.commercialBankEthiopia,
       })
       .getMany();
 

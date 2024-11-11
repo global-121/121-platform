@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
@@ -22,35 +22,35 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
     id: 8,
     name: 'addressStreet',
     type: 'text',
-    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    fspNames: [FinancialServiceProviders.intersolveVisa],
     questionTypes: [QuestionType.fspQuestion],
   },
   {
     id: 9,
     name: 'addressHouseNumber',
     type: 'numeric',
-    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    fspNames: [FinancialServiceProviders.intersolveVisa],
     questionTypes: [QuestionType.fspQuestion],
   },
   {
     id: 10,
     name: 'addressHouseNumberAddition',
     type: 'text',
-    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    fspNames: [FinancialServiceProviders.intersolveVisa],
     questionTypes: [QuestionType.fspQuestion],
   },
   {
     id: 11,
     name: 'addressPostalCode',
     type: 'text',
-    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    fspNames: [FinancialServiceProviders.intersolveVisa],
     questionTypes: [QuestionType.fspQuestion],
   },
   {
     id: 12,
     name: 'addressCity',
     type: 'text',
-    fspNames: [FinancialServiceProviderName.intersolveVisa],
+    fspNames: [FinancialServiceProviders.intersolveVisa],
     questionTypes: [QuestionType.fspQuestion],
   },
   {
@@ -58,8 +58,8 @@ const dynamicAttributes: AttributeWithOptionalLabel[] = [
     name: 'whatsappPhoneNumber',
     type: 'tel',
     fspNames: [
-      FinancialServiceProviderName.intersolveVisa,
-      FinancialServiceProviderName.intersolveVoucherWhatsapp,
+      FinancialServiceProviders.intersolveVisa,
+      FinancialServiceProviders.intersolveVoucherWhatsapp,
     ],
     questionTypes: [QuestionType.fspQuestion],
   },
@@ -152,7 +152,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviders.intersolveVoucherWhatsapp,
         scope: 'country',
         house: 'stark',
       },
@@ -174,7 +174,7 @@ describe('RegistrationsInputValidator', () => {
     );
     expect(result[0]).toHaveProperty(
       'fspName',
-      FinancialServiceProviderName.intersolveVoucherWhatsapp,
+      FinancialServiceProviders.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
     expect(result[0]).toHaveProperty('preferredLanguage', 'en');
@@ -192,7 +192,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviders.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -211,7 +211,7 @@ describe('RegistrationsInputValidator', () => {
   it('should report errors for rows missing mandatory fields on import', async () => {
     const csvArray = [
       {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviders.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -233,7 +233,7 @@ describe('RegistrationsInputValidator', () => {
   it('should not report errors for rows missing mandatory fields on bulk update', async () => {
     const csvArray = [
       {
-        fspName: FinancialServiceProviderName.intersolveVoucherWhatsapp,
+        fspName: FinancialServiceProviders.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];

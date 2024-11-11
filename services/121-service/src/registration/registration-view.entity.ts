@@ -9,7 +9,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -102,7 +102,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProvider?: FinancialServiceProviderName;
+  public financialServiceProvider?: FinancialServiceProviders;
 
   @ViewColumn()
   public fspDisplayName: LocalizedString;

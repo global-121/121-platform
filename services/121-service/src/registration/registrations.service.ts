@@ -6,7 +6,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
@@ -756,7 +756,7 @@ export class RegistrationsService {
     userId,
   }: {
     referenceId: string;
-    newFspName: FinancialServiceProviderName;
+    newFspName: FinancialServiceProviders;
     newFspAttributesRaw?: Record<string, any>;
     userId: number;
   }) {

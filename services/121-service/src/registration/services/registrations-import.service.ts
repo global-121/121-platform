@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { CustomAttributeType } from '@121-service/src/programs/dto/create-program-custom-attribute.dto';
@@ -384,7 +384,7 @@ export class RegistrationsImportService {
     programId: number,
   ): Promise<AttributeWithOptionalLabel[]> {
     let attributes: (AttributeWithOptionalLabel & {
-      fspName?: FinancialServiceProviderName;
+      fspName?: FinancialServiceProviders;
     })[] = [];
     const programCustomAttributes =
       await this.getProgramCustomAttributes(programId);
@@ -415,7 +415,7 @@ export class RegistrationsImportService {
           id: c.id,
           name: c.name,
           type: c.answerType,
-          fspName: c.fsp.fsp as FinancialServiceProviderName,
+          fspName: c.fsp.fsp as FinancialServiceProviders,
           questionType: QuestionType.fspQuestion,
         };
       });

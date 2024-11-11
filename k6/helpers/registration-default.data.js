@@ -1,6 +1,6 @@
 import {
   CustomDataAttributes,
-  FinancialServiceProviderName,
+  FinancialServiceProviders,
 } from './custom-data-attributes.js';
 
 export const registrationVisa = {
@@ -10,7 +10,7 @@ export const registrationVisa = {
   firstName: 'Jane',
   lastName: 'Doe',
   [CustomDataAttributes.phoneNumber]: '14155238887',
-  fspName: FinancialServiceProviderName.intersolveVisa,
+  fspName: FinancialServiceProviders.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',

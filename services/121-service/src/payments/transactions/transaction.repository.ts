@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -49,7 +49,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     registrationId?: number;
     referenceId?: string;
     status?: TransactionStatusEnum;
-    fspName?: FinancialServiceProviderName;
+    fspName?: FinancialServiceProviders;
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
