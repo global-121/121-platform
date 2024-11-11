@@ -89,18 +89,20 @@ export class MigrateVisaService {
       try {
         await this.dataSource.manager.save(config2);
       } catch (e) {
-        console.log(
-          'MigrateVisaService ~ inserProgramConfiguration program 2 ~ e',
-          e,
-        );
+        if (e.code === '23505') {
+          console.log('Funding token already set for program 2');
+        } else {
+          throw e; // Re-throw the error if it's not the specific one we're handling
+        }
       }
       try {
         await this.dataSource.manager.save(config3);
       } catch (e) {
-        console.log(
-          'MigrateVisaService ~ inserProgramConfiguration program 3 ~ e',
-          e,
-        );
+        if (e.code === '23505') {
+          console.log('Funding token already set for program 3');
+        } else {
+          throw e; // Re-throw the error if it's not the specific one we're handling
+        }
       }
     }
   }
@@ -154,6 +156,10 @@ export class MigrateVisaService {
 
     console.time(`Migrating program ${programId}`);
     const brandCode = await this.getBrandcodeForProgram(queryRunner, programId);
+    const fundingTokenCode = await this.getFundingTokenCodeForProgram(
+      queryRunner,
+      programId,
+    );
     const visaCustomers = await this.selectVisaCustomers(
       programId,
       queryRunner,
@@ -182,6 +188,7 @@ export class MigrateVisaService {
           brandCode,
           queryRunner,
           preActivationValuesMap,
+          fundingTokenCode,
         );
       } catch (e) {
         // console.log('error:', e);
@@ -231,6 +238,7 @@ export class MigrateVisaService {
     brandCode: string,
     queryRunner: QueryRunner,
     preActivationValuesMap: Map<string, number>,
+    fundingTokenCode: string,
   ): Promise<void> {
     const originalWalletsOfCustomer = await this.selectOriginalWallets(
       visaCustomer,
@@ -253,6 +261,7 @@ export class MigrateVisaService {
         parentWallet,
         queryRunner,
         preActivationValuesMap,
+        fundingTokenCode,
       );
     }
   }
@@ -322,6 +331,7 @@ export class MigrateVisaService {
     parentWallet: IntersolveVisaParentWalletEntity,
     queryRunner: QueryRunner,
     preActivationValuesMap: Map<string, number>,
+    fundingTokenCode: string,
   ): Promise<void> {
     for (const originalWallet of originalWallets) {
       const childWallet = new IntersolveVisaChildWalletEntity();
@@ -377,6 +387,7 @@ export class MigrateVisaService {
         const postTransferResult = await this.postTransfer(
           parentWallet.tokenCode,
           preActivationValue as number,
+          fundingTokenCode,
         );
 
         if (!this.isSuccessResponseStatus(postTransferResult.status)) {
@@ -404,6 +415,34 @@ export class MigrateVisaService {
   ////////////////////////////////////////////////////////////////////////////////
   //////////////////////////// QUERY HELPER FUNCTIONS ////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
+
+  private async getFundingTokenCodeForProgram(
+    queryRunner: QueryRunner,
+    programId: number,
+  ): Promise<string> {
+    const fundingTokenCodeConfig = await queryRunner.query(
+      `
+      SELECT *
+      FROM "121-service"."program_fsp_configuration" pfc
+      INNER JOIN "121-service"."financial_service_provider" f ON pfc."fspId" = f."id"
+      WHERE pfc."programId" = $1
+      AND pfc."name" = $2
+      AND f."fsp" = $3
+    `,
+      [
+        programId,
+        FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+        FinancialServiceProviderName.intersolveVisa,
+      ],
+    );
+
+    if (!fundingTokenCodeConfig || fundingTokenCodeConfig.length === 0) {
+      throw new Error(
+        `No fundingTokenCode found for program ${programId}. Please update the program FSP cofinguration.`,
+      );
+    }
+    return fundingTokenCodeConfig[0]?.value as string;
+  }
 
   private async getBrandcodeForProgram(
     queryRunner: QueryRunner,
@@ -454,7 +493,7 @@ export class MigrateVisaService {
       from
         "121-service"."intersolve_visa_customer" i
       left join "121-service".registration r on
-        r.id = i."registrationId" 
+        r.id = i."registrationId"
       LEFT JOIN "121-service"."intersolve_migration_progress" imp ON r."referenceId" = imp."referenceId"
       WHERE "programId" = ${programId} AND imp."referenceId" IS NULL
       LIMIT ${limit ?? 'ALL'}`,
@@ -647,6 +686,7 @@ export class MigrateVisaService {
   public async postTransfer(
     parentTokenCode: string,
     amountInCent: number,
+    fundingTokenCode: string,
   ): Promise<{
     data: {
       success?: boolean;
@@ -661,7 +701,7 @@ export class MigrateVisaService {
     const apiPath = process.env.INTERSOLVE_VISA_PROD
       ? 'wallet-payments'
       : 'wallet';
-    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE}/transfer`;
+    const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${fundingTokenCode}/transfer`;
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
       { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
