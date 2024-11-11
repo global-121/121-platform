@@ -11,7 +11,6 @@ export class LanguageOption {
   providedIn: 'root',
 })
 export class LanguageService {
-  private DEFAULT_LANGUAGE_CODE = 'en';
   private USER_PREFERENCE_KEY = 'selectedLanguage';
 
   // These locale/language codes should match the filenames in: `src/assets/i18n/<code>.json`
@@ -48,9 +47,12 @@ export class LanguageService {
       }
     }
 
-    // Finally, fall back to English
-    if (!selectedLanguage) {
-      selectedLanguage = this.DEFAULT_LANGUAGE_CODE;
+    // Finally, fall back to Default or English
+    if (
+      !selectedLanguage &&
+      this.enabledLocales.includes(environment.defaultLocale)
+    ) {
+      selectedLanguage = environment.defaultLocale ?? 'en';
     }
 
     this.translate.use(selectedLanguage);
@@ -69,8 +71,8 @@ export class LanguageService {
     if (!this.enabledLocales || this.enabledLocales.length === 0) {
       return [
         {
-          code: this.DEFAULT_LANGUAGE_CODE,
-          name: this.SUPPORTED_LANGUAGES[this.DEFAULT_LANGUAGE_CODE],
+          code: environment.defaultLocale,
+          name: this.SUPPORTED_LANGUAGES[environment.defaultLocale],
         },
       ];
     }

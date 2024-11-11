@@ -5,7 +5,7 @@ export const environment = {
   production: ${process.env.NG_PRODUCTION || 'true'},
 
   // Configuration/Feature-switches:
-  defaultLocale: 'en-GB',
+  defaultLocale: '${process.env.NG_DEFAULT_LOCALE || 'en-GB'}',
   locales: '${process.env.NG_LOCALES || 'en-GB,nl'}',
   envName: '${process.env.NG_ENV_NAME || ''}',
 

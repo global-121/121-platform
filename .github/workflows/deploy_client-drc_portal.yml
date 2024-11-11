@@ -37,6 +37,7 @@ jobs:
         env:
           NG_ENV_NAME: 'DRC'
           NG_LOCALES: ${{ vars.NG_LOCALES }}
+          NG_DEFAULT_LOCALE: ${{ vars.NG_DEFAULT_LOCALE }}
           NG_URL_121_SERVICE_API: 'https://drc.121.global/api'
           NG_AI_IKEY: '6da2af57-0ff8-4907-8e59-193e3aedc69b'
           NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
