@@ -1,7 +1,6 @@
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-// TODO: This could be refactored to for example only contain the attribute names used by fsps
 export enum DefaultRegistrationDataAttributeNames {
   phoneNumber = 'phoneNumber',
   whatsappPhoneNumber = 'whatsappPhoneNumber',

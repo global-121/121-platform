@@ -235,7 +235,7 @@
       "type": "dropdown",
       "options": [
         {
-          "option": "true",
+          "option": "yes",
           "label": {
             "ar": "نعم",
             "en": "Yes",
@@ -245,7 +245,7 @@
           }
         },
         {
-          "option": "false",
+          "option": "no",
           "label": {
             "ar": "لا",
             "en": "No",
