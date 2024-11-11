@@ -21,6 +21,7 @@ export class LanguageService {
     es: 'Español',
     fr: 'Français',
     nl: 'Nederlands',
+    ru: 'Русский',
   };
 
   private enabledLocales = environment.locales
