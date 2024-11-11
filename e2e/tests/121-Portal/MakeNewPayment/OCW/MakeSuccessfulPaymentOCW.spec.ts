@@ -4,12 +4,16 @@ import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdOCW,
+  registrationsOCW,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
@@ -33,12 +37,14 @@ const paymentFilterByTab =
   englishTranslations['registration-details']['activity-overview'].filters
     .message;
 
+let accessToken: string;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
 
-  const accessToken = await getAccessToken();
+  accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
 
   // Login
@@ -75,6 +81,12 @@ test('[28445] OCW: Make Successful payment', async ({ page }) => {
       defaultTransferValue,
       defaultMaxTransferValue,
     });
+    await waitForPaymentTransactionsToComplete(
+      programIdOCW,
+      registrationsOCW.map((pa) => pa.referenceId),
+      accessToken,
+      10000,
+    );
   });
 
   await test.step('Check PA payments and messages', async () => {
