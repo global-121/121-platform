@@ -283,7 +283,6 @@ export class SeedHelper {
       programFromJSON.programFinancialServiceProviderConfigurations;
     foundProgram.programFinancialServiceProviderConfigurations = [];
 
-    // ##TODO use the fspConfigService later to create the fspConfigEntities after this has been implemented
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
       const financialServiceProviderObject = FINANCIAL_SERVICE_PROVIDERS.find(
         (fsp) => fsp.name === fspConfigFromJson.financialServiceProvider,

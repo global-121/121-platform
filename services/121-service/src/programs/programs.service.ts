@@ -226,9 +226,6 @@ export class ProgramService {
       await queryRunner.release();
     }
 
-    // Loop through FSPs again to store config, which can only be done after program is saved
-    // ##TODO write code to store programFspConfiguration and the attributes in the new structure
-
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
       scope: undefined,

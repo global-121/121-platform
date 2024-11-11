@@ -572,7 +572,6 @@ export class MetricsService {
     fileName: ExportType;
     data: unknown[];
   }> {
-    // ##TODO retest this function after this refactoring
     const duplicatesMap = new Map<number, number[]>();
     const uniqueRegistrationIds = new Set<number>();
 

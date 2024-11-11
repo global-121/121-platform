@@ -14,7 +14,6 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-// ##TODO: Enable these tests after FSP config endpoints are implemented (and the logic is reused in create program)
 describe('Create program', () => {
   let accessToken: string;
 
