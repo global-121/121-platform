@@ -236,8 +236,7 @@ You can also leave the body empty.`,
     @Body() programRegistrationAttribute: ProgramRegistrationAttributeDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramRegistrationAttributeEntity | undefined> {
-    // ##TODO: Return a dto in instead of entity
+  ): Promise<ProgramRegistrationAttributeDto> {
     return await this.programService.createProgramRegistrationAttribute({
       programId,
       createProgramRegistrationAttributeDto: programRegistrationAttribute,

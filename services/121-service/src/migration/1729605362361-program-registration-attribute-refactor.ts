@@ -578,6 +578,9 @@ export class ProgramRegistrationAttributeRefactor1729605362361
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d8a56a1864ef40e1551833430bb" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ALTER COLUMN "programFinancialServiceProviderConfigurationId" SET NOT NULL`,
+    );
   }
 
   private async dropOldTablesAndViews(queryRunner: QueryRunner): Promise<void> {

@@ -73,7 +73,6 @@ export class CommercialBankEthiopiaService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
-    // ##TODO: Regactor this to ensure that the programFinancialServiceProviderConfigurationId is the same for the whole list
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
@@ -88,6 +87,7 @@ export class CommercialBankEthiopiaService
     );
     const registrationData = await this.getRegistrationData(referenceIds);
 
+    // TODO Refactor this to get all data in one query instead of per PA
     for (const paPayment of paPaymentList) {
       const paRegistrationData = await this.getPaRegistrationData(
         paPayment,

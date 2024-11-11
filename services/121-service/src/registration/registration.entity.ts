@@ -76,14 +76,13 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
-  // ##TODO find out if this can also be required instead of optional
   @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity)
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
   })
   public programFinancialServiceProviderConfiguration: ProgramFinancialServiceProviderConfigurationEntity;
-  @Column({ type: 'integer', nullable: true })
-  public programFinancialServiceProviderConfigurationId: number | null;
+  @Column({ type: 'integer', nullable: false })
+  public programFinancialServiceProviderConfigurationId: number;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()
