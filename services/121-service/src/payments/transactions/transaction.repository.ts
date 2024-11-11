@@ -20,7 +20,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     super(request, scopedRepository);
   }
 
-  async getManyByRegistrationIdAndProgramId(
+  async getLatestTransactionsByRegistrationIdAndProgramId(
     registrationId: number,
     programId: number,
   ) {

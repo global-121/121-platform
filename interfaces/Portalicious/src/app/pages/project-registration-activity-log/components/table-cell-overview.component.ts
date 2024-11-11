@@ -114,7 +114,7 @@ export class TableCellOverviewComponent
 
     if (
       item.type !== ActivityTypeEnum.Transaction ||
-      item.attributes.fsp !==
+      item.attributes.financialServiceProviderName !==
         FinancialServiceProviders.intersolveVoucherWhatsapp
     ) {
       return;

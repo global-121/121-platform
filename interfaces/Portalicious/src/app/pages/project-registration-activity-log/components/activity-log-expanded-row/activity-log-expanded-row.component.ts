@@ -53,7 +53,7 @@ export class ActivityLogExpandedRowComponent
 
     return (
       activity.type === ActivityTypeEnum.Transaction &&
-      activity.attributes.fsp ===
+      activity.attributes.financialServiceProviderName ===
         FinancialServiceProviders.intersolveVoucherWhatsapp
     );
   });
@@ -113,7 +113,7 @@ export class ActivityLogExpandedRowComponent
           },
           {
             label: $localize`FSP`,
-            value: item.attributes.fsp,
+            value: item.attributes.financialServiceProviderConfigurationLabel,
           },
           {
             label: $localize`Amount`,

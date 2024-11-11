@@ -116,8 +116,11 @@ export class ActivitiesMapper {
         status: transaction.status,
         amount: transaction.amount,
         paymentDate: transaction.paymentDate,
-        fsp: transaction.fsp,
-        fspName: transaction.fspName,
+        financialServiceProviderName: transaction.financialServiceProviderName,
+        financialServiceProviderConfigurationLabel:
+          transaction.financialServiceProviderConfigurationLabel,
+        financialServiceProviderConfigurationName:
+          transaction.programFinancialServiceProviderConfigurationName,
         errorMessage: transaction.errorMessage,
       },
     }));

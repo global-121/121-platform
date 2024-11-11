@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import FspName from 'src/app/enums/fsp-name.enum';
 import { Person } from 'src/app/models/person.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { FinancialServiceProviderConfiguration } from '../../models/fsp.model';
@@ -29,7 +28,7 @@ export class UpdateFspComponent implements OnInit {
   public type: string;
 
   @Input()
-  public value: FspName;
+  public value: string;
 
   @Input()
   public placeholder: string | undefined;
@@ -123,7 +122,7 @@ export class UpdateFspComponent implements OnInit {
     this.enableUpdateBtn = this.startingFspName !== this.selectedFspName;
   }
 
-  public setSelectedFspAndPrepareDropdown(fspString: FspName) {
+  public setSelectedFspAndPrepareDropdown(fspString: string) {
     if (this.programFspConfigList) {
       this.programFspConfigList = this.programFspConfigList.map(
         (programFspConfig) => ({
