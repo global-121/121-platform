@@ -7,16 +7,15 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 
 const programId = 1;
-const programIdNonExistent = 2;
 const mockProgramFspConfigPropertyEntity =
   new ProgramFinancialServiceProviderConfigurationPropertyEntity();
 mockProgramFspConfigPropertyEntity.id = 1;
@@ -45,7 +44,7 @@ const validPropertyDto: CreateProgramFinancialServiceProviderConfigurationProper
 // Declaring mocks here so they are accesble through all files
 let mockProgramFspConfigurationRepository;
 let mockProgramFspConfigurationPropertyRepository;
-let mockProgramRepository;
+let mockTransactionScopedRepository;
 
 describe('ProgramFinancialServiceProviderConfigurationsService', () => {
   let service: ProgramFinancialServiceProviderConfigurationsService;
@@ -96,20 +95,18 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       }),
     };
 
-    mockProgramRepository = {
-      findOneBy: jest.fn().mockImplementation((criteria) => {
-        if (criteria.id === programId) {
-          return {
-            id: 1,
-            name: 'Config 1',
-            programFinancialServiceProviderConfigurations: [
-              mockProgramFspConfigEntity,
-            ],
-          };
+    mockTransactionScopedRepository = {
+      count: jest.fn().mockImplementation((criteria) => {
+        const programFinancialServiceProviderConfigurationIdOfWhere =
+          criteria.where.programFinancialServiceProviderConfigurationId._value;
+
+        if (programFinancialServiceProviderConfigurationIdOfWhere === 1) {
+          return 0;
         }
-        return null;
+        return 1;
       }),
     };
+
     const moduleRef = await Test.createTestingModule({
       providers: [
         ProgramFinancialServiceProviderConfigurationsService,
@@ -126,8 +123,8 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
           useValue: mockProgramFspConfigurationPropertyRepository,
         },
         {
-          provide: getRepositoryToken(ProgramEntity),
-          useValue: mockProgramRepository,
+          provide: TransactionScopedRepository,
+          useValue: mockTransactionScopedRepository,
         },
       ],
     }).compile();
@@ -153,18 +150,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBe(1);
     });
-
-    it('should throw an exception if program does not exist', async () => {
-      await expect(
-        service.findByProgramId(programIdNonExistent),
-      ).rejects.toThrow(HttpException);
-      await expect(service.findByProgramId(2)).rejects.toThrow(
-        new HttpException(
-          `Program with id ${programIdNonExistent} not found`,
-          HttpStatus.NOT_FOUND,
-        ),
-      );
-    });
   });
 
   describe('validateAndCreate', () => {
@@ -184,10 +169,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       await expect(
         service.validateAndCreate(programId, createDto),
       ).resolves.not.toThrow();
-
-      expect(mockProgramRepository.findOneBy).toHaveBeenCalledWith({
-        id: programId,
-      });
       expect(
         mockProgramFspConfigurationRepository.findOne,
       ).toHaveBeenCalledWith({
@@ -213,20 +194,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         new HttpException(
           `Label must have an English translation`,
           HttpStatus.BAD_REQUEST,
-        ),
-      );
-    });
-
-    it('should throw an exception if the program does not exist', async () => {
-      await expect(
-        service.validateAndCreate(programIdNonExistent, createDto),
-      ).rejects.toThrow(HttpException);
-      await expect(
-        service.validateAndCreate(programIdNonExistent, createDto),
-      ).rejects.toThrow(
-        new HttpException(
-          `Program with id ${programIdNonExistent} not found`,
-          HttpStatus.NOT_FOUND,
         ),
       );
     });
@@ -392,9 +359,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     });
 
     it('should throw an exception if the configuration has associated transactions', async () => {
-      mockProgramFspConfigurationRepository
-        .createQueryBuilder()
-        .getCount.mockResolvedValue(1); // Simulating existing transactions
+      mockTransactionScopedRepository.count.mockResolvedValue(1); // Simulating existing transactions
 
       await expect(service.delete(programId, configName)).rejects.toThrow(
         HttpException,
@@ -410,8 +375,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
   describe('validateAndCreateProperties', () => {
     it('should succesfully map and create properties', async () => {
-      mockProgramRepository.findOneBy.mockResolvedValue({ id: programId });
-
       const result = await service.validateAndCreateProperties({
         programId,
         programFspConfigurationName: configName,
@@ -422,26 +385,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         mockProgramFspConfigurationPropertyRepository.save,
       ).toHaveBeenCalled();
       expect(result[0].name).toEqual(validPropertyDto.name);
-    });
-
-    it('should throw an error if the program does not exist', async () => {
-      const nonExistingProgramId = 2;
-
-      await expect(
-        service.validateAndCreateProperties({
-          programId: nonExistingProgramId,
-          programFspConfigurationName: configName,
-          properties: [validPropertyDto],
-        }),
-      ).rejects.toThrow(
-        new HttpException(
-          `Program with id ${nonExistingProgramId} not found`,
-          HttpStatus.NOT_FOUND,
-        ),
-      );
-      expect(
-        mockProgramFspConfigurationPropertyRepository.save,
-      ).not.toHaveBeenCalled();
     });
 
     it('should throw an error if configuration does not exist', async () => {
@@ -480,9 +423,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         property: updatedPropertyDto,
       });
 
-      expect(mockProgramRepository.findOneBy).toHaveBeenCalledWith({
-        id: programId,
-      });
       expect(
         mockProgramFspConfigurationRepository.findOne,
       ).toHaveBeenCalledWith({
@@ -533,7 +473,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     });
 
     it('should successfully delete the property', async () => {
-      mockProgramRepository.findOneBy.mockResolvedValue({ id: programId });
       mockProgramFspConfigurationRepository.findOne.mockResolvedValue({
         id: 10,
       });
@@ -548,9 +487,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         propertyName,
       });
 
-      expect(mockProgramRepository.findOneBy).toHaveBeenCalledWith({
-        id: programId,
-      });
       expect(
         mockProgramFspConfigurationRepository.findOne,
       ).toHaveBeenCalledWith({

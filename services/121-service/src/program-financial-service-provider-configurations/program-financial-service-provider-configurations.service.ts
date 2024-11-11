@@ -8,6 +8,7 @@ import {
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import { findConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
@@ -17,8 +18,6 @@ import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
 @Injectable()
 export class ProgramFinancialServiceProviderConfigurationsService {
@@ -26,14 +25,14 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   private readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
   @InjectRepository(ProgramFinancialServiceProviderConfigurationPropertyEntity)
   private readonly programFspConfigurationPropertyRepository: Repository<ProgramFinancialServiceProviderConfigurationPropertyEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: ProgramRepository;
+
+  constructor(
+    private readonly transactionScopedRepository: TransactionScopedRepository,
+  ) {}
 
   public async findByProgramId(
     programId: number,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
-    await this.validateProgramExists(programId);
-
     const programFspConfigurations =
       await this.programFspConfigurationRepository.find({
         where: { programId: Equal(programId) },
@@ -57,7 +56,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<void> {
-    await this.validateProgramExists(programId);
     this.validateFspExists(
       programFspConfigurationDto.financialServiceProviderName,
     );
@@ -116,7 +114,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programFspConfigurationName: string,
     updateProgramFspConfigurationDto: UpdateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
-    await this.validateProgramExists(programId);
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(programFspConfigurationName),
@@ -161,7 +158,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programId: number,
     programFspConfigurationName: string,
   ): Promise<void> {
-    await this.validateProgramExists(programId);
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(programFspConfigurationName),
@@ -174,14 +170,12 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
-    // Should I import the transaction repository here or is this better for the single responsibility principle
-    const configCountIfItHasTransactions =
-      await this.programFspConfigurationRepository
-        .createQueryBuilder('config')
-        .innerJoin('config.transactions', 'transaction')
-        .where('config.id = :id', { id: config.id })
-        .getCount();
-    if (configCountIfItHasTransactions > 0) {
+    const transactionCount = await this.transactionScopedRepository.count({
+      where: {
+        programFinancialServiceProviderConfigurationId: Equal(config.id),
+      },
+    });
+    if (transactionCount > 0) {
       throw new HttpException(
         'Cannot delete program fsp configuration with transactions as this is needed for reporting',
         HttpStatus.CONFLICT,
@@ -205,7 +199,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   }): Promise<
     ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
   > {
-    await this.validateProgramExists(programId);
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       programFspConfigurationName,
@@ -294,7 +287,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
   }): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
     // Find the configuration
-    await this.validateProgramExists(programId);
+
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       programFspConfigurationName,
@@ -330,7 +323,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programFspConfigurationName: string;
     propertyName: FinancialServiceProviderConfigurationProperties;
   }): Promise<void> {
-    await this.validateProgramExists(programId);
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       programFspConfigurationName,
@@ -371,19 +363,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     });
     // create new properties
     return await this.createProperties(programFspConfigurationId, properties);
-  }
-
-  // ##TODO: We call this now at the start of each function. Should we move this to a middleware or something else?
-  // Or think about refactoring this in some other way? Or leave this out of scope for now
-  // I do think this error is useful for the user, but it is a bit repetitive
-  private async validateProgramExists(programId: number): Promise<void> {
-    const program = await this.programRepository.findOneBy({ id: programId });
-    if (!program) {
-      throw new HttpException(
-        `Program with id ${programId} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
   }
 
   private validateFspExists(fspName: string): void {
