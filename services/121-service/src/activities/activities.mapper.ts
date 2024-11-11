@@ -11,6 +11,7 @@ import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
+import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
@@ -116,8 +117,13 @@ export class ActivitiesMapper {
         status: transaction.status,
         amount: transaction.amount,
         paymentDate: transaction.paymentDate,
-        fsp: transaction.fsp,
-        fspName: transaction.fspName,
+        financialServiceProvider: findFinancialServiceProviderByNameOrFail(
+          transaction.financialServiceProviderName,
+        ),
+        financialServiceProviderConfigurationLabel:
+          transaction.financialServiceProviderConfigurationLabel,
+        financialServiceProviderConfigurationName:
+          transaction.programFinancialServiceProviderConfigurationName,
         errorMessage: transaction.errorMessage,
       },
     }));

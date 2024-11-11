@@ -10,8 +10,9 @@ export interface GetAuditedTransactionDto {
   amount: number;
   errorMessage?: string;
   customData?: string;
-  fspName: LocalizedString;
-  fsp: FinancialServiceProviders;
+  financialServiceProviderConfigurationLabel: LocalizedString;
+  programFinancialServiceProviderConfigurationName: string;
+  financialServiceProviderName: FinancialServiceProviders;
   fspIntegrationType: string;
   userId: number;
   username: string;

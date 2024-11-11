@@ -48,10 +48,11 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Transaction);
 
       transactions =
-        await this.transactionScopedRepository.getManyByRegistrationIdAndProgramId(
+        await this.transactionScopedRepository.getLatestTransactionsByRegistrationIdAndProgramId(
           registrationId,
           programId,
         );
+      console.log('🚀 ~ ActivitiesService ~ transactions:', transactions);
     }
 
     const canViewMessageHistory = await this.userService.canActivate(
