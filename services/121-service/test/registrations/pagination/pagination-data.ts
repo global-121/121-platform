@@ -150,7 +150,8 @@ export const registrationPV8 = {
   paymentAmountMultiplier: 1,
   fullName: 'Jack Strong',
   phoneNumber: '14155235557',
-  fspName: FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.intersolveVisa,
   whatsappPhoneNumber: '14155235557',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
