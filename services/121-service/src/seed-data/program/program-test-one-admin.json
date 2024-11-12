@@ -35,7 +35,7 @@
         "fr": "Nom",
         "nl": "Naam"
       },
-      "answerType": "text",
+      "type": "text",
       "options": null,
       "export": ["all-people-affected", "included"],
       "scoring": {},
@@ -50,7 +50,7 @@
         "fr": "Date de naissance",
         "nl": "Geboortedatum"
       },
-      "answerType": "date",
+      "type": "date",
       "options": null,
       "export": ["all-people-affected", "included"],
       "scoring": {},
@@ -66,7 +66,7 @@
         "fr": "Maison",
         "nl": "Huis"
       },
-      "answerType": "dropdown",
+      "type": "dropdown",
       "options": [
         {
           "option": "lannister",
@@ -103,7 +103,7 @@
         "fr": "Nombre de dragons",
         "nl": "Aantal draken"
       },
-      "answerType": "numeric",
+      "type": "numeric",
       "options": null,
       "editableInPortal": true,
       "scoring": {

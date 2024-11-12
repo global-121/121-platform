@@ -27,6 +27,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     ],
   },
   {
+    // @ts-expect-error XXX: figure out how to handle this
     name: 'fsp_no_attributes',
     integrationType: FinancialServiceProviderIntegrationType.api,
     defaultLabel: {
@@ -79,6 +80,7 @@ export const FINANCIAL_SERVICE_PROVIDERS: FinancialServiceProviderDto[] = [
     configurationProperties: [],
   },
   {
+    // @ts-expect-error XXX: figure out how to handle this
     name: 'bank_a',
     integrationType: FinancialServiceProviderIntegrationType.api,
     defaultLabel: {
