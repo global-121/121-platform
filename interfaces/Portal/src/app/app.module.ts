@@ -41,7 +41,7 @@ export function appInitializerFactory(
   translate: TranslateService,
   injector: Injector,
 ) {
-  const langToSet = 'en';
+  const langToSet = environment.defaultLocale;
 
   return () =>
     new Promise<any>((resolve: any) => {
