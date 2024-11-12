@@ -1,7 +1,5 @@
-<form
-  [formGroup]="formGroup"
-  (ngSubmit)="onSubmit()"
->
+<!-- We are not using 'form' here because this component is already rendered within a form -->
+<div [formGroup]="formGroup">
   @if (showAreYouSureCheckbox()) {
     <div class="align-items-center flex gap-1 pt-4">
       <p-checkbox
@@ -20,5 +18,6 @@
   <app-change-status-submit-buttons
     [isMutating]="isMutating()"
     (onCancelClick)="cancelClick()"
+    (onApproveClick)="validateFormGroupOrPreventSubmit($event)"
   />
-</form>
+</div>

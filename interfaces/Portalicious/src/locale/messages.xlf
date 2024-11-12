@@ -995,7 +995,7 @@
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
       </trans-unit>
-      <trans-unit id="6759205696902713848" datatype="html">
+      <trans-unit id="generic-warning" datatype="html">
         <source>Warning</source>
       </trans-unit>
       <trans-unit id="684272908201420787" datatype="html">

@@ -1271,7 +1271,7 @@
         <source><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
         <target state="new"><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</target>
       </trans-unit>
-      <trans-unit id="6759205696902713848" datatype="html">
+      <trans-unit id="generic-warning" datatype="html">
         <source>Warning</source>
         <target state="new">Warning</target>
       </trans-unit>

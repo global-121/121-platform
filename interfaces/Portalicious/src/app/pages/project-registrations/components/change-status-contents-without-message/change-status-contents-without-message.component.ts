@@ -67,12 +67,12 @@ export class ChangeStatusContentsWithoutMessageComponent {
     });
   }
 
-  onSubmit() {
+  validateFormGroupOrPreventSubmit(event: MouseEvent) {
     this.formGroup.markAllAsTouched();
     if (!this.formGroup.valid) {
-      return;
+      event.stopPropagation();
+      event.preventDefault();
     }
-    this.onConfirm.emit();
   }
 
   cancelClick() {

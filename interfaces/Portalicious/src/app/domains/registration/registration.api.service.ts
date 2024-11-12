@@ -102,15 +102,13 @@ export class RegistrationApiService extends DomainApiService {
     messageData?: SendMessageData | undefined;
     dryRun: boolean;
   }) {
-    let body: RegistrationStatusPatchDto;
-    body = {
+    let body: RegistrationStatusPatchDto = {
       status,
     };
     if (messageData && 'customMessage' in messageData) {
       body = {
         ...body,
         message: messageData.customMessage,
-        status,
       };
     } else if (messageData) {
       body = {
@@ -118,6 +116,7 @@ export class RegistrationApiService extends DomainApiService {
         messageTemplateKey: messageData.messageTemplateKey,
       };
     }
+
     let params =
       this.paginateQueryService.paginateQueryToHttpParamsObject(paginateQuery);
     params = {

@@ -1,30 +1,29 @@
 @if (enableSendMessage()) {
   @if (!previewData()) {
-    <form [formGroup]="formGroup">
-      <div>
-        <app-custom-message-control
-          formControlName="customMessage"
-          [projectId]="projectId()"
-          [error]="formFieldErrors()('customMessage')"
+    <!-- We are not using 'form' here because this component is already rendered within a form -->
+    <div [formGroup]="formGroup">
+      <app-custom-message-control
+        formControlName="customMessage"
+        [projectId]="projectId()"
+        [error]="formFieldErrors()('customMessage')"
+      />
+      <div class="flex justify-end space-x-2">
+        <p-button
+          label="Cancel"
+          i18n-label="@@generic-cancel"
+          outlined
+          rounded
+          severity="contrast"
+          (click)="cancelClick()"
         />
-        <div class="flex justify-end space-x-2">
-          <p-button
-            label="Cancel"
-            i18n-label="@@generic-cancel"
-            outlined
-            rounded
-            severity="contrast"
-            (click)="cancelClick()"
-          />
-          <p-button
-            label="Continue to preview"
-            i18n-label
-            rounded
-            (click)="onProceedToPreview()"
-          />
-        </div>
+        <p-button
+          label="Continue to preview"
+          i18n-label
+          rounded
+          (click)="onProceedToPreview()"
+        />
       </div>
-    </form>
+    </div>
   } @else {
     <div>
       @let messageData = previewData();
@@ -35,29 +34,29 @@
           [messageData]="messageData"
         ></app-custom-message-preview>
       }
-      <app-change-status-submit-buttons
-        [isMutating]="isMutating()"
-        (onCancelClick)="previewData.set(undefined)"
-      />
+      <div class="mt-6 flex justify-end space-x-2">
+        <p-button
+          label="Go back"
+          i18n-label="@@generic-go-back"
+          outlined
+          rounded
+          [disabled]="isMutating()"
+          (click)="previewData.set(undefined)"
+        />
+        <p-button
+          label="Approve"
+          i18n-label="@@generic-approve"
+          rounded
+          [disabled]="isMutating()"
+          [loading]="isMutating()"
+          type="submit"
+        />
+      </div>
     </div>
   }
 } @else {
-  <div class="mt-6 flex justify-end space-x-2">
-    <p-button
-      label="Cancel"
-      i18n-label="@@generic-cancel"
-      outlined
-      rounded
-      severity="contrast"
-      (onClick)="cancelClick()"
-    />
-    <p-button
-      label="Approve"
-      i18n-label="@@generic-approve"
-      rounded
-      [disabled]="isMutating()"
-      [loading]="isMutating()"
-      type="submit"
-    />
-  </div>
+  <app-change-status-submit-buttons
+    [isMutating]="isMutating()"
+    (onCancelClick)="previewData.set(undefined)"
+  />
 }

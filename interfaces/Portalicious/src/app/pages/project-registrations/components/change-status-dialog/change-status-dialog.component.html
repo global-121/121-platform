@@ -108,7 +108,7 @@
 <app-confirmation-dialog
   #dryRunWarningDialog
   header="Warning"
-  i18n-header
+  i18n-header="@@generic-warning"
   headerIcon="pi pi-exclamation-triangle"
   acceptLabel="Proceed"
   i18n-acceptLabel
@@ -294,7 +294,7 @@
       label="Cancel"
       i18n-label="@@generic-cancel"
       rounded
-      (onClick)="dryRunFailureDialogVisible.set(false)"
+      (click)="dryRunFailureDialogVisible.set(false)"
     />
   </div>
 </p-dialog>

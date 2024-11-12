@@ -13,6 +13,7 @@
     rounded
     [disabled]="isMutating()"
     [loading]="isMutating()"
+    (click)="onApproveClick.emit($event)"
     type="submit"
   />
 </div>
