@@ -34,9 +34,13 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
 
   @ViewChild('confirmDialog') confirmDialog: ConfirmDialog;
 
-  askForConfirmation() {
+  askForConfirmation({
+    resetMutation = true,
+  }: { resetMutation?: boolean } = {}) {
     this.confirmationService.confirm({});
-    this.mutation().reset();
+    if (resetMutation) {
+      this.mutation().reset();
+    }
   }
 
   onProceed() {

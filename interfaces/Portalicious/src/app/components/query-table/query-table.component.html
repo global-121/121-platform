@@ -44,7 +44,7 @@
           rounded
           severity="secondary"
           icon="pi pi-filter-slash"
-          (onClick)="clearAllFilters()"
+          (click)="clearAllFilters()"
         />
       }
       @if (globalFilterFields() || serverSideFiltering()) {
@@ -70,7 +70,7 @@
               @if (globalFilterValue()) {
                 <p-button
                   icon="pi pi-times"
-                  (onClick)="table.filterGlobal(undefined, 'contains')"
+                  (click)="table.filterGlobal(undefined, 'contains')"
                   text
                   severity="secondary"
                   class="absolute end-0 top-1/2 -translate-y-1/2"
@@ -81,7 +81,7 @@
           } @else {
             <p-button
               icon="pi pi-search"
-              (onClick)="globalFilterVisible.set(true)"
+              (click)="globalFilterVisible.set(true)"
               text
               severity="secondary"
             />
@@ -109,7 +109,7 @@
                 ? 'pi pi-chevron-down'
                 : 'pi pi-chevron-right'
             "
-            (onClick)="areAllRowsExpanded() ? collapseAll() : expandAll()"
+            (click)="areAllRowsExpanded() ? collapseAll() : expandAll()"
           />
         </th>
       }
@@ -328,7 +328,7 @@
             label="Clear all filters"
             i18n-label="@@table-clear-filters"
             link
-            (onClick)="clearAllFilters()"
+            (click)="clearAllFilters()"
           />
         </div>
       </td>

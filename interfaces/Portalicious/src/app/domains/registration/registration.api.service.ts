@@ -2,11 +2,14 @@ import { Injectable, Signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
 
+import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
   ActitivitiesResponse,
+  ChangeStatusResult,
   FindAllRegistrationsResult,
   IntersolveVisaCardStatus,
   IntersolveVisaTokenStatus,
@@ -84,6 +87,60 @@ export class RegistrationApiService extends DomainApiService {
           paginateQuery,
         ),
     });
+  }
+
+  changeStatus({
+    projectId,
+    paginateQuery,
+    status,
+    messageData,
+    dryRun = true,
+  }: {
+    projectId: Signal<number>;
+    paginateQuery: PaginateQuery | undefined;
+    status: RegistrationStatusEnum;
+    messageData?: SendMessageData | undefined;
+    dryRun: boolean;
+  }) {
+    let body: RegistrationStatusPatchDto = {
+      status,
+    };
+    if (messageData && 'customMessage' in messageData) {
+      body = {
+        ...body,
+        message: messageData.customMessage,
+      };
+    } else if (messageData) {
+      body = {
+        ...body,
+        messageTemplateKey: messageData.messageTemplateKey,
+      };
+    }
+
+    let params =
+      this.paginateQueryService.paginateQueryToHttpParamsObject(paginateQuery);
+    params = {
+      ...params,
+      dryRun,
+    };
+
+    const method =
+      status === RegistrationStatusEnum.deleted ? 'DELETE' : 'PATCH';
+    const endpoint =
+      status === RegistrationStatusEnum.deleted
+        ? this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/')
+        : this.pathToQueryKey([...BASE_ENDPOINT(projectId), 'status']).join(
+            '/',
+          );
+
+    return this.httpWrapperService.perform121ServiceRequest<ChangeStatusResult>(
+      {
+        method,
+        endpoint,
+        body,
+        params,
+      },
+    );
   }
 
   getActivityLog(projectId: Signal<number>, registrationId: Signal<number>) {

@@ -19,6 +19,28 @@ export const REGISTRATION_STATUS_LABELS: Record<
   [RegistrationStatusEnum.paused]: $localize`:@@registration-status-paused:Paused`,
 };
 
+export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
+  {
+    [RegistrationStatusEnum.registered]: '',
+    [RegistrationStatusEnum.completed]: '',
+    [RegistrationStatusEnum.validated]: 'pi pi-check-circle',
+    [RegistrationStatusEnum.included]: 'pi pi-check',
+    [RegistrationStatusEnum.paused]: 'pi pi-pause',
+    [RegistrationStatusEnum.declined]: 'pi pi-times',
+    [RegistrationStatusEnum.deleted]: 'pi pi-trash',
+  };
+
+export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =
+  {
+    [RegistrationStatusEnum.registered]: $localize`Register`,
+    [RegistrationStatusEnum.completed]: $localize`Complete`,
+    [RegistrationStatusEnum.validated]: $localize`Validate`,
+    [RegistrationStatusEnum.included]: $localize`Include`,
+    [RegistrationStatusEnum.paused]: $localize`Pause`,
+    [RegistrationStatusEnum.declined]: $localize`Decline`,
+    [RegistrationStatusEnum.deleted]: $localize`Delete`,
+  };
+
 export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
   [VisaCard121Status.Active]: $localize`:@@debit-card-status-active:Active`,
   [VisaCard121Status.Issued]: $localize`:@@debit-card-status-issued:Issued`,
