@@ -118,7 +118,7 @@ export class ActivitiesMapper {
         paymentDate: transaction.paymentDate,
         financialServiceProviderName: transaction.financialServiceProviderName,
         financialServiceProviderConfigurationLabel:
-          transaction.financialServiceProviderConfigurationLabel,
+          transaction.programFinancialServiceProviderConfigurationLabel,
         financialServiceProviderConfigurationName:
           transaction.programFinancialServiceProviderConfigurationName,
         errorMessage: transaction.errorMessage,
