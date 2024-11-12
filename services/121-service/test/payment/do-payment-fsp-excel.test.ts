@@ -149,7 +149,6 @@ describe('Do payment with Excel FSP', () => {
       expect(fspInstructions).toMatchSnapshot();
     });
 
-    // ##TODO: wait with fixing this test until endpoint is available to update/delete columnsToExport
     it('Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
       // Arrange
       const programAttributeColumns =

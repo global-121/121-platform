@@ -4,7 +4,7 @@ export class PaPaymentDataDto {
   public referenceId: string;
   public paymentAddress: string;
   public programFinancialServiceProviderConfigurationId: number;
-  // ##TODO: Look into if we can do without financialServiceProviderName since we already have programFinancialServiceProviderConfigurationId
+  // TODO: Do not use the the PaPaymentDataDto in Intersolve voucher & CBE than we we can refactor this to not need the FinancialServiceProviders enum anymore
   public financialServiceProviderName: FinancialServiceProviders;
   public transactionAmount: number;
   public bulkSize: number;

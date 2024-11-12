@@ -212,7 +212,6 @@ export class ProgramReturnDto {
   @IsBoolean()
   public readonly allowEmptyPhoneNumber: boolean;
 
-  // ##TODO add proper API documentation
   @ApiProperty()
   @IsArray()
   public readonly financialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationResponseDto[];

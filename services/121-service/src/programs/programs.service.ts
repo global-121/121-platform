@@ -199,11 +199,12 @@ export class ProgramService {
 
       savedProgram.programRegistrationAttributes = [];
       for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
-        const attributeReturn = await this.createProgramRegistrationAttribute({
-          programId: savedProgram.id,
-          createProgramRegistrationAttributeDto: programRegistrationAttribute,
-          repository: programRegistrationAttributeRepository,
-        });
+        const attributeReturn =
+          await this.createProgramRegistrationAttributeEntity({
+            programId: savedProgram.id,
+            createProgramRegistrationAttributeDto: programRegistrationAttribute,
+            repository: programRegistrationAttributeRepository,
+          });
         if (attributeReturn) {
           savedProgram.programRegistrationAttributes.push(attributeReturn);
         }
@@ -225,9 +226,6 @@ export class ProgramService {
     } finally {
       await queryRunner.release();
     }
-
-    // Loop through FSPs again to store config, which can only be done after program is saved
-    // ##TODO write code to store programFspConfiguration and the attributes in the new structure
 
     await this.userService.assignAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.Admin],
@@ -352,12 +350,26 @@ export class ProgramService {
   public async createProgramRegistrationAttribute({
     programId,
     createProgramRegistrationAttributeDto,
+  }: {
+    programId: number;
+    createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
+  }): Promise<ProgramRegistrationAttributeDto> {
+    const entity = await this.createProgramRegistrationAttributeEntity({
+      programId,
+      createProgramRegistrationAttributeDto,
+    });
+    return ProgramRegistrationAttributeMapper.entityToDto(entity);
+  }
+
+  private async createProgramRegistrationAttributeEntity({
+    programId,
+    createProgramRegistrationAttributeDto,
     repository,
   }: {
     programId: number;
     createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
     repository?: Repository<ProgramRegistrationAttributeEntity>;
-  }) {
+  }): Promise<ProgramRegistrationAttributeEntity> {
     await this.validateAttributeName(
       programId,
       createProgramRegistrationAttributeDto.name,
@@ -381,8 +393,9 @@ export class ProgramService {
         const errorMessage = error.message; // Get the error message from QueryFailedError
         throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
       }
+      // Unexpected error
+      throw error;
     }
-    return;
   }
 
   private programRegistrationAttributeDtoToEntity(

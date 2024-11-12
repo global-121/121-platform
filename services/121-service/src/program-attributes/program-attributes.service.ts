@@ -148,7 +148,6 @@ export class ProgramAttributesService {
         label: null,
       },
       {
-        // ##TODO: refactor this naming to something like programFinancialServiceProviderConfigurationName
         name: GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
         type: RegistrationAttributeTypes.text,
         label: null,

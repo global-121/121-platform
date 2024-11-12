@@ -30,7 +30,6 @@ import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-// ##TODO add status codes
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/financial-service-provider-configurations')
 @Controller('programs')

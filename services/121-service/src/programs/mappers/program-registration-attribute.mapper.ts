@@ -9,7 +9,7 @@ export class ProgramRegistrationAttributeMapper {
     return entities.map((entity) => this.entityToDto(entity));
   }
 
-  private static entityToDto(
+  public static entityToDto(
     entity: ProgramRegistrationAttributeEntity,
   ): ProgramRegistrationAttributeDto {
     return {
