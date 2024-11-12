@@ -11,6 +11,17 @@ export interface AuthenticatedUserParameters {
 }
 
 export const AuthenticatedUser = (parameters?: AuthenticatedUserParameters) => {
+  let permissionsDescription = '';
+  if (parameters?.permissions) {
+    permissionsDescription = `Required permissions: ${parameters.permissions.join(', ')}`;
+  }
+  if (parameters?.isAdmin) {
+    permissionsDescription = 'User must be an admin.';
+  }
+  if (parameters?.isOrganizationAdmin) {
+    permissionsDescription = 'User must be an organization admin.';
+  }
+
   return applyDecorators(
     SetMetadata('authenticationParameters', {
       ...parameters,
@@ -18,8 +29,7 @@ export const AuthenticatedUser = (parameters?: AuthenticatedUserParameters) => {
     }),
     ApiResponse({
       status: HttpStatus.FORBIDDEN,
-      description:
-        'User does not have the right permission to access this endpoint.',
+      description: `User does not have the right permission to access this endpoint. \n (${permissionsDescription})`,
     }),
     ApiResponse({
       status: HttpStatus.UNAUTHORIZED,
