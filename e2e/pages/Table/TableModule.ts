@@ -392,7 +392,7 @@ class TableModule {
     );
   }
 
-  async exportPayMentData({ status, amount }: ExportPaymentAssertionData) {
+  async exportPaymentData({ status, amount }: ExportPaymentAssertionData) {
     const assertionData = {
       status,
       amount,
