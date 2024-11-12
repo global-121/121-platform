@@ -11,21 +11,7 @@
     [messageData]="messageData()"
   ></app-custom-message-preview>
 }
-<div class="mt-6 flex justify-end space-x-2">
-  <p-button
-    label="Cancel"
-    i18n-label="@@generic-cancel"
-    outlined
-    rounded
-    severity="contrast"
-    (onClick)="cancelClick()"
-  />
-  <p-button
-    label="Approve"
-    i18n-label="@@generic-approve"
-    rounded
-    [disabled]="isMutating()"
-    [loading]="isMutating()"
-    type="submit"
-  />
-</div>
+<app-change-status-submit-buttons
+  [isMutating]="isMutating()"
+  (onCancelClick)="cancelClick()"
+/>

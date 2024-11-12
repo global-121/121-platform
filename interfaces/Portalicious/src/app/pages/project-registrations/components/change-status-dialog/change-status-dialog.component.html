@@ -9,7 +9,7 @@
   <ng-template pTemplate="header">
     <h3>
       <i
-        class="pi me-2"
+        class="me-2"
         [class]="icon()"
       ></i>
       <ng-container i18n>{{ statusVerb() }} registration(s)</ng-container>
@@ -39,7 +39,7 @@
           }
           @case (RegistrationStatusEnum.declined) {
             <ng-container i18n>
-              This means that they will not included in payments.
+              This means that they will not be included in payments.
             </ng-container>
           }
           @case (RegistrationStatusEnum.deleted) {
@@ -56,9 +56,10 @@
 
       @if (!canSendMessage()) {
         <app-change-status-contents-without-message
-          (onCancel)="dialogVisible.set(false); changeStatusMutation.reset()"
+          (onCancel)="onChangeStatusCancel()"
           (onConfirm)="onFormSubmit()"
           [showAreYouSureCheckbox]="status() === RegistrationStatusEnum.deleted"
+          [isMutating]="changeStatusMutation.isPending()"
         />
       } @else {
         @if (messageTemplates.isLoading()) {
@@ -84,12 +85,10 @@
             <app-change-status-contents-with-templated-message
               [projectId]="projectId()"
               [enableSendMessage]="enableSendMessage()"
-              [messageData]="getSendMessageInputData()"
+              [messageData]="sendMessageInputData()"
               [previewRegistration]="actionData()?.previewItem"
-              [isMutating]="messageTemplates.isLoading()"
-              (onCancel)="
-                dialogVisible.set(false); changeStatusMutation.reset()
-              "
+              [isMutating]="changeStatusMutation.isPending()"
+              (onCancel)="onChangeStatusCancel()"
             />
           } @else {
             <app-change-status-contents-with-custom-message
@@ -97,10 +96,8 @@
               [enableSendMessage]="enableSendMessage()"
               [previewRegistration]="actionData()?.previewItem"
               [isMutating]="changeStatusMutation.isPending()"
-              (onCancel)="
-                dialogVisible.set(false); changeStatusMutation.reset()
-              "
-              (onSubmit)="customMessage.set($event)"
+              (onCancel)="onChangeStatusCancel()"
+              (onCustomMessageUpdated)="customMessage.set($event)"
             />
           }
         }
@@ -123,12 +120,12 @@
   <b i18n
     >There are
     {{ changeStatusMutation.data()?.nonApplicableCount }}
-    registrations that don't support this action</b
+    registration(s) that don't support this action</b
   >
   @switch (status()) {
     @case (RegistrationStatusEnum.validated) {
       <p
-        i18n
+        i18n="@@change-status-validate-warning"
         class="pt-2"
       >
         The action "Validate" can only be applied to registrations with the
@@ -138,7 +135,7 @@
     }
     @case (RegistrationStatusEnum.included) {
       <p
-        i18n
+        i18n="@@change-status-include-warning"
         class="pt-2"
       >
         The action "Include" can only be applied to registrations who’s
@@ -148,7 +145,7 @@
     }
     @case (RegistrationStatusEnum.paused) {
       <p
-        i18n
+        i18n="@@change-status-pause-warning"
         class="pt-2"
       >
         The action "Pause" can only be applied to registrations with the
@@ -158,7 +155,7 @@
     }
     @case (RegistrationStatusEnum.declined) {
       <p
-        i18n
+        i18n="@@change-status-decline-warning"
         class="pt-2"
       >
         The action "Decline" can not be applied to registrations with the
@@ -168,7 +165,7 @@
     }
     @case (RegistrationStatusEnum.deleted) {
       <p
-        i18n
+        i18n="@@change-status-delete-warning"
         class="pt-2"
       >
         The action "Delete" can not be applied to registrations with the
@@ -189,14 +186,14 @@
 
 <p-dialog
   i18n-header
-  [(visible)]="dryRunFailure"
+  [(visible)]="dryRunFailureDialogVisible"
   [modal]="true"
   [dismissableMask]="true"
 >
   <ng-template pTemplate="header">
     <h3>
       <i class="pi pi-exclamation-triangle me-2"></i>
-      <ng-container i18n>Error</ng-container>
+      <ng-container i18n="@@generic-error">Error</ng-container>
     </h3>
   </ng-template>
   <b i18n>0 selected registrations support this action. </b>
@@ -294,10 +291,10 @@
   }
   <div class="mt-6 flex justify-end space-x-2">
     <p-button
-      label="OK"
-      i18n-label="@@generic-ok"
+      label="Cancel"
+      i18n-label="@@generic-cancel"
       rounded
-      (onClick)="dryRunFailure.set(false)"
+      (onClick)="dryRunFailureDialogVisible.set(false)"
     />
   </div>
 </p-dialog>

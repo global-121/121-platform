@@ -21,13 +21,13 @@ export const REGISTRATION_STATUS_LABELS: Record<
 
 export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
   {
-    [RegistrationStatusEnum.registered]: 'pi-TODO',
-    [RegistrationStatusEnum.completed]: 'pi-TODO',
-    [RegistrationStatusEnum.validated]: 'pi-check-circle',
-    [RegistrationStatusEnum.included]: 'pi-check',
-    [RegistrationStatusEnum.paused]: 'pi-pause',
-    [RegistrationStatusEnum.declined]: 'pi-times',
-    [RegistrationStatusEnum.deleted]: 'pi-trash',
+    [RegistrationStatusEnum.registered]: '',
+    [RegistrationStatusEnum.completed]: '',
+    [RegistrationStatusEnum.validated]: 'pi pi-check-circle',
+    [RegistrationStatusEnum.included]: 'pi pi-check',
+    [RegistrationStatusEnum.paused]: 'pi pi-pause',
+    [RegistrationStatusEnum.declined]: 'pi pi-times',
+    [RegistrationStatusEnum.deleted]: 'pi pi-trash',
   };
 
 export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =

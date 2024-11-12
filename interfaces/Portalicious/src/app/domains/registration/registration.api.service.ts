@@ -102,7 +102,7 @@ export class RegistrationApiService extends DomainApiService {
     messageData?: SendMessageData | undefined;
     dryRun: boolean;
   }) {
-    let body: Partial<RegistrationStatusPatchDto>;
+    let body: RegistrationStatusPatchDto;
     body = {
       status,
     };
@@ -125,27 +125,19 @@ export class RegistrationApiService extends DomainApiService {
       dryRun,
     };
 
-    if (status === RegistrationStatusEnum.deleted) {
-      return this.httpWrapperService.perform121ServiceRequest<ChangeStatusResult>(
-        {
-          method: 'DELETE',
-          endpoint: this.pathToQueryKey([
-            ...BASE_ENDPOINT(projectId),
-            'status',
-          ]).join('/'),
-          body,
-          params,
-        },
-      );
-    }
+    const method =
+      status === RegistrationStatusEnum.deleted ? 'DELETE' : 'PATCH';
+    const endpoint =
+      status === RegistrationStatusEnum.deleted
+        ? this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/')
+        : this.pathToQueryKey([...BASE_ENDPOINT(projectId), 'status']).join(
+            '/',
+          );
 
     return this.httpWrapperService.perform121ServiceRequest<ChangeStatusResult>(
       {
-        method: 'PATCH',
-        endpoint: this.pathToQueryKey([
-          ...BASE_ENDPOINT(projectId),
-          'status',
-        ]).join('/'),
+        method,
+        endpoint,
         body,
         params,
       },

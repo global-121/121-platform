@@ -16,6 +16,7 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { ChangeStatusSubmitButtonsComponent } from '~/pages/project-registrations/components/change-status-submit-buttons/change-status-submit-buttons.component';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
@@ -26,6 +27,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     CheckboxModule,
     ReactiveFormsModule,
     FormErrorComponent,
+    ChangeStatusSubmitButtonsComponent,
   ],
   templateUrl: './change-status-contents-without-message.component.html',
   styles: ``,
@@ -33,6 +35,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class ChangeStatusContentsWithoutMessageComponent {
   showAreYouSureCheckbox = input.required<boolean>();
+  isMutating = input<boolean>(false);
   readonly onCancel = output();
   readonly onConfirm = output();
 
@@ -44,7 +47,7 @@ export class ChangeStatusContentsWithoutMessageComponent {
   formFieldErrors = generateFieldErrors(this.formGroup, {
     confirmAction: (control) => {
       if (control.errors?.required) {
-        return $localize`The checkbox should be checked.`;
+        return $localize`You must select this to proceed.`;
       }
       return;
     },

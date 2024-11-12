@@ -1,4 +1,4 @@
-import { LowerCasePipe, NgTemplateOutlet } from '@angular/common';
+import { LowerCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,15 +33,10 @@ import {
   REGISTRATION_STATUS_ICON,
   REGISTRATION_STATUS_VERB,
 } from '~/domains/registration/registration.helper';
-import {
-  Registration,
-  SendMessageData,
-} from '~/domains/registration/registration.model';
+import { Registration } from '~/domains/registration/registration.model';
 import { ChangeStatusContentsWithCustomMessageComponent } from '~/pages/project-registrations/components/change-status-contents-with-custom-message/change-status-contents-with-custom-message.component';
 import { ChangeStatusContentsWithTemplatedMessageComponent } from '~/pages/project-registrations/components/change-status-contents-with-templated-message/change-status-contents-with-templated-message.component';
 import { ChangeStatusContentsWithoutMessageComponent } from '~/pages/project-registrations/components/change-status-contents-without-message/change-status-contents-without-message.component';
-import { CustomMessageControlComponent } from '~/pages/project-registrations/components/custom-message-control/custom-message-control.component';
-import { CustomMessagePreviewComponent } from '~/pages/project-registrations/components/custom-message-preview/custom-message-preview.component';
 import {
   MessageInputData,
   MessagingService,
@@ -59,10 +54,7 @@ import { ToastService } from '~/services/toast.service';
     FormErrorComponent,
     RadioButtonModule,
     DropdownModule,
-    CustomMessageControlComponent,
-    CustomMessagePreviewComponent,
     InputSwitchModule,
-    NgTemplateOutlet,
     SkeletonModule,
     ConfirmationDialogComponent,
     ChangeStatusContentsWithoutMessageComponent,
@@ -91,15 +83,15 @@ export class ChangeStatusDialogComponent {
     undefined,
   );
   dialogVisible = model<boolean>(false);
-  dryRunFailure = model<boolean>(false);
+  dryRunFailureDialogVisible = model<boolean>(false);
   enableSendMessage = model<boolean>(false);
   customMessage = model<string>();
-  previewData = signal<Partial<MessageInputData> | undefined>(undefined);
   status = signal<RegistrationStatusEnum | undefined>(undefined);
+  foundTemplateKey = signal<string | undefined>(undefined);
+
   messageTemplates = injectQuery(
     this.notificationApiService.getMessageTemplates(this.projectId),
   );
-  foundTemplateKey = signal<string | undefined>(undefined);
   icon = computed(() => {
     const status = this.status();
     if (!status) {
@@ -139,13 +131,11 @@ export class ChangeStatusDialogComponent {
           .find((template) => template.type === status.toLowerCase());
 
         if (!foundMessageTemplate) {
+          this.foundTemplateKey.set(undefined);
           this.enableSendMessage.set(false);
-          this.previewData.set(undefined);
         } else {
           this.foundTemplateKey.set(foundMessageTemplate.type);
-
           this.enableSendMessage.set(false);
-          this.previewData.set(this.getSendMessageData());
         }
       },
       {
@@ -166,7 +156,7 @@ export class ChangeStatusDialogComponent {
     this.dialogVisible.set(true);
   }
 
-  getSendMessageInputData(): Partial<MessageInputData> {
+  sendMessageInputData = computed<Partial<MessageInputData>>(() => {
     const foundTemplateKey = this.foundTemplateKey();
 
     if (foundTemplateKey) {
@@ -180,40 +170,36 @@ export class ChangeStatusDialogComponent {
       messageType: 'custom',
       customMessage: this.customMessage(),
     };
-  }
-
-  private getSendMessageData(): SendMessageData | undefined {
-    if (!this.enableSendMessage()) {
-      return undefined;
-    }
-
-    const messageInputData = this.getSendMessageInputData();
-    return this.messagingService.getSendMessageData(messageInputData);
-  }
+  });
 
   changeStatusMutation = injectMutation(() => ({
     mutationFn: ({ dryRun }: { dryRun: boolean }) => {
-      const messageData = this.getSendMessageData();
+      const status = this.status();
+      if (!status) {
+        throw new Error('Status is undefined.');
+      }
+      const messageData = this.messagingService.getSendMessageData(
+        this.sendMessageInputData(),
+      );
 
       return this.registrationApiService.changeStatus({
         projectId: this.projectId,
         paginateQuery: this.actionData()?.query,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        status: this.status()!,
+        status,
         messageData,
         dryRun,
       });
     },
     onSuccess: (data, variables) => {
-      // decide which dialog to show based on count
       if (data.nonApplicableCount === 0) {
+        // case #1: the change can be applied to all registrations
         if (variables.dryRun) {
           this.changeStatusMutation.mutate({ dryRun: false });
           return;
         }
         this.dialogVisible.set(false);
         this.toastService.showToast({
-          summary: $localize`Success`,
+          summary: $localize`:@@generic-success:Success`,
           detail: $localize`${data.applicableCount} registration(s) were ${this.statusVerb().toLowerCase()} successfully. The status change can take up to a minute to process.`,
           severity: 'success',
         });
@@ -222,11 +208,13 @@ export class ChangeStatusDialogComponent {
       }
 
       if (data.applicableCount === 0) {
+        // case #2: the change can be applied to none of the registrations
         this.dialogVisible.set(false);
-        this.dryRunFailure.set(true);
+        this.dryRunFailureDialogVisible.set(true);
         return;
       }
 
+      // case #3: the change can be applied to only some of the registrations
       this.dialogVisible.set(false);
       this.dryRunWarningDialog.askForConfirmation({
         resetMutation: false,
@@ -236,5 +224,10 @@ export class ChangeStatusDialogComponent {
 
   onFormSubmit(): void {
     this.changeStatusMutation.mutate({ dryRun: true });
+  }
+
+  onChangeStatusCancel() {
+    this.dialogVisible.set(false);
+    this.changeStatusMutation.reset();
   }
 }

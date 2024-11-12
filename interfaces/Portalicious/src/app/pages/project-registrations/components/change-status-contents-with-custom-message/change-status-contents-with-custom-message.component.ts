@@ -16,6 +16,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 
 import { Registration } from '~/domains/registration/registration.model';
+import { ChangeStatusSubmitButtonsComponent } from '~/pages/project-registrations/components/change-status-submit-buttons/change-status-submit-buttons.component';
 import { CustomMessageControlComponent } from '~/pages/project-registrations/components/custom-message-control/custom-message-control.component';
 import { CustomMessagePreviewComponent } from '~/pages/project-registrations/components/custom-message-preview/custom-message-preview.component';
 import { MessageInputData } from '~/services/messaging.service';
@@ -29,6 +30,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     CustomMessageControlComponent,
     ButtonModule,
     ReactiveFormsModule,
+    ChangeStatusSubmitButtonsComponent,
   ],
   templateUrl: './change-status-contents-with-custom-message.component.html',
   styles: ``,
@@ -40,7 +42,7 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   enableSendMessage = input.required<boolean>();
   isMutating = input<boolean>(false);
   readonly onCancel = output();
-  readonly onSubmit = output<string>();
+  readonly onCustomMessageUpdated = output<string>();
 
   formGroup = new FormGroup({
     customMessage: new FormControl<string | undefined>(undefined, {
@@ -84,13 +86,6 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
       messageType: 'custom',
       customMessage: this.formGroup.value.customMessage,
     });
-    this.onSubmit.emit(this.formGroup.value.customMessage);
-  }
-
-  getMessageData(): Partial<MessageInputData> {
-    return {
-      messageType: 'custom',
-      customMessage: this.formGroup.value.customMessage,
-    };
+    this.onCustomMessageUpdated.emit(this.formGroup.value.customMessage);
   }
 }
