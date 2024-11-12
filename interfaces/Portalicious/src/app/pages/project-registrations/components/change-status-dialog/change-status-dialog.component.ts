@@ -208,7 +208,7 @@ export class ChangeStatusDialogComponent
         setTimeout(() => {
           // invalidate the cache again after a delay to try and make the status change reflected in the UI
           void this.registrationApiService.invalidateCache(this.projectId);
-        }, 3000);
+        }, 500);
         return;
       }
 
