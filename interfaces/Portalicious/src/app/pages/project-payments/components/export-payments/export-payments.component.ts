@@ -26,6 +26,7 @@ import {
 } from '~/domains/project/project.helper';
 import { LatestExportDateComponent } from '~/pages/project-registrations/components/latest-export-date/latest-export-date.component';
 import { AuthService } from '~/services/auth.service';
+import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -46,6 +47,7 @@ export class ExportPaymentsComponent {
   projectId = input.required<number>();
 
   private authService = inject(AuthService);
+  private downloadService = inject(DownloadService);
   private exportService = inject(ExportService);
   private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
@@ -105,7 +107,9 @@ export class ExportPaymentsComponent {
       this.projectId,
       this.toastService,
     ),
-    onSuccess: this.exportService.downloadExport(),
+    onSuccess: ({ exportResult: file, filename }) => {
+      this.downloadService.downloadFile({ file, filename });
+    },
   }));
 
   exportOptions = computed<MenuItem[]>(() => [

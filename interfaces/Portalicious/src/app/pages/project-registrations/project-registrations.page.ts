@@ -33,6 +33,7 @@ import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.
 import { Registration } from '~/domains/registration/registration.model';
 import { ChangeStatusDialogComponent } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
 import { ExportRegistrationsComponent } from '~/pages/project-registrations/components/export-registrations/export-registrations.component';
+import { ImportRegistrationsComponent } from '~/pages/project-registrations/components/import-registrations/import-registrations.component';
 import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import {
@@ -53,6 +54,7 @@ import { ToastService } from '~/services/toast.service';
     SendMessageDialogComponent,
     ExportRegistrationsComponent,
     ChangeStatusDialogComponent,
+    ImportRegistrationsComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
@@ -241,6 +243,16 @@ export class ProjectRegistrationsPageComponent {
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
+    }),
+  );
+
+  canImport = computed(() =>
+    this.authService.hasAllPermissions({
+      projectId: this.projectId(),
+      requiredPermissions: [
+        PermissionEnum.RegistrationCREATE,
+        PermissionEnum.RegistrationImportTemplateREAD,
+      ],
     }),
   );
 

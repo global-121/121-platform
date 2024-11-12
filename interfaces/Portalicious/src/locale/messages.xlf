@@ -1028,6 +1028,36 @@
       <trans-unit id="3865701940123165586" datatype="html">
         <source>Included reg.</source>
       </trans-unit>
+      <trans-unit id="1071721880474488785" datatype="html">
+        <source>Import</source>
+      </trans-unit>
+      <trans-unit id="13613170635045985" datatype="html">
+        <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
+      </trans-unit>
+      <trans-unit id="3142649024295180156" datatype="html">
+        <source>Choose file</source>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+      </trans-unit>
+      <trans-unit id="5248644489024163464" datatype="html">
+        <source>Import file</source>
+      </trans-unit>
+      <trans-unit id="6525991351362607122" datatype="html">
+        <source>The system will create registrations with the status “registered”.</source>
+      </trans-unit>
+      <trans-unit id="7123246815138482133" datatype="html">
+        <source>The import takes about 1 minute per 100 records</source>
+      </trans-unit>
+      <trans-unit id="4555355588212916481" datatype="html">
+        <source>Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+      </trans-unit>
+      <trans-unit id="import-registrations-success" datatype="html">
+        <source><x equiv-text="importResult?.length" id="PH"/> registration(s) imported successfully.</source>
+      </trans-unit>
+      <trans-unit id="7893013905728176682" datatype="html">
+        <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

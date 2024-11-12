@@ -29,6 +29,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { LatestExportDateComponent } from '~/pages/project-registrations/components/latest-export-date/latest-export-date.component';
 import { AuthService } from '~/services/auth.service';
+import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
@@ -58,6 +59,7 @@ export class ExportRegistrationsComponent {
     >();
 
   private authService = inject(AuthService);
+  private downloadService = inject(DownloadService);
   private exportService = inject(ExportService);
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
@@ -93,7 +95,9 @@ export class ExportRegistrationsComponent {
       this.projectId,
       this.toastService,
     ),
-    onSuccess: this.exportService.downloadExport(),
+    onSuccess: ({ exportResult: file, filename }) => {
+      this.downloadService.downloadFile({ file, filename });
+    },
   }));
 
   exportCBEVerificationReportMutation = injectMutation((queryClient) => ({

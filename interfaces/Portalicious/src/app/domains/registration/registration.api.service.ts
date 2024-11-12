@@ -2,6 +2,7 @@ import { Injectable, Signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
 
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -20,6 +21,7 @@ import {
   WalletWithCards,
 } from '~/domains/registration/registration.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
+import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
@@ -49,6 +51,33 @@ export class RegistrationApiService extends DomainApiService {
     return this.generateQueryOptions<Registration>({
       path: [...BASE_ENDPOINT(projectId as Signal<number>), registrationId],
       enabled: () => !!projectId() && !!registrationId(),
+    });
+  }
+
+  getImportTemplate(projectId: Signal<number>) {
+    return this.generateQueryOptions<string[]>({
+      path: [...BASE_ENDPOINT(projectId), 'import-template'],
+    });
+  }
+
+  importRegistrations({
+    projectId,
+    file,
+  }: {
+    projectId: Signal<number>;
+    file: File;
+  }) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpWrapperService.perform121ServiceRequest<Dto<ImportResult>>({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'import-registrations',
+      ]).join('/'),
+      body: formData,
+      isUpload: true,
     });
   }
 

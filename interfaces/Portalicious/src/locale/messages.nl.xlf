@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
-  <file original="ng2.template" datatype="plaintext" xml:space="preserve" source-language="en-GB" target-language="nl">
-    <header>
-      <tool tool-id="lokalise.com" tool-name="Lokalise"></tool>
-    </header>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-GB" target-language="nl" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
@@ -494,7 +491,7 @@
       </trans-unit>
       <trans-unit id="5209857233936409392" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
-        <target>De actie &quot; Pauzeren &quot; kan alleen worden toegepast op registraties met de status 'Actief'.</target>
+        <target>De actie &quot;Pauzeren&quot; kan alleen worden toegepast op registraties met de status &apos;Actief&apos;.</target>
       </trans-unit>
       <trans-unit id="5306473977542913614" datatype="html">
         <source>Activity</source>
@@ -599,7 +596,7 @@
       </trans-unit>
       <trans-unit id="6345542796169013745" datatype="html">
         <source>Select registrations who&apos;s “Payments left” is larger than 0 and try again.</source>
-        <target>Selecteer registraties waar "Resterende betalingen" groter is dan 0 (nul) en probeer het opnieuw.</target>
+        <target>Selecteer registraties waar &quot;Resterende betalingen&quot; groter is dan 0 (nul) en probeer het opnieuw.</target>
       </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
@@ -819,7 +816,7 @@
       </trans-unit>
       <trans-unit id="8668090925608056170" datatype="html">
         <source>The action &quot;Include&quot; can only be applied to registrations who&apos;s “Payments left” is larger than 0.</source>
-        <target>De actie &quot;Activeren&quot; kan alleen worden toegepast op registraties waarvan het aantal "Resterende betalingen" groter is dan 0.</target>
+        <target>De actie &quot;Activeren&quot; kan alleen worden toegepast op registraties waarvan het aantal &quot;Resterende betalingen&quot; groter is dan 0.</target>
       </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
@@ -943,15 +940,15 @@
       </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-        <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status "Voltooid" behouden hun huidige status.</target>
+        <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status &quot;Voltooid&quot; behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-delete-warning" datatype="html">
         <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-        <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status "voltooid" behouden hun huidige status.</target>
+        <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status &quot;voltooid&quot; behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-include-warning" datatype="html">
         <source>The action &quot;Include&quot; can only be applied to registrations who’s “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
-        <target>De actie &quot;Activeer&quot; kan alleen worden toegepast op registraties waarvan het aantal "Resterende betalingen" groter is dan 0. Registraties met 0 resterende betalingen behouden hun huidige status.</target>
+        <target>De actie &quot;Activeer&quot; kan alleen worden toegepast op registraties waarvan het aantal &quot;Resterende betalingen&quot; groter is dan 0. Registraties met 0 resterende betalingen behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-pause-warning" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status. Registrations with other statuses will remain with their current status.</source>
@@ -1370,6 +1367,46 @@
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
         <target>Filteren op trefwoord</target>
+      </trans-unit>
+      <trans-unit id="13613170635045985" datatype="html">
+        <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
+        <target state="new">Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</target>
+      </trans-unit>
+      <trans-unit id="3142649024295180156" datatype="html">
+        <source>Choose file</source>
+        <target state="new">Choose file</target>
+      </trans-unit>
+      <trans-unit id="1071721880474488785" datatype="html">
+        <source>Import</source>
+        <target state="new">Import</target>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+        <target state="new">Import registrations</target>
+      </trans-unit>
+      <trans-unit id="6525991351362607122" datatype="html">
+        <source>The system will create registrations with the status “registered”.</source>
+        <target state="new">The system will create registrations with the status “registered”.</target>
+      </trans-unit>
+      <trans-unit id="7123246815138482133" datatype="html">
+        <source>The import takes about 1 minute per 100 records</source>
+        <target state="new">The import takes about 1 minute per 100 records</target>
+      </trans-unit>
+      <trans-unit id="5248644489024163464" datatype="html">
+        <source>Import file</source>
+        <target state="new">Import file</target>
+      </trans-unit>
+      <trans-unit id="4555355588212916481" datatype="html">
+        <source>Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+        <target state="new">Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
+      </trans-unit>
+      <trans-unit id="import-registrations-success" datatype="html">
+        <source><x equiv-text="importResult?.length" id="PH"/> registration(s) imported successfully.</source>
+        <target state="new"><x equiv-text="importResult?.length" id="PH"/> registration(s) imported successfully.</target>
+      </trans-unit>
+      <trans-unit id="7893013905728176682" datatype="html">
+        <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
+        <target state="new">Something went wrong with this import. Please fix the errors reported below and try again.</target>
       </trans-unit>
     </body>
   </file>

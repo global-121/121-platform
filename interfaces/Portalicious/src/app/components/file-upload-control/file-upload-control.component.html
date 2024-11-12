@@ -1,0 +1,52 @@
+<p-fileUpload
+  mode="advanced"
+  [accept]="accept()"
+  (onSelect)="fileInputInternalModel.set($event.files[0])"
+  (onRemove)="fileInputInternalModel.set(null); onClearFiles.emit()"
+  [disabled]="fileInputDisabled()"
+  [files]="fileInputFiles()"
+>
+  <ng-template
+    pTemplate="content"
+    let-files
+    let-removeFileCallback="removeFileCallback"
+    let-chooseCallback="chooseCallback"
+  >
+    @if (files.length === 0) {
+      <div class="space-y-3 py-4 text-center">
+        <i class="pi pi-cloud-upload text-4xl text-grey-500"></i>
+        <p
+          i18n
+          class="text-grey-500 txt-system-s"
+        >
+          Drag and drop file here<br />or
+        </p>
+        <div>
+          <p-button
+            label="Choose file"
+            i18n-label
+            (onClick)="chooseCallback()"
+            icon="pi pi-download"
+            [rounded]="true"
+            [outlined]="true"
+          />
+        </div>
+      </div>
+    } @else {
+      @for (file of files; track $index) {
+        <div class="flex items-center gap-3 bg-grey-100 px-3.5 py-1">
+          <span class="grow txt-system-s">{{ file.name }}</span>
+          <div class="txt-system-s">{{ file.size | filesize }}</div>
+          <p-button
+            icon="pi pi-trash"
+            (onClick)="removeFileCallback(file, $index)"
+            [plain]="true"
+            [text]="true"
+            styleClass="grow-0"
+          />
+        </div>
+      }
+    }
+  </ng-template>
+  <ng-template pTemplate="file"></ng-template>
+</p-fileUpload>
