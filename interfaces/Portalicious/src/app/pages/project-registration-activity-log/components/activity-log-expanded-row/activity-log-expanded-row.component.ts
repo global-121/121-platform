@@ -20,7 +20,6 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
-import { TranslatableStringService } from '~/services/translatable-string.service';
 @Component({
   selector: 'app-activity-log-expanded-row',
   standalone: true,
@@ -33,9 +32,6 @@ export class ActivityLogExpandedRowComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
   private readonly projectApiService = inject(ProjectApiService);
-  private readonly translatableStringService = inject(
-    TranslatableStringService,
-  );
 
   value = input.required<Activity>();
   context = input.required<ActivityLogTableCellContext>();
@@ -116,9 +112,7 @@ export class ActivityLogExpandedRowComponent
           },
           {
             label: $localize`FSP`,
-            value: this.translatableStringService.translate(
-              item.attributes.financialServiceProviderConfigurationLabel,
-            ),
+            value: item.attributes.financialServiceProviderConfigurationLabel,
           },
           {
             label: $localize`Amount`,
