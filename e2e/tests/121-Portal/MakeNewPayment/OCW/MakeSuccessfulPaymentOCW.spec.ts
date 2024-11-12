@@ -12,6 +12,11 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
+  registrationOCW5,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -45,7 +50,17 @@ test.beforeEach(async ({ page }) => {
   const OcwProgramId = programIdOCW;
 
   accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
+  await seedIncludedRegistrations(
+    [
+      registrationOCW5,
+      registrationOCW4,
+      registrationOCW3,
+      registrationOCW2,
+      registrationOCW1,
+    ],
+    OcwProgramId,
+    accessToken,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
