@@ -2,6 +2,7 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import { injectQueryClient } from '@tanstack/angular-query-experimental';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { NotificationApiService } from '~/domains/notification/notification.api.service';
@@ -137,5 +138,19 @@ export class MessagingService {
       this.notificationApiService.getMessageTemplates(projectId)(),
     );
     return templates.find((template) => template.type === type);
+  }
+
+  public async getTemplateTypeByRegistrationStatus({
+    status,
+    projectId,
+  }: {
+    status: RegistrationStatusEnum;
+    projectId: Signal<number>;
+  }): Promise<string | undefined> {
+    const templates = await this.queryClient.fetchQuery(
+      this.notificationApiService.getMessageTemplates(projectId)(),
+    );
+    return templates.find((template) => template.type === status.toLowerCase())
+      ?.type;
   }
 }

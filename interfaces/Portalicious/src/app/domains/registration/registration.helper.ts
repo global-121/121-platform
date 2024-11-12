@@ -1,6 +1,7 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
+import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import {
   // TODO: AB#30525 should import this from 121-service
   VisaCard121Status,
@@ -17,6 +18,19 @@ export const REGISTRATION_STATUS_LABELS: Record<
   [RegistrationStatusEnum.completed]: $localize`:@@registration-status-completed:Completed`,
   [RegistrationStatusEnum.deleted]: $localize`:@@registration-status-deleted:Deleted`,
   [RegistrationStatusEnum.paused]: $localize`:@@registration-status-paused:Paused`,
+};
+
+export const REGISTRATION_STATUS_CHIP_VARIANTS: Record<
+  RegistrationStatusEnum,
+  ChipVariant
+> = {
+  [RegistrationStatusEnum.included]: 'green',
+  [RegistrationStatusEnum.registered]: 'blue',
+  [RegistrationStatusEnum.validated]: 'yellow',
+  [RegistrationStatusEnum.declined]: 'red',
+  [RegistrationStatusEnum.completed]: 'purple',
+  [RegistrationStatusEnum.deleted]: 'red',
+  [RegistrationStatusEnum.paused]: 'orange',
 };
 
 export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =

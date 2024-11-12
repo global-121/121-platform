@@ -8,6 +8,7 @@ import {
   MessageStatus,
 } from '~/domains/message/message.helper';
 import {
+  REGISTRATION_STATUS_CHIP_VARIANTS,
   REGISTRATION_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
@@ -28,28 +29,11 @@ export function getChipDataByRegistrationStatus(
       chipLabel: $localize`:@@generic-not-available:Not available`,
     };
   }
-  const chipLabel = REGISTRATION_STATUS_LABELS[status];
-  switch (status) {
-    case RegistrationStatusEnum.included:
-    case RegistrationStatusEnum.registered:
-    case RegistrationStatusEnum.validated:
-      return {
-        chipLabel,
-        chipVariant: 'green',
-      };
-    case RegistrationStatusEnum.declined:
-    case RegistrationStatusEnum.completed:
-    case RegistrationStatusEnum.deleted:
-      return {
-        chipLabel,
-        chipVariant: 'red',
-      };
-    case RegistrationStatusEnum.paused:
-      return {
-        chipLabel,
-        chipVariant: 'orange',
-      };
-  }
+
+  return {
+    chipLabel: REGISTRATION_STATUS_LABELS[status],
+    chipVariant: REGISTRATION_STATUS_CHIP_VARIANTS[status],
+  };
 }
 
 export function getChipDataByTransactionStatusEnum(

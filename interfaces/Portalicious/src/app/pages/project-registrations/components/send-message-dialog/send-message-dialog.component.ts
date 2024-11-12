@@ -5,6 +5,7 @@ import {
   input,
   model,
   OnDestroy,
+  output,
   signal,
 } from '@angular/core';
 import {
@@ -34,7 +35,10 @@ import {
   MessageInputData,
   MessagingService,
 } from '~/services/messaging.service';
-import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
+import {
+  ActionDataWithPaginateQuery,
+  IActionDataHandler,
+} from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -62,8 +66,11 @@ type SendMessageFormGroup =
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SendMessageDialogComponent implements OnDestroy {
+export class SendMessageDialogComponent
+  implements OnDestroy, IActionDataHandler<Registration>
+{
   readonly projectId = input.required<number>();
+  readonly onActionComplete = output();
 
   private messagingService = inject(MessagingService);
   private notificationApiService = inject(NotificationApiService);
@@ -170,7 +177,9 @@ export class SendMessageDialogComponent implements OnDestroy {
 
         Closing this notification will not cancel message sending.`,
         severity: 'info',
+        showSpinner: true,
       });
+      this.onActionComplete.emit();
     },
   }));
 

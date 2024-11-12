@@ -3,10 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   model,
+  output,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -27,10 +27,10 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { NotificationApiService } from '~/domains/notification/notification.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   REGISTRATION_STATUS_ICON,
+  REGISTRATION_STATUS_LABELS,
   REGISTRATION_STATUS_VERB,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
@@ -41,7 +41,10 @@ import {
   MessageInputData,
   MessagingService,
 } from '~/services/messaging.service';
-import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
+import {
+  ActionDataWithPaginateQuery,
+  IActionDataHandler,
+} from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -68,14 +71,18 @@ import { ToastService } from '~/services/toast.service';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeStatusDialogComponent {
+export class ChangeStatusDialogComponent
+  implements IActionDataHandler<Registration>
+{
   projectId = input.required<number>();
+  readonly onActionComplete = output();
+
   RegistrationStatusEnum = RegistrationStatusEnum;
 
   private messagingService = inject(MessagingService);
-  private notificationApiService = inject(NotificationApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+
   @ViewChild('dryRunWarningDialog')
   private dryRunWarningDialog: ConfirmationDialogComponent;
 
@@ -87,17 +94,20 @@ export class ChangeStatusDialogComponent {
   enableSendMessage = model<boolean>(false);
   customMessage = model<string>();
   status = signal<RegistrationStatusEnum | undefined>(undefined);
-  foundTemplateKey = signal<string | undefined>(undefined);
 
-  messageTemplates = injectQuery(
-    this.notificationApiService.getMessageTemplates(this.projectId),
-  );
   icon = computed(() => {
     const status = this.status();
     if (!status) {
       return '';
     }
     return REGISTRATION_STATUS_ICON[status];
+  });
+  statusLabel = computed(() => {
+    const status = this.status();
+    if (!status) {
+      return '';
+    }
+    return REGISTRATION_STATUS_LABELS[status];
   });
   statusVerb = computed(() => {
     const status = this.status();
@@ -119,45 +129,33 @@ export class ChangeStatusDialogComponent {
     return statusesWithSendMessageEnabled.includes(status);
   });
 
-  constructor() {
-    effect(
-      () => {
-        const status = this.status();
-        if (!this.messageTemplates.isSuccess() || !status) {
-          return;
-        }
-        const foundMessageTemplate = this.messageTemplates
-          .data()
-          .find((template) => template.type === status.toLowerCase());
-
-        if (!foundMessageTemplate) {
-          this.foundTemplateKey.set(undefined);
-          this.enableSendMessage.set(false);
-        } else {
-          this.foundTemplateKey.set(foundMessageTemplate.type);
-          this.enableSendMessage.set(false);
-        }
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
-  }
-
   triggerAction(
     actionData: ActionDataWithPaginateQuery<Registration>,
     status: RegistrationStatusEnum,
   ) {
     this.actionData.set(actionData);
-    // Doing this to trigger the effect
-    this.status.set(undefined);
     this.status.set(status);
 
     this.dialogVisible.set(true);
+    this.enableSendMessage.set(false);
   }
 
+  messageTemplateKey = injectQuery(() => ({
+    queryKey: ['change-status-template-key', this.status(), this.projectId()],
+    queryFn: () => {
+      const status = this.status();
+      if (!status) {
+        return;
+      }
+      return this.messagingService.getTemplateTypeByRegistrationStatus({
+        status,
+        projectId: this.projectId,
+      });
+    },
+  }));
+
   sendMessageInputData = computed<Partial<MessageInputData>>(() => {
-    const foundTemplateKey = this.foundTemplateKey();
+    const foundTemplateKey = this.messageTemplateKey.data();
 
     if (foundTemplateKey) {
       return {
@@ -199,11 +197,18 @@ export class ChangeStatusDialogComponent {
         }
         this.dialogVisible.set(false);
         this.toastService.showToast({
-          summary: $localize`:@@generic-success:Success`,
-          detail: $localize`${data.applicableCount} registration(s) were ${this.statusVerb().toLowerCase()} successfully. The status change can take up to a minute to process.`,
-          severity: 'success',
+          summary: $localize`Changing statuses`,
+          detail: $localize`The status of ${data.applicableCount} registration(s) is being changed to "${this.statusLabel()}" successfully. The status change can take up to a minute to process.`,
+          severity: 'info',
+          showSpinner: true,
         });
+        this.onActionComplete.emit();
         void this.registrationApiService.invalidateCache(this.projectId);
+
+        setTimeout(() => {
+          // invalidate the cache again after a delay to try and make the status change reflected in the UI
+          void this.registrationApiService.invalidateCache(this.projectId);
+        }, 500);
         return;
       }
 
