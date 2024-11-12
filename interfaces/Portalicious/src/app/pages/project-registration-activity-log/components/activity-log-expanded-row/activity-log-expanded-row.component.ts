@@ -20,7 +20,6 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
-
 @Component({
   selector: 'app-activity-log-expanded-row',
   standalone: true,
@@ -53,7 +52,7 @@ export class ActivityLogExpandedRowComponent
 
     return (
       activity.type === ActivityTypeEnum.Transaction &&
-      activity.attributes.fsp ===
+      activity.attributes.financialServiceProviderName ===
         FinancialServiceProviders.intersolveVoucherWhatsapp
     );
   });
@@ -113,7 +112,7 @@ export class ActivityLogExpandedRowComponent
           },
           {
             label: $localize`FSP`,
-            value: item.attributes.fsp,
+            value: item.attributes.financialServiceProviderConfigurationLabel,
           },
           {
             label: $localize`Amount`,
