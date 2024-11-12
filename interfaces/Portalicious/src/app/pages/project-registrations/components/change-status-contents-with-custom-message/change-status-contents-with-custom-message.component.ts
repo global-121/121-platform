@@ -73,7 +73,6 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   }
 
   cancelClick() {
-    this.previewData.set(undefined);
     this.onCancel.emit();
   }
 
