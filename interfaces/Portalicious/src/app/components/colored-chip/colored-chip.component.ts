@@ -14,7 +14,8 @@ export type ChipVariant =
   | 'grey'
   | 'orange'
   | 'purple'
-  | 'red';
+  | 'red'
+  | 'yellow';
 
 @Component({
   selector: 'app-colored-chip',
@@ -50,6 +51,8 @@ export class ColoredChipComponent {
         return `${baseClass} bg-red-100 text-red-700`;
       case 'orange':
         return `${baseClass} bg-orange-100 text-orange-700`;
+      case 'yellow':
+        return `${baseClass} bg-yellow-100 text-yellow-700`;
       case 'grey':
         return `${baseClass} bg-grey-100 text-grey-700`;
       default:

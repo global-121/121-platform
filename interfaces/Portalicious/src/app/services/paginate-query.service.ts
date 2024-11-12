@@ -1,5 +1,5 @@
 import { HttpParamsOptions } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OutputEmitterRef } from '@angular/core';
 
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
@@ -26,6 +26,14 @@ export interface ActionDataWithPaginateQuery<T> {
   count: number;
   selectAll: boolean;
   previewItem: T;
+}
+
+export abstract class IActionDataHandler<TData> {
+  abstract readonly onActionComplete: OutputEmitterRef<void>;
+  abstract triggerAction(
+    data: ActionDataWithPaginateQuery<TData>,
+    ...args: unknown[]
+  ): void;
 }
 
 @Injectable({

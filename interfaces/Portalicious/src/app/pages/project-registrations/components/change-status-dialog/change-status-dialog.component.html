@@ -62,7 +62,7 @@
           [isMutating]="changeStatusMutation.isPending()"
         />
       } @else {
-        @if (messageTemplates.isLoading()) {
+        @if (messageTemplateKey.isLoading()) {
           <p-skeleton
             width="100%"
             height="2rem"
@@ -81,7 +81,7 @@
               >Send a message to registration(s)</label
             >
           </div>
-          @if (foundTemplateKey()) {
+          @if (sendMessageInputData().messageType === 'template') {
             <app-change-status-contents-with-templated-message
               [projectId]="projectId()"
               [enableSendMessage]="enableSendMessage()"

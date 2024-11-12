@@ -13,6 +13,7 @@
   </div>
   <p-card>
     <app-query-table
+      #table
       [items]="registrations()"
       [isPending]="registrationsResponse.isPending()"
       [columns]="columns()"
@@ -105,9 +106,11 @@
 <app-send-message-dialog
   #sendMessageDialog
   [projectId]="projectId()"
+  (onActionComplete)="onActionComplete()"
 />
 
 <app-change-status-dialog
   #changeStatusDialog
   [projectId]="projectId()"
+  (onActionComplete)="onActionComplete()"
 />

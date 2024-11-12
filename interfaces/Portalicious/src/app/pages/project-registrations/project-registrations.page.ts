@@ -72,6 +72,8 @@ export class ProjectRegistrationsPageComponent {
 
   PermissionEnum = PermissionEnum;
 
+  @ViewChild('table')
+  private table: QueryTableComponent<Registration, never>;
   @ViewChild('sendMessageDialog')
   private sendMessageDialog: SendMessageDialogComponent;
   @ViewChild('changeStatusDialog')
@@ -204,6 +206,10 @@ export class ProjectRegistrationsPageComponent {
     }
 
     this.changeStatusDialog.triggerAction(actionData, status);
+  }
+
+  onActionComplete() {
+    this.table.resetSelection();
   }
 
   canChangeStatus(

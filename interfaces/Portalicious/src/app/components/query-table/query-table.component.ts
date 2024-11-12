@@ -380,6 +380,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       : this.selectedItems().length,
   );
 
+  resetSelection() {
+    this.selectedItems.set([]);
+    this.selectAll.set(false);
+    this.onUpdateSelection.emit([]);
+  }
+
   /**
    *  EXPANDABLE ROWS
    */

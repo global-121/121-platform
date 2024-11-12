@@ -1195,10 +1195,6 @@
         <source>Payment</source>
         <target state="new">Payment</target>
       </trans-unit>
-      <trans-unit id="3865701940123165586" datatype="html">
-        <source>Included reg.</source>
-        <target state="new">Included reg.</target>
-      </trans-unit>
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
         <target state="new">Total amount</target>
@@ -1355,13 +1351,17 @@
         <source>Select registrations with another status and try again.</source>
         <target state="new">Select registrations with another status and try again.</target>
       </trans-unit>
-      <trans-unit id="1130540455223752082" datatype="html">
-        <source><x equiv-text="data.applicableCount" id="PH"/> registration(s) were <x equiv-text="this.statusVerb().toLowerCase()" id="PH_1"/> successfully. The status change can take up to a minute to process.</source>
-        <target state="new"><x equiv-text="data.applicableCount" id="PH"/> registration(s) were <x equiv-text="this.statusVerb().toLowerCase()" id="PH_1"/> successfully. The status change can take up to a minute to process.</target>
-      </trans-unit>
       <trans-unit id="6828231165009897209" datatype="html">
         <source>You must select this to proceed.</source>
         <target state="new">You must select this to proceed.</target>
+      </trans-unit>
+      <trans-unit id="8315909063441814502" datatype="html">
+        <source>Changing statuses</source>
+        <target state="new">Changing statuses</target>
+      </trans-unit>
+      <trans-unit id="9126928390466272085" datatype="html">
+        <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
+        <target state="new">The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</target>
       </trans-unit>
     </body>
   </file>
