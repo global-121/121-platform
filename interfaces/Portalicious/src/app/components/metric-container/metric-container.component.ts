@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { SummaryMetric } from '~/domains/metric/metric.model';
 
 @Component({
   selector: 'app-metric-container',
@@ -11,8 +12,5 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetricContainerComponent {
-  public pending = input.required<boolean>();
-  public value = input<null | number | string>();
-  public label = input.required<string>();
-  public showAlert = input<boolean>(false);
+  public metric = input.required<SummaryMetric>();
 }

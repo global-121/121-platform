@@ -1,13 +1,19 @@
-<dt class="px-2 pb-2 pt-1 txt-body-m">
-  {{ label() }}
-</dt>
-<dd class="px-2 font-bold txt-h-2">
-  @if (pending()) {
-    <app-skeleton-inline />
-  } @else {
-    {{ value() ?? '-' }}
-    @if (showAlert()) {
-      <i class="pi pi-exclamation-triangle text-red-500"></i>
+<div class="flex h-full flex-col">
+  <dt class="px-2 pb-2 pt-2 txt-body-m">
+    {{ metric().label }}
+  </dt>
+  <dd class="mt-auto border-b border-grey-300 px-2 pb-2 font-bold txt-h-2">
+    @if (!metric()) {
+      <app-skeleton-inline />
+    } @else {
+      {{ metric().value ?? '-' }}
+      @if (metric().showAlert) {
+        <i
+          class="pi pi-exclamation-triangle text-red-500"
+          title="!"
+          aria-label="!"
+        ></i>
+      }
     }
-  }
-</dd>
+  </dd>
+</div>

@@ -10,6 +10,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { AppRoutes } from '~/app.routes';
+import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
@@ -24,11 +25,12 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   imports: [
     TranslatableStringPipe,
     CommonModule,
-    CurrencyPipe,
     MetricContainerComponent,
     SkeletonInlineComponent,
     CardWithLinkComponent,
+    CardSummaryMetricsContainerComponent,
   ],
+  providers: [CurrencyPipe],
   templateUrl: './project-summary-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +39,7 @@ export class ProjectSummaryCardComponent {
   private metricApiService = inject(MetricApiService);
   private projectApiService = inject(ProjectApiService);
   private paymentApiService = inject(PaymentApiService);
+  private currencyPipe = inject(CurrencyPipe);
 
   public id = input.required<number>();
 
@@ -57,5 +60,44 @@ export class ProjectSummaryCardComponent {
       return;
     }
     return data.sort((a, b) => (a.payment < b.payment ? 1 : -1))[0];
+  });
+
+  public summaryMetrics = computed(() => {
+    if (
+      this.metrics.isPending() ||
+      this.project.isPending() ||
+      !this.metrics.data()
+    ) {
+      return [];
+    }
+
+    return [
+      {
+        value: this.metrics.data()?.targetedPeople,
+        label: $localize`Target registrations`,
+      },
+      {
+        value: this.metrics.data()?.includedPeople,
+        label: $localize`Included registrations`,
+      },
+      {
+        value: this.currencyPipe.transform(
+          this.metrics.data()?.totalBudget,
+          this.project.data()?.currency ?? 'EUR',
+          'simbol-narrow',
+          '1.0-0',
+        ),
+        label: $localize`Budget`,
+      },
+      {
+        value: this.currencyPipe.transform(
+          this.metrics.data()?.spentMoney,
+          this.project.data()?.currency ?? 'EUR',
+          'symbol-narrow',
+          '1.0-0',
+        ),
+        label: $localize`Cash disbursed`,
+      },
+    ];
   });
 }
