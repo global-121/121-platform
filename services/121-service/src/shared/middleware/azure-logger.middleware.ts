@@ -42,8 +42,8 @@ export class AzureLoggerMiddleware implements NestMiddleware {
       .then(() => {
         return;
       })
-      .catch(() => {
-        return;
+      .catch((flushError) => {
+        console.error('An error occured in logError:', flushError);
       });
   }
 }
