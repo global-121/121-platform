@@ -29,10 +29,21 @@ export class AzureLoggerMiddleware implements NestMiddleware {
         this.defaultClient.trackTrace({
           message: `${requestLog} - ${responseLog}}`,
         });
-        this.defaultClient.flush();
+        this.flushLogs();
       });
     }
 
     next();
+  }
+
+  private flushLogs(): void {
+    this.defaultClient
+      .flush()
+      .then(() => {
+        return;
+      })
+      .catch((flushError) => {
+        console.error('An error occured in logError:', flushError);
+      });
   }
 }
