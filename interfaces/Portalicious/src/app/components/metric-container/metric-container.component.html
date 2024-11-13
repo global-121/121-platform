@@ -8,7 +8,11 @@
     } @else {
       {{ metric().value ?? '-' }}
       @if (metric().showAlert) {
-        <i class="pi pi-exclamation-triangle text-red-500"></i>
+        <i
+          class="pi pi-exclamation-triangle text-red-500"
+          title="!"
+          aria-label="!"
+        ></i>
       }
     }
   </dd>
