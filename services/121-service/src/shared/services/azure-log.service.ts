@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Contracts, TelemetryClient } from 'applicationinsights';
+import { KnownSeverityLevel, TelemetryClient } from 'applicationinsights';
 
 @Injectable()
 export class AzureLogService {
@@ -23,8 +23,8 @@ export class AzureLogService {
       this.defaultClient.trackException({
         exception: error,
         severity: alert
-          ? Contracts.SeverityLevel.Critical
-          : Contracts.SeverityLevel.Error,
+          ? KnownSeverityLevel.Critical
+          : KnownSeverityLevel.Error,
       });
     } catch (trackExceptionError) {
       console.error('An error occured in logError:', trackExceptionError);
