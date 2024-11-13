@@ -27,7 +27,11 @@ jobs:
             core.endGroup()
 
             const prDescription = pr.data.body;
-            if (!/AB#\d{5}/.test(prDescription)) {
+            const prLabels = pr.data.labels.map(label => label.name);
+
+            if (prLabels.includes('dependencies')) {
+              core.notice('🚨 PR contains a "dependencies" label');
+            } else if (!/AB#\d{5}/.test(prDescription)) {
               core.setFailed('Please make sure you have replaced AB#XXXX with a valid DevOps ID in your PR description');
             } else {
               core.notice('✅ PR description contains a DevOps ID');
