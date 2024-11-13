@@ -1025,6 +1025,9 @@
       <trans-unit id="9126928390466272085" datatype="html">
         <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
       </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
