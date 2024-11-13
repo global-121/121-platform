@@ -14,7 +14,7 @@ export class EventLogOptionsDto {
    * An object of additional log attributes, for example the reason
    * The keys are attribute names and the values are attribute values.
    */
-  additionalLogAttributes?: {
-    [K in EventAttributeKeyEnum]?: string | undefined;
-  };
+  additionalLogAttributes?: Partial<
+    Record<EventAttributeKeyEnum, string | undefined>
+  >;
 }
