@@ -280,9 +280,11 @@ export class EventsService {
     return event;
   }
 
-  private getAttributesForChange(attributesData: {
-    [key in EventAttributeKeyEnum]?: EventAttributeEntity['value'];
-  }): EventAttributeEntity[] {
+  private getAttributesForChange(
+    attributesData: Partial<
+      Record<EventAttributeKeyEnum, EventAttributeEntity['value']>
+    >,
+  ): EventAttributeEntity[] {
     return Object.entries(attributesData)
       .filter(([_, value]) => value)
       .map(([key, value]) =>
