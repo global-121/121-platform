@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import BasePage from './BasePage';
 import TableComponent from './TableComponent';
 
-const expectedColumnsPaExport = [
+const expectedColumnsSelectedRegistrationsExport = [
   'referenceid',
   'id',
   'status',
@@ -28,12 +28,51 @@ const expectedColumnsPaExport = [
   'addresscity',
 ];
 
+const expectedColumnsStatusAndDataChangesExport = [
+  'paId',
+  'referenceId',
+  'changedAt',
+  'changedBy',
+  'type',
+  'newValue',
+  'oldValue',
+];
+
+const expectedColumnsDuplicateRegistrationsExport = [
+  'referenceId',
+  'id',
+  'status',
+  'fsp',
+  'scope',
+  'phoneNumber',
+  'whatsappPhoneNumber',
+  'name',
+  'duplicateWithIds',
+];
+
 interface ExportPaAssertionData {
-  registrationStatus: string;
-  paId: number;
+  status: string;
+  id: number;
   paymentAmountMultiplier: number;
   preferredLanguage: string;
   fspDisplayName: string;
+  whatsappPhoneNumber?: string;
+}
+
+interface ExportStatusAndDataChangesData {
+  paId: number;
+  changedBy: string;
+  type: string;
+  newValue: string;
+  oldValue: string;
+}
+
+interface ExportDuplicateRegistrationsData {
+  id: number;
+  status: string;
+  fsp: string;
+  name: string;
+  duplicateWithIds: string;
 }
 
 class RegistrationsPage extends BasePage {
@@ -210,6 +249,7 @@ class RegistrationsPage extends BasePage {
   async exportAndAssertData(
     expectedColumns: string[],
     assertionData: Record<string, unknown>,
+    registrationIndex: number,
     filterContext?: string,
   ) {
     const [download] = await Promise.all([
@@ -239,7 +279,7 @@ class RegistrationsPage extends BasePage {
             value?.toString().includes(filterContext),
           ),
         )
-      : data[0];
+      : data[registrationIndex];
 
     if (!rowToAssert) throw new Error('No data found to assert');
 
@@ -258,11 +298,31 @@ class RegistrationsPage extends BasePage {
     }
 
     const keyMapping: Record<string, string> = {
-      paid: 'id',
-      registrationstatus: 'status',
-      paymentAmountMultiplier: 'paymentamountmultiplier',
+      referenceId: 'referenceid',
+      id: 'id',
+      status: 'status',
+      phoneNumber: 'phonenumber',
       preferredLanguage: 'preferredlanguage',
+      paymentAmountMultiplier: 'paymentamountmultiplier',
+      paymentCount: 'paymentcount',
+      registrationCreatedDate: 'registrationcreateddate',
       fspDisplayName: 'fspdisplayname',
+      scope: 'scope',
+      namePartnerOrganization: 'namepartnerorganization',
+      fullName: 'fullname',
+      whatsappPhoneNumber: 'whatsappphonenumber',
+      addressCity: 'addresscity',
+      addressPostalCode: 'addresspostalcode',
+      addressHouseNumberAddition: 'addresshousenumberaddition',
+      addressHouseNumber: 'addresshousenumber',
+      addressStreet: 'addressstreet',
+      changedAt: 'changedat',
+      type: 'type',
+      newValue: 'newvalue',
+      oldValue: 'oldvalue',
+      name: 'name',
+      fsp: 'fsp',
+      duplicateWithIds: 'duplicatewithids',
     };
 
     const mappedAssertionData = Object.keys(assertionData).reduce(
@@ -284,29 +344,80 @@ class RegistrationsPage extends BasePage {
     );
 
     Object.entries(mappedAssertionData).forEach(([key, value]) => {
-      console.log(
-        `Comparing key: ${key}, Expected value: ${value}, Actual value: ${normalizedRowToAssert[key]}`,
-      );
       expect(normalizedRowToAssert[key]).toBe(value);
     });
   }
 
-  async exportSelectedPaData({
-    registrationStatus,
-    paId,
-    paymentAmountMultiplier,
-    preferredLanguage,
-    fspDisplayName,
-  }: ExportPaAssertionData) {
+  async exportAndAssertSelectedRegistrations(
+    registrationIndex: number,
+    {
+      status,
+      id,
+      paymentAmountMultiplier,
+      preferredLanguage,
+      fspDisplayName,
+    }: ExportPaAssertionData,
+  ) {
     const assertionData = {
-      registrationStatus,
-      paId,
+      status,
+      id,
       paymentAmountMultiplier,
       preferredLanguage,
       fspDisplayName,
     };
+    await this.exportAndAssertData(
+      expectedColumnsSelectedRegistrationsExport,
+      assertionData,
+      registrationIndex,
+    );
+  }
 
-    await this.exportAndAssertData(expectedColumnsPaExport, assertionData);
+  async exportAndAssertStatusAndDataChanges(
+    registrationIndex: number,
+    {
+      paId,
+      changedBy,
+      type,
+      newValue,
+      oldValue,
+    }: ExportStatusAndDataChangesData,
+  ) {
+    const assertionData = {
+      paId,
+      changedBy,
+      type,
+      newValue,
+      oldValue,
+    };
+    await this.exportAndAssertData(
+      expectedColumnsStatusAndDataChangesExport,
+      assertionData,
+      registrationIndex,
+    );
+  }
+
+  async exportAndAssertDuplicates(
+    registrationIndex: number,
+    {
+      id,
+      status,
+      fsp,
+      name,
+      duplicateWithIds,
+    }: ExportDuplicateRegistrationsData,
+  ) {
+    const assertionData = {
+      id,
+      status,
+      fsp,
+      name,
+      duplicateWithIds,
+    };
+    await this.exportAndAssertData(
+      expectedColumnsDuplicateRegistrationsExport,
+      assertionData,
+      registrationIndex,
+    );
   }
 }
 
