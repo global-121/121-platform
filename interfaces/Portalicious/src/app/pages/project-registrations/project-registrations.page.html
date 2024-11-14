@@ -13,31 +13,22 @@
     @if (canExport()) {
       <app-export-registrations
         [projectId]="projectId()"
-        [getActionData]="getActionData.bind(this)"
+        [getActionData]="
+          registrationsTable.getActionData.bind(registrationsTable)
+        "
       />
     }
   </div>
   <p-card>
-    <app-query-table
-      #table
-      [items]="registrations()"
-      [isPending]="registrationsResponse.isPending()"
-      [columns]="columns()"
-      localStorageKey="project-registrations-table"
-      [serverSideFiltering]="true"
-      [serverSideTotalRecords]="totalRegistrations()"
-      (onUpdatePaginateQuery)="paginateQuery.set($event)"
-      [enableSelection]="true"
-      (onUpdateSelection)="tableSelection.set($event)"
+    <app-registrations-table
+      #registrationsTable
+      [projectId]="projectId()"
+      [localStorageKey]="'project-registrations-table-' + projectId()"
       [contextMenuItems]="contextMenuItems()"
-      (onUpdateContextMenuItem)="contextMenuRegistration.set($event)"
     >
       <div table-actions>
         <p-buttonGroup>
-          @if (
-            canChangeStatus(RegistrationStatusEnum.validated) &&
-            project.data()?.validation
-          ) {
+          @if (canChangeStatus()(RegistrationStatusEnum.validated)) {
             <p-button
               label="Validate"
               i18n-label
@@ -49,7 +40,7 @@
               "
             />
           }
-          @if (canChangeStatus(RegistrationStatusEnum.included)) {
+          @if (canChangeStatus()(RegistrationStatusEnum.included)) {
             <p-button
               label="Include"
               i18n-label
@@ -61,7 +52,7 @@
               "
             />
           }
-          @if (canChangeStatus(RegistrationStatusEnum.declined)) {
+          @if (canChangeStatus()(RegistrationStatusEnum.declined)) {
             <p-button
               label="Decline"
               i18n-label
@@ -73,7 +64,7 @@
               "
             />
           }
-          @if (canChangeStatus(RegistrationStatusEnum.paused)) {
+          @if (canChangeStatus()(RegistrationStatusEnum.paused)) {
             <p-button
               label="Pause"
               i18n-label
@@ -93,7 +84,7 @@
               (click)="sendMessage()"
             />
           }
-          @if (canChangeStatus(RegistrationStatusEnum.deleted)) {
+          @if (canChangeStatus()(RegistrationStatusEnum.deleted)) {
             <p-button
               label="Delete"
               i18n-label
@@ -105,7 +96,7 @@
           }
         </p-buttonGroup>
       </div>
-    </app-query-table>
+    </app-registrations-table>
   </p-card>
 </app-page-layout>
 

@@ -1,6 +1,7 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
+import { AppRoutes } from '~/app.routes';
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 import {
   // TODO: AB#30525 should import this from 121-service
@@ -83,3 +84,19 @@ export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.StatusChange]: 'pi pi-refresh',
   [ActivityTypeEnum.Transaction]: 'pi pi-money-bill',
 };
+
+export function registrationLink({
+  projectId,
+  registrationId,
+}: {
+  projectId: number;
+  registrationId: number;
+}) {
+  return [
+    '/',
+    AppRoutes.project,
+    projectId,
+    AppRoutes.projectRegistrations,
+    registrationId,
+  ];
+}
