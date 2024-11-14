@@ -31,8 +31,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.primengConfig.setTranslation({
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       dateFormat: getLocaleDateFormat(
         this.locale,
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         FormatWidth.Short,
       ).toLowerCase(), // toLowerCase because PrimeNG otherwise interprets DD and MM as "name of day" and "name of month"
     });

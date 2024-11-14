@@ -124,6 +124,7 @@ module.exports = tseslint.config(
             'p-button[icon]',
             'p-button[iconPos]',
             'p-columnFilter[display]',
+            'p-dropdown[optionValue]',
             'p-fileUpload[accept]',
             'p-fileUpload[mode]',
             'p-fileUpload[removeStyleClass]',
