@@ -7,7 +7,7 @@ import {
   PaymentStatus,
 } from '~/domains/payment/payment.model';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | undefined>) => [
   'programs',
   projectId,
   'payments',
@@ -23,7 +23,10 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPayment(projectId: Signal<number>, paymentId: Signal<number | undefined>) {
+  getPayment(
+    projectId: Signal<number | undefined>,
+    paymentId: Signal<number | undefined>,
+  ) {
     return this.generateQueryOptions<PaymentAggregate>({
       path: [...BASE_ENDPOINT(projectId), paymentId],
       enabled: () => !!paymentId(),
