@@ -1,0 +1,36 @@
+@let authErrorText = authError();
+<app-form-default
+  [formGroup]="formGroup"
+  [mutation]="loginMutation"
+  submitButtonText="Log in"
+  i18n-submitButtonText
+>
+  <app-form-field-wrapper
+    label="E-mail"
+    i18n-label
+    [errorMessage]="formFieldErrors()('email')"
+  >
+    <!-- eslint-disable @angular-eslint/template/no-autofocus -->
+    <input
+      pInputText
+      type="email"
+      formControlName="email"
+      autocomplete="email username"
+      placeholder="yourname@example.org"
+      i18n-placeholder
+      pAutoFocus
+      autofocus
+    />
+  </app-form-field-wrapper>
+</app-form-default>
+
+@if (authErrorText) {
+  <span class="mt-2 block text-red-700">
+    <i
+      class="pi pi-exclamation-triangle"
+      title="!"
+      aria-label="!"
+    ></i>
+    {{ authErrorText }}
+  </span>
+}

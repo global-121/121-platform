@@ -14,7 +14,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 
-import { getUserFromLocalStorage } from '~/services/auth.service';
+import { getUserFromLocalStorage } from '~/utils/local-storage';
 import { environment } from '~environment';
 
 interface PerformRequestParams {

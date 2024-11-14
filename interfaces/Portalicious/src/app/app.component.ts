@@ -25,9 +25,10 @@ import { Locale } from '~/utils/locale';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
+  private primengConfig = inject(PrimeNGConfig);
+  private locale = inject<Locale>(LOCALE_ID);
+
   toastKey = ToastService.TOAST_KEY;
-  primengConfig = inject(PrimeNGConfig);
-  locale = inject<Locale>(LOCALE_ID);
 
   ngOnInit() {
     this.primengConfig.setTranslation({

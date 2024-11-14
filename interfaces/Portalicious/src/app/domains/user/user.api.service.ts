@@ -67,6 +67,13 @@ export class UserApiService extends DomainApiService {
     });
   }
 
+  getCurrent() {
+    return this.generateQueryOptions<{ user: User }>({
+      path: [`${BASE_ENDPOINT}/current`],
+      queryKey: [BASE_ENDPOINT],
+    });
+  }
+
   createUser({
     username,
     displayName,

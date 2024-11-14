@@ -1448,6 +1448,10 @@
         <source>Payment not found. Please check the URL and try again.</source>
         <target state="new">Payment not found. Please check the URL and try again.</target>
       </trans-unit>
+      <trans-unit id="3950247133633104105" datatype="html">
+        <source>Redirecting to 121…</source>
+        <target state="new">Redirecting to 121…</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

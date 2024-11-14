@@ -1,46 +1,26 @@
-import { inject, Injectable, Injector } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { injectQueryClient } from '@tanstack/angular-query-experimental';
+import { get } from 'lodash';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { User } from '~/domains/user/user.model';
+import { UserApiService } from '~/domains/user/user.api.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
 import { LogEvent, LogService } from '~/services/log.service';
+import {
+  getUserFromLocalStorage,
+  LOCAL_STORAGE_AUTH_USER_KEY,
+  LocalStorageUser,
+  setReturnUrlInLocalStorage,
+  setUserInLocalStorage,
+} from '~/utils/local-storage';
 import { environment } from '~environment';
-
-export type LocalStorageUser = Pick<
-  User,
-  | 'expires'
-  | 'isAdmin'
-  | 'isEntraUser'
-  | 'isOrganizationAdmin'
-  | 'permissions'
-  | 'username'
->;
-
-const LOCAL_STORAGE_AUTH_USER_KEY = 'logged-in-user-portalicious';
-
-export function getUserFromLocalStorage(): LocalStorageUser | null {
-  const rawUser = localStorage.getItem(LOCAL_STORAGE_AUTH_USER_KEY);
-
-  if (!rawUser) {
-    return null;
-  }
-
-  let user: LocalStorageUser;
-
-  try {
-    user = JSON.parse(rawUser) as LocalStorageUser;
-  } catch {
-    console.warn('AuthService: Invalid token');
-    return null;
-  }
-
-  return user;
-}
 
 const AuthStrategy = environment.use_sso_azure_entra
   ? MsalAuthStrategy
@@ -55,12 +35,16 @@ export class AuthService {
   private readonly logService = inject(LogService);
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
+  private readonly userApiService = inject(UserApiService);
+
+  private queryClient = injectQueryClient();
 
   private readonly authStrategy: IAuthStrategy;
 
   constructor() {
     this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
   }
+  public authError = signal<string | undefined>(undefined);
 
   public get isLoggedIn(): boolean {
     return this.user !== null;
@@ -82,20 +66,8 @@ export class AuthService {
     return this.authStrategy.LoginComponent;
   }
 
-  private setUserInStorage(user: User): void {
-    const userToStore: LocalStorageUser = {
-      username: user.username,
-      permissions: user.permissions,
-      isAdmin: user.isAdmin,
-      isOrganizationAdmin: user.isOrganizationAdmin,
-      isEntraUser: user.isEntraUser,
-      expires: user.expires,
-    };
-
-    localStorage.setItem(
-      LOCAL_STORAGE_AUTH_USER_KEY,
-      JSON.stringify(userToStore),
-    );
+  public get CallbackComponent() {
+    return this.authStrategy.CallbackComponent;
   }
 
   get user(): LocalStorageUser | null {
@@ -119,8 +91,12 @@ export class AuthService {
     returnUrl?: string,
   ) {
     this.logService.logEvent(LogEvent.userLogin);
+    if (returnUrl) {
+      setReturnUrlInLocalStorage(returnUrl);
+    }
     const user = await this.authStrategy.login(credentials);
-    this.setUserInStorage(user);
+    // Note: SSO never resolves so the code below this line is not executed in the SSO case
+    setUserInLocalStorage(user);
 
     if (returnUrl) {
       return this.router.navigate([returnUrl]);
@@ -208,5 +184,23 @@ export class AuthService {
         user: this.user,
       }),
     );
+  }
+
+  async processAzureCallback() {
+    try {
+      const currentUser = await this.queryClient.fetchQuery(
+        this.userApiService.getCurrent()(),
+      );
+      setUserInLocalStorage(currentUser.user);
+    } catch (error) {
+      // TODO: AB#31489 Return a more generic endpoint from the back-end
+      if (error instanceof HttpErrorResponse) {
+        const errorMessage = get(error.error, 'message') as string | undefined;
+        if (errorMessage) {
+          this.authError.set(errorMessage);
+        }
+      }
+      throw error;
+    }
   }
 }

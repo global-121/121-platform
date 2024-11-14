@@ -28,7 +28,6 @@ function MSALInstanceFactory(): IPublicClientApplication {
     auth: {
       clientId: environment.azure_ad_client_id,
       authority: `${environment.azure_ad_url}/${environment.azure_ad_tenant_id}`,
-      // XXX: make authCallback do something
       redirectUri: `${window.location.origin}/${AppRoutes.authCallback}`,
       postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
       navigateToLoginRequestUrl: false,

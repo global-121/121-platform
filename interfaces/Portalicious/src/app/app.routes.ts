@@ -29,6 +29,13 @@ export const routes: Routes = [
       import('~/pages/login/login.page').then((x) => x.LoginPageComponent),
   },
   {
+    path: AppRoutes.authCallback,
+    loadComponent: () =>
+      import('~/pages/auth-callback/auth-callback.page').then(
+        (x) => x.AuthCallbackPageComponent,
+      ),
+  },
+  {
     path: AppRoutes.changePassword,
     title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
     loadComponent: () =>
