@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -451,9 +451,6 @@
       </trans-unit>
       <trans-unit id="6102855402615761891" datatype="html">
         <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
-      </trans-unit>
-      <trans-unit id="1709815007411996759" datatype="html">
-        <source>project-payment works!</source>
       </trans-unit>
       <trans-unit id="3054018033337101957" datatype="html">
         <source>Old data</source>
@@ -1057,6 +1054,15 @@
       </trans-unit>
       <trans-unit id="7893013905728176682" datatype="html">
         <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
+      </trans-unit>
+      <trans-unit id="2224540478181897692" datatype="html">
+        <source>All Payments</source>
+      </trans-unit>
+      <trans-unit id="4892553839051604445" datatype="html">
+        <source>Payment</source>
+      </trans-unit>
+      <trans-unit id="8221183084962199390" datatype="html">
+        <source>Payment not found. Please check the URL and try again.</source>
       </trans-unit>
     </body>
   </file>
