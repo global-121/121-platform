@@ -1,0 +1,18 @@
+<app-query-table
+  #table
+  [items]="registrations()"
+  [isPending]="registrationsResponse.isPending()"
+  [columns]="columns()"
+  [localStorageKey]="localStorageKey()"
+  [serverSideFiltering]="true"
+  [serverSideTotalRecords]="totalRegistrations()"
+  (onUpdatePaginateQuery)="paginateQuery.set($event)"
+  [enableSelection]="true"
+  (onUpdateSelection)="tableSelection.set($event)"
+  [contextMenuItems]="contextMenuItems()"
+  (onUpdateContextMenuItem)="contextMenuRegistration.set($event)"
+>
+  <div table-actions>
+    <ng-content select="[table-actions]"></ng-content>
+  </div>
+</app-query-table>

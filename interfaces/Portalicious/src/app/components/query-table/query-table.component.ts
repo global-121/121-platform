@@ -121,7 +121,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   items = input.required<TData[]>();
   isPending = input.required<boolean>();
   columns = input.required<QueryTableColumn<TData>[]>();
-  localStorageKey = input.required<string>();
+  localStorageKey = input<string>();
   contextMenuItems = input<MenuItem[]>();
   globalFilterFields = input<(keyof TData & string)[]>();
   expandableRowTemplate = input<Type<TableCellComponent<TData, TContext>>>();
@@ -244,7 +244,10 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   clearAllFilters() {
     this.table.clear();
-    localStorage.removeItem(this.localStorageKey());
+    const localStorageKey = this.localStorageKey();
+    if (localStorageKey) {
+      localStorage.removeItem(localStorageKey);
+    }
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
     this.selectAll.set(false);
