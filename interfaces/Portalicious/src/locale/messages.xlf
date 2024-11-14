@@ -1058,6 +1058,21 @@
       <trans-unit id="7893013905728176682" datatype="html">
         <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
       </trans-unit>
+      <trans-unit id="1953762348939012822" datatype="html">
+        <source>Revert to default</source>
+      </trans-unit>
+      <trans-unit id="3080049585860279558" datatype="html">
+        <source>Manage table</source>
+      </trans-unit>
+      <trans-unit id="generic-apply" datatype="html">
+        <source>Apply</source>
+      </trans-unit>
+      <trans-unit id="8980999496899249966" datatype="html">
+        <source>Table columns:</source>
+      </trans-unit>
+      <trans-unit id="generic-clear" datatype="html">
+        <source>Clear</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

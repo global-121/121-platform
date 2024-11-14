@@ -30,10 +30,11 @@
   [selectionMode]="enableSelection() ? 'multiple' : null"
   (selectionChange)="onSelectionChange($event)"
   (selectAllChange)="onSelectAllChange($event)"
+  [columns]="visibleColumns()"
   [dataKey]="'id'"
 >
   <ng-template pTemplate="caption">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center">
       <ng-content select="[table-actions]"></ng-content>
       <span class="ms-auto"></span>
       @if (isFiltered()) {
@@ -45,48 +46,22 @@
           severity="secondary"
           icon="pi pi-filter-slash"
           (click)="clearAllFilters()"
+          class="me-2"
         />
       }
       @if (globalFilterFields() || serverSideFiltering()) {
-        <div #globalFilterContainer>
-          @if (globalFilterVisible() || !!globalFilterValue()) {
-            <p-iconField
-              iconPosition="left"
-              pAutoFocus
-              [autofocus]="true"
-            >
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #globalFilterInput
-                pInputText
-                type="text"
-                [value]="globalFilterValue() ?? ''"
-                (input)="
-                  table.filterGlobal(globalFilterInput.value, 'contains')
-                "
-                placeholder="Filter by keyword"
-                i18n-placeholder="@@table-quick-search"
-              />
-              @if (globalFilterValue()) {
-                <p-button
-                  icon="pi pi-times"
-                  (click)="table.filterGlobal(undefined, 'contains')"
-                  text
-                  severity="secondary"
-                  class="absolute end-0 top-1/2 -translate-y-1/2"
-                  styleClass="bg-transparent hover:text-purple-700"
-                />
-              }
-            </p-iconField>
-          } @else {
-            <p-button
-              icon="pi pi-search"
-              (click)="globalFilterVisible.set(true)"
-              text
-              severity="secondary"
-            />
-          }
-        </div>
+        <app-query-table-global-search
+          [globalFilterValue]="globalFilterValue()"
+          [(globalFilterVisible)]="globalFilterVisible"
+          (onFilterChange)="table.filterGlobal($event, 'contains')"
+        />
+      }
+      @if (enableColumnManagement()) {
+        <app-query-table-column-management
+          [columns]="columns()"
+          [(visibleColumns)]="visibleColumns"
+          (resetColumnVisibility)="resetColumnVisibility()"
+        />
       }
     </div>
   </ng-template>
@@ -113,7 +88,7 @@
           />
         </th>
       }
-      @for (column of columns(); track $index) {
+      @for (column of visibleColumns(); track $index) {
         @if (column.field) {
           <th
             [pSortableColumn]="getColumnSortField(column)"
@@ -217,7 +192,7 @@
           />
         </td>
       }
-      @for (column of columns(); track $index) {
+      @for (column of visibleColumns(); track $index) {
         <td>
           @if (column.component) {
             <ng-container
@@ -291,7 +266,7 @@
           <td style="width: 0"></td>
         }
 
-        @for (column of [].constructor(columns().length); track $index) {
+        @for (column of [].constructor(visibleColumns().length); track $index) {
           <td>
             <app-skeleton-inline />
           </td>

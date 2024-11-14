@@ -1,0 +1,37 @@
+<div #globalFilterContainer>
+  @if (globalFilterVisible() || !!globalFilterValue()) {
+    <p-iconField
+      iconPosition="left"
+      pAutoFocus
+      [autofocus]="true"
+    >
+      <p-inputIcon styleClass="pi pi-search" />
+      <input
+        #globalFilterInput
+        pInputText
+        type="text"
+        [value]="globalFilterValue() ?? ''"
+        (input)="onFilterChange.emit(globalFilterInput.value)"
+        placeholder="Filter by keyword"
+        i18n-placeholder="@@table-quick-search"
+      />
+      @if (globalFilterValue()) {
+        <p-button
+          icon="pi pi-times"
+          (click)="onFilterChange.emit(undefined)"
+          text
+          severity="secondary"
+          class="absolute end-0 top-1/2 -translate-y-1/2"
+          styleClass="bg-transparent hover:text-purple-700"
+        />
+      }
+    </p-iconField>
+  } @else {
+    <p-button
+      icon="pi pi-search"
+      (click)="globalFilterVisible.set(true)"
+      text
+      severity="secondary"
+    />
+  }
+</div>

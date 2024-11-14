@@ -1,18 +1,13 @@
 <!-- We are not using 'form' here because this component is already rendered within a form -->
 <div [formGroup]="formGroup">
   @if (showAreYouSureCheckbox()) {
-    <div class="align-items-center flex gap-1 pt-4">
+    <div class="mt-4 w-full">
       <p-checkbox
         formControlName="confirmAction"
-        inputId="areYouSure"
         [binary]="true"
+        label="I understand this action can not be undone."
+        i18n-label
       />
-      <label
-        i18n
-        for="areYouSure"
-        class="ml-1"
-        >I understand this action can not be undone.</label
-      >
     </div>
   }
   <app-form-error [error]="formFieldErrors()('confirmAction')" />

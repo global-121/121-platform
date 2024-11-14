@@ -5,7 +5,7 @@ import {
   input,
 } from '@angular/core';
 
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import {
   ACTIVITY_LOG_ITEM_TYPE_ICONS,
   ACTIVITY_LOG_ITEM_TYPE_LABELS,

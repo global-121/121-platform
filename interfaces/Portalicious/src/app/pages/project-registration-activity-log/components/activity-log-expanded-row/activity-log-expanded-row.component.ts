@@ -15,7 +15,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
