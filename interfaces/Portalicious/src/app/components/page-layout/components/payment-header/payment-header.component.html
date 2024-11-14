@@ -1,0 +1,16 @@
+<app-page-layout-title-and-actions>
+  <ng-container page-layout-title>
+    @if (payments.isPending()) {
+      <p-skeleton
+        width="24rem"
+        height="1.6rem"
+      />
+    } @else {
+      <app-breadcrumbs-title
+        [projectId]="projectId()"
+        [paymentDate]="paymentDate()"
+      ></app-breadcrumbs-title>
+    }
+  </ng-container>
+  <ng-container page-layout-actions> </ng-container>
+</app-page-layout-title-and-actions>
