@@ -522,7 +522,7 @@ export class UserService {
 
   public async findByUsernameOrThrow(
     username: string,
-    relations: FindOptionsRelations<UserEntity> | undefined,
+    relations?: FindOptionsRelations<UserEntity>,
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { username: Equal(username) },
