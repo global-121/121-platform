@@ -7,25 +7,33 @@ import * as XLSX from 'xlsx';
 import BasePage from './BasePage';
 import TableComponent from './TableComponent';
 
-const expectedColumnsDebitCard = [
-  'paId',
-  'referenceId',
-  'registrationStatus',
-  'cardNumber',
-  'cardStatus121',
-  'issuedDate',
-  'balance',
-  'explanation',
-  'spentThisMonth',
-  'isCurrentWallet',
+const expectedColumnsPaExport = [
+  'referenceid',
+  'id',
+  'status',
+  'phonenumber',
+  'preferredlanguage',
+  'paymentamountmultiplier',
+  'paymentcount',
+  'registrationcreateddate',
+  'fspdisplayname',
+  'scope',
+  'namepartnerorganization',
+  'fullname',
+  'whatsappphonenumber',
+  'addressstreet',
+  'addresshousenumber',
+  'addresshousenumberaddition',
+  'addresspostalcode',
+  'addresscity',
 ];
 
-interface ExportDebitCardAssertionData {
+interface ExportPaAssertionData {
   registrationStatus: string;
   paId: number;
-  balance: number;
-  spentThisMonth: number;
-  isCurrentWallet: boolean;
+  paymentAmountMultiplier: number;
+  preferredLanguage: string;
+  fspDisplayName: string;
 }
 
 class RegistrationsPage extends BasePage {
@@ -206,86 +214,99 @@ class RegistrationsPage extends BasePage {
   ) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
-      await this.clickProceedToExport(),
+      this.clickProceedToExport(),
     ]);
 
-    // Wait for the download to complete
     const downloadDir = './downloads';
-    if (!fs.existsSync(downloadDir)) {
-      fs.mkdirSync(downloadDir);
-    }
+    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
+
     const filePath = path.join(downloadDir, download.suggestedFilename());
     await download.saveAs(filePath);
 
-    // Read and parse the .xlsx file
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet) as Record<string, unknown>[];
+    const data = XLSX.utils.sheet_to_json(sheet, { defval: null }) as Record<
+      string,
+      unknown
+    >[];
 
-    let rowToAssert: Record<string, unknown> | undefined = data[0];
-    if (filterContext) {
-      // Find the row that matches the filter context
-      rowToAssert = data.find((row) => {
-        return Object.values(row).some((value) =>
-          value?.toString().includes(filterContext),
-        );
-      });
+    if (data.length === 0) throw new Error('No data found in the sheet');
 
-      if (!rowToAssert) {
-        throw new Error('No row matches the filter context');
-      }
-    }
+    const rowToAssert = filterContext
+      ? data.find((row) =>
+          Object.values(row).some((value) =>
+            value?.toString().includes(filterContext),
+          ),
+        )
+      : data[0];
 
-    if (!rowToAssert) {
-      throw new Error('No data found to assert');
-    }
-    // Extract the column names from the first object in the array
-    const actualColumns = Object.keys(rowToAssert);
+    if (!rowToAssert) throw new Error('No data found to assert');
 
-    // Normalize the column names for comparison (lowercase and trim whitespace)
+    const actualColumns = Object.keys(rowToAssert).map((col) =>
+      col.toLowerCase().trim(),
+    );
     const normalizedExpectedColumns = expectedColumns.map((col) =>
       col.toLowerCase().trim(),
     );
-    const normalizedActualColumns = actualColumns.map((col) =>
-      col.toLowerCase().trim(),
-    );
 
-    // Check if every expected column is present in the actual columns
-    const columnsPresent = normalizedExpectedColumns.every((expectedCol) =>
-      normalizedActualColumns.includes(expectedCol),
-    );
-
-    // This approach does not require the counts to match exactly, focusing on presence
     if (
-      !columnsPresent ||
-      normalizedExpectedColumns.length !== normalizedActualColumns.length
+      !normalizedExpectedColumns.every((col) => actualColumns.includes(col)) ||
+      normalizedExpectedColumns.length !== actualColumns.length
     ) {
       throw new Error('Column validation failed');
     }
 
-    // Assert the values of the row
-    Object.entries(assertionData).forEach(([key, value]) => {
-      expect(rowToAssert[key]).toBe(value);
+    const keyMapping: Record<string, string> = {
+      paid: 'id',
+      registrationstatus: 'status',
+      paymentAmountMultiplier: 'paymentamountmultiplier',
+      preferredLanguage: 'preferredlanguage',
+      fspDisplayName: 'fspdisplayname',
+    };
+
+    const mappedAssertionData = Object.keys(assertionData).reduce(
+      (acc, key) => {
+        const mappedKey =
+          keyMapping[key.toLowerCase().trim()] || key.toLowerCase().trim();
+        acc[mappedKey] = assertionData[key];
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
+
+    const normalizedRowToAssert = Object.keys(rowToAssert).reduce(
+      (acc, key) => {
+        acc[key.toLowerCase().trim()] = rowToAssert[key];
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
+
+    Object.entries(mappedAssertionData).forEach(([key, value]) => {
+      console.log(
+        `Comparing key: ${key}, Expected value: ${value}, Actual value: ${normalizedRowToAssert[key]}`,
+      );
+      expect(normalizedRowToAssert[key]).toBe(value);
     });
   }
 
-  async exportDebitCardData({
+  async exportSelectedPaData({
     registrationStatus,
     paId,
-    balance,
-    spentThisMonth,
-    isCurrentWallet,
-  }: ExportDebitCardAssertionData) {
+    paymentAmountMultiplier,
+    preferredLanguage,
+    fspDisplayName,
+  }: ExportPaAssertionData) {
     const assertionData = {
       registrationStatus,
       paId,
-      balance,
-      spentThisMonth,
-      isCurrentWallet,
+      paymentAmountMultiplier,
+      preferredLanguage,
+      fspDisplayName,
     };
 
-    await this.exportAndAssertData(expectedColumnsDebitCard, assertionData);
+    await this.exportAndAssertData(expectedColumnsPaExport, assertionData);
   }
 }
 

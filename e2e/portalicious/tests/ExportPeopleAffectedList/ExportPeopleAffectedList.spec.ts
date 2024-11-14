@@ -14,10 +14,10 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 const registrationStatus = 'included';
-const paId = 2;
-const balance = 0;
-const spentThisMonth = 0;
-const isCurrentWallet = true;
+const paId = 1;
+const paymentAmountMultiplier = 1;
+const preferredLanguage = 'nl';
+const fspDisplayName = 'Albert Heijn voucher WhatsApp';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -47,17 +47,17 @@ test('[29358] Export People Affected list', async ({ page }) => {
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Export list and validate CSV file downloaded', async () => {
+  await test.step('Export list and validate XLSX file downloaded', async () => {
     await table.selectAllCheckbox();
     await registrations.clickAndSelectExportOption(
       'Export selected registrations',
     );
-    await registrations.exportDebitCardData({
-      registrationStatus,
+    await registrations.exportSelectedPaData({
       paId,
-      balance,
-      spentThisMonth,
-      isCurrentWallet,
+      registrationStatus,
+      paymentAmountMultiplier,
+      preferredLanguage,
+      fspDisplayName,
     });
   });
 });
