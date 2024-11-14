@@ -11,16 +11,16 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 import {
-  findFinancialServiceProviderByNameOrFail,
-  findRequiredConfigurationProperties,
-} from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+  getFinancialServiceProviderConfigurationRequiredProperties,
+  getFinancialServiceProviderSettingByNameOrThrow,
+} from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import {
   ExportFileType,
   FspInstructions,
 } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { ImportTemplateResponseDto } from '@121-service/src/payments/dto/import-template-response.dto';
+import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
@@ -345,9 +345,10 @@ export class PaymentsService {
         },
       );
 
-    const requiredConfigurations = findRequiredConfigurationProperties(
-      config.financialServiceProviderName,
-    );
+    const requiredConfigurations =
+      getFinancialServiceProviderConfigurationRequiredProperties(
+        config.financialServiceProviderName,
+      );
     // Early return for FSP that don't have required configurations
     if (!requiredConfigurations) {
       return [];
@@ -719,9 +720,10 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
-      FinancialServiceProviders.intersolveVisa,
-    ).attributes;
+    const intersolveVisaAttributes =
+      getFinancialServiceProviderSettingByNameOrThrow(
+        FinancialServiceProviders.intersolveVisa,
+      ).attributes;
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
     );
@@ -812,7 +814,7 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
-    const safaricomAttributes = findFinancialServiceProviderByNameOrFail(
+    const safaricomAttributes = getFinancialServiceProviderSettingByNameOrThrow(
       FinancialServiceProviders.safaricom,
     ).attributes;
     const safaricomAttributeNames = safaricomAttributes.map((q) => q.name);
@@ -1032,7 +1034,7 @@ export class PaymentsService {
 
   public async getImportInstructionsTemplate(
     programId: number,
-  ): Promise<ImportTemplateResponseDto[]> {
+  ): Promise<GetImportTemplateResponseDto[]> {
     const programWithExcelFspConfigs = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
@@ -1051,7 +1053,7 @@ export class PaymentsService {
       );
     }
 
-    const templates: ImportTemplateResponseDto[] = [];
+    const templates: GetImportTemplateResponseDto[] = [];
     for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
@@ -1129,7 +1131,7 @@ export class PaymentsService {
   }
 
   private getFspNamesThatRequireInstructions(): string[] {
-    return FINANCIAL_SERVICE_PROVIDERS.filter((fsp) =>
+    return FINANCIAL_SERVICE_PROVIDER_SETTINGS.filter((fsp) =>
       [FinancialServiceProviderIntegrationType.csv].includes(
         fsp.integrationType,
       ),

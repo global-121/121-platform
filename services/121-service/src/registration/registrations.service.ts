@@ -8,7 +8,7 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -995,9 +995,10 @@ export class RegistrationsService {
       );
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes = findFinancialServiceProviderByNameOrFail(
-      FinancialServiceProviders.intersolveVisa,
-    ).attributes;
+    const intersolveVisaAttributes =
+      getFinancialServiceProviderSettingByNameOrThrow(
+        FinancialServiceProviders.intersolveVisa,
+      ).attributes;
 
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,

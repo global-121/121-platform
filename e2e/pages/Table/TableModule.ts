@@ -6,9 +6,9 @@ import * as XLSX from 'xlsx';
 
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
 
-const fsp = FINANCIAL_SERVICE_PROVIDERS.find(
+const fsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
   (fsp) => fsp.name === FinancialServiceProviders.intersolveVisa,
 );
 

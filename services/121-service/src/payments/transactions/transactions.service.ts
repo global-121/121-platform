@@ -4,7 +4,7 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -134,7 +134,7 @@ export class TransactionsService {
       );
     }
 
-    const notifyOnTransaction = findFinancialServiceProviderByNameOrFail(
+    const notifyOnTransaction = getFinancialServiceProviderSettingByNameOrThrow(
       transactionResponse.fspName,
     ).notifyOnTransaction;
 

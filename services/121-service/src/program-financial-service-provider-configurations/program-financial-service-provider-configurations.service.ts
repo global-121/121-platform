@@ -6,8 +6,8 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
-import { findConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
@@ -30,7 +30,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {}
 
-  public async findByProgramId(
+  public async getByProgramId(
     programId: number,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
     const programFspConfigurations =
@@ -44,12 +44,12 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     );
   }
 
-  public async validateAndCreate(
+  public async create(
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
     await this.validate(programId, programFspConfigurationDto);
-    return this.create(programId, programFspConfigurationDto);
+    return this.createEntity(programId, programFspConfigurationDto);
   }
 
   private async validate(
@@ -87,7 +87,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     }
   }
 
-  private async create(
+  private async createEntity(
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
@@ -99,7 +99,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     const savedEntity =
       await this.programFspConfigurationRepository.save(newConfigEntity);
     if (programFspConfigurationDto.properties) {
-      savedEntity.properties = await this.createProperties(
+      savedEntity.properties = await this.createPropertyEntities(
         savedEntity.id,
         programFspConfigurationDto.properties,
       );
@@ -188,7 +188,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     });
   }
 
-  public async validateAndCreateProperties({
+  public async createProperties({
     programId,
     programFspConfigurationName,
     properties: inputProperties,
@@ -208,7 +208,10 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       financialServiceProviderName: config.financialServiceProviderName,
       configIdToCheckForDuplicates: config.id,
     });
-    const properties = await this.createProperties(config.id, inputProperties);
+    const properties = await this.createPropertyEntities(
+      config.id,
+      inputProperties,
+    );
     return ProgramFinancialServiceProviderConfigurationMapper.mapPropertyEntitiesToDtos(
       properties,
     );
@@ -223,9 +226,10 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     financialServiceProviderName: FinancialServiceProviders;
     configIdToCheckForDuplicates?: number;
   }): Promise<void> {
-    const configPropertiesOfFsp = findConfigurationProperties(
-      financialServiceProviderName,
-    );
+    const configPropertiesOfFsp =
+      getFinancialServiceProviderConfigurationProperties(
+        financialServiceProviderName,
+      );
 
     const errors: string[] = [];
     for (const programFspConfigurationDto of properties) {
@@ -286,8 +290,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     propertyName: FinancialServiceProviderConfigurationProperties;
     property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
   }): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
-    // Find the configuration
-
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       programFspConfigurationName,
@@ -337,7 +339,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     });
   }
 
-  private async createProperties(
+  private async createPropertyEntities(
     programFspConfigurationId: number,
     inputProperties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
   ): Promise<ProgramFinancialServiceProviderConfigurationPropertyEntity[]> {
@@ -362,11 +364,16 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       ),
     });
     // create new properties
-    return await this.createProperties(programFspConfigurationId, properties);
+    return await this.createPropertyEntities(
+      programFspConfigurationId,
+      properties,
+    );
   }
 
   private validateFspExists(fspName: string): void {
-    const fsp = FINANCIAL_SERVICE_PROVIDERS.find((fsp) => fsp.name === fspName);
+    const fsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
+      (fsp) => fsp.name === fspName,
+    );
     if (!fsp) {
       throw new HttpException(
         `No fsp found with name ${fspName}`,

@@ -18,6 +18,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
       ProgramEntity,
       ProgramFinancialServiceProviderConfigurationEntity,
     ]),
+    // TODO: Refactor this to not make excel module depedenent TransactionsModule and RegistrationsModule
     TransactionsModule,
     RegistrationsModule,
   ],
@@ -25,6 +26,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
     ExcelService,
     LookupService,
     FileImportService,
+    // TODO: Refactor this to not make excel module depedenent on program financial service provider configuration
     ProgramFinancialServiceProviderConfigurationRepository,
   ],
   controllers: [],

@@ -3,7 +3,7 @@ import { test } from '@playwright/test';
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -21,7 +21,7 @@ const pageTitle = englishTranslations['registration-details'].pageTitle;
 const status = englishTranslations.entity.registration.status.included;
 const language =
   englishTranslations.page.program['program-people-affected'].language.nl;
-const visaFsp = findFinancialServiceProviderByNameOrFail(
+const visaFsp = getFinancialServiceProviderSettingByNameOrThrow(
   FinancialServiceProviders.intersolveVisa,
 ).defaultLabel.en;
 

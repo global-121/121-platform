@@ -106,6 +106,7 @@ export class ExcelService
     );
     // TODO: Think about refactoring it's probably better use the transaction ids instead of the referenceIds not sure what the original reasoning was
     // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
+    // TODO: Also refactor this so that the excel service does not know about transactions, so than this query should be moved to a repository and be called in another service
     const qb =
       this.registrationsPaginationService.getQueryBuilderForFspInstructions({
         programId,

@@ -1,5 +1,5 @@
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { findFinancialServiceProviderByNameOrFail } from '@121-service/src/financial-service-providers/financial-service-providers.helpers';
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
@@ -74,9 +74,10 @@ describe('Send custom message with placeholders', () => {
       new RegExp('{{paymentAmountMultiplier}}', 'g'),
       String(registrationAh.paymentAmountMultiplier),
     );
-    const labelInPreferredLanguage = findFinancialServiceProviderByNameOrFail(
-      FinancialServiceProviders.intersolveVoucherPaper,
-    ).defaultLabel[registrationAh.preferredLanguage];
+    const labelInPreferredLanguage =
+      getFinancialServiceProviderSettingByNameOrThrow(
+        FinancialServiceProviders.intersolveVoucherPaper,
+      ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
       new RegExp('{{programFinancialServiceProviderConfigurationLabel}}', 'g'),
       labelInPreferredLanguage!,

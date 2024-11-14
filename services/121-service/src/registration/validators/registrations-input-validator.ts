@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Equal, Not, Repository } from 'typeorm';
 
-import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -832,7 +832,7 @@ export class RegistrationsInputValidator {
         programFspConfig.name ===
         programFinancialServiceProviderConfigurationName,
     )?.financialServiceProviderName;
-    const foundFsp = FINANCIAL_SERVICE_PROVIDERS.find(
+    const foundFsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
       (fsp) => fsp.name === fspName,
     );
     if (!foundFsp) {

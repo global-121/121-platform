@@ -2,7 +2,7 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
@@ -45,9 +45,10 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
 
-      const expectedFinancialServiceProvider = FINANCIAL_SERVICE_PROVIDERS.find(
-        (fsp) => fsp.name === testEntity.financialServiceProviderName,
-      )!;
+      const expectedFinancialServiceProvider =
+        FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
+          (fsp) => fsp.name === testEntity.financialServiceProviderName,
+        )!;
       // Remove unnecessary properties from the financialServiceProvider object
       const {
         configurationProperties: _configurationProperties,
@@ -91,9 +92,10 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       );
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
-      const expectedFinancialServiceProvider = FINANCIAL_SERVICE_PROVIDERS.find(
-        (fsp) => fsp.name === testEntity.financialServiceProviderName,
-      )!;
+      const expectedFinancialServiceProvider =
+        FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
+          (fsp) => fsp.name === testEntity.financialServiceProviderName,
+        )!;
       // Remove unnecessary properties from the financialServiceProvider object
       const {
         configurationProperties: _configurationProperties,

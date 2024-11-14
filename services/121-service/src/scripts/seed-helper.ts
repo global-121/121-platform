@@ -8,7 +8,7 @@ import {
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
-import { FINANCIAL_SERVICE_PROVIDERS } from '@121-service/src/financial-service-providers/financial-service-providers.const';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
@@ -284,12 +284,13 @@ export class SeedHelper {
     foundProgram.programFinancialServiceProviderConfigurations = [];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
-      const financialServiceProviderObject = FINANCIAL_SERVICE_PROVIDERS.find(
-        (fsp) => fsp.name === fspConfigFromJson.financialServiceProvider,
-      );
+      const financialServiceProviderObject =
+        FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
+          (fsp) => fsp.name === fspConfigFromJson.financialServiceProvider,
+        );
       if (!financialServiceProviderObject) {
         throw new HttpException(
-          `FSP with name ${fspConfigFromJson.financialServiceProvider} not found in FINANCIAL_SERVICE_PROVIDERS`,
+          `FSP with name ${fspConfigFromJson.financialServiceProvider} not found in FINANCIAL_SERVICE_PROVIDER_SETTINGS`,
           HttpStatus.NOT_FOUND,
         );
       }
