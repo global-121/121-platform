@@ -6,16 +6,11 @@
         height="1.6rem"
       />
     } @else {
-      <a
-        i18n
-        [routerLink]="allRegistrationsLink()"
-        class="font-normal hover:text-purple-700"
-        >All Registrations</a
-      >
-      <i class="pi pi-chevron-right mx-2"></i>
-      <ng-container i18n>Reg. #</ng-container
-      >{{ registration.data()?.registrationProgramId }} -
-      {{ registration.data()?.name }}
+      <app-breadcrumbs-title
+        [projectId]="projectId()"
+        [registrationId]="registration.data()?.registrationProgramId"
+        [registrationName]="registration.data()?.name"
+      ></app-breadcrumbs-title>
     }
   </ng-container>
   <ng-container page-layout-actions>
