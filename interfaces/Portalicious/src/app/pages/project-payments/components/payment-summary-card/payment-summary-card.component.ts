@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,20 +14,14 @@ import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-payment-summary-card',
   standalone: true,
   imports: [
-    TranslatableStringPipe,
-    CommonModule,
-    CurrencyPipe,
-    MetricContainerComponent,
     SkeletonInlineComponent,
     ColoredChipComponent,
     CardWithLinkComponent,

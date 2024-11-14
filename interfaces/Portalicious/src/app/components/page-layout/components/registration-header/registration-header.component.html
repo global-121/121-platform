@@ -1,22 +1,11 @@
-<app-page-layout-title-and-actions>
+<app-page-layout-title-and-actions [isPending]="registration.isPending()">
   <ng-container page-layout-title>
-    @if (registration.isPending()) {
-      <p-skeleton
-        width="24rem"
-        height="1.6rem"
-      />
-    } @else {
-      <a
-        i18n
-        [routerLink]="allRegistrationsLink()"
-        class="font-normal hover:text-purple-700"
-        >All Registrations</a
-      >
-      <i class="pi pi-chevron-right mx-2"></i>
-      <ng-container i18n>Reg. #</ng-container
-      >{{ registration.data()?.registrationProgramId }} -
-      {{ registration.data()?.name }}
-    }
+    <app-breadcrumbs-title
+      [parentLink]="allRegistrationsLink()"
+      parentTitle="All Registrations"
+      i18n-parentTitle
+      [childTitle]="registrationTitle()"
+    ></app-breadcrumbs-title>
   </ng-container>
   <ng-container page-layout-actions>
     @if (canUpdatePersonalData() && !registration.isError()) {
