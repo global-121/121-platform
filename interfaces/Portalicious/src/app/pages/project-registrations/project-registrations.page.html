@@ -3,7 +3,13 @@
   i18n-pageTitle="@@page-title-project-registrations"
   [projectId]="projectId()"
 >
-  <div header-actions>
+  <div
+    header-actions
+    class="space-x-2.5"
+  >
+    @if (canImport()) {
+      <app-import-registrations [projectId]="projectId()" />
+    }
     @if (canExport()) {
       <app-export-registrations
         [projectId]="projectId()"

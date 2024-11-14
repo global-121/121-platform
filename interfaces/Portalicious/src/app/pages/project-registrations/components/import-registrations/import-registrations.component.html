@@ -1,0 +1,91 @@
+<p-button
+  label="Import"
+  i18n-label
+  (onClick)="resetForm(); dialogVisible.set(true)"
+  icon="pi pi-download"
+  outlined
+  rounded
+></p-button>
+
+<p-dialog
+  [modal]="true"
+  [dismissableMask]="true"
+  [(visible)]="dialogVisible"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-download me-2"></i>
+      <ng-container i18n>Import registrations</ng-container>
+    </h3>
+  </ng-template>
+
+  <form
+    class="space-y-3"
+    [formGroup]="formGroup"
+    (ngSubmit)="onFormSubmit()"
+  >
+    <p i18n>
+      The system will create registrations with the status “registered”.
+    </p>
+    <p i18n>
+      Make sure to match the required format of the template CSV-file. Download
+      the template
+      <p-button
+        [link]="true"
+        (click)="downloadImportRegistrationsTemplateMutation.mutate()"
+        >here</p-button
+      >.
+    </p>
+    <p i18n>The import takes about 1 minute per 100 records</p>
+    <div>
+      <app-file-upload-control
+        formControlName="file"
+        accept=".csv,text/csv,text/comma-separated-values,application/csv"
+        (onClearFiles)="resetForm()"
+      ></app-file-upload-control>
+      <app-form-error [error]="formFieldErrors()('file')" />
+    </div>
+    @if (importRegistrationsMutation.isError()) {
+      <div class="mt-4">
+        @let detailedErrors = importRegistrationErrors();
+
+        @if (detailedErrors) {
+          <app-form-error
+            error="Something went wrong with this import. Please fix the errors reported below and try again."
+            i18n-error
+          />
+
+          <p-scrollPanel
+            styleClass="h-32 w-full border border-grey-300 bg-grey-100 p-4"
+          >
+            @for (error of detailedErrors; track $index) {
+              <pre>{{ error | json }}</pre>
+            }
+          </p-scrollPanel>
+        } @else {
+          <app-form-error
+            [error]="importRegistrationsMutation.failureReason()?.message"
+          />
+        }
+      </div>
+    }
+    <div class="flex justify-end gap-3 pt-2">
+      <p-button
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+        rounded
+        outlined
+        severity="contrast"
+        (click)="dialogVisible.set(false)"
+        [disabled]="importRegistrationsMutation.isPending()"
+      />
+      <p-button
+        label="Import file"
+        i18n-label
+        type="submit"
+        rounded
+        [loading]="importRegistrationsMutation.isPending()"
+      />
+    </div>
+  </form>
+</p-dialog>

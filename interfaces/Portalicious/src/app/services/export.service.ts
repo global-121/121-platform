@@ -163,22 +163,6 @@ export class ExportService {
     };
   }
 
-  downloadExport() {
-    return ({
-      exportResult,
-      filename,
-    }: {
-      exportResult: Blob;
-      filename: string;
-    }) => {
-      const downloadURL = window.URL.createObjectURL(exportResult);
-      const link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = filename;
-      link.click();
-    };
-  }
-
   private toAtributesForDuplicateCheckFilter(
     attributes: {
       name: string;

@@ -252,4 +252,28 @@ body {
       }
     }
   }
+
+  .p-fileupload {
+    .p-fileupload-buttonbar,
+    p-progressbar {
+      display: none;
+    }
+
+    .p-fileupload-content {
+      @apply rounded-[16px] border border-dashed border-grey-500;
+
+      .ng-touched.ng-invalid & {
+        @apply border-red-500;
+      }
+    }
+
+    .p-fileupload-filename,
+    .p-fileupload-filename + div {
+      @apply txt-system-s;
+    }
+
+    .p-fileupload-filename ~ * {
+      @apply grow-0;
+    }
+  }
 }
