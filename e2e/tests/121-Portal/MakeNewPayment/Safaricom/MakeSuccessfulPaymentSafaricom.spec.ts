@@ -1,6 +1,5 @@
 import { test } from '@playwright/test';
 
-import { FinancialServiceProviderName } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -19,6 +18,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 const krcsProgramTitle = KRCSProgram.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
@@ -99,7 +99,7 @@ test('[30259] Safaricom: "Make Successful payment"', async ({ page }) => {
     });
     await registrationPage.validatePaymentDetails({
       transferAmount: formattedValue,
-      fspName: FinancialServiceProviderName.safaricom,
+      fspName: FinancialServiceProviders.safaricom,
       currency,
     });
   });
