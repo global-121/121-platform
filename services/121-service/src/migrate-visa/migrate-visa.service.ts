@@ -432,7 +432,7 @@ export class MigrateVisaService {
       [
         programId,
         FinancialServiceProviderConfigurationEnum.fundingTokenCode,
-        FinancialServiceProviderName.intersolveVisa,
+        FinancialServiceProviders.intersolveVisa,
       ],
     );
 
