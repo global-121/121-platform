@@ -20,7 +20,7 @@ export const registrationVisa = {
 
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  fspName: FinancialServiceProviderName.safaricom,
+  fspName: FinancialServiceProviders.safaricom,
   phoneNumber: '254708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
