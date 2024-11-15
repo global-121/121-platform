@@ -13,6 +13,13 @@ import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
+// Export selected registrations
+const status = 'included';
+const id = 1;
+const paymentAmountMultiplier = 1;
+const preferredLanguage = 'nl';
+const fspDisplayName = 'Albert Heijn voucher WhatsApp';
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
@@ -25,14 +32,12 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
+    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
 });
 
-test('[29360] Viewing the export options without permission', async ({
-  page,
-}) => {
+test('[29358] Export People Affected list', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const table = new TableComponent(page);
@@ -43,8 +48,17 @@ test('[29360] Viewing the export options without permission', async ({
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Validate that export button is not present', async () => {
+  await test.step('Export list and validate XLSX files downloaded', async () => {
     await table.selectAllCheckbox();
-    await registrations.assertExportButtonIsHidden();
+    await registrations.clickAndSelectExportOption(
+      'Export selected registrations',
+    );
+    await registrations.exportAndAssertSelectedRegistrations(0, {
+      id,
+      status,
+      paymentAmountMultiplier,
+      preferredLanguage,
+      fspDisplayName,
+    });
   });
 });

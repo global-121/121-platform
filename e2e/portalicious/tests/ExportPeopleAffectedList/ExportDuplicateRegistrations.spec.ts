@@ -13,23 +13,9 @@ import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
-// Export selected registrations
-const status = 'included';
-const id = 1;
-const paymentAmountMultiplier = 1;
-const preferredLanguage = 'nl';
-const fspDisplayName = 'Albert Heijn voucher WhatsApp';
-
-// Export status & data changes
-const paId = 4;
-const changedBy = 'admin@example.org';
-const type = 'registrationStatusChange';
-const newValue = 'included';
-const oldValue = 'registered';
-
 // Export duplicate registrations
-const duplicateId = 2;
-const duplicateStatus = 'included';
+const id = 2;
+const status = 'included';
 const fsp = 'Albert Heijn voucher WhatsApp';
 const name = 'Jan Janssen';
 const duplicateWithIds = '3';
@@ -51,7 +37,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[29358] Export People Affected list', async ({ page }) => {
+test('[29318] Export duplicate people affected list', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const table = new TableComponent(page);
@@ -62,36 +48,14 @@ test('[29358] Export People Affected list', async ({ page }) => {
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Export list and validate XLSX file downloaded', async () => {
+  await test.step('Export list and validate XLSX files downloaded', async () => {
     await table.selectAllCheckbox();
-    await registrations.clickAndSelectExportOption(
-      'Export selected registrations',
-    );
-    await registrations.exportAndAssertSelectedRegistrations(0, {
-      id,
-      status,
-      paymentAmountMultiplier,
-      preferredLanguage,
-      fspDisplayName,
-    });
-
-    await registrations.clickAndSelectExportOption(
-      'Export status & data changes',
-    );
-    await registrations.exportAndAssertStatusAndDataChanges(0, {
-      paId,
-      changedBy,
-      type,
-      newValue,
-      oldValue,
-    });
-
     await registrations.clickAndSelectExportOption(
       'Export duplicate registrations',
     );
     await registrations.exportAndAssertDuplicates(0, {
-      id: duplicateId,
-      status: duplicateStatus,
+      id,
+      status,
       fsp,
       name,
       duplicateWithIds,

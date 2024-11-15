@@ -13,3 +13,6 @@ node_modules
 # TS Build output logs
 *.tsbuildinfo
 
+# Downloads
+/downloads
+

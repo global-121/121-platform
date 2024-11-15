@@ -4,6 +4,10 @@ import * as path from 'path';
 import { Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
+import {
+  AllXlxsColumnsMapping,
+  allXlxsColumnsMapping,
+} from '../ColumnMaping/RegistrationPageColumnMaping';
 import BasePage from './BasePage';
 import TableComponent from './TableComponent';
 
@@ -255,6 +259,7 @@ class RegistrationsPage extends BasePage {
     assertionData: Record<string, unknown>,
     registrationIndex: number,
     filterContext?: string,
+    validateRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
@@ -276,6 +281,14 @@ class RegistrationsPage extends BasePage {
     >[];
 
     if (data.length === 0) throw new Error('No data found in the sheet');
+
+    if (validateRowCount?.condition) {
+      if (data.length <= validateRowCount.minRowCount) {
+        throw new Error(
+          `Row count validation failed. Expected more than ${validateRowCount.minRowCount} rows, but found ${data.length}.`,
+        );
+      }
+    }
 
     const rowToAssert = filterContext
       ? data.find((row) =>
@@ -301,38 +314,12 @@ class RegistrationsPage extends BasePage {
       throw new Error('Column validation failed');
     }
 
-    const keyMapping: Record<string, string> = {
-      referenceId: 'referenceid',
-      id: 'id',
-      status: 'status',
-      phoneNumber: 'phonenumber',
-      preferredLanguage: 'preferredlanguage',
-      paymentAmountMultiplier: 'paymentamountmultiplier',
-      paymentCount: 'paymentcount',
-      registrationCreatedDate: 'registrationcreateddate',
-      fspDisplayName: 'fspdisplayname',
-      scope: 'scope',
-      namePartnerOrganization: 'namepartnerorganization',
-      fullName: 'fullname',
-      whatsappPhoneNumber: 'whatsappphonenumber',
-      addressCity: 'addresscity',
-      addressPostalCode: 'addresspostalcode',
-      addressHouseNumberAddition: 'addresshousenumberaddition',
-      addressHouseNumber: 'addresshousenumber',
-      addressStreet: 'addressstreet',
-      changedAt: 'changedat',
-      type: 'type',
-      newValue: 'newvalue',
-      oldValue: 'oldvalue',
-      name: 'name',
-      fsp: 'fsp',
-      duplicateWithIds: 'duplicatewithids',
-    };
-
+    // Use allXlxsColumnsMapping for key mapping
     const mappedAssertionData = Object.keys(assertionData).reduce(
       (acc, key) => {
         const mappedKey =
-          keyMapping[key.toLowerCase().trim()] || key.toLowerCase().trim();
+          allXlxsColumnsMapping[key as keyof AllXlxsColumnsMapping] ||
+          key.toLowerCase().trim();
         acc[mappedKey] = assertionData[key];
         return acc;
       },
@@ -361,6 +348,7 @@ class RegistrationsPage extends BasePage {
       preferredLanguage,
       fspDisplayName,
     }: ExportPaAssertionData,
+    validateRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
       status,
@@ -373,6 +361,8 @@ class RegistrationsPage extends BasePage {
       expectedColumnsSelectedRegistrationsExport,
       assertionData,
       registrationIndex,
+      undefined,
+      validateRowCount,
     );
   }
 
@@ -385,6 +375,7 @@ class RegistrationsPage extends BasePage {
       newValue,
       oldValue,
     }: ExportStatusAndDataChangesData,
+    validateRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
       paId,
@@ -397,6 +388,8 @@ class RegistrationsPage extends BasePage {
       expectedColumnsStatusAndDataChangesExport,
       assertionData,
       registrationIndex,
+      undefined,
+      validateRowCount,
     );
   }
 
@@ -409,6 +402,7 @@ class RegistrationsPage extends BasePage {
       name,
       duplicateWithIds,
     }: ExportDuplicateRegistrationsData,
+    validateRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
       id,
@@ -421,6 +415,8 @@ class RegistrationsPage extends BasePage {
       expectedColumnsDuplicateRegistrationsExport,
       assertionData,
       registrationIndex,
+      undefined,
+      validateRowCount,
     );
   }
 }

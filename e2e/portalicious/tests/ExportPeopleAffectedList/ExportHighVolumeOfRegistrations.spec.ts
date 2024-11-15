@@ -5,13 +5,21 @@ import { seedIncludedRegistrations } from '@121-service/test/helpers/registratio
 import {
   getAccessToken,
   resetDB,
+  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { registrationPV8 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
+
+// Export selected registrations
+const status = 'included';
+const id = 1;
+const paymentAmountMultiplier = 1;
+const preferredLanguage = 'en';
+const fspDisplayName = 'Visa debit card';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -19,7 +27,8 @@ test.beforeEach(async ({ page }) => {
   const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+  await seedIncludedRegistrations([registrationPV8], pvProgramId, accessToken);
+  await resetDuplicateRegistrations(14);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -43,6 +52,19 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
 
   await test.step('Export list and validate XLSX file downloaded', async () => {
     await table.selectAllCheckbox();
-    await registrations.assertExportButtonIsHidden();
+    await registrations.clickAndSelectExportOption(
+      'Export selected registrations',
+    );
+    await registrations.exportAndAssertSelectedRegistrations(
+      0,
+      {
+        id,
+        status,
+        paymentAmountMultiplier,
+        preferredLanguage,
+        fspDisplayName,
+      },
+      { condition: true, minRowCount: 15000 },
+    );
   });
 });
