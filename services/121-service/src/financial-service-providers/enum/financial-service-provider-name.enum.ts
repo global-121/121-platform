@@ -15,6 +15,7 @@ export enum FinancialServiceProviderConfigurationEnum {
   brandCode = 'brandCode',
   displayName = 'displayName',
   coverLetterCode = 'coverLetterCode',
+  fundingTokenCode = 'fundingTokenCode',
 }
 
 export const FinancialServiceProviderConfigurationMapping: Record<
@@ -35,6 +36,7 @@ export const FinancialServiceProviderConfigurationMapping: Record<
     FinancialServiceProviderConfigurationEnum.brandCode,
     FinancialServiceProviderConfigurationEnum.coverLetterCode,
     FinancialServiceProviderConfigurationEnum.displayName,
+    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
   ],
   [FinancialServiceProviders.safaricom]: [
     FinancialServiceProviderConfigurationEnum.displayName,
@@ -48,5 +50,31 @@ export const FinancialServiceProviderConfigurationMapping: Record<
     FinancialServiceProviderConfigurationEnum.columnsToExport,
     FinancialServiceProviderConfigurationEnum.columnToMatch,
     FinancialServiceProviderConfigurationEnum.displayName,
+  ],
+};
+
+export const RequiredFinancialServiceProviderConfigurations: Partial<
+  Record<FinancialServiceProviders, any>
+> = {
+  [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviders.intersolveVoucherPaper]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviders.intersolveVisa]: [
+    FinancialServiceProviderConfigurationEnum.brandCode,
+    FinancialServiceProviderConfigurationEnum.coverLetterCode,
+    FinancialServiceProviderConfigurationEnum.fundingTokenCode,
+  ],
+  [FinancialServiceProviders.commercialBankEthiopia]: [
+    FinancialServiceProviderConfigurationEnum.password,
+    FinancialServiceProviderConfigurationEnum.username,
+  ],
+  [FinancialServiceProviders.excel]: [
+    FinancialServiceProviderConfigurationEnum.columnsToExport,
+    FinancialServiceProviderConfigurationEnum.columnToMatch,
   ],
 };

@@ -6,7 +6,7 @@ import { FinancialServiceProviderIntegrationType } from '@121-service/src/financ
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { Attribute } from '@121-service/src/registration/enum/custom-data-attributes';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
@@ -58,10 +58,12 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(
-    (_type) => ProgramFspConfigurationEntity,
+    (_type) => ProgramFinancialServiceProviderConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.fsp,
   )
-  public configuration: Relation<ProgramFspConfigurationEntity[]>;
+  public configuration: Relation<
+    ProgramFinancialServiceProviderConfigurationEntity[]
+  >;
 
   public editableAttributes?: Attribute[];
 }

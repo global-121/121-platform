@@ -1,12 +1,9 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
+import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
-import {
-  // TODO: AB#30525 should import this from 121-service
-  VisaCard121Status,
-} from '~/domains/registration/registration.model';
 
 export const REGISTRATION_STATUS_LABELS: Record<
   RegistrationStatusEnum,

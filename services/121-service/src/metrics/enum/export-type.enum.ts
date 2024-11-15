@@ -6,5 +6,5 @@ export enum ExportType {
   vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
-  cardBalances = 'card-balances',
+  intersolveVisaCardDetails = 'intersolve-visa-card-details',
 }

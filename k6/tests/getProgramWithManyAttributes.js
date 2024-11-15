@@ -11,6 +11,7 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const registrationsPage = new RegistrationsModel();
 
+const resetScript = 'nlrc-multiple';
 const duplicateNumber = 5;
 const programId = 2;
 
@@ -25,7 +26,7 @@ export const options = {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDB();
+  const reset = resetPage.resetDB(resetScript);
   check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });

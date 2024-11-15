@@ -18,5 +18,5 @@ export const registrationVisa = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
-  [CustomDataAttributes.whatsappPhoneNumber]: '',
+  [CustomDataAttributes.whatsappPhoneNumber]: '14155238887',
 };

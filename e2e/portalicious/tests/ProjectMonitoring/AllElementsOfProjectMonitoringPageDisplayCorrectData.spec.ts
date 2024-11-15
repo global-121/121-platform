@@ -43,8 +43,8 @@ test('[30579] All elements of Monitoring page display correct data for OCW', asy
       shouldHaveIframe: true,
     });
     await projectMonitoring.assertValuesInMonitoringTab({
-      peopleIncluded: 4,
-      peopleRegistered: 4,
+      peopleIncluded: 5,
+      peopleRegistered: 5,
     });
   });
 });

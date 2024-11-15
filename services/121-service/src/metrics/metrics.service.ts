@@ -15,8 +15,11 @@ import { RegistrationType } from '@121-service/src/metrics/dto/registration-type
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { RowType } from '@121-service/src/metrics/dto/rolo-type.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { IntersolveVisaExportService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
+import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
+import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
+import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -34,12 +37,13 @@ import {
   GenericAttributes,
 } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
@@ -53,7 +57,7 @@ const userPermissionMapByExportType = {
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.vouchersWithBalance]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.duplicates]: [PermissionEnum.RegistrationPaymentExport],
-  [ExportType.cardBalances]: [PermissionEnum.FspDebitCardEXPORT],
+  [ExportType.intersolveVisaCardDetails]: [PermissionEnum.FspDebitCardEXPORT],
 };
 
 @Injectable()
@@ -70,15 +74,13 @@ export class MetricsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
-    private registrationDataScopedRepository: ScopedRepository<RegistrationDataEntity>,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
-    private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
   ) {}
@@ -163,8 +165,8 @@ export class MetricsService {
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
       }
-      case ExportType.cardBalances: {
-        return this.getCardBalances(programId);
+      case ExportType.intersolveVisaCardDetails: {
+        return this.createIntersolveVisaBalancesExport(programId);
       }
       default:
         throw new HttpException(
@@ -215,7 +217,7 @@ export class MetricsService {
       programId,
       ExportType.included,
     );
-    const pastPaymentDetails = await this.getPaymentDetailsPayment(
+    const pastPaymentDetails = await this.getPastPaymentDetails(
       programId,
       minPaymentId,
       maxPaymentId,
@@ -891,7 +893,7 @@ export class MetricsService {
     return relationOptionsPerFsp;
   }
 
-  private async getPaymentDetailsPayment(
+  private async getPastPaymentDetails(
     programId: number,
     minPaymentId: number,
     maxPaymentId: number,
@@ -941,15 +943,12 @@ export class MetricsService {
       await this.getAdditionalFspExportFields(programId);
 
     for (const field of additionalFspExportFields) {
-      const nestedParts = field.split('.');
-      let variabeleSelectQuery = 'transaction."customData"';
-      for (const part of nestedParts) {
-        variabeleSelectQuery += `->'${part}'`;
-      }
-      transactionQuery.addSelect(
-        variabeleSelectQuery,
-        nestedParts[nestedParts.length - 1],
+      transactionQuery.leftJoin(
+        field.entityJoinedToTransaction,
+        'joinTable',
+        'transaction.id = joinTable.transactionId',
       );
+      transactionQuery.addSelect(`"${field.attribute}"`);
     }
 
     const duplicateNames = registrationDataOptions
@@ -1019,15 +1018,28 @@ export class MetricsService {
 
   private async getAdditionalFspExportFields(
     programId: number,
-  ): Promise<string[]> {
+  ): Promise<
+    { entityJoinedToTransaction: EntityClass<any>; attribute: string }[]
+  > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
       relations: ['financialServiceProviders'],
     });
-    let fields: string[] = [];
+    let fields: {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+    }[] = [];
     for (const fsp of program.financialServiceProviders) {
       if (fsp.fsp === FinancialServiceProviders.safaricom) {
-        fields = [...fields, ...['requestResult.OriginatorConversationID']];
+        fields = [
+          ...fields,
+          ...[
+            {
+              entityJoinedToTransaction: SafaricomTransferEntity,
+              attribute: 'mpesaTransactionId',
+            },
+          ],
+        ];
       }
     }
     return fields;
@@ -1175,15 +1187,56 @@ export class MetricsService {
     };
   }
 
-  private async getCardBalances(programId: number): Promise<{
+  private async createIntersolveVisaBalancesExport(programId: number): Promise<{
     fileName: ExportType;
-    data: unknown[];
+    data: ExportVisaCardDetails[];
   }> {
-    const data = await this.intersolveVisaExportService.getCards(programId);
+    const rawDebitCardDetails =
+      await this.registrationScopedRepository.getDebitCardsDetailsForExport(
+        programId,
+      );
+
+    const mappedDebitCardDetails =
+      this.mapIntersolveVisaBalancesDataToDto(rawDebitCardDetails);
+
     return {
-      fileName: ExportType.cardBalances,
-      data,
+      fileName: ExportType.intersolveVisaCardDetails,
+      data: mappedDebitCardDetails,
     };
+  }
+
+  private mapIntersolveVisaBalancesDataToDto(
+    exportVisaCardRawDetails: ExportVisaCardDetailsRawData[],
+  ): ExportVisaCardDetails[] {
+    let previousRegistrationProgramId: number | null = null;
+    const exportCardDetailsArray: ExportVisaCardDetails[] = [];
+    for (const cardRawData of exportVisaCardRawDetails) {
+      const isCurrentWallet =
+        previousRegistrationProgramId !== cardRawData.paId;
+
+      const statusInfo =
+        IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({
+          isTokenBlocked: cardRawData.isTokenBlocked,
+          walletStatus: cardRawData.walletStatus,
+          cardStatus: cardRawData.cardStatus,
+        });
+
+      exportCardDetailsArray.push({
+        paId: cardRawData.paId,
+        referenceId: cardRawData.referenceId,
+        registrationStatus: cardRawData.registrationStatus,
+        cardNumber: cardRawData.cardNumber,
+        cardStatus121: statusInfo.status,
+        issuedDate: cardRawData.issuedDate,
+        lastUsedDate: cardRawData.lastUsedDate,
+        balance: cardRawData.balance / 100,
+        explanation: statusInfo.explanation,
+        spentThisMonth: cardRawData.spentThisMonth / 100,
+        isCurrentWallet,
+      });
+      previousRegistrationProgramId = cardRawData.paId;
+    }
+    return exportCardDetailsArray;
   }
 
   public async getRegistrationStatusStats(
