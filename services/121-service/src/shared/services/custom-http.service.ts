@@ -176,7 +176,7 @@ export class CustomHttpService {
             externalUrl: request.url,
           },
         });
-        this.flushLogs('logMessageRequest');
+        this.defaultClient.flush();
       } catch (error) {
         console.log('An error occured in logMessageRequest: ', error);
       }
@@ -208,22 +208,11 @@ export class CustomHttpService {
             externalUrl: request.url,
           },
         });
-        this.flushLogs('logErrorRequest');
+        this.defaultClient.flush();
       } catch (error) {
         console.log('An error occured in logErrorRequest: ', error);
       }
     }
-  }
-
-  private flushLogs(methodName: string): void {
-    this.defaultClient
-      .flush()
-      .then(() => {
-        return;
-      })
-      .catch((flushError) => {
-        console.error(`An error occured in ${methodName}:`, flushError);
-      });
   }
 
   private stringify(obj: object): string {
