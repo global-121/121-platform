@@ -58,9 +58,10 @@ export class QueryTableColumnManagementComponent<
   updateColumnVisibility = injectMutation(() => ({
     // We don't technically need a mutation here, but we're using one
     // so that we can easily reuse the form-sidebar component
-    mutationFn: () => Promise.resolve(),
-    onSuccess: () => {
-      this.visibleColumns.set(this.formGroup.getRawValue().selectedColumns);
+    mutationFn: () =>
+      Promise.resolve(this.formGroup.getRawValue().selectedColumns),
+    onSuccess: (selectedColumns) => {
+      this.visibleColumns.set(selectedColumns);
       this.formVisible.set(false);
     },
   }));

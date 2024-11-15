@@ -3,6 +3,10 @@
   (click)="showColumnManagement()"
   text
   severity="secondary"
+  title="Manage table"
+  i18n-title="@@query-table-manage-table"
+  aria-label="Manage table"
+  i18n-aria-label="@@query-table-manage-table"
 />
 
 <app-form-sidebar
@@ -10,7 +14,7 @@
   [formGroup]="formGroup"
   [mutation]="updateColumnVisibility"
   formTitle="Manage table"
-  i18n-formTitle
+  i18n-formTitle="@@query-table-manage-table"
   submitButtonText="Apply"
   i18n-submitButtonText="@@generic-apply"
 >

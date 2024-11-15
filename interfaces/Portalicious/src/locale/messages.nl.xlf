@@ -1408,7 +1408,7 @@
         <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
         <target state="new">Something went wrong with this import. Please fix the errors reported below and try again.</target>
       </trans-unit>
-      <trans-unit id="3080049585860279558" datatype="html">
+      <trans-unit id="query-table-manage-table" datatype="html">
         <source>Manage table</source>
         <target state="new">Manage table</target>
       </trans-unit>

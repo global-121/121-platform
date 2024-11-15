@@ -1061,7 +1061,7 @@
       <trans-unit id="1953762348939012822" datatype="html">
         <source>Revert to default</source>
       </trans-unit>
-      <trans-unit id="3080049585860279558" datatype="html">
+      <trans-unit id="query-table-manage-table" datatype="html">
         <source>Manage table</source>
       </trans-unit>
       <trans-unit id="generic-apply" datatype="html">
