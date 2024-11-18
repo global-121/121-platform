@@ -61,7 +61,7 @@
     [mutation]="exportPaymentsMutation"
     [mutationData]="
       getMutationData({
-        type: ExportType.cardBalances,
+        type: ExportType.intersolveVisaCardDetails,
         withPaymentRange: true,
       })
     "
@@ -80,7 +80,7 @@
     </p>
     <app-latest-export-date
       [projectId]="projectId()"
-      [exportType]="ExportType.cardBalances"
+      [exportType]="ExportType.intersolveVisaCardDetails"
     />
   </app-confirmation-dialog>
 }

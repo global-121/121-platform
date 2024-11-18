@@ -8,5 +8,4 @@ export interface FinancialServiceProviderIntegrationInterface {
     paymentNr: number,
     useWhatsapp?: boolean,
   ): Promise<void | FspTransactionResultDto>;
-  getQueueProgress(programId: number): Promise<number>;
 }
