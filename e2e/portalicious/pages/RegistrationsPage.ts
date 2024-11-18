@@ -4,32 +4,28 @@ import * as path from 'path';
 import { Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
-import {
-  AllXlxsColumnsMapping,
-  allXlxsColumnsMapping,
-} from '../ColumnMaping/RegistrationPageColumnMaping';
 import BasePage from './BasePage';
 import TableComponent from './TableComponent';
 
 const expectedColumnsSelectedRegistrationsExport = [
-  'referenceid',
+  'referenceId',
   'id',
   'status',
-  'phonenumber',
-  'preferredlanguage',
-  'paymentamountmultiplier',
-  'paymentcount',
-  'registrationcreateddate',
-  'fspdisplayname',
+  'phoneNumber',
+  'preferredLanguage',
+  'paymentAmountMultiplier',
+  'paymentCount',
+  'registrationCreatedDate',
+  'fspDisplayName',
   'scope',
-  'namepartnerorganization',
-  'fullname',
-  'whatsappphonenumber',
-  'addressstreet',
-  'addresshousenumber',
-  'addresshousenumberaddition',
-  'addresspostalcode',
-  'addresscity',
+  'namePartnerOrganization',
+  'fullName',
+  'whatsappPhoneNumber',
+  'addressStreet',
+  'addressHouseNumber',
+  'addressHouseNumberAddition',
+  'addressPostalCode',
+  'addressCity',
 ];
 
 const expectedColumnsStatusAndDataChangesExport = [
@@ -316,9 +312,7 @@ class RegistrationsPage extends BasePage {
 
     const mappedAssertionData = Object.keys(assertionData).reduce(
       (acc, key) => {
-        const mappedKey =
-          allXlxsColumnsMapping[key as keyof AllXlxsColumnsMapping] ||
-          key.toLowerCase().trim();
+        const mappedKey = key.toLowerCase().trim();
         acc[mappedKey] = assertionData[key];
         return acc;
       },

@@ -24,10 +24,9 @@ const fspDisplayName = 'Visa debit card';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
-  const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV8], pvProgramId, accessToken);
+  await seedIncludedRegistrations([registrationPV8], programIdPV, accessToken);
   await resetDuplicateRegistrations(14);
 
   // Login

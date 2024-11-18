@@ -16,10 +16,9 @@ import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
-  const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);

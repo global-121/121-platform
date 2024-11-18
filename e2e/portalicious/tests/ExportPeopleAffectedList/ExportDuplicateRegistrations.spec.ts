@@ -23,10 +23,9 @@ const duplicateWithIds = '3';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
-  const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
