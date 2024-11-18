@@ -266,7 +266,7 @@ class RegistrationsPage extends BasePage {
       this.clickProceedToExport(),
     ]);
 
-    const downloadDir = 'e2e/downloads';
+    const downloadDir = path.join(__dirname, '../../downloads');
     if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
 
     const filePath = path.join(downloadDir, download.suggestedFilename());
@@ -314,7 +314,6 @@ class RegistrationsPage extends BasePage {
       throw new Error('Column validation failed');
     }
 
-    // Use allXlxsColumnsMapping for key mapping
     const mappedAssertionData = Object.keys(assertionData).reduce(
       (acc, key) => {
         const mappedKey =
