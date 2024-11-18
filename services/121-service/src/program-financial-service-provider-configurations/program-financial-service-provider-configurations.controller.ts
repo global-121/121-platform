@@ -102,7 +102,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will overwrite all properties. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
+      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
