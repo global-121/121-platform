@@ -297,12 +297,6 @@
       ]
     },
     {
-      "financialServiceProvider": "bank_a"
-    },
-    {
-      "financialServiceProvider": "fsp_no_attributes"
-    },
-    {
       "financialServiceProvider": "Excel",
       "name": "ironBank",
       "label": {

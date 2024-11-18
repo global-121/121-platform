@@ -53,11 +53,11 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     description: 'Program does not exist',
   })
   @Get(':programId/financial-service-provider-configurations')
-  public async findByProgramId(
+  public async getByProgramId(
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
-    return this.programFinancialServiceProviderConfigurationsService.findByProgramId(
+    return this.programFinancialServiceProviderConfigurationsService.getByProgramId(
       programId,
     );
   }
@@ -65,7 +65,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Create a Financial Service Provider Configuration for a Program. Financial Service Provider Configuration properties',
+      'Create a Financial Service Provider Configuration for a Program. You can also add properties in this API call or you can add them later using /programs/{programId}/financial-service-provider-configurations/{name}/properties',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -93,7 +93,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
-    return await this.programFinancialServiceProviderConfigurationsService.validateAndCreate(
+    return await this.programFinancialServiceProviderConfigurationsService.create(
       programId,
       programFspConfigurationData,
     );
@@ -102,7 +102,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an empty array of properties will delete all properties. It is recommand to use this endpoint for adding properties /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
+      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -207,7 +207,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     type: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
   })
   @Post(':programId/financial-service-provider-configurations/:name/properties')
-  public async validateAndCreateProperties(
+  public async createProperties(
     @Body(
       new ParseArrayPipe({
         items: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
@@ -221,8 +221,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   ): Promise<
     ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
   > {
-    // Should this work with an array of properties or just a single property?
-    return await this.programFinancialServiceProviderConfigurationsService.validateAndCreateProperties(
+    return await this.programFinancialServiceProviderConfigurationsService.createProperties(
       {
         programId,
         programFspConfigurationName: name,

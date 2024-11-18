@@ -141,7 +141,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
   describe('findByProgramId', () => {
     it('should return program configurations for a given program ID', async () => {
-      const result = await service.findByProgramId(programId);
+      const result = await service.getByProgramId(programId);
 
       expect(mockProgramFspConfigurationRepository.find).toHaveBeenCalledWith({
         where: { programId: Equal(programId) },
@@ -166,9 +166,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     };
 
     it('should validate successfully if all checks pass', async () => {
-      await expect(
-        service.validateAndCreate(programId, createDto),
-      ).resolves.not.toThrow();
+      await expect(service.create(programId, createDto)).resolves.not.toThrow();
       expect(
         mockProgramFspConfigurationRepository.findOne,
       ).toHaveBeenCalledWith({
@@ -186,10 +184,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         label: { fr: 'Test Label' },
       };
       await expect(
-        service.validateAndCreate(programId, noEnglishLabelDto),
+        service.create(programId, noEnglishLabelDto),
       ).rejects.toThrow(HttpException);
       await expect(
-        service.validateAndCreate(programId, noEnglishLabelDto),
+        service.create(programId, noEnglishLabelDto),
       ).rejects.toThrow(
         new HttpException(
           `Label must have an English translation`,
@@ -205,12 +203,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         financialServiceProviderName: fakeFspName as FinancialServiceProviders,
       };
 
-      await expect(
-        service.validateAndCreate(programId, invalidCreateDto),
-      ).rejects.toThrow(HttpException);
-      await expect(
-        service.validateAndCreate(programId, invalidCreateDto),
-      ).rejects.toThrow(
+      await expect(service.create(programId, invalidCreateDto)).rejects.toThrow(
+        HttpException,
+      );
+      await expect(service.create(programId, invalidCreateDto)).rejects.toThrow(
         new HttpException(
           `No fsp found with name ${fakeFspName}`,
           HttpStatus.NOT_FOUND,
@@ -226,10 +222,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       };
 
       await expect(
-        service.validateAndCreate(programId, duplivateNameCreateDto),
+        service.create(programId, duplivateNameCreateDto),
       ).rejects.toThrow(HttpException);
       await expect(
-        service.validateAndCreate(programId, duplivateNameCreateDto),
+        service.create(programId, duplivateNameCreateDto),
       ).rejects.toThrow(
         new HttpException(
           `Program Financial Service Provider with name ${duplivateNameCreateDto.name} already exists`,
@@ -249,10 +245,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         ],
       };
       await expect(
-        service.validateAndCreate(programId, invalidPropertiesDto),
+        service.create(programId, invalidPropertiesDto),
       ).rejects.toThrow();
       await expect(
-        service.validateAndCreate(programId, invalidPropertiesDto),
+        service.create(programId, invalidPropertiesDto),
       ).rejects.toThrow(new RegExp(`only the following values are allowed`));
     });
 
@@ -271,10 +267,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         ],
       };
       await expect(
-        service.validateAndCreate(programId, invalidPropertiesDto),
+        service.create(programId, invalidPropertiesDto),
       ).rejects.toThrow();
       await expect(
-        service.validateAndCreate(programId, invalidPropertiesDto),
+        service.create(programId, invalidPropertiesDto),
       ).rejects.toThrow(new RegExp(`Duplicate property names are not allowed`));
     });
   });
@@ -375,7 +371,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
   describe('validateAndCreateProperties', () => {
     it('should succesfully map and create properties', async () => {
-      const result = await service.validateAndCreateProperties({
+      const result = await service.createProperties({
         programId,
         programFspConfigurationName: configName,
         properties: [validPropertyDto],
@@ -390,7 +386,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     it('should throw an error if configuration does not exist', async () => {
       const nonExistingConfigName = 'Non existing config';
       await expect(
-        service.validateAndCreateProperties({
+        service.createProperties({
           programId,
           programFspConfigurationName: nonExistingConfigName,
           properties: [validPropertyDto],

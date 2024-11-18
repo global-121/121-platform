@@ -31,10 +31,10 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
-import { ImportTemplateResponseDto } from '@121-service/src/payments/dto/import-template-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
@@ -270,7 +270,7 @@ export class PaymentsController {
   public async getImportFspReconciliationTemplate(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ImportTemplateResponseDto[]> {
+  ): Promise<GetImportTemplateResponseDto[]> {
     return await this.paymentsService.getImportInstructionsTemplate(
       Number(programId),
     );
