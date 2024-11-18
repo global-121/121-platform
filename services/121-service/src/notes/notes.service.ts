@@ -19,13 +19,12 @@ export class NotesService {
     userId: number,
     programId: number,
   ): Promise<void> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
+    const registration =
+      await this.registrationsService.getRegistrationFromReferenceId(
         referenceId,
-        relations: undefined,
+        undefined,
         programId,
-      },
-    );
+      );
 
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known.`;

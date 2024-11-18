@@ -8,16 +8,19 @@ export class SafaricomTransferPayload {
   public Remarks: string;
   public QueueTimeOutURL: string;
   public ResultURL: string;
+  public Occassion: string;
   public OriginatorConversationID: string;
   public IDType: string;
   public IDNumber: string;
+  public conversationId?: string;
+  public status?: string;
+  public requestResult?: Record<string, unknown>;
+  public paymentResult?: Record<string, unknown>;
 }
 
 export class SafaricomTransferResponseBodyDto {
   public ConversationID: string;
   public OriginatorConversationID: string;
-  readonly ResponseCode?: string;
-  readonly ResponseDescription?: string;
-  readonly errorCode?: string;
-  readonly errorMessage?: string;
+  public ResponseCode: string;
+  public ResponseDescription: string;
 }

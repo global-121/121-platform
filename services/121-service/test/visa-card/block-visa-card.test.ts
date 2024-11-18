@@ -1,4 +1,4 @@
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import messageTemplatesOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
@@ -58,13 +58,12 @@ describe('Block visa debit card', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    const tokencode = visaWalletResponseBeforeBlock.body.cards[0].tokenCode;
+    const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
 
     const blockVisaResponse = await blockVisaCard(
       programIdVisa,
       tokencode,
       accessToken,
-      registrationVisa.referenceId,
     );
 
     const visaWalletResponseAfterBlock = await getVisaWalletsAndDetails(
@@ -80,13 +79,13 @@ describe('Block visa debit card', () => {
       accessToken,
     );
     // Assert
-
-    expect(blockVisaResponse.status).toBe(200);
-    expect(visaWalletResponseAfterBlock.body.cards[0].status).toBe(
-      VisaCard121Status.Paused,
+    expect(blockVisaResponse.status).toBe(201);
+    expect(blockVisaResponse.body.status).toBe(204);
+    expect(visaWalletResponseAfterBlock.body.wallets[0].status).toBe(
+      WalletCardStatus121.Paused,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(messageTemplatesOCW.pauseVisaCard.message.en);
+    expect(lastMessage.body).toBe(messageTemplatesOCW.blockVisaCard.message.en);
   });
 
   it('should succesfully unblock a Visa Debit card', async () => {
@@ -114,19 +113,13 @@ describe('Block visa debit card', () => {
       registrationVisa.referenceId,
       accessToken,
     );
-    const tokencode = visaWalletResponseBeforeBlock.body.cards[0].tokenCode;
+    const tokencode = visaWalletResponseBeforeBlock.body.wallets[0].tokenCode;
 
-    await blockVisaCard(
-      programIdVisa,
-      tokencode,
-      accessToken,
-      registrationVisa.referenceId,
-    );
+    await blockVisaCard(programIdVisa, tokencode, accessToken);
     const unblockVisaResponse = await unblockVisaCard(
       programIdVisa,
       tokencode,
       accessToken,
-      registrationVisa.referenceId,
     );
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -134,20 +127,21 @@ describe('Block visa debit card', () => {
       accessToken,
     );
 
-    await waitFor(4_000); // the last message otherwise was not in the db yet
+    await waitFor(2_000); // the last message otherwise was not in the db yet
     const messageReponse = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
     // Assert
-    expect(unblockVisaResponse.status).toBe(200);
-    expect(visaWalletResponse.body.cards[0].status).not.toBe(
-      VisaCard121Status.Blocked,
+    expect(unblockVisaResponse.status).toBe(201);
+    expect(unblockVisaResponse.body.status).toBe(204);
+    expect(visaWalletResponse.body.wallets[0].status).not.toBe(
+      WalletCardStatus121.Blocked,
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(
-      messageTemplatesOCW.unpauseVisaCard.message.en,
+      messageTemplatesOCW.unblockVisaCard.message.en,
     );
   });
 });

@@ -1,10 +1,10 @@
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateFormat } from 'src/app/enums/date-format.enum';
-import { Card, Wallet } from 'src/app/models/intersolve-visa-wallet.model';
 import { Person } from 'src/app/models/person.model';
+import { PhysicalCard } from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
@@ -38,10 +38,9 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   @Input()
   public registrationStatus: Person['status'];
 
-  public wallet: Wallet;
-  public latestCard: Card;
-
-  public DateFormat = DateFormat;
+  public physicalCards: PhysicalCard[];
+  public WalletCardStatus121 = WalletCardStatus121;
+  public latestCard: PhysicalCard;
 
   public loading = true;
 
@@ -57,15 +56,15 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
     }
 
     try {
-      this.wallet = await this.programsService.getUpdateWalletAndCards(
+      this.physicalCards = await this.programsService.getPhysicalCards(
         this.programId,
         this.referenceId,
       );
     } catch (error) {
-      this.wallet = null;
+      this.physicalCards = [];
     }
 
-    this.wallet.cards.sort((a, b) => {
+    this.physicalCards.sort((a, b) => {
       if (a.issuedDate < b.issuedDate) {
         return 1;
       }
@@ -77,12 +76,12 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
       return 0;
     });
 
-    this.latestCard = this.wallet.cards[0];
+    this.latestCard = this.physicalCards[0];
 
     this.loading = false;
   }
 
-  public async openCardDetails(card: Card) {
+  public async openCardDetails(card: PhysicalCard) {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PhysicalCardPopupComponent,
       componentProps: {
@@ -97,6 +96,6 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   }
 
   public showPhysicalCardOverview(): boolean {
-    return this.wallet?.cards?.length > 0;
+    return this.physicalCards?.length > 0;
   }
 }

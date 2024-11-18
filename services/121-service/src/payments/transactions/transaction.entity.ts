@@ -32,11 +32,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   public errorMessage: string | null;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
-  @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
-  @Index()
-  @Column({ type: 'int' })
-  public programId: number;
 
   @Column({ default: 1 })
   @Index()
@@ -55,11 +51,7 @@ export class TransactionEntity extends Base121AuditedEntity {
     (_type) => FinancialServiceProviderEntity,
     (financialServiceProvider) => financialServiceProvider.transactions,
   )
-  @JoinColumn({ name: 'financialServiceProviderId' })
   public financialServiceProvider: Relation<FinancialServiceProviderEntity>;
-  @Index()
-  @Column({ type: 'int' })
-  public financialServiceProviderId: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,

@@ -12,15 +12,15 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
-import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { QueueMessageModule } from '@121-service/src/notifications/queue-message/queue-message.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -67,13 +67,12 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ActionsModule,
     ProgramModule,
     FinancialServiceProvidersModule,
-    MessageQueuesModule,
+    QueueMessageModule,
     IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
     EventsModule,
     QueueRegistrationUpdateModule,
-    ProgramFinancialServiceProviderConfigurationsModule,
   ],
   providers: [
     RegistrationsService,
@@ -88,6 +87,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     FileImportService,
     RegistrationUpdateProcessor,
     RegistrationsInputValidator,
+    createScopedRepositoryProvider(SafaricomRequestEntity),
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
     createScopedRepositoryProvider(RegistrationDataEntity),
@@ -101,7 +101,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationsBulkService,
     RegistrationsPaginationService,
     RegistrationsImportService,
-    RegistrationScopedRepository,
   ],
 })
 export class RegistrationsModule {}

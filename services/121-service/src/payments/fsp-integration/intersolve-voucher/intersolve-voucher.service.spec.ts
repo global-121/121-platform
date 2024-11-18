@@ -6,10 +6,12 @@ import {
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
@@ -46,7 +48,7 @@ describe('IntersolveVoucherService', () => {
 
     intersolveVoucherService = unit;
     paymentQueue = unitRef.get(
-      getQueueName(TransactionJobQueueNames.intersolveVoucher),
+      getQueueName(QueueNamePayment.paymentIntersolveVoucher),
     );
   });
 
@@ -96,7 +98,7 @@ describe('IntersolveVoucherService', () => {
     // Assert
     expect(paymentQueue.add).toHaveBeenCalledTimes(1);
     expect(paymentQueue.add).toHaveBeenCalledWith(
-      JobNames.default,
+      ProcessNamePayment.sendPayment,
       paymentDetailsResult,
     );
   });

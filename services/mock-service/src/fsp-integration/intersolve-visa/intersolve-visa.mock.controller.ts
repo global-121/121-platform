@@ -73,13 +73,10 @@ export class IntersolveVisaMockController {
   @ApiOperation({ summary: 'Create debit card' })
   @Post('/payment-instrument-payment/v1/tokens/:tokenCode/create-physical-card')
   public createDebitCard(
-    @Body() payload: Record<string, any>,
-    @Param('tokenCode') _tokenCode: string,
+    @Body() _payload: Record<string, unknown>,
+    @Param('tokenCode') tokenCode: string,
   ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.createDebitCardMock(
-      payload.lastName,
-      payload.mobileNumber,
-    );
+    return this.intersolveVisaMockService.createDebitCardMock(tokenCode);
   }
 
   @ApiOperation({ summary: 'Load balance' }) // This will be depricated after the new visa flow is implemented, it has been added for the current flow to make that one work and mergable
@@ -134,36 +131,5 @@ export class IntersolveVisaMockController {
     @Param('holderId') _holderId: string,
   ): { status: number } {
     return this.intersolveVisaMockService.updateCustomerAddress();
-  }
-
-  @ApiOperation({ summary: 'Link token' })
-  @Post('/wallet/v1/tokens/:childTokenCode/link-token')
-  public linkToken(
-    @Body() payload: Record<string, string>,
-    @Param('childTokenCode') _childTokenCode: string,
-  ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.linkToken(payload.tokenCode);
-  }
-
-  @ApiOperation({ summary: 'Transfer' })
-  @Post('/wallet/v1/tokens/:fromToken/transfer')
-  public transfer(
-    @Body() payload: Record<string, any>,
-    @Param('fromToken') _fromToken: string,
-  ): IntersolveVisaMockResponseDto {
-    const toToken = payload.creditor.tokenCode;
-    return this.intersolveVisaMockService.transfer(
-      toToken,
-      payload.quantity.value,
-    );
-  }
-
-  @ApiOperation({ summary: 'Substitute token' })
-  @Post('wallet/v1/tokens/:oldTokenCode/substitute-token')
-  public substituteToken(
-    @Body() _substituteTokenRequestDto: Record<string, unknown>,
-    @Param('oldTokenCode') oldTokenCode: string,
-  ): IntersolveVisaMockResponseDto {
-    return this.intersolveVisaMockService.substituteToken(oldTokenCode);
   }
 }

@@ -7,6 +7,6 @@ export enum ProgramNotificationEnum {
   visaDebitCardCreated = 'visaDebitCardCreated',
   visaLoad = 'visaLoad',
   reissueVisaCard = 'reissueVisaCard',
-  pauseVisaCard = 'pauseVisaCard',
-  unpauseVisaCard = 'unpauseVisaCard',
+  blockVisaCard = 'blockVisaCard',
+  unblockVisaCard = 'unblockVisaCard',
 }

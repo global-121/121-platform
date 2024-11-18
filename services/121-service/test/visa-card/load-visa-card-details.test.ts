@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
-import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
@@ -19,7 +19,6 @@ import {
   getVisaWalletsAndDetails,
   importRegistrations,
   issueNewVisaCard,
-  retrieveAndUpdateVisaWalletsAndDetails,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -81,34 +80,33 @@ describe('Load Visa debit cards and details', () => {
         accessToken,
       );
 
-      const visaParentWalletResponse =
-        await retrieveAndUpdateVisaWalletsAndDetails(
-          programIdVisa,
-          registration.referenceId,
-          accessToken,
-        );
+      const visaWalletResponse = await getVisaWalletsAndDetails(
+        programIdVisa,
+        registration.referenceId,
+        accessToken,
+      );
 
       // Assert
-      expect(visaParentWalletResponse.status).toBe(200);
-      expect(visaParentWalletResponse.body.cards).toBeDefined();
-      expect(visaParentWalletResponse.body.cards.length).toBe(2);
-      expect(visaParentWalletResponse.body.balance).toBeDefined();
-      expect(visaParentWalletResponse.body.balance).toBe(amountVisa * 100);
-      expect(visaParentWalletResponse.body.lastUsedDate).toBeDefined();
-      expect(visaParentWalletResponse.body.spentThisMonth).toBeDefined();
-      const sortedCards = visaParentWalletResponse.body.cards.sort(
+      expect(visaWalletResponse.status).toBe(200);
+      expect(visaWalletResponse.body.wallets).toBeDefined();
+      expect(visaWalletResponse.body.wallets.length).toBe(2);
+      const sortedWallets = visaWalletResponse.body.wallets.sort(
         (a, b) => a.issuedDate - b.issuedDate,
       );
-      for (const [index, card] of sortedCards.entries()) {
+      for (const [index, wallet] of sortedWallets.entries()) {
         if (index === 1) {
-          expect(card.actions.length).toBe(0);
+          expect(wallet.links.length).toBe(0);
         } else {
-          expect(card.actions.length).toBeGreaterThan(0);
+          expect(wallet.links.length).toBeGreaterThan(0);
         }
-        expect(card.tokenCode).toBeDefined();
-        expect(Object.values(VisaCard121Status)).toContain(card.status);
-        expect(card.status).not.toBe(VisaCard121Status.Unknown);
-        expect(card.issuedDate).toBeDefined();
+        expect(wallet.tokenCode).toBeDefined();
+        expect(wallet.balance).toBeDefined();
+        expect(wallet.balance).toBe(amountVisa * 100);
+        expect(Object.values(WalletCardStatus121)).toContain(wallet.status);
+        expect(wallet.status).not.toBe(WalletCardStatus121.Unknown);
+        expect(wallet.issuedDate).toBeDefined();
+        expect(wallet.lastUsedDate).toBeDefined();
+        expect(wallet.spentThisMonth).toBeDefined();
       }
     }
   });

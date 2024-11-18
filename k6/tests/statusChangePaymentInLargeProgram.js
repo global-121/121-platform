@@ -13,7 +13,6 @@ const programsPage = new ProgramsModel();
 const paymentsPage = new PaymentsModel();
 const registrationsPage = new RegistrationsModel();
 
-const resetScript = 'nlrc-multiple';
 const duplicateNumber = 15;
 const programId = 3;
 const paymentId = 3;
@@ -31,7 +30,7 @@ export const options = {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDB(resetScript);
+  const reset = resetPage.resetDB();
   check(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });

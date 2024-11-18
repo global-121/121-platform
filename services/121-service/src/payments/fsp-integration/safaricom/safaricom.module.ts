@@ -3,54 +3,52 @@ import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
-import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
+import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
+import { PaymentProcessorSafaricom } from '@121-service/src/payments/fsp-integration/safaricom/processors/safaricom.processor';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { SafaricomRequestEntity } from '@121-service/src/payments/fsp-integration/safaricom/safaricom-request.entity';
+import { RedisModule } from '@121-service/src/payments/redis.module';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { UserModule } from '@121-service/src/user/user.module';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([SafaricomTransferEntity]),
+    TypeOrmModule.forFeature([
+      TransactionEntity,
+      RegistrationEntity,
+      SafaricomRequestEntity,
+    ]),
+    UserModule,
+    TransactionsModule,
+    BullModule.registerQueue({
+      name: QueueNamePayment.paymentSafaricom,
+      processors: [
+        {
+          path: 'src/payments/fsp-integration/safaricom/processors/safaricom.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 5, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
     RedisModule,
-    BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.transfer,
-      processors: [
-        {
-          path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-transfer-callback-job.processor.ts',
-        },
-      ],
-      limiter: {
-        max: 20, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
-      },
-    }),
-    BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.timeout,
-      processors: [
-        {
-          path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-timeout-callback-job.processor.ts',
-        },
-      ],
-      limiter: {
-        max: 20, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
-      },
-    }),
   ],
   providers: [
     SafaricomService,
     SafaricomApiService,
     CustomHttpService,
-    SafaricomTransferScopedRepository,
+    PaymentProcessorSafaricom,
   ],
   controllers: [SafaricomController],
-  exports: [SafaricomService, SafaricomTransferScopedRepository],
+  exports: [SafaricomService, SafaricomApiService],
 })
 export class SafaricomModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

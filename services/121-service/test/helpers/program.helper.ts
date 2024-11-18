@@ -30,7 +30,7 @@ export async function postProgram(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs`)
+    .post(`/programs/`)
     .set('Cookie', [accessToken])
     .send(program);
 }

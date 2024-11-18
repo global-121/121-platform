@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -51,18 +51,18 @@ test('[28516] View Visa cards', async ({ page }) => {
   await test.step('Should validate all possible card statuses at once: Paused, Active, Blocked/Substitued', async () => {
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Active,
+      WalletCardStatus121.Active,
     );
     await physicalCard.issueNewVisaDebitCard();
     // FOR NOW STATUS SHOULD BE BLOCKED BUT AFTER NEW CHANGES ARE APPLIED THIS SHOULD BE CHANGED INTO "SUBSTITUTED"
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Substituted,
+      WalletCardStatus121.Blocked,
     );
     await physicalCard.pauseVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Paused,
+      WalletCardStatus121.Paused,
     );
   });
 });

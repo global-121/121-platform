@@ -14,8 +14,8 @@ import { CascadeDeleteEntity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ValidationInfo } from '@121-service/src/programs/dto/validation-info.dto';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -115,7 +115,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: false })
   public tryWhatsAppFirst: boolean;
 
-  // TODO: This can be refactored into 'nameField' so that this can be 1 field name that maps to the 'Name' column in the Portal.
   // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
   public fullnameNamingConvention: string[] | null;
@@ -133,12 +132,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public budget: number | null;
 
   @OneToMany(
-    () => ProgramFinancialServiceProviderConfigurationEntity,
+    () => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,
   )
-  public programFspConfiguration: Relation<
-    ProgramFinancialServiceProviderConfigurationEntity[]
-  >;
+  public programFspConfiguration: Relation<ProgramFspConfigurationEntity[]>;
 
   @Column({ nullable: true, default: null, type: 'character varying' })
   public monitoringDashboardUrl: string | null;
@@ -180,7 +177,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
         columnName: 'program',
       },
       {
-        entityClass: ProgramFinancialServiceProviderConfigurationEntity,
+        entityClass: ProgramFspConfigurationEntity,
         columnName: 'programId',
       },
     ]);

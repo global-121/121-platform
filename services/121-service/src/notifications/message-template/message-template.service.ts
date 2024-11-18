@@ -22,7 +22,7 @@ export class MessageTemplateService {
   public async getMessageTemplatesByProgramId(
     programId: number,
     type?: string,
-    language?: LanguageEnum,
+    language?: string,
   ): Promise<MessageTemplateEntity[]> {
     let where: FindOptionsWhere<MessageTemplateEntity> = { programId };
 

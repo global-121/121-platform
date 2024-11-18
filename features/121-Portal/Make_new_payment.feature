@@ -218,48 +218,21 @@ Feature: Make a new payment
 
   Scenario: Successfully make a payment to a Person Affected with Financial Service provider "Safaricom"
     Given the Person Affected has been imported as registered
-    Given all fields have correctly filled ("phoneNumber", "National ID number")
+    Given all fields have correctly filled ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
     Given age is not under 18
     Given PA requests valid transaction value
     When payment is successfully requested
-    Then a successful transaction appears in the payment column and the payment history popup
+    Then a successful payment appears in the payment column and the payment history popup
+    And payment details are displayed with accordion open
+
 
   Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
-    Given the Person Affected has been imported as registered and included
+    Given the Person Affected has been imported as registered
     Given an obligatory field is missing ("phoneNumber", "National ID number")
     Given requested value is not valid
     When payment is requested
-    Then a failed transaction appears for the PA with the missing data
-
-  Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" by making a wrong request
-    # Trigger this in mock by using phoneNumber=254000000001
-    Given the Person Affected has been imported as registered and included
-    Given the request cannot be processed correctly
-    When payment is requested
-    Then a failed transaction appears for the PA with an error message of Invalid Access Token
-
-  Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" by making a successful request, but the PA cannot be paid out
-    # Trigger this in mock by using phoneNumber=254000000000
-    Given the Person Affected has been imported as registered and included
-    Given the request can be processed correctly, but the PA cannot be paid out
-    When payment is requested
-    Then a failed transaction appears for the PA with an error message of 'The phone number does not have M-PESA'
-
-  Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" by making a successful request, but the PA cannot be paid out due to timeout on safaricom side
-    # Trigger this in mock by using phoneNumber=254000000002
-    Given the Person Affected has been imported as registered and included
-    Given the request can be processed correctly, but the PA cannot be paid out due to timeout on safaricom
-    When payment is requested
-    Then a failed transaction appears for the PA with an error message of 'Transfer timed out'
-
-  Scenario: Unsuccessfully make a duplicate payment to a Person Affected with Financial Service provider "Safaricom" because of a unintended Redis job re-attempt
-    # This is not easily triggered in mock currently, but can be triggered by providing a static originatorConversationId in payments.service.ts and manually retrying a failed transaction
-    Given the Person Affected has been imported as registered and included
-    Given a failed transaction has been done already for the PA
-    When the retry payment is requested
-    Then a failed transaction appears for the PA with an error message indicating 'Payout with originatorConversationId=abc already exists & processed before.'
-
-
+    Then a failed payment appears for the PA with the missing data
+    And error is displayed
 
   --"Commercial Bank of Ethiopia"
 

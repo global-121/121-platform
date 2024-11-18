@@ -4,7 +4,7 @@ export enum ExportType {
   included = 'included',
   payment = 'payment',
   unusedVouchers = 'unused-vouchers',
-  intersolveVisaCardDetails = 'intersolve-visa-card-details',
+  cardBalances = 'card-balances',
   paDataChanges = 'pa-data-changes',
   filteredTable = 'filtered-table',
 }

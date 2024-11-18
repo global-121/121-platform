@@ -1,5 +1,4 @@
-import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, IonicModule, ModalController } from '@ionic/angular';
@@ -8,7 +7,7 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
-import { Card } from '../../models/intersolve-visa-wallet.model';
+import { PhysicalCard } from '../../models/physical-card.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -28,9 +27,9 @@ export class PhysicalCardPopupComponent implements OnInit {
   public programId: number;
 
   @Input({ required: true })
-  public card: Card = {
-    status: VisaCard121Status.Active,
-  } as Card;
+  public card: PhysicalCard = {
+    status: WalletCardStatus121.Active,
+  } as PhysicalCard;
 
   @Input({ required: true })
   public currency: string;
@@ -42,6 +41,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   public showButtons: boolean;
 
   public DateFormat = DateFormat;
+  public WalletCardStatus121 = WalletCardStatus121;
 
   public isCardPaused: boolean;
   public canIssueNewCard: boolean;
@@ -61,7 +61,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.isCardPaused = this.card.status === VisaCard121Status.Paused;
+    this.isCardPaused = this.card.status === WalletCardStatus121.Paused;
     this.canIssueNewCard = await this.getCanIssueNewCard();
   }
 
@@ -91,7 +91,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   }
 
   public canUsePauseButton() {
-    return this.card.status === VisaCard121Status.Paused
+    return this.card.status === WalletCardStatus121.Paused
       ? this.canUnpause()
         ? true
         : false
@@ -100,24 +100,32 @@ export class PhysicalCardPopupComponent implements OnInit {
         : false;
   }
 
-  public checkActionsInclude(actions: VisaCardAction[]) {
-    return this.card.actions.some((action) => actions.includes(action));
+  public checkActionsInclude(actions: string[]) {
+    return this.card.links.some((link) => actions.includes(link.action));
   }
 
   togglePauseButton() {
     this.pauseLoading = true;
-    const block = this.card.status !== VisaCard121Status.Paused;
+    const block = this.card.status !== WalletCardStatus121.Paused;
     this.progamsServiceApiService
-      .pauseCard(this.programId, this.referenceId, this.card.tokenCode, block)
-      .then(() => {
-        const message = block
-          ? this.translate.instant(
-              'registration-details.physical-cards-overview.action-result.pause-success',
-            )
-          : this.translate.instant(
-              'registration-details.physical-cards-overview.action-result.unpause-success',
-            );
-
+      .toggleBlockWallet(this.programId, this.card.tokenCode, block)
+      .then((response) => {
+        let message = '';
+        if (response.status === 204) {
+          message = block
+            ? this.translate.instant(
+                'registration-details.physical-cards-overview.action-result.pause-success',
+              )
+            : this.translate.instant(
+                'registration-details.physical-cards-overview.action-result.unpause-success',
+              );
+        } else if (response.status === 405) {
+          message = this.translate.instant('common.error-with-message', {
+            error: response.data?.code,
+          });
+        } else {
+          message = this.translate.instant('common.unknown-error');
+        }
         actionResult(this.alertController, this.translate, message, true);
       })
       .catch((error) => {
@@ -145,7 +153,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   issueNewCardButtonClick() {
     this.issueLoading = true;
     this.progamsServiceApiService
-      .reissueCard(this.programId, this.referenceId)
+      .issueNewCard(this.programId, this.referenceId)
       .then(() => {
         actionResult(
           this.alertController,
@@ -162,7 +170,7 @@ export class PhysicalCardPopupComponent implements OnInit {
           const errorMessage = this.translate.instant(
             'registration-details.physical-cards-overview.action-result.new-card-error',
             {
-              error: this.errorHandlerService.formatErrors(error),
+              error: error.error.errors,
             },
           );
           actionResult(

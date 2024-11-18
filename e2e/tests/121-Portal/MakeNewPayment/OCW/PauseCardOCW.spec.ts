@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { WalletCardStatus121 } from '@121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -51,17 +51,17 @@ test('[28462] Pause Visa debit cards', async ({ page }) => {
   await test.step('Should Pause Visa Card and details are presented correctly with status: Paused', async () => {
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Active,
+      WalletCardStatus121.Active,
     );
     await physicalCard.pauseVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Paused,
+      WalletCardStatus121.Paused,
     );
     await physicalCard.unPauseVisaDebitCard();
     await physicalCard.validateDebitCardStatus(
       physicalCardTitle,
-      VisaCard121Status.Active,
+      WalletCardStatus121.Active,
     );
   });
 });

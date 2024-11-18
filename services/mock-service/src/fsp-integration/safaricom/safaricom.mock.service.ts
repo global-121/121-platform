@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
 
@@ -11,9 +11,8 @@ import {
 
 enum MockScenario {
   success = 'success',
-  errorOnRequest = 'error-on-request',
-  errorOnCallback = 'error-on-callback',
-  errorOnCallbackForTimeOut = 'error-on-callback-for-timeout',
+  otherFailure = 'other-failure',
+  noResponse = 'no-response',
 }
 @Injectable()
 export class SafaricomMockService {
@@ -26,42 +25,30 @@ export class SafaricomMockService {
 
   public async transfer(
     transferDto: SafaricomTransferPayload,
-  ): Promise<
-    Partial<SafaricomTransferResponseBodyDto | SafaricomTransferPayload>
-  > {
+  ): Promise<SafaricomTransferResponseBodyDto> {
     let mockScenario: MockScenario = MockScenario.success;
-    if (transferDto.PartyB === '254000000000') {
-      mockScenario = MockScenario.errorOnRequest;
-    } else if (transferDto.PartyB === '254000000001') {
-      mockScenario = MockScenario.errorOnCallback;
-    } else if (transferDto.PartyB === '254000000002') {
-      mockScenario = MockScenario.errorOnCallbackForTimeOut;
-    }
-
-    if (mockScenario === MockScenario.errorOnRequest) {
-      return {
-        errorCode: '401.002.01',
-        errorMessage:
-          'Error Occurred - Invalid Access Token - mocked_access_token',
-      };
+    if (!transferDto.PartyB) {
+      mockScenario = MockScenario.otherFailure;
     }
 
     const transferResponse = {
       ConversationID: 'AG_20191219_00005797af5d7d75f652',
       OriginatorConversationID: transferDto.OriginatorConversationID,
-      ResponseCode: '0',
-      ResponseDescription: 'Accept the service request successfully.',
+      ResponseCode: mockScenario === MockScenario.success ? '0' : null,
+      ResponseDescription:
+        mockScenario === MockScenario.success
+          ? 'Accept the service request successfully.'
+          : 'Mock error message',
     };
 
-    this.sendStatusCallback(transferDto, transferResponse, mockScenario).catch(
-      (error) => console.log(error),
+    this.sendStatusCallback(transferResponse, mockScenario).catch((error) =>
+      console.log(error),
     );
 
     return transferResponse;
   }
 
   private async sendStatusCallback(
-    transferDto: SafaricomTransferPayload,
     transferResponse: SafaricomTransferResponseBodyDto,
     mockScenario: MockScenario,
   ): Promise<void> {
@@ -119,11 +106,11 @@ export class SafaricomMockService {
         },
       },
     };
-    const callbackErrorResponse = {
+    const otherFailureStatus = {
       Result: {
         ResultType: 0,
         ResultCode: 2001,
-        ResultDesc: 'The phone number does not have M-PESA.',
+        ResultDesc: 'The initiator information is invalid.',
         OriginatorConversationID: transferResponse.OriginatorConversationID,
         ConversationID: transferResponse.ConversationID,
         TransactionID: 'NLJ0000000',
@@ -137,25 +124,22 @@ export class SafaricomMockService {
       },
     };
 
-    const httpService = new HttpService();
-
     // Switch between mock scenarios
-    let response = {};
-    let url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTransferCallback}`;
+    let Status;
     if (mockScenario === MockScenario.success) {
-      response = {
-        Result: successStatus.Result,
-      };
-    } else if (mockScenario === MockScenario.errorOnCallback) {
-      response = {
-        Result: callbackErrorResponse.Result,
-      };
-    } else if (mockScenario === MockScenario.errorOnCallbackForTimeOut) {
-      // Based on Job Kipngetich reponse from safaricom,
-      // The initial request payload has been returned on the QueueTimeoutURL if the transaction times out on M-PESA.
-      response = transferDto;
-      url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`;
+      Status = successStatus;
+    } else if (mockScenario === MockScenario.otherFailure) {
+      Status = otherFailureStatus;
+    } else if (mockScenario === MockScenario.noResponse) {
+      const errors = 'No response';
+      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    const response = {
+      Result: Status.Result,
+    };
+    const httpService = new HttpService();
+    const url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomCallback}`;
 
     await lastValueFrom(httpService.post(url, response)).catch((error) =>
       console.log(error),

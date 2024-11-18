@@ -130,21 +130,11 @@ export class SeedMockHelper {
     console.log(`**CREATING MOCK DATA match Visa customers to registrations**`);
     await this.dataSource.query(queryAllVisaCustomers);
 
-    const queryAllVisaParentWallets = readSqlFile(
-      '../../src/scripts/sql/mock-visa-parent-wallets.sql',
+    const queryAllVisaWallets = readSqlFile(
+      '../../src/scripts/sql/mock-visa-wallets.sql',
     );
-    console.log(
-      `**CREATING MOCK DATA match Visa parent wallets to registrations**`,
-    );
-    await this.dataSource.query(queryAllVisaParentWallets);
-
-    const queryAllVisaChildWallets = readSqlFile(
-      '../../src/scripts/sql/mock-visa-child-wallets.sql',
-    );
-    console.log(
-      `**CREATING MOCK DATA match Visa child wallets to registrations**`,
-    );
-    await this.dataSource.query(queryAllVisaChildWallets);
+    console.log(`**CREATING MOCK DATA match Visa wallets to registrations**`);
+    await this.dataSource.query(queryAllVisaWallets);
 
     const queryDuplicateVouchers = readSqlFile(
       '../../src/scripts/sql/mock-intersolve-voucher.sql',

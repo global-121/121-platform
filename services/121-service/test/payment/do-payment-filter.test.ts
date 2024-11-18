@@ -169,8 +169,8 @@ describe('Do payment with filter', () => {
       [],
       accessToken,
       {
-        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3
-        'filter.fullName': `$ilike:s`, // selects registrationOCW1 and registrationOCW3
+        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
+        'filter.lastName': `$ilike:s`, // selects registrationOCW1 and registrationOCW3
       }, // This combination should only select registrationOCW3 that one is in both filters
     );
 
@@ -188,11 +188,10 @@ describe('Do payment with filter', () => {
     );
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(1);
-    // REFACTOR: this test no longer involves the scenario where applicableCount<totalFilterCount, which might have originally been part of the intention. Change/add this test again in the future.
-    expect(doPaymentResponse.body.totalFilterCount).toBe(1);
+    expect(doPaymentResponse.body.applicableCount).toBe(2);
+    expect(doPaymentResponse.body.totalFilterCount).toBe(3);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(1);
+    expect(transactionsResponse.body.length).toBe(2);
   });
 
   it('should only pay included people with a combi of filter and search', async () => {

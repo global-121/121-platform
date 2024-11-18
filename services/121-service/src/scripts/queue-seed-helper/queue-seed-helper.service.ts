@@ -2,23 +2,23 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 
-import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
 import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+} from '@121-service/src/notifications/enum/queue.names.enum';
+import { QueueNamePayment } from '@121-service/src/payments/enum/queue.names.enum';
+import { createRedisClient } from '@121-service/src/payments/redis-client';
 
 @Injectable()
 export class QueueSeedHelperService {
   constructor(
-    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
+    @InjectQueue(QueueNamePayment.paymentIntersolveVisa)
     private paymentIntersolveVisa: Queue,
-    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
+    @InjectQueue(QueueNamePayment.paymentIntersolveVoucher)
     private paymentIntersolveVoucher: Queue,
-    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
+    @InjectQueue(QueueNamePayment.paymentCommercialBankEthiopia)
     private paymentCommercialBankEthiopia: Queue,
-    @InjectQueue(TransactionJobQueueNames.safaricom)
+    @InjectQueue(QueueNamePayment.paymentSafaricom)
     private paymentSafaricom: Queue,
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
     private replyOnIncoming: Queue,

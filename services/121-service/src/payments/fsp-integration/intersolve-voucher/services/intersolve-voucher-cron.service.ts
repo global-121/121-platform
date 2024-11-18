@@ -9,13 +9,13 @@ import {
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
+import { QueueMessageService } from '@121-service/src/notifications/queue-message/queue-message.service';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -33,14 +33,14 @@ export class IntersolveVoucherCronService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   private readonly fallbackLanguage = 'en';
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
-    private readonly queueMessageService: MessageQueuesService,
+    private readonly queueMessageService: QueueMessageService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly registrationDataService: RegistrationDataService,
   ) {}
@@ -191,7 +191,7 @@ export class IntersolveVoucherCronService {
           .split('[[amount]]')
           .join(unsentIntersolveVoucher.amount);
 
-        await this.queueMessageService.addMessageJob({
+        await this.queueMessageService.addMessageToQueue({
           registration,
           message: whatsappPayment,
           messageContentType: MessageContentType.paymentReminder,

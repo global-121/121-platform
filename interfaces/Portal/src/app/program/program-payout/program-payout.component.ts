@@ -35,7 +35,7 @@ export class ProgramPayoutComponent implements OnInit {
   public DateFormat = DateFormat;
   public enumExportType = ExportType;
   public exportPaymentType: ExportType = ExportType.payment;
-  public exportCardUsageType: ExportType = ExportType.intersolveVisaCardDetails;
+  public exportCardUsageType: ExportType = ExportType.cardBalances;
 
   public program: Program;
   public payments: Payment[];

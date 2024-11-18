@@ -131,39 +131,6 @@ export class CustomHttpService {
     );
   }
 
-  public async request<T>({
-    method,
-    url,
-    payload,
-    headers,
-  }: {
-    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    url: string;
-    payload?: unknown;
-    headers?: Header[];
-  }): Promise<T> {
-    return await lastValueFrom(
-      this.httpService
-        .request<T>({
-          method,
-          url,
-          data: payload,
-          headers: this.createHeaders(headers),
-        })
-        .pipe(
-          map((response) => {
-            this.logMessageRequest({ headers, url, payload }, response);
-            return response;
-          }),
-          catchError((err) => {
-            const errorResponse = err.response || this.setNoResponseError(err);
-            this.logErrorRequest({ headers, url, payload }, errorResponse);
-            return of(errorResponse);
-          }),
-        ),
-    );
-  }
-
   private createHeaders(headers?: Header[]): Record<string, string> {
     const returnHeaders: Record<string, string> = {
       'Content-Type': 'application/json',

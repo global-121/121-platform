@@ -3,15 +3,17 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
+import {
+  ProcessNamePayment,
+  QueueNamePayment,
+} from '@121-service/src/payments/enum/queue.names.enum';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
-} from '@121-service/src/payments/redis/redis-client';
-import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+} from '@121-service/src/payments/redis-client';
 
-@Processor(TransactionJobQueueNames.commercialBankEthiopia)
+@Processor(QueueNamePayment.paymentCommercialBankEthiopia)
 export class PaymentProcessorCommercialBankEthiopia {
   constructor(
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
@@ -19,7 +21,7 @@ export class PaymentProcessorCommercialBankEthiopia {
     private readonly redisClient: Redis,
   ) {}
 
-  @Process(JobNames.default)
+  @Process(ProcessNamePayment.sendPayment)
   async handleSendPayment(job: Job): Promise<void> {
     await this.commercialBankEthiopiaService.processQueuedPayment(job.data);
     await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);

@@ -52,7 +52,7 @@ const indirectRelationConfig: EntityRelations = {
     'registration',
   ],
   IntersolveVisaParentWalletEntity: ['intersolveVisaCustomer', 'registration'],
-  SafaricomTransferEntity: ['transaction', 'registration'],
+  SafaricomRequestEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
 };
 
@@ -90,7 +90,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
 
-  public override async find(options: FindOptionsCombined<T>): Promise<T[]> {
+  public async find(options: FindOptionsCombined<T>): Promise<T[]> {
     if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
@@ -102,7 +102,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.find(scopedOptions);
   }
 
-  public override async findAndCount(
+  public async findAndCount(
     options: FindOptionsCombined<T>,
   ): Promise<[T[], number]> {
     if (!hasUserScope(this.request)) {
@@ -116,9 +116,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findAndCount(scopedOptions);
   }
 
-  public override async findOne(
-    options: FindOptionsCombined<T>,
-  ): Promise<T | null> {
+  public async findOne(options: FindOptionsCombined<T>): Promise<T | null> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
     }
@@ -130,9 +128,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
-  public override async findOneOrFail(
-    options: FindOptionsCombined<T>,
-  ): Promise<T> {
+  public async findOneOrFail(options: FindOptionsCombined<T>): Promise<T> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOneOrFail(options);
     }
@@ -144,9 +140,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findOneOrFail(scopedOptions);
   }
 
-  public override createQueryBuilder(
-    queryBuilderAlias: string,
-  ): ScopedQueryBuilder<T> {
+  public createQueryBuilder(queryBuilderAlias: string): ScopedQueryBuilder<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
     if (!hasUserScope(this.request)) {
@@ -177,38 +171,32 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   ////////////////////////////////////////////////////////////////
   // COPIED IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
-  public override async save(
+  public async save(
     entity: T,
     options: SaveOptions & { reload: false },
   ): Promise<T>;
-  public override async save(entity: T, options?: SaveOptions): Promise<T>;
-  public override async save(
+  public async save(entity: T, options?: SaveOptions): Promise<T>;
+  public async save(
     entities: T[],
     options: SaveOptions & { reload: false },
   ): Promise<T[]>;
-  public override async save(
-    entities: T[],
-    options?: SaveOptions,
-  ): Promise<T[]>;
-  public override async save(
+  public async save(entities: T[], options?: SaveOptions): Promise<T[]>;
+  public async save(
     entityOrEntities: T | T[],
     options?: SaveOptions,
   ): Promise<T | T[]> {
     return this.repository.save(entityOrEntities as any, options);
   }
 
-  public override async insert(
+  public async insert(
     entityOrEntities: QueryDeepPartialEntity<T> | QueryDeepPartialEntity<T>[],
   ): Promise<InsertResult> {
     return this.repository.insert(entityOrEntities);
   }
 
-  public override async remove(entity: T, options?: RemoveOptions): Promise<T>;
-  public override async remove(
-    entities: T[],
-    options?: RemoveOptions,
-  ): Promise<T[]>;
-  public override async remove(
+  public async remove(entity: T, options?: RemoveOptions): Promise<T>;
+  public async remove(entities: T[], options?: RemoveOptions): Promise<T[]>;
+  public async remove(
     entityOrEntities: T | T[],
     options?: RemoveOptions,
   ): Promise<T | T[]> {

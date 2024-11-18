@@ -49,6 +49,8 @@ export const API_PATHS = {
   imageCode: 'notifications/imageCode/',
   voucherInstructions:
     'financial-service-providers/intersolve-voucher/instructions/',
+  safaricomResult: 'payments/safaricom/transaction',
+  safaricomQueueTimeout: 'payments/safaricom/timeout',
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 export const EXTERNAL_API = {
@@ -60,6 +62,8 @@ export const EXTERNAL_API = {
   whatsAppStatusTemplateTest: baseApiUrl + API_PATHS.whatsAppStatusTemplateTest,
   whatsAppIncoming: baseApiUrl + API_PATHS.whatsAppIncoming,
   imageCodeUrl: baseApiUrl + API_PATHS.imageCode,
+  safaricomResultUrl: baseApiUrl + API_PATHS.safaricomResult,
+  safaricomQueueTimeoutUrl: baseApiUrl + API_PATHS.safaricomQueueTimeout,
 };
 
 // Configure Public Twilio Setttings:

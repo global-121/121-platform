@@ -3,18 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
-import {
-  FinancialServiceProviderConfigurationEnum,
-  FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { FspQuestionEntity } from '@121-service/src/financial-service-providers/fsp-question.entity';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import {
   CreateProgramCustomAttributeDto,
@@ -27,6 +19,8 @@ import {
 } from '@121-service/src/programs/dto/program-question.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { ProgramFspConfigurationService } from '@121-service/src/programs/fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from '@121-service/src/programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
@@ -56,9 +50,7 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
-    private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly programFspConfigurationService: ProgramFspConfigurationService,
   ) {}
 
   public async findProgramOrThrow(
@@ -684,7 +676,7 @@ export class ProgramService {
   public async getFspConfigurations(
     programId: number,
     configName: string[],
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
+  ): Promise<ProgramFspConfigurationEntity[]> {
     let programFspConfigurations =
       await this.programFspConfigurationService.findByProgramId(programId);
     if (configName.length > 0) {
@@ -695,35 +687,5 @@ export class ProgramService {
     }
 
     return programFspConfigurations;
-  }
-
-  public async getFundingWallet(programId: number) {
-    const programFspConfigurations =
-      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
-        programId,
-        FinancialServiceProviders.intersolveVisa,
-      );
-    if (!programFspConfigurations) {
-      throw new HttpException(
-        'Financial Service Provider configurations not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const fundingTokenConfiguration = programFspConfigurations.find(
-      (config) =>
-        config.name ===
-        FinancialServiceProviderConfigurationEnum.fundingTokenCode,
-    );
-    if (!fundingTokenConfiguration) {
-      throw new HttpException(
-        'Funding token configuration not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return await this.intersolveVisaService.getWallet(
-      fundingTokenConfiguration.value as string,
-    );
   }
 }
