@@ -266,7 +266,7 @@ class RegistrationsPage extends BasePage {
       this.clickProceedToExport(),
     ]);
 
-    const downloadDir = './downloads';
+    const downloadDir = 'e2e/downloads';
     if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
 
     const filePath = path.join(downloadDir, download.suggestedFilename());
