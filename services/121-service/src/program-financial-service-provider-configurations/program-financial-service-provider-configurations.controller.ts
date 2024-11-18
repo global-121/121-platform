@@ -224,7 +224,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     return await this.programFinancialServiceProviderConfigurationsService.createProperties(
       {
         programId,
-        programFspConfigurationName: name,
+        name,
         properties,
       },
     );
@@ -275,7 +275,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     return await this.programFinancialServiceProviderConfigurationsService.updateProperty(
       {
         programId,
-        programFspConfigurationName: name,
+        name,
         propertyName,
         property,
       },
@@ -326,7 +326,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     await this.programFinancialServiceProviderConfigurationsService.deleteProperty(
       {
         programId,
-        programFspConfigurationName: name,
+        name,
         propertyName,
       },
     );

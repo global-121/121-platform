@@ -33,7 +33,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Act
       const result =
-        ProgramFinancialServiceProviderConfigurationMapper.mapEntitytoDto(
+        ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
           testEntity,
         );
 
@@ -81,7 +81,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Act
       const result =
-        ProgramFinancialServiceProviderConfigurationMapper.mapEntitytoDto(
+        ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
           testEntity,
         );
 

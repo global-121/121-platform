@@ -503,7 +503,7 @@ export class ProgramService {
   public async getFundingWallet(programId: number) {
     // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =
-      await this.programFinancialServiceProviderConfigurationRepository.findByProgramIdAndFinancialServiceProviderName(
+      await this.programFinancialServiceProviderConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
         {
           programId,
           financialServiceProviderName:

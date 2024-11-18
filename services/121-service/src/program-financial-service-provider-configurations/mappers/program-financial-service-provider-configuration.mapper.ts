@@ -12,11 +12,11 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
     entities: ProgramFinancialServiceProviderConfigurationEntity[],
   ): ProgramFinancialServiceProviderConfigurationResponseDto[] {
     return entities.map((entity) =>
-      ProgramFinancialServiceProviderConfigurationMapper.mapEntitytoDto(entity),
+      ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(entity),
     );
   }
 
-  public static mapEntitytoDto(
+  public static mapEntityToDto(
     entity: ProgramFinancialServiceProviderConfigurationEntity,
   ): ProgramFinancialServiceProviderConfigurationResponseDto {
     // Remove unnecessary properties from the financialServiceProvider object
@@ -97,7 +97,6 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
     entity.name = dto.name;
     entity.programFinancialServiceProviderConfigurationId =
       programFinancialServiceProviderConfigurationId;
-    // For now this is the only property that is an array
     // Later we can add a switch case and a type for each property if there are more non-string properties
     entity.value =
       ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtoValueToEntityValue(

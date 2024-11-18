@@ -20,7 +20,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     );
   }
 
-  public async findByProgramIdAndFinancialServiceProviderName({
+  public async getByProgramIdAndFinancialServiceProviderName({
     programId,
     financialServiceProviderName,
     includeProperties,
@@ -38,26 +38,10 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     });
   }
 
-  public async findUsernamePasswordPropertiesForIds(
-    programFinancialServiceProviderConfigurationId: number[],
-  ): Promise<
-    {
-      programFinancialServiceProviderConfigurationId: number;
-      credentials: UsernamePasswordInterface;
-    }[]
-  > {
-    return await Promise.all(
-      programFinancialServiceProviderConfigurationId.map(async (id) => ({
-        programFinancialServiceProviderConfigurationId: id,
-        credentials: await this.getUsernamePasswordProperties(id),
-      })),
-    );
-  }
-
   public async getUsernamePasswordProperties(
     programFinancialServiceProviderConfigurationId: number,
   ): Promise<UsernamePasswordInterface> {
-    const properties = await this.getConfigurationProperties(
+    const properties = await this.getProperties(
       programFinancialServiceProviderConfigurationId,
     );
     const propertyUsername = properties.find(
@@ -90,7 +74,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     programFinancialServiceProviderConfigurationId: number;
     names: string[];
   }) {
-    const properties = await this.getConfigurationProperties(
+    const properties = await this.getProperties(
       programFinancialServiceProviderConfigurationId,
     );
 
@@ -108,22 +92,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     }));
   }
 
-  public async getPropertyValueByNameOrThrow({
-    programFinancialServiceProviderConfigurationId,
-    name,
-  }: {
-    programFinancialServiceProviderConfigurationId: number;
-    name: string;
-  }): Promise<string | string[] | Record<string, string> | undefined> {
-    const properties = await this.getConfigurationProperties(
-      programFinancialServiceProviderConfigurationId,
-    );
-
-    const property = properties.find((property) => property.name === name);
-    return property?.value;
-  }
-
-  private async getConfigurationProperties(
+  private async getProperties(
     programFinancialServiceProviderConfigurationId: number,
   ) {
     const configuration = await this.baseRepository.findOne({

@@ -196,24 +196,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       );
     });
 
-    it('should throw an exception if the financial service provider name is invalid', async () => {
-      const fakeFspName = 'InvalidProvider';
-      const invalidCreateDto = {
-        ...createDto,
-        financialServiceProviderName: fakeFspName as FinancialServiceProviders,
-      };
-
-      await expect(service.create(programId, invalidCreateDto)).rejects.toThrow(
-        HttpException,
-      );
-      await expect(service.create(programId, invalidCreateDto)).rejects.toThrow(
-        new HttpException(
-          `No fsp found with name ${fakeFspName}`,
-          HttpStatus.NOT_FOUND,
-        ),
-      );
-    });
-
     it('should throw an exception if a configuration with the same name exists', async () => {
       // Mocking the check for existing configuration
       const duplivateNameCreateDto = {
@@ -362,7 +344,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       );
       await expect(service.delete(programId, configName)).rejects.toThrow(
         new HttpException(
-          'Cannot delete program fsp configuration with transactions as this is needed for reporting',
+          'Cannot delete Program FSP Configuration because it has related Transactions as this is needed for reporting',
           HttpStatus.CONFLICT,
         ),
       );
@@ -373,7 +355,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     it('should succesfully map and create properties', async () => {
       const result = await service.createProperties({
         programId,
-        programFspConfigurationName: configName,
+        name: configName,
         properties: [validPropertyDto],
       });
       expect(mockProgramFspConfigurationRepository.findOne).toHaveBeenCalled();
@@ -388,7 +370,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       await expect(
         service.createProperties({
           programId,
-          programFspConfigurationName: nonExistingConfigName,
+          name: nonExistingConfigName,
           properties: [validPropertyDto],
         }),
       ).rejects.toThrow(
@@ -414,7 +396,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     it('should successfully update and map the property', async () => {
       await service.updateProperty({
         programId,
-        programFspConfigurationName: configName,
+        name: configName,
         propertyName,
         property: updatedPropertyDto,
       });
@@ -443,7 +425,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       await expect(
         service.updateProperty({
           programId,
-          programFspConfigurationName: configName,
+          name: configName,
           propertyName,
           property: updatedPropertyDto,
         }),
@@ -479,7 +461,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
       await service.deleteProperty({
         programId,
-        programFspConfigurationName: configName,
+        name: configName,
         propertyName,
       });
 

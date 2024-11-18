@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -34,6 +35,7 @@ export class CreateProgramFinancialServiceProviderConfigurationDto {
     example: FinancialServiceProviders.intersolveVoucherWhatsapp,
   })
   @IsNotEmpty()
+  @IsEnum(FinancialServiceProviders)
   public readonly financialServiceProviderName: FinancialServiceProviders;
 
   @IsArray()

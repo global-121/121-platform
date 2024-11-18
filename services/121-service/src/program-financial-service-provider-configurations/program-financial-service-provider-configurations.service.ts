@@ -7,7 +7,6 @@ import {
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
@@ -56,9 +55,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<void> {
-    this.validateFspExists(
-      programFspConfigurationDto.financialServiceProviderName,
-    );
     this.validateLabelHasEnglishTranslation(programFspConfigurationDto.label);
 
     const existingConfig = await this.programFspConfigurationRepository.findOne(
@@ -71,7 +67,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     );
 
     if (existingConfig) {
-      // Should we use http status code conflict here or is that code too obscure
       throw new HttpException(
         `Program Financial Service Provider with name ${programFspConfigurationDto.name} already exists`,
         HttpStatus.CONFLICT,
@@ -80,7 +75,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
 
     if (programFspConfigurationDto.properties) {
       await this.validateAllowedPropertyNames({
-        properties: programFspConfigurationDto.properties,
+        propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
         financialServiceProviderName:
           programFspConfigurationDto.financialServiceProviderName,
       });
@@ -104,19 +99,19 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         programFspConfigurationDto.properties,
       );
     }
-    return ProgramFinancialServiceProviderConfigurationMapper.mapEntitytoDto(
+    return ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
       savedEntity,
     );
   }
 
   public async update(
     programId: number,
-    programFspConfigurationName: string,
+    name: string,
     updateProgramFspConfigurationDto: UpdateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
-        name: Equal(programFspConfigurationName),
+        name: Equal(name),
         programId: Equal(programId),
       },
     });
@@ -134,7 +129,9 @@ export class ProgramFinancialServiceProviderConfigurationsService {
 
     if (updateProgramFspConfigurationDto.properties) {
       await this.validateAllowedPropertyNames({
-        properties: updateProgramFspConfigurationDto.properties,
+        propertyNames: updateProgramFspConfigurationDto.properties.map(
+          (p) => p.name,
+        ),
         financialServiceProviderName: config.financialServiceProviderName,
       });
     }
@@ -149,18 +146,15 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       );
     }
 
-    return ProgramFinancialServiceProviderConfigurationMapper.mapEntitytoDto(
+    return ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
       savedEntity,
     );
   }
 
-  public async delete(
-    programId: number,
-    programFspConfigurationName: string,
-  ): Promise<void> {
+  public async delete(programId: number, name: string): Promise<void> {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
-        name: Equal(programFspConfigurationName),
+        name: Equal(name),
         programId: Equal(programId),
       },
       relations: ['properties'],
@@ -177,7 +171,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     });
     if (transactionCount > 0) {
       throw new HttpException(
-        'Cannot delete program fsp configuration with transactions as this is needed for reporting',
+        'Cannot delete Program FSP Configuration because it has related Transactions as this is needed for reporting',
         HttpStatus.CONFLICT,
       );
     }
@@ -190,22 +184,25 @@ export class ProgramFinancialServiceProviderConfigurationsService {
 
   public async createProperties({
     programId,
-    programFspConfigurationName,
+    name,
     properties: inputProperties,
   }: {
     programId: number;
-    programFspConfigurationName: string;
+    name: string;
     properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
   }): Promise<
     ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
   > {
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
-      programFspConfigurationName,
+      name,
     );
     await this.validateAllowedPropertyNames({
-      properties: inputProperties,
+      propertyNames: inputProperties.map((p) => p.name),
       financialServiceProviderName: config.financialServiceProviderName,
+    });
+    await this.validateNoDuplicateExistingProperties({
+      propertyNames: inputProperties.map((p) => p.name),
       configIdToCheckForDuplicates: config.id,
     });
     const properties = await this.createPropertyEntities(
@@ -218,13 +215,11 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   }
 
   private async validateAllowedPropertyNames({
-    properties,
+    propertyNames,
     financialServiceProviderName,
-    configIdToCheckForDuplicates,
   }: {
-    properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
+    propertyNames: string[];
     financialServiceProviderName: FinancialServiceProviders;
-    configIdToCheckForDuplicates?: number;
   }): Promise<void> {
     const configPropertiesOfFsp =
       getFinancialServiceProviderConfigurationProperties(
@@ -232,19 +227,18 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       );
 
     const errors: string[] = [];
-    for (const programFspConfigurationDto of properties) {
+    for (const propertyName of propertyNames) {
       if (
         configPropertiesOfFsp &&
-        !configPropertiesOfFsp.includes(programFspConfigurationDto.name)
+        !configPropertiesOfFsp.includes(propertyName)
       ) {
         errors.push(
-          `For fsp ${financialServiceProviderName}, only the following values are allowed: ${configPropertiesOfFsp.join(' ')}. You tried to add ${programFspConfigurationDto.name}.`,
+          `For fsp ${financialServiceProviderName}, only the following values are allowed: ${configPropertiesOfFsp.join(' ')}. You tried to add ${propertyName}.`,
         );
       }
     }
 
     // Check if there are duplicate property names in this array
-    const propertyNames = properties.map((property) => property.name);
     if (propertyNames.length !== new Set(propertyNames).size) {
       const duplicateNames = propertyNames.filter(
         (name, index) => propertyNames.indexOf(name) !== index,
@@ -254,7 +248,21 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       );
     }
 
+    if (errors.length > 0) {
+      const errorsString = errors.join(' ');
+      throw new HttpException(errorsString, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async validateNoDuplicateExistingProperties({
+    propertyNames,
+    configIdToCheckForDuplicates,
+  }: {
+    propertyNames: string[];
+    configIdToCheckForDuplicates: number;
+  }): Promise<void> {
     // Check if properties are already present in the database
+    const errors: string[] = [];
     if (configIdToCheckForDuplicates) {
       const exisingProperties =
         await this.programFspConfigurationPropertyRepository.find({
@@ -262,7 +270,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
             programFinancialServiceProviderConfigurationId: Equal(
               configIdToCheckForDuplicates,
             ),
-            name: In(properties.map((property) => property.name)),
+            name: In(propertyNames),
           },
         });
       for (const property of exisingProperties) {
@@ -271,28 +279,26 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         );
       }
     }
-
     if (errors.length > 0) {
       const errorsString = errors.join(' ');
-
       throw new HttpException(errorsString, HttpStatus.BAD_REQUEST);
     }
   }
 
   public async updateProperty({
     programId,
-    programFspConfigurationName,
+    name: name,
     propertyName,
     property,
   }: {
     programId: number;
-    programFspConfigurationName: string;
+    name: string;
     propertyName: FinancialServiceProviderConfigurationProperties;
     property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
   }): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
-      programFspConfigurationName,
+      name,
     );
     const existingProperty =
       await this.getProgramFspConfigurationPropertyOrThrow(
@@ -318,16 +324,16 @@ export class ProgramFinancialServiceProviderConfigurationsService {
 
   public async deleteProperty({
     programId,
-    programFspConfigurationName,
+    name: name,
     propertyName,
   }: {
     programId: number;
-    programFspConfigurationName: string;
+    name: string;
     propertyName: FinancialServiceProviderConfigurationProperties;
   }): Promise<void> {
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
-      programFspConfigurationName,
+      name,
     );
     const existingProperty =
       await this.getProgramFspConfigurationPropertyOrThrow(
@@ -370,18 +376,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     );
   }
 
-  private validateFspExists(fspName: string): void {
-    const fsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-      (fsp) => fsp.name === fspName,
-    );
-    if (!fsp) {
-      throw new HttpException(
-        `No fsp found with name ${fspName}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-  }
-
   private validateLabelHasEnglishTranslation(label: any): void {
     if (!label.en) {
       throw new HttpException(
@@ -393,17 +387,17 @@ export class ProgramFinancialServiceProviderConfigurationsService {
 
   private async getProgramFspConfigurationOrThrow(
     programId: number,
-    programFspConfigurationName: string,
+    name: string,
   ): Promise<ProgramFinancialServiceProviderConfigurationEntity> {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
-        name: Equal(programFspConfigurationName),
+        name: Equal(name),
         programId: Equal(programId),
       },
     });
     if (!config) {
       throw new HttpException(
-        `Program financial service provider configuration with name ${programFspConfigurationName} not found`,
+        `Program financial service provider configuration with name ${name} not found`,
         HttpStatus.NOT_FOUND,
       );
     }

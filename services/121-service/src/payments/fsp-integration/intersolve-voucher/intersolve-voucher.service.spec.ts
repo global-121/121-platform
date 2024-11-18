@@ -56,20 +56,15 @@ describe('IntersolveVoucherService', () => {
     // Arrange
     const useWhatsapp = true;
 
-    const dbQueryResult = [
-      {
-        credentials: {
-          username: usernameValue,
-          password: passwordValue,
-        },
-        programFinancialServiceProviderConfigurationId: 1,
-      },
-    ];
+    const dbQueryResult = {
+      username: usernameValue,
+      password: passwordValue,
+    };
 
     jest
       .spyOn(
         intersolveVoucherService.programFspConfigurationRepository,
-        'findUsernamePasswordPropertiesForIds',
+        'getUsernamePasswordProperties',
       )
       .mockImplementation(() => Promise.resolve(dbQueryResult));
 
