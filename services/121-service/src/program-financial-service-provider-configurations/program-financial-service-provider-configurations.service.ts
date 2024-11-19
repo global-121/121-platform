@@ -171,7 +171,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     });
     if (transactionCount > 0) {
       throw new HttpException(
-        'Cannot delete Program FSP Configuration because it has related Transactions as this is needed for reporting',
+        'Cannot delete Program FSP Configuration because it has related Transactions',
         HttpStatus.CONFLICT,
       );
     }

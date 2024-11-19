@@ -138,14 +138,12 @@ export class ExcelService
     programId: number,
   ): Promise<string[]> {
     const columnsToExportConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
           programFinancialServiceProviderConfigurationId,
-          names: [
-            FinancialServiceProviderConfigurationProperties.columnsToExport,
-          ],
+          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
         },
-      )[0].value;
+      );
 
     if (columnsToExportConfig) {
       // check if columnsToExportConfig is a string array or throw an error
@@ -227,14 +225,12 @@ export class ExcelService
     programFinancialServiceProviderConfigurationId: number,
   ): Promise<string> {
     const matchColumn =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
+      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
           programFinancialServiceProviderConfigurationId,
-          names: [
-            FinancialServiceProviderConfigurationProperties.columnToMatch,
-          ],
+          name: FinancialServiceProviderConfigurationProperties.columnToMatch,
         },
-      )[0].value;
+      );
     if (!matchColumn) {
       throw new HttpException(
         {

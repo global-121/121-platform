@@ -23,18 +23,16 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   public async getByProgramIdAndFinancialServiceProviderName({
     programId,
     financialServiceProviderName,
-    includeProperties,
   }: {
     programId: number;
     financialServiceProviderName: FinancialServiceProviders;
-    includeProperties: boolean;
   }): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
     return await this.baseRepository.find({
       where: {
         programId: Equal(programId),
         financialServiceProviderName: Equal(financialServiceProviderName),
       },
-      relations: includeProperties ? ['properties'] : [],
+      relations: { properties: true },
     });
   }
 
@@ -65,6 +63,26 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
       response.password = propertyPassword.value;
     }
     return response;
+  }
+
+  // This methods specfically does not throw as it also used to check if the property exists
+  public async getPropertyValueByName({
+    programFinancialServiceProviderConfigurationId,
+    name,
+  }: {
+    programFinancialServiceProviderConfigurationId: number;
+    name: FinancialServiceProviderConfigurationProperties;
+  }) {
+    const configuration = await this.baseRepository
+      .createQueryBuilder('configuration')
+      .leftJoinAndSelect('configuration.properties', 'properties')
+      .where('configuration.id = :id', {
+        id: programFinancialServiceProviderConfigurationId,
+      })
+      .andWhere('properties.name = :name', { name })
+      .getOne();
+    return configuration?.properties.find((property) => property.name === name)
+      ?.value;
   }
 
   public async getPropertiesByNamesOrThrow({

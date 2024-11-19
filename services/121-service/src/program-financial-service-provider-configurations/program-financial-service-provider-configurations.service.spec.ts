@@ -344,7 +344,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       );
       await expect(service.delete(programId, configName)).rejects.toThrow(
         new HttpException(
-          'Cannot delete Program FSP Configuration because it has related Transactions as this is needed for reporting',
+          'Cannot delete Program FSP Configuration because it has related Transactions',
           HttpStatus.CONFLICT,
         ),
       );
