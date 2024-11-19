@@ -276,4 +276,8 @@ body {
       @apply grow-0;
     }
   }
+
+  .p-checkbox-label {
+    @apply font-normal;
+  }
 }

@@ -3,19 +3,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  ElementRef,
+  effect,
   inject,
   input,
   LOCALE_ID,
   model,
   output,
-  Renderer2,
   signal,
   Type,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UrlTree } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 import { get } from 'lodash';
 import {
@@ -43,7 +42,9 @@ import {
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { QueryTableColumnManagementComponent } from '~/components/query-table/components/query-table-column-management/query-table-column-management.component';
+import { QueryTableGlobalSearchComponent } from '~/components/query-table/components/query-table-global-search/query-table-global-search.component';
+import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import {
   PaginateQuery,
@@ -66,6 +67,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
   fieldForFilter?: TField; // defaults to field
   disableSorting?: boolean;
   disableFiltering?: boolean;
+  defaultHidden?: boolean;
   filterMatchMode?: FilterMatchMode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component?: Type<TableCellComponent<TData, any>>;
@@ -81,9 +83,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
         | QueryTableColumnType.NUMERIC
         | QueryTableColumnType.TEXT; // defaults to QueryTableColumnType.TEXT
       getCellText?: (item: TData) => string;
-      getCellRouterLink?: (
-        item: TData,
-      ) => (number | string)[] | null | string | undefined | UrlTree;
+      getCellRouterLink?: (item: TData) => RouterLink['routerLink'];
     }
 );
 
@@ -99,7 +99,6 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
     MenuModule,
     ContextMenuModule,
     ButtonModule,
-    DatePipe,
     IconFieldModule,
     InputTextModule,
     InputIconModule,
@@ -109,6 +108,8 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
     ColoredChipComponent,
     AutoFocusModule,
     CheckboxModule,
+    QueryTableGlobalSearchComponent,
+    QueryTableColumnManagementComponent,
   ],
   templateUrl: './query-table.component.html',
   styles: ``,
@@ -131,6 +132,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   initialSortField = input<keyof TData & string>();
   initialSortOrder = input<-1 | 1>(1);
   enableSelection = input<boolean>(false);
+  enableColumnManagement = input<boolean>(false);
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();
   readonly onUpdateSelection = output<QueryTableSelectionEvent<TData>>();
@@ -138,27 +140,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
   @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
-  @ViewChild('globalFilterContainer')
-  globalFilterContainer: ElementRef<HTMLDivElement>;
-  @ViewChild('globalFilterInput')
-  globalFilterInput: ElementRef<HTMLInputElement>;
-
-  constructor(private renderer: Renderer2) {
-    this.renderer.listen('window', 'click', (e: Event) => {
-      const globalFilterValue = this.globalFilterValue();
-
-      const isNoGlobalFilterApplied =
-        globalFilterValue === undefined || globalFilterValue === '';
-
-      const hasCickedOutsideGlobalFilterContainer =
-        e.target !== this.globalFilterContainer.nativeElement &&
-        !this.globalFilterContainer.nativeElement.contains(e.target as Node);
-
-      if (isNoGlobalFilterApplied && hasCickedOutsideGlobalFilterContainer) {
-        this.globalFilterVisible.set(false);
-      }
-    });
-  }
 
   /**
    * DISPLAY
@@ -186,7 +167,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   totalColumnCount = computed(
     () =>
-      this.columns().length +
+      this.visibleColumns().length +
       (this.contextMenuItems() ? 1 : 0) +
       (this.expandableRowTemplate() ? 1 : 0) +
       (this.enableSelection() ? 1 : 0),
@@ -430,4 +411,29 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       $localize`(${selectedItemsCount.toString()} selected)`
     );
   });
+
+  /**
+   * COLUMN VISIBILITY
+   */
+  visibleColumns = model<QueryTableColumn<TData>[]>([]);
+
+  resetColumnVisibility() {
+    this.visibleColumns.set(
+      this.columns().filter((column) => !column.defaultHidden),
+    );
+  }
+
+  columnVisibilityEffect = effect(
+    () => {
+      if (
+        !this.enableColumnManagement() ||
+        this.visibleColumns().length === 0
+      ) {
+        this.resetColumnVisibility();
+      }
+    },
+    {
+      allowSignalWrites: true,
+    },
+  );
 }

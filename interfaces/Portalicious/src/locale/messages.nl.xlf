@@ -1408,6 +1408,26 @@
         <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
         <target state="new">Something went wrong with this import. Please fix the errors reported below and try again.</target>
       </trans-unit>
+      <trans-unit id="query-table-manage-table" datatype="html">
+        <source>Manage table</source>
+        <target state="new">Manage table</target>
+      </trans-unit>
+      <trans-unit id="generic-apply" datatype="html">
+        <source>Apply</source>
+        <target state="new">Apply</target>
+      </trans-unit>
+      <trans-unit id="1953762348939012822" datatype="html">
+        <source>Revert to default</source>
+        <target state="new">Revert to default</target>
+      </trans-unit>
+      <trans-unit id="8980999496899249966" datatype="html">
+        <source>Table columns:</source>
+        <target state="new">Table columns:</target>
+      </trans-unit>
+      <trans-unit id="generic-clear" datatype="html">
+        <source>Clear</source>
+        <target state="new">Clear</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

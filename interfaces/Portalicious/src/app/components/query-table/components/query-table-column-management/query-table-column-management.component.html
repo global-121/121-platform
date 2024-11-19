@@ -1,0 +1,46 @@
+<p-button
+  icon="pi pi-cog"
+  (click)="showColumnManagement()"
+  text
+  severity="secondary"
+  title="Manage table"
+  i18n-title="@@query-table-manage-table"
+  aria-label="Manage table"
+  i18n-aria-label="@@query-table-manage-table"
+/>
+
+<app-form-sidebar
+  [(visible)]="formVisible"
+  [formGroup]="formGroup"
+  [mutation]="updateColumnVisibility"
+  formTitle="Manage table"
+  i18n-formTitle="@@query-table-manage-table"
+  submitButtonText="Apply"
+  i18n-submitButtonText="@@generic-apply"
+>
+  <p-button
+    label="Revert to default"
+    i18n-label
+    icon="pi pi-replay"
+    iconPos="left"
+    outlined
+    rounded
+    (click)="resetColumnVisibility.emit(); formVisible.set(false)"
+  />
+  <p
+    i18n
+    class="mb-2 mt-5 font-semibold"
+  >
+    Table columns:
+  </p>
+
+  @for (column of columns(); track $index) {
+    <div class="align-items-center flex w-full gap-1">
+      <p-checkbox
+        formControlName="selectedColumns"
+        [label]="column.header"
+        [value]="column"
+      />
+    </div>
+  }
+</app-form-sidebar>

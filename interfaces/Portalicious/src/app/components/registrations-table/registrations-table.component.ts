@@ -96,12 +96,6 @@ export class RegistrationsTableComponent {
         }),
     },
     {
-      field: 'registrationCreated',
-      fieldForFilter: 'registrationCreatedDate',
-      header: $localize`:@@registration-created:Registration created`,
-      type: QueryTableColumnType.DATE,
-    },
-    {
       field: 'status',
       header: $localize`:@@registration-status:Status`,
       type: QueryTableColumnType.MULTISELECT,
@@ -113,6 +107,13 @@ export class RegistrationsTableComponent {
       ),
       getCellChipData: (registration) =>
         getChipDataByRegistrationStatus(registration.status),
+    },
+    {
+      field: 'registrationCreated',
+      fieldForFilter: 'registrationCreatedDate',
+      header: $localize`:@@registration-created:Registration created`,
+      type: QueryTableColumnType.DATE,
+      defaultHidden: true,
     },
   ]);
 

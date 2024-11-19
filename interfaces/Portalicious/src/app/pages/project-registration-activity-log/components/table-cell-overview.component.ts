@@ -18,7 +18,7 @@ import {
   getChipDataByTransactionStatusEnum,
   getChipDataByTwilioMessageStatus,
 } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/table-cell/table-cell.component';
+import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';

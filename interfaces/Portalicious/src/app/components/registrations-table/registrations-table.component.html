@@ -11,6 +11,7 @@
   (onUpdateSelection)="tableSelection.set($event)"
   [contextMenuItems]="contextMenuItems()"
   (onUpdateContextMenuItem)="contextMenuRegistration.set($event)"
+  [enableColumnManagement]="true"
 >
   <div table-actions>
     <ng-content select="[table-actions]"></ng-content>
