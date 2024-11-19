@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { Equal, In, Repository } from 'typeorm';
+import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
@@ -520,14 +520,13 @@ export class UserService {
     return user;
   }
 
-  public async findByUsernameOrThrow(username: string): Promise<UserEntity> {
+  public async findByUsernameOrThrow(
+    username: string,
+    relations?: FindOptionsRelations<UserEntity>,
+  ): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { username: Equal(username) },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
+      relations,
     });
 
     if (!user) {

@@ -92,7 +92,9 @@ export class CookieJwtStrategy
       }
     }
     const username = (payload.username ?? '').toLowerCase();
-    const user = await this.userService.findByUsernameOrThrow(username);
+    const user = await this.userService.findByUsernameOrThrow(username, {
+      programAssignments: true,
+    });
 
     const userToken: UserRequestData = {
       id: payload.id,

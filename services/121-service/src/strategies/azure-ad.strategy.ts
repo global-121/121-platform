@@ -83,7 +83,10 @@ export class AzureAdStrategy
 
     try {
       // Try to find user by username (this is an email address in our case)
-      user = await this.userService.findByUsernameOrThrow(username);
+      user = await this.userService.findByUsernameOrThrow(username, {
+        programAssignments: true,
+      });
+
       if (!user.isEntraUser) {
         user = await this.userService.updateUser({
           id: user.id,
