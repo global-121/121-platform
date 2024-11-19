@@ -110,6 +110,7 @@
   header="Warning"
   i18n-header="@@generic-warning"
   headerIcon="pi pi-exclamation-triangle"
+  headerClass="text-orange-700"
   acceptLabel="Proceed"
   i18n-acceptLabel
   [mutation]="changeStatusMutation"
@@ -191,7 +192,7 @@
   [dismissableMask]="true"
 >
   <ng-template pTemplate="header">
-    <h3>
+    <h3 class="text-red-700">
       <i class="pi pi-exclamation-triangle me-2"></i>
       <ng-container i18n="@@generic-error">Error</ng-container>
     </h3>
