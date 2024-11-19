@@ -38,7 +38,8 @@ Make sure to update any dependencies from _within_ the Docker-container, with:
 The only exception to this is TypeORM. To update TypeORM:
 
 - Go to the forked repo and create a new version as described in the [README](https://github.com/global-121/typeorm/)
-- Change the version number of typeorm `"typeorm": "npm:@global121/typeorm@1.0.3",` in `services/121-service/package.json` according to the new release.
+- Change the version number of typeorm `"typeorm": "npm:@global121/typeorm@<version-number>",` in `services/121-service/package.json` according to the new release.
+  - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the typeorm package is also a dependency in other packages. This configuration overwrites that.
 - Run `npm i` and commit both the changes to the `services/121-service/package.json` and the `services/121-service/package-lock.json`
 
 ---
