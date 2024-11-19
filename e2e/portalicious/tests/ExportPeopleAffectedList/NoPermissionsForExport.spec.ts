@@ -11,7 +11,6 @@ import { registrationsPV } from '@121-service/test/registrations/pagination/pagi
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -34,7 +33,6 @@ test('[29360] Viewing the export options without permission', async ({
 }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
-  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -43,7 +41,7 @@ test('[29360] Viewing the export options without permission', async ({
   });
 
   await test.step('Validate that export button is not present', async () => {
-    await table.selectAllCheckbox();
+    await registrations.selectAllRegistrations();
     await registrations.assertExportButtonIsHidden();
   });
 });

@@ -1,11 +1,13 @@
 import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
 
-import BasePage from './BasePage';
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
+import BasePage from '@121-e2e/portalicious/pages/BasePage';
+import { expectedSortedArraysToEqual } from '@121-e2e/portalicious/utils';
 
 class UsersPage extends BasePage {
   page: Page;
-  readonly tableRows: Locator;
+  readonly table: TableComponent;
   readonly newUserButton: Locator;
   readonly fullNameInput: Locator;
   readonly emailInput: Locator;
@@ -16,7 +18,7 @@ class UsersPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.tableRows = this.page.locator('table tbody tr');
+    this.table = new TableComponent(page);
     this.newUserButton = this.page.getByRole('button', {
       name: 'Add new User',
     });
@@ -32,37 +34,17 @@ class UsersPage extends BasePage {
   }
 
   async validateAssignedUsersNames(expectedAssignedUsers: string[]) {
-    const actualAssignedUsers = await this.tableRows.evaluateAll((rows) =>
-      rows.map((row) =>
-        row.querySelector('td:nth-child(1)').textContent.trim(),
-      ),
-    );
+    await this.table.waitForLoaded(expectedAssignedUsers.length);
 
-    const sortedActualUsers = [...actualAssignedUsers].sort((a, b) =>
-      a.localeCompare(b),
-    );
-    const sortedExpectedUsers = [...expectedAssignedUsers].sort((a, b) =>
-      a.localeCompare(b),
-    );
-
-    expect(sortedActualUsers).toEqual(sortedExpectedUsers);
+    const actualAssignedUsers = await this.table.getTextArrayFromColumn(1);
+    expectedSortedArraysToEqual(actualAssignedUsers, expectedAssignedUsers);
   }
 
   async validateAssignedUserEmails(expectedUserEmails: string[]) {
-    const actualUserEmails = await this.tableRows.evaluateAll((rows) =>
-      rows.map((row) =>
-        row.querySelector('td:nth-child(2)').textContent.trim(),
-      ),
-    );
+    await this.table.waitForLoaded(expectedUserEmails.length);
 
-    const sortedActualUserEmails = [...actualUserEmails].sort((a, b) =>
-      a.localeCompare(b),
-    );
-    const sortedExpectedUserEmails = [...expectedUserEmails].sort((a, b) =>
-      a.localeCompare(b),
-    );
-
-    expect(sortedActualUserEmails).toEqual(sortedExpectedUserEmails);
+    const actualUserEmails = await this.table.getTextArrayFromColumn(2);
+    expectedSortedArraysToEqual(actualUserEmails, expectedUserEmails);
   }
 
   async validateRowTextContent({

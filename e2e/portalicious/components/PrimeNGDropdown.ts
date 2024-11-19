@@ -1,6 +1,6 @@
 import { Locator, Page } from 'playwright';
 
-export class PrimeDropdown {
+export class PrimeNGDropdown {
   readonly page: Page;
   readonly dropdownWrapper: Locator;
   readonly dropdownOpener: Locator;

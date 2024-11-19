@@ -10,7 +10,6 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 const sendingMessageToast =
   'Closing this notification will not cancel message sending.';
@@ -39,7 +38,6 @@ test.beforeEach(async ({ page }) => {
 test('[31076] Send templated message', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
-  const table = new TableComponent(page);
   const activityLog = new RegistrationActivityLogPage(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
@@ -49,7 +47,7 @@ test('[31076] Send templated message', async ({ page }) => {
   });
 
   await test.step('Send templated message', async () => {
-    await table.selectAllCheckbox();
+    await registrations.selectAllRegistrations();
     await registrations.selectBulkAction('Message');
     await registrations.selectTemplatedMessage('Include');
     await registrations.clickContinueToPreview();
