@@ -10,7 +10,7 @@
       rounded
       text
       class="lg:mr-9 [&_button:not(:hover)]:text-white"
-      (click)="sidebarVisible = true"
+      (click)="sidebarVisible.set(true)"
       data-testid="sidebar-toggle"
     />
     <app-logo [projectId]="projectId()" />
@@ -46,7 +46,7 @@
   [showCloseIcon]="false"
   (onShow)="sideBar.el.nativeElement.focus()"
   pFocusTrap
-  [pFocusTrapDisabled]="!sidebarVisible"
+  [pFocusTrapDisabled]="!sidebarVisible()"
   [tabindex]="-1"
 >
   <ng-template pTemplate="header">
@@ -57,7 +57,7 @@
       iconPos="left"
       plain
       text
-      (click)="sidebarVisible = false"
+      (click)="sidebarVisible.set(false)"
     />
   </ng-template>
   <div class="flex h-full w-full flex-col">
@@ -67,7 +67,6 @@
           [routerLink]="sidebarLink.routerLink"
           [routerLinkActive]="['font-bold', 'pointer-events-none']"
           [ariaCurrentWhenActive]="'page'"
-          (click)="sidebarVisible = false"
           class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
         >
           {{ sidebarLink.label }}
