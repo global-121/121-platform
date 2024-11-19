@@ -8,6 +8,21 @@ The 121-Service is the backend where 121-programs can be created and monitored, 
 
 See instructions to get started in the main [`README`](../../README.md#getting-started).
 
+## Database
+
+This service uses a [fork](https://github.com/global-121/typeorm) of [TypeORM](https://typeorm.io/) with a PostgreSQL database.
+
+### Seed the database
+
+You can seed the database by using the `api/reset` endpoint from the Swagger UI.
+
+### API Sign-up/Log-in
+
+- If you have no users in your database yet, start with running one of the [reset/seed-scripts above](#seed-the-database).
+- If you have already created the above user earlier, make a request: `POST /users/login`'. Change the example-value where necessary, and execute.
+- The 121-service will respond with a (httpOnly-)Cookie containing the users's details and permissions, the cookie will be used automatically on subsequent requests.
+- This will give access to each API-endpoint for which a `Permission` is specified and a matching `Permission` is present in the users' token/cookie.
+
 ## API
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
@@ -20,20 +35,12 @@ Make sure to update any dependencies from _within_ the Docker-container, with:
 
     docker compose exec 121-service  npm install --save <package-name>
 
-## Database
+The only exception to this is TypeORM. To update TypeORM:
 
-This service uses [TypeORM](https://typeorm.io/) with a PostgreSQL database.
-
-### Seed the database
-
-You can seed the database by using the `api/reset` endpoint from the Swagger UI.
-
-### API Sign-up/Log-in
-
-- If you have no users in your database yet, start with running one of the [reset/seed-scripts above](#seed-the-database).
-- If you have already created the above user earlier, make a request: `POST /users/login`'. Change the example-value where necessary, and execute.
-- The 121-service will respond with a (httpOnly-)Cookie containing the users's details and permissions, the cookie will be used automatically on subsequent requests.
-- This will give access to each API-endpoint for which a `Permission` is specified and a matching `Permission` is present in the users' token/cookie.
+- Go to the forked repo and create a new version as described in the [README](https://github.com/global-121/typeorm/)
+- Change the version number of typeorm `"typeorm": "npm:@global121/typeorm@<version-number>",` in `services/121-service/package.json` according to the new release.
+  - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the typeorm package is also a dependency in other packages. This configuration "tricks" npm into treating our fork as if it were the original `typeorm` so that, anywhere in our codebase (including in the `node_modules`), `import ... from 'typeorm'` will use our fork instead of the original `typeorm`
+- Run `npm i` and commit both the changes to the `services/121-service/package.json` and the `services/121-service/package-lock.json`
 
 ---
 
