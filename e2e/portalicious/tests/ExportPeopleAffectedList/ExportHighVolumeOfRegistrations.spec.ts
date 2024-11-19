@@ -5,20 +5,29 @@ import { seedIncludedRegistrations } from '@121-service/test/helpers/registratio
 import {
   getAccessToken,
   resetDB,
+  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { registrationPV8 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
+import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
+
+// Export selected registrations
+const status = 'included';
+const id = 1;
+const paymentAmountMultiplier = 1;
+const preferredLanguage = 'en';
+const fspDisplayName = 'Visa debit card';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
-  const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+  await seedIncludedRegistrations([registrationPV8], programIdPV, accessToken);
+  await resetDuplicateRegistrations(14);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -29,11 +38,10 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31196] Selection should show correct PA count for bulk action (Single PA)', async ({
-  page,
-}) => {
+test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
+  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -41,11 +49,21 @@ test('[31196] Selection should show correct PA count for bulk action (Single PA)
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Apply bulk action on one PA', async () => {
-    await registrations.performActionOnRegistrationByName({
-      registrationName: 'Gemma Houtenbos',
-      action: 'Message',
-    });
-    await registrations.validateSendMessagePaCount(1);
+  await test.step('Export list and validate XLSX file downloaded', async () => {
+    await table.selectAllCheckbox();
+    await registrations.clickAndSelectExportOption(
+      'Export selected registrations',
+    );
+    await registrations.exportAndAssertSelectedRegistrations(
+      0,
+      {
+        id,
+        status,
+        paymentAmountMultiplier,
+        preferredLanguage,
+        fspDisplayName,
+      },
+      { condition: true, minRowCount: 15000 },
+    );
   });
 });

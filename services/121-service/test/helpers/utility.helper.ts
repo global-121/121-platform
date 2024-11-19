@@ -29,6 +29,19 @@ export function resetDB(seedScript: SeedScript): Promise<request.Response> {
     });
 }
 
+export function resetDuplicateRegistrations(
+  mockNumber: number,
+): Promise<request.Response> {
+  return getServer()
+    .post('/scripts/duplicate-registrations')
+    .query({
+      mockPowerNumberRegistrations: mockNumber,
+    })
+    .send({
+      secret: process.env.RESET_SECRET,
+    });
+}
+
 export function loginApi(
   username: string,
   password: string,

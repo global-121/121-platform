@@ -11,29 +11,30 @@ import { registrationsPV } from '@121-service/test/registrations/pagination/pagi
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
+import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
-  const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
   );
 });
 
-test('[31196] Selection should show correct PA count for bulk action (Single PA)', async ({
+test('[29360] Viewing the export options without permission', async ({
   page,
 }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
+  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -41,11 +42,8 @@ test('[31196] Selection should show correct PA count for bulk action (Single PA)
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Apply bulk action on one PA', async () => {
-    await registrations.performActionOnRegistrationByName({
-      registrationName: 'Gemma Houtenbos',
-      action: 'Message',
-    });
-    await registrations.validateSendMessagePaCount(1);
+  await test.step('Validate that export button is not present', async () => {
+    await table.selectAllCheckbox();
+    await registrations.assertExportButtonIsHidden();
   });
 });

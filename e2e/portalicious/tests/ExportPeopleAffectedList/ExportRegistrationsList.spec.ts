@@ -11,14 +11,21 @@ import { registrationsPV } from '@121-service/test/registrations/pagination/pagi
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
+import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
+
+// Export selected registrations
+const status = 'included';
+const id = 1;
+const paymentAmountMultiplier = 1;
+const preferredLanguage = 'nl';
+const fspDisplayName = 'Albert Heijn voucher WhatsApp';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
-  const pvProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
+  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -29,11 +36,10 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31196] Selection should show correct PA count for bulk action (Single PA)', async ({
-  page,
-}) => {
+test('[29358] Export People Affected list', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
+  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -41,11 +47,17 @@ test('[31196] Selection should show correct PA count for bulk action (Single PA)
     await basePage.selectProgram(projectTitle);
   });
 
-  await test.step('Apply bulk action on one PA', async () => {
-    await registrations.performActionOnRegistrationByName({
-      registrationName: 'Gemma Houtenbos',
-      action: 'Message',
+  await test.step('Export list and validate XLSX files downloaded', async () => {
+    await table.selectAllCheckbox();
+    await registrations.clickAndSelectExportOption(
+      'Export selected registrations',
+    );
+    await registrations.exportAndAssertSelectedRegistrations(0, {
+      id,
+      status,
+      paymentAmountMultiplier,
+      preferredLanguage,
+      fspDisplayName,
     });
-    await registrations.validateSendMessagePaCount(1);
   });
 });
