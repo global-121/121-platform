@@ -35,7 +35,7 @@ Make sure to update any dependencies from _within_ the Docker-container, with:
 
     docker compose exec 121-service  npm install --save <package-name>
 
-The only expection to this is TypeORM. To update TypeORM:
+The only exception to this is TypeORM. To update TypeORM:
 
 - Go to the forked repo and create a new version as described in the [README](https://github.com/global-121/typeorm/)
 - Change the version number of typeorm `"typeorm": "npm:@global121/typeorm@1.0.3",` in `services/121-service/package.json` according to the new release.
