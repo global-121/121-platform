@@ -10,7 +10,7 @@ See instructions to get started in the main [`README`](../../README.md#getting-s
 
 ## Database
 
-This service uses as [fork](https://github.com/global-121/typeorm) of [TypeORM](https://typeorm.io/) with a PostgreSQL database.
+This service uses a [fork](https://github.com/global-121/typeorm) of [TypeORM](https://typeorm.io/) with a PostgreSQL database.
 
 ### Seed the database
 
