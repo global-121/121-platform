@@ -39,7 +39,7 @@ The only exception to this is TypeORM. To update TypeORM:
 
 - Go to the forked repo and create a new version as described in the [README](https://github.com/global-121/typeorm/)
 - Change the version number of typeorm `"typeorm": "npm:@global121/typeorm@<version-number>",` in `services/121-service/package.json` according to the new release.
-  - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the typeorm package is also a dependency in other packages. This configuration overwrites that.
+  - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the typeorm package is also a dependency in other packages. This configuration "tricks" npm into treating our fork as if it were the original `typeorm` so that, anywhere in our codebase (including in the `node_modules`), `import ... from 'typeorm'` will use our fork instead of the original `typeorm`
 - Run `npm i` and commit both the changes to the `services/121-service/package.json` and the `services/121-service/package-lock.json`
 
 ---
