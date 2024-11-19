@@ -218,6 +218,17 @@ export class ProjectRegistrationsPageComponent {
         },
       },
       {
+        label: $localize`Pause`,
+        icon: 'pi pi-pause',
+        visible: this.canChangeStatus()(RegistrationStatusEnum.paused),
+        command: () => {
+          this.changeStatus({
+            status: RegistrationStatusEnum.paused,
+            triggeredFromContextMenu: true,
+          });
+        },
+      },
+      {
         label: $localize`Message`,
         icon: 'pi pi-envelope',
         visible: this.canSendMessage(),

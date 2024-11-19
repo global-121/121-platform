@@ -6,7 +6,7 @@
 >
   <ng-template pTemplate="header">
     <div class="flex w-full items-center">
-      <h3>
+      <h3 [class]="headerClass()">
         <i class="me-2 {{ headerIcon() }}"></i>
         {{ header() }}
       </h3>
