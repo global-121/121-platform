@@ -111,7 +111,7 @@ updates:
       - dependency-name: 'zone.js'
 
   - package-ecosystem: npm
-    directory: '/interfaces/Portalicous'
+    directory: '/interfaces/Portalicious'
     schedule:
       interval: weekly
       day: tuesday
@@ -122,17 +122,17 @@ updates:
         patterns:
           - '@angular/*'
           - '@angular-devkit/*'
+          - 'typescript'
           - 'zone.js'
       dependencies:
         patterns:
           - '*'
     ignore:
       # Dependencies below are ordered alphabetically!
-      # Most/all Angular-related dependencies are ignored for all versions
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
-      - dependency-name: typescript
-        update-types: ['version-update:semver-major']
+        # filesize 10 does not work with ngx-filesize
+      - dependency-name: filesize
 
   - package-ecosystem: npm
     directory: '/e2e'
@@ -147,7 +147,6 @@ updates:
           - '*'
     ignore:
       # Dependencies below are ordered alphabetically!
-      # Most/all Angular-related dependencies are ignored for all versions
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
 

@@ -11,7 +11,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import {
-  provideAngularQuery,
+  provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 
@@ -25,7 +25,7 @@ export function getAppConfig(locale: Locale): ApplicationConfig {
       provideExperimentalZonelessChangeDetection(),
       provideAnimationsAsync(),
       provideHttpClient(withInterceptorsFromDi()),
-      provideAngularQuery(
+      provideTanStackQuery(
         new QueryClient({
           defaultOptions: {
             queries: {
