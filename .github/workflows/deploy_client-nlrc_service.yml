@@ -22,6 +22,15 @@ on:
   workflow_dispatch:
 
 jobs:
+  fail_immediately:
+    name: 'Fail Immediately'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Set Error Message'
+        run: |
+          echo "Error: This workflow is intentionally failing because we do not deploy to NLRC any more, we are waiting for Intersolve to fix migrations issues. If you want to bypass this, comment out this step temporarily."
+          exit 1
+
   build-and-deploy:
     name: Build and Deploy
     environment: 'client-nlrc'
