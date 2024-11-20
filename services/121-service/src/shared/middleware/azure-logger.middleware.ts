@@ -1,8 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { TelemetryClient } from 'applicationinsights';
+import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { NextFunction, Request, Response } from 'express';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import appInsights = require('applicationinsights');
 
 @Injectable()
 export class AzureLoggerMiddleware implements NestMiddleware {
@@ -10,7 +8,7 @@ export class AzureLoggerMiddleware implements NestMiddleware {
 
   constructor() {
     if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-      this.defaultClient = appInsights.defaultClient;
+      this.defaultClient = defaultClient;
     }
   }
 
