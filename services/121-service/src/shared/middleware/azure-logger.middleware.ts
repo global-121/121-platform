@@ -1,5 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { TelemetryClient } from 'applicationinsights';
+import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
@@ -7,10 +7,8 @@ export class AzureLoggerMiddleware implements NestMiddleware {
   defaultClient: TelemetryClient;
 
   constructor() {
-    if (process.env.APPLICATION_INSIGHT_IKEY) {
-      this.defaultClient = new TelemetryClient(
-        process.env.APPLICATION_INSIGHT_IKEY,
-      );
+    if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+      this.defaultClient = defaultClient;
     }
   }
 
@@ -29,10 +27,21 @@ export class AzureLoggerMiddleware implements NestMiddleware {
         this.defaultClient.trackTrace({
           message: `${requestLog} - ${responseLog}}`,
         });
-        this.defaultClient.flush();
+        this.flushLogs();
       });
     }
 
     next();
+  }
+
+  private flushLogs(): void {
+    this.defaultClient
+      .flush()
+      .then(() => {
+        return;
+      })
+      .catch((flushError) => {
+        console.error('An error occured in logError:', flushError);
+      });
   }
 }

@@ -27,14 +27,17 @@ jobs:
             core.endGroup()
 
             const prDescription = pr.data.body;
-            if (!/AB#\d{5}/.test(prDescription)) {
+            const prLabels = pr.data.labels.map(label => label.name);
+
+            if (prLabels.includes('dependencies')) {
+              core.notice('✅ PR contains a "dependencies" label. Do not check on AB#XXXX.');
+            } else if (!/AB#\d{5}/.test(prDescription)) {
               core.setFailed('Please make sure you have replaced AB#XXXX with a valid DevOps ID in your PR description');
             } else {
               core.notice('✅ PR description contains a DevOps ID');
             }
 
             const validLabels = ['enhancement', 'bugfix', 'dependencies', 'chore', 'ignore-for-release', 'portalicious', 'other'];
-            const prLabels = pr.data.labels.map(label => label.name);
             if (!prLabels.some(label => validLabels.includes(label))) {
               core.setFailed('Add one of the following labels to your PR: ' + validLabels.join(', '));
             } else {

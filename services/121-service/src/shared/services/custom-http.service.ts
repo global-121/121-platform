@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { TelemetryClient } from 'applicationinsights';
+import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { isPlainObject } from 'lodash';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
@@ -29,11 +29,7 @@ export class CustomHttpService {
   defaultClient: TelemetryClient;
 
   public constructor(private readonly httpService: HttpService) {
-    if (process.env.APPLICATION_INSIGHT_IKEY) {
-      this.defaultClient = new TelemetryClient(
-        process.env.APPLICATION_INSIGHT_IKEY,
-      );
-    }
+    this.defaultClient = defaultClient;
   }
 
   public async get<T>(url: string, headers?: Header[]): Promise<T> {
@@ -209,7 +205,7 @@ export class CustomHttpService {
             externalUrl: request.url,
           },
         });
-        this.defaultClient.flush();
+        this.flushLogs('logMessageRequest');
       } catch (error) {
         console.log('An error occured in logMessageRequest: ', error);
       }
@@ -241,11 +237,22 @@ export class CustomHttpService {
             externalUrl: request.url,
           },
         });
-        this.defaultClient.flush();
+        this.flushLogs('logErrorRequest');
       } catch (error) {
         console.log('An error occured in logErrorRequest: ', error);
       }
     }
+  }
+
+  private flushLogs(methodName: string): void {
+    this.defaultClient
+      .flush()
+      .then(() => {
+        return;
+      })
+      .catch((flushError) => {
+        console.error(`An error occured in ${methodName}:`, flushError);
+      });
   }
 
   private stringify(obj: object): string {

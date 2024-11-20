@@ -192,7 +192,7 @@ async function bootstrap(): Promise<void> {
 
 void bootstrap();
 
-if (!!process.env.APPLICATION_INSIGHT_IKEY) {
-  appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+if (!!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
   appInsights.start();
 }
