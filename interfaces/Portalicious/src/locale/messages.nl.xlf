@@ -198,10 +198,6 @@
         <source>Reset user password</source>
         <target>Reset user password</target>
       </trans-unit>
-      <trans-unit id="1709815007411996759" datatype="html">
-        <source>project-payment works!</source>
-        <target>project-betaling werkt!</target>
-      </trans-unit>
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
         <target>Gebruiker bijgewerkt</target>
@@ -1439,6 +1435,18 @@
       <trans-unit id="2655022920786701138" datatype="html">
         <source>Add to Payment</source>
         <target state="new">Add to Payment</target>
+      </trans-unit>
+      <trans-unit id="2224540478181897692" datatype="html">
+        <source>All Payments</source>
+        <target state="new">All Payments</target>
+      </trans-unit>
+      <trans-unit id="4892553839051604445" datatype="html">
+        <source>Payment</source>
+        <target state="new">Payment</target>
+      </trans-unit>
+      <trans-unit id="8221183084962199390" datatype="html">
+        <source>Payment not found. Please check the URL and try again.</source>
+        <target state="new">Payment not found. Please check the URL and try again.</target>
       </trans-unit>
     </body>
   </file>

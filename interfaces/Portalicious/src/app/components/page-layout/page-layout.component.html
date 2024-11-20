@@ -15,15 +15,15 @@
         <app-project-menu [projectId]="projectId()!" />
       }
       <div class="flex-1 px-6 py-8 lg:px-24">
-        @if (registration.isError()) {
-          <p-message
-            severity="warn"
-            styleClass="w-full"
-            text="Registration not found. Please check the URL and try again."
-            i18n-text
-          />
-        } @else {
-          @if (registrationId()) {
+        @if (registrationId()) {
+          @if (registration.isError()) {
+            <p-message
+              severity="warn"
+              styleClass="w-full"
+              text="Registration not found. Please check the URL and try again."
+              i18n-text
+            />
+          } @else {
             <app-registration-header
               [projectId]="projectId()!"
               [registrationId]="registrationId()!"
@@ -35,20 +35,34 @@
               />
               <ng-content select="[registration-page]"></ng-content>
             </p-card>
-          } @else {
-            @if (pageTitle()) {
-              <app-page-layout-title-and-actions>
-                <ng-container page-layout-title>
-                  {{ pageTitle() }}
-                </ng-container>
-                <ng-container page-layout-actions>
-                  <ng-content select="[header-actions]"></ng-content>
-                </ng-container>
-              </app-page-layout-title-and-actions>
-            }
-
-            <ng-content></ng-content>
           }
+        } @else if (paymentId()) {
+          @if (payment.isError()) {
+            <p-message
+              severity="warn"
+              styleClass="w-full"
+              text="Payment not found. Please check the URL and try again."
+              i18n-text
+            />
+          } @else {
+            <app-payment-header
+              [projectId]="projectId()!"
+              [paymentId]="paymentId()!"
+            ></app-payment-header>
+          }
+        } @else {
+          @if (pageTitle()) {
+            <app-page-layout-title-and-actions>
+              <ng-container page-layout-title>
+                {{ pageTitle() }}
+              </ng-container>
+              <ng-container page-layout-actions>
+                <ng-content select="[header-actions]"></ng-content>
+              </ng-container>
+            </app-page-layout-title-and-actions>
+          }
+
+          <ng-content></ng-content>
         }
       </div>
     }

@@ -23,10 +23,13 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPayment(projectId: Signal<number>, paymentId: Signal<number | undefined>) {
+  getPayment(
+    projectId: Signal<number | undefined>,
+    paymentId: Signal<number | undefined>,
+  ) {
     return this.generateQueryOptions<PaymentAggregate>({
-      path: [...BASE_ENDPOINT(projectId), paymentId],
-      enabled: () => !!paymentId(),
+      path: [...BASE_ENDPOINT(projectId as Signal<number>), paymentId],
+      enabled: () => !!projectId() && !!paymentId(),
     });
   }
 

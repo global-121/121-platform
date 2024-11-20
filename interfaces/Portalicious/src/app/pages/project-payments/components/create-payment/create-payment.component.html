@@ -30,13 +30,13 @@
         Select included registrations to add to this payment.
       </p>
       <p-card>
-        <!-- TODO AB#31329 limit this to included registrations -->
         <app-registrations-table
           #registrationsTable
           [projectId]="projectId()"
           [localStorageKey]="
             'project-payment-registrations-table-' + projectId()
           "
+          [overrideFilters]="overrideFilters"
         />
       </p-card>
     }

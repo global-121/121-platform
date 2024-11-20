@@ -12,6 +12,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { ToastService } from '~/services/toast.service';
 
@@ -43,6 +45,11 @@ export class CreatePaymentComponent {
   registrationsTable: RegistrationsTableComponent;
 
   today = new Date();
+
+  overrideFilters = {
+    // only registrations with status "included" are eligible for payment
+    status: RegistrationStatusEnum.included,
+  };
 
   addSelectedToPayment() {
     this.toastService.showToast({
