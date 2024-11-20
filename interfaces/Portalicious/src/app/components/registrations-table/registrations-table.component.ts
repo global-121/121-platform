@@ -46,6 +46,7 @@ export class RegistrationsTableComponent {
   projectId = input.required<number>();
   contextMenuItems = input<MenuItem[]>();
   localStorageKey = input<string>();
+  overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>({});
 
   private paginateQueryService = inject(PaginateQueryService);
   private registrationApiService = inject(RegistrationApiService);
@@ -61,10 +62,21 @@ export class RegistrationsTableComponent {
   protected tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
   public contextMenuRegistration = signal<Registration | undefined>(undefined);
 
+  private registrationsPaginateQuery = computed<PaginateQuery>(() => {
+    const paginateQuery = this.paginateQuery() ?? {};
+    return {
+      ...paginateQuery,
+      filter: {
+        ...(paginateQuery.filter ?? {}),
+        ...this.overrideFilters(),
+      },
+    };
+  });
+
   protected registrationsResponse = injectQuery(
     this.registrationApiService.getManyByQuery(
       this.projectId,
-      this.paginateQuery,
+      this.registrationsPaginateQuery,
     ),
   );
 
@@ -75,47 +87,57 @@ export class RegistrationsTableComponent {
     () => this.registrationsResponse.data()?.meta.totalItems ?? 0,
   );
 
-  protected columns = computed<QueryTableColumn<Registration>[]>(() => [
-    {
-      field: 'personAffectedSequence',
-      fieldForSort: 'registrationProgramId',
-      header: $localize`PA #`,
-      getCellRouterLink: (registration) =>
-        registrationLink({
-          projectId: this.projectId(),
-          registrationId: registration.id,
-        }),
-    },
-    {
-      field: 'fullName',
-      header: $localize`:@@registration-full-name:Full Name`,
-      getCellRouterLink: (registration) =>
-        registrationLink({
-          projectId: this.projectId(),
-          registrationId: registration.id,
-        }),
-    },
-    {
-      field: 'status',
-      header: $localize`:@@registration-status:Status`,
-      type: QueryTableColumnType.MULTISELECT,
-      options: Object.entries(REGISTRATION_STATUS_LABELS).map(
-        ([value, label]) => ({
-          label,
-          value,
-        }),
-      ),
-      getCellChipData: (registration) =>
-        getChipDataByRegistrationStatus(registration.status),
-    },
-    {
-      field: 'registrationCreated',
-      fieldForFilter: 'registrationCreatedDate',
-      header: $localize`:@@registration-created:Registration created`,
-      type: QueryTableColumnType.DATE,
-      defaultHidden: true,
-    },
-  ]);
+  protected columns = computed(() => {
+    const registrationTableColumns: QueryTableColumn<Registration>[] = [
+      {
+        field: 'personAffectedSequence',
+        fieldForSort: 'registrationProgramId',
+        header: $localize`PA #`,
+        getCellRouterLink: (registration) =>
+          registrationLink({
+            projectId: this.projectId(),
+            registrationId: registration.id,
+          }),
+      },
+      {
+        field: 'fullName',
+        header: $localize`:@@registration-full-name:Full Name`,
+        getCellRouterLink: (registration) =>
+          registrationLink({
+            projectId: this.projectId(),
+            registrationId: registration.id,
+          }),
+      },
+      {
+        field: 'status',
+        header: $localize`:@@registration-status:Status`,
+        type: QueryTableColumnType.MULTISELECT,
+        options: Object.entries(REGISTRATION_STATUS_LABELS).map(
+          ([value, label]) => ({
+            label,
+            value,
+          }),
+        ),
+        getCellChipData: (registration) =>
+          getChipDataByRegistrationStatus(registration.status),
+      },
+      {
+        field: 'registrationCreated',
+        fieldForFilter: 'registrationCreatedDate',
+        header: $localize`:@@registration-created:Registration created`,
+        type: QueryTableColumnType.DATE,
+        defaultHidden: true,
+      },
+    ];
+
+    registrationTableColumns.forEach((column) => {
+      column.disableFiltering =
+        !!column.field &&
+        Object.keys(this.overrideFilters()).includes(column.field);
+    });
+
+    return registrationTableColumns;
+  });
 
   public getActionData({
     triggeredFromContextMenu = false,
