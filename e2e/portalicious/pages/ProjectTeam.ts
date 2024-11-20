@@ -1,11 +1,13 @@
 import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
 
-import BasePage from './BasePage';
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
+import BasePage from '@121-e2e/portalicious/pages/BasePage';
+import { expectedSortedArraysToEqual } from '@121-e2e/portalicious/utils';
 
 class ProjectTeam extends BasePage {
   readonly page: Page;
-  readonly tableRows: Locator;
+  readonly table: TableComponent;
   readonly addUserFormUsersDropdown: Locator;
   readonly addUserFormChooseUserDropdown: Locator;
   readonly addUserFormChooseRoleDropdown: Locator;
@@ -16,7 +18,7 @@ class ProjectTeam extends BasePage {
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.tableRows = this.page.locator('table tbody tr');
+    this.table = new TableComponent(page);
     this.addUserFormUsersDropdown = this.page.getByRole('option');
     this.addUserFormChooseUserDropdown = this.page.locator(
       `[formControlName="userValue"]`,
@@ -34,29 +36,10 @@ class ProjectTeam extends BasePage {
   }
 
   async validateAssignedTeamMembers(expectedAssignedUsers: string[]) {
-    // Wait for the first row to appear to tackle the flakiness when the table is still loading
-    await expect(
-      this.page
-        .getByRole('row', {
-          name: expectedAssignedUsers[0],
-        })
-        .nth(0),
-    ).toBeVisible();
-    // Act
-    const actualAssignedUsers = await this.tableRows.evaluateAll((rows) =>
-      rows.map((row) =>
-        row.querySelector('td:nth-child(1)').textContent.trim(),
-      ),
-    );
-    // Assert
-    const sortedActualUsers = [...actualAssignedUsers].sort((a, b) =>
-      a.localeCompare(b),
-    );
-    const sortedExpectedUsers = [...expectedAssignedUsers].sort((a, b) =>
-      a.localeCompare(b),
-    );
+    await this.table.waitForLoaded(expectedAssignedUsers.length);
 
-    expect(sortedActualUsers).toEqual(sortedExpectedUsers);
+    const actualAssignedUsers = await this.table.getTextArrayFromColumn(1);
+    expectedSortedArraysToEqual(actualAssignedUsers, expectedAssignedUsers);
   }
 
   async openAddUserForm() {
@@ -86,14 +69,7 @@ class ProjectTeam extends BasePage {
       (options) => options.map((option) => option.textContent.trim()),
     );
 
-    const sortedActualUsers = [...actualAssignedUsers].sort((a, b) =>
-      a.localeCompare(b),
-    );
-    const sortedExpectedUsers = [...expectedAssignedUsers].sort((a, b) =>
-      a.localeCompare(b),
-    );
-
-    expect(sortedActualUsers).toEqual(sortedExpectedUsers);
+    expectedSortedArraysToEqual(actualAssignedUsers, expectedAssignedUsers);
   }
 
   async removeUserFromTeam({ userEmail }: { userEmail: string }) {

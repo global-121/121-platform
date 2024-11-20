@@ -4,8 +4,8 @@ import * as path from 'path';
 import { Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
-import BasePage from './BasePage';
-import TableComponent from './TableComponent';
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
+import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
 const expectedColumnsSelectedRegistrationsExport = [
   'referenceId',
@@ -97,6 +97,10 @@ class RegistrationsPage extends BasePage {
 
   async selectBulkAction(action: string) {
     await this.page.getByRole('button', { name: action }).click();
+  }
+
+  async selectAllRegistrations() {
+    await this.table.selectAllCheckbox();
   }
 
   async selectCustomMessage() {

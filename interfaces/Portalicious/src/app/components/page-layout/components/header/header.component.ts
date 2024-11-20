@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -64,7 +65,7 @@ export class HeaderComponent {
     },
   ]);
 
-  sidebarVisible = false;
+  sidebarVisible = model(false);
 
   sidebarLinks = computed(() => {
     const links = [

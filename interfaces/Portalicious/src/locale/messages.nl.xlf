@@ -1428,6 +1428,18 @@
         <source>Clear</source>
         <target state="new">Clear</target>
       </trans-unit>
+      <trans-unit id="8090326902764851563" datatype="html">
+        <source>Select included registrations to add to this payment.</source>
+        <target state="new">Select included registrations to add to this payment.</target>
+      </trans-unit>
+      <trans-unit id="8676540958141900081" datatype="html">
+        <source>Step 1 of 2</source>
+        <target state="new">Step 1 of 2</target>
+      </trans-unit>
+      <trans-unit id="2655022920786701138" datatype="html">
+        <source>Add to Payment</source>
+        <target state="new">Add to Payment</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -5,19 +5,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { authGuard } from '~/guards/auth.guard';
 import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
-import { ChangePasswordPageComponent } from '~/pages/change-password/change-password.page';
-import { LoginPageComponent } from '~/pages/login/login.page';
-import { ProjectMonitoringPageComponent } from '~/pages/project-monitoring/project-monitoring.page';
-import { ProjectPaymentPageComponent } from '~/pages/project-payment/project-payment.page';
-import { ProjectPaymentsPageComponent } from '~/pages/project-payments/project-payments.page';
-import { ProjectRegistrationActivityLogPageComponent } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
-import { ProjectRegistrationDebitCardsPageComponent } from '~/pages/project-registration-debit-cards/project-registration-debit-cards.page';
-import { ProjectRegistrationPersonalInformationPageComponent } from '~/pages/project-registration-personal-information/project-registration-personal-information.page';
-import { ProjectRegistrationsPageComponent } from '~/pages/project-registrations/project-registrations.page';
-import { ProjectTeamPageComponent } from '~/pages/project-team/project-team.page';
-import { ProjectsOverviewPageComponent } from '~/pages/projects-overview/projects-overview.page';
-import { UserRolesPageComponent } from '~/pages/user-roles/user-roles.page';
-import { UsersPageComponent } from '~/pages/users/users.page';
 
 export enum AppRoutes {
   changePassword = 'change-password',
@@ -34,16 +21,19 @@ export enum AppRoutes {
   userRoles = 'user-roles',
   users = 'users',
 }
-
 export const routes: Routes = [
   {
     path: AppRoutes.login,
-    component: LoginPageComponent,
+    loadComponent: () =>
+      import('~/pages/login/login.page').then((x) => x.LoginPageComponent),
   },
   {
     path: AppRoutes.changePassword,
     title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
-    component: ChangePasswordPageComponent,
+    loadComponent: () =>
+      import('~/pages/change-password/change-password.page').then(
+        (x) => x.ChangePasswordPageComponent,
+      ),
     canActivate: [
       authGuard,
       authCapabilitiesGuard(
@@ -54,12 +44,16 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.projects,
-    component: ProjectsOverviewPageComponent,
+    loadComponent: () =>
+      import('~/pages/projects-overview/projects-overview.page').then(
+        (x) => x.ProjectsOverviewPageComponent,
+      ),
     canActivate: [authGuard],
   },
   {
     path: AppRoutes.users,
-    component: UsersPageComponent,
+    loadComponent: () =>
+      import('~/pages/users/users.page').then((x) => x.UsersPageComponent),
     canActivate: [
       authGuard,
       authCapabilitiesGuard((authService) => authService.isOrganizationAdmin),
@@ -67,7 +61,10 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.userRoles,
-    component: UserRolesPageComponent,
+    loadComponent: () =>
+      import('~/pages/user-roles/user-roles.page').then(
+        (x) => x.UserRolesPageComponent,
+      ),
     canActivate: [
       authGuard,
       authCapabilitiesGuard((authService) => authService.isOrganizationAdmin),
@@ -79,14 +76,20 @@ export const routes: Routes = [
     children: [
       {
         path: AppRoutes.projectMonitoring,
-        component: ProjectMonitoringPageComponent,
+        loadComponent: () =>
+          import('~/pages/project-monitoring/project-monitoring.page').then(
+            (x) => x.ProjectMonitoringPageComponent,
+          ),
         canActivate: [
           projectPermissionsGuard(PermissionEnum.ProgramMetricsREAD),
         ],
       },
       {
         path: AppRoutes.projectTeam,
-        component: ProjectTeamPageComponent,
+        loadComponent: () =>
+          import('~/pages/project-team/project-team.page').then(
+            (x) => x.ProjectTeamPageComponent,
+          ),
         canActivate: [
           projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
         ],
@@ -96,19 +99,33 @@ export const routes: Routes = [
         children: [
           {
             path: ``,
-            component: ProjectRegistrationsPageComponent,
+            loadComponent: () =>
+              import(
+                '~/pages/project-registrations/project-registrations.page'
+              ).then((x) => x.ProjectRegistrationsPageComponent),
           },
           {
             path: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
-            component: ProjectRegistrationActivityLogPageComponent,
+            loadComponent: () =>
+              import(
+                '~/pages/project-registration-activity-log/project-registration-activity-log.page'
+              ).then((x) => x.ProjectRegistrationActivityLogPageComponent),
           },
           {
             path: `:registrationId/${AppRoutes.projectRegistrationPersonalInformation}`,
-            component: ProjectRegistrationPersonalInformationPageComponent,
+            loadComponent: () =>
+              import(
+                '~/pages/project-registration-personal-information/project-registration-personal-information.page'
+              ).then(
+                (x) => x.ProjectRegistrationPersonalInformationPageComponent,
+              ),
           },
           {
             path: `:registrationId/${AppRoutes.projectRegistrationDebitCards}`,
-            component: ProjectRegistrationDebitCardsPageComponent,
+            loadComponent: () =>
+              import(
+                '~/pages/project-registration-debit-cards/project-registration-debit-cards.page'
+              ).then((x) => x.ProjectRegistrationDebitCardsPageComponent),
           },
           {
             path: `:registrationId`,
@@ -122,12 +139,18 @@ export const routes: Routes = [
         children: [
           {
             path: ``,
-            component: ProjectPaymentsPageComponent,
+            loadComponent: () =>
+              import('~/pages/project-payments/project-payments.page').then(
+                (x) => x.ProjectPaymentsPageComponent,
+              ),
           },
           {
             path: `:paymentId`,
             pathMatch: 'full',
-            component: ProjectPaymentPageComponent,
+            loadComponent: () =>
+              import('~/pages/project-payment/project-payment.page').then(
+                (x) => x.ProjectPaymentPageComponent,
+              ),
           },
         ],
       },

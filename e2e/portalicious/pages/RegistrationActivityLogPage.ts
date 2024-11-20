@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
 import { Page } from 'playwright';
 
-import BasePage from './BasePage';
-import TableComponent from './TableComponent';
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
+import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
 class RegistrationActivityLogPage extends BasePage {
   readonly page: Page;
