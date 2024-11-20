@@ -10,13 +10,9 @@
     @if (canExport()) {
       <app-export-payments [projectId]="projectId()" />
     }
-    <p-button
-      label="Create new payment"
-      i18n-label="@@create-payment"
-      rounded
-      icon="pi pi-money-bill"
-      (click)="onCreatePayment()"
-    />
+    @if (canCreatePayment()) {
+      <app-create-payment [projectId]="projectId()" />
+    }
   </div>
 
   <app-card-grid

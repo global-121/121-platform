@@ -11,7 +11,6 @@ import { registrationsPV } from '@121-service/test/registrations/pagination/pagi
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 // Export selected registrations
 const status = 'included';
@@ -39,7 +38,6 @@ test.beforeEach(async ({ page }) => {
 test('[29358] Export People Affected list', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
-  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -48,7 +46,7 @@ test('[29358] Export People Affected list', async ({ page }) => {
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
-    await table.selectAllCheckbox();
+    await registrations.selectAllRegistrations();
     await registrations.clickAndSelectExportOption(
       'Export selected registrations',
     );

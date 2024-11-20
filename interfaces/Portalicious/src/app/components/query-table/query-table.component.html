@@ -255,7 +255,7 @@
   </ng-template>
   <ng-template pTemplate="loadingbody">
     @for (row of [].constructor(table.rows); track $index) {
-      <tr>
+      <tr data-testid="query-table-loading">
         @if (enableSelection()) {
           <td style="width: 0">
             <p-checkbox [disabled]="true" />
@@ -279,7 +279,7 @@
     }
   </ng-template>
   <ng-template pTemplate="emptymessage">
-    <tr>
+    <tr data-testid="query-table-empty">
       <td [attr.colspan]="totalColumnCount()">
         <div class="w-full py-6 text-center">
           <i class="pi pi-filter mb-5 inline text-xl"></i>

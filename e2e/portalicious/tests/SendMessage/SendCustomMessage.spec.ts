@@ -10,7 +10,6 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-import TableComponent from '@121-e2e/portalicious/pages/TableComponent';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -33,7 +32,6 @@ test('[31077] Send custom message', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const activityLog = new RegistrationActivityLogPage(page);
-  const table = new TableComponent(page);
 
   const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
@@ -53,7 +51,7 @@ test('[31077] Send custom message', async ({ page }) => {
     const sendingMessageToast =
       'Closing this notification will not cancel message sending.';
 
-    await table.selectAllCheckbox();
+    await registrations.selectAllRegistrations();
     await registrations.selectBulkAction('Message');
     await registrations.selectCustomMessage();
     await registrations.typeCustomMessage(customMessageText);

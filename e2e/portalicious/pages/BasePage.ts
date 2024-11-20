@@ -1,12 +1,12 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
-import { PrimeDropdown } from '@121-e2e/portalicious/primeng-components/PrimeDropdown';
+import { PrimeNGDropdown } from '@121-e2e/portalicious/components/PrimeNGDropdown';
 
 class BasePage {
   readonly page: Page;
   readonly logo: Locator;
-  readonly languageDropdown: PrimeDropdown;
+  readonly languageDropdown: PrimeNGDropdown;
   readonly projectHeader: Locator;
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
@@ -18,7 +18,7 @@ class BasePage {
     this.page = page;
 
     this.logo = this.page.getByTestId('logo');
-    this.languageDropdown = new PrimeDropdown({
+    this.languageDropdown = new PrimeNGDropdown({
       page,
       testId: 'language-dropdown',
     });

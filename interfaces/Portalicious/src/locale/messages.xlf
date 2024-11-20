@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1072,6 +1072,15 @@
       </trans-unit>
       <trans-unit id="generic-clear" datatype="html">
         <source>Clear</source>
+      </trans-unit>
+      <trans-unit id="2655022920786701138" datatype="html">
+        <source>Add to Payment</source>
+      </trans-unit>
+      <trans-unit id="8090326902764851563" datatype="html">
+        <source>Select included registrations to add to this payment.</source>
+      </trans-unit>
+      <trans-unit id="8676540958141900081" datatype="html">
+        <source>Step 1 of 2</source>
       </trans-unit>
     </body>
   </file>

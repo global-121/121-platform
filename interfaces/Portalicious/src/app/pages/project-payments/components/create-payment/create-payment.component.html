@@ -1,0 +1,61 @@
+<p-button
+  label="Create new payment"
+  i18n-label="@@create-payment"
+  rounded
+  icon="pi pi-money-bill"
+  (click)="dialogVisible.set(true); createPaymentDialog.maximize()"
+/>
+
+<p-dialog
+  #createPaymentDialog
+  [(visible)]="dialogVisible"
+  [draggable]="false"
+  [resizable]="false"
+  [modal]="true"
+  styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:p-0 [&_.p-dialog-footer]:shadow"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-money-bill me-2"></i>
+      <ng-container i18n="@@create-payment">Create new payment</ng-container>
+      - {{ today | date: 'shortDate' }}
+    </h3>
+  </ng-template>
+  <div class="w-full px-6 lg:px-24">
+    @defer (when dialogVisible()) {
+      <p
+        i18n
+        class="mb-5"
+      >
+        Select included registrations to add to this payment.
+      </p>
+      <p-card>
+        <!-- TODO AB#31329 limit this to included registrations -->
+        <app-registrations-table
+          #registrationsTable
+          [projectId]="projectId()"
+          [localStorageKey]="
+            'project-payment-registrations-table-' + projectId()
+          "
+        />
+      </p-card>
+    }
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="w-1/2 border-t-2 border-t-purple-300"></div>
+    <div class="flex items-center justify-end p-4">
+      <span
+        i18n
+        class="absolute left-1/2 -translate-x-1/2"
+        >Step 1 of 2</span
+      >
+      <p-button
+        label="Add to Payment"
+        i18n-label
+        rounded
+        class="float-end"
+        (click)="addSelectedToPayment()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
