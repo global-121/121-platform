@@ -342,23 +342,34 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 This is how we create and publish a new release of the 121-platform.
 (See [the glossary](#glossary) for definitions of some terms.)
 
-- [ ] Define what code gets released. ("_Is the current `main`-branch working?_")
-- [ ] Check the changes since the last release, by replacing `vX.X-X` with the latest release in this URL: `https://github.com/global-121/121-platform/compare/vX.X-X...main`
-  - [ ] Check whether there are any changes to [`services/.env.example`](services/.env.example). If there are, then make any configuration changes to the staging-service in the Azure Portal, relating to new/changed/removed `ENV`-variables, changed values, etc.
-- [ ] Define the [`version`](#glossary)-name for the upcoming release.
-- [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
+- Define what code gets released.  
+   (Is the current state of the `main`-branch what we want? Or a specific commit/point-in-the-past?)
+- Check the changes since the last release, by replacing `vX.X-X` with the latest release in this URL: `https://github.com/global-121/121-platform/compare/vX.X-X...main`  
+  Check any changes to:
+  - `services/.env.example`:  
+     If there are, then make any configuration changes to the staging-service(_Or Mock-Service_) in the Azure Portal, relating to new/changed/removed `ENV`-variables, changed default values, etc.
+  - `interfaces/Portal/.env.example`:  
+     If there are, then make any configuration changes to the ["staging"-environment settings on GitHub](https://github.com/global-121/121-platform/settings/environments/1000830806/edit).
+  - `interfaces/Portalicious/.env.example` (_Optional_)  
+     If there are, then make any configuration changes to the ["staging"-environment settings on GitHub](https://github.com/global-121/121-platform/settings/environments/1000830806/edit).
+- Define the [`version`](#glossary)-name for the upcoming release.
+- "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - For "Choose a tag": Insert the `version` to create a new tag
-  - For "Target": Choose the commit which you would like to release on `main`
+  - For "Target": Choose the commit which you would like to release (defined in the first step).
   - Set the title of the release to `<version>`.
-  - Use the "auto-generate release notes" button to generate the release notes, and double-check their contents
-    - This will also be the basis of the "Inform stakeholders" message to be posted on Teams
-- [ ] Publish the release on GitHub (as 'latest', not 'pre-release')
-- [ ] Check the deployed release on the staging-environment
-  - Now, and throughout the release process, it is wise to monitor the [CPU usage](https://portal.azure.com/#@rodekruis.onmicrosoft.com/blade/Microsoft_Azure_MonitoringMetrics/Metrics.ReactView/Referer/MetricsExplorer/ResourceId/%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510Global%2Fproviders%2Fmicrosoft.insights%2Fcomponents%2F121-global-application-insights/TimeContext/%7B%22relative%22%3A%7B%22duration%22%3A3600000%7D%2C%22showUTCTime%22%3Afalse%2C%22grain%22%3A1%7D/ChartDefinition/%7B%22v2charts%22%3A%5B%7B%22metrics%22%3A%5B%7B%22resourceMetadata%22%3A%7B%22id%22%3A%22%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510Global%2Fproviders%2Fmicrosoft.insights%2Fcomponents%2F121-global-application-insights%22%7D%2C%22name%22%3A%22performanceCounters%2FprocessorCpuPercentage%22%2C%22aggregationType%22%3A3%2C%22namespace%22%3A%22microsoft.insights%2Fcomponents%22%2C%22metricVisualization%22%3A%7B%22displayName%22%3A%22Processor%20time%22%2C%22color%22%3A%22%2347BDF5%22%7D%7D%5D%2C%22title%22%3A%22Most%20recent%20Max%20CPU%20usage%20App%20Services%22%2C%22titleKind%22%3A2%2C%22visualization%22%3A%7B%22chartType%22%3A2%2C%22legendVisualization%22%3A%7B%22isVisible%22%3Atrue%2C%22position%22%3A2%2C%22hideSubtitle%22%3Afalse%2C%22hideHoverCard%22%3Afalse%2C%22hideLabelNames%22%3Atrue%7D%2C%22axisVisualization%22%3A%7B%22x%22%3A%7B%22isVisible%22%3Atrue%2C%22axisType%22%3A2%7D%2C%22y%22%3A%7B%22isVisible%22%3Atrue%2C%22axisType%22%3A1%7D%7D%7D%7D%5D%7D) of our services
-- [ ] Make any configuration changes (`ENV`-variables, etc.) on production-service(s)
-- [ ] Use the ["Deploy `<client name>` All" deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy to each production-instance.
+  - Use the "Generate release notes" button and double-check the contents.  
+    This will be the basis of the "Inform stakeholders"-message to be posted on Teams
+- Publish the release on GitHub (as 'latest', not 'pre-release')  
+  This will trigger the deployment-workflow that can be monitored under [GitHub Action runs](https://github.com/global-121/121-platform/actions/workflows/deploy_staging_all.yml)
+- Check the deployed release on the staging-environment (_this can take some time..._)
+  - Now, and throughout the release process, it is wise to monitor the [combined CPU usage](https://portal.azure.com/#@rodekruis.onmicrosoft.com/blade/Microsoft_Azure_MonitoringMetrics/Metrics.ReactView/Referer/MetricsExplorer/ResourceId/%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510Global%2Fproviders%2Fmicrosoft.insights%2Fcomponents%2F121-global-application-insights/TimeContext/%7B%22relative%22%3A%7B%22duration%22%3A3600000%7D%2C%22showUTCTime%22%3Afalse%2C%22grain%22%3A1%7D/ChartDefinition/%7B%22v2charts%22%3A%5B%7B%22metrics%22%3A%5B%7B%22resourceMetadata%22%3A%7B%22id%22%3A%22%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510Global%2Fproviders%2Fmicrosoft.insights%2Fcomponents%2F121-global-application-insights%22%7D%2C%22name%22%3A%22performanceCounters%2FprocessorCpuPercentage%22%2C%22aggregationType%22%3A3%2C%22namespace%22%3A%22microsoft.insights%2Fcomponents%22%2C%22metricVisualization%22%3A%7B%22displayName%22%3A%22Processor%20time%22%2C%22color%22%3A%22%2347BDF5%22%7D%7D%5D%2C%22title%22%3A%22Most%20recent%20Max%20CPU%20usage%20App%20Services%22%2C%22titleKind%22%3A2%2C%22visualization%22%3A%7B%22chartType%22%3A2%2C%22legendVisualization%22%3A%7B%22isVisible%22%3Atrue%2C%22position%22%3A2%2C%22hideSubtitle%22%3Afalse%2C%22hideHoverCard%22%3Afalse%2C%22hideLabelNames%22%3Atrue%7D%2C%22axisVisualization%22%3A%7B%22x%22%3A%7B%22isVisible%22%3Atrue%2C%22axisType%22%3A2%7D%2C%22y%22%3A%7B%22isVisible%22%3Atrue%2C%22axisType%22%3A1%7D%7D%7D%7D%5D%7D) of our App-Services.
+- If all looks fine, proceed with deploying the release to all other production-instances.
+- Make any configuration changes (`ENV`-variables, etc.) on each App-Service just before deployment.
+- Make any configuration changes for the Portal(s) in each [GitHub-environment-settings](https://github.com/global-121/121-platform/settings/environments).
+- Use the ["Deploy `<client name>` All" deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the `version`-tag to each production-instance.
   - ⚠️ **Note:**  
-    Start with deployment of the "**_Demo_**"-instance. This will **_also_** deploy to the production-environment Mock-Service.
+    Start with deployment of the "**_Demo_**"-instance.  
+    This will **_also_** deploy the Mock-Service to its production-environment.
 
 ### Patch/Hotfix Checklist
 
