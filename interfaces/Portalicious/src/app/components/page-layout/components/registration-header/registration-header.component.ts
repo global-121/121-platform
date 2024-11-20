@@ -11,7 +11,6 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { SkeletonModule } from 'primeng/skeleton';
 import { TabMenuModule } from 'primeng/tabmenu';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -22,6 +21,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { BreadcrumbsTitleComponent } from '~/components/page-layout/components/breadcrumbs-title/breadcrumbs-title.component';
 import { PageLayoutTitleAndActionsComponent } from '~/components/page-layout/components/page-layout-title-and-actions/page-layout-title-and-actions.component';
 import { AddNoteFormComponent } from '~/components/page-layout/components/registration-header/add-note-form/add-note-form.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
@@ -39,9 +39,9 @@ import { AuthService } from '~/services/auth.service';
     ButtonModule,
     DatePipe,
     SkeletonInlineComponent,
-    SkeletonModule,
     AddNoteFormComponent,
     PageLayoutTitleAndActionsComponent,
+    BreadcrumbsTitleComponent,
   ],
   templateUrl: './registration-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -102,8 +102,16 @@ export class RegistrationHeaderComponent {
   });
 
   allRegistrationsLink = computed(() => [
-    `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}`,
+    '/',
+    AppRoutes.project,
+    this.projectId(),
+    AppRoutes.projectRegistrations,
   ]);
+
+  registrationTitle = computed(() => {
+    const localized = $localize`Reg. #`;
+    return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.fullName ?? ''}`;
+  });
 
   addNoteFormVisible = signal(false);
 

@@ -1,0 +1,11 @@
+<app-page-layout-title-and-actions [isPending]="payments.isPending()">
+  <ng-container page-layout-title>
+    <app-breadcrumbs-title
+      [parentLink]="allPaymentsLink()"
+      parentTitle="All Payments"
+      i18n-parentTitle
+      [childTitle]="paymentTitle()"
+    ></app-breadcrumbs-title>
+  </ng-container>
+  <ng-container page-layout-actions> </ng-container>
+</app-page-layout-title-and-actions>
