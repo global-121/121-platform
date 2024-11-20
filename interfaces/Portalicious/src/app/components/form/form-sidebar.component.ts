@@ -32,4 +32,5 @@ export class FormSidebarComponent<
 > extends FormComponent<T> {
   visible = model<boolean>(false);
   formTitle = input.required<string>();
+  modal = model<boolean>(true);
 }

@@ -167,7 +167,7 @@ export class RegistrationsTableComponent {
       selection,
       fieldForFilter: 'referenceId',
       totalCount: this.totalRegistrations(),
-      currentPaginateQuery: this.paginateQuery(),
+      currentPaginateQuery: this.registrationsPaginateQuery(),
       previewItemForSelectAll: this.registrations()[0],
     });
   }

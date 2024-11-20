@@ -1070,14 +1070,11 @@
       <trans-unit id="generic-clear" datatype="html">
         <source>Clear</source>
       </trans-unit>
-      <trans-unit id="2655022920786701138" datatype="html">
-        <source>Add to Payment</source>
+      <trans-unit id="2200382670798092138" datatype="html">
+        <source>Add to payment</source>
       </trans-unit>
       <trans-unit id="8090326902764851563" datatype="html">
         <source>Select included registrations to add to this payment.</source>
-      </trans-unit>
-      <trans-unit id="8676540958141900081" datatype="html">
-        <source>Step 1 of 2</source>
       </trans-unit>
       <trans-unit id="2224540478181897692" datatype="html">
         <source>All Payments</source>
@@ -1093,6 +1090,42 @@
       </trans-unit>
       <trans-unit id="5255226222389200378" datatype="html">
         <source>Unknown user account or authentication failed</source>
+      </trans-unit>
+      <trans-unit id="17234570072885140" datatype="html">
+        <source>Registrations</source>
+      </trans-unit>
+      <trans-unit id="1767359435550986288" datatype="html">
+        <source>The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.</source>
+      </trans-unit>
+      <trans-unit id="3545183022492788567" datatype="html">
+        <source>A payment is currently in progress. Please wait until it has finished.</source>
+      </trans-unit>
+      <trans-unit id="4207014437413577720" datatype="html">
+        <source>Start payment</source>
+      </trans-unit>
+      <trans-unit id="4746344653872488527" datatype="html">
+        <source>Export payment list</source>
+      </trans-unit>
+      <trans-unit id="5081696702832953928" datatype="html">
+        <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
+      </trans-unit>
+      <trans-unit id="5411216479306923315" datatype="html">
+        <source>Review summary and click start payment.</source>
+      </trans-unit>
+      <trans-unit id="5995232414192798763" datatype="html">
+        <source>Financial Service Provider(s)</source>
+      </trans-unit>
+      <trans-unit id="6430223777327451722" datatype="html">
+        <source>Total payment amount</source>
+      </trans-unit>
+      <trans-unit id="6725574712013202474" datatype="html">
+        <source>Payment created.</source>
+      </trans-unit>
+      <trans-unit id="7102075992666089988" datatype="html">
+        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></source>
+      </trans-unit>
+      <trans-unit id="8890553633144307762" datatype="html">
+        <source>Back</source>
       </trans-unit>
     </body>
   </file>

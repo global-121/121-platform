@@ -272,7 +272,6 @@ export class PaymentsService {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
       if (
-        !dryRun && // This is only needed in actual doPayment call
         registration.financialServiceProvider &&
         !fspsInPayment.includes(registration.financialServiceProvider)
       ) {
