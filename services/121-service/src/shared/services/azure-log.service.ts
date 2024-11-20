@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { KnownSeverityLevel, TelemetryClient } from 'applicationinsights';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import appInsights = require('applicationinsights');
 
 @Injectable()
 export class AzureLogService {
   defaultClient: TelemetryClient;
 
   public constructor() {
-    if (process.env.APPLICATION_INSIGHT_IKEY) {
-      this.defaultClient = new TelemetryClient(
-        process.env.APPLICATION_INSIGHT_IKEY,
-      );
+    if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+      this.defaultClient = appInsights.defaultClient;
     }
   }
 
