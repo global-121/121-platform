@@ -202,6 +202,10 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('button', { name: 'Cancel' }).click();
   }
 
+  async clickApproveButton() {
+    await this.page.getByRole('button', { name: 'Approve' }).click();
+  }
+
   async validateSendMessagePaCount(count: number) {
     const dialogText = await this.sendMessageDialogPreview.innerText();
 
