@@ -4,13 +4,16 @@ import {
   Component,
   inject,
   LOCALE_ID,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { Subscription } from 'rxjs';
 
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { Locale } from '~/utils/locale';
 
@@ -24,10 +27,11 @@ import { Locale } from '~/utils/locale';
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   private primengConfig = inject(PrimeNGConfig);
   private locale = inject<Locale>(LOCALE_ID);
-
+  private readonly authService = inject(AuthService);
+  private authSubscriptions: Subscription[] = [];
   toastKey = ToastService.TOAST_KEY;
 
   ngOnInit() {
@@ -41,5 +45,13 @@ export class AppComponent implements OnInit {
       apply: $localize`:@@generic-apply:Apply`,
       clear: $localize`:@@generic-clear:Clear`,
     });
+
+    this.authSubscriptions = this.authService.initializeSubscriptions();
+  }
+
+  ngOnDestroy(): void {
+    for (const subscription of this.authSubscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }

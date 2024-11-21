@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
+  input,
 } from '@angular/core';
 import {
   FormControl,
@@ -10,7 +10,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -46,15 +45,7 @@ type LoginFormSsoGroup =
 })
 export class MsalAuthLoginComponent {
   private authService = inject(AuthService);
-  private route = inject(ActivatedRoute);
-  private returnUrl = computed(() => {
-    const returnUrl: unknown = this.route.snapshot.queryParams.returnUrl;
-    if (typeof returnUrl !== 'string') {
-      return undefined;
-    }
-    return returnUrl;
-  });
-  authError = this.authService.authError;
+  returnUrl = input<string | undefined>(undefined);
 
   formGroup = new FormGroup({
     email: new FormControl('', {

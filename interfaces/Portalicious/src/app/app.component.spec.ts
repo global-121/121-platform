@@ -1,5 +1,11 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+
+import {
+  provideTanStackQuery,
+  QueryClient,
+} from '@tanstack/angular-query-experimental';
 
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
@@ -9,6 +15,18 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       ...getAppConfig,
       imports: [AppComponent, RouterModule.forRoot([])],
+      providers: [
+        provideHttpClient(),
+        provideTanStackQuery(
+          new QueryClient({
+            defaultOptions: {
+              queries: {
+                staleTime: 1000 * 60 * 5, // 5 minutes
+              },
+            },
+          }),
+        ),
+      ],
       teardown: { destroyAfterEach: false },
     }).compileComponents();
   });

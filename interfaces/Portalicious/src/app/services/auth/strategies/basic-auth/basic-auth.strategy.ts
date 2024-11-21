@@ -1,4 +1,5 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { UserApiService } from '~/domains/user/user.api.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
@@ -11,12 +12,17 @@ import { LocalStorageUser } from '~/utils/local-storage';
 })
 export class BasicAuthStrategy implements IAuthStrategy {
   private readonly userApiService = inject(UserApiService);
+  private readonly router = inject(Router);
 
   static readonly APP_PROVIDERS = [];
 
   public LoginComponent = BasicAuthLoginComponent;
   public ChangePasswordComponent = BasicAuthChangePasswordComponent;
-  public CallbackComponent = null;
+
+  public initializeSubscriptions() {
+    // Not applicable for basic auth
+    return [];
+  }
 
   public async login(credentials: { username: string; password: string }) {
     try {
@@ -65,5 +71,7 @@ export class BasicAuthStrategy implements IAuthStrategy {
     return !user?.expires || Date.parse(user.expires) < Date.now();
   }
 
-  public authError: Signal<string | undefined>;
+  public handleAuthCallback(nextPageUrl: string): void {
+    void this.router.navigate([nextPageUrl]);
+  }
 }

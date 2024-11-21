@@ -1,4 +1,3 @@
-@let authErrorText = authError();
 <app-form-default
   [formGroup]="formGroup"
   [mutation]="loginMutation"
@@ -23,14 +22,3 @@
     />
   </app-form-field-wrapper>
 </app-form-default>
-
-@if (authErrorText) {
-  <span class="mt-2 block text-red-700">
-    <i
-      class="pi pi-exclamation-triangle"
-      title="!"
-      aria-label="!"
-    ></i>
-    {{ authErrorText }}
-  </span>
-}

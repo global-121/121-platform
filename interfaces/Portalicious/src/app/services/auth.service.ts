@@ -1,19 +1,15 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, Injector, signal } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { injectQueryClient } from '@tanstack/angular-query-experimental';
-import { get } from 'lodash';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { UserApiService } from '~/domains/user/user.api.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
 import { LogEvent, LogService } from '~/services/log.service';
 import {
+  getReturnUrlFromLocalStorage,
   getUserFromLocalStorage,
   LOCAL_STORAGE_AUTH_USER_KEY,
   LocalStorageUser,
@@ -26,6 +22,8 @@ const AuthStrategy = environment.use_sso_azure_entra
   ? MsalAuthStrategy
   : BasicAuthStrategy;
 
+export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -35,16 +33,16 @@ export class AuthService {
   private readonly logService = inject(LogService);
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
-  private readonly userApiService = inject(UserApiService);
-
-  private queryClient = injectQueryClient();
 
   private readonly authStrategy: IAuthStrategy;
 
   constructor() {
     this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
   }
-  public authError = signal<string | undefined>(undefined);
+
+  initializeSubscriptions() {
+    return this.authStrategy.initializeSubscriptions();
+  }
 
   public get isLoggedIn(): boolean {
     return this.user !== null;
@@ -66,10 +64,6 @@ export class AuthService {
     return this.authStrategy.LoginComponent;
   }
 
-  public get CallbackComponent() {
-    return this.authStrategy.CallbackComponent;
-  }
-
   get user(): LocalStorageUser | null {
     const user = getUserFromLocalStorage();
 
@@ -87,7 +81,7 @@ export class AuthService {
   }
 
   public async login(
-    credentials?: { username: string; password?: string },
+    credentials: { username: string; password?: string },
     returnUrl?: string,
   ) {
     this.logService.logEvent(LogEvent.userLogin);
@@ -97,12 +91,7 @@ export class AuthService {
     const user = await this.authStrategy.login(credentials);
     // Note: SSO never resolves so the code below this line is not executed in the SSO case
     setUserInLocalStorage(user);
-
-    if (returnUrl) {
-      return this.router.navigate([returnUrl]);
-    }
-
-    return this.router.navigate(['/']);
+    return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 
   public async logout() {
@@ -185,22 +174,9 @@ export class AuthService {
       }),
     );
   }
+  public handleAuthCallback() {
+    const returnUrl = getReturnUrlFromLocalStorage();
 
-  async processAzureCallback() {
-    try {
-      const currentUser = await this.queryClient.fetchQuery(
-        this.userApiService.getCurrent()(),
-      );
-      setUserInLocalStorage(currentUser.user);
-    } catch (error) {
-      // TODO: AB#31489 Return a more generic endpoint from the back-end
-      if (error instanceof HttpErrorResponse) {
-        const errorMessage = get(error.error, 'message') as string | undefined;
-        if (errorMessage) {
-          this.authError.set(errorMessage);
-        }
-      }
-      throw error;
-    }
+    this.authStrategy.handleAuthCallback(returnUrl ?? '/');
   }
 }
