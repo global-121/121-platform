@@ -1,7 +1,7 @@
 <app-query-table
   #table
   [items]="registrations()"
-  [isPending]="registrationsResponse.isPending()"
+  [isPending]="registrationsResponse.isPending() || project.isPending()"
   [columns]="columns()"
   [localStorageKey]="localStorageKey()"
   [serverSideFiltering]="true"

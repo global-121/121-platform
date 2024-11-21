@@ -192,6 +192,16 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return;
     }
 
+    if (column.type === QueryTableColumnType.MULTISELECT) {
+      const correspondingLabel = column.options.find(
+        (option) => option.value === text,
+      )?.label;
+
+      if (correspondingLabel) {
+        return correspondingLabel;
+      }
+    }
+
     if (column.type === QueryTableColumnType.DATE) {
       if (
         !(text instanceof Date) &&
