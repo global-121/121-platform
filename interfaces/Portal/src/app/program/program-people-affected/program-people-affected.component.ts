@@ -623,7 +623,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     let show = false;
     if (this.program?.programQuestions) {
       for (const question of this.program.programQuestions) {
-        if (question['scoring']) {
+        if (
+          question['scoring'] &&
+          Object.keys(question['scoring']).length > 0
+        ) {
           show = true;
           break;
         }
