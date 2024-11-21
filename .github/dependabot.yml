@@ -5,12 +5,12 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
 
   - package-ecosystem: npm
     directory: '/services/121-service'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
     open-pull-requests-limit: 5
     versioning-strategy: increase
@@ -38,7 +38,7 @@ updates:
   - package-ecosystem: npm
     directory: '/services/mock-service'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
     open-pull-requests-limit: 5
     versioning-strategy: increase
@@ -113,7 +113,7 @@ updates:
   - package-ecosystem: npm
     directory: '/interfaces/Portalicious'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
     open-pull-requests-limit: 5
     versioning-strategy: increase
@@ -137,7 +137,7 @@ updates:
   - package-ecosystem: npm
     directory: '/e2e'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
     open-pull-requests-limit: 5
     versioning-strategy: increase
@@ -153,7 +153,7 @@ updates:
   - package-ecosystem: npm
     directory: '/k6'
     schedule:
-      interval: weekly
+      interval: monthly
       day: tuesday
     open-pull-requests-limit: 5
     versioning-strategy: increase
