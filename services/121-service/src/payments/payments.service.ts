@@ -266,24 +266,30 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspsInPayment: FinancialServiceProviders[] = [];
+    const fspsInPaymentChecker: {
+      FinancialServiceProviders?: boolean;
+    } = {};
+    const fspsInPayment: BulkActionResultPaymentDto['fspsInPayment'] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
       if (
-        !dryRun && // This is only needed in actual doPayment call
         registration.financialServiceProvider &&
-        !fspsInPayment.includes(registration.financialServiceProvider)
+        !fspsInPaymentChecker[registration.financialServiceProvider]
       ) {
-        fspsInPayment.push(registration.financialServiceProvider);
+        fspsInPaymentChecker[registration.financialServiceProvider] = true;
+        fspsInPayment.push({
+          fsp: registration.financialServiceProvider,
+          fspName: registration.fspDisplayName,
+        });
       }
     }
 
     // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
-    for (const fsp of fspsInPayment) {
+    for (const fspInPayment of fspsInPayment) {
       await this.validateRequiredFinancialServiceProviderConfigurations(
-        fsp,
+        fspInPayment.fsp,
         programId,
       );
     }
@@ -469,6 +475,9 @@ export class PaymentsService {
         );
       });
 
+    const fspsInPaymentChecker: {
+      FinancialServiceProviders?: boolean;
+    } = {};
     const fspsInPayment: FinancialServiceProviders[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {

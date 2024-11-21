@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class BulkActionResultDto {
   @ApiProperty({
@@ -18,11 +19,18 @@ export class BulkActionResultDto {
 export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
   @ApiProperty({
     example: [
-      FinancialServiceProviders.intersolveVisa,
-      FinancialServiceProviders.excel,
+      {
+        fspName: {
+          en: 'Visa debit card',
+        },
+        fsp: FinancialServiceProviders.intersolveVisa,
+      },
     ],
   })
-  public readonly fspsInPayment: string[];
+  public readonly fspsInPayment: {
+    fspName: LocalizedString;
+    fsp: FinancialServiceProviders;
+  }[];
 }
 
 export class BulkActionResultPaymentDto extends BulkActionResultRetryPaymentDto {
