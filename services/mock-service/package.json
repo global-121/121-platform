@@ -36,7 +36,7 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.4.7",
+    "@nestjs/cli": "^10.4.8",
     "@swc/cli": "^0.5.1",
     "@swc/core": "^1.9.2",
     "@types/express": "^4.17.21",
