@@ -1,3 +1,4 @@
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import {
   AnswerTypes,
   CustomAttributeType,
@@ -81,5 +82,12 @@ export function projectHasVoucherSupport(project?: Project) {
 export function projectHasPhysicalCardSupport(project?: Project) {
   return project?.financialServiceProviders.some((fsp) =>
     FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.fsp),
+  );
+}
+
+export function projectHasFspWithExportFileIntegration(project?: Project) {
+  return project?.financialServiceProviders.some(
+    (fsp) =>
+      fsp.integrationType === FinancialServiceProviderIntegrationType.csv,
   );
 }

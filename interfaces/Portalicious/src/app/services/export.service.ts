@@ -12,6 +12,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { EventApiService } from '~/domains/event/event.api.service';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
+import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import {
   PaginateQuery,
@@ -29,6 +30,7 @@ export class ExportService {
   private paginateQueryService = inject(PaginateQueryService);
   private eventApiService = inject(EventApiService);
   private metricApiService = inject(MetricApiService);
+  private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
 
   private generateExportParams({
@@ -200,5 +202,41 @@ export class ExportService {
     ];
 
     return [...new Set(allAttributeNames)].sort((a, b) => a.localeCompare(b));
+  }
+
+  async exportFspInstructions({
+    projectId,
+    paymentId,
+    toastService,
+  }: {
+    projectId: Signal<number>;
+    paymentId: string;
+    toastService: ToastService;
+  }) {
+    toastService.showToast({
+      summary: $localize`Exporting FSP Instructions`,
+      detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
+      severity: 'info',
+      showSpinner: true,
+    });
+
+    try {
+      const exportResult = await this.queryClient.fetchQuery(
+        this.paymentApiService.exportFspInstructions({
+          projectId,
+          paymentId,
+        })(),
+      );
+
+      this.downloadArrayToXlsx()({
+        data: exportResult.data,
+        fileName: `payment#${paymentId}-fsp-instructions`,
+      });
+    } catch {
+      toastService.showToast({
+        detail: $localize`An unexpected error occurred while exporting the FSP instructions. Please try again later.`,
+        severity: 'error',
+      });
+    }
   }
 }
