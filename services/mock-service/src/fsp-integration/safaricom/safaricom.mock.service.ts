@@ -20,7 +20,7 @@ export class SafaricomMockService {
   public async authenticate(): Promise<object> {
     return {
       access_token: 'mock_access_token',
-      expires_in: 3600,
+      expires_in: 3599,
     };
   }
 
