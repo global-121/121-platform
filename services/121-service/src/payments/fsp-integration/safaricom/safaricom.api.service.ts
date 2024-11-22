@@ -85,11 +85,10 @@ export class SafaricomApiService {
         headers,
       );
 
-      const datetime = new Date();
       // Cache tokenSet and expires_at
       const tokenSet = new TokenSet({
         access_token: data.access_token,
-        expires_at: datetime.setMinutes(datetime.getMinutes() + 55),
+        expires_at: (data.expires_in - 5 * 60) * 1000 + Date.now(), //expires_in is typically 3599, so in seconds and 1 hour from now. We subtract 5 minutes to be safe.
       });
 
       this.tokenSet = tokenSet;
@@ -158,10 +157,8 @@ export class SafaricomApiService {
     if (!tokenSet || !tokenSet.expires_at) {
       return false;
     }
-    // Convert expires_at to milliseconds
-    const expiresAtInMs = tokenSet.expires_at * 1000;
-    const timeLeftBeforeExpire = expiresAtInMs - Date.now();
-    // If more than 1 hour left before expiration, the token is considered valid
-    return timeLeftBeforeExpire > 3600000;
+    const timeLeftBeforeExpire = tokenSet.expires_at - Date.now();
+    // We set a buffer of 5 minutes to make sure that when doing the subsequent POST call, the token is still valid.
+    return timeLeftBeforeExpire > 5 * 60 * 1000;
   }
 }
