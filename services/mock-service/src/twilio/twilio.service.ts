@@ -85,6 +85,7 @@ export class TwilioService {
     // 1. First loop through different error rseponses and return early
     if (
       !twilioMessagesCreateDto.To ||
+      twilioMessagesCreateDto.To === 'not available' || // this relates to 'to' being set to 'not available' in the sms.service > send Sms()
       twilioMessagesCreateDto.To.includes(MockPhoneNumbers.FailGeneric)
     ) {
       response.status = TwilioStatus.failed;
