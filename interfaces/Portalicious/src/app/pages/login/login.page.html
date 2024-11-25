@@ -16,7 +16,13 @@
         >
           Use your work email to log in.
         </p>
-        <ng-container *ngComponentOutlet="LoginComponent"></ng-container>
+        <ng-container
+          *ngComponentOutlet="
+            LoginComponent;
+            inputs: { returnUrl: returnUrl() }
+          "
+        ></ng-container>
+        <app-form-error [error]="authError" />
         <p class="mt-2">
           <a
             href="https://manual.121.global/privacy-policy/"

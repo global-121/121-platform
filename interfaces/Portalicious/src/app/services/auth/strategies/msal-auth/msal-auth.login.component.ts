@@ -13,33 +13,37 @@ import {
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { AutoFocusModule } from 'primeng/autofocus';
+import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { FormDefaultComponent } from '~/components/form/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
-type LoginFormGroup =
-  (typeof BasicAuthLoginComponent)['prototype']['formGroup'];
+type LoginFormSsoGroup =
+  (typeof MsalAuthLoginComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-basic-auth-login',
+  selector: 'app-msal-auth.login',
   standalone: true,
   imports: [
+    ButtonModule,
+    FormFieldWrapperComponent,
+    ReactiveFormsModule,
+    ProgressSpinnerModule,
     InputTextModule,
-    PasswordModule,
     AutoFocusModule,
-    FormDefaultComponent,
     ReactiveFormsModule,
     FormFieldWrapperComponent,
+    FormDefaultComponent,
   ],
-  templateUrl: './basic-auth.login.component.html',
+  templateUrl: './msal-auth.login.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BasicAuthLoginComponent {
+export class MsalAuthLoginComponent {
   private authService = inject(AuthService);
   returnUrl = input<string | undefined>(undefined);
 
@@ -49,33 +53,17 @@ export class BasicAuthLoginComponent {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       validators: [Validators.required, Validators.email],
     }),
-    password: new FormControl('', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      validators: [Validators.required],
-    }),
   });
-
-  formFieldErrors = generateFieldErrors<LoginFormGroup>(this.formGroup, {
+  formFieldErrors = generateFieldErrors<LoginFormSsoGroup>(this.formGroup, {
     email: (control) => {
       if (!control.invalid) {
         return;
       }
       return $localize`Enter a valid email address`;
     },
-    password: (control) => {
-      if (!control.invalid) {
-        return;
-      }
-      return $localize`Enter your password`;
-    },
   });
-
   loginMutation = injectMutation(() => ({
-    mutationFn: ({
-      email,
-      password,
-    }: ReturnType<LoginFormGroup['getRawValue']>) =>
-      this.authService.login({ username: email, password }, this.returnUrl()),
+    mutationFn: ({ email }: ReturnType<LoginFormSsoGroup['getRawValue']>) =>
+      this.authService.login({ username: email }, this.returnUrl()),
   }));
 }

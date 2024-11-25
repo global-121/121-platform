@@ -4,48 +4,32 @@ import { Router } from '@angular/router';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { User } from '~/domains/user/user.model';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
 import { LogEvent, LogService } from '~/services/log.service';
+import {
+  getReturnUrlFromLocalStorage,
+  getUserFromLocalStorage,
+  LOCAL_STORAGE_AUTH_USER_KEY,
+  LocalStorageUser,
+  setReturnUrlInLocalStorage,
+  setUserInLocalStorage,
+} from '~/utils/local-storage';
 import { environment } from '~environment';
 
-export type LocalStorageUser = Pick<
-  User,
-  | 'expires'
-  | 'isAdmin'
-  | 'isEntraUser'
-  | 'isOrganizationAdmin'
-  | 'permissions'
-  | 'username'
->;
+const AuthStrategy = environment.use_sso_azure_entra
+  ? MsalAuthStrategy
+  : BasicAuthStrategy;
 
-const LOCAL_STORAGE_AUTH_USER_KEY = 'logged-in-user-portalicious';
-
-export function getUserFromLocalStorage(): LocalStorageUser | null {
-  const rawUser = localStorage.getItem(LOCAL_STORAGE_AUTH_USER_KEY);
-
-  if (!rawUser) {
-    return null;
-  }
-
-  let user: LocalStorageUser;
-
-  try {
-    user = JSON.parse(rawUser) as LocalStorageUser;
-  } catch {
-    console.warn('AuthService: Invalid token');
-    return null;
-  }
-
-  return user;
-}
+export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  public static APP_PROVIDERS = AuthStrategy.APP_PROVIDERS;
+
   private readonly logService = inject(LogService);
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
@@ -53,11 +37,11 @@ export class AuthService {
   private readonly authStrategy: IAuthStrategy;
 
   constructor() {
-    const AuthStrategy = environment.use_sso_azure_entra
-      ? MsalAuthStrategy
-      : BasicAuthStrategy;
+    this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
+  }
 
-    this.authStrategy = this.injector.get(AuthStrategy);
+  initializeSubscriptions() {
+    return this.authStrategy.initializeSubscriptions();
   }
 
   public get isLoggedIn(): boolean {
@@ -78,22 +62,6 @@ export class AuthService {
 
   public get LoginComponent() {
     return this.authStrategy.LoginComponent;
-  }
-
-  private setUserInStorage(user: User): void {
-    const userToStore: LocalStorageUser = {
-      username: user.username,
-      permissions: user.permissions,
-      isAdmin: user.isAdmin,
-      isOrganizationAdmin: user.isOrganizationAdmin,
-      isEntraUser: user.isEntraUser,
-      expires: user.expires,
-    };
-
-    localStorage.setItem(
-      LOCAL_STORAGE_AUTH_USER_KEY,
-      JSON.stringify(userToStore),
-    );
   }
 
   get user(): LocalStorageUser | null {
@@ -117,14 +85,13 @@ export class AuthService {
     returnUrl?: string,
   ) {
     this.logService.logEvent(LogEvent.userLogin);
-    const user = await this.authStrategy.login(credentials);
-    this.setUserInStorage(user);
-
     if (returnUrl) {
-      return this.router.navigate([returnUrl]);
+      setReturnUrlInLocalStorage(returnUrl);
     }
-
-    return this.router.navigate(['/']);
+    const user = await this.authStrategy.login(credentials);
+    // Note: SSO never resolves so the code below this line is not executed in the SSO case
+    setUserInLocalStorage(user);
+    return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 
   public async logout() {
@@ -206,5 +173,10 @@ export class AuthService {
         user: this.user,
       }),
     );
+  }
+  public handleAuthCallback() {
+    const returnUrl = getReturnUrlFromLocalStorage();
+
+    this.authStrategy.handleAuthCallback(returnUrl ?? '/');
   }
 }

@@ -7,6 +7,7 @@ import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 
 export enum AppRoutes {
+  authCallback = 'auth-callback',
   changePassword = 'change-password',
   login = 'login',
   project = 'project',
@@ -26,6 +27,13 @@ export const routes: Routes = [
     path: AppRoutes.login,
     loadComponent: () =>
       import('~/pages/login/login.page').then((x) => x.LoginPageComponent),
+  },
+  {
+    path: AppRoutes.authCallback,
+    loadComponent: () =>
+      import('~/pages/auth-callback/auth-callback.page').then(
+        (x) => x.AuthCallbackPageComponent,
+      ),
   },
   {
     path: AppRoutes.changePassword,
