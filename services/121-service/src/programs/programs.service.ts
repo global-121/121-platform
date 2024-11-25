@@ -508,7 +508,6 @@ export class ProgramService {
           programId,
           financialServiceProviderName:
             FinancialServiceProviders.intersolveVisa,
-          includeProperties: true,
         },
       );
     if (!programFspConfigurations) {
