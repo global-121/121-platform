@@ -7,6 +7,7 @@
   [pFocusTrapDisabled]="!visible"
   [blockScroll]="true"
   (onHide)="formGroup().reset()"
+  [modal]="modal()"
 >
   <ng-template pTemplate="headless">
     <form

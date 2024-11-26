@@ -5,7 +5,12 @@
   }"
 >
   @for (item of data(); track $index) {
-    <p class="trim space-x-1 border-b border-grey-300 py-3">
+    <p
+      class="trim space-x-1 border-b border-grey-300 py-3"
+      [ngClass]="{
+        'col-span-2': item.fullWidth,
+      }"
+    >
       @if (item.loading) {
         <div class="py-1">
           <p-skeleton [width]="skeletonWidth()" />

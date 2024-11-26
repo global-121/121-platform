@@ -84,7 +84,7 @@ export class ProjectSummaryCardComponent {
         value: this.currencyPipe.transform(
           this.metrics.data()?.totalBudget,
           this.project.data()?.currency ?? 'EUR',
-          'simbol-narrow',
+          'symbol-narrow',
           '1.0-0',
         ),
         label: $localize`Budget`,

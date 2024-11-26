@@ -3,7 +3,8 @@
   i18n-label="@@create-payment"
   rounded
   icon="pi pi-money-bill"
-  (click)="dialogVisible.set(true); createPaymentDialog.maximize()"
+  [loading]="paymentInProgress.isPending()"
+  (click)="openDialog()"
 />
 
 <p-dialog
@@ -12,6 +13,7 @@
   [draggable]="false"
   [resizable]="false"
   [modal]="true"
+  [closeOnEscape]="false"
   styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:p-0 [&_.p-dialog-footer]:shadow"
 >
   <ng-template pTemplate="header">
@@ -23,38 +25,97 @@
   </ng-template>
   <div class="w-full px-6 lg:px-24">
     @defer (when dialogVisible()) {
-      <p
-        i18n
-        class="mb-5"
+      <!-- This ngClass is a trick where we are hiding the table instead of not rendering it -->
+      <!-- because this makes the selection in the table persist without saving it to local storage. -->
+      <!-- It also has the advantage of not adding / removing the DOM of the table when going back and forth -->
+      <!-- which makes it more performant on slower devices. -->
+      <div
+        [ngClass]="{
+          hidden: currentStep() !== 1,
+        }"
       >
-        Select included registrations to add to this payment.
-      </p>
-      <p-card>
-        <app-registrations-table
-          #registrationsTable
-          [projectId]="projectId()"
-          [localStorageKey]="
-            'project-payment-registrations-table-' + projectId()
-          "
-          [overrideFilters]="overrideFilters"
-        />
-      </p-card>
+        <p
+          i18n
+          class="mb-5"
+        >
+          Select included registrations to add to this payment.
+        </p>
+        <p-card>
+          <app-registrations-table
+            #registrationsTable
+            [projectId]="projectId()"
+            [localStorageKey]="
+              'project-payment-registrations-table-' +
+              projectId() +
+              '-' +
+              today.toISOString()
+            "
+            [overrideFilters]="overrideFilters"
+          />
+        </p-card>
+      </div>
+
+      @if (currentStep() === 2) {
+        <div>
+          <p
+            i18n
+            class="mb-5"
+          >
+            Review summary and click start payment.
+          </p>
+          <p-card class="relative [&_.p-card-body]:py-2">
+            <app-data-list
+              [data]="paymentSummaryData()"
+              [hideBottomBorder]="true"
+            />
+            <p-button
+              text
+              plain
+              icon="pi pi-ellipsis-h"
+              class="absolute end-4 top-2"
+              (click)="menu.toggle($event)"
+            />
+            <p-menu
+              #menu
+              [model]="paymentSummaryMenuItems()"
+              [popup]="true"
+              appendTo="body"
+            />
+          </p-card>
+        </div>
+      }
     }
   </div>
+  <app-fullscreen-spinner [loading]="createPaymentMutation.isPending()" />
   <ng-template pTemplate="footer">
-    <div class="w-1/2 border-t-2 border-t-purple-300"></div>
+    <div
+      class="border-t-2 border-t-purple-300 transition-all"
+      [style]="{
+        width: (currentStep() / totalSteps) * 100 + '%',
+      }"
+    ></div>
     <div class="flex items-center justify-end p-4">
+      @if (currentStep() > 1) {
+        <p-button
+          label="Back"
+          i18n-label
+          rounded
+          outlined
+          class="me-auto"
+          (click)="dryRunResult.set(undefined)"
+        />
+      }
       <span
         i18n
         class="absolute left-1/2 -translate-x-1/2"
-        >Step 1 of 2</span
+        >Step {{ currentStep() }} of {{ totalSteps }}</span
       >
       <p-button
-        label="Add to Payment"
-        i18n-label
+        [label]="proceedLabel()"
         rounded
-        class="float-end"
-        (click)="addSelectedToPayment()"
+        [loading]="cannotProceed()"
+        [disabled]="cannotProceed()"
+        (click)="createPayment()"
       />
     </div>
   </ng-template>

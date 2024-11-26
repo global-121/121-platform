@@ -11,7 +11,6 @@ import {
   ColoredChipComponent,
 } from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 export type DataListItem = {
@@ -20,6 +19,7 @@ export type DataListItem = {
   loading?: boolean;
   chipLabel?: string;
   chipVariant?: ChipVariant;
+  fullWidth?: boolean;
 } & (
   | {
       type: 'boolean';
@@ -54,7 +54,6 @@ export type DataListItem = {
     DatePipe,
     DecimalPipe,
     SkeletonModule,
-    SkeletonInlineComponent,
     ColoredChipComponent,
     TranslatableStringPipe,
     NgClass,

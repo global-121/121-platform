@@ -244,12 +244,18 @@ body {
   }
 
   .p-menu {
+    @apply w-auto;
+
     .p-menuitem {
       &:not(.p-highlight):not(.p-disabled) {
         > .p-menuitem-content:hover {
           @apply bg-purple-100 text-purple-700;
         }
       }
+    }
+
+    .p-menuitem-text {
+      @apply whitespace-nowrap;
     }
   }
 
@@ -279,5 +285,9 @@ body {
 
   .p-checkbox-label {
     @apply font-normal;
+  }
+
+  .p-progress-spinner-svg .p-progress-spinner-circle {
+    @apply stroke-purple-700 #{!important};
   }
 }

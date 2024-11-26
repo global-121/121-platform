@@ -1,11 +1,16 @@
 import { Injectable, Signal } from '@angular/core';
 
+import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
+import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
   Payment,
   PaymentAggregate,
   PaymentStatus,
 } from '~/domains/payment/payment.model';
+import { PaginateQuery } from '~/services/paginate-query.service';
+import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number>) => [
   'programs',
@@ -36,6 +41,33 @@ export class PaymentApiService extends DomainApiService {
   getPaymentStatus(projectId: Signal<number>) {
     return this.generateQueryOptions<PaymentStatus>({
       path: [...BASE_ENDPOINT(projectId), 'status'],
+      refetchInterval: 3000,
+    });
+  }
+
+  createPayment({
+    projectId,
+    paginateQuery,
+    paymentData,
+    dryRun = true,
+  }: {
+    projectId: Signal<number>;
+    paginateQuery: PaginateQuery;
+    paymentData: Dto<CreatePaymentDto>;
+    dryRun?: boolean;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<BulkActionResultPaymentDto>
+    >({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      body: paymentData,
+      params: {
+        ...this.paginateQueryService.paginateQueryToHttpParamsObject(
+          paginateQuery,
+        ),
+        dryRun,
+      },
     });
   }
 
