@@ -89,8 +89,9 @@ export class AuthService {
       setReturnUrlInLocalStorage(returnUrl);
     }
     const user = await this.authStrategy.login(credentials);
-    // Note: SSO never resolves so the code below this line is not executed in the SSO case
-    setUserInLocalStorage(user);
+    if (user) {
+      setUserInLocalStorage(user);
+    }
     return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 

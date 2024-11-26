@@ -15,7 +15,7 @@ export abstract class IAuthStrategy {
   public abstract login(credentials: {
     username: string;
     password?: string;
-  }): Promise<User>;
+  }): Promise<null | User>;
   public abstract logout(user: LocalStorageUser | null): Promise<unknown>;
   public abstract changePassword(data: {
     user: LocalStorageUser | null;

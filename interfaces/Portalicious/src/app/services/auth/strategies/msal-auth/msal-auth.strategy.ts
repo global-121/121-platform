@@ -48,21 +48,27 @@ export class MsalAuthStrategy implements IAuthStrategy {
       loginHint: credentials.username,
     };
 
-    if (!isIframed()) {
-      this.msalService.loginRedirect(loginRequest);
-    } else {
-      const sub = this.msalService
-        .loginPopup(loginRequest)
-        .subscribe((data: AuthenticationResult | null) => {
-          sub.unsubscribe();
-          if (!data) {
-            throw new Error(
-              'MSAL Strategy: an error occurred while logging in with popup',
-            );
-          }
-          void this.router.navigate(['/', AppRoutes.authCallback]);
-        });
+    // Popup scenario
+    if (isIframed()) {
+      return new Promise<null>((resolve, reject) => {
+        const sub = this.msalService
+          .loginPopup(loginRequest)
+          .subscribe((data: AuthenticationResult | null) => {
+            sub.unsubscribe();
+            if (!data) {
+              reject(
+                new Error(
+                  'MSAL Strategy: an error occurred while logging in with popup',
+                ),
+              );
+            }
+            resolve(null);
+          });
+      });
     }
+
+    // Redirect scenario
+    this.msalService.loginRedirect(loginRequest);
 
     // The user is being fetched & set in msal-auth.callback.component
     return new Promise<User>((_resolve, reject) => {
@@ -111,10 +117,15 @@ export class MsalAuthStrategy implements IAuthStrategy {
   }
 
   public handleAuthCallback(nextPageUrl: string) {
+    if (isIframed()) {
+      void this.refreshUserAndNavigate(nextPageUrl);
+      return;
+    }
+
     const subscription = this.msalService
       .handleRedirectObservable()
       .subscribe((data: AuthenticationResult | null) => {
-        if (!data && !isIframed()) {
+        if (!data) {
           return;
         }
         subscription.unsubscribe();
