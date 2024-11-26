@@ -2,7 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MsalService } from '@azure/msal-angular';
-import { AuthenticationResult } from '@azure/msal-browser';
+import {
+  AuthenticationResult,
+  PopupRequest,
+  RedirectRequest,
+} from '@azure/msal-browser';
 import { injectQueryClient } from '@tanstack/angular-query-experimental';
 
 import { AppRoutes } from '~/app.routes';
@@ -39,14 +43,32 @@ export class MsalAuthStrategy implements IAuthStrategy {
   }
 
   public async login(credentials: { username: string }) {
-    if (!isIframed()) {
-      this.msalService.loginRedirect({
-        scopes: [`api://${environment.azure_ad_client_id}/User.read`],
-        loginHint: credentials.username,
+    const loginRequest: PopupRequest | RedirectRequest = {
+      scopes: [`api://${environment.azure_ad_client_id}/User.read`],
+      loginHint: credentials.username,
+    };
+
+    // Popup scenario
+    if (isIframed()) {
+      return new Promise<null>((resolve, reject) => {
+        const sub = this.msalService
+          .loginPopup(loginRequest)
+          .subscribe((data: AuthenticationResult | null) => {
+            sub.unsubscribe();
+            if (!data) {
+              reject(
+                new Error(
+                  'MSAL Strategy: an error occurred while logging in with popup',
+                ),
+              );
+            }
+            resolve(null);
+          });
       });
-    } else {
-      throw new Error('TODO: AB#31469 Implement loginPopup for iframe');
     }
+
+    // Redirect scenario
+    this.msalService.loginRedirect(loginRequest);
 
     // The user is being fetched & set in msal-auth.callback.component
     return new Promise<User>((_resolve, reject) => {
@@ -95,6 +117,11 @@ export class MsalAuthStrategy implements IAuthStrategy {
   }
 
   public handleAuthCallback(nextPageUrl: string) {
+    if (isIframed()) {
+      void this.refreshUserAndNavigate(nextPageUrl);
+      return;
+    }
+
     const subscription = this.msalService
       .handleRedirectObservable()
       .subscribe((data: AuthenticationResult | null) => {

@@ -129,6 +129,9 @@ updates:
           - '*'
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@azure/msal-angular'
+        # version 3.1.0. was giving an error on window.crypto object
+      - dependency-name: '@azure/msal-browser'
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
         # filesize 10 does not work with ngx-filesize
