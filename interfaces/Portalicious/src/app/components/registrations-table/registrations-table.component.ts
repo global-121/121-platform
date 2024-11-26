@@ -21,6 +21,7 @@ import {
   QueryTableComponent,
   QueryTableSelectionEvent,
 } from '~/components/query-table/query-table.component';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   REGISTRATION_STATUS_LABELS,
@@ -32,6 +33,7 @@ import {
   PaginateQueryService,
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-registrations-table',
@@ -49,8 +51,10 @@ export class RegistrationsTableComponent {
   overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>({});
 
   private paginateQueryService = inject(PaginateQueryService);
+  private projectApiService = inject(ProjectApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+  private translatableStringService = inject(TranslatableStringService);
 
   PermissionEnum = PermissionEnum;
 
@@ -73,6 +77,10 @@ export class RegistrationsTableComponent {
     };
   });
 
+  protected project = injectQuery(
+    this.projectApiService.getProject(this.projectId),
+  );
+
   protected registrationsResponse = injectQuery(
     this.registrationApiService.getManyByQuery(
       this.projectId,
@@ -88,6 +96,10 @@ export class RegistrationsTableComponent {
   );
 
   protected columns = computed(() => {
+    if (!this.project.isSuccess()) {
+      return [];
+    }
+
     const registrationTableColumns: QueryTableColumn<Registration>[] = [
       {
         field: 'personAffectedSequence',
@@ -120,6 +132,16 @@ export class RegistrationsTableComponent {
         ),
         getCellChipData: (registration) =>
           getChipDataByRegistrationStatus(registration.status),
+      },
+      {
+        field: 'financialServiceProvider',
+        header: $localize`FSP`,
+        type: QueryTableColumnType.MULTISELECT,
+        options: this.project.data().financialServiceProviders.map((fsp) => ({
+          label:
+            this.translatableStringService.translate(fsp.displayName) ?? '',
+          value: fsp.fsp,
+        })),
       },
       {
         field: 'registrationCreated',
