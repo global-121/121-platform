@@ -139,7 +139,7 @@ export class RegistrationsTableComponent {
         type: QueryTableColumnType.MULTISELECT,
         options: this.project.data().financialServiceProviders.map((fsp) => ({
           label:
-            this.translatableStringService.translate(fsp.displayName) ?? 'asd',
+            this.translatableStringService.translate(fsp.displayName) ?? '',
           value: fsp.fsp,
         })),
       },
