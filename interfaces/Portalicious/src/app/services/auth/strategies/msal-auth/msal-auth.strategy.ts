@@ -2,7 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MsalService } from '@azure/msal-angular';
-import { AuthenticationResult } from '@azure/msal-browser';
+import {
+  AuthenticationResult,
+  PopupRequest,
+  RedirectRequest,
+} from '@azure/msal-browser';
 import { injectQueryClient } from '@tanstack/angular-query-experimental';
 
 import { AppRoutes } from '~/app.routes';
@@ -39,13 +43,25 @@ export class MsalAuthStrategy implements IAuthStrategy {
   }
 
   public async login(credentials: { username: string }) {
+    const loginRequest: PopupRequest | RedirectRequest = {
+      scopes: [`api://${environment.azure_ad_client_id}/User.read`],
+      loginHint: credentials.username,
+    };
+
     if (!isIframed()) {
-      this.msalService.loginRedirect({
-        scopes: [`api://${environment.azure_ad_client_id}/User.read`],
-        loginHint: credentials.username,
-      });
+      this.msalService.loginRedirect(loginRequest);
     } else {
-      throw new Error('TODO: AB#31469 Implement loginPopup for iframe');
+      const sub = this.msalService
+        .loginPopup(loginRequest)
+        .subscribe((data: AuthenticationResult | null) => {
+          sub.unsubscribe();
+          if (!data) {
+            throw new Error(
+              'MSAL Strategy: an error occurred while logging in with popup',
+            );
+          }
+          void this.router.navigate(['/', AppRoutes.authCallback]);
+        });
     }
 
     // The user is being fetched & set in msal-auth.callback.component
@@ -98,7 +114,7 @@ export class MsalAuthStrategy implements IAuthStrategy {
     const subscription = this.msalService
       .handleRedirectObservable()
       .subscribe((data: AuthenticationResult | null) => {
-        if (!data) {
+        if (!data && !isIframed()) {
           return;
         }
         subscription.unsubscribe();
