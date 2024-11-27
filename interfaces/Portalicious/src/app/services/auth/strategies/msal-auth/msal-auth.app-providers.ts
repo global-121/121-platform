@@ -21,7 +21,6 @@ import {
 
 import { AppRoutes } from '~/app.routes';
 import { isIframed } from '~/utils/is-iframed';
-import { Locale } from '~/utils/locale';
 import { environment } from '~environment';
 
 function MSALInstanceFactory(): IPublicClientApplication {
@@ -84,7 +83,7 @@ function MSALGuardConfigFactory(): MsalGuardConfiguration {
 export function getOriginUrl(): string {
   return !environment.production
     ? window.location.origin
-    : `${window.location.origin}/${Locale.en}`;
+    : `${window.location.origin}/${environment.defaultLocale}`;
 }
 
 export function getMsalAuthAppProviders() {
