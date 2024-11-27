@@ -18,6 +18,7 @@ import { getMsalAuthAppProviders } from '~/services/auth/strategies/msal-auth/ms
 import { MsalAuthLoginComponent } from '~/services/auth/strategies/msal-auth/msal-auth.login.component';
 import { isIframed } from '~/utils/is-iframed';
 import { LocalStorageUser, setUserInLocalStorage } from '~/utils/local-storage';
+import { getOriginUrl } from '~/utils/url-helper';
 import { environment } from '~environment';
 
 @Injectable({
@@ -94,8 +95,8 @@ export class MsalAuthStrategy implements IAuthStrategy {
     const logoutRequest: Record<string, unknown> = {
       account: currentUser,
       authority: `${environment.azure_ad_url}/${currentUser.tenantId}`,
-      mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
-      postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      mainWindowRedirectUri: `${getOriginUrl()}/${AppRoutes.login}`,
+      postLogoutRedirectUri: `${getOriginUrl()}/${AppRoutes.login}`,
     };
     if (isIframed()) {
       this.msalService.logoutPopup(logoutRequest);
