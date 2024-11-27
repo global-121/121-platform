@@ -22,7 +22,7 @@ export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
       FinancialServiceProviders.excel,
     ],
   })
-  public readonly fspsInPayment: string[];
+  public readonly fspsInPayment: FinancialServiceProviders[];
 }
 
 export class BulkActionResultPaymentDto extends BulkActionResultRetryPaymentDto {

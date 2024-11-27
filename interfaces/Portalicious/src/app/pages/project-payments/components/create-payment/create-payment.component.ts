@@ -29,11 +29,13 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/fullscreen-spinner.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
+import { FinancialServiceProviderApiService } from '~/domains/financial-service-provider/financial-service-provider.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
 @Component({
@@ -59,9 +61,13 @@ export class CreatePaymentComponent {
   projectId = input.required<number>();
 
   currencyPipe = inject(CurrencyPipe);
-  toastService = inject(ToastService);
+  financialServiceProviderApiService = inject(
+    FinancialServiceProviderApiService,
+  );
   paymentApiService = inject(PaymentApiService);
   projectApiService = inject(ProjectApiService);
+  toastService = inject(ToastService);
+  translatableStringService = inject(TranslatableStringService);
 
   @ViewChild('createPaymentDialog')
   createPaymentDialog: Dialog;
@@ -78,6 +84,9 @@ export class CreatePaymentComponent {
     status: RegistrationStatusEnum.included,
   };
 
+  financialServiceProviders = injectQuery(
+    this.financialServiceProviderApiService.getFinancialServiceProviders(),
+  );
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   paymentInProgress = injectQuery(
@@ -187,10 +196,21 @@ export class CreatePaymentComponent {
       return [];
     }
 
+    const fsps = this.financialServiceProviders.data();
+
     const listData: DataListItem[] = [
       {
         label: $localize`Financial Service Provider(s)`,
-        value: dryRunResult.fspsInPayment.join(', '),
+        value: dryRunResult.fspsInPayment
+          .map((fspInPayment) => {
+            const fsp = fsps?.find((fsp) => fsp.fsp === fspInPayment);
+            return (
+              this.translatableStringService.translate(fsp?.displayName) ??
+              fspInPayment
+            );
+          })
+          .join(', '),
+        loading: this.financialServiceProviders.isPending(),
         fullWidth: true,
       },
       {
