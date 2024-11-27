@@ -161,4 +161,8 @@ export class SafaricomApiService {
     // We set a buffer of 5 minutes to make sure that when doing the subsequent POST call, the token is still valid.
     return timeLeftBeforeExpire > 5 * 60 * 1000;
   }
+
+  public testIsTokenValid(tokenSet: TokenSet): boolean {
+    return this.isTokenValid(tokenSet);
+  }
 }
