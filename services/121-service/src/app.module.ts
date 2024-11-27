@@ -22,6 +22,8 @@ import { MessageModule } from '@121-service/src/notifications/message.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { OrganizationModule } from '@121-service/src/organization/organization.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { QueueHelperModule } from '@121-service/src/scripts/queue-helper/queue-helper.module';
+import { QueueHelperService } from '@121-service/src/scripts/queue-helper/queue-helper.service';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
@@ -70,6 +72,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     TransactionQueuesModule,
     TransactionJobProcessorsModule,
     FinancialServiceProviderCallbackJobProcessorsModule,
+    QueueHelperModule,
   ],
   controllers: [AppController],
   providers: [
@@ -80,9 +83,15 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
   ],
 })
 export class ApplicationModule implements OnApplicationBootstrap {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    private queueHelperService: QueueHelperService,
+  ) {}
 
   async onApplicationBootstrap(): Promise<void> {
     await this.dataSource.runMigrations();
+    // This is needed because of the issue where on 121-service startup jobs will start processing before the process handlers are registered, which leads to failed jobs.
+    // We are not able to prevent this from happening, so instead this workaround will retry all failed jobs on startup. By then the process handler is up and the jobs will not fail for this reason again.
+    await this.queueHelperService.retryFailedJobs();
   }
 }

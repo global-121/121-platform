@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, Equal } from 'typeorm';
 
-import { QueueSeedHelperService } from '@121-service/src/scripts/queue-seed-helper/queue-seed-helper.service';
+import { QueueHelperService } from '@121-service/src/scripts/queue-helper/queue-helper.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import fspCommercialBankEthiopia from '@121-service/src/seed-data/fsp/fsp-commercial-bank-ethiopia.json';
@@ -24,7 +24,7 @@ export class SeedInit implements InterfaceScript {
   public constructor(
     private dataSource: DataSource,
     private readonly seedHelper: SeedHelper,
-    private readonly queueSeedHelper: QueueSeedHelperService,
+    private readonly queueHelper: QueueHelperService,
     private readonly httpService: CustomHttpService,
   ) {}
 
@@ -60,7 +60,7 @@ export class SeedInit implements InterfaceScript {
       process.env.REDIS_PREFIX &&
       ['development', 'test'].includes(process.env.NODE_ENV!)
     ) {
-      await this.queueSeedHelper.emptyAllQueues();
+      await this.queueHelper.emptyAllQueues();
     }
   }
 
