@@ -34,6 +34,7 @@ export class SafaricomService
    * Do not use! This function was previously used to send payments.
    * It has been deprecated and should not be called anymore.
    */
+  // ##TODO: Unit test this function
   public async sendPayment(
     _paymentList: PaPaymentDataDto[],
     _programId: number,
@@ -41,6 +42,23 @@ export class SafaricomService
   ): Promise<void> {
     throw new Error('Method should not be called anymore.');
   }
+
+  /* ##TODO:
+  1. Unit test this function:
+  - All cases and edge cases to verify that this function handles all possible scenarios correctly
+  - transferAmount 0
+  - transferAmount negative
+  - phoneNumber empty string
+  - idNumber empty string
+  - originatorConversationId empty string
+  - SafaricomApiService not available or times out?
+  - Database not available or times out?
+
+  2. Integration test this function:
+  - With our Mock Service
+  - Happy path
+  - Key error cases: not authorized, not found, ...
+  */
 
   public async doTransfer({
     transferAmount,
@@ -69,6 +87,26 @@ export class SafaricomService
     );
   }
 
+  /* ##TODO: 
+  Unit test this function:
+  - All cases and edge cases to verify that this function handles all possible scenarios correctly
+  - Weird input data from SafaricomTransferCallbackDto that would pass automatic validation
+  - originatorConversationId empty string
+  - mpesaConversationId empty string or not present
+  - mpesaTransactionId empty string or not present
+  - resultCode 0 or not present
+  - resultDescription empty string or not present
+  - resultCode negative 
+  - resultCode positive 
+  - Queue not available or times out?
+  - Redis not available or times out?
+
+  Integration test this function:
+  - Job being added to the queue
+  - RedisClient being updated
+  - Any "typical" error cases that could happen?
+  
+  */
   public async processTransferCallback(
     safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<void> {
@@ -89,6 +127,31 @@ export class SafaricomService
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
   }
 
+  /* ## TODO:
+  Unit test this function:
+  - All cases and edge cases to verify that this function handles all possible scenarios correctly
+  - Weird input data from SafaricomTimeoutCallbackDto that would pass automatic validation
+  - InitiatorName empty string or not present
+  - SecurityCredential empty string or not present
+  - CommandID empty string or not present
+  - Amount 0 or not present
+  - PartyA empty string or not present
+  - PartyB empty string or not present
+  - Remarks empty string or not present
+  - QueueTimeOutURL empty string or not present
+  - ResultURL empty string or not present
+  - OriginatorConversationID empty string or not present
+  - IDType empty string or not present
+  - IDNumber empty string or not present
+  - Queue not available or times out?
+  - Redis not available or times out?
+
+  Integration test this function:
+  - Job being added to the queue
+  - RedisClient being updated
+  - Any "typical" error cases that could happen?
+
+  */
   public async processTimeoutCallback(
     safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
   ): Promise<void> {
