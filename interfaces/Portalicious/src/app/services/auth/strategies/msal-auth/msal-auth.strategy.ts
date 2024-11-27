@@ -14,13 +14,11 @@ import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { AUTH_ERROR_IN_STATE_KEY } from '~/services/auth.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
-import {
-  getMsalAuthAppProviders,
-  getOriginUrl,
-} from '~/services/auth/strategies/msal-auth/msal-auth.app-providers';
+import { getMsalAuthAppProviders } from '~/services/auth/strategies/msal-auth/msal-auth.app-providers';
 import { MsalAuthLoginComponent } from '~/services/auth/strategies/msal-auth/msal-auth.login.component';
 import { isIframed } from '~/utils/is-iframed';
 import { LocalStorageUser, setUserInLocalStorage } from '~/utils/local-storage';
+import { getOriginUrl } from '~/utils/url-helper';
 import { environment } from '~environment';
 
 @Injectable({

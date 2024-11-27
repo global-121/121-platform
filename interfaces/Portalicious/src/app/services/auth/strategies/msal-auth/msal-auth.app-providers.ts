@@ -21,6 +21,7 @@ import {
 
 import { AppRoutes } from '~/app.routes';
 import { isIframed } from '~/utils/is-iframed';
+import { getOriginUrl } from '~/utils/url-helper';
 import { environment } from '~environment';
 
 function MSALInstanceFactory(): IPublicClientApplication {
@@ -78,12 +79,6 @@ function MSALGuardConfigFactory(): MsalGuardConfiguration {
       ? InteractionType.Popup
       : InteractionType.Redirect,
   };
-}
-
-export function getOriginUrl(): string {
-  return !environment.production
-    ? window.location.origin
-    : `${window.location.origin}/${environment.defaultLocale}`;
 }
 
 export function getMsalAuthAppProviders() {
