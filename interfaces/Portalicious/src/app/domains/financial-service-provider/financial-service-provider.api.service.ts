@@ -8,19 +8,10 @@ const BASE_ENDPOINT = 'financial-service-providers';
 @Injectable({
   providedIn: 'root',
 })
-export class financialServiceProviderApiService extends DomainApiService {
-  getFinancialServiceProviderQuestions(fspName: null | string | undefined) {
-    return this.generateQueryOptions<FinancialServiceProvider[], string[]>({
+export class FinancialServiceProviderApiService extends DomainApiService {
+  getFinancialServiceProviders() {
+    return this.generateQueryOptions<FinancialServiceProvider[]>({
       path: [BASE_ENDPOINT],
-      processResponse: (fspList) => {
-        const selectedFsp = fspList.find((fsp) => fsp.fsp === fspName);
-
-        if (!selectedFsp) {
-          return [];
-        }
-
-        return selectedFsp.questions.map((question) => question.name);
-      },
     });
   }
 }
