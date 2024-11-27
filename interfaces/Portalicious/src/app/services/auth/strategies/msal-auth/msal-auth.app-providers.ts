@@ -21,6 +21,7 @@ import {
 
 import { AppRoutes } from '~/app.routes';
 import { isIframed } from '~/utils/is-iframed';
+import { Locale } from '~/utils/locale';
 import { environment } from '~environment';
 
 function MSALInstanceFactory(): IPublicClientApplication {
@@ -28,8 +29,8 @@ function MSALInstanceFactory(): IPublicClientApplication {
     auth: {
       clientId: environment.azure_ad_client_id,
       authority: `${environment.azure_ad_url}/${environment.azure_ad_tenant_id}`,
-      redirectUri: `${window.location.origin}/${AppRoutes.authCallback}`,
-      postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      redirectUri: `${getOriginUrl()}/${AppRoutes.authCallback}`,
+      postLogoutRedirectUri: `${getOriginUrl()}/${AppRoutes.login}`,
       navigateToLoginRequestUrl: false,
     },
     cache: {
@@ -78,6 +79,12 @@ function MSALGuardConfigFactory(): MsalGuardConfiguration {
       ? InteractionType.Popup
       : InteractionType.Redirect,
   };
+}
+
+export function getOriginUrl(): string {
+  return !environment.production
+    ? window.location.origin
+    : `${window.location.origin}/${Locale.en}`;
 }
 
 export function getMsalAuthAppProviders() {

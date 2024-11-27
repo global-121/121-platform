@@ -14,7 +14,10 @@ import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { AUTH_ERROR_IN_STATE_KEY } from '~/services/auth.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
-import { getMsalAuthAppProviders } from '~/services/auth/strategies/msal-auth/msal-auth.app-providers';
+import {
+  getMsalAuthAppProviders,
+  getOriginUrl,
+} from '~/services/auth/strategies/msal-auth/msal-auth.app-providers';
 import { MsalAuthLoginComponent } from '~/services/auth/strategies/msal-auth/msal-auth.login.component';
 import { isIframed } from '~/utils/is-iframed';
 import { LocalStorageUser, setUserInLocalStorage } from '~/utils/local-storage';
@@ -94,8 +97,8 @@ export class MsalAuthStrategy implements IAuthStrategy {
     const logoutRequest: Record<string, unknown> = {
       account: currentUser,
       authority: `${environment.azure_ad_url}/${currentUser.tenantId}`,
-      mainWindowRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
-      postLogoutRedirectUri: `${window.location.origin}/${AppRoutes.login}`,
+      mainWindowRedirectUri: `${getOriginUrl()}/${AppRoutes.login}`,
+      postLogoutRedirectUri: `${getOriginUrl()}/${AppRoutes.login}`,
     };
     if (isIframed()) {
       this.msalService.logoutPopup(logoutRequest);
