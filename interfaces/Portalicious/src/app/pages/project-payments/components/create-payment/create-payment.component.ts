@@ -9,7 +9,6 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
 
 import {
   injectMutation,
@@ -21,11 +20,9 @@ import { CardModule } from 'primeng/card';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { AppRoutes } from '~/app.routes';
 import {
   DataListComponent,
   DataListItem,
@@ -36,7 +33,6 @@ import { FinancialServiceProviderApiService } from '~/domains/financial-service-
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { ExportService } from '~/services/export.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -65,11 +61,9 @@ export class CreatePaymentComponent {
   projectId = input.required<number>();
 
   currencyPipe = inject(CurrencyPipe);
-  exportService = inject(ExportService);
   financialServiceProviderApiService = inject(
     FinancialServiceProviderApiService,
   );
-  router = inject(Router);
   paymentApiService = inject(PaymentApiService);
   projectApiService = inject(ProjectApiService);
   toastService = inject(ToastService);
@@ -95,7 +89,7 @@ export class CreatePaymentComponent {
   );
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
-  paymentStatus = injectQuery(
+  paymentInProgress = injectQuery(
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
@@ -112,33 +106,23 @@ export class CreatePaymentComponent {
   paymentAmount = computed(() => this.project.data()?.fixedTransferValue ?? 0);
 
   createPaymentMutation = injectMutation(() => ({
-    mutationFn: async ({
-      paymentId,
+    mutationFn: ({
       dryRun,
       paginateQuery,
     }: {
-      paymentId: number;
       dryRun: boolean;
       paginateQuery: PaginateQuery;
-    }) => {
-      const paymentResult = await this.paymentApiService.createPayment({
+    }) =>
+      this.paymentApiService.createPayment({
         projectId: this.projectId,
         paginateQuery,
         paymentData: {
-          payment: paymentId,
+          payment: this.nextPaymentId(),
           amount: this.paymentAmount(),
         },
         dryRun,
-      });
-
-      if (!dryRun) {
-        // wait 1 second before resolving, to give the backend time to create at least one transaction in the DB
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-
-      return paymentResult;
-    },
-    onSuccess: async (result, { dryRun, paymentId }) => {
+      }),
+    onSuccess: (result, { dryRun }) => {
       if (result.nonApplicableCount > 0) {
         throw new Error(
           $localize`Some of the registrations you have selected are not eligible for this payment. Change your selection and try again`,
@@ -152,19 +136,16 @@ export class CreatePaymentComponent {
 
       this.dialogVisible.set(false);
 
-      await this.router.navigate([
-        '/',
-        AppRoutes.project,
-        this.projectId(),
-        AppRoutes.projectPayments,
-        paymentId,
-      ]);
-
       this.toastService.showToast({
         detail: $localize`Payment created.`,
       });
 
       void this.paymentApiService.invalidateCache(this.projectId);
+
+      setTimeout(() => {
+        // invalidate the cache again after a delay to try and make the payments change reflected in the UI
+        void this.paymentApiService.invalidateCache(this.projectId);
+      }, 500);
     },
     onError: (error) => {
       this.toastService.showToast({
@@ -175,7 +156,11 @@ export class CreatePaymentComponent {
   }));
 
   openDialog() {
-    if (this.paymentStatus.data()?.inProgress) {
+    if (!this.paymentInProgress.isSuccess()) {
+      return;
+    }
+
+    if (this.paymentInProgress.data().inProgress) {
       this.toastService.showToast({
         severity: 'warn',
         detail: $localize`A payment is currently in progress. Please wait until it has finished.`,
@@ -201,21 +186,8 @@ export class CreatePaymentComponent {
     this.createPaymentMutation.mutate({
       dryRun: this.currentStep() === 1,
       paginateQuery: actionData.query,
-      paymentId: this.nextPaymentId(),
     });
   }
-
-  hasIntegratedFsp = computed(() =>
-    this.dryRunResult()?.fspsInPayment.some(
-      (fsp) => fsp !== FinancialServiceProviders.excel,
-    ),
-  );
-
-  hasExcelFsp = computed(() =>
-    this.dryRunResult()?.fspsInPayment.includes(
-      FinancialServiceProviders.excel,
-    ),
-  );
 
   paymentSummaryData = computed(() => {
     const dryRunResult = this.dryRunResult();
@@ -284,6 +256,6 @@ export class CreatePaymentComponent {
     () =>
       this.createPaymentMutation.isPending() ||
       this.project.isPending() ||
-      this.paymentStatus.isPending(),
+      this.paymentInProgress.isPending(),
   );
 }

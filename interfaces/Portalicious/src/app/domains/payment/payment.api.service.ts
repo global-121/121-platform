@@ -1,7 +1,6 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
-import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -46,16 +45,6 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPaymentStatusByPaymentId(
-    projectId: Signal<number>,
-    paymentId: Signal<number>,
-  ) {
-    return this.generateQueryOptions<PaymentStatus>({
-      path: [...BASE_ENDPOINT(projectId), paymentId, 'status'],
-      refetchInterval: 3000,
-    });
-  }
-
   createPayment({
     projectId,
     paginateQuery,
@@ -79,19 +68,6 @@ export class PaymentApiService extends DomainApiService {
         ),
         dryRun,
       },
-    });
-  }
-
-  exportFspInstructions({
-    projectId,
-    paymentId,
-  }: {
-    projectId: Signal<number>;
-    paymentId: string;
-  }) {
-    return this.generateQueryOptions<Dto<FspInstructions>>({
-      path: [...BASE_ENDPOINT(projectId), paymentId, 'fsp-instructions'],
-      staleTime: 0,
     });
   }
 

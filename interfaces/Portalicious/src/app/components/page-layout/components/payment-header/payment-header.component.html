@@ -7,15 +7,5 @@
       [childTitle]="paymentTitle()"
     ></app-breadcrumbs-title>
   </ng-container>
-  <ng-container page-layout-actions>
-    @if (canExportPaymentInstructions()) {
-      <p-button
-        label="Export FSP payment list"
-        i18n-label
-        icon="pi pi-upload"
-        (click)="exportFspInstructions()"
-        [disabled]="paymentInProgress.isPending()"
-      />
-    }
-  </ng-container>
+  <ng-container page-layout-actions> </ng-container>
 </app-page-layout-title-and-actions>

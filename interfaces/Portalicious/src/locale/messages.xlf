@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1109,7 +1109,7 @@
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
       </trans-unit>
-      <trans-unit id="8074727237612649640" datatype="html">
+      <trans-unit id="5411216479306923315" datatype="html">
         <source>Review summary and click start payment.</source>
       </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
@@ -1126,36 +1126,6 @@
       </trans-unit>
       <trans-unit id="8890553633144307762" datatype="html">
         <source>Back</source>
-      </trans-unit>
-      <trans-unit id="1021287001460137349" datatype="html">
-        <source>Exporting FSP Instructions</source>
-      </trans-unit>
-      <trans-unit id="2077280297780026969" datatype="html">
-        <source>Review payment summary and follow the next steps:</source>
-      </trans-unit>
-      <trans-unit id="3107789597484856473" datatype="html">
-        <source>Click start payment, this will redirect you to the payment page.</source>
-      </trans-unit>
-      <trans-unit id="5677186522471416018" datatype="html">
-        <source>Upload the file to the Financial Service Provider’s portal.</source>
-      </trans-unit>
-      <trans-unit id="8847988975348610068" datatype="html">
-        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
-      </trans-unit>
-      <trans-unit id="5013095735395935362" datatype="html">
-        <source>The current payment is still in progress. Please try again later</source>
-      </trans-unit>
-      <trans-unit id="5982069520336655984" datatype="html">
-        <source>Export not possible</source>
-      </trans-unit>
-      <trans-unit id="614288202138197410" datatype="html">
-        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
-      </trans-unit>
-      <trans-unit id="7386091350857462296" datatype="html">
-        <source>An unexpected error occurred while exporting the FSP instructions. Please try again later.</source>
-      </trans-unit>
-      <trans-unit id="3706395027796944760" datatype="html">
-        <source>Export FSP payment list</source>
       </trans-unit>
     </body>
   </file>

@@ -3,7 +3,7 @@
   i18n-label="@@create-payment"
   rounded
   icon="pi pi-money-bill"
-  [loading]="paymentStatus.isPending()"
+  [loading]="paymentInProgress.isPending()"
   (click)="openDialog()"
 />
 
@@ -57,48 +57,30 @@
 
       @if (currentStep() === 2) {
         <div>
-          @if (hasExcelFsp()) {
-            <p i18n>Review payment summary and follow the next steps:</p>
-            <!-- TODO: AB#31559 finalise copy of this section -->
-            <ol class="mt-2 list-decimal pl-6">
-              <li i18n>
-                Click start payment, this will redirect you to the payment page.
-              </li>
-              <li i18n>
-                Export the FSP instructions from the payment page. This is only
-                possible once the payment is no longer in progress.
-              </li>
-              <li i18n>
-                Save the exported XLSX-file in the format required by the
-                Financial Service Provider.
-              </li>
-              <li i18n>
-                Upload the file to the Financial Service Provider’s portal.
-              </li>
-            </ol>
-          } @else {
-            <p i18n>Review summary and click start payment.</p>
-          }
-          <p-card class="relative mt-5 block [&_.p-card-body]:py-2">
+          <p
+            i18n
+            class="mb-5"
+          >
+            Review summary and click start payment.
+          </p>
+          <p-card class="relative [&_.p-card-body]:py-2">
             <app-data-list
               [data]="paymentSummaryData()"
               [hideBottomBorder]="true"
             />
-            @if (hasIntegratedFsp()) {
-              <p-button
-                text
-                plain
-                icon="pi pi-ellipsis-h"
-                class="absolute end-4 top-2"
-                (click)="menu.toggle($event)"
-              />
-              <p-menu
-                #menu
-                [model]="paymentSummaryMenuItems()"
-                [popup]="true"
-                appendTo="body"
-              />
-            }
+            <p-button
+              text
+              plain
+              icon="pi pi-ellipsis-h"
+              class="absolute end-4 top-2"
+              (click)="menu.toggle($event)"
+            />
+            <p-menu
+              #menu
+              [model]="paymentSummaryMenuItems()"
+              [popup]="true"
+              appendTo="body"
+            />
           </p-card>
         </div>
       }
