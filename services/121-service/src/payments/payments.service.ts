@@ -12,15 +12,12 @@ import { FinancialServiceProviderIntegrationType } from '@121-service/src/financ
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RequiredFinancialServiceProviderConfigurations } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
-import {
-  CsvInstructions,
-  ExportFileType,
-  FspInstructions,
-} from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
+import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -524,7 +521,23 @@ export class PaymentsService {
 
   public async getProgramPaymentsStatus(
     programId: number,
+    payment?: number,
   ): Promise<ProgramPaymentsStatusDto> {
+    if (payment) {
+      // TODO: refactor this once the "transaction/payment" entity exists,
+      // so that we can just get the status for a specific entity
+      const payments = await this.getPayments(programId);
+      const latestPayment = Math.max(...payments.map((p) => p.payment));
+      const isLatestPayment = payment === latestPayment;
+
+      if (!isLatestPayment) {
+        // only the latest payment can be in progress
+        return {
+          inProgress: false,
+        };
+      }
+    }
+
     return {
       inProgress: await this.isPaymentInProgress(programId),
     };
@@ -1037,8 +1050,7 @@ export class PaymentsService {
       );
     }
 
-    let csvInstructions: CsvInstructions = [];
-    let fileType: ExportFileType | undefined;
+    let excelInstructions: ExcelFspInstructions[] = [];
 
     // REFACTOR: below code seems to facilitate multiple non-api FSPs in 1 payment, but does not actually handle this correctly.
     // REFACTOR: below code should be transformed to paginate-queries instead of per PA, like the Excel-FSP code below
@@ -1067,12 +1079,11 @@ export class PaymentsService {
         t.status === TransactionStatusEnum.waiting, // only 'waiting' given that Excel FSP has reconciliation
     );
     if (excelTransactions.length) {
-      csvInstructions = await this.excelService.getFspInstructions(
+      excelInstructions = await this.excelService.getFspInstructions(
         excelTransactions,
         programId,
         payment,
       );
-      fileType = ExportFileType.excel;
     }
 
     await this.actionService.saveAction(
@@ -1082,8 +1093,7 @@ export class PaymentsService {
     );
 
     return {
-      data: csvInstructions,
-      fileType,
+      data: excelInstructions,
     };
   }
 
