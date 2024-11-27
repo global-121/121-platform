@@ -246,30 +246,22 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const programFinancialServiceProviderConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
 
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
       // This is only needed in actual doPayment call
-
-      const fspConfigName =
-        registration.programFinancialServiceProviderConfigurationName;
-
-      if (
-        fspConfigName &&
-        !programFinancialServiceProviderConfigurationNames.includes(
-          fspConfigName,
-        )
-      ) {
-        programFinancialServiceProviderConfigurationNames.push(fspConfigName);
-      }
     }
 
-    await this.checkFspConfigurationsOrThrow(
-      programId,
-      programFinancialServiceProviderConfigurationNames,
+    // Get unique programFinancialServiceProviderConfigurationNames in payment
+    const programFinancialServiceProviderConfigurationNames = Array.from(
+      new Set(
+        registrationsForPayment.map(
+          (registration) =>
+            registration.programFinancialServiceProviderConfigurationName,
+        ),
+      ),
     );
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
@@ -285,6 +277,11 @@ export class PaymentsService {
     );
 
     if (!dryRun && referenceIds.length > 0) {
+      await this.checkFspConfigurationsOrThrow(
+        programId,
+        programFinancialServiceProviderConfigurationNames,
+      );
+
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment(
         userId,
