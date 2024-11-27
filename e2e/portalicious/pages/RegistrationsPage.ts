@@ -95,6 +95,10 @@ class RegistrationsPage extends BasePage {
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
   }
 
+  async waitForLoaded(registrationsCount: number) {
+    await this.table.waitForLoaded(registrationsCount);
+  }
+
   async selectBulkAction(action: string) {
     await this.page.getByRole('button', { name: action }).click();
   }
@@ -144,6 +148,9 @@ class RegistrationsPage extends BasePage {
     await this.page.waitForSelector('table tbody tr td');
     const fullName = await this.table.getCell(0, 2);
     const fullNameText = (await fullName.textContent())?.trim();
+    if (!fullNameText) {
+      throw new Error('Could not find full name in the table');
+    }
     return fullNameText;
   }
 
@@ -239,6 +246,10 @@ class RegistrationsPage extends BasePage {
   async performActionWithRightClick(action: string, row = 0) {
     await this.table.tableRows.nth(row).click({ button: 'right' });
     await this.page.getByLabel(action).click();
+
+    if (action !== 'Message') {
+      await this.page.getByRole('button', { name: 'Approve' }).click();
+    }
   }
 
   async clickAndSelectExportOption(option: string) {
