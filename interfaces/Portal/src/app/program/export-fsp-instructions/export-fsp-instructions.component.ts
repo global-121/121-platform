@@ -1,4 +1,3 @@
-import { ExportFileType } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,7 +8,6 @@ import { ActionType } from '../../models/actions.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { LatestActionService } from '../../services/latest-action.service';
 import { actionResult } from '../../shared/action-result';
-import { downloadAsCsv } from '../../shared/array-to-csv';
 import { arrayToXlsx as downloadAsXlsx } from '../../shared/array-to-xlsx';
 
 @Component({
@@ -119,12 +117,7 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
           }
           const exportFileName = `payment#${this.payment}-fsp-instructions`;
 
-          if (res.fileType === ExportFileType.csv) {
-            downloadAsCsv(res.data, exportFileName);
-          }
-          if (res.fileType === ExportFileType.excel) {
-            downloadAsXlsx(res.data, exportFileName);
-          }
+          downloadAsXlsx(res.data, exportFileName);
 
           this.updateSubHeader();
         },

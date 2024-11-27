@@ -89,6 +89,31 @@ export class PaymentsController {
     return await this.paymentsService.getProgramPaymentsStatus(programId);
   }
 
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
+  @ApiOperation({ summary: 'Get status of a specific payment.' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'payment',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Status of the specific payment',
+  })
+  @Get('programs/:programId/payments/:payment/status')
+  public async getPaymentStatusForPayment(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('payment', ParseIntPipe)
+    payment: number,
+  ): Promise<ProgramPaymentsStatusDto> {
+    return await this.paymentsService.getProgramPaymentsStatus(
+      programId,
+      payment,
+    );
+  }
+
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({ summary: '[SCOPED] Get payment aggregate results' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
