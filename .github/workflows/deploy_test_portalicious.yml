@@ -50,23 +50,20 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAABNIQAA/OrwAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAiIgAgAAACABAAACAAAAIAAgAAIAAAAgAAIAAgAAACAAACACAAAAIAIAIAIAAAAgAgAgAgAAACAAIgACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
           envIconPath: 'src/assets/favicon.ico'
-          envContentSecurityPolicy: >-
-            connect-src 'self' https://test.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://login.microsoftonline.com;
-            form-action https://test.121.global;
-            frame-src blob: 'self' https://app.powerbi.com https://login.microsoftonline.com;
-            frame-ancestors 'self' https://flex.twilio.com;
-            style-src 'self' https://fonts.googleapis.com;
-            font-src 'self' https://fonts.gstatic.com;
+          envContentSecurityPolicy: ''
         env:
           NG_ENV_NAME: 'test'
           NG_LOCALES: 'en-GB,nl'
           NG_DEFAULT_LOCALE: 'en-GB'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+          USE_GOOGLE_FONTS: 'for-now'
+          USE_IN_TWILIO_FLEX_IFRAME: ${{ vars.USE_IN_TWILIO_FLEX_IFRAME }}
+          USE_POWERBI_DASHBOARDS: ${{ vars.USE_POWERBI_DASHBOARDS }}
           USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}
           AZURE_ENTRA_CLIENT_ID: ${{ vars.AZURE_ENTRA_CLIENT_ID }}
           AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
           AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig

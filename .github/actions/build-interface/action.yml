@@ -20,13 +20,10 @@ inputs:
     description: Value of a 'baseline' Content-Security-Policy to use. (all non-enviroment-specific) (All lines should end with a ";"!)
     required: false
     default: >-
-      base-uri 'self';
       default-src 'self';
-      script-src 'self';
-      style-src 'self' 'unsafe-inline';
       object-src 'none';
+      style-src 'self' 'unsafe-inline';
       upgrade-insecure-requests;
-      block-all-mixed-content;
   envContentSecurityPolicy:
     description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
     required: false
@@ -34,7 +31,6 @@ inputs:
       connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://login.microsoftonline.com;
       form-action https://*.121.global;
       frame-src blob: 'self';
-      frame-ancestors 'self';
 
 outputs:
   build_version:
@@ -84,7 +80,7 @@ runs:
         APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
     - name: Add/Override environment-specific Content-Security-Policy
-      if: ${{ inputs.envContentSecurityPolicy }} != ''
+      if: inputs.envContentSecurityPolicy != ''
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
