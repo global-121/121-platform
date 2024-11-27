@@ -11,6 +11,7 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { RequiredFinancialServiceProviderConfigurations } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider.repository';
 import { FinancialServiceProviderQuestionRepository } from '@121-service/src/financial-service-providers/repositories/financial-service-provider-question.repository';
 import {
   CsvInstructions,
@@ -103,6 +104,7 @@ export class PaymentsService {
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionQueuesService: TransactionQueuesService,
+    private readonly financialServiceProviderRepository: FinancialServiceProviderRepository,
     private readonly financialServiceProviderQuestionRepository: FinancialServiceProviderQuestionRepository,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     @Inject(REDIS_CLIENT)
@@ -266,23 +268,30 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspsInPayment: FinancialServiceProviders[] = [];
+    const isFspInPayment: {
+      FinancialServiceProviders?: boolean;
+    } = {};
+    const fspsInPayment: BulkActionResultPaymentDto['fspsInPayment'] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
       if (
         registration.financialServiceProvider &&
-        !fspsInPayment.includes(registration.financialServiceProvider)
+        !isFspInPayment[registration.financialServiceProvider]
       ) {
-        fspsInPayment.push(registration.financialServiceProvider);
+        isFspInPayment[registration.financialServiceProvider] = true;
+        fspsInPayment.push({
+          fsp: registration.financialServiceProvider,
+          displayName: registration.fspDisplayName,
+        });
       }
     }
 
     // TODO: REFACTOR: See https://github.com/global-121/121-platform/pull/5347#discussion_r1738465704, can be done as part of: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27393
-    for (const fsp of fspsInPayment) {
+    for (const fspInPayment of fspsInPayment) {
       await this.validateRequiredFinancialServiceProviderConfigurations(
-        fsp,
+        fspInPayment.fsp,
         programId,
       );
     }
@@ -476,11 +485,23 @@ export class PaymentsService {
       }
     }
 
+    const fspsInPaymentWithDisplayName: BulkActionResultRetryPaymentDto['fspsInPayment'] =
+      await Promise.all(
+        fspsInPayment.map(async (fsp) => {
+          const fspEntity =
+            await this.financialServiceProviderRepository.getByName(fsp);
+          return {
+            fsp,
+            displayName: fspEntity?.displayName,
+          };
+        }),
+      );
+
     return {
       totalFilterCount: paPaymentDataList.length,
       applicableCount: paPaymentDataList.length,
       nonApplicableCount: 0,
-      fspsInPayment,
+      fspsInPayment: fspsInPaymentWithDisplayName,
     };
   }
 

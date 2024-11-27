@@ -34,6 +34,7 @@ import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
 @Component({
@@ -62,6 +63,7 @@ export class CreatePaymentComponent {
   toastService = inject(ToastService);
   paymentApiService = inject(PaymentApiService);
   projectApiService = inject(ProjectApiService);
+  translatableStringService = inject(TranslatableStringService);
 
   @ViewChild('createPaymentDialog')
   createPaymentDialog: Dialog;
@@ -190,7 +192,14 @@ export class CreatePaymentComponent {
     const listData: DataListItem[] = [
       {
         label: $localize`Financial Service Provider(s)`,
-        value: dryRunResult.fspsInPayment.join(', '),
+        value: dryRunResult.fspsInPayment
+          .map(
+            (fspInPayment) =>
+              this.translatableStringService.translate(
+                fspInPayment.displayName,
+              ) ?? fspInPayment.fsp,
+          )
+          .join(', '),
         fullWidth: true,
       },
       {

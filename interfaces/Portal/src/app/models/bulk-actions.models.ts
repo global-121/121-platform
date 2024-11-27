@@ -1,7 +1,9 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import Permission from '../auth/permission.enum';
+import FspName from '../enums/fsp-name.enum';
 import { InputProps } from '../shared/confirm-prompt/confirm-prompt.component';
 import { ProgramTab } from './program.model';
+import { TranslatableString } from './translatable-string.model';
 
 export enum BulkActionId {
   chooseAction = '',
@@ -39,5 +41,8 @@ export class BulkActionResult {
   public readonly applicableCount: number;
   public readonly nonApplicableCount: number;
   public readonly sumPaymentAmountMultiplier?: number;
-  public readonly fspsInPayment?: string[];
+  public readonly fspsInPayment?: {
+    fsp: FspName;
+    displayName?: TranslatableString | null;
+  }[];
 }
