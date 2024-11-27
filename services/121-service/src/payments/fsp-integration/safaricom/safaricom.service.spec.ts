@@ -59,6 +59,7 @@ describe('SafaricomService', () => {
     });
   });
 
+  // ##TODO: See comment in SafaricomService.doTransfer
   describe('doTransfer', () => {
     it('should do transfer', async () => {
       const transferResult: TransferReturnType = {
@@ -83,6 +84,7 @@ describe('SafaricomService', () => {
     });
   });
 
+  // ##TODO: See comment in SafaricomService.processTransferCallback
   describe('processTransferCallback', () => {
     it('should add job to safaricomTransferCallbackQueue and update Redis', async () => {
       const mockCallback: SafaricomTransferCallbackDto = {
@@ -124,6 +126,7 @@ describe('SafaricomService', () => {
     });
   });
 
+  // ##TODO: See comment in SafaricomService.processTimeoutCallback
   describe('processTimeoutCallback', () => {
     it('should add job to safaricomTimeoutCallbackQueue and update Redis', async () => {
       const mockTimeoutCallback: SafaricomTimeoutCallbackDto = {

@@ -78,15 +78,15 @@ To run the Unit-tests: (replace `:all` with `:watch` to run during development)
 
 To run the API/Integration tests: (replace `:all` with `:watch` to run during development)
 
-    docker exec 121-service  npm run test:e2e:all
+    docker exec 121-service  npm run test:integration:all
 
 To run a single test suite, amend the name of the test file, for example:
 
-    docker exec 121-service  npm run test:e2e:all update-program.test.ts
+    docker exec 121-service  npm run test:integration:all update-program.test.ts
 
 To update snapshots, amend the `-- -u` option, for example:
 
-    docker exec 121-service  npm run test:e2e:all -- -u
+    docker exec 121-service  npm run test:integration:all -- -u
 
 ### Debugging
 
