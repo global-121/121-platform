@@ -19,11 +19,17 @@ export class SafaricomApiService {
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
+  // ##TODO: Info to team: paramters were not typed here, implicit any!
   public async transfer({
     transferAmount,
     phoneNumber,
     idNumber,
     originatorConversationId,
+  }: {
+    transferAmount: number;
+    phoneNumber: string;
+    idNumber: string;
+    originatorConversationId: string;
   }): Promise<TransferReturnType> {
     const payload = this.createTransferPayload({
       transferAmount,
@@ -160,5 +166,9 @@ export class SafaricomApiService {
     const timeLeftBeforeExpire = tokenSet.expires_at - Date.now();
     // We set a buffer of 5 minutes to make sure that when doing the subsequent POST call, the token is still valid.
     return timeLeftBeforeExpire > 5 * 60 * 1000;
+  }
+
+  public testIsTokenValid(tokenSet: TokenSet): boolean {
+    return this.isTokenValid(tokenSet);
   }
 }
