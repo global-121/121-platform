@@ -19,6 +19,7 @@ import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
@@ -230,7 +231,7 @@ export class PaymentsService {
       return {
         ...bulkActionResultDto,
         sumPaymentAmountMultiplier: 0,
-        fspsInPayment: [],
+        programFinancialServiceProviderConfigurationNames: [],
       };
     }
 
@@ -245,8 +246,7 @@ export class PaymentsService {
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
-    const fspConfigIdsInPayment: number[] = [];
-    const fspsInPayment: FinancialServiceProviders[] = [];
+    const programFinancialServiceProviderConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
 
     for (const registration of registrationsForPayment) {
@@ -254,31 +254,29 @@ export class PaymentsService {
         totalMultiplierSum + registration.paymentAmountMultiplier;
       // This is only needed in actual doPayment call
 
+      const fspConfigName =
+        registration.programFinancialServiceProviderConfigurationName;
+
       if (
-        registration.programFinancialServiceProviderConfigurationId &&
-        !fspConfigIdsInPayment.includes(
-          registration.programFinancialServiceProviderConfigurationId,
+        fspConfigName &&
+        !programFinancialServiceProviderConfigurationNames.includes(
+          fspConfigName,
         )
       ) {
-        fspConfigIdsInPayment.push(
-          registration.programFinancialServiceProviderConfigurationId,
-        );
-      }
-      if (
-        registration.financialServiceProviderName &&
-        !fspsInPayment.includes(registration.financialServiceProviderName)
-      ) {
-        fspsInPayment.push(registration.financialServiceProviderName);
+        programFinancialServiceProviderConfigurationNames.push(fspConfigName);
       }
     }
 
-    await this.checkFspConfigurationsOrThrow(fspConfigIdsInPayment);
+    await this.checkFspConfigurationsOrThrow(
+      programId,
+      programFinancialServiceProviderConfigurationNames,
+    );
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
-      fspsInPayment,
+      programFinancialServiceProviderConfigurationNames,
     };
 
     // Create an array of referenceIds to be paid
@@ -312,11 +310,12 @@ export class PaymentsService {
   }
 
   private async checkFspConfigurationsOrThrow(
-    programFinancialServiceProviderConfigurationIds: number[],
+    programId: number,
+    programFinancialServiceProviderConfigurationNames: string[],
   ): Promise<void> {
     const validationResults = await Promise.all(
-      programFinancialServiceProviderConfigurationIds.map((id) =>
-        this.validateMissingFspConfigurations(id),
+      programFinancialServiceProviderConfigurationNames.map((name) =>
+        this.validateMissingFspConfigurations(programId, name),
       ),
     );
     const errorMessages = validationResults.flat();
@@ -329,13 +328,15 @@ export class PaymentsService {
   }
 
   private async validateMissingFspConfigurations(
-    programFinancialServiceProviderConfigurationId: number,
+    programId: number,
+    programFinancialServiceProviderConfigurationName: string,
   ): Promise<string[]> {
     const config =
       await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
         {
           where: {
-            id: Equal(programFinancialServiceProviderConfigurationId),
+            name: Equal(programFinancialServiceProviderConfigurationName),
+            programId: Equal(programId),
           },
           relations: ['properties'],
         },
@@ -479,11 +480,17 @@ export class PaymentsService {
         );
       });
 
-    const fspsInPayment: FinancialServiceProviders[] = [];
+    const programFinancialServiceProviderConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
-      if (!fspsInPayment.includes(registration.financialServiceProviderName)) {
-        fspsInPayment.push(registration.financialServiceProviderName);
+      if (
+        !programFinancialServiceProviderConfigurationNames.includes(
+          registration.programFinancialServiceProviderConfigurationName,
+        )
+      ) {
+        programFinancialServiceProviderConfigurationNames.push(
+          registration.programFinancialServiceProviderConfigurationName,
+        );
       }
     }
 
@@ -491,7 +498,7 @@ export class PaymentsService {
       totalFilterCount: paPaymentDataList.length,
       applicableCount: paPaymentDataList.length,
       nonApplicableCount: 0,
-      fspsInPayment,
+      programFinancialServiceProviderConfigurationNames,
     };
   }
 
@@ -968,9 +975,13 @@ export class PaymentsService {
     payment: number,
     userId: number,
     referenceIds?: string[],
-  ): Promise<PaPaymentDataDto[]> {
+  ): Promise<PaPaymentRetryDataDto[]> {
     let q = this.getPaymentRegistrationsQuery(programId);
     q = this.failedTransactionForRegistrationAndPayment(q, payment);
+
+    q.addSelect(
+      '"fspConfig"."name" as "programFinancialServiceProviderConfigurationName"',
+    );
 
     // If referenceIds passed, only retry those
     let rawResult;
@@ -1006,7 +1017,7 @@ export class PaymentsService {
       });
       rawResult = await q.getRawMany();
     }
-    const result: PaPaymentDataDto[] = [];
+    const result: PaPaymentRetryDataDto[] = [];
     for (const row of rawResult) {
       row['userId'] = userId;
       result.push(row);
