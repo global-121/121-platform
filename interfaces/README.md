@@ -60,6 +60,8 @@ To protect users against malicious injected scripts and attacks, a [Content Secu
 This is related to some features of the 121-platform, so some settings will only apply when really in use/necessary.
 The default/generic values are defined at: [`build-interface/action.yml#L17`](../.github/actions/build-interface/action.yml)
 
+For each different interface, on each specific instance, other settings apply, depending on their (required) functionality.
+
 Following the configuration of the 121 Demo environment, the following CSP is set in: [`workflows/deploy_client-demo_portal.yml`](../.github/workflows/deploy_client-demo_portal.yml#L34):
 
 - `connect-src` and `form-action`:  
@@ -72,6 +74,30 @@ Following the configuration of the 121 Demo environment, the following CSP is se
   - When SSO using Azure Entra will be used, `https://login.microsoftonline.com` should be included..
 - `frame-ancestors`:  
   Allows an interface to be included in an `<iframe>` on some other web-site or -service.
-  - When the integration with Redline/Twilio Flex will be used, `https://flex.twilio.com` should be included.
 
-For each different interface, on each specific instance, other settings apply, depending on their (required) functionality.
+  When the integration with Twilio Flex will be used, `https://flex.twilio.com` should be included.
+
+  ##### Testing Twilio Flex integration
+
+  Some aspects of the Twilio Flex integration can be simulated/mocked (locally) by injecting an `<iframe>` into a page on the Twilio Flex website.
+
+  1. Go to <https://flex.twilio.com/>
+  2. Without being logged in, open the browser's developer tools (F12 or ⌘+⇧+I) or console. Paste and run the following code:
+
+     ```js
+     // Set the hostname of the 121-portal-instance;
+     // For example: 'https://<instance-name>.121.global/portal/' or 'https://portal.<instance-name>.121.global/'
+     const instancePortalHostname = 'http://localhost:4200/';
+
+     document.querySelector('.Twilio-LoginFormView-Container').innerHTML =
+       `<iframe id="redline" src="${instancePortalHostname}/iframe/recipient?phonenumber=1234567890" width="480" height="800" style="width:100%"></iframe>`;
+     ```
+
+  3. To trigger a page-change/load (as if done by Twilio), run the following code:
+
+     ```js
+     document.getElementById('redline').src =
+       `${instancePortalHostname}/iframe/recipient?phonenumber=1234567890`;
+     ```
+
+     Or without the `phonenumber`-parameter, to simulate a 'clean' starting point.
