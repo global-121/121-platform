@@ -287,6 +287,7 @@ export class SeedMockHelper {
         }
       }
     }
+    console.log('**Done updating sequence numbers.**');
   }
 
   public async importRegistrations(

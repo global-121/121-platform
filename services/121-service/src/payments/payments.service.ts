@@ -255,6 +255,7 @@ export class PaymentsService {
     }
 
     // Get unique programFinancialServiceProviderConfigurationNames in payment
+    // Getting unique programFinancialServiceProviderConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
     const programFinancialServiceProviderConfigurationNames = Array.from(
       new Set(
         registrationsForPayment.map(
