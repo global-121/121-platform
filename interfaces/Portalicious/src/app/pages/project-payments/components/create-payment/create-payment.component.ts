@@ -21,6 +21,7 @@ import { CardModule } from 'primeng/card';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
 
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -35,10 +36,7 @@ import { FinancialServiceProviderConfigurationApiService } from '~/domains/finan
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import {
-  fspsHaveExcelFsp,
-  fspsHaveIntegratedFsp,
-} from '~/domains/project/project.helper';
+import { financialServiceProviderConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
 import { ExportService } from '~/services/export.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
@@ -210,12 +208,30 @@ export class CreatePaymentComponent {
     });
   }
 
-  hasIntegratedFsp = computed(() =>
-    fspsHaveIntegratedFsp(this.dryRunResult()?.fspsInPayment ?? []),
+  private paymentHasIntegrationType(
+    integrationType: FinancialServiceProviderIntegrationType,
+  ) {
+    const project = this.project.data();
+    const dryRunResult = this.dryRunResult();
+
+    if (!project || !dryRunResult) {
+      return false;
+    }
+
+    return financialServiceProviderConfigurationNamesHaveIntegrationType({
+      project,
+      financialServiceProviderConfigurationNames:
+        dryRunResult.programFinancialServiceProviderConfigurationNames,
+      integrationType,
+    });
+  }
+
+  paymentHasIntegratedFsp = computed(() =>
+    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.api),
   );
 
-  hasExcelFsp = computed(() =>
-    fspsHaveExcelFsp(this.dryRunResult()?.fspsInPayment ?? []),
+  paymentHasExcelFsp = computed(() =>
+    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.csv),
   );
 
   paymentSummaryData = computed(() => {

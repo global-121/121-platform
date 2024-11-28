@@ -1,9 +1,9 @@
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { DataListItem } from '~/components/data-list/data-list.component';
+import { getFinancialServiceProviderSettingByName } from '~/domains/financial-service-provider/financial-service-provider.helper';
 import {
   FSPS_WITH_PHYSICAL_CARD_SUPPORT,
   FSPS_WITH_VOUCHER_SUPPORT,
@@ -69,9 +69,6 @@ export const attributeToDataListItem = (
   }
 };
 
-// TODO: AB#31594 all of the below helpers should be changed in the refactor registration data branch
-// to use "fsp configurations" instead of "financial service providers"
-
 export function projectHasVoucherSupport(project?: Project) {
   return project?.programFinancialServiceProviderConfigurations.some((fsp) =>
     FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.financialServiceProviderName),
@@ -85,16 +82,41 @@ export function projectHasPhysicalCardSupport(project?: Project) {
 }
 
 export function projectHasFspWithExportFileIntegration(project?: Project) {
-  return project?.financialServiceProviders.some(
+  return project?.programFinancialServiceProviderConfigurations.some(
     (fsp) =>
-      fsp.integrationType === FinancialServiceProviderIntegrationType.csv,
+      getFinancialServiceProviderSettingByName(fsp.financialServiceProviderName)
+        ?.integrationType === FinancialServiceProviderIntegrationType.csv,
   );
 }
 
-export function fspsHaveExcelFsp(fsps: FinancialServiceProviders[]) {
-  return fsps.some((fsp) => fsp === FinancialServiceProviders.excel);
-}
+export function financialServiceProviderConfigurationNamesHaveIntegrationType({
+  project,
+  financialServiceProviderConfigurationNames,
+  integrationType,
+}: {
+  project: Project;
+  financialServiceProviderConfigurationNames: string[];
+  integrationType: FinancialServiceProviderIntegrationType;
+}) {
+  const fspSettings = financialServiceProviderConfigurationNames.map(
+    (financialServiceProviderConfigurationName) => {
+      const config = project.programFinancialServiceProviderConfigurations.find(
+        (fsp) => fsp.name === financialServiceProviderConfigurationName,
+      );
 
-export function fspsHaveIntegratedFsp(fsps: FinancialServiceProviders[]) {
-  return fsps.some((fsp) => fsp !== FinancialServiceProviders.excel);
+      if (!config) {
+        throw new Error(
+          `Could not find financial service provider configuration with name ${financialServiceProviderConfigurationName}`,
+        );
+      }
+
+      return getFinancialServiceProviderSettingByName(
+        config.financialServiceProviderName,
+      );
+    },
+  );
+
+  return fspSettings.some((fspSetting) => {
+    return fspSetting?.integrationType === integrationType;
+  });
 }
