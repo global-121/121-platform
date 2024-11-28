@@ -26,6 +26,7 @@ You can seed the database by using the `api/reset` endpoint from the Swagger UI.
 ## API
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
+- A JSON document will be generated at [`swagger.json`](./swagger.json). You can use it to get a 'diff' view in github of API changes between different version of the platform.
 - A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).
   It can be viewed with <https://mermaid.live/> or the VSCode-extension: [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
 

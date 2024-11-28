@@ -1,0 +1,567 @@
+[
+  {
+    "method": "get",
+    "path": "/api/health/health",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/health/version",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/roles",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/roles",
+    "returnType": "UserRoleResponseDTO"
+  },
+  {
+    "method": "put",
+    "path": "/api/roles/{userRoleId}",
+    "returnType": "UserRoleResponseDTO"
+  },
+  {
+    "method": "delete",
+    "path": "/api/roles/{userRoleId}",
+    "returnType": "UserRoleResponseDTO"
+  },
+  {
+    "method": "get",
+    "path": "/api/users",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/users",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/users/login",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/users/logout",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/users/password",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/users/password",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "delete",
+    "path": "/api/users/{userId}",
+    "returnType": "UserEntity"
+  },
+  {
+    "method": "patch",
+    "path": "/api/users/{userId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/users/current",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/users/search",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/users/{userId}",
+    "returnType": "AssignmentResponseDTO"
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/users/{userId}",
+    "returnType": "AssignmentResponseDTO"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/users/{userId}",
+    "returnType": "AssignmentResponseDTO"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/users/{userId}",
+    "returnType": "AssignmentResponseDTO"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/users",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/scripts/reset",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/scripts/duplicate-registrations",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/{programId}/message-templates",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/{programId}/message-templates",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/notifications/{programId}/message-templates/{type}/{language}",
+    "returnType": "MessageTemplateEntity"
+  },
+  {
+    "method": "delete",
+    "path": "/api/notifications/{programId}/message-templates/{type}",
+    "returnType": "DeleteResult"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}",
+    "returnType": "ProgramReturnDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/program-questions",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/program-questions/{programQuestionId}",
+    "returnType": "ProgramQuestionEntity"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/program-questions/{programQuestionId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/custom-attributes",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/custom-attributes/{customAttributeId}",
+    "returnType": "ProgramCustomAttributeEntity"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attributes",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa/funding-wallet",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/actions",
+    "returnType": "ActionReturnDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/actions",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/financial-service-providers",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/financial-service-providers/{fspId}",
+    "returnType": "FinancialServiceProviderEntity"
+  },
+  {
+    "method": "patch",
+    "path": "/api/financial-service-providers/{fspId}",
+    "returnType": "FinancialServiceProviderEntity"
+  },
+  {
+    "method": "patch",
+    "path": "/api/financial-service-providers/{fspId}/attribute/{attributeName}",
+    "returnType": "FspQuestionEntity"
+  },
+  {
+    "method": "delete",
+    "path": "/api/financial-service-providers/{fspId}/attribute/{attributeName}",
+    "returnType": "FspQuestionEntity"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/{fspId}/attribute",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsp-configuration",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/fsp-configuration",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/fsp-configuration/{programFspConfigurationId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/fsp-configuration/{programFspConfigurationId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/organization",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/organization",
+    "returnType": "OrganizationEntity"
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/whatsapp/templates",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/whatsapp/templates",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/whatsapp/templates/{sessionId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/imageCode/{secret}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers/balance",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/batch-jobs",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/intersolve-voucher/cancel",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/intersolve-voucher/cache-unused-vouchers",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/intersolve-voucher/send-reminders",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/events",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/metrics/to-cancel-vouchers",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/payment-state-sums",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/program-stats-summary",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/registration-status",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/import-registrations",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/import",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/registrations",
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/import-template",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/status",
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/registrations",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsp",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/message",
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/messages",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/referenceid/{paId}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards/{tokenCode}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/contact-information",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{id}",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/payments",
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/payments",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/status",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/{payment}/status",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/{payment}",
+    "returnType": "PaymentReturnDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/{payment}/fsp-instructions",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/fsp-reconciliation/import-template",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/payments/{payment}/fsp-reconciliation",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/safaricom/transfer-callback",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/safaricom/timeout-callback",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
+    "returnType": "CommercialBankEthiopiaValidationReportDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/migrate-visa/visa",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/whatsapp/status",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/whatsapp/incoming",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/sms/status",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
+    "returnType": "Not set/ undefined"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{registrationId}/activities",
+    "returnType": "Not set/ undefined"
+  }
+]
