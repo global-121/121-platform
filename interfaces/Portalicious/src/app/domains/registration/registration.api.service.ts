@@ -68,7 +68,7 @@ export class RegistrationApiService extends DomainApiService {
       method: 'POST',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
-        'import-registrations',
+        'import',
       ]).join('/'),
       body: formData,
       isUpload: true,
