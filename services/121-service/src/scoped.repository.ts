@@ -3,6 +3,8 @@ import { REQUEST } from '@nestjs/core';
 import {
   DeleteResult,
   EntityMetadata,
+  FindManyOptions,
+  FindOneOptions,
   FindOptionsWhere,
   InsertResult,
   ObjectId,
@@ -13,6 +15,7 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
+import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -20,10 +23,7 @@ import {
   ScopedUserRequest,
   ScopedUserRequestWithUser,
 } from '@121-service/src/shared/scoped-user-request';
-import {
-  convertToScopedOptions,
-  FindOptionsCombined,
-} from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 export class ScopedQueryBuilder<
   T extends ObjectLiteral,
@@ -90,11 +90,13 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   // CUSTOM IMPLEMENTATION OF REPOSITORY METHODS ////////////////
   //////////////////////////////////////////////////////////////
 
-  public override async find(options: FindOptionsCombined<T>): Promise<T[]> {
+  public override async find<Options extends FindManyOptions<T>>(
+    options?: Options,
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
     if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       this.relationArrayToRegistration,
       this.request.user.scope,
@@ -102,13 +104,16 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.find(scopedOptions);
   }
 
-  public override async findAndCount(
-    options: FindOptionsCombined<T>,
-  ): Promise<[T[], number]> {
+  public override async findAndCount<Options extends FindManyOptions<T>>(
+    options?: Options,
+  ): Promise<
+    [FindReturnType<T, Options['select'], Options['relations']>[], number]
+  > {
     if (!hasUserScope(this.request)) {
-      return this.repository.findAndCount(options);
+      return this.repository.findAndCount(options); // Pass undefined directly if no scope
     }
-    const scopedOptions = convertToScopedOptions<T>(
+
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       this.relationArrayToRegistration,
       this.request.user.scope,
@@ -116,13 +121,18 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findAndCount(scopedOptions);
   }
 
-  public override async findOne(
-    options: FindOptionsCombined<T>,
-  ): Promise<T | null> {
+  public override async findOne<Options extends FindOneOptions<T>>(
+    options: Options,
+  ): Promise<FindReturnType<
+    T,
+    Options['select'],
+    Options['relations']
+  > | null> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       this.relationArrayToRegistration,
       this.request.user.scope,
@@ -130,13 +140,14 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     return this.repository.findOne(scopedOptions);
   }
 
-  public override async findOneOrFail(
-    options: FindOptionsCombined<T>,
-  ): Promise<T> {
+  public override async findOneOrFail<Options extends FindOneOptions<T>>(
+    options: Options,
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOneOrFail(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       this.relationArrayToRegistration,
       this.request.user.scope,

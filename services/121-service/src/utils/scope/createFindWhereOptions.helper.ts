@@ -42,24 +42,28 @@ function getWhereQueryWithScopeEnabled<T>(
   );
 }
 
-export function convertToScopedOptions<T>(
-  options: FindOptionsCombined<T>,
+export function convertToScopedOptions<T, Options extends FindManyOptions<T>>(
+  options: Options | undefined,
   relationArrayToRegistration: string[],
   requestScope: string,
-): FindOptionsCombined<T> {
+): Options {
+  // Create default options if undefined
+  const baseOptions: FindManyOptions<T> | FindOneOptions<T> = options || {};
+
   const whereQueryScope = getWhereQueryWithScope(
-    options,
+    baseOptions,
     relationArrayToRegistration,
     requestScope,
   );
   const whereQueryScopeEnabled = getWhereQueryWithScopeEnabled(
-    options,
+    baseOptions,
     relationArrayToRegistration,
   );
 
   const scopedOptions = {
-    ...options,
+    ...baseOptions,
     where: [whereQueryScope, whereQueryScopeEnabled],
   };
-  return scopedOptions as FindOptionsCombined<T>;
+
+  return scopedOptions as Options; // Ensure the return type matches Options
 }

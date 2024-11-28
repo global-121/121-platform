@@ -6,6 +6,7 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
+import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 
 import {
   hasUserScope,
@@ -22,11 +23,13 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     this.repository = dataSource.createEntityManager().getRepository(target);
   }
 
-  public async find(options: FindManyOptions<T>): Promise<T[]> {
+  public async find<Options extends FindManyOptions<T>>(
+    options?: Options,
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
     if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       [],
       this.request.user.scope,
@@ -34,11 +37,17 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     return this.repository.find(scopedOptions);
   }
 
-  public async findOne(options: FindOneOptions<T>): Promise<T | null> {
+  public async findOne<Options extends FindOneOptions<T>>(
+    options: Options,
+  ): Promise<FindReturnType<
+    T,
+    Options['select'],
+    Options['relations']
+  > | null> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       [],
       this.request.user.scope,
@@ -46,11 +55,13 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     return this.repository.findOne(scopedOptions);
   }
 
-  public async findOneOrFail(options: FindOneOptions<T>): Promise<T> {
+  public async findOneOrFail<Options extends FindOneOptions<T>>(
+    options: Options,
+  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOneOrFail(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       [],
       this.request.user.scope,
@@ -58,15 +69,19 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     return this.repository.findOneOrFail(scopedOptions);
   }
 
-  public async count(options: FindManyOptions<T>): Promise<number> {
+  public async count<Options extends FindManyOptions<T>>(
+    options?: Options,
+  ): Promise<number> {
     if (!hasUserScope(this.request)) {
       return this.repository.count(options);
     }
-    const scopedOptions = convertToScopedOptions<T>(
+
+    const scopedOptions = convertToScopedOptions<T, Options>(
       options,
       [],
       this.request.user.scope,
     );
+
     return this.repository.count(scopedOptions);
   }
 
