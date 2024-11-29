@@ -1,3 +1,5 @@
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import {
   AnswerTypes,
   CustomAttributeType,
@@ -72,6 +74,9 @@ export const attributeToDataListItem = (
   }
 };
 
+// TODO: AB#31594 all of the below helpers should be changed in the refactor registration data branch
+// to use "fsp configurations" instead of "financial service providers"
+
 export function projectHasVoucherSupport(project?: Project) {
   return project?.financialServiceProviders.some((fsp) =>
     FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.fsp),
@@ -82,4 +87,19 @@ export function projectHasPhysicalCardSupport(project?: Project) {
   return project?.financialServiceProviders.some((fsp) =>
     FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.fsp),
   );
+}
+
+export function projectHasFspWithExportFileIntegration(project?: Project) {
+  return project?.financialServiceProviders.some(
+    (fsp) =>
+      fsp.integrationType === FinancialServiceProviderIntegrationType.csv,
+  );
+}
+
+export function fspsHaveExcelFsp(fsps: FinancialServiceProviders[]) {
+  return fsps.some((fsp) => fsp === FinancialServiceProviders.excel);
+}
+
+export function fspsHaveIntegratedFsp(fsps: FinancialServiceProviders[]) {
+  return fsps.some((fsp) => fsp !== FinancialServiceProviders.excel);
 }

@@ -10,7 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
-import fs from 'fs';
+import fs, { writeFileSync } from 'fs';
 import { SpelunkerModule } from 'nestjs-spelunker';
 
 import { ApplicationModule } from '@121-service/src/app.module';
@@ -25,6 +25,8 @@ import {
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+
+import 'multer'; // This is import is required to prevent typing error on the MulterModule
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import appInsights = require('applicationinsights');
 
@@ -71,6 +73,54 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   });
 }
 
+interface MethodInfo {
+  method: string;
+  path: string;
+  params: string[];
+  returnType?: string;
+}
+
+function generateSwaggerSummaryJson(app: INestApplication<any>): void {
+  const options = new DocumentBuilder()
+    .setTitle(APP_TITLE)
+    .setVersion(APP_VERSION)
+    .build();
+  const openApiDocument = SwaggerModule.createDocument(app, options);
+
+  const summaryDocument: MethodInfo[] = [];
+
+  for (const path in openApiDocument.paths) {
+    for (const method in openApiDocument.paths[path]) {
+      const methodInfo = openApiDocument.paths[path][method];
+      const returnType =
+        methodInfo.responses['200']?.content?.['application/json']?.schema?.$ref
+          ?.split('/')
+          .pop() ||
+        methodInfo.responses['201']?.content?.['application/json']?.schema?.$ref
+          ?.split('/')
+          .pop();
+
+      const params =
+        methodInfo.parameters?.map((param: any) => param.name) || [];
+
+      const methodInfoObject: MethodInfo = {
+        method,
+        path,
+        params,
+      };
+
+      if (returnType) {
+        methodInfoObject.returnType = returnType;
+      }
+
+      summaryDocument.push(methodInfoObject);
+    }
+  }
+
+  const document = JSON.stringify(summaryDocument, null, 2);
+  writeFileSync('swagger.json', document);
+}
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
@@ -88,10 +138,6 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-
-  if (DEBUG) {
-    generateModuleDependencyGraph(app);
-  }
 
   // Prepare redirects:
   const expressInstance = app.getHttpAdapter().getInstance();
@@ -166,6 +212,11 @@ async function bootstrap(): Promise<void> {
 
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
+
+  if (DEBUG) {
+    generateModuleDependencyGraph(app);
+    generateSwaggerSummaryJson(app);
+  }
 
   // Set up generic error handling:
   process.on(

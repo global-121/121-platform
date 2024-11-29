@@ -109,7 +109,7 @@ export class AzureAdStrategy
       }
     } catch (error: Error | unknown) {
       throw new HttpException(
-        { message: `User with username ${username} not found`, username },
+        { message: 'Unknown user account or authentication failed.' },
         HttpStatus.UNAUTHORIZED,
       );
     }

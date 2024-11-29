@@ -7,6 +7,9 @@ class TableComponent {
   readonly tableLoading: Locator;
   readonly tableRows: Locator;
   readonly selectAllRegistrationsCheckbox: Locator;
+  readonly globalSearchOpenerButton: Locator;
+  readonly globalSearchInput: Locator;
+  readonly clearAllFiltersButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,6 +18,11 @@ class TableComponent {
     this.tableRows = this.page.locator('table tbody tr');
     this.selectAllRegistrationsCheckbox = this.page.getByRole('cell', {
       name: 'All items unselected',
+    });
+    this.globalSearchOpenerButton = this.page.getByTitle('Filter by keyword');
+    this.globalSearchInput = this.page.getByPlaceholder('Filter by keyword');
+    this.clearAllFiltersButton = this.page.getByRole('button', {
+      name: 'Clear all filters',
     });
   }
 
@@ -43,6 +51,25 @@ class TableComponent {
         ),
       column,
     );
+  }
+
+  async globalSearch(searchText: string) {
+    const isGlobalSearchOpen = await this.globalSearchInput.isVisible();
+
+    if (!isGlobalSearchOpen) {
+      await this.globalSearchOpenerButton.click();
+    }
+
+    await expect(this.globalSearchInput).toBeVisible();
+    await this.globalSearchInput.fill(searchText);
+    // wait for 500s for filter to be applied in the BE
+    await this.page.waitForTimeout(500);
+  }
+
+  async clearAllFilters() {
+    await this.clearAllFiltersButton.click();
+    // wait for 500s for filter to be cleared in the BE
+    await this.page.waitForTimeout(500);
   }
 }
 

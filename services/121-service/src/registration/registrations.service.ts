@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Equal, Repository } from 'typeorm';
+import { Equal, FindOneOptions, Repository } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
@@ -51,7 +51,6 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
@@ -151,7 +150,7 @@ export class RegistrationsService {
     postData: CreateRegistrationDto,
     programId: number,
     userId: number,
-  ): Promise<RegistrationViewEntity> {
+  ) {
     const user = await this.findUserOrThrow(userId);
     const registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
@@ -169,7 +168,7 @@ export class RegistrationsService {
   private async setRegistrationStatus(
     referenceId: string,
     status: RegistrationStatusEnum,
-  ): Promise<RegistrationViewEntity> {
+  ) {
     const registrationBeforeUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
         where: { referenceId: Equal(referenceId) },
@@ -767,11 +766,10 @@ export class RegistrationsService {
             referenceId: Equal(registration.referenceId),
           },
         };
-        const findOption = convertToScopedOptions<RegistrationEntity>(
-          findProgramOption,
-          [],
-          programIdScopeObject.scope,
-        );
+        const findOption = convertToScopedOptions<
+          RegistrationEntity,
+          FindOneOptions<RegistrationEntity>
+        >(findProgramOption, [], programIdScopeObject.scope);
         const foundRegistration =
           await this.registrationScopedRepository.findOne(findOption);
 

@@ -106,12 +106,12 @@ export class ImportRegistrationsComponent {
         file,
       });
     },
-    onSuccess: ({ importResult }) => {
+    onSuccess: () => {
       void this.registrationApiService.invalidateCache(this.projectId);
       this.dialogVisible.set(false);
       this.resetForm();
       this.toastService.showToast({
-        summary: $localize`:@@import-registrations-success:${importResult?.length} registration(s) imported successfully.`,
+        summary: $localize`:@@import-registrations-success:Registration(s) imported successfully.`,
       });
     },
   }));

@@ -1397,8 +1397,8 @@
         <target state="new">Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
       </trans-unit>
       <trans-unit id="import-registrations-success" datatype="html">
-        <source><x equiv-text="importResult?.length" id="PH"/> registration(s) imported successfully.</source>
-        <target state="new"><x equiv-text="importResult?.length" id="PH"/> registration(s) imported successfully.</target>
+        <source>Registration(s) imported successfully.</source>
+        <target state="new">Registration(s) imported successfully.</target>
       </trans-unit>
       <trans-unit id="7893013905728176682" datatype="html">
         <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
@@ -1452,7 +1452,7 @@
         <source>Unknown user account or authentication failed</source>
         <target state="new">Unknown user account or authentication failed</target>
       </trans-unit>
-      <trans-unit id="5411216479306923315" datatype="html">
+      <trans-unit id="8074727237612649640" datatype="html">
         <source>Review summary and click start payment.</source>
         <target state="new">Review summary and click start payment.</target>
       </trans-unit>
@@ -1499,6 +1499,46 @@
       <trans-unit id="4207014437413577720" datatype="html">
         <source>Start payment</source>
         <target state="new">Start payment</target>
+      </trans-unit>
+      <trans-unit id="2077280297780026969" datatype="html">
+        <source>Review payment summary and follow the next steps:</source>
+        <target state="new">Review payment summary and follow the next steps:</target>
+      </trans-unit>
+      <trans-unit id="3107789597484856473" datatype="html">
+        <source>Click start payment, this will redirect you to the payment page.</source>
+        <target state="new">Click start payment, this will redirect you to the payment page.</target>
+      </trans-unit>
+      <trans-unit id="8847988975348610068" datatype="html">
+        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
+        <target state="new">Save the exported XLSX-file in the format required by the Financial Service Provider.</target>
+      </trans-unit>
+      <trans-unit id="5677186522471416018" datatype="html">
+        <source>Upload the file to the Financial Service Provider’s portal.</source>
+        <target state="new">Upload the file to the Financial Service Provider’s portal.</target>
+      </trans-unit>
+      <trans-unit id="1021287001460137349" datatype="html">
+        <source>Exporting FSP Instructions</source>
+        <target state="new">Exporting FSP Instructions</target>
+      </trans-unit>
+      <trans-unit id="5982069520336655984" datatype="html">
+        <source>Export not possible</source>
+        <target state="new">Export not possible</target>
+      </trans-unit>
+      <trans-unit id="5013095735395935362" datatype="html">
+        <source>The current payment is still in progress. Please try again later</source>
+        <target state="new">The current payment is still in progress. Please try again later</target>
+      </trans-unit>
+      <trans-unit id="614288202138197410" datatype="html">
+        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
+        <target state="new">Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</target>
+      </trans-unit>
+      <trans-unit id="7386091350857462296" datatype="html">
+        <source>An unexpected error occurred while exporting the FSP instructions. Please try again later.</source>
+        <target state="new">An unexpected error occurred while exporting the FSP instructions. Please try again later.</target>
+      </trans-unit>
+      <trans-unit id="3706395027796944760" datatype="html">
+        <source>Export FSP payment list</source>
+        <target state="new">Export FSP payment list</target>
       </trans-unit>
     </body>
   </file>
