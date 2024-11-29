@@ -1,5 +1,10 @@
 import { cloneDeep, merge } from 'lodash';
-import { FindManyOptions, FindOneOptions, Like } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  Like,
+} from 'typeorm';
 
 export type FindOptionsCombined<T> = FindOneOptions<T> & FindManyOptions<T>;
 
@@ -7,7 +12,7 @@ function getWhereQueryScope<T>(
   options: FindOptionsCombined<T>,
   whereQueryScopeRelated: Record<string, any>,
   relationArrayToRegistration: string[],
-): FindOptionsCombined<T> {
+): FindOptionsWhere<T> {
   const optionsCopy = options ? cloneDeep(options) : {};
   for (const relation of [...relationArrayToRegistration.reverse()]) {
     whereQueryScopeRelated = {
@@ -21,7 +26,7 @@ function getWhereQueryWithScope<T>(
   options: FindOptionsCombined<T>,
   relationArrayToRegistration: string[],
   requestScope: string,
-): FindOptionsCombined<T> {
+): FindOptionsWhere<T> {
   const whereQueryScope = { scope: Like(`${requestScope}%`) };
   return getWhereQueryScope(
     options,
@@ -33,7 +38,7 @@ function getWhereQueryWithScope<T>(
 function getWhereQueryWithScopeEnabled<T>(
   options: FindOptionsCombined<T>,
   relationArrayToRegistration: string[],
-): FindOptionsCombined<T> {
+): FindOptionsWhere<T> {
   const whereQueryScopeEnabled = { program: { enableScope: false } };
   return getWhereQueryScope(
     options,
@@ -42,24 +47,28 @@ function getWhereQueryWithScopeEnabled<T>(
   );
 }
 
-export function convertToScopedOptions<T>(
-  options: FindOptionsCombined<T>,
+export function convertToScopedOptions<T, Options extends FindManyOptions<T>>(
+  options: Options | undefined,
   relationArrayToRegistration: string[],
   requestScope: string,
-): FindOptionsCombined<T> {
+): Options {
+  // Create default options if undefined
+  const baseOptions: FindOptionsCombined<T> = options || {};
+
   const whereQueryScope = getWhereQueryWithScope(
-    options,
+    baseOptions,
     relationArrayToRegistration,
     requestScope,
   );
   const whereQueryScopeEnabled = getWhereQueryWithScopeEnabled(
-    options,
+    baseOptions,
     relationArrayToRegistration,
   );
 
   const scopedOptions = {
-    ...options,
+    ...baseOptions,
     where: [whereQueryScope, whereQueryScopeEnabled],
   };
-  return scopedOptions as FindOptionsCombined<T>;
+
+  return scopedOptions as Options; // Ensure the return type matches Options
 }

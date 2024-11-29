@@ -1,4 +1,4 @@
-import { Equal, FindOperator } from 'typeorm';
+import { Equal, FindManyOptions, FindOperator } from 'typeorm';
 
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import {
@@ -34,12 +34,10 @@ describe('createFindWhereOptions helper', () => {
     } as unknown as FindOptionsCombined<RegistrationDataEntity>;
 
     // Act
-    const convertedScopedOptions =
-      convertToScopedOptions<RegistrationDataEntity>(
-        options,
-        relationArrayToRegistration,
-        requestScope,
-      );
+    const convertedScopedOptions = convertToScopedOptions<
+      RegistrationDataEntity,
+      FindManyOptions<RegistrationDataEntity>
+    >(options, relationArrayToRegistration, requestScope);
 
     // Transform to comparable form
     const transformToComparableForm = (obj: any) => {

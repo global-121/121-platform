@@ -153,7 +153,7 @@ export class UserController {
     type: [UserEntity],
   })
   @Get('users')
-  public async getUsers(): Promise<UserEntity[]> {
+  public async getUsers() {
     return await this.userService.getUsers();
   }
 
