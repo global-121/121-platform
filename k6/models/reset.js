@@ -47,4 +47,18 @@ export default class ResetModel {
     const res = http.post(url, payload, params);
     return res;
   }
+
+  kill121Service() {
+    const url = `${baseUrl}api/scripts/kill-service`;
+    const payload = JSON.stringify({
+      secret: 'fill_in_secret',
+    });
+    const params = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = http.post(url, payload, params);
+    return res;
+  }
 }
