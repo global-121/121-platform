@@ -699,7 +699,7 @@ export class UserService {
     return userEntity;
   }
 
-  public async getUsers(): Promise<UserEntity[]> {
+  public async getUsers() {
     return await this.userRepository.find({
       select: {
         id: true,
