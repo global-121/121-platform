@@ -93,5 +93,5 @@ export class ImportRegistrationsDto extends BulkImportDto {
 
   @ApiProperty()
   @IsOptional()
-  public declare scope?: string;
+  declare public scope?: string;
 }
