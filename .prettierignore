@@ -8,3 +8,6 @@ dist/
 
 # Exclude (generated) package files
 package-lock.json
+
+# Exclude auto generated swagger doc file
+services/121-service/swagger.json
