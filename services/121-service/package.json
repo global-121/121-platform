@@ -88,7 +88,7 @@
     "@automock/jest": "^2.1.0",
     "@compodoc/compodoc": "^1.1.26",
     "@nestjs/cli": "^10.4.7",
-    "@swc/cli": "^0.5.0",
+    "@swc/cli": "^0.5.1",
     "@swc/core": "^1.9.2",
     "@types/cookie-parser": "^1.4.7",
     "@types/jest": "^29.5.14",
