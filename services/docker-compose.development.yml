@@ -23,6 +23,7 @@ services:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
     command: 'npm run start:dev${WINDOWS_DEV_STARTUP_SUFFIX}'
+    restart: unless-stopped
   mock-service:
     build:
       target: development
