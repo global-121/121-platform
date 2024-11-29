@@ -73,6 +73,13 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   });
 }
 
+interface MethodInfo {
+  method: string;
+  path: string;
+  params: string[];
+  returnType?: string;
+}
+
 function generateSwaggerSummaryJson(app: INestApplication<any>): void {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
@@ -80,11 +87,7 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
     .build();
   const openApiDocument = SwaggerModule.createDocument(app, options);
 
-  const minimalDocument: {
-    method: string;
-    path: string;
-    returnType: string;
-  }[] = [];
+  const summaryDocument: MethodInfo[] = [];
 
   for (const path in openApiDocument.paths) {
     for (const method in openApiDocument.paths[path]) {
@@ -92,17 +95,29 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
       const returnType =
         methodInfo.responses['200']?.content?.['application/json']?.schema?.$ref
           ?.split('/')
-          .pop() || 'Not set/ undefined';
-      const methodInfoObject = {
+          .pop() ||
+        methodInfo.responses['201']?.content?.['application/json']?.schema?.$ref
+          ?.split('/')
+          .pop();
+
+      const params =
+        methodInfo.parameters?.map((param: any) => param.name) || [];
+
+      const methodInfoObject: MethodInfo = {
         method,
         path,
-        returnType,
+        params,
       };
-      minimalDocument.push(methodInfoObject);
+
+      if (returnType) {
+        methodInfoObject.returnType = returnType;
+      }
+
+      summaryDocument.push(methodInfoObject);
     }
   }
 
-  const document = JSON.stringify(minimalDocument, null, 2);
+  const document = JSON.stringify(summaryDocument, null, 2);
   writeFileSync('swagger.json', document);
 }
 
@@ -123,7 +138,6 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-
 
   // Prepare redirects:
   const expressInstance = app.getHttpAdapter().getInstance();
