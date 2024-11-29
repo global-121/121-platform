@@ -49,6 +49,7 @@
               [projectId]="projectId()!"
               [paymentId]="paymentId()!"
             ></app-payment-header>
+            <ng-content select="[payment-page]"></ng-content>
           }
         } @else {
           @if (pageTitle()) {

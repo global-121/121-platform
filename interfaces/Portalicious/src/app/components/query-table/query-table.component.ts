@@ -215,13 +215,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return new DatePipe(this.locale).transform(new Date(text), 'short');
     }
 
-    if (typeof text !== 'string') {
+    if (typeof text !== 'string' && typeof text !== 'number') {
       throw new Error(
         `Expected field ${column.field} to be a string, but got ${typeof text}`,
       );
     }
 
-    return text;
+    return text.toString();
   }
 
   getColumnType(column: QueryTableColumn<TData>) {

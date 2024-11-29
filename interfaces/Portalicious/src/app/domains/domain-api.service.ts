@@ -1,4 +1,4 @@
-import { inject, Signal } from '@angular/core';
+import { inject, isSignal, Signal } from '@angular/core';
 
 import {
   injectQueryClient,
@@ -21,9 +21,8 @@ export abstract class DomainApiService {
   protected queryClient = injectQueryClient();
 
   protected pathToQueryKey = (
-    path: (Signal<number | string | undefined> | string)[],
-  ) =>
-    path.map((part) => (typeof part === 'string' ? part : part()?.toString()));
+    path: (number | Signal<number | string | undefined> | string)[],
+  ) => path.map((part) => (isSignal(part) ? part()?.toString() : part));
 
   protected generateQueryOptions<
     BackendDataShape,

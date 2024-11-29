@@ -102,9 +102,10 @@ export class RegistrationsTableComponent {
 
     const registrationTableColumns: QueryTableColumn<Registration>[] = [
       {
-        field: 'personAffectedSequence',
-        fieldForSort: 'registrationProgramId',
-        header: $localize`PA #`,
+        field: 'registrationProgramId',
+        header: $localize`Reg. #`,
+        getCellText: (registration) =>
+          `Reg. #${registration.registrationProgramId.toString()}`,
         getCellRouterLink: (registration) =>
           registrationLink({
             projectId: this.projectId(),

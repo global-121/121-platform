@@ -3,10 +3,9 @@ import {
   HttpErrorResponse,
   HttpHeaders,
   HttpParams,
-  HttpParamsOptions,
   HttpStatusCode,
 } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, isSignal, Signal } from '@angular/core';
 
 import { get } from 'lodash';
 import { lastValueFrom, of } from 'rxjs';
@@ -23,7 +22,14 @@ interface PerformRequestParams {
   body?: unknown;
   responseAsBlob?: boolean;
   isUpload?: boolean;
-  params?: HttpParamsOptions['fromObject'];
+  params?: Record<
+    string,
+    | boolean
+    | number
+    | readonly (boolean | number | string)[]
+    | Signal<boolean | number | readonly (boolean | number | string)[] | string>
+    | string
+  >;
 }
 
 export type Perform121ServiceRequestParams = { endpoint: string } & Omit<
@@ -147,6 +153,13 @@ export class HttpWrapperService {
   }: PerformRequestParams): Promise<T> {
     console.log(`HttpWrapperService ${method}: ${url}`, body ?? '');
 
+    const deSignalizedParams = Object.fromEntries(
+      Object.entries(params ?? {}).map(([key, value]) => [
+        key,
+        isSignal(value) ? value() : value,
+      ]),
+    );
+
     try {
       const response = await lastValueFrom<Error | HttpErrorResponse | T>(
         this.http
@@ -154,14 +167,16 @@ export class HttpWrapperService {
             headers: this.createHeaders(isUpload),
             responseType: responseAsBlob ? 'blob' : undefined,
             withCredentials: true,
-            params: new HttpParams({ fromObject: params }),
+            params: new HttpParams({ fromObject: deSignalizedParams }),
             body,
           })
           .pipe(
             tap((response) => {
               console.log(
                 `HttpWrapperService ${method}: ${url}${
-                  params ? `\nParams ${JSON.stringify(params, null, 2)}` : ''
+                  params
+                    ? `\nParams ${JSON.stringify(deSignalizedParams, null, 2)}`
+                    : ''
                 }${body ? `\nBody: ${JSON.stringify(body, null, 2)}` : ''}`,
                 '\nResponse:',
                 response,

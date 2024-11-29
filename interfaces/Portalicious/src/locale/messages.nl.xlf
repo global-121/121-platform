@@ -10,10 +10,6 @@
         <source>Custom message</source>
         <target>Custom bericht</target>
       </trans-unit>
-      <trans-unit id="84476789249519306" datatype="html">
-        <source>PA #</source>
-        <target>Hulpvrager #</target>
-      </trans-unit>
       <trans-unit id="126074860850048964" datatype="html">
         <source>End date</source>
         <target>Einddatum</target>
@@ -1539,6 +1535,34 @@
       <trans-unit id="3706395027796944760" datatype="html">
         <source>Export FSP payment list</source>
         <target state="new">Export FSP payment list</target>
+      </trans-unit>
+      <trans-unit id="transaction-status-waiting" datatype="html">
+        <source>Pending</source>
+        <target state="new">Pending</target>
+      </trans-unit>
+      <trans-unit id="transaction-status-error" datatype="html">
+        <source>Error</source>
+        <target state="new">Error</target>
+      </trans-unit>
+      <trans-unit id="transaction-status-success" datatype="html">
+        <source>Success</source>
+        <target state="new">Success</target>
+      </trans-unit>
+      <trans-unit id="504281469996866803" datatype="html">
+        <source>Retry failed transfers</source>
+        <target state="new">Retry failed transfers</target>
+      </trans-unit>
+      <trans-unit id="908038299240128268" datatype="html">
+        <source>Transfer status</source>
+        <target state="new">Transfer status</target>
+      </trans-unit>
+      <trans-unit id="5156383097673576773" datatype="html">
+        <source>Fail reason</source>
+        <target state="new">Fail reason</target>
+      </trans-unit>
+      <trans-unit id="5169543313827462176" datatype="html">
+        <source>Transfer value</source>
+        <target state="new">Transfer value</target>
       </trans-unit>
     </body>
   </file>
