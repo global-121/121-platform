@@ -70,7 +70,15 @@ export class QueueRegistryService implements OnModuleInit {
   async onModuleInit(): Promise<void> {
     // This is needed because of the issue where on 121-service startup jobs will start processing before the process handlers are registered, which leads to failed jobs.
     // We are not able to prevent this from happening, so instead this workaround will retry all failed jobs on startup. By then the process handler is up and the jobs will not fail for this reason again.
-    await this.retryFailedJobs();
+    // Wait 5 seconds to be sure that the process handlers are registered
+    new Promise((resolve) => setTimeout(resolve, 5000))
+      .then(async () => {
+        return await this.retryFailedJobs();
+      })
+      .catch((err) => {
+        // ##TODO: handle differently
+        console.error('Error in retryFailedJobs: ', err);
+      });
   }
 
   public async retryFailedJobs(): Promise<void> {
