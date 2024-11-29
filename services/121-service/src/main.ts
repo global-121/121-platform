@@ -124,7 +124,6 @@ async function bootstrap(): Promise<void> {
     credentials: true,
   });
 
-  console.log('🚀 ~ bootstrap ~ DEBUG:', DEBUG);
 
   // Prepare redirects:
   const expressInstance = app.getHttpAdapter().getInstance();
