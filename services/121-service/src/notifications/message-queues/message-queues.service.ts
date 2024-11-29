@@ -1,4 +1,3 @@
-import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
@@ -19,6 +18,7 @@ import {
 } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -38,24 +38,19 @@ export class MessageQueuesService {
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
     private readonly programAttributesService: ProgramAttributesService,
-    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
-    private readonly messageProcessorReplyOnIncoming: Queue,
-    @InjectQueue(QueueNameCreateMessage.smallBulk)
-    private readonly messageProcessorSmallBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.mediumBulk)
-    private readonly messageProcessorMediumBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.largeBulk)
-    private readonly messageProcessorLargeBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.lowPriority)
-    private readonly messageProcessorLowPriority: Queue,
+    private readonly queueRegistryService: QueueRegistryService,
   ) {
     this.queueNameToQueueMap = {
       [QueueNameCreateMessage.replyOnIncoming]:
-        this.messageProcessorReplyOnIncoming,
-      [QueueNameCreateMessage.smallBulk]: this.messageProcessorSmallBulk,
-      [QueueNameCreateMessage.mediumBulk]: this.messageProcessorMediumBulk,
-      [QueueNameCreateMessage.largeBulk]: this.messageProcessorLargeBulk,
-      [QueueNameCreateMessage.lowPriority]: this.messageProcessorLowPriority,
+        this.queueRegistryService.createMessageReplyOnIncomingQueue,
+      [QueueNameCreateMessage.smallBulk]:
+        this.queueRegistryService.createMessageSmallBulkQueue,
+      [QueueNameCreateMessage.mediumBulk]:
+        this.queueRegistryService.createMessageMediumBulkQueue,
+      [QueueNameCreateMessage.largeBulk]:
+        this.queueRegistryService.createMessageLargeBulkQueue,
+      [QueueNameCreateMessage.lowPriority]:
+        this.queueRegistryService.createMessageLowPriorityQueue,
     };
   }
 

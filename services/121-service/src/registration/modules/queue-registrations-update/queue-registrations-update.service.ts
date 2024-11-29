@@ -1,21 +1,16 @@
-import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Queue } from 'bull';
 
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
-import {
-  ProcessNameRegistration,
-  QueueNameRegistration,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { ProcessNameRegistration } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 @Injectable()
 export class QueueRegistrationUpdateService {
   public constructor(
     @Inject(REQUEST) private request: ScopedUserRequest,
-    @InjectQueue(QueueNameRegistration.registration)
-    private readonly queueRegistrationUpdate: Queue,
+    private readonly queueRegistryService: QueueRegistryService,
   ) {}
 
   public async addRegistrationUpdateToQueue(
@@ -25,6 +20,9 @@ export class QueueRegistrationUpdateService {
       userId: this.request.user?.id,
       scope: this.request.user?.scope,
     };
-    await this.queueRegistrationUpdate.add(ProcessNameRegistration.update, job);
+    await this.queueRegistryService.updateRegistrationQueue.add(
+      ProcessNameRegistration.update,
+      job,
+    );
   }
 }

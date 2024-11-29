@@ -12,50 +12,58 @@ import {
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 
 @Injectable()
-export class QueueHelperService {
+export class QueueRegistryService {
   private allQueues: Queue[] = [];
 
   constructor(
     @InjectQueue(TransactionJobQueueNames.intersolveVisa)
-    private paymentIntersolveVisa: Queue,
+    public transactionJobIntersolveVisaQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
-    private paymentIntersolveVoucher: Queue,
+    public transactionJobIntersolveVoucherQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
-    private paymentCommercialBankEthiopia: Queue,
+    public transactionJobCommercialBankEthiopiaQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.safaricom)
-    private paymentSafaricom: Queue,
-    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
-    private replyOnIncoming: Queue,
-    @InjectQueue(QueueNameCreateMessage.smallBulk) private smallBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.mediumBulk) private mediumBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.largeBulk) private largeBulk: Queue,
-    @InjectQueue(QueueNameCreateMessage.lowPriority) private lowPriority: Queue,
-    @InjectQueue(QueueNameMessageCallBack.incomingMessage)
-    private incomingMessage: Queue,
-    @InjectQueue(QueueNameMessageCallBack.status)
-    private statusMessage: Queue,
-    @InjectQueue(QueueNameRegistration.registration)
-    private queueRegistrationUpdate: Queue,
+    public transactionJobSafaricomQueue: Queue,
+
     @InjectQueue(SafaricomCallbackQueueNames.transfer)
-    private safaricomTransferCallbackQueue: Queue,
+    public safaricomTransferCallbackQueue: Queue,
     @InjectQueue(SafaricomCallbackQueueNames.timeout)
-    private safaricomTimeoutCallbackQueue: Queue,
+    public safaricomTimeoutCallbackQueue: Queue,
+
+    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
+    public createMessageReplyOnIncomingQueue: Queue,
+    @InjectQueue(QueueNameCreateMessage.smallBulk)
+    public createMessageSmallBulkQueue: Queue,
+    @InjectQueue(QueueNameCreateMessage.mediumBulk)
+    public createMessageMediumBulkQueue: Queue,
+    @InjectQueue(QueueNameCreateMessage.largeBulk)
+    public createMessageLargeBulkQueue: Queue,
+    @InjectQueue(QueueNameCreateMessage.lowPriority)
+    public createMessageLowPriorityQueue: Queue,
+
+    @InjectQueue(QueueNameMessageCallBack.incomingMessage)
+    public messageIncomingCallbackQueue: Queue,
+    @InjectQueue(QueueNameMessageCallBack.status)
+    public messageStatusCallbackQueue: Queue,
+
+    @InjectQueue(QueueNameRegistration.registration)
+    public updateRegistrationQueue: Queue,
   ) {
     this.allQueues = [
-      this.paymentIntersolveVisa,
-      this.paymentIntersolveVoucher,
-      this.paymentCommercialBankEthiopia,
-      this.paymentSafaricom,
-      this.replyOnIncoming,
-      this.smallBulk,
-      this.mediumBulk,
-      this.largeBulk,
-      this.lowPriority,
-      this.incomingMessage,
-      this.statusMessage,
-      this.queueRegistrationUpdate,
+      this.transactionJobIntersolveVisaQueue,
+      this.transactionJobIntersolveVoucherQueue,
+      this.transactionJobCommercialBankEthiopiaQueue,
+      this.transactionJobSafaricomQueue,
       this.safaricomTimeoutCallbackQueue,
       this.safaricomTransferCallbackQueue,
+      this.createMessageReplyOnIncomingQueue,
+      this.createMessageSmallBulkQueue,
+      this.createMessageMediumBulkQueue,
+      this.createMessageLargeBulkQueue,
+      this.createMessageLowPriorityQueue,
+      this.messageIncomingCallbackQueue,
+      this.messageStatusCallbackQueue,
+      this.updateRegistrationQueue,
     ];
   }
 

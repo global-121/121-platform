@@ -1,7 +1,5 @@
-import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
 import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
@@ -27,14 +25,12 @@ import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integrat
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import {
-  ProcessNameMessage,
-  QueueNameMessageCallBack,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
+import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -65,10 +61,7 @@ export class MessageIncomingService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    @InjectQueue(QueueNameMessageCallBack.status)
-    private readonly messageStatusCallbackQueue: Queue,
-    @InjectQueue(QueueNameMessageCallBack.incomingMessage)
-    private readonly incommingMessageQueue: Queue,
+    private readonly queueRegistryService: QueueRegistryService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
@@ -112,7 +105,7 @@ export class MessageIncomingService {
   public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.messageStatusCallbackQueue.add(
+    await this.queueRegistryService.messageStatusCallbackQueue.add(
       ProcessNameMessage.sms,
       callbackData,
     );
@@ -128,7 +121,7 @@ export class MessageIncomingService {
   public async addWhatsappStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.messageStatusCallbackQueue.add(
+    await this.queueRegistryService.messageStatusCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
     );
@@ -137,7 +130,7 @@ export class MessageIncomingService {
   public async addIncomingWhatsappToQueue(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
-    await this.incommingMessageQueue.add(
+    await this.queueRegistryService.messageIncomingCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
     );

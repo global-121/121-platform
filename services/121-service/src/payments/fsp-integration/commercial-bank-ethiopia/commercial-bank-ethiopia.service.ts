@@ -1,7 +1,5 @@
-import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
@@ -34,10 +32,10 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -61,8 +59,7 @@ export class CommercialBankEthiopiaService
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
-    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
-    private readonly commercialBankEthiopiaQueue: Queue,
+    private readonly queueRegistryService: QueueRegistryService,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly transactionsService: TransactionsService,
     @Inject(REDIS_CLIENT)
@@ -111,10 +108,11 @@ export class CommercialBankEthiopiaService
         credentials,
         userId: paPayment.userId,
       };
-      const job = await this.commercialBankEthiopiaQueue.add(
-        JobNames.default,
-        jobData,
-      );
+      const job =
+        await this.queueRegistryService.transactionJobCommercialBankEthiopiaQueue.add(
+          JobNames.default,
+          jobData,
+        );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
     return fspTransactionResult;
