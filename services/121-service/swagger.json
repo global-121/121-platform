@@ -23,13 +23,17 @@
   {
     "method": "put",
     "path": "/api/roles/{userRoleId}",
-    "params": ["userRoleId"],
+    "params": [
+      "userRoleId"
+    ],
     "returnType": "UserRoleResponseDTO"
   },
   {
     "method": "delete",
     "path": "/api/roles/{userRoleId}",
-    "params": ["userRoleId"],
+    "params": [
+      "userRoleId"
+    ],
     "returnType": "UserRoleResponseDTO"
   },
   {
@@ -66,13 +70,17 @@
   {
     "method": "delete",
     "path": "/api/users/{userId}",
-    "params": ["userId"],
+    "params": [
+      "userId"
+    ],
     "returnType": "UserEntity"
   },
   {
     "method": "patch",
     "path": "/api/users/{userId}",
-    "params": ["userId"]
+    "params": [
+      "userId"
+    ]
   },
   {
     "method": "get",
@@ -82,36 +90,53 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/users/search",
-    "params": ["programId", "username"]
+    "params": [
+      "programId",
+      "username"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/users/{userId}",
-    "params": ["programId", "userId"],
+    "params": [
+      "programId",
+      "userId"
+    ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "put",
     "path": "/api/programs/{programId}/users/{userId}",
-    "params": ["programId", "userId"],
+    "params": [
+      "programId",
+      "userId"
+    ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "patch",
     "path": "/api/programs/{programId}/users/{userId}",
-    "params": ["programId", "userId"],
+    "params": [
+      "programId",
+      "userId"
+    ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "delete",
     "path": "/api/programs/{programId}/users/{userId}",
-    "params": ["programId", "userId"],
+    "params": [
+      "programId",
+      "userId"
+    ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/users",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
@@ -129,77 +154,115 @@
   {
     "method": "post",
     "path": "/api/scripts/duplicate-registrations",
-    "params": ["mockPowerNumberRegistrations"]
+    "params": [
+      "mockPowerNumberRegistrations"
+    ]
   },
   {
     "method": "get",
     "path": "/api/notifications/{programId}/message-templates",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/notifications/{programId}/message-templates",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "patch",
     "path": "/api/notifications/{programId}/message-templates/{type}/{language}",
-    "params": ["language", "type", "programId"],
+    "params": [
+      "language",
+      "type",
+      "programId"
+    ],
     "returnType": "MessageTemplateEntity"
   },
   {
     "method": "delete",
     "path": "/api/notifications/{programId}/message-templates/{type}",
-    "params": ["language", "type", "programId"],
+    "params": [
+      "language",
+      "type",
+      "programId"
+    ],
     "returnType": "DeleteResult"
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}",
-    "params": ["programId", "formatProgramReturnDto"]
+    "params": [
+      "programId",
+      "formatProgramReturnDto"
+    ]
   },
   {
     "method": "delete",
     "path": "/api/programs/{programId}",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "patch",
     "path": "/api/programs/{programId}",
-    "params": ["programId"],
+    "params": [
+      "programId"
+    ],
     "returnType": "ProgramReturnDto"
   },
   {
     "method": "post",
     "path": "/api/programs",
-    "params": ["importFromKobo", "koboToken", "koboAssetId"],
+    "params": [
+      "importFromKobo",
+      "koboToken",
+      "koboAssetId"
+    ],
     "returnType": "ProgramEntity"
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/program-questions",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "patch",
     "path": "/api/programs/{programId}/program-questions/{programQuestionId}",
-    "params": ["programId", "programQuestionId"],
+    "params": [
+      "programId",
+      "programQuestionId"
+    ],
     "returnType": "ProgramQuestionEntity"
   },
   {
     "method": "delete",
     "path": "/api/programs/{programId}/program-questions/{programQuestionId}",
-    "params": ["programId", "programQuestionId"]
+    "params": [
+      "programId",
+      "programQuestionId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/custom-attributes",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "patch",
     "path": "/api/programs/{programId}/custom-attributes/{customAttributeId}",
-    "params": ["programId", "customAttributeId"],
+    "params": [
+      "programId",
+      "customAttributeId"
+    ],
     "returnType": "ProgramCustomAttributeEntity"
   },
   {
@@ -217,18 +280,25 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa/funding-wallet",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/actions",
-    "params": ["programId", "actionType"],
+    "params": [
+      "programId",
+      "actionType"
+    ],
     "returnType": "ActionReturnDto"
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/actions",
-    "params": ["programId"],
+    "params": [
+      "programId"
+    ],
     "returnType": "ActionReturnDto"
   },
   {
@@ -239,52 +309,74 @@
   {
     "method": "get",
     "path": "/api/financial-service-providers/{fspId}",
-    "params": ["fspId"],
+    "params": [
+      "fspId"
+    ],
     "returnType": "FinancialServiceProviderEntity"
   },
   {
     "method": "patch",
     "path": "/api/financial-service-providers/{fspId}",
-    "params": ["fspId"],
+    "params": [
+      "fspId"
+    ],
     "returnType": "FinancialServiceProviderEntity"
   },
   {
     "method": "patch",
     "path": "/api/financial-service-providers/{fspId}/attribute/{attributeName}",
-    "params": ["fspId", "attributeName"],
+    "params": [
+      "fspId",
+      "attributeName"
+    ],
     "returnType": "FspQuestionEntity"
   },
   {
     "method": "delete",
     "path": "/api/financial-service-providers/{fspId}/attribute/{attributeName}",
-    "params": ["fspId", "attributeName"],
+    "params": [
+      "fspId",
+      "attributeName"
+    ],
     "returnType": "FspQuestionEntity"
   },
   {
     "method": "post",
     "path": "/api/financial-service-providers/{fspId}/attribute",
-    "params": ["fspId"],
+    "params": [
+      "fspId"
+    ],
     "returnType": "FspQuestionEntity"
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/fsp-configuration",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/fsp-configuration",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "put",
     "path": "/api/programs/{programId}/fsp-configuration/{programFspConfigurationId}",
-    "params": ["programId", "programFspConfigurationId"]
+    "params": [
+      "programId",
+      "programFspConfigurationId"
+    ]
   },
   {
     "method": "delete",
     "path": "/api/programs/{programId}/fsp-configuration/{programFspConfigurationId}",
-    "params": ["programId", "programFspConfigurationId"]
+    "params": [
+      "programId",
+      "programFspConfigurationId"
+    ]
   },
   {
     "method": "patch",
@@ -315,37 +407,55 @@
   {
     "method": "get",
     "path": "/api/notifications/whatsapp/templates/{sessionId}",
-    "params": ["sessionId"]
+    "params": [
+      "sessionId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/notifications/imageCode/{secret}",
-    "params": ["secret"]
+    "params": [
+      "secret"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers",
-    "params": ["programId", "referenceId", "payment"]
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers/balance",
-    "params": ["programId", "referenceId", "payment"]
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/batch-jobs",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
@@ -365,17 +475,30 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/transactions",
-    "params": ["programId", "referenceId", "payment"]
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/events",
-    "params": ["programId", "format", "toDate", "fromDate", "referenceId"]
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{registrationId}/events",
-    "params": ["registrationId", "programId"]
+    "params": [
+      "registrationId",
+      "programId"
+    ]
   },
   {
     "method": "get",
@@ -423,27 +546,37 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/metrics/payment-state-sums",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/metrics/program-stats-summary",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/metrics/registration-status",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/import-registrations",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/import",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
@@ -480,7 +613,9 @@
   {
     "method": "patch",
     "path": "/api/programs/{programId}/registrations",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "delete",
@@ -519,7 +654,9 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/import-template",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "patch",
@@ -558,17 +695,25 @@
   {
     "method": "patch",
     "path": "/api/programs/{programId}/registrations/{referenceId}",
-    "params": ["programId", "referenceId"]
+    "params": [
+      "programId",
+      "referenceId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/registrations",
-    "params": ["phonenumber"]
+    "params": [
+      "phonenumber"
+    ]
   },
   {
     "method": "put",
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsp",
-    "params": ["programId", "referenceId"]
+    "params": [
+      "programId",
+      "referenceId"
+    ]
   },
   {
     "method": "post",
@@ -607,49 +752,77 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{referenceId}/messages",
-    "params": ["referenceId", "programId"]
+    "params": [
+      "referenceId",
+      "programId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/referenceid/{paId}",
-    "params": ["paId", "programId"]
+    "params": [
+      "paId",
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards",
-    "params": ["programId", "referenceId"]
+    "params": [
+      "programId",
+      "referenceId"
+    ]
   },
   {
     "method": "patch",
     "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards/{tokenCode}",
-    "params": ["programId", "referenceId", "tokenCode", "pause"]
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode",
+      "pause"
+    ]
   },
   {
     "method": "patch",
     "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet",
-    "params": ["referenceId", "programId"],
+    "params": [
+      "referenceId",
+      "programId"
+    ],
     "returnType": "IntersolveVisaWalletDto"
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet",
-    "params": ["referenceId", "programId"],
+    "params": [
+      "referenceId",
+      "programId"
+    ],
     "returnType": "IntersolveVisaWalletDto"
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/contact-information",
-    "params": ["programId", "referenceId"]
+    "params": [
+      "programId",
+      "referenceId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{id}",
-    "params": ["programId", "id"]
+    "params": [
+      "programId",
+      "id"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
@@ -688,38 +861,56 @@
   {
     "method": "patch",
     "path": "/api/programs/{programId}/payments",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/status",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/{payment}/status",
-    "params": ["programId", "payment"]
+    "params": [
+      "programId",
+      "payment"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/{payment}",
-    "params": ["payment", "programId"],
+    "params": [
+      "payment",
+      "programId"
+    ],
     "returnType": "PaymentReturnDto"
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/{payment}/fsp-instructions",
-    "params": ["programId", "payment"]
+    "params": [
+      "programId",
+      "payment"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/fsp-reconciliation/import-template",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/payments/{payment}/fsp-reconciliation",
-    "params": ["programId", "payment"]
+    "params": [
+      "programId",
+      "payment"
+    ]
   },
   {
     "method": "post",
@@ -734,13 +925,17 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
-    "params": ["programId"],
+    "params": [
+      "programId"
+    ],
     "returnType": "CommercialBankEthiopiaValidationReportDto"
   },
   {
     "method": "post",
     "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation",
-    "params": ["programId"]
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "post",
@@ -750,7 +945,9 @@
   {
     "method": "post",
     "path": "/api/migrate-visa/visa",
-    "params": ["limit"]
+    "params": [
+      "limit"
+    ]
   },
   {
     "method": "post",
@@ -770,16 +967,25 @@
   {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
-    "params": ["programId", "referenceId"]
+    "params": [
+      "programId",
+      "referenceId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
-    "params": ["programId", "referenceId"]
+    "params": [
+      "programId",
+      "referenceId"
+    ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{registrationId}/activities",
-    "params": ["programId", "registrationId"]
+    "params": [
+      "programId",
+      "registrationId"
+    ]
   }
 ]
