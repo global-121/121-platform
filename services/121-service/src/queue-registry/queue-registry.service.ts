@@ -1,5 +1,5 @@
 import { InjectQueue } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
@@ -12,7 +12,7 @@ import {
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 
 @Injectable()
-export class QueueRegistryService {
+export class QueueRegistryService implements OnModuleInit {
   private allQueues: Queue[] = [];
 
   constructor(
@@ -67,9 +67,24 @@ export class QueueRegistryService {
     ];
   }
 
+  async onModuleInit(): Promise<void> {
+    // This is needed because of the issue where on 121-service startup jobs will start processing before the process handlers are registered, which leads to failed jobs.
+    // We are not able to prevent this from happening, so instead this workaround will retry all failed jobs on startup. By then the process handler is up and the jobs will not fail for this reason again.
+    await this.retryFailedJobs();
+  }
+
   public async retryFailedJobs(): Promise<void> {
     for (const queue of this.allQueues) {
       const failedJobs = await queue.getFailed();
+      const missingProcessHandlerJobs = failedJobs.filter((job) =>
+        job.failedReason?.includes('Missing process handler for job type'),
+      );
+      if (!missingProcessHandlerJobs.length) {
+        continue;
+      }
+      console.log(
+        `Found ${failedJobs.length} failed jobs because of missing process handler for queue ${queue.name}. Retrying now.`,
+      );
       for (const job of failedJobs) {
         // Only retry for this specific error message, as we know the job processing has never started and is therefore safe to retry (jobs are not idempotent)
         if (
