@@ -1,7 +1,5 @@
-import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Queue } from 'bull';
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
@@ -44,13 +42,13 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -81,8 +79,7 @@ export class IntersolveVoucherService
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
-    private readonly paymentIntersolveVoucherQueue: Queue,
+    private readonly queueRegistryService: QueueRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
@@ -112,16 +109,17 @@ export class IntersolveVoucherService
     };
 
     for (const paymentInfo of paPaymentList) {
-      const job = await this.paymentIntersolveVoucherQueue.add(
-        JobNames.default,
-        {
-          paymentInfo,
-          useWhatsapp,
-          payment,
-          credentials,
-          programId,
-        },
-      );
+      const job =
+        await this.queueRegistryService.transactionJobIntersolveVoucherQueue.add(
+          JobNames.default,
+          {
+            paymentInfo,
+            useWhatsapp,
+            payment,
+            credentials,
+            programId,
+          },
+        );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }

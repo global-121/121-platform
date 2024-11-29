@@ -1,5 +1,4 @@
 import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 import {
   FinancialServiceProviderConfigurationEnum,
@@ -9,10 +8,9 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-job.dto';
 import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
-import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
 const programId = 3;
 const paymentNr = 5;
@@ -52,17 +50,20 @@ const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
 
 describe('CommercialBankEthiopiaService', () => {
   let commercialBankEthiopiaService: CommercialBankEthiopiaService;
-  let paymentQueue: jest.Mocked<Queue>;
+  let queueRegistryService: QueueRegistryService;
 
   beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
-      CommercialBankEthiopiaService,
-    ).compile();
+    const { unit, unitRef } = TestBed.create(CommercialBankEthiopiaService)
+      .mock(QueueRegistryService)
+      .using({
+        transactionJobCommercialBankEthiopiaQueue: {
+          add: jest.fn(),
+        },
+      })
+      .compile();
 
     commercialBankEthiopiaService = unit;
-    paymentQueue = unitRef.get(
-      getQueueName(TransactionJobQueueNames.commercialBankEthiopia),
-    );
+    queueRegistryService = unitRef.get(QueueRegistryService);
   });
 
   it('should be defined', () => {
@@ -102,12 +103,17 @@ describe('CommercialBankEthiopiaService', () => {
       )
       .mockImplementation(() => createQueryBuilder) as any;
 
-    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
-      data: {
-        id: 1,
-        programId: 3,
-      },
-    });
+    jest
+      .spyOn(
+        queueRegistryService.transactionJobCommercialBankEthiopiaQueue as any,
+        'add',
+      )
+      .mockReturnValue({
+        data: {
+          id: 1,
+          programId: 3,
+        },
+      });
 
     // Act
     await commercialBankEthiopiaService.sendPayment(
@@ -117,10 +123,11 @@ describe('CommercialBankEthiopiaService', () => {
     );
 
     // Assert
-    expect(paymentQueue.add).toHaveBeenCalledTimes(1);
-    expect(paymentQueue.add).toHaveBeenCalledWith(
-      JobNames.default,
-      paymentDetailsResult,
-    );
+    expect(
+      queueRegistryService.transactionJobCommercialBankEthiopiaQueue.add,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      queueRegistryService.transactionJobCommercialBankEthiopiaQueue.add,
+    ).toHaveBeenCalledWith(JobNames.default, paymentDetailsResult);
   });
 });

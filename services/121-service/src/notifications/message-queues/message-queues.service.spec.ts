@@ -1,9 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Queue } from 'bull';
 import { Repository } from 'typeorm';
 
-import { DEFAULT_QUEUE_CREATE_MESSAGE } from '@121-service/src/notifications/enum/message-queue-mapping.const';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import {
   MessageJobDto,
@@ -12,12 +10,12 @@ import {
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
-import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',
@@ -32,16 +30,23 @@ const defaultMessageJob = {
 
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
-  let messageQueue: jest.Mocked<Queue>;
+  let queueRegistryService: QueueRegistryService;
   let programAttributesService: ProgramAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(MessageQueuesService).compile();
+    const { unit, unitRef } = TestBed.create(MessageQueuesService)
+      .mock(QueueRegistryService)
+      .using({
+        createMessageSmallBulkQueue: {
+          add: jest.fn(),
+        },
+      })
+      .compile();
 
     queueMessageService = unit;
-    messageQueue = unitRef.get(getQueueName(DEFAULT_QUEUE_CREATE_MESSAGE));
+    queueRegistryService = unitRef.get(QueueRegistryService);
     programAttributesService = unitRef.get(ProgramAttributesService);
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
@@ -74,7 +79,9 @@ describe('MessageQueuesService', () => {
     });
 
     // Assert
-    expect(messageQueue.add).toHaveBeenCalledWith(ProcessNameMessage.send, {
+    expect(
+      queueRegistryService.createMessageSmallBulkQueue.add,
+    ).toHaveBeenCalledWith(ProcessNameMessage.send, {
       ...defaultMessageJob,
       whatsappPhoneNumber: registration['whatsappPhoneNumber'],
       phoneNumber: registration.phoneNumber,
@@ -114,7 +121,9 @@ describe('MessageQueuesService', () => {
 
     // Assert
     expect(mockGetRegistrationDataValueByName).toHaveBeenCalledTimes(1);
-    expect(messageQueue.add).toHaveBeenCalledWith(ProcessNameMessage.send, {
+    expect(
+      queueRegistryService.createMessageSmallBulkQueue.add,
+    ).toHaveBeenCalledWith(ProcessNameMessage.send, {
       ...defaultMessageJob,
       whatsappPhoneNumber: whatsappNumber,
       phoneNumber: registration.phoneNumber,

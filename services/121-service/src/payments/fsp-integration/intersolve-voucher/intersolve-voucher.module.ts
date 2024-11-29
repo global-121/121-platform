@@ -1,5 +1,4 @@
 import { HttpModule } from '@nestjs/axios';
-import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -21,11 +20,11 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -51,19 +50,8 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     MessageTemplateModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
-    BullModule.registerQueue({
-      name: TransactionJobQueueNames.intersolveVoucher,
-      processors: [
-        {
-          path: 'src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor.ts',
-        },
-      ],
-      limiter: {
-        max: 5, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
-      },
-    }),
     RedisModule,
+    QueueRegistryModule,
   ],
   providers: [
     IntersolveVoucherService,

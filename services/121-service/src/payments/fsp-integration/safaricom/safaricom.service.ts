@@ -1,7 +1,5 @@
-import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import { Queue } from 'bull';
 import { Redis } from 'ioredis';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -10,7 +8,6 @@ import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integ
 import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
-import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
@@ -18,6 +15,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
@@ -27,12 +25,9 @@ export class SafaricomService
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
+    private readonly queueRegistryService: QueueRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    @InjectQueue(SafaricomCallbackQueueNames.transfer)
-    private readonly safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(SafaricomCallbackQueueNames.timeout)
-    private readonly safaricomTimeoutCallbackQueue: Queue,
   ) {}
 
   /**
@@ -86,10 +81,11 @@ export class SafaricomService
       resultDescription: safaricomTransferCallback.Result.ResultDesc,
     };
 
-    const job = await this.safaricomTransferCallbackQueue.add(
-      JobNames.default,
-      safaricomTransferCallbackJob,
-    );
+    const job =
+      await this.queueRegistryService.safaricomTransferCallbackQueue.add(
+        JobNames.default,
+        safaricomTransferCallbackJob,
+      );
 
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
   }
@@ -102,10 +98,11 @@ export class SafaricomService
         safaricomTimeoutCallback.OriginatorConversationID,
     };
 
-    const job = await this.safaricomTimeoutCallbackQueue.add(
-      JobNames.default,
-      safaricomTimeoutCallbackJob,
-    );
+    const job =
+      await this.queueRegistryService.safaricomTimeoutCallbackQueue.add(
+        JobNames.default,
+        safaricomTimeoutCallbackJob,
+      );
 
     await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
   }

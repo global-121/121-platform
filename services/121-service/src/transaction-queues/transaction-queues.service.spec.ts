@@ -1,12 +1,10 @@
 import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
-import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
 const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
   {
@@ -44,22 +42,23 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
 
 describe('TransactionQueuesService', () => {
   let transactionQueuesService: TransactionQueuesService;
-  let intersolveVisaQueue: jest.Mocked<Queue>;
-  let safaricomQueue: jest.Mocked<Queue>;
+  let queueRegistryService: QueueRegistryService;
 
   beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
-      TransactionQueuesService,
-    ).compile();
+    const { unit, unitRef } = TestBed.create(TransactionQueuesService)
+      .mock(QueueRegistryService)
+      .using({
+        transactionJobIntersolveVisaQueue: {
+          add: jest.fn(),
+        },
+        transactionJobSafaricomQueue: {
+          add: jest.fn(),
+        },
+      })
+      .compile();
 
     transactionQueuesService = unit;
-    intersolveVisaQueue = unitRef.get(
-      getQueueName(TransactionJobQueueNames.intersolveVisa),
-    );
-
-    safaricomQueue = unitRef.get(
-      getQueueName(TransactionJobQueueNames.safaricom),
-    );
+    queueRegistryService = unitRef.get(QueueRegistryService);
   });
 
   it('should be defined', () => {
@@ -67,12 +66,17 @@ describe('TransactionQueuesService', () => {
   });
 
   it('should add transaction job to queue: intersolve-visa', async () => {
-    jest.spyOn(intersolveVisaQueue as any, 'add').mockReturnValue({
-      data: {
-        id: 1,
-        programId: 3,
-      },
-    });
+    jest
+      .spyOn(
+        queueRegistryService.transactionJobIntersolveVisaQueue as any,
+        'add',
+      )
+      .mockReturnValue({
+        data: {
+          id: 1,
+          programId: 3,
+        },
+      });
 
     // Act
     await transactionQueuesService.addIntersolveVisaTransactionJobs(
@@ -80,20 +84,26 @@ describe('TransactionQueuesService', () => {
     );
 
     // Assert
-    expect(intersolveVisaQueue.add).toHaveBeenCalledTimes(1);
-    expect(intersolveVisaQueue.add).toHaveBeenCalledWith(
+    expect(
+      queueRegistryService.transactionJobIntersolveVisaQueue.add,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      queueRegistryService.transactionJobIntersolveVisaQueue.add,
+    ).toHaveBeenCalledWith(
       JobNames.default,
       mockIntersolveVisaTransactionJobDto[0],
     );
   });
 
   it('should add transaction job to queue: safaricom', async () => {
-    jest.spyOn(safaricomQueue as any, 'add').mockReturnValue({
-      data: {
-        id: 1,
-        programId: 3,
-      },
-    });
+    jest
+      .spyOn(queueRegistryService.transactionJobSafaricomQueue as any, 'add')
+      .mockReturnValue({
+        data: {
+          id: 1,
+          programId: 3,
+        },
+      });
 
     // Act
     await transactionQueuesService.addSafaricomTransactionJobs(
@@ -101,10 +111,11 @@ describe('TransactionQueuesService', () => {
     );
 
     // Assert
-    expect(safaricomQueue.add).toHaveBeenCalledTimes(1);
-    expect(safaricomQueue.add).toHaveBeenCalledWith(
-      JobNames.default,
-      mockSafaricomTransactionJobDto[0],
-    );
+    expect(
+      queueRegistryService.transactionJobSafaricomQueue.add,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      queueRegistryService.transactionJobSafaricomQueue.add,
+    ).toHaveBeenCalledWith(JobNames.default, mockSafaricomTransactionJobDto[0]);
   });
 });

@@ -1,5 +1,4 @@
 import { TestBed } from '@automock/jest';
-import { Queue } from 'bull';
 
 import {
   FinancialServiceProviderConfigurationEnum,
@@ -8,10 +7,9 @@ import {
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
-import { getQueueName } from '@121-service/src/utils/unit-test.helpers';
 
 const programId = 3;
 const paymentNr = 5;
@@ -37,17 +35,20 @@ const paymentDetailsResult: IntersolveVoucherJobDto = {
 
 describe('IntersolveVoucherService', () => {
   let intersolveVoucherService: IntersolveVoucherService;
-  let paymentQueue: jest.Mocked<Queue>;
+  let queueRegistryService: QueueRegistryService;
 
   beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(
-      IntersolveVoucherService,
-    ).compile();
+    const { unit, unitRef } = TestBed.create(IntersolveVoucherService)
+      .mock(QueueRegistryService)
+      .using({
+        transactionJobIntersolveVoucherQueue: {
+          add: jest.fn(),
+        },
+      })
+      .compile();
 
     intersolveVoucherService = unit;
-    paymentQueue = unitRef.get(
-      getQueueName(TransactionJobQueueNames.intersolveVoucher),
-    );
+    queueRegistryService = unitRef.get(QueueRegistryService);
   });
 
   it('should be defined', () => {
@@ -78,12 +79,17 @@ describe('IntersolveVoucherService', () => {
       )
       .mockImplementation(() => createQueryBuilder) as any;
 
-    jest.spyOn(paymentQueue as any, 'add').mockReturnValue({
-      data: {
-        id: 1,
-        programId: 3,
-      },
-    });
+    jest
+      .spyOn(
+        queueRegistryService.transactionJobIntersolveVoucherQueue as any,
+        'add',
+      )
+      .mockReturnValue({
+        data: {
+          id: 1,
+          programId: 3,
+        },
+      });
 
     // Act
     await intersolveVoucherService.sendPayment(
@@ -94,10 +100,11 @@ describe('IntersolveVoucherService', () => {
     );
 
     // Assert
-    expect(paymentQueue.add).toHaveBeenCalledTimes(1);
-    expect(paymentQueue.add).toHaveBeenCalledWith(
-      JobNames.default,
-      paymentDetailsResult,
-    );
+    expect(
+      queueRegistryService.transactionJobIntersolveVoucherQueue.add,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      queueRegistryService.transactionJobIntersolveVoucherQueue.add,
+    ).toHaveBeenCalledWith(JobNames.default, paymentDetailsResult);
   });
 });

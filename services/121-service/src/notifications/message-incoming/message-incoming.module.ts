@@ -1,4 +1,3 @@
-import { BullModule } from '@nestjs/bull';
 import {
   MiddlewareConsumer,
   Module,
@@ -23,9 +22,9 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { QueueNameMessageCallBack } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -48,32 +47,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     MessageQueuesModule,
     MessageTemplateModule,
     RegistrationDataModule,
-    BullModule.registerQueue({
-      name: QueueNameMessageCallBack.status,
-      processors: [
-        {
-          path: 'src/notifications/processors/message-status-callback.processor.ts',
-          concurrency: 4,
-        },
-      ],
-      limiter: {
-        max: 50, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
-      },
-    }),
-    BullModule.registerQueue({
-      name: QueueNameMessageCallBack.incomingMessage,
-      processors: [
-        {
-          path: 'src/notifications/processors/message-incoming.processor.ts',
-          concurrency: 4,
-        },
-      ],
-      limiter: {
-        max: 50, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
-      },
-    }),
+    QueueRegistryModule,
   ],
   providers: [
     MessageIncomingService,
@@ -82,7 +56,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     AzureLogService,
   ],
   controllers: [MessageIncomingController],
-  exports: [MessageIncomingService, BullModule],
+  exports: [MessageIncomingService],
 })
 export class MessageIncomingModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
