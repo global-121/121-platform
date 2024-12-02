@@ -21,6 +21,7 @@
     "test:deployment-configuration": "node ./_test-deployment-configuration.js",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "test": "ng test",
+    "verify:deployment": "node ./_verify-deployment-configuration.mjs",
     "typecheck": "npx tsc --noEmit",
     "extract-i18n": "ng extract-i18n"
   },
