@@ -18,6 +18,7 @@
     "lint": "ng lint",
     "fix": "ng lint --fix",
     "test:all": "npm run lint && npm test",
+    "test:deployment-configuration": "node ./_test-deployment-configuration.js",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "test": "ng test",
     "typecheck": "npx tsc --noEmit",

@@ -30,7 +30,7 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm ci --no-fund --no-audit'
 
-      - name: Type Check
+      - name: 'Test: Types'
         working-directory: ${{ env.interfacePath }}
         run: 'npm run typecheck'
 
@@ -38,6 +38,13 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm run lint'
 
-      - name: Test
+      - name: 'Test: Deployment Configuration'
+        working-directory: ${{ env.interfacePath }}
+        run: |
+          cp -vf .env.example .env
+          npm run build:deployment-configuration
+          npm run test:deployment-configuration
+
+      - name: 'Test: Code'
         working-directory: ${{ env.interfacePath }}
         run: 'npm run test:ci'
