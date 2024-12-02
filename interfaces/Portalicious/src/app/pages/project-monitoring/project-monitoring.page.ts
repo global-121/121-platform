@@ -128,10 +128,8 @@ export class ProjectMonitoringPageComponent {
       },
       {
         label: $localize`FSP(s)`,
-        value: projectData?.financialServiceProviders
-          .map((fsp) =>
-            this.translatableStringService.translate(fsp.displayName),
-          )
+        value: projectData?.programFinancialServiceProviderConfigurations
+          .map((fsp) => this.translatableStringService.translate(fsp.label))
           .join(', '),
       },
       {

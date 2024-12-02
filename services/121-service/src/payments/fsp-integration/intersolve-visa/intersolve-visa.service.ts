@@ -619,7 +619,9 @@ export class IntersolveVisaService
 
   public async hasIntersolveCustomer(registrationId: number): Promise<boolean> {
     const count = await this.intersolveVisaCustomerScopedRepository.count({
-      where: { registrationId: Equal(registrationId) },
+      where: {
+        registrationId: Equal(registrationId),
+      },
     });
     return count > 0;
   }

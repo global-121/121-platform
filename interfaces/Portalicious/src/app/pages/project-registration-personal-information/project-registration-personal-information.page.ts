@@ -50,9 +50,7 @@ export class ProjectRegistrationPersonalInformationPageComponent {
   projectAttributes = injectQuery(
     this.projectApiService.getProjectAttributes({
       projectId: this.projectId,
-      includeCustomAttributes: true,
-      includeFspQuestions: true,
-      includeProgramQuestions: true,
+      includeProgramRegistrationAttributes: true,
       includeTemplateDefaultAttributes: true,
     }),
   );

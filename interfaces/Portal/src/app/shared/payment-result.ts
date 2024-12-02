@@ -1,21 +1,25 @@
 import { TranslateService } from '@ngx-translate/core';
-import FspName from '../enums/fsp-name.enum';
 import { FspIntegrationType } from '../models/fsp.model';
 import { Program } from '../models/program.model';
 
 export function getFspIntegrationType(
-  fspsInPayment: FspName[],
+  fspConfigNamesInPayment: string[],
   program: Program,
 ) {
   // In case of multiple FSPs default integrationType to API, but overwrite if any FSP has a different integration type
   // This variable is only used to return different UX copy on doPayment result
   let fspIntegrationType = FspIntegrationType.api;
-  for (const fsp of fspsInPayment) {
-    const programFsp = program.financialServiceProviders.find(
-      (f) => f.fsp === fsp,
-    );
-    if (programFsp.integrationType === FspIntegrationType.csv) {
-      fspIntegrationType = programFsp.integrationType;
+  for (const fspConfigName of fspConfigNamesInPayment) {
+    const programFspConfig =
+      program.financialServiceProviderConfigurations.find(
+        (f) => f.name === fspConfigName,
+      );
+    if (
+      programFspConfig.financialServiceProvider.integrationType ===
+      FspIntegrationType.csv
+    ) {
+      fspIntegrationType =
+        programFspConfig.financialServiceProvider.integrationType;
       return fspIntegrationType;
     }
   }

@@ -80,7 +80,7 @@ export class BulkImportComponent implements OnInit {
     };
   }
 
-  public importPeopleAffected(event: { file: File }) {
+  public importRegistrations(event: { file: File }) {
     this.isInProgress = true;
 
     this.programsService
@@ -142,11 +142,11 @@ export class BulkImportComponent implements OnInit {
   private async getLatestActionMessage(
     type: RegistrationStatus,
   ): Promise<string> {
-    let action = ActionType.importPeopleAffected;
-
-    if (type === RegistrationStatus.registered) {
-      action = ActionType.importRegistrations;
+    if (type !== RegistrationStatus.registered) {
+      return '';
     }
+
+    const action = ActionType.importRegistrations;
 
     const latestAction = await this.programsService.retrieveLatestActions(
       action,

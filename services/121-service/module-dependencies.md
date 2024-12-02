@@ -16,6 +16,18 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
+  ProgramFinancialServiceProviderConfigurationsModule-->TransactionsModule
+  TransactionsModule-->UserModule
+  TransactionsModule-->ActionsModule
+  TransactionsModule-->MessageQueuesModule
+  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->RegistrationDataModule
+  MessageQueuesModule-->QueueRegistryModule
+  TransactionsModule-->MessageTemplateModule
+  TransactionsModule-->RegistrationUtilsModule
+  RegistrationUtilsModule-->RegistrationDataModule
+  TransactionsModule-->EventsModule
+  EventsModule-->UserModule
   ProgramModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
   OrganizationModule-->UserModule
@@ -25,21 +37,10 @@ graph LR
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->MessageQueuesModule
-  MessageQueuesModule-->ProgramAttributesModule
-  MessageQueuesModule-->RegistrationDataModule
-  MessageQueuesModule-->QueueRegistryModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule
   IntersolveVoucherModule-->TransactionsModule
-  TransactionsModule-->UserModule
-  TransactionsModule-->ActionsModule
-  TransactionsModule-->MessageQueuesModule
-  TransactionsModule-->MessageTemplateModule
-  TransactionsModule-->RegistrationUtilsModule
-  RegistrationUtilsModule-->RegistrationDataModule
-  TransactionsModule-->EventsModule
-  EventsModule-->UserModule
   IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
@@ -95,7 +96,6 @@ graph LR
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
   MetricsModule-->RegistrationDataModule
-  MigrateVisaModule-->UserModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule

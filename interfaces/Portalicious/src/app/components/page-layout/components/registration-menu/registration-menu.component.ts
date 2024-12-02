@@ -53,7 +53,7 @@ export class RegistrationMenuComponent {
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationDebitCards}`,
       icon: 'pi pi-credit-card',
       visible:
-        this.registration.data()?.financialServiceProvider ===
+        this.registration.data()?.financialServiceProviderName ===
         FinancialServiceProviders.intersolveVisa,
     },
   ]);

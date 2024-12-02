@@ -23,6 +23,7 @@ enum MockPhoneNumbers {
   NoIncomingYesMessage = '16005550002',
   FailFaultyTemplateError = '16005550003',
   FailNoWhatsAppNumber = '16005550004',
+  LookupFail = '16005550005',
 }
 
 // See: services/121-service/src/notifications/enum/message-type.enum.ts
@@ -36,6 +37,12 @@ export class TwilioService {
   }> {
     if (!phoneNumber) {
       phoneNumber = '+31600000000';
+    }
+    if (phoneNumber.includes(MockPhoneNumbers.LookupFail)) {
+      return {
+        phone_number: null,
+        national_format: null,
+      };
     }
     await setTimeoutQueue(400); // This is the average time of an actual twilio lookup
     return {
@@ -78,6 +85,7 @@ export class TwilioService {
     // 1. First loop through different error rseponses and return early
     if (
       !twilioMessagesCreateDto.To ||
+      twilioMessagesCreateDto.To === 'not available' || // this relates to 'to' being set to 'not available' in the sms.service > send Sms()
       twilioMessagesCreateDto.To.includes(MockPhoneNumbers.FailGeneric)
     ) {
       response.status = TwilioStatus.failed;

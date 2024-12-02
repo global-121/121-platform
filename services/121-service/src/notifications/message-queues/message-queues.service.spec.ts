@@ -11,6 +11,7 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -66,7 +67,8 @@ describe('MessageQueuesService', () => {
     registration.preferredLanguage = LanguageEnum.fr;
     registration.phoneNumber = '234567891';
     registration.programId = 1;
-    registration['whatsappPhoneNumber'] = '0987654321';
+    registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
+      '0987654321';
 
     // Act
     await queueMessageService.addMessageJob({
@@ -83,7 +85,8 @@ describe('MessageQueuesService', () => {
       queueRegistryService.createMessageSmallBulkQueue.add,
     ).toHaveBeenCalledWith(ProcessNameMessage.send, {
       ...defaultMessageJob,
-      whatsappPhoneNumber: registration['whatsappPhoneNumber'],
+      whatsappPhoneNumber:
+        registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber],
       phoneNumber: registration.phoneNumber,
       preferredLanguage: registration.preferredLanguage,
       registrationId: registration.id,

@@ -30,7 +30,8 @@
                 activity.paymentRowDetail.transaction &&
                 !hasErrorCheck(activity.paymentRowDetail) &&
                 hasVoucherSupportCheck(
-                  activity.paymentRowDetail.transaction.fsp
+                  activity.paymentRowDetail.transaction
+                    .financialServiceProviderName
                 )
               "
               shape="round"
@@ -136,7 +137,10 @@
                 id="hover-trigger"
                 *ngIf="activity.paymentRowDetail.transaction?.status"
               >
-                {{ activity.paymentRowDetail.transaction?.fspName }}
+                {{
+                  activity.paymentRowDetail.transaction
+                    ?.programFinancialServiceProviderConfigurationTranslatedLabel
+                }}
               </span>
             </div>
 

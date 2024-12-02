@@ -174,13 +174,15 @@ export function cleanProgramForAssertions(originalProgram: any): any {
     'endDate',
     'updated',
     'created',
+    'programFinancialServiceProviderConfigurations',
+    'financialServiceProviderConfigurations',
   ]);
 
   const attributesToSort = [
     { attribute: 'editableAttributes', key: 'name' },
     { attribute: 'paTableAttributes', key: 'name' },
     { attribute: 'financialServiceProviders', key: 'fsp' },
-    { attribute: 'programQuestions', key: 'name' },
+    { attribute: 'programRegistrationAttributes', key: 'name' },
     { attribute: 'filterableAttributes', key: 'group' },
   ];
 
@@ -196,23 +198,6 @@ export function cleanProgramForAssertions(originalProgram: any): any {
         return {
           ...filterableAttribute,
           filters: filterableAttribute.filters.sort(sortByAttribute('name')),
-        };
-      },
-    );
-  }
-
-  if (program.financialServiceProviders) {
-    program.financialServiceProviders = program.financialServiceProviders.map(
-      (financialServiceProvider: any) => {
-        if (!financialServiceProvider.questions) {
-          return financialServiceProvider;
-        }
-
-        return {
-          ...financialServiceProvider,
-          questions: financialServiceProvider.questions.sort(
-            sortByAttribute('name'),
-          ),
         };
       },
     );

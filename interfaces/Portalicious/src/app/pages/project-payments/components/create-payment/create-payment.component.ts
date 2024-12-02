@@ -21,6 +21,7 @@ import { CardModule } from 'primeng/card';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
 
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -31,14 +32,11 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/fullscreen-spinner.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
-import { FinancialServiceProviderApiService } from '~/domains/financial-service-provider/financial-service-provider.api.service';
+import { FinancialServiceProviderConfigurationApiService } from '~/domains/financial-service-provider-configuration/financial-service-provider-configuration.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import {
-  fspsHaveExcelFsp,
-  fspsHaveIntegratedFsp,
-} from '~/domains/project/project.helper';
+import { financialServiceProviderConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
 import { ExportService } from '~/services/export.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
@@ -69,8 +67,8 @@ export class CreatePaymentComponent {
 
   currencyPipe = inject(CurrencyPipe);
   exportService = inject(ExportService);
-  financialServiceProviderApiService = inject(
-    FinancialServiceProviderApiService,
+  financialServiceProviderConfigurationApiService = inject(
+    FinancialServiceProviderConfigurationApiService,
   );
   router = inject(Router);
   paymentApiService = inject(PaymentApiService);
@@ -93,8 +91,10 @@ export class CreatePaymentComponent {
     status: RegistrationStatusEnum.included,
   };
 
-  financialServiceProviders = injectQuery(
-    this.financialServiceProviderApiService.getFinancialServiceProviders(),
+  financialServiceProviderConfigurations = injectQuery(
+    this.financialServiceProviderConfigurationApiService.getFinancialServiceProviderConfigurations(
+      this.projectId,
+    ),
   );
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
@@ -208,12 +208,30 @@ export class CreatePaymentComponent {
     });
   }
 
-  hasIntegratedFsp = computed(() =>
-    fspsHaveIntegratedFsp(this.dryRunResult()?.fspsInPayment ?? []),
+  private paymentHasIntegrationType(
+    integrationType: FinancialServiceProviderIntegrationType,
+  ) {
+    const project = this.project.data();
+    const dryRunResult = this.dryRunResult();
+
+    if (!project || !dryRunResult) {
+      return false;
+    }
+
+    return financialServiceProviderConfigurationNamesHaveIntegrationType({
+      project,
+      financialServiceProviderConfigurationNames:
+        dryRunResult.programFinancialServiceProviderConfigurationNames,
+      integrationType,
+    });
+  }
+
+  paymentHasIntegratedFsp = computed(() =>
+    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.api),
   );
 
-  hasExcelFsp = computed(() =>
-    fspsHaveExcelFsp(this.dryRunResult()?.fspsInPayment ?? []),
+  paymentHasExcelFsp = computed(() =>
+    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.csv),
   );
 
   paymentSummaryData = computed(() => {
@@ -223,21 +241,21 @@ export class CreatePaymentComponent {
       return [];
     }
 
-    const fsps = this.financialServiceProviders.data();
-
     const listData: DataListItem[] = [
       {
         label: $localize`Financial Service Provider(s)`,
-        value: dryRunResult.fspsInPayment
-          .map((fspInPayment) => {
-            const fsp = fsps?.find((fsp) => fsp.fsp === fspInPayment);
+        value: dryRunResult.programFinancialServiceProviderConfigurationNames
+          .map((paymentFspConfigName) => {
+            const fspConfig = this.financialServiceProviderConfigurations
+              .data()
+              ?.find((fspConfig) => fspConfig.name === paymentFspConfigName);
             return (
-              this.translatableStringService.translate(fsp?.displayName) ??
-              fspInPayment
+              this.translatableStringService.translate(fspConfig?.label) ??
+              paymentFspConfigName
             );
           })
           .join(', '),
-        loading: this.financialServiceProviders.isPending(),
+        loading: this.financialServiceProviderConfigurations.isPending(),
         fullWidth: true,
       },
       {

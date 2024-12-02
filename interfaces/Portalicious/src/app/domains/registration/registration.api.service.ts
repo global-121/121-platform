@@ -50,7 +50,7 @@ export class RegistrationApiService extends DomainApiService {
 
   getImportTemplate(projectId: Signal<number>) {
     return this.generateQueryOptions<string[]>({
-      path: [...BASE_ENDPOINT(projectId), 'import-template'],
+      path: [...BASE_ENDPOINT(projectId), 'import', 'template'],
     });
   }
 
@@ -68,7 +68,7 @@ export class RegistrationApiService extends DomainApiService {
       method: 'POST',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
-        'import-registrations',
+        'import',
       ]).join('/'),
       body: formData,
       isUpload: true,

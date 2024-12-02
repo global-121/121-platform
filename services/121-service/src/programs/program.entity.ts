@@ -1,30 +1,13 @@
-import {
-  BeforeRemove,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  Relation,
-} from 'typeorm';
+import { BeforeRemove, Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { AppDataSource } from '@121-service/src/appdatasource';
 import { CascadeDeleteEntity } from '@121-service/src/base.entity';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
-import { ValidationInfo } from '@121-service/src/programs/dto/validation-info.dto';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramCustomAttributeEntity } from '@121-service/src/programs/program-custom-attribute.entity';
-import { ProgramQuestionEntity } from '@121-service/src/programs/program-question.entity';
-import { Attributes } from '@121-service/src/registration/dto/update-registration.dto';
-import {
-  AnswerTypes,
-  Attribute,
-  CustomAttributeType,
-} from '@121-service/src/registration/enum/custom-data-attributes';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
@@ -61,13 +44,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ type: 'character varying', nullable: true })
   public paymentAmountMultiplierFormula: string | null;
 
-  @ManyToMany(
-    () => FinancialServiceProviderEntity,
-    (financialServiceProviders) => financialServiceProviders.program,
-  )
-  @JoinTable()
-  public financialServiceProviders: Relation<FinancialServiceProviderEntity[]>;
-
   @Column({ type: 'integer', nullable: true })
   public targetNrRegistrations: number | null;
 
@@ -95,16 +71,12 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public actions: ActionEntity[];
 
   @OneToMany(
-    () => ProgramQuestionEntity,
-    (programQuestions) => programQuestions.program,
+    () => ProgramRegistrationAttributeEntity,
+    (programRegistrationAttributes) => programRegistrationAttributes.program,
   )
-  public programQuestions: Relation<ProgramQuestionEntity[]>;
-
-  @OneToMany(
-    () => ProgramCustomAttributeEntity,
-    (programCustomAttributes) => programCustomAttributes.program,
-  )
-  public programCustomAttributes: Relation<ProgramCustomAttributeEntity[]>;
+  public programRegistrationAttributes: Relation<
+    ProgramRegistrationAttributeEntity[]
+  >;
 
   @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
   public transactions: Relation<TransactionEntity[]>;
@@ -116,7 +88,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public tryWhatsAppFirst: boolean;
 
   // TODO: This can be refactored into 'nameField' so that this can be 1 field name that maps to the 'Name' column in the Portal.
-  // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
+  // This is an array of ProgramRegistrationAttributeEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
   public fullnameNamingConvention: string[] | null;
 
@@ -136,7 +108,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     () => ProgramFinancialServiceProviderConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,
   )
-  public programFspConfiguration: Relation<
+  public programFinancialServiceProviderConfigurations: Relation<
     ProgramFinancialServiceProviderConfigurationEntity[]
   >;
 
@@ -164,14 +136,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
         columnName: 'program',
       },
       {
-        entityClass: ProgramQuestionEntity,
-        columnName: 'program',
-      },
-      {
-        entityClass: ProgramCustomAttributeEntity,
-        columnName: 'program',
-      },
-      {
         entityClass: RegistrationEntity,
         columnName: 'program',
       },
@@ -184,95 +148,5 @@ export class ProgramEntity extends CascadeDeleteEntity {
         columnName: 'programId',
       },
     ]);
-  }
-
-  public async getValidationInfoForQuestionName(
-    name: string,
-  ): Promise<ValidationInfo> {
-    if (name === Attributes.paymentAmountMultiplier) {
-      return { type: AnswerTypes.numeric };
-    } else if (name === Attributes.maxPayments) {
-      return { type: AnswerTypes.numericNullable };
-    } else if (name === Attributes.referenceId) {
-      return { type: AnswerTypes.text };
-    } else if (name === Attributes.phoneNumber) {
-      return { type: AnswerTypes.tel };
-    } else if (name === Attributes.preferredLanguage) {
-      return {
-        type: AnswerTypes.dropdown,
-        options: await this.getPreferredLanguageOptions(),
-      };
-    } else if (name === Attributes.scope) {
-      return { type: AnswerTypes.text };
-    }
-
-    const repo = AppDataSource.getRepository(ProgramEntity);
-    const resultProgramQuestion = await repo
-      .createQueryBuilder('program')
-      .leftJoin('program.programQuestions', 'programQuestion')
-      .where('program.id = :programId', { programId: this.id })
-      .andWhere('programQuestion.name = :name', { name })
-      .select('"programQuestion"."answerType"', 'type')
-      .addSelect('"programQuestion"."options"', 'options')
-      .getRawOne();
-
-    const resultFspQuestion = await repo
-      .createQueryBuilder('program')
-      .leftJoin('program.financialServiceProviders', 'fsp')
-      .leftJoin('fsp.questions', 'question')
-      .where('program.id = :programId', { programId: this.id })
-      .andWhere('question.name = :name', { name })
-      .select('"question"."answerType"', 'type')
-      .addSelect('"question"."options"', 'options')
-      .getRawOne();
-
-    const resultProgramCustomAttribute = await repo
-      .createQueryBuilder('program')
-      .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
-      .where('program.id = :programId', { programId: this.id })
-      .andWhere('programCustomAttribute.name = :name', { name })
-      .select('"programCustomAttribute".type', 'type')
-      .getRawOne();
-
-    if (
-      Number(!!resultProgramQuestion) +
-        Number(!!resultFspQuestion) +
-        Number(!!resultProgramCustomAttribute) >
-      1
-    ) {
-      throw new Error(
-        'Found more than one fsp question, program question or  with the same name for program',
-      );
-    } else if (resultProgramQuestion && resultProgramQuestion.type) {
-      return {
-        type: resultProgramQuestion.type as AnswerTypes,
-        options: resultProgramQuestion.options,
-      };
-    } else if (resultFspQuestion && resultFspQuestion.type) {
-      return {
-        type: resultFspQuestion.type as AnswerTypes,
-        options: resultFspQuestion.options,
-      };
-    } else if (
-      resultProgramCustomAttribute &&
-      resultProgramCustomAttribute.type
-    ) {
-      return {
-        type: resultProgramCustomAttribute.type as CustomAttributeType,
-      };
-    } else {
-      return new ValidationInfo();
-    }
-  }
-
-  private async getPreferredLanguageOptions(): Promise<object[]> {
-    const repo = AppDataSource.getRepository(ProgramEntity);
-    const program = await repo.findOneBy({ id: this.id });
-
-    return JSON.parse(JSON.stringify(program?.languages)).map((key: string) => {
-      return {
-        option: key,
-      };
-    });
   }
 }

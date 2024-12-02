@@ -16,7 +16,6 @@ INSERT
         "paymentAmountMultiplier",
         "programId",
         "userId",
-        "fspId",
         updated,
         "registrationProgramId" + (
         SELECT
@@ -32,6 +31,7 @@ INSERT
                     ELSE 'zeeland.goes'
                 END
             ELSE scope
-        END
+        END,
+        "programFinancialServiceProviderConfigurationId"
     FROM
         "121-service".registration);
