@@ -217,7 +217,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
     if (typeof text !== 'string' && typeof text !== 'number') {
       throw new Error(
-        `Expected field ${column.field} to be a string, but got ${typeof text}`,
+        `Expected field ${column.field} to be a string or number, but got ${typeof text}`,
       );
     }
 
