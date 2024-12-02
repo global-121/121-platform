@@ -763,6 +763,7 @@ export class MetricsService {
       .select([
         'registration.referenceId as "referenceId"',
         'registration.registrationProgramId as "id"',
+        'registration.id as "registrationId"',
         'transaction.status as "status"',
         'transaction.payment as "payment"',
         'transaction.created as "timestamp"',
