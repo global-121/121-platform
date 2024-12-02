@@ -22,6 +22,7 @@ import { Dialog, DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
 
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -37,6 +38,7 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { financialServiceProviderConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
+import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
@@ -66,6 +68,7 @@ export class CreatePaymentComponent {
   projectId = input.required<number>();
 
   currencyPipe = inject(CurrencyPipe);
+  downloadService = inject(DownloadService);
   exportService = inject(ExportService);
   financialServiceProviderConfigurationApiService = inject(
     FinancialServiceProviderConfigurationApiService,
@@ -113,6 +116,16 @@ export class CreatePaymentComponent {
   });
 
   paymentAmount = computed(() => this.project.data()?.fixedTransferValue ?? 0);
+
+  exportRegistrationsMutation = injectMutation(() => ({
+    mutationFn: this.exportService.getExportListMutation(
+      this.projectId,
+      this.toastService,
+    ),
+    onSuccess: ({ exportResult: file, filename }) => {
+      this.downloadService.downloadFile({ file, filename });
+    },
+  }));
 
   createPaymentMutation = injectMutation(() => ({
     mutationFn: async ({
@@ -282,10 +295,9 @@ export class CreatePaymentComponent {
       label: $localize`Export payment list`,
       icon: 'pi pi-upload',
       command: () => {
-        // TODO: AB#31502
-        this.toastService.showToast({
-          severity: 'warn',
-          detail: "Haven't implemented this yet 😵‍💫",
+        this.exportRegistrationsMutation.mutate({
+          type: ExportType.allPeopleAffected,
+          paginateQuery: this.registrationsTable?.getActionData()?.query,
         });
       },
     },
