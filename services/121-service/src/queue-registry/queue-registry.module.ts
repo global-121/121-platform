@@ -9,6 +9,7 @@ import {
   QueueNameRegistration,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
   imports: [
@@ -199,7 +200,7 @@ import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transacti
       },
     }),
   ],
-  providers: [QueueRegistryService],
+  providers: [QueueRegistryService, AzureLogService],
   exports: [QueueRegistryService],
 })
 export class QueueRegistryModule {}

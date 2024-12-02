@@ -1,5 +1,11 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
-import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiProperty,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import { DEBUG } from '@121-service/src/config';
@@ -193,6 +199,7 @@ export class ScriptsController {
     summary:
       'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
   })
+  @ApiExcludeEndpoint(!DEBUG)
   @Post('kill-service')
   killService(@Body() body: SecretDto, @Res() res): void {
     if (body.secret !== process.env.RESET_SECRET) {

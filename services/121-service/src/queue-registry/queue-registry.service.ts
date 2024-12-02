@@ -10,12 +10,15 @@ import {
   QueueNameRegistration,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class QueueRegistryService implements OnModuleInit {
   private allQueues: Queue[] = [];
 
   constructor(
+    private azureLogService: AzureLogService,
+
     @InjectQueue(TransactionJobQueueNames.intersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
@@ -76,8 +79,8 @@ export class QueueRegistryService implements OnModuleInit {
         return await this.retryFailedJobs();
       })
       .catch((err) => {
-        // ##TODO: handle differently
         console.error('Error in retryFailedJobs: ', err);
+        this.azureLogService.logError(err, true);
       });
   }
 
