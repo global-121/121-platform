@@ -64,7 +64,7 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
           envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAABNIQAA/OrwAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAiIgAgAAACABAAACAAAAIAAgAAIAAAAgAAIAAgAAACAAACACAAAAIAIAIAIAAAAgAgAgAgAAACAAIgACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
           envIconPath: 'src/assets/favicon.ico'
-          envContentSecurityPolicy: ''
+          envContentSecurityPolicy: '' # Not used for Portalicious, the `build:deployment-configuration`-script is used.
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig

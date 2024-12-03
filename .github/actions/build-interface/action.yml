@@ -19,6 +19,7 @@ inputs:
   envContentSecurityPolicyBase:
     description: Value of a 'baseline' Content-Security-Policy to use. (all non-enviroment-specific) (All lines should end with a ";"!)
     required: false
+    deprecationMessage: "Use only for the 'old' Portal. Portalicious will use the `build:deployment-configuration`-script."
     default: >-
       default-src 'self';
       object-src 'none';
@@ -27,6 +28,7 @@ inputs:
   envContentSecurityPolicy:
     description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
     required: false
+    deprecationMessage: "Use only for the 'old' Portal. Portalicious will use the `build:deployment-configuration`-script."
     default: >-
       connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://login.microsoftonline.com;
       form-action https://*.121.global;
