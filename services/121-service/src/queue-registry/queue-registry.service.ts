@@ -74,17 +74,23 @@ export class QueueRegistryService implements OnModuleInit {
     // This is needed because of the issue where on 121-service startup jobs will start processing before the process handlers are registered, which leads to failed jobs.
     // We are not able to prevent this from happening, so instead this workaround will retry all failed jobs on startup. By then the process handler is up and the jobs will not fail for this reason again.
     // Wait 5 seconds to be sure that the process handlers are registered
-    new Promise((resolve) => setTimeout(resolve, 5000))
-      .then(async () => {
-        return await this.retryFailedJobs();
-      })
-      .catch((err) => {
-        console.error('Error in retryFailedJobs: ', err);
-        this.azureLogService.logError(err, true);
-      });
+    this.scheduleRetryFailedJobs().catch((err) => {
+      // We just put this error here to make ts happy. The error is already logged in the function
+      console.error('scheduleRetryFailedJobs', err);
+    });
   }
 
-  public async retryFailedJobs(): Promise<void> {
+  private async scheduleRetryFailedJobs(): Promise<void> {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await this.retryFailedJobs();
+    } catch (err) {
+      console.error('Error in retryFailedJobs: ', err);
+      await this.azureLogService.logError(err, true);
+    }
+  }
+
+  private async retryFailedJobs(): Promise<void> {
     for (const queue of this.allQueues) {
       const failedJobs = await queue.getFailed();
       const missingProcessHandlerJobs = failedJobs.filter((job) =>
