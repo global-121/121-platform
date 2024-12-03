@@ -86,7 +86,7 @@ export class QueueRegistryService implements OnModuleInit {
       await this.retryFailedJobs();
     } catch (err) {
       console.error('Error in retryFailedJobs: ', err);
-      await this.azureLogService.logError(err, true);
+      this.azureLogService.logError(err, true);
     }
   }
 
