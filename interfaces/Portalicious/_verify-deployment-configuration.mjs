@@ -66,7 +66,7 @@ test('Content-Security-Policy set for loading as iframe in Twilio Flex', () => {
 test('Content-Security-Policy set to load PowerBI dashboard(s) in iframe', () => {
   const frameSrcCondition = /frame-src[^;]* https:\/\/app\.powerbi\.com/;
 
-  if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
+  if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
     match(csp, frameSrcCondition);
   } else {
     doesNotMatch(csp, frameSrcCondition);
