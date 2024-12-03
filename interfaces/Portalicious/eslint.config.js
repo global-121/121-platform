@@ -161,7 +161,7 @@ module.exports = tseslint.config(
     },
   },
   {
-    files: ['**/*.js'],
+    files: ['**/*.js', '**/*.mjs'],
     extends: [eslintPluginPrettierRecommended],
     rules: {},
   },

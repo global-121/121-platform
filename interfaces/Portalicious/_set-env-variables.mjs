@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const dotenv = require('dotenv');
+import { writeFile } from 'fs';
+import { config } from 'dotenv';
 
 // Load environment-variables from .env file
-dotenv.config({
+config({
   debug: process.env.DEBUG,
+  override: process.env.DEBUG,
 });
 
 let targetEnv = 'production';
@@ -15,10 +16,10 @@ if (process.argv[2] === 'env=development') {
   targetEnv = 'development';
 }
 
-const configFileTemplate = require('./src/environments/environment.ts.template.js');
+import configFileTemplate from './src/environments/environment.ts.template.js';
 const targetPath = `./src/environments/environment.${targetEnv}.ts`;
 
-fs.writeFile(targetPath, configFileTemplate, (err) => {
+writeFile(targetPath, configFileTemplate, (err) => {
   if (process.env.DEBUG || process.env.CI) {
     console.log(configFileTemplate);
   }
