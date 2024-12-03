@@ -436,8 +436,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   columnVisibilityEffect = effect(
     () => {
       if (
-        !this.enableColumnManagement() ||
-        this.visibleColumns().length === 0
+        (!this.enableColumnManagement() ||
+          this.visibleColumns().length === 0) &&
+        this.columns().length > 0
       ) {
         this.resetColumnVisibility();
       }
