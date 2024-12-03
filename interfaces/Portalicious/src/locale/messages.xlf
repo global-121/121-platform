@@ -1127,8 +1127,8 @@
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
       </trans-unit>
-      <trans-unit id="3107789597484856473" datatype="html">
-        <source>Click start payment, this will redirect you to the payment page.</source>
+      <trans-unit id="4360422423466093126" datatype="html">
+        <source>Click start payment, this will direct you to the payment page.</source>
       </trans-unit>
       <trans-unit id="5677186522471416018" datatype="html">
         <source>Upload the file to the Financial Service Provider’s portal.</source>
@@ -1177,6 +1177,9 @@
       </trans-unit>
       <trans-unit id="5391647417948016120" datatype="html">
         <source>TODO: AB#31324</source>
+      </trans-unit>
+      <trans-unit id="9047634939215362248" datatype="html">
+        <source>Registrations selected:</source>
       </trans-unit>
     </body>
   </file>

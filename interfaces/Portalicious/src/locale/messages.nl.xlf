@@ -1496,9 +1496,9 @@
         <source>Review payment summary and follow the next steps:</source>
         <target state="new">Review payment summary and follow the next steps:</target>
       </trans-unit>
-      <trans-unit id="3107789597484856473" datatype="html">
-        <source>Click start payment, this will redirect you to the payment page.</source>
-        <target state="new">Click start payment, this will redirect you to the payment page.</target>
+      <trans-unit id="4360422423466093126" datatype="html">
+        <source>Click start payment, this will direct you to the payment page.</source>
+        <target state="new">Click start payment, this will direct you to the payment page.</target>
       </trans-unit>
       <trans-unit id="8847988975348610068" datatype="html">
         <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
@@ -1567,6 +1567,10 @@
       <trans-unit id="3595291210637281374" datatype="html">
         <source>Transfers data</source>
         <target state="new">Transfers data</target>
+      </trans-unit>
+      <trans-unit id="9047634939215362248" datatype="html">
+        <source>Registrations selected:</source>
+        <target state="new">Registrations selected:</target>
       </trans-unit>
     </body>
   </file>
