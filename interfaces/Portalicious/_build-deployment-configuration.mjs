@@ -4,28 +4,29 @@
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
-const fs = require('fs');
-const dotenv = require('dotenv');
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { config } from 'dotenv';
 
 // Load environment-variables from .env file
-dotenv.config({
+config({
   debug: process.env.DEBUG,
+  override: process.env.DEBUG,
 });
 
 // Set up specifics
 const sourcePath = './staticwebapp.config.base.json';
 const targetPath = './staticwebapp.config.json';
 
-let config = require(sourcePath);
+let swaConfig = JSON.parse(readFileSync(sourcePath, 'utf8'));
 
 // Check source/base
-if (!fs.existsSync(sourcePath) || !config) {
+if (!existsSync(sourcePath) || !swaConfig) {
   console.error(`Source-file not found or readable: ${sourcePath}`);
   process.exit(1);
 }
 
-if (!config.globalHeaders) {
-  config.globalHeaders = {};
+if (!swaConfig.globalHeaders) {
+  swaConfig.globalHeaders = {};
 }
 
 // NOTE: All values in each array are written as template-strings, as the use of single-quotes around some values (i.e. 'self') is mandatory and will affect the working of the HTTP-Header.
@@ -133,9 +134,10 @@ const contentSecurityPolicyValue = Array.from(contentSecurityPolicy)
 if (process.env.DEBUG) {
   console.log(`Content-Security-Policy: "${contentSecurityPolicyValue}"`);
 }
-config.globalHeaders['Content-Security-Policy'] = contentSecurityPolicyValue;
+swaConfig.globalHeaders['Content-Security-Policy'] = contentSecurityPolicyValue;
 
 // Write result
-fs.writeFileSync(targetPath, JSON.stringify(config, null, 2));
+const swaConfigFile = JSON.stringify(swaConfig, null, 2);
+writeFileSync(targetPath, swaConfigFile);
 console.info(`✅ Deployment configuration written at: ${targetPath}`);
-console.log(JSON.stringify(config, null, 2));
+console.log(swaConfigFile);
