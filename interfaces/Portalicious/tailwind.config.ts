@@ -1,3 +1,5 @@
+/** @type {import('tailwindcss').Config} */
+import pluginGridAreas from '@savvywombat/tailwindcss-grid-areas';
 import type { Config } from 'tailwindcss';
 import plugin from 'tailwindcss/plugin';
 
@@ -86,15 +88,21 @@ export default {
           'metric3 metric4 description',
           'iframe iframe iframe',
         ],
+        'project-payment': ['metric1 metric2', 'chart chart', 'table table'],
+        'project-payment-wide': [
+          'metric1 chart',
+          'metric2 chart',
+          'table table',
+        ],
       },
       gridTemplateColumns: {
         'project-monitoring-wide': '16rem 16rem 1fr',
+        'project-payment-wide': '24rem 1fr',
       },
     },
   },
   plugins: [
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('@savvywombat/tailwindcss-grid-areas'),
+    pluginGridAreas,
     plugin(function ({ matchUtilities, theme }) {
       // heading utilities
       matchUtilities(

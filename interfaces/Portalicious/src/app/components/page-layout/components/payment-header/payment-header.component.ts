@@ -51,10 +51,7 @@ export class PaymentHeaderComponent {
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentInProgress = injectQuery(
-    this.paymentApiService.getPaymentStatusByPaymentId(
-      this.projectId,
-      this.paymentId,
-    ),
+    this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
   paymentDate = computed(() => {

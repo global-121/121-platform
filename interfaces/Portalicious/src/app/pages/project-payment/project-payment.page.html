@@ -4,8 +4,47 @@
   [projectId]="projectId()"
   [paymentId]="paymentId()"
 >
-  <div payment-page>
-    <p-card>
+  <div
+    payment-page
+    class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
+  >
+    <app-metric-tile
+      class="grid-in-metric1"
+      [pending]="false"
+      [metricValue]="100"
+      metricLabel="TODO: AB#31324"
+      i18n-metricLabel
+    />
+    <app-metric-tile
+      class="grid-in-metric2"
+      [pending]="false"
+      [metricValue]="100"
+      metricLabel="TODO: AB#31324"
+      i18n-metricLabel
+    />
+
+    @let paymentDetails = this.payment.data();
+
+    @if (!paymentDetails) {
+      <p-skeleton
+        class="grid-in-chart"
+        height="100%"
+      ></p-skeleton>
+    } @else {
+      <p-card class="grid-in-chart [&_.p-card-body]:h-full [&_.p-card]:h-full">
+        <p
+          i18n
+          class="mb-6 font-medium txt-h-2"
+        >
+          Transfers data
+        </p>
+        <app-project-payment-chart
+          [paymentDetails]="paymentDetails"
+        ></app-project-payment-chart>
+      </p-card>
+    }
+
+    <p-card class="grid-in-table">
       <app-query-table
         [items]="payments.data()?.data ?? []"
         [isPending]="payments.isPending()"

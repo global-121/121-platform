@@ -4,6 +4,9 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 export function registerChartDefaults() {
   const documentStyle = getComputedStyle(document.documentElement);
 
+  Chart.defaults.font.family = 'Montserrat, sans-serif';
+  Chart.defaults.font.weight = 500;
+
   Chart.defaults.scale.ticks.color =
     documentStyle.getPropertyValue('--text-color');
 
