@@ -85,7 +85,7 @@ export class QueueRegistryService implements OnModuleInit {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       await this.retryFailedJobs();
     } catch (err) {
-      console.error('Error in retryFailedJobs: ', err);
+      console.error('Error in scheduleRetryFailedJobs: ', err);
       this.azureLogService.logError(err, true);
     }
   }
