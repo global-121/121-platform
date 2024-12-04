@@ -1,0 +1,5 @@
+{
+  "events": {
+    "crash": "echo 'App crashed! Sending SIGUSR2 to nodemon to restart it...' && kill -12 $(pgrep -f nodemon)"
+  }
+}

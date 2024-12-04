@@ -159,6 +159,11 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/scripts/kill-service",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/notifications/{programId}/message-templates",
     "params": [

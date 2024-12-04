@@ -1,7 +1,14 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
-import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiProperty,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
+import { DEBUG } from '@121-service/src/config';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
@@ -171,7 +178,6 @@ export class ScriptsController {
     @Body() body: SecretDto,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
-
     @Res() res,
   ): Promise<void> {
     if (body.secret !== process.env.RESET_SECRET) {
@@ -187,5 +193,23 @@ export class ScriptsController {
     return res
       .status(HttpStatus.CREATED)
       .send('Request received. Data should have been duplicated.');
+  }
+
+  @ApiOperation({
+    summary:
+      'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
+  })
+  @ApiExcludeEndpoint(!DEBUG)
+  @Post('kill-service')
+  killService(@Body() body: SecretDto, @Res() res): void {
+    if (body.secret !== process.env.RESET_SECRET) {
+      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+    }
+    if (!DEBUG) {
+      return;
+    }
+
+    console.log('Service is being killed...');
+    process.exit(1); // Exit with a non-zero status code to indicate an error
   }
 }
