@@ -245,14 +245,14 @@ export class CustomHttpService {
   }
 
   private flushLogs(methodName: string): void {
-    this.defaultClient
-      .flush()
-      .then(() => {
-        return;
-      })
-      .catch((flushError) => {
-        console.error(`An error occured in ${methodName}:`, flushError);
-      });
+    try {
+      this.defaultClient.flush();
+    } catch (flushError) {
+      console.error(
+        `An error occured in CustomHttpService::${methodName}:`,
+        flushError,
+      );
+    }
   }
 
   private stringify(obj: object): string {
