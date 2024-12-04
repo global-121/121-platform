@@ -1,13 +1,7 @@
 #!/usr/bin/env node
 
 import { writeFile } from 'fs';
-import { config } from 'dotenv';
-
-// Load environment-variables from .env file
-config({
-  debug: process.env.DEBUG,
-  override: process.env.DEBUG,
-});
+import configFileTemplate from './src/environments/environment.ts.template.mjs';
 
 let targetEnv = 'production';
 
@@ -16,7 +10,6 @@ if (process.argv[2] === 'env=development') {
   targetEnv = 'development';
 }
 
-import configFileTemplate from './src/environments/environment.ts.template.js';
 const targetPath = `./src/environments/environment.${targetEnv}.ts`;
 
 writeFile(targetPath, configFileTemplate, (err) => {
