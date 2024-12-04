@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 
 import {
-  FinancialServiceProviderConfigurationEnum,
+  FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -15,13 +15,14 @@ import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQue
 const programId = 3;
 const paymentNr = 5;
 const userId = 1;
-const mockCredentials = { username: '1234', password: '1234' };
 const sendPaymentData: PaPaymentDataDto[] = [
   {
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    fspName: FinancialServiceProviders.commercialBankEthiopia,
+    programFinancialServiceProviderConfigurationId: 1,
+    financialServiceProviderName:
+      FinancialServiceProviders.commercialBankEthiopia,
     bulkSize: 1,
     userId,
   },
@@ -44,7 +45,6 @@ const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
   paymentNr,
   programId,
   payload: payload[0],
-  credentials: mockCredentials,
   userId: sendPaymentData[0].userId,
 };
 
@@ -73,11 +73,11 @@ describe('CommercialBankEthiopiaService', () => {
   it('should add payment to queue', async () => {
     const dbQueryResult = [
       {
-        name: FinancialServiceProviderConfigurationEnum.username,
+        name: FinancialServiceProviderConfigurationProperties.username,
         value: '1234',
       },
       {
-        name: FinancialServiceProviderConfigurationEnum.password,
+        name: FinancialServiceProviderConfigurationProperties.password,
         value: '1234',
       },
     ];

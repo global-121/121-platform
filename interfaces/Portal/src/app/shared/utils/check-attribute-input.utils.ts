@@ -1,12 +1,20 @@
-import { AnswerType } from '../../models/fsp.model';
+import { RegistrationAttributeType } from '../../models/registration-attribute.model';
 
 export class CheckAttributeInputUtils {
   static isAttributeCorrectlyFilled(
-    type: AnswerType,
+    type: RegistrationAttributeType,
     pattern: string,
     value: string,
+    isRequired: boolean,
   ): boolean {
-    if (type === AnswerType.Text) {
+    if (value == null || value === '') {
+      if (isRequired) {
+        return false;
+      }
+      return true;
+    }
+
+    if (type === RegistrationAttributeType.Text) {
       if (pattern) {
         if (new RegExp(pattern).test(value || '')) {
           // text with pattern, and matched: correct
@@ -17,7 +25,7 @@ export class CheckAttributeInputUtils {
       }
       // text without pattern: correct
       return true;
-    } else if (type === AnswerType.Number) {
+    } else if (type === RegistrationAttributeType.Number) {
       if (value) {
         // number filled: correct
         return true;

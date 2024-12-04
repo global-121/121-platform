@@ -17,7 +17,8 @@ import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
@@ -63,6 +64,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     PaymentProcessorIntersolveVoucher,
+    ProgramFinancialServiceProviderConfigurationRepository,
   ],
   controllers: [IntersolveVoucherController],
   exports: [

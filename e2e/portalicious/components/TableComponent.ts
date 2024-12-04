@@ -35,7 +35,7 @@ class TableComponent {
   }
 
   async waitForLoaded(rowsCount?: number) {
-    await expect(this.tableLoading).not.toBeVisible();
+    await expect(this.tableLoading).toHaveCount(0);
     await expect(this.tableEmpty).not.toBeVisible();
 
     if (rowsCount) {

@@ -4,4 +4,44 @@
   [projectId]="projectId()"
   [paymentId]="paymentId()"
 >
+  <div payment-page>
+    <p-card>
+      <app-query-table
+        [items]="payments.data()?.data ?? []"
+        [isPending]="payments.isPending()"
+        [columns]="columns()"
+        [localStorageKey]="localStorageKey()"
+        [enableColumnManagement]="true"
+        [contextMenuItems]="contextMenuItems()"
+        (onUpdateContextMenuItem)="contextMenuSelection.set($event)"
+        [globalFilterFields]="[
+          'id',
+          'fullName',
+          'errorMessage',
+          'financialserviceprovider',
+        ]"
+      >
+        <div
+          table-actions
+          class="me-2 flex w-full"
+        >
+          <span
+            i18n
+            class="me-auto font-medium txt-h-2"
+            >Included registrations</span
+          >
+          @if (canRetryTransfers()) {
+            <p-button
+              label="Retry failed transfers"
+              i18n-label
+              rounded
+              outlined
+              icon="pi pi-refresh"
+              (click)="retryFailedTransfers()"
+            />
+          }
+        </div>
+      </app-query-table>
+    </p-card>
+  </div>
 </app-page-layout>

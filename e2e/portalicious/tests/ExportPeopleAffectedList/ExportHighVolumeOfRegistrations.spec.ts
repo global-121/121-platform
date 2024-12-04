@@ -59,7 +59,7 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
         status,
         paymentAmountMultiplier,
         preferredLanguage,
-        fspDisplayName,
+        programFinancialServiceProviderConfigurationLabel: fspDisplayName,
       },
       { condition: true, minRowCount: 15000 },
     );

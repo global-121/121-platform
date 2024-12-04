@@ -1,6 +1,7 @@
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
+// TODO: This file is up for refactoring: splitting up into multiple files, consistent naming, using interfaces instead of classes and/or using param decorators.
 export class FspTransactionResultDto {
   public fspName: FinancialServiceProviders;
   public paList: PaTransactionResultDto[];

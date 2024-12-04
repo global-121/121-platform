@@ -57,7 +57,7 @@
 
       @if (currentStep() === 2) {
         <div>
-          @if (hasExcelFsp()) {
+          @if (paymentHasExcelFsp()) {
             <p i18n>Review payment summary and follow the next steps:</p>
             <ol class="mt-2 list-decimal pl-6">
               <li i18n>
@@ -83,7 +83,7 @@
               [data]="paymentSummaryData()"
               [hideBottomBorder]="true"
             />
-            @if (hasIntegratedFsp()) {
+            @if (paymentHasIntegratedFsp()) {
               <p-button
                 text
                 plain

@@ -35,15 +35,18 @@ const paymentErrorMessages =
   ]['fix-error'];
 const programIdBHA = 2;
 const bhaProgramId = programIdBHA;
+const registrationsSafaricomRetry = JSON.parse(
+  JSON.stringify(registrationsSafaricom),
+);
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.krcsMultiple);
 
-  registrationsSafaricom[0].phoneNumber = '254000000000';
+  registrationsSafaricomRetry[0].phoneNumber = '254000000000';
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    registrationsSafaricom,
+    registrationsSafaricomRetry,
     bhaProgramId,
     accessToken,
   );
@@ -64,7 +67,7 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
   const registrationPage = new RegistrationDetails(page);
   const paymentsPage = new PaymentsPage(page);
 
-  const numberOfPas = registrationsSafaricom.length;
+  const numberOfPas = registrationsSafaricomRetry.length;
   const defaultTransferValue = KRCSProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsSafaricom.reduce(
     (output, pa) => {
@@ -120,7 +123,7 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
 
       await updateRegistration(
         bhaProgramId,
-        registrationsSafaricom[0].referenceId,
+        registrationsSafaricomRetry[0].referenceId,
         {
           phoneNumber: '254708374149',
         },

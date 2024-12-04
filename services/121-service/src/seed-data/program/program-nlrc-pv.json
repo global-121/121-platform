@@ -15,66 +15,9 @@
   "distributionFrequency": "week",
   "distributionDuration": 90,
   "fixedTransferValue": 17.5,
-  "financialServiceProviders": [
-    {
-      "fsp": "Intersolve-voucher-whatsapp",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Intersolve-voucher-paper",
-      "configuration": [
-        {
-          "name": "username",
-          "value": "INTERSOLVE_USERNAME"
-        },
-        {
-          "name": "password",
-          "value": "INTERSOLVE_PASSWORD"
-        }
-      ]
-    },
-    {
-      "fsp": "Intersolve-visa",
-      "configuration": [
-        {
-          "name": "brandCode",
-          "value": "INTERSOLVE_VISA_BRAND_CODE"
-        },
-        {
-          "name": "coverLetterCode",
-          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
-        },
-        {
-          "name": "fundingTokenCode",
-          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
-        }
-      ]
-    },
-    {
-      "fsp": "Excel",
-      "configuration": [
-        {
-          "name": "displayName",
-          "value": {
-            "en": "Occasional (physical)",
-            "nl": "Af-en-toe (Fysiek)"
-          }
-        }
-      ]
-    }
-  ],
   "targetNrRegistrations": 250,
   "tryWhatsAppFirst": true,
-  "programCustomAttributes": [
+  "programRegistrationAttributes": [
     {
       "label": {
         "en": "Partner Organization"
@@ -83,19 +26,15 @@
       "type": "text",
       "export": ["all-people-affected", "included", "payment"],
       "showInPeopleAffectedTable": true
-    }
-  ],
-  "programQuestions": [
+    },
     {
       "name": "fullName",
       "label": {
         "en": "Full Name"
       },
-      "answerType": "text",
-      "questionType": "standard",
+      "type": "text",
       "pattern": null,
       "options": null,
-      "persistence": true,
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
@@ -109,15 +48,76 @@
       "placeholder": {
         "en": "+31 6 00 00 00 00"
       },
-      "answerType": "tel",
-      "questionType": "standard",
+      "type": "tel",
       "pattern": null,
       "options": null,
-      "persistence": true,
       "export": [],
       "scoring": {},
       "duplicateCheck": true,
       "editableInPortal": false,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "addressStreet",
+      "label": {
+        "en": "Address street"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "pattern": ".+",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressHouseNumber",
+      "label": {
+        "en": "Address house number"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "numeric",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressHouseNumberAddition",
+      "label": {
+        "en": "Address house number addition"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressPostalCode",
+      "label": {
+        "en": "Address postal code"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "pattern": ".+",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressCity",
+      "label": {
+        "en": "Address city"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "pattern": ".+",
       "showInPeopleAffectedTable": false
     }
   ],
@@ -135,5 +135,66 @@
   "languages": ["ar", "en", "es", "fr", "in", "nl", "pt_BR", "tl"],
   "enableMaxPayments": true,
   "enableScope": true,
-  "allowEmptyPhoneNumber": true
+  "allowEmptyPhoneNumber": true,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Intersolve-voucher-paper",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Intersolve-visa",
+      "properties": [
+        {
+          "name": "brandCode",
+          "value": "INTERSOLVE_VISA_BRAND_CODE"
+        },
+        {
+          "name": "coverLetterCode",
+          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
+        },
+        {
+          "name": "fundingTokenCode",
+          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
+        }
+      ]
+    },
+    {
+      "financialServiceProvider": "Excel",
+      "properties": [
+        {
+          "name": "displayName",
+          "value": {
+            "en": "Occasional (physical)",
+            "nl": "Af-en-toe (Fysiek)"
+          }
+        },
+        {
+          "name": "columnToMatch",
+          "value": "phoneNumber"
+        }
+      ]
+    }
+  ]
 }

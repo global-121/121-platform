@@ -215,13 +215,13 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return new DatePipe(this.locale).transform(new Date(text), 'short');
     }
 
-    if (typeof text !== 'string') {
+    if (typeof text !== 'string' && typeof text !== 'number') {
       throw new Error(
-        `Expected field ${column.field} to be a string, but got ${typeof text}`,
+        `Expected field ${column.field} to be a string or number, but got ${typeof text}`,
       );
     }
 
-    return text;
+    return text.toString();
   }
 
   getColumnType(column: QueryTableColumn<TData>) {
@@ -436,8 +436,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   columnVisibilityEffect = effect(
     () => {
       if (
-        !this.enableColumnManagement() ||
-        this.visibleColumns().length === 0
+        (!this.enableColumnManagement() ||
+          this.visibleColumns().length === 0) &&
+        this.columns().length > 0
       ) {
         this.resetColumnVisibility();
       }

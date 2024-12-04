@@ -4,8 +4,7 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderEntity } from '@121-service/src/financial-service-providers/financial-service-provider.entity';
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -38,8 +37,7 @@ export class TransactionsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(LatestTransactionEntity)
   private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
@@ -83,7 +81,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    fspName?: FinancialServiceProviders,
+    programFinancialServiceProviderConfigId?: number,
   ): Promise<TransactionReturnDto[]> {
     return this.transactionScopedRepository
       .getLastTransactionsQuery({
@@ -91,7 +89,7 @@ export class TransactionsService {
         payment,
         referenceId,
         status,
-        fspName,
+        programFinancialServiceProviderConfigId,
       })
       .getRawMany();
   }
@@ -104,9 +102,7 @@ export class TransactionsService {
     const program = await this.programRepository.findOneByOrFail({
       id: relationDetails.programId,
     });
-    const fsp = await this.financialServiceProviderRepository.findOneOrFail({
-      where: { fsp: Equal(transactionResponse.fspName) },
-    });
+
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(transactionResponse.referenceId) },
     });
@@ -115,7 +111,8 @@ export class TransactionsService {
     transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
-    transaction.financialServiceProvider = fsp;
+    transaction.programFinancialServiceProviderConfigurationId =
+      relationDetails.programFinancialServiceProviderConfigurationId;
     transaction.program = program;
     transaction.payment = relationDetails.paymentNr;
     transaction.userId = relationDetails.userId;
@@ -137,6 +134,10 @@ export class TransactionsService {
       );
     }
 
+    const notifyOnTransaction = getFinancialServiceProviderSettingByNameOrThrow(
+      transactionResponse.fspName,
+    ).notifyOnTransaction;
+
     await this.updatePaymentCountRegistration(
       registration,
       program.enableMaxPayments,
@@ -144,7 +145,7 @@ export class TransactionsService {
     await this.updateLatestTransaction(transaction);
     if (
       transactionResponse.status === TransactionStatusEnum.success &&
-      fsp.notifyOnTransaction &&
+      notifyOnTransaction &&
       transactionResponse.notificationObjects &&
       transactionResponse.notificationObjects.length > 0
     ) {
@@ -283,49 +284,56 @@ export class TransactionsService {
   }
 
   public async storeAllTransactions(
-    transactionResults: { paList: PaTransactionResultDto[] },
-    transactionRelationDetails: Required<TransactionRelationDetailsDto>,
+    transactionResultObjects: {
+      paTransactionResultDto: PaTransactionResultDto;
+      transactionRelationDetailsDto: TransactionRelationDetailsDto;
+    }[],
   ): Promise<void> {
-    // Intersolve transactions are now stored during PA-request-loop already
-    // Align across FSPs in future again
-    for (const transaction of transactionResults.paList) {
+    // Currently only used for Excel FSP
+    for (const transactionResultObject of transactionResultObjects) {
       await this.storeTransactionUpdateStatus(
-        transaction,
-        transactionRelationDetails,
+        transactionResultObject.paTransactionResultDto,
+        transactionResultObject.transactionRelationDetailsDto,
       );
     }
   }
 
-  public async storeAllTransactionsBulk(
+  public async storeReconciliationTransactionsBulk(
     transactionResults: PaTransactionResultDto[],
     transactionRelationDetails: TransactionRelationDetailsDto,
-    transactionStep?: number,
   ): Promise<void> {
     // NOTE: this method is currently only used for the import-fsp-reconciliation use case and assumes:
-    // 1: only 1 FSP
+    // 1: only 1 program financial service provider id
     // 2: no notifications to send
     // 3: no payment count to update (as it is reconciliation of existing payment)
     // 4: no twilio message to relate to
-    // 5: registrationId to be known in transactionResults
-    const program = await this.programRepository.findOneBy({
-      id: transactionRelationDetails.programId,
-    });
-    const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { fsp: Equal(transactionResults[0].fspName) },
-    });
 
-    const transactionsToSave = transactionResults.map(
-      (transactionResponse) => ({
-        amount: transactionResponse.calculatedAmount,
-        registrationId: transactionResponse.registrationId,
-        financialServiceProvider: fsp,
-        program,
-        payment: transactionRelationDetails.paymentNr,
-        userId: transactionRelationDetails.userId,
-        status: transactionResponse.status,
-        errorMessage: transactionResponse.message,
-        customData: transactionResponse.customData,
-        transactionStep: transactionStep || 1,
+    const transactionsToSave = await Promise.all(
+      transactionResults.map(async (transactionResponse) => {
+        // Get registrationId from referenceId if it is not defined
+        // TODO find out when this is needed it seems to make more sense if the registrationId is always known and than refenceId is not needed
+        if (!transactionResponse.registrationId) {
+          const registration =
+            await this.registrationScopedRepository.findOneOrFail({
+              where: { referenceId: Equal(transactionResponse.referenceId) },
+            });
+          transactionResponse.registrationId = registration.id;
+        }
+
+        const transaction = new TransactionEntity();
+        transaction.amount = transactionResponse.calculatedAmount;
+        transaction.registrationId = transactionResponse.registrationId;
+        transaction.programFinancialServiceProviderConfigurationId =
+          transactionRelationDetails.programFinancialServiceProviderConfigurationId;
+        transaction.programId = transactionRelationDetails.programId;
+        transaction.payment = transactionRelationDetails.paymentNr;
+        transaction.userId = transactionRelationDetails.userId;
+        transaction.status = transactionResponse.status;
+        transaction.errorMessage = transactionResponse.message ?? null;
+        transaction.customData = transactionResponse.customData;
+        transaction.transactionStep = 1;
+        // set other properties as needed
+        return transaction;
       }),
     );
 
@@ -336,16 +344,12 @@ export class TransactionsService {
     );
 
     for (const chunk of transactionChunks) {
-      const savedTransactions = await this.transactionScopedRepository
-        .createQueryBuilder('transaction')
-        .insert()
-        .into(TransactionEntity)
-        .values(chunk as QueryDeepPartialEntity<TransactionEntity>)
-        .execute();
+      const savedTransactions =
+        await this.transactionScopedRepository.save(chunk);
       const savedTransactionEntities =
         await this.transactionScopedRepository.find({
           where: {
-            id: In(savedTransactions.identifiers.map((i) => i.id)),
+            id: In(savedTransactions.map((i) => i.id)),
           },
         });
 

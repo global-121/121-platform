@@ -59,6 +59,7 @@
               | translate
           "
           [value]="attributeValues?.paymentAmountMultiplier"
+          [isRequired]="true"
           (updated)="
             updatePaAttribute(
               'paymentAmountMultiplier',
@@ -99,6 +100,7 @@
                 | translate
             "
             [value]="attributeValues?.maxPayments"
+            [isRequired]="false"
             (updated)="
               updatePaAttribute(
                 'maxPayments',
@@ -129,6 +131,7 @@
                 | translate
             "
             [value]="attributeValues?.phoneNumber"
+            [isRequired]="!program.allowEmptyPhoneNumber"
             (updated)="
               updatePaAttribute(
                 'phoneNumber',
@@ -156,6 +159,7 @@
                 | translate
             "
             [value]="attributeValues?.scope"
+            [isRequired]="false"
             (updated)="
               updatePaAttribute(
                 'scope',
@@ -180,6 +184,7 @@
                 | translate
             "
             [value]="attributeValues.preferredLanguage"
+            [isRequired]="true"
             [options]="availableLanguages"
             (updated)="
               updatePaAttribute(
@@ -198,33 +203,34 @@
 
         <div
           *ngIf="
-            (!canUpdatePaData || !canUpdatePaFsp) && person?.fspDisplayName
+            (!canUpdatePaData || !canUpdatePaProgramFspConfig) &&
+            person?.programFinancialServiceProviderConfigurationLabel
           "
           class="ion-margin-vertical"
         >
           <strong
             >{{
-              'page.program.program-people-affected.column.fspDisplayName'
+              'page.program.program-people-affected.column.programFinancialServiceProviderConfigurationLabel'
                 | translate
             }}:</strong
           >
           <br />
-          {{ person?.fspDisplayName }}
+          {{ person?.programFinancialServiceProviderConfigurationLabel }}
         </div>
         <app-update-fsp
           data-testid="edit-person-affected-popup-fsp-dropdown"
           *ngIf="
             canUpdatePaData &&
-            canUpdatePaFsp &&
-            fspList.length === programFspLength &&
-            person?.financialServiceProvider
+            canUpdatePaProgramFspConfig &&
+            programFspConfigList.length === programFspLength &&
+            person?.programFinancialServiceProviderConfigurationName
           "
-          [fspList]="fspList"
+          [programFspConfigList]="programFspConfigList"
           [label]="
-            'page.program.program-people-affected.column.fspDisplayName'
+            'page.program.program-people-affected.column.programFinancialServiceProviderConfigurationLabel'
               | translate
           "
-          [value]="person?.financialServiceProvider"
+          [value]="person?.programFinancialServiceProviderConfigurationName"
           [attributeValues]="attributeValues"
           [referenceId]="person?.referenceId"
           [programId]="programId"
@@ -241,6 +247,7 @@
             [showSubmit]="canUpdatePaData && canUpdatePersonalData"
             [options]="paTableAttribute.options"
             [pattern]="paTableAttribute.pattern"
+            [isRequired]="paTableAttribute.isRequired"
             [explanation]="paTableAttribute.explanation"
             (updated)="
               updatePaAttribute(

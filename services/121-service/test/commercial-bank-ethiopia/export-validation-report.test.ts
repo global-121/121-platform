@@ -1,6 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getCbeValidationReport,
@@ -11,35 +9,10 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { registrationCbe } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Export CBE validation report', () => {
   const programId = 1;
-
-  const registrationCbe = {
-    referenceId: 'registration-cbe-1',
-    phoneNumber: '14155238886',
-    preferredLanguage: LanguageEnum.en,
-    paymentAmountMultiplier: 1,
-    fspName: FinancialServiceProviders.commercialBankEthiopia,
-    maxPayments: 3,
-    fullName: 'ANDUALEM MOHAMMED YIMER',
-    idNumber: '39231855170',
-    age: '48',
-    gender: 'male',
-    howManyFemale: '1',
-    howManyMale: '2',
-    totalFamilyMembers: '3',
-    howManyFemaleUnder18: '1',
-    howManyMaleUnder18: '2',
-    howManyFemaleOver18: '1',
-    howManyMaleOver18: '1',
-    howManyFemaleDisabilityUnder18: '2',
-    howManyMaleDisabilityUnder18: '1',
-    howManyFemaleDisabilityOver18: '1',
-    howManyMaleDisabilityOver18: '2',
-    bankAccountNumber: '407951684723597',
-  };
-
   let accessToken: string;
 
   beforeEach(async () => {

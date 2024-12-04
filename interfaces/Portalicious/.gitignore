@@ -41,3 +41,4 @@ Thumbs.db
 .env
 environment.development.ts
 environment.production.ts
+staticwebapp.config.json

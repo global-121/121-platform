@@ -19,7 +19,7 @@ import {
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
-import { CustomDataAttributes } from '@121-service/src/registration/enum/custom-data-attributes';
+import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -75,12 +75,13 @@ export class MessageQueuesService {
     bulksize?: number;
     userId: number;
   }): Promise<void> {
-    let whatsappPhoneNumber = registration['whatsappPhoneNumber'];
+    let whatsappPhoneNumber =
+      registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];
     if (registration instanceof RegistrationEntity) {
       whatsappPhoneNumber =
         await this.registrationDataService.getRegistrationDataValueByName(
           registration,
-          CustomDataAttributes.whatsappPhoneNumber,
+          DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
         );
     }
 
@@ -136,13 +137,11 @@ export class MessageQueuesService {
       });
       messageText = messageTemplate?.message;
     }
-    const placeholders = await this.programAttributesService.getAttributes(
+    const placeholders = await this.programAttributesService.getAttributes({
       programId,
-      true,
-      true,
-      false,
-      true,
-    );
+      includeProgramRegistrationAttributes: true,
+      includeTemplateDefaultAttributes: true,
+    });
     const usedPlaceholders: string[] = [];
     for (const placeholder of placeholders) {
       const regex = new RegExp(`{{${placeholder.name}}}`, 'g');

@@ -17,6 +17,10 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MessageSizeType as MessageSizeTypeDto } from '@121-service/src/registration/dto/message-size-type.dto';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -295,23 +299,33 @@ export class RegistrationsBulkService {
     usedPlaceholders?: string[];
     selectColumns?: string[];
   }): PaginateQuery {
-    query.select = ['referenceId', 'programId', ...selectColumns];
+    query.select = [
+      GenericRegistrationAttributes.referenceId,
+      'programId',
+      ...selectColumns,
+    ];
     if (includePaymentAttributes) {
-      query.select.push('paymentAmountMultiplier');
-      query.select.push('financialServiceProvider');
+      query.select.push(GenericRegistrationAttributes.paymentAmountMultiplier);
+      query.select.push('programFinancialServiceProviderConfigurationId');
+      query.select.push(
+        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+      );
+      query.select.push('financialServiceProviderName');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');
-      query.select.push('preferredLanguage');
-      query.select.push('whatsappPhoneNumber');
-      query.select.push('phoneNumber');
+      query.select.push(GenericRegistrationAttributes.preferredLanguage);
+      query.select.push(
+        DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
+      );
+      query.select.push(GenericRegistrationAttributes.phoneNumber);
     }
     if (usedPlaceholders && usedPlaceholders?.length > 0) {
       query.select = [...query.select, ...usedPlaceholders];
     }
     if (includeStatusChangeProperties) {
       query.select.push('id');
-      query.select.push('status');
+      query.select.push(GenericRegistrationAttributes.status);
     }
     // Remove duplicates from select
     query.select = [...new Set(query.select)];

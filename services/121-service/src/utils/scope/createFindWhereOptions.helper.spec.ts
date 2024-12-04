@@ -1,6 +1,6 @@
 import { Equal, FindManyOptions, FindOperator } from 'typeorm';
 
-import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import {
   convertToScopedOptions,
   FindOptionsCombined,
@@ -9,12 +9,12 @@ import {
 describe('createFindWhereOptions helper', () => {
   it('should return correct scoped whereFilters', () => {
     // Arrange
-    const options: FindOptionsCombined<RegistrationDataEntity> = {
+    const options: FindOptionsCombined<RegistrationAttributeDataEntity> = {
       where: {
         program: { id: Equal(3) },
         registrationStatus: Equal('included'),
       },
-    } as unknown as FindOptionsCombined<RegistrationDataEntity>;
+    } as unknown as FindOptionsCombined<RegistrationAttributeDataEntity>;
     const relationArrayToRegistration = [];
     const requestScope = 'utrecht';
 
@@ -27,16 +27,17 @@ describe('createFindWhereOptions helper', () => {
       program: { id: 3, enableScope: false },
       registrationStatus: 'included',
     };
-    const expectedOptions: FindOptionsCombined<RegistrationDataEntity> = {
-      ...options,
-      // This ensures the toEqual checks for the 'adding the where' part.
-      where: [expectedWhereQueryScope, expectedWhereQueryScopeEnabled],
-    } as unknown as FindOptionsCombined<RegistrationDataEntity>;
+    const expectedOptions: FindOptionsCombined<RegistrationAttributeDataEntity> =
+      {
+        ...options,
+        // This ensures the toEqual checks for the 'adding the where' part.
+        where: [expectedWhereQueryScope, expectedWhereQueryScopeEnabled],
+      } as unknown as FindOptionsCombined<RegistrationAttributeDataEntity>;
 
     // Act
     const convertedScopedOptions = convertToScopedOptions<
-      RegistrationDataEntity,
-      FindManyOptions<RegistrationDataEntity>
+      RegistrationAttributeDataEntity,
+      FindManyOptions<RegistrationAttributeDataEntity>
     >(options, relationArrayToRegistration, requestScope);
 
     // Transform to comparable form

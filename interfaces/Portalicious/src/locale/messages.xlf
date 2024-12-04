@@ -641,9 +641,6 @@
       <trans-unit id="7022070615528435141" datatype="html">
         <source>Delete</source>
       </trans-unit>
-      <trans-unit id="84476789249519306" datatype="html">
-        <source>PA #</source>
-      </trans-unit>
       <trans-unit id="registration-full-name" datatype="html">
         <source>Full Name</source>
       </trans-unit>
@@ -1156,6 +1153,27 @@
       </trans-unit>
       <trans-unit id="3706395027796944760" datatype="html">
         <source>Export FSP payment list</source>
+      </trans-unit>
+      <trans-unit id="504281469996866803" datatype="html">
+        <source>Retry failed transfers</source>
+      </trans-unit>
+      <trans-unit id="5156383097673576773" datatype="html">
+        <source>Fail reason</source>
+      </trans-unit>
+      <trans-unit id="5169543313827462176" datatype="html">
+        <source>Transfer value</source>
+      </trans-unit>
+      <trans-unit id="908038299240128268" datatype="html">
+        <source>Transfer status</source>
+      </trans-unit>
+      <trans-unit id="transaction-status-error" datatype="html">
+        <source>Error</source>
+      </trans-unit>
+      <trans-unit id="transaction-status-success" datatype="html">
+        <source>Success</source>
+      </trans-unit>
+      <trans-unit id="transaction-status-waiting" datatype="html">
+        <source>Pending</source>
       </trans-unit>
     </body>
   </file>

@@ -102,9 +102,10 @@ export class RegistrationsTableComponent {
 
     const registrationTableColumns: QueryTableColumn<Registration>[] = [
       {
-        field: 'personAffectedSequence',
-        fieldForSort: 'registrationProgramId',
-        header: $localize`PA #`,
+        field: 'registrationProgramId',
+        header: $localize`Reg. #`,
+        getCellText: (registration) =>
+          `Reg. #${registration.registrationProgramId.toString()}`,
         getCellRouterLink: (registration) =>
           registrationLink({
             projectId: this.projectId(),
@@ -134,14 +135,15 @@ export class RegistrationsTableComponent {
           getChipDataByRegistrationStatus(registration.status),
       },
       {
-        field: 'financialServiceProvider',
+        field: 'programFinancialServiceProviderConfigurationName',
         header: $localize`FSP`,
         type: QueryTableColumnType.MULTISELECT,
-        options: this.project.data().financialServiceProviders.map((fsp) => ({
-          label:
-            this.translatableStringService.translate(fsp.displayName) ?? '',
-          value: fsp.fsp,
-        })),
+        options: this.project
+          .data()
+          .programFinancialServiceProviderConfigurations.map((config) => ({
+            label: this.translatableStringService.translate(config.label) ?? '',
+            value: config.name,
+          })),
       },
       {
         field: 'registrationCreated',
