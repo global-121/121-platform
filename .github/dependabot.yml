@@ -28,6 +28,8 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'applicationinsights'
+        update-types: ['version-update:semver-major']
       - dependency-name: 'bwip-js'
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
