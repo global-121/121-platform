@@ -93,10 +93,9 @@ export class QueueRegistryService implements OnModuleInit {
   private async retryFailedJobs(): Promise<void> {
     for (const queue of this.allQueues) {
       const failedJobs = await queue.getFailed();
-      const missingProcessHandlerJobs = failedJobs.filter(
-        (job) =>
-          job.failedReason?.includes('Missing process handler for job type') && // Only retry for this specific error message, as we know the job processing has never started and is therefore safe to retry (jobs are not idempotent)
-          job.timestamp >= Date.now() - 1000 * 60 * 5, // Only retry jobs that failed during because of the current start-up, and not older ones. Only 5s + a little bit should be needed, this is some extra buffer.
+      // Only retry for this specific error message, as we know the job processing has never started and is therefore safe to retry (jobs are not idempotent)
+      const missingProcessHandlerJobs = failedJobs.filter((job) =>
+        job.failedReason?.includes('Missing process handler for job type'),
       );
       if (!missingProcessHandlerJobs.length) {
         continue;
