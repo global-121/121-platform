@@ -10,12 +10,15 @@ import {
   QueueNameRegistration,
 } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class QueueRegistryService implements OnModuleInit {
   private allQueues: Queue[] = [];
 
   constructor(
+    private azureLogService: AzureLogService,
+
     @InjectQueue(TransactionJobQueueNames.intersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
@@ -71,17 +74,23 @@ export class QueueRegistryService implements OnModuleInit {
     // This is needed because of the issue where on 121-service startup jobs will start processing before the process handlers are registered, which leads to failed jobs.
     // We are not able to prevent this from happening, so instead this workaround will retry all failed jobs on startup. By then the process handler is up and the jobs will not fail for this reason again.
     // Wait 5 seconds to be sure that the process handlers are registered
-    new Promise((resolve) => setTimeout(resolve, 5000))
-      .then(async () => {
-        return await this.retryFailedJobs();
-      })
-      .catch((err) => {
-        // ##TODO: handle differently
-        console.error('Error in retryFailedJobs: ', err);
-      });
+    this.scheduleRetryFailedJobs().catch((err) => {
+      // We just put this error here to make ts happy. The error is already logged in the function
+      console.error('scheduleRetryFailedJobs', err);
+    });
   }
 
-  public async retryFailedJobs(): Promise<void> {
+  private async scheduleRetryFailedJobs(): Promise<void> {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await this.retryFailedJobs();
+    } catch (err) {
+      console.error('Error in scheduleRetryFailedJobs: ', err);
+      this.azureLogService.logError(err, true);
+    }
+  }
+
+  private async retryFailedJobs(): Promise<void> {
     for (const queue of this.allQueues) {
       const failedJobs = await queue.getFailed();
       const missingProcessHandlerJobs = failedJobs.filter((job) =>

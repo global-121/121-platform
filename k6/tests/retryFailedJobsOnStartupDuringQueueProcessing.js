@@ -84,6 +84,4 @@ export default function () {
       return r.status == 200;
     },
   });
-
-  sleep(1);
 }
