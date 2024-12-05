@@ -79,7 +79,7 @@
     "tsconfig-paths": "^4.2.0",
     "twilio": "^5.3.6",
     "typeorm": "npm:@global121/typeorm@1.0.4",
-    "typescript": "^5.5.2",
+    "typescript": "^5.7.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "xml-js": "^1.6.11"
   },
