@@ -1541,12 +1541,12 @@
         <target state="new">Pending</target>
       </trans-unit>
       <trans-unit id="transaction-status-error" datatype="html">
-        <source>Error</source>
-        <target state="new">Error</target>
+        <source>Failed</source>
+        <target state="new">Failed</target>
       </trans-unit>
       <trans-unit id="transaction-status-success" datatype="html">
-        <source>Success</source>
-        <target state="new">Success</target>
+        <source>Successful</source>
+        <target state="new">Successful</target>
       </trans-unit>
       <trans-unit id="504281469996866803" datatype="html">
         <source>Retry failed transfers</source>
@@ -1563,6 +1563,14 @@
       <trans-unit id="5169543313827462176" datatype="html">
         <source>Transfer value</source>
         <target state="new">Transfer value</target>
+      </trans-unit>
+      <trans-unit id="5391647417948016120" datatype="html">
+        <source>TODO: AB#31324</source>
+        <target state="new">TODO: AB#31324</target>
+      </trans-unit>
+      <trans-unit id="3595291210637281374" datatype="html">
+        <source>Transfers data</source>
+        <target state="new">Transfers data</target>
       </trans-unit>
     </body>
   </file>

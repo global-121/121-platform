@@ -46,16 +46,6 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPaymentStatusByPaymentId(
-    projectId: Signal<number>,
-    paymentId: Signal<number>,
-  ) {
-    return this.generateQueryOptions<PaymentStatus>({
-      path: [...BASE_ENDPOINT(projectId), paymentId, 'status'],
-      refetchInterval: 3000,
-    });
-  }
-
   createPayment({
     projectId,
     paginateQuery,

@@ -1167,13 +1167,19 @@
         <source>Transfer status</source>
       </trans-unit>
       <trans-unit id="transaction-status-error" datatype="html">
-        <source>Error</source>
+        <source>Failed</source>
       </trans-unit>
       <trans-unit id="transaction-status-success" datatype="html">
-        <source>Success</source>
+        <source>Successful</source>
       </trans-unit>
       <trans-unit id="transaction-status-waiting" datatype="html">
         <source>Pending</source>
+      </trans-unit>
+      <trans-unit id="3595291210637281374" datatype="html">
+        <source>Transfers data</source>
+      </trans-unit>
+      <trans-unit id="5391647417948016120" datatype="html">
+        <source>TODO: AB#31324</source>
       </trans-unit>
     </body>
   </file>

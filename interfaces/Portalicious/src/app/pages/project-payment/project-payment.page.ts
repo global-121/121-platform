@@ -14,6 +14,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -26,12 +27,15 @@ import {
 } from '~/components/query-table/query-table.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentMetricDetails } from '~/domains/metric/metric.model';
+import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { registrationLink } from '~/domains/registration/registration.helper';
 import {
   TRANSACTION_STATUS_CHIP_VARIANTS,
   TRANSACTION_STATUS_LABELS,
 } from '~/domains/transaction/transaction.helper';
+import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
+import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -43,7 +47,15 @@ export interface TransactionsTableCellContext {
 @Component({
   selector: 'app-project-payment',
   standalone: true,
-  imports: [PageLayoutComponent, CardModule, QueryTableComponent, ButtonModule],
+  imports: [
+    PageLayoutComponent,
+    CardModule,
+    QueryTableComponent,
+    ButtonModule,
+    MetricTileComponent,
+    ProjectPaymentChartComponent,
+    SkeletonModule,
+  ],
   templateUrl: './project-payment.page.html',
   styles: ``,
   providers: [CurrencyPipe, ToastService],
@@ -55,6 +67,7 @@ export class ProjectPaymentPageComponent {
 
   private authService = inject(AuthService);
   private currencyPipe = inject(CurrencyPipe);
+  private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
   private metricApiService = inject(MetricApiService);
   private router = inject(Router);
@@ -64,6 +77,14 @@ export class ProjectPaymentPageComponent {
   contextMenuSelection = signal<PaymentMetricDetails | undefined>(undefined);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
+  paymentStatus = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
+  );
+  payment = injectQuery(() => ({
+    ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
+    // Refetch the data every second if a payment is in progress
+    staleTime: this.paymentStatus.data()?.inProgress ? 1000 : undefined,
+  }));
   payments = injectQuery(
     this.metricApiService.getPaymentData({
       projectId: this.projectId,
