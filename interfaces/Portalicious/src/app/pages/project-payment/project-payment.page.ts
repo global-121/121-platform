@@ -1,10 +1,11 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
   Signal,
   signal,
 } from '@angular/core';
@@ -19,6 +20,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { AppRoutes } from '~/app.routes';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -35,6 +37,7 @@ import {
   TRANSACTION_STATUS_LABELS,
 } from '~/domains/transaction/transaction.helper';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
+import { ExportPaymentInstructionsComponent } from '~/pages/project-payment/components/export-payment-instructions/export-payment-instructions.component';
 import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
@@ -55,10 +58,11 @@ export interface TransactionsTableCellContext {
     MetricTileComponent,
     ProjectPaymentChartComponent,
     SkeletonModule,
+    ExportPaymentInstructionsComponent,
   ],
   templateUrl: './project-payment.page.html',
   styles: ``,
-  providers: [CurrencyPipe, ToastService],
+  providers: [CurrencyPipe, DatePipe, ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentPageComponent {
@@ -67,6 +71,7 @@ export class ProjectPaymentPageComponent {
 
   private authService = inject(AuthService);
   private currencyPipe = inject(CurrencyPipe);
+  private locale = inject(LOCALE_ID);
   private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
   private metricApiService = inject(MetricApiService);
@@ -85,12 +90,38 @@ export class ProjectPaymentPageComponent {
     // Refetch the data every second if a payment is in progress
     staleTime: this.paymentStatus.data()?.inProgress ? 1000 : undefined,
   }));
-  payments = injectQuery(
+  payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
+  transactions = injectQuery(
     this.metricApiService.getPaymentData({
       projectId: this.projectId,
       payment: this.paymentId,
     }),
   );
+
+  allPaymentsLink = computed(() => [
+    '/',
+    AppRoutes.project,
+    this.projectId(),
+    AppRoutes.projectPayments,
+  ]);
+
+  paymentDate = computed(() => {
+    if (!this.payments.isSuccess()) {
+      return '';
+    }
+
+    const date = this.payments
+      .data()
+      .find(
+        (payment) => payment.payment === Number(this.paymentId()),
+      )?.paymentDate;
+
+    return new DatePipe(this.locale).transform(date, 'short') ?? '';
+  });
+
+  paymentTitle = computed(() => {
+    return $localize`Payment` + ' ' + this.paymentDate();
+  });
 
   columns = computed(() => {
     if (!this.project.isSuccess()) {
@@ -217,11 +248,11 @@ export class ProjectPaymentPageComponent {
       return false;
     }
 
-    if (!this.payments.isSuccess()) {
+    if (!this.transactions.isSuccess()) {
       return false;
     }
 
-    return this.payments
+    return this.transactions
       .data()
       .data.some((payment) => payment.status === TransactionStatusEnum.error);
   });
