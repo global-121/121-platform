@@ -12,12 +12,12 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { uniqBy } from 'lodash';
 import { SelectButtonModule } from 'primeng/selectbutton';
 
-import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
+import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
@@ -34,10 +34,10 @@ export interface ActivityLogTableCellContext {
   selector: 'app-project-registration-activity-log',
   standalone: true,
   imports: [
-    PageLayoutComponent,
     FormsModule,
     SelectButtonModule,
     QueryTableComponent,
+    RegistrationPageLayoutComponent,
   ],
   templateUrl: './project-registration-activity-log.page.html',
   styles: ``,

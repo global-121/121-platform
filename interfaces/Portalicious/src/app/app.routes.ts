@@ -4,6 +4,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { authGuard } from '~/guards/auth.guard';
 import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
+import { foundResourceGuard } from '~/guards/found-resource.guard';
 import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 
 export enum AppRoutes {
@@ -80,7 +81,7 @@ export const routes: Routes = [
   },
   {
     path: `${AppRoutes.project}/:projectId`,
-    canActivate: [authGuard],
+    canActivate: [authGuard, foundResourceGuard('project')],
     children: [
       {
         path: AppRoutes.projectMonitoring,
@@ -113,32 +114,39 @@ export const routes: Routes = [
               ).then((x) => x.ProjectRegistrationsPageComponent),
           },
           {
-            path: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
-            loadComponent: () =>
-              import(
-                '~/pages/project-registration-activity-log/project-registration-activity-log.page'
-              ).then((x) => x.ProjectRegistrationActivityLogPageComponent),
-          },
-          {
-            path: `:registrationId/${AppRoutes.projectRegistrationPersonalInformation}`,
-            loadComponent: () =>
-              import(
-                '~/pages/project-registration-personal-information/project-registration-personal-information.page'
-              ).then(
-                (x) => x.ProjectRegistrationPersonalInformationPageComponent,
-              ),
-          },
-          {
-            path: `:registrationId/${AppRoutes.projectRegistrationDebitCards}`,
-            loadComponent: () =>
-              import(
-                '~/pages/project-registration-debit-cards/project-registration-debit-cards.page'
-              ).then((x) => x.ProjectRegistrationDebitCardsPageComponent),
-          },
-          {
             path: `:registrationId`,
-            pathMatch: 'full',
-            redirectTo: `:registrationId/${AppRoutes.projectRegistrationActivityLog}`,
+            canActivate: [foundResourceGuard('registration')],
+            children: [
+              {
+                path: AppRoutes.projectRegistrationActivityLog,
+                loadComponent: () =>
+                  import(
+                    '~/pages/project-registration-activity-log/project-registration-activity-log.page'
+                  ).then((x) => x.ProjectRegistrationActivityLogPageComponent),
+              },
+              {
+                path: AppRoutes.projectRegistrationPersonalInformation,
+                loadComponent: () =>
+                  import(
+                    '~/pages/project-registration-personal-information/project-registration-personal-information.page'
+                  ).then(
+                    (x) =>
+                      x.ProjectRegistrationPersonalInformationPageComponent,
+                  ),
+              },
+              {
+                path: AppRoutes.projectRegistrationDebitCards,
+                loadComponent: () =>
+                  import(
+                    '~/pages/project-registration-debit-cards/project-registration-debit-cards.page'
+                  ).then((x) => x.ProjectRegistrationDebitCardsPageComponent),
+              },
+              {
+                path: ``,
+                pathMatch: 'full',
+                redirectTo: AppRoutes.projectRegistrationActivityLog,
+              },
+            ],
           },
         ],
       },
@@ -155,6 +163,7 @@ export const routes: Routes = [
           {
             path: `:paymentId`,
             pathMatch: 'full',
+            canActivate: [foundResourceGuard('payment')],
             loadComponent: () =>
               import('~/pages/project-payment/project-payment.page').then(
                 (x) => x.ProjectPaymentPageComponent,
