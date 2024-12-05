@@ -1,18 +1,20 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 
+import { BreadcrumbsTitleComponent } from '~/components/page-layout/components/breadcrumbs-title/breadcrumbs-title.component';
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
 import { PageLayoutTitleAndActionsComponent } from '~/components/page-layout/components/page-layout-title-and-actions/page-layout-title-and-actions.component';
-import { PaymentHeaderComponent } from '~/components/page-layout/components/payment-header/payment-header.component';
 import { ProjectMenuComponent } from '~/components/page-layout/components/project-menu/project-menu.component';
 import { RegistrationHeaderComponent } from '~/components/page-layout/components/registration-header/registration-header.component';
 import { RegistrationMenuComponent } from '~/components/page-layout/components/registration-menu/registration-menu.component';
@@ -32,7 +34,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
     CardModule,
     PageLayoutTitleAndActionsComponent,
     MessageModule,
-    PaymentHeaderComponent,
+    BreadcrumbsTitleComponent,
   ],
   templateUrl: './page-layout.component.html',
   styles: ``,
@@ -44,20 +46,39 @@ export class PageLayoutComponent {
   readonly paymentApiService = inject(PaymentApiService);
 
   pageTitle = input<string>();
+  parentPageTitle = input<string>();
+  parentPageLink = input<RouterLink['routerLink']>();
+
   projectId = input<number>();
   registrationId = input<number>();
   paymentId = input<number>();
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  isPending = input<boolean>();
 
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.projectId,
       this.registrationId,
     ),
   );
-
   payment = injectQuery(
     this.paymentApiService.getPayment(this.projectId, this.paymentId),
   );
+
+  pageLoadError = computed(() => {
+    if (this.project.isError()) {
+      return $localize`Project not found. Please check the URL and try again.`;
+    }
+
+    if (this.registration.isError()) {
+      return $localize`Registration not found. Please check the URL and try again.`;
+    }
+
+    if (this.payment.isError()) {
+      return $localize`Payment not found. Please check the URL and try again.`;
+    }
+
+    return undefined;
+  });
 }
