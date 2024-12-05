@@ -77,7 +77,7 @@ updates:
           - '*eslint*'
           - '*prettier*'
         exclude-patterns: ['@angular-eslint/*']
-      azureSSO:
+      AzureMSAL:
         patterns:
           - '@azure/msal*'
     ignore:
@@ -122,22 +122,37 @@ updates:
     groups:
       angular:
         patterns:
-          - '@angular/*'
-          - '@angular-devkit/*'
+          - '@angular*'
           - 'typescript'
           - 'zone.js'
+      linting:
+        patterns:
+          - '*eslint*'
+          - '*prettier*'
+      AzureMSAL:
+        patterns:
+          - '@azure/msal*' # Combine peer-dependencies
       dependencies:
         patterns:
           - '*'
+        exclude-patterns:
+          - '@angular*'
+          - '@azure/msal*'
+          - '*eslint*'
+          - '*prettier*'
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@angular*'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@azure/msal-angular'
-        # version 3.1.0. was giving an error on window.crypto object
+        versions: ['3.1.0']
       - dependency-name: '@azure/msal-browser'
+        versions: ['3.27.0']
+        # For both MSAL packages, to check manually: https://github.com/AzureAD/microsoft-authentication-library-for-js/releases?q=msal-browser&expanded=true
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
-        # filesize 10 does not work with ngx-filesize
-      - dependency-name: filesize
+      - dependency-name: 'filesize'
+        versions: ['^10.x'] # See: https://www.npmjs.com/package/ngx-filesize
 
   - package-ecosystem: npm
     directory: '/e2e'
