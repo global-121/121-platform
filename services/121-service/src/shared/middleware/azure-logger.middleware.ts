@@ -35,13 +35,13 @@ export class AzureLoggerMiddleware implements NestMiddleware {
   }
 
   private flushLogs(): void {
-    this.defaultClient
-      .flush()
-      .then(() => {
-        return;
-      })
-      .catch((flushError) => {
-        console.error('An error occured in logError:', flushError);
-      });
+    try {
+      this.defaultClient.flush();
+    } catch (flushError) {
+      console.error(
+        'An error occured in AzureLoggerMiddleware::flushLogs:',
+        flushError,
+      );
+    }
   }
 }
