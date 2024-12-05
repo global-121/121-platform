@@ -33,15 +33,17 @@ runs:
       working-directory: ${{ inputs.servicePath }}
       run: 'npm ci --no-fund --no-audit'
 
+    - name: Test
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: |
+        npm run typecheck
+        npm run test
+
     - name: Build
       shell: bash
       working-directory: ${{ inputs.servicePath }}
       run: 'npm run build'
-
-    - name: Test
-      shell: bash
-      working-directory: ${{ inputs.servicePath }}
-      run: 'npm run test'
 
     - name: Set VERSION of build/deployment
       shell: bash
