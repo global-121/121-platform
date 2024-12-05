@@ -299,7 +299,7 @@ export class UserService {
     const user = await qb.getOne();
 
     if (user) {
-      const errors = { username: 'Username must be unique.' };
+      const errors = { username: `Username: '${username}' must be unique.` };
       throw new HttpException(
         { message: 'Input data validation failed', errors },
         HttpStatus.BAD_REQUEST,
