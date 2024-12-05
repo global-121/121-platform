@@ -29,6 +29,8 @@ import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bu
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,
   DataListItem,
@@ -62,6 +64,7 @@ const queryParamStep = 'create-payment-step';
     DataListComponent,
     FullscreenSpinnerComponent,
     MenuModule,
+    ColoredChipComponent,
   ],
   templateUrl: './create-payment.component.html',
   styles: ``,
@@ -98,6 +101,9 @@ export class CreatePaymentComponent {
     // only registrations with status "included" are eligible for payment
     status: RegistrationStatusEnum.included,
   };
+  includedChipData = getChipDataByRegistrationStatus(
+    RegistrationStatusEnum.included,
+  );
 
   financialServiceProviderConfigurations = injectQuery(
     this.financialServiceProviderConfigurationApiService.getFinancialServiceProviderConfigurations(
