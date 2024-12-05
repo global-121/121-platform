@@ -38,7 +38,13 @@
           i18n
           class="mb-5"
         >
-          Select included registrations to add to this payment.
+          Below is a table of all
+          <app-colored-chip
+            [variant]="includedChipData.chipVariant"
+            [label]="includedChipData.chipLabel"
+          />
+          registrations. Select registrations you would like to add to this
+          payment.
         </p>
         <p-card>
           <app-registrations-table

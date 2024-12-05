@@ -1420,10 +1420,6 @@
         <source>Clear</source>
         <target state="new">Clear</target>
       </trans-unit>
-      <trans-unit id="8090326902764851563" datatype="html">
-        <source>Select included registrations to add to this payment.</source>
-        <target state="new">Select included registrations to add to this payment.</target>
-      </trans-unit>
       <trans-unit id="2200382670798092138" datatype="html">
         <source>Add to payment</source>
         <target state="new">Add to payment</target>
@@ -1571,6 +1567,10 @@
       <trans-unit id="9047634939215362248" datatype="html">
         <source>Registrations selected:</source>
         <target state="new">Registrations selected:</target>
+      </trans-unit>
+      <trans-unit id="3890824728366334701" datatype="html">
+        <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
+        <target state="new">Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</target>
       </trans-unit>
     </body>
   </file>
