@@ -9,6 +9,14 @@ on:
       - '.github/actions/build-service/action.yml'
       - '.github/workflows/test_service_code.yml'
       - 'services/121-service/**'
+  push:
+    paths:
+      - '.github/actions/build-service/action.yml'
+      - '.github/workflows/test_service_code.yml'
+      - 'services/121-service/**'
+    branches:
+      - 'release/*'
+      - 'hotfix/*'
 
 env:
   workingDirectory: 'services/121-service/'
