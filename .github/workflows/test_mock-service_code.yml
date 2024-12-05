@@ -8,6 +8,14 @@ on:
     paths:
       - '.github/workflows/test_mock-service_code.yml'
       - 'services/mock-service/**'
+  push:
+    paths:
+      - '.github/actions/build-service/action.yml'
+      - '.github/workflows/test_mock-service_code.yml'
+      - 'services/mock-service/**'
+    branches:
+      - 'release/*'
+      - 'hotfix/*'
 
 env:
   workingDirectory: 'services/mock-service'
