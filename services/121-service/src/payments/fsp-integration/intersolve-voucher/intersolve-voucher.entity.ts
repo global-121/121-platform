@@ -53,7 +53,7 @@ export class IntersolveVoucherEntity extends Base121Entity {
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.voucher)
   public image: Relation<ImageCodeExportVouchersEntity[]>;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
   @Column()

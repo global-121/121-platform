@@ -25,8 +25,6 @@ describe('User mapper', () => {
       active: true,
       lastLogin: new Date(),
       hashPassword: async () => {},
-      deleteAllOneToMany: async () => {},
-      deleteOneToMany: async () => {},
       created: new Date(),
       updated: new Date(),
       isOrganizationAdmin: false,

@@ -28,6 +28,7 @@ export class LatestTransactionEntity extends Base121Entity {
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.latestTransactions,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
@@ -35,7 +36,7 @@ export class LatestTransactionEntity extends Base121Entity {
   @Column({ type: 'int', nullable: true })
   public registrationId: number | null;
 
-  @OneToOne(() => TransactionEntity)
+  @OneToOne(() => TransactionEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'transactionId' })
   public transaction: Relation<TransactionEntity>;
   @Index()

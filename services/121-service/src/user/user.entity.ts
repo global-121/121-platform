@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import crypto from 'crypto';
 import {
   BeforeInsert,
-  BeforeRemove,
   Column,
   Entity,
   Index,
@@ -11,7 +10,7 @@ import {
 } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -19,7 +18,7 @@ import { UserType } from '@121-service/src/user/user-type-enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('user')
-export class UserEntity extends CascadeDeleteEntity {
+export class UserEntity extends Base121Entity {
   @Index({ unique: true })
   @Column({ type: 'character varying', nullable: true })
   @ApiProperty({ example: 'username' })
@@ -63,24 +62,6 @@ export class UserEntity extends CascadeDeleteEntity {
   @Column({ default: false })
   @ApiProperty({ example: false })
   public isEntraUser: boolean;
-
-  @BeforeRemove()
-  public async cascadeDelete(): Promise<void> {
-    await this.deleteAllOneToMany([
-      {
-        entityClass: RegistrationEntity,
-        columnName: 'user',
-      },
-      {
-        entityClass: ActionEntity,
-        columnName: 'user',
-      },
-      {
-        entityClass: ProgramAidworkerAssignmentEntity,
-        columnName: 'user',
-      },
-    ]);
-  }
 
   @Column({ nullable: true, select: false, type: 'character varying' })
   @ApiProperty()
