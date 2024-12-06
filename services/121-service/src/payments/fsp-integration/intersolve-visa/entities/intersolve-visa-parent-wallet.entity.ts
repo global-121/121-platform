@@ -8,13 +8,15 @@ import {
   Relation,
 } from 'typeorm';
 
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 
 @Entity('intersolve_visa_parent_wallet')
-export class IntersolveVisaParentWalletEntity extends CascadeDeleteEntity {
-  @OneToOne(() => IntersolveVisaCustomerEntity)
+export class IntersolveVisaParentWalletEntity extends Base121Entity {
+  @OneToOne(() => IntersolveVisaCustomerEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'intersolveVisaCustomerId' })
   public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
   @Column({ type: 'int' })

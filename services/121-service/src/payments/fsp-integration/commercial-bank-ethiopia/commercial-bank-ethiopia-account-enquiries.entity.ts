@@ -5,7 +5,9 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 
 @Entity('commercial_bank_ethiopia_account_enquiries')
 export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity {
-  @OneToOne(() => RegistrationEntity)
+  @OneToOne(() => RegistrationEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: true })

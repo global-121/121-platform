@@ -33,8 +33,6 @@ describe('Action mapper', () => {
       active: true,
       lastLogin: new Date(),
       hashPassword: async () => {},
-      deleteAllOneToMany: async () => {},
-      deleteOneToMany: async () => {},
       created: createdDate,
       updated: new Date(),
       isOrganizationAdmin: false,

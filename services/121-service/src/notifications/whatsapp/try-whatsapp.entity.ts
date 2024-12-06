@@ -12,7 +12,8 @@ export class TryWhatsappEntity extends Base121Entity {
 
   @OneToOne(
     (_type) => RegistrationEntity,
-    (registration) => registration.whatsappPendingMessages,
+    // (registration) => registration.whatsappPendingMessages,
+    { onDelete: 'CASCADE' }, // This will not delete registration on message-deletion, but the other way around, as TryWhatsappEntity owns the foreign key (through the JoinColumn)
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;

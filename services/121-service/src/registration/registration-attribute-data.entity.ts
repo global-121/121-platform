@@ -20,7 +20,13 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 ])
 @Entity('registration_attribute_data')
 export class RegistrationAttributeDataEntity extends Base121Entity {
-  @ManyToOne((_type) => RegistrationEntity, (registration) => registration.data)
+  @ManyToOne(
+    (_type) => RegistrationEntity,
+    (registration) => registration.data,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Index()
@@ -31,6 +37,9 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
     (_type) => ProgramRegistrationAttributeEntity,
     (programRegistrationAttribute) =>
       programRegistrationAttribute.registrationAttributeData,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'programRegistrationAttributeId' })
   public programRegistrationAttribute: Relation<ProgramRegistrationAttributeEntity>;
