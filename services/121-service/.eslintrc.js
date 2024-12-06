@@ -98,5 +98,13 @@ module.exports = {
         'simple-import-sort/exports': 'error',
       },
     },
+    {
+      files: ['*.entity.ts'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['custom-rules'],
+      rules: {
+        'custom-rules/typeorm-cascade-ondelete': 'error',
+      },
+    },
   ],
 };
