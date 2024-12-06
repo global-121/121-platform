@@ -1,13 +1,12 @@
 <div class="flex min-h-screen flex-col">
   <app-header [projectId]="projectId()" />
   <div class="flex flex-1 flex-col">
-    @if (project.isError()) {
+    @if (pageLoadError()) {
       <div class="flex-1 px-6 py-8 lg:px-24">
         <p-message
           severity="warn"
           styleClass="w-full"
-          text="Project not found. Please check the URL and try again."
-          i18n-text
+          [text]="pageLoadError()"
         />
       </div>
     } @else {
@@ -16,46 +15,33 @@
       }
       <div class="flex-1 px-6 py-8 lg:px-24">
         @if (registrationId()) {
-          @if (registration.isError()) {
-            <p-message
-              severity="warn"
-              styleClass="w-full"
-              text="Registration not found. Please check the URL and try again."
-              i18n-text
-            />
-          } @else {
-            <app-registration-header
+          <app-registration-header
+            [projectId]="projectId()!"
+            [registrationId]="registrationId()!"
+          />
+          <p-card styleClass="mt-6">
+            <app-registration-menu
               [projectId]="projectId()!"
               [registrationId]="registrationId()!"
             />
-            <p-card styleClass="mt-6">
-              <app-registration-menu
-                [projectId]="projectId()!"
-                [registrationId]="registrationId()!"
-              />
-              <ng-content select="[registration-page]"></ng-content>
-            </p-card>
-          }
-        } @else if (paymentId()) {
-          @if (payment.isError()) {
-            <p-message
-              severity="warn"
-              styleClass="w-full"
-              text="Payment not found. Please check the URL and try again."
-              i18n-text
-            />
-          } @else {
-            <app-payment-header
-              [projectId]="projectId()!"
-              [paymentId]="paymentId()!"
-            ></app-payment-header>
-            <ng-content select="[payment-page]"></ng-content>
-          }
+            <ng-content select="[registration-page]"></ng-content>
+          </p-card>
         } @else {
           @if (pageTitle()) {
+            @let parentTitle = parentPageTitle();
+            @let parentLink = parentPageLink();
+
             <app-page-layout-title-and-actions>
               <ng-container page-layout-title>
-                {{ pageTitle() }}
+                @if (parentTitle && parentLink) {
+                  <app-breadcrumbs-title
+                    [parentLink]="parentLink"
+                    [parentTitle]="parentTitle"
+                    [childTitle]="pageTitle()"
+                  ></app-breadcrumbs-title>
+                } @else {
+                  {{ pageTitle() }}
+                }
               </ng-container>
               <ng-container page-layout-actions>
                 <ng-content select="[header-actions]"></ng-content>
