@@ -14,7 +14,9 @@ export class SafaricomTransferEntity extends Base121Entity {
   @Column({ nullable: true })
   public mpesaTransactionId: string;
 
-  @OneToOne(() => TransactionEntity)
+  @OneToOne(() => TransactionEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'transactionId' })
   transaction: TransactionEntity;
   @Column({ type: 'int', nullable: false })

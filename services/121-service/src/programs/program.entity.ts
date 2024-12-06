@@ -1,7 +1,7 @@
-import { BeforeRemove, Column, Entity, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
@@ -13,7 +13,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @Entity('program')
-export class ProgramEntity extends CascadeDeleteEntity {
+export class ProgramEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
   public location: string | null;
 
@@ -123,30 +123,4 @@ export class ProgramEntity extends CascadeDeleteEntity {
     (messageTemplates) => messageTemplates.program,
   )
   public messageTemplates: Relation<MessageTemplateEntity[]>;
-
-  @BeforeRemove()
-  public async cascadeDelete(): Promise<void> {
-    await this.deleteAllOneToMany([
-      {
-        entityClass: ProgramAidworkerAssignmentEntity,
-        columnName: 'program',
-      },
-      {
-        entityClass: ActionEntity,
-        columnName: 'program',
-      },
-      {
-        entityClass: RegistrationEntity,
-        columnName: 'program',
-      },
-      {
-        entityClass: MessageTemplateEntity,
-        columnName: 'program',
-      },
-      {
-        entityClass: ProgramFinancialServiceProviderConfigurationEntity,
-        columnName: 'programId',
-      },
-    ]);
-  }
 }

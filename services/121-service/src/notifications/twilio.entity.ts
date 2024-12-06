@@ -69,6 +69,9 @@ export class TwilioMessageEntity extends Base121Entity {
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.twilioMessages,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
@@ -79,13 +82,17 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column({ type: 'int', default: 0 })
   public retryCount: number;
 
-  @OneToOne(() => TransactionEntity)
+  @OneToOne(() => TransactionEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'transactionId' })
   public transaction: Relation<TransactionEntity>;
   @Column({ type: 'int', nullable: true })
   public transactionId: number | null;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
   @Column()

@@ -36,7 +36,9 @@ export class MessageTemplateEntity extends Base121Entity {
   @Column({ default: false })
   public isSendMessageTemplate: boolean;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates)
+  @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'programId' })
   public program?: Relation<ProgramEntity>;
   @Column()
