@@ -17,13 +17,17 @@ import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 @Unique('userProgramAssignmentUnique', ['userId', 'programId'])
 @Entity('program_aidworker_assignment')
 export class ProgramAidworkerAssignmentEntity extends Base121Entity {
-  @ManyToOne(() => UserEntity, (user) => user.programAssignments)
+  @ManyToOne(() => UserEntity, (user) => user.programAssignments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
   @Column()
   public userId: number;
 
-  @ManyToOne(() => ProgramEntity, (program) => program.aidworkerAssignments)
+  @ManyToOne(() => ProgramEntity, (program) => program.aidworkerAssignments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
   @Column()

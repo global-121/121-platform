@@ -11,6 +11,7 @@ export class IntersolveVisaChildWalletEntity extends Base121Entity {
     () => IntersolveVisaParentWalletEntity,
     (intersolveVisaParentWallet) =>
       intersolveVisaParentWallet.intersolveVisaChildWallets,
+    { onDelete: 'CASCADE' },
   )
   public intersolveVisaParentWallet: Relation<IntersolveVisaParentWalletEntity>;
   @Index()

@@ -17,7 +17,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
@@ -31,7 +31,9 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
+  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
   @Index()
@@ -55,6 +57,7 @@ export class TransactionEntity extends Base121AuditedEntity {
     (_type) => ProgramFinancialServiceProviderConfigurationEntity,
     (programFinancialServiceProviderConfiguration) =>
       programFinancialServiceProviderConfiguration.transactions,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
@@ -67,6 +70,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.transactions,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
@@ -77,6 +81,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   @OneToOne(
     () => LatestTransactionEntity,
     (latestTransaction) => latestTransaction.transaction,
+    { onDelete: 'NO ACTION' },
   )
   public latestTransaction: Relation<LatestTransactionEntity>;
 }
