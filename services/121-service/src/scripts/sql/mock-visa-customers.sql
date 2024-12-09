@@ -1,4 +1,3 @@
-truncate "121-service".intersolve_visa_wallet;
 truncate "121-service".intersolve_visa_customer cascade;
 INSERT
 	INTO
