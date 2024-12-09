@@ -287,7 +287,7 @@ When new Node.js dependencies are added to a service since it is last build on y
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and API/integration-tests for all services; Run with `npm test` in each `services/*`-folder.
     See: `121-service/README.md`/[Testing](./services/121-service/README.md#testing) for details.
-  
+
 ### How to use E2E tests and maintain documentation/Test Suites
 
 - For how to wright and execute Playwright E2E tests see `e2e/README.md`/[E2E testing suite](https://github.com/global-121/121-platform/tree/main/e2e).
