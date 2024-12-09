@@ -1082,9 +1082,6 @@
       <trans-unit id="8221183084962199390" datatype="html">
         <source>Payment not found. Please check the URL and try again.</source>
       </trans-unit>
-      <trans-unit id="3950247133633104105" datatype="html">
-        <source>Redirecting to 121…</source>
-      </trans-unit>
       <trans-unit id="5255226222389200378" datatype="html">
         <source>Unknown user account or authentication failed</source>
       </trans-unit>
