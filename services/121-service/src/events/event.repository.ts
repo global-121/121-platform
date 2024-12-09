@@ -15,9 +15,9 @@ export class EventScopedRepository extends ScopedRepository<EventEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(EventEntity)
-    scopedRepository: ScopedRepository<EventEntity>,
+    repository: ScopedRepository<EventEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   async getManyByProgramIdAndSearchOptions(
