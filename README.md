@@ -377,7 +377,8 @@ This follows a similar process to regular release + deployment, with some small 
 
 - Checkout the `<version>` tag which contains the code that you want to hotfix.
 - Create a new local hotfix-branch using that tag as the `HEAD` (e.g. `hotfix/<vX.X-X>`, with an increased final `MICRO`-number) and make the changes.
-- Push this branch to the upstream/origin repository on GitHub.
+- Push this branch to the upstream/origin repository on GitHub.  
+  Verify the test-runs(s) on the hotfix-branch by looking at the status of the last commit on the [branches-overview](https://github.com/global-121/121-platform/branches/all?query=hotfix).
 - Create a new release + tag (see above) selecting the `hotfix/v*`-branch as target, and publish it.
 - Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
 - After the hotfix has been released to production, follow standard procedures to merge the hotfix-branch into the `main`-branch.
