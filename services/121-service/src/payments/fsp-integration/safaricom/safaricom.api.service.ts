@@ -19,11 +19,17 @@ export class SafaricomApiService {
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
+  // ##TODO: Info to team: paramters were not typed here, implicit any!
   public async transfer({
     transferAmount,
     phoneNumber,
     idNumber,
     originatorConversationId,
+  }: {
+    transferAmount: number;
+    phoneNumber: string;
+    idNumber: string;
+    originatorConversationId: string;
   }): Promise<TransferReturnType> {
     const payload = this.createTransferPayload({
       transferAmount,
