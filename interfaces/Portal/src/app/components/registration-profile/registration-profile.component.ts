@@ -40,6 +40,9 @@ export class RegistrationProfileComponent implements OnInit {
 
   public lastRegistrationStatusChangeEvent: Event;
 
+  public duplicates: any[];
+  public fuzzyDuplicates: any[];
+
   constructor(
     private authService: AuthService,
     private programsService: ProgramsServiceApiService,
@@ -54,6 +57,16 @@ export class RegistrationProfileComponent implements OnInit {
     this.lastRegistrationStatusChangeEvent = this.events.find(
       (event) => event.type === EventEnum.registrationStatusChange,
     );
+    const duplicateObject = await this.programsService.getRegistrationDuplicate(
+      this.program.id,
+      this.person.referenceId,
+    );
+    this.duplicates = duplicateObject.duplicates;
+    this.fuzzyDuplicates = duplicateObject.fuzzyDuplicates;
+    console.log(
+      '🚀 ~ RegistrationProfileComponent ~ ngOnInit ~ this.duplicates:',
+      this.duplicates,
+    );
   }
 
   public canViewPhysicalCards(programId: number): boolean {
@@ -62,6 +75,15 @@ export class RegistrationProfileComponent implements OnInit {
       Permission.PaymentTransactionREAD,
       Permission.FspDebitCardREAD,
     ]);
+  }
+
+  public async postUnique(referenceIdDuplicate: string) {
+    await this.programsService.postUnique(
+      this.program.id,
+      this.person.referenceId,
+      referenceIdDuplicate,
+    );
+    window.location.reload();
   }
 
   public fspHasPhysicalCardSupport(

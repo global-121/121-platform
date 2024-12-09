@@ -28,6 +28,7 @@ import { RegistrationUtilsModule } from '@121-service/src/registration/modules/r
 import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationUniquePairEntity } from '@121-service/src/registration/registration-unique-pair.entity';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -88,6 +89,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(NoteEntity),
     createScopedRepositoryProvider(TransactionEntity),
     createScopedRepositoryProvider(EventEntity),
+    createScopedRepositoryProvider(RegistrationUniquePairEntity),
   ],
   controllers: [RegistrationsController],
   exports: [

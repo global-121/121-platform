@@ -14,6 +14,8 @@ export const AllowedFilterOperatorsNumber = [
   FilterOperator.NULL,
 ];
 
+export const AllowedFilterOperatorsBoolean = [FilterOperator.EQ];
+
 const dataSearchableColumn = 'data.value';
 const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> =
   {
@@ -37,6 +39,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       'paymentCount',
       'paymentCountRemaining',
       'lastMessageStatus',
+      'isDuplicate',
       'data.value',
     ],
     filterableColumns: {
@@ -59,6 +62,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       paymentCountRemaining: AllowedFilterOperatorsNumber,
       personAffectedSequence: AllowedFilterOperatorsString,
       lastMessageStatus: AllowedFilterOperatorsString,
+      isDuplicate: AllowedFilterOperatorsBoolean,
     },
   };
 

@@ -67,6 +67,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.multiplyTransactions(nrPayments);
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
     await this.seedMockHelper.updateSequenceNumbers();
+    await this.seedMockHelper.introduceDuplicates();
   }
 
   private async seedRegistrationForProgram(

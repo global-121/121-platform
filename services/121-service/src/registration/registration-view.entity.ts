@@ -81,6 +81,44 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect(
         `COALESCE(message.type || ': ' || message.status,'no messages yet')`,
         'lastMessageStatus',
+      )
+
+      .addSelect(
+        `
+        (CASE
+            WHEN dup."registrationId" IS NOT NULL THEN TRUE
+        ELSE FALSE
+        END)
+        `,
+        'isDuplicate',
+      )
+      .leftJoin(
+        (qb) =>
+          qb
+            .select('distinct d1."registrationId"')
+            .from('registration_attribute_data', 'd1')
+            .innerJoin(
+              'registration_attribute_data',
+              'd2',
+              'd1."programRegistrationAttributeId" = d2."programRegistrationAttributeId" AND d1.value = d2.value AND d1."registrationId" != d2."registrationId"',
+            )
+            .innerJoin(
+              'program_registration_attribute',
+              'pra',
+              'd1."programRegistrationAttributeId" = pra.id',
+            )
+            .where("d1.value != ''")
+            .andWhere('pra."duplicateCheck" = true')
+            .andWhere(
+              'NOT EXISTS (' +
+                'SELECT 1 ' +
+                'FROM "121-service".registration_unique_pairs rup ' +
+                'WHERE (rup."registrationSmallerId" = LEAST(d1."registrationId", d2."registrationId") ' +
+                'AND rup."registrationLargerId" = GREATEST(d1."registrationId", d2."registrationId"))' +
+                ')',
+            ),
+        'dup',
+        'registration.id = dup."registrationId"',
       ),
 })
 export class RegistrationViewEntity {
@@ -151,6 +189,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public scope: string;
+
+  @ViewColumn()
+  public isDuplicate: boolean;
 
   @OneToMany(
     () => RegistrationAttributeDataEntity,

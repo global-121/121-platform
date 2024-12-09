@@ -537,6 +537,30 @@ export class ProgramsServiceApiService {
     );
   }
 
+  public getRegistrationDuplicate(
+    programId: number,
+    referenceId: string,
+  ): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/registrations/${referenceId}/duplicates`,
+    );
+  }
+
+  public postUnique(
+    programId: number,
+    referenceId1: string,
+    referenceId2: string,
+  ): Promise<Note> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/${programId}/registrations/${referenceId1}/uniques`,
+      {
+        referenceId: referenceId2,
+      },
+    );
+  }
+
   public async getUpdateWalletAndCards(
     programId: number,
     referenceId: string,

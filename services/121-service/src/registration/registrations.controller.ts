@@ -876,4 +876,50 @@ export class RegistrationsController {
 
     return registrationEntity;
   }
+
+  @ApiTags('registration')
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
+  @ApiOperation({
+    summary: '[SCOPED] Gets duplicates fro registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Duplicates',
+  })
+  @Get('programs/:programId/registrations/:referenceId/duplicates')
+  public async getDuplicates(
+    @Param('referenceId') referenceId: string,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<any> {
+    return await this.registrationsService.getDuplicates(
+      referenceId,
+      programId,
+    );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
+  @ApiOperation({
+    summary: '[SCOPED] Post uniques for registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Uniques',
+  })
+  @Post('programs/:programId/registrations/:referenceId/uniques')
+  public async markRegistrationAsUnique(
+    @Param('referenceId') referenceId: string,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Body() body: ReferenceIdDto,
+  ): Promise<any> {
+    return await this.registrationsService.markRegistrationAsUnique(
+      referenceId,
+      body.referenceId,
+      programId,
+    );
+  }
 }

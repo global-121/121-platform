@@ -38,7 +38,8 @@
       "export": ["all-people-affected", "included"],
       "scoring": {},
       "editableInPortal": true,
-      "showInPeopleAffectedTable": false
+      "showInPeopleAffectedTable": false,
+      "duplicateCheck": false
     },
     {
       "name": "phoneNumber",
@@ -69,8 +70,20 @@
       "export": ["all-people-affected", "included"],
       "type": "tel",
       "options": null,
-      "duplicateCheck": true,
+      "duplicateCheck": false,
       "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "nationalId",
+      "label": {
+        "en": "Nationaal Id"
+      },
+      "export": ["all-people-affected", "included"],
+      "type": "text",
+      "pattern": ".+",
+      "duplicateCheck": false,
+      "showInPeopleAffectedTable": true,
+      "editableInPortal": true
     },
     {
       "name": "addressStreet",

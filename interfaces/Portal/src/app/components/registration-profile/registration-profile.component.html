@@ -8,6 +8,82 @@
       [sizeMd]="5"
       [sizeLg]="4"
     >
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Duplicate Registrations</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col>Duplicate Registration ID</ion-col>
+              <ion-col>Value</ion-col>
+              <ion-col>Attribute Name</ion-col>
+              <ion-col>Action</ion-col>
+            </ion-row>
+            <ng-container *ngFor="let duplicate of duplicates">
+              <ion-row>
+                <ion-col>
+                  <a
+                    [href]="
+                      'http://localhost:8888/program/' +
+                      program.id +
+                      '/registration/' +
+                      duplicate.duplicateRegistrationProgramId
+                    "
+                  >
+                    {{ duplicate.duplicateRegistrationProgramId }}
+                  </a>
+                </ion-col>
+                <ion-col>{{ duplicate.value }}</ion-col>
+                <ion-col>{{ duplicate.name }}</ion-col>
+                <ion-col>
+                  <ion-button
+                    (click)="postUnique(duplicate.duplicateReferenceId)"
+                  >
+                    Mark as Unique
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ng-container>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Fuzzy Duplicate Registrations</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col>Fuzzy Match Score</ion-col>
+              <ion-col>Duplicate Registration ID</ion-col>
+              <ion-col>Value</ion-col>
+              <ion-col>Attribute Name</ion-col>
+            </ion-row>
+            <ng-container *ngFor="let fuzzyDuplicate of fuzzyDuplicates">
+              <ion-row>
+                <ion-col>{{ fuzzyDuplicate.fuzzyMatchScore }}</ion-col>
+                <ion-col>
+                  <a
+                    [href]="
+                      'http://localhost:8888/program/' +
+                      program.id +
+                      '/registration/' +
+                      fuzzyDuplicate.duplicateRegistrationProgramId
+                    "
+                  >
+                    {{ fuzzyDuplicate.duplicateRegistrationProgramId }}
+                  </a>
+                </ion-col>
+                <ion-col>{{ fuzzyDuplicate.value }}</ion-col>
+                <ion-col>{{ fuzzyDuplicate.name }}</ion-col>
+              </ion-row>
+            </ng-container>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+
       <app-registration-personal-information
         data-testid="registration-personal-information-data"
         [person]="person"

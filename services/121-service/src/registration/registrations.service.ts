@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, Repository } from 'typeorm';
 
@@ -49,16 +49,20 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationUniquePairEntity } from '@121-service/src/registration/registration-unique-pair.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class RegistrationsService {
@@ -85,6 +89,8 @@ export class RegistrationsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
+    @Inject(getScopedRepositoryProviderName(RegistrationUniquePairEntity))
+    private readonly registrationUniquePairScopedRepository: ScopedRepository<RegistrationUniquePairEntity>,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -1163,5 +1169,159 @@ export class RegistrationsService {
       programId,
     });
     await this.sendContactInformationToIntersolve(registration);
+  }
+
+  public async getDuplicates(
+    referenceId: string,
+    programId: number,
+  ): Promise<any> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+    const registrationId = registration.id;
+    console.log('🚀 ~ RegistrationsService ~ registrationId:', registrationId);
+
+    console.time('duplicates');
+    const duplicates = await this.registrationDataScopedRepository
+      .createQueryBuilder('d1')
+      .select([
+        'd1."registrationId" as "registrationId"',
+        'r2."referenceId" AS "duplicateReferenceId"',
+        'r2."registrationProgramId" AS "duplicateRegistrationProgramId"',
+        'd1.programRegistrationAttributeId as "programRegistrationAttributeId"',
+        'd1.value as value',
+        'pra.name AS "name"',
+      ])
+      .innerJoin(
+        RegistrationAttributeDataEntity,
+        'd2',
+        'd1.programRegistrationAttributeId = d2.programRegistrationAttributeId AND d1.value = d2.value AND d1.registrationId != d2.registrationId', // Ensure different registrationId but same programRegistrationAttributeId and value
+      )
+      .leftJoin(RegistrationEntity, 'r2', 'd2.registrationId = r2.id')
+      .leftJoin(
+        ProgramRegistrationAttributeEntity,
+        'pra',
+        'd1.programRegistrationAttributeId = pra.id',
+      )
+      .andWhere('d1.registrationId = :registrationId', { registrationId })
+      .andWhere('pra."duplicateCheck" = true')
+      .andWhere(
+        'NOT EXISTS (' +
+          'SELECT 1 ' +
+          'FROM "121-service".registration_unique_pairs rup ' +
+          'WHERE rup."registrationSmallerId" = LEAST(d1."registrationId", d2."registrationId") ' +
+          'AND rup."registrationLargerId" = GREATEST(d1."registrationId", d2."registrationId")' +
+          ')',
+      )
+      .orderBy('d1.programRegistrationAttributeId', 'ASC')
+      .getRawMany();
+    console.timeEnd('duplicates');
+    console.log('🚀 ~ RegistrationsService ~ result:', duplicates);
+
+    console.time('fuzzyMatch levenshtein');
+    const fuzzyQbLeven = await this.registrationDataScopedRepository
+      .createQueryBuilder('d1')
+      .select([
+        'd1."registrationId" as "registrationId"',
+        'r2."registrationProgramId" AS "duplicateRegistrationProgramId"',
+        'd1.programRegistrationAttributeId as "programRegistrationAttributeId"',
+        'd1.value as value',
+        'pra.name AS "name"',
+        'levenshtein(d1.value, d2.value) AS "fuzzyMatchScore"',
+      ])
+      .innerJoin(
+        RegistrationAttributeDataEntity,
+        'd2',
+        'd1.programRegistrationAttributeId = d2.programRegistrationAttributeId AND d1.registrationId != d2.registrationId', // Ensure different registrationId but same programRegistrationAttributeId
+      )
+      .leftJoin(RegistrationEntity, 'r2', 'd2.registrationId = r2.id')
+      .leftJoin(
+        ProgramRegistrationAttributeEntity,
+        'pra',
+        'd1.programRegistrationAttributeId = pra.id',
+      )
+      .andWhere('d1.registrationId = :registrationId', { registrationId })
+      .andWhere('pra."duplicateCheck" = true')
+      // .andWhere('similarity(d1.value, d2.value) > 0.7')
+      .andWhere('levenshtein(d1.value, d2.value) <= 3') // Use <= for distance threshold
+      .orderBy('d1.programRegistrationAttributeId', 'ASC');
+
+    const fuzzyLevenshteinDuplicates = await fuzzyQbLeven.getRawMany();
+    console.log(
+      '🚀 ~ RegistrationsService ~ fuzzyLevenshteinDuplicates:',
+      fuzzyLevenshteinDuplicates,
+    );
+    console.timeEnd('fuzzyMatch levenshtein');
+
+    console.time('fuzzyMatch fuzzySimilarity');
+    const fuzzySimilarityDuplicates =
+      await this.registrationDataScopedRepository
+        .createQueryBuilder('d1')
+        .select([
+          'd1."registrationId" as "registrationId"',
+          'r2."registrationProgramId" AS "duplicateRegistrationProgramId"',
+          'd1.programRegistrationAttributeId as "programRegistrationAttributeId"',
+          'd1.value as value',
+          'pra.name AS "name"',
+          'similarity(d1.value, d2.value) AS "fuzzyMatchScore"',
+        ])
+        .innerJoin(
+          RegistrationAttributeDataEntity,
+          'd2',
+          'd1.programRegistrationAttributeId = d2.programRegistrationAttributeId AND d1.registrationId != d2.registrationId', // Ensure different registrationId but same programRegistrationAttributeId
+        )
+        .leftJoin(RegistrationEntity, 'r2', 'd2.registrationId = r2.id')
+        .leftJoin(
+          ProgramRegistrationAttributeEntity,
+          'pra',
+          'd1.programRegistrationAttributeId = pra.id',
+        )
+        .andWhere('d1.registrationId = :registrationId', { registrationId })
+        .andWhere('pra."duplicateCheck" = true')
+        .andWhere('similarity(d1.value, d2.value) > 0.7')
+        .orderBy('d1.programRegistrationAttributeId', 'ASC')
+        .getRawMany();
+    console.timeEnd('fuzzyMatch fuzzySimilarity');
+    console.log(
+      '🚀 ~ RegistrationsService ~ fuzzySimilarityDuplicates:',
+      fuzzySimilarityDuplicates,
+    );
+
+    return {
+      duplicates,
+      fuzzyDuplicates: fuzzyLevenshteinDuplicates,
+    };
+  }
+
+  public async markRegistrationAsUnique(
+    referenceId1: string,
+    referenceId2: string,
+    programId: number,
+  ) {
+    const registration1 = await this.getRegistrationOrThrow({
+      referenceId: referenceId1,
+      programId,
+    });
+    const registration2 = await this.getRegistrationOrThrow({
+      referenceId: referenceId2,
+      programId,
+    });
+    const registrationUniquePair = new RegistrationUniquePairEntity();
+    if (registration1.id < registration2.id) {
+      registrationUniquePair.registrationWithSmallerId = registration1;
+      registrationUniquePair.registrationSmallerId = registration1.id;
+      registrationUniquePair.registrationWithLargerId = registration2;
+      registrationUniquePair.registrationLargerId = registration2.id;
+    } else {
+      registrationUniquePair.registrationWithSmallerId = registration2;
+      registrationUniquePair.registrationSmallerId = registration2.id;
+      registrationUniquePair.registrationWithLargerId = registration1;
+      registrationUniquePair.registrationLargerId = registration1.id;
+    }
+
+    await this.registrationUniquePairScopedRepository.save(
+      registrationUniquePair,
+    );
   }
 }
