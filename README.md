@@ -282,11 +282,16 @@ When new Node.js dependencies are added to a service since it is last build on y
 
 ## Testing
 
-- Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
+- Scenarios of e2e and integration/API-tests for the whole platform are described in [`Azure Test Plan`](https://dev.azure.com/redcrossnl/121%20Platform/_testPlans/define?planId=27408&suiteId=27409).
 - Each component has its own individual tests:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and API/integration-tests for all services; Run with `npm test` in each `services/*`-folder.
     See: `121-service/README.md`/[Testing](./services/121-service/README.md#testing) for details.
+  
+### How to use E2E tests and maintain documentation/Test Suites
+
+- For how to wright and execute Playwright E2E tests see `e2e/README.md`/[E2E testing suite](https://github.com/global-121/121-platform/tree/main/e2e).
+- For how to write and maintain Azure Test Plan suites see `wiki`/[Creating and maintaining E2E tests](https://github.com/global-121/121-platform/wiki/Creating-and-maintaining-E2E-tests).
 
 ### When to use an API-test? (back-end + db? only)
 
