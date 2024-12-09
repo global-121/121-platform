@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -12,9 +12,9 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(TwilioMessageEntity)
-    scopedRepository: ScopedRepository<TwilioMessageEntity>,
+    repository: Repository<TwilioMessageEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   // TODO: refactor to use this method in registrations service
