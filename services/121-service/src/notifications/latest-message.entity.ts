@@ -9,6 +9,7 @@ export class LatestMessageEntity extends Base121Entity {
   @OneToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.latestMessage,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
@@ -16,7 +17,9 @@ export class LatestMessageEntity extends Base121Entity {
   @Column({ type: 'int', nullable: true, unique: true })
   public registrationId: number | null;
 
-  @OneToOne(() => TwilioMessageEntity)
+  @OneToOne(() => TwilioMessageEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'messageId' })
   public message: Relation<TwilioMessageEntity>;
   @Index()

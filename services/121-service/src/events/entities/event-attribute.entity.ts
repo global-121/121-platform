@@ -13,7 +13,9 @@ import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attrib
 
 @Entity('event_attribute')
 export class EventAttributeEntity extends Base121Entity {
-  @ManyToOne((_type) => EventEntity, (event) => event.attributes)
+  @ManyToOne((_type) => EventEntity, (event) => event.attributes, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'eventId' })
   public event: Relation<EventEntity>;
   @Column()

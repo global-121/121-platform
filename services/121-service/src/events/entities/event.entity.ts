@@ -16,7 +16,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('event')
 export class EventEntity extends Base121OptionalAuditedEntity {
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
@@ -31,7 +31,7 @@ export class EventEntity extends Base121OptionalAuditedEntity {
   @Column({ type: 'character varying' })
   public type: EventEnum;
 
-  @ManyToOne(() => RegistrationEntity)
+  @ManyToOne(() => RegistrationEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Column()
