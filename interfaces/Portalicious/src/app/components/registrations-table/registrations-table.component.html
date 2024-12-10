@@ -14,6 +14,14 @@
   [enableColumnManagement]="true"
 >
   <div table-actions>
+    @if (showSelectionInHeader()) {
+      @let selectedItemsCount = table.selectedItemsCount();
+      @if (selectedItemsCount) {
+        <p class="font-normal txt-body-m">
+          <b i18n>Registrations selected:</b> {{ selectedItemsCount }}
+        </p>
+      }
+    }
     <ng-content select="[table-actions]"></ng-content>
   </div>
 </app-query-table>
