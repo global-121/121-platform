@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -12,9 +12,9 @@ export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(NoteEntity)
-    scopedRepository: ScopedRepository<NoteEntity>,
+    repository: Repository<NoteEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   async getManyByRegistrationIdAndProgramId(
