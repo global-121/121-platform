@@ -15,7 +15,7 @@ export class EventScopedRepository extends ScopedRepository<EventEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(EventEntity)
-    repository: ScopedRepository<EventEntity>,
+    repository: Repository<EventEntity>,
   ) {
     super(request, repository);
   }
