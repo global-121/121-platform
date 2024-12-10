@@ -18,7 +18,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { attributeToDataListItem } from '~/domains/project/project.helper';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -27,7 +27,6 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
   selector: 'app-project-registration-personal-information',
   standalone: true,
   imports: [
-    PageLayoutComponent,
     CardModule,
     TabMenuModule,
     CommonModule,
@@ -35,6 +34,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
     SelectButtonModule,
     InputTextModule,
     DataListComponent,
+    RegistrationPageLayoutComponent,
   ],
   templateUrl: './project-registration-personal-information.page.html',
   styles: ``,

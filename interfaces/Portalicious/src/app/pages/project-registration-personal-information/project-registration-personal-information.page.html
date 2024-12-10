@@ -1,15 +1,10 @@
-<app-page-layout
-  pageTitle=""
-  i18n-pageTitle="@@page-title-project-registration-personal-information"
+<app-registration-page-layout
   [projectId]="projectId()"
   [registrationId]="registrationId()"
 >
-  <div
-    registration-page
-    class="px-2"
-  >
+  <div class="px-2">
     @if (registration.isSuccess() && projectAttributes.isSuccess()) {
       <app-data-list [data]="attributeList()"> </app-data-list>
     }
   </div>
-</app-page-layout>
+</app-registration-page-layout>

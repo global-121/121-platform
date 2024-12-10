@@ -1,13 +1,8 @@
-<app-page-layout
-  pageTitle=""
-  i18n-pageTitle="@@page-title-project-registration-debit-cards"
+<app-registration-page-layout
   [projectId]="projectId()"
   [registrationId]="registrationId()"
 >
-  <div
-    registration-page
-    class="px-2"
-  >
+  <div class="px-2">
     <div class="my-auto ms-auto flex">
       @if (currentCardHasAction()('pause')) {
         <p-button
@@ -71,7 +66,7 @@
       </p-accordion>
     }
   </div>
-</app-page-layout>
+</app-registration-page-layout>
 <app-confirmation-dialog
   #pauseConfirmationDialog
   header="Pause card"
