@@ -55,6 +55,7 @@ export interface TransactionsTableCellContext {
     MetricTileComponent,
     ProjectPaymentChartComponent,
     SkeletonModule,
+    CurrencyPipe,
   ],
   templateUrl: './project-payment.page.html',
   styles: ``,
@@ -91,6 +92,41 @@ export class ProjectPaymentPageComponent {
       payment: this.paymentId,
     }),
   );
+
+  totalPaymentAmount = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return '0';
+    }
+
+    const totalAmount =
+      this.payment.data().failed.amount +
+      this.payment.data().success.amount +
+      this.payment.data().waiting.amount;
+
+    return (
+      this.currencyPipe.transform(
+        totalAmount,
+        this.project.data()?.currency ?? 'EUR',
+        'symbol-narrow',
+        '1.0-0',
+      ) ?? '0'
+    );
+  });
+
+  successfulPaymentsAmount = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return '0';
+    }
+
+    return (
+      this.currencyPipe.transform(
+        this.payment.data().success.amount,
+        this.project.data()?.currency ?? 'EUR',
+        'symbol-narrow',
+        '1.0-0',
+      ) ?? '0'
+    );
+  });
 
   columns = computed(() => {
     if (!this.project.isSuccess()) {
