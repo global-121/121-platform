@@ -7,7 +7,11 @@ import {
   registrationScopedMiddelburgPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
-import { importRegistrations } from '@121-service/test/helpers/registration.helper';
+import { getTransactions } from '@121-service/test/helpers/program.helper';
+import {
+  importRegistrations,
+  seedPaidRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   getAccessTokenScoped,
@@ -28,13 +32,12 @@ describe('Registrations - [Scoped]', () => {
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
-
-    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
-    await importRegistrations(PvProgramId, registrationsPV, accessToken);
   });
 
   it('should return all registrations from 1 program within the scope of the requesting user', async () => {
     // Arrange
+    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
+    await importRegistrations(PvProgramId, registrationsPV, accessToken);
     const testScope = DebugScope.Zeeland;
     accessToken = await getAccessTokenScoped(testScope);
 
@@ -62,6 +65,8 @@ describe('Registrations - [Scoped]', () => {
 
   it('should return all filtered registrations from 1 program within the scope of the requesting user', async () => {
     // Arrange
+    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
+    await importRegistrations(PvProgramId, registrationsPV, accessToken);
     const testScope = DebugScope.Zeeland;
     accessToken = await getAccessTokenScoped(testScope);
 
@@ -88,6 +93,43 @@ describe('Registrations - [Scoped]', () => {
     // Also check if the right referenceIds are in the transactions
     expect(data.map((r) => r.referenceId).sort()).toEqual(
       expectedReferenceIds.sort(),
+    );
+  });
+
+  // This tests if the ScopedRepository of entities related to registrations is working correctly
+  it('should get only transactions that from 1 program within the scope of the requesting user', async () => {
+    // Arrange
+    await seedPaidRegistrations(registrationsPV, PvProgramId);
+    await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+
+    const testScope = DebugScope.Zeeland;
+    accessToken = await getAccessTokenScoped(testScope);
+
+    // Act
+    const transactionResponse = await getTransactions(
+      PvProgramId,
+      1,
+      null,
+      accessToken,
+    );
+    const transactions = transactionResponse.body;
+
+    const refrenceIdsWithAllowedScope = registrationsPV
+      .filter((r) => r.scope.startsWith(testScope))
+      .map((r) => r.referenceId);
+
+    const referenceIdsFromTransactions = transactions.map(
+      (transaction) => transaction.referenceId,
+    );
+
+    // Sort both arrays
+    const sortedAllowedReferenceIds = refrenceIdsWithAllowedScope.sort();
+    const sortedReferenceIdsFromTransactions =
+      referenceIdsFromTransactions.sort();
+
+    // Validate that both arrays contain the same values
+    expect(sortedAllowedReferenceIds).toEqual(
+      sortedReferenceIdsFromTransactions,
     );
   });
 });
