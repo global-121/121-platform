@@ -20,7 +20,6 @@ describe('User mapper', () => {
       userType: UserType.aidWorker,
       admin: false,
       isEntraUser: false,
-      cascadeDelete: async () => {},
       salt: 'salt',
       active: true,
       lastLogin: new Date(),
