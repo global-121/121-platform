@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindOptionsWhere } from 'typeorm';
+import { Between, FindOptionsWhere, Repository } from 'typeorm';
 
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
