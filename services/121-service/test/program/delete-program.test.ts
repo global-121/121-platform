@@ -22,7 +22,7 @@ import {
 describe('Delete program', () => {
   let accessToken: string;
 
-  it('should delete a nlrc programs', async () => {
+  it('should delete nlrc programs', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
