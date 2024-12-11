@@ -1,0 +1,35 @@
+<!-- @if (hasExportOptions()) { -->
+<app-button-menu
+  label="Export"
+  i18n-label="@@export"
+  [menuItems]="exportOptions()"
+  [icon]="'pi pi-upload'"
+  [outlined]="true"
+/>
+<app-confirmation-dialog
+  #exportFspPaymentListDialog
+  [header]="fspPaymentListLabel()"
+  headerIcon="pi pi-upload"
+  [mutation]="exportFspPaymentListMutation"
+  [mutationData]=""
+>
+  <p i18n>export fsp payment list</p>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.payment"
+  />
+</app-confirmation-dialog>
+<app-confirmation-dialog
+  #paymentReportDialog
+  [header]="paymentReportLabel()"
+  headerIcon="pi pi-upload"
+  [mutation]="paymentReportMutation"
+  [mutationData]="paymentReportMutationData()"
+>
+  <p i18n>payment report</p>
+  <app-latest-export-date
+    [projectId]="projectId()"
+    [exportType]="ExportType.payment"
+  />
+</app-confirmation-dialog>
+<!-- } -->

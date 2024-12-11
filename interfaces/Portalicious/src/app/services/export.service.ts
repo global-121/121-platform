@@ -192,7 +192,7 @@ export class ExportService {
     );
   }
 
-  async exportFspInstructions({
+  exportFspInstructions({
     projectId,
     paymentId,
     toastService,
@@ -201,30 +201,34 @@ export class ExportService {
     paymentId: string;
     toastService: ToastService;
   }) {
-    toastService.showToast({
-      summary: $localize`Exporting FSP Instructions`,
-      detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
-      severity: 'info',
-      showSpinner: true,
-    });
-
-    try {
-      const exportResult = await this.queryClient.fetchQuery(
-        this.paymentApiService.exportFspInstructions({
-          projectId,
-          paymentId,
-        })(),
-      );
-
-      this.downloadArrayToXlsx()({
-        data: exportResult.data,
-        fileName: `payment#${paymentId}-fsp-instructions`,
-      });
-    } catch {
+    return async () => {
       toastService.showToast({
-        detail: $localize`An unexpected error occurred while exporting the FSP instructions. Please try again later.`,
-        severity: 'error',
+        summary: $localize`Exporting FSP Instructions`,
+        detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
+        severity: 'info',
+        showSpinner: true,
       });
-    }
+
+      try {
+        const query = await this.queryClient.fetchQuery(
+          this.paymentApiService.exportFspInstructions({
+            projectId,
+            paymentId,
+          })(),
+        );
+
+        return {
+          data: query.data,
+          fileName: `payment#${paymentId}-fsp-instructions`,
+        };
+      } catch (error) {
+        toastService.showToast({
+          detail: $localize`An unexpected error occurred while exporting the FSP instructions. Please try again later.`,
+          severity: 'error',
+        });
+
+        throw error;
+      }
+    };
   }
 }
