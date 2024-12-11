@@ -1574,7 +1574,7 @@
       </trans-unit>
       <trans-unit id="5889532119950831763" datatype="html">
         <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
-        <target state="new">You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</target>
+        <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. De huidige kaart wordt geblokkeerd en wordt er een nieuwe kaart uitgegeven.</target>
       </trans-unit>
     </body>
   </file>
