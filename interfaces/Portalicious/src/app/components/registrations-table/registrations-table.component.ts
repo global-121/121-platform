@@ -117,12 +117,12 @@ export class RegistrationsTableComponent {
         field: 'status',
         header: $localize`:@@registration-status:Status`,
         type: QueryTableColumnType.MULTISELECT,
-        options: Object.entries(REGISTRATION_STATUS_LABELS).map(
-          ([value, label]) => ({
-            label,
-            value,
-          }),
-        ),
+        options: Object.values(RegistrationStatusEnum)
+          .filter((status) => status !== RegistrationStatusEnum.deleted)
+          .map((status) => ({
+            label: REGISTRATION_STATUS_LABELS[status],
+            value: status,
+          })),
         getCellChipData: (registration) =>
           getChipDataByRegistrationStatus(registration.status),
       },
