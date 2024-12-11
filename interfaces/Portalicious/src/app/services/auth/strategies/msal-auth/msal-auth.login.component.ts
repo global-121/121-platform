@@ -21,6 +21,8 @@ import { FormDefaultComponent } from '~/components/form/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { generateFieldErrors } from '~/utils/form-validation';
+import { isIframed } from '~/utils/is-iframed';
+import { isPopupBlocked } from '~/utils/is-pop-up-blocked';
 
 type LoginFormSsoGroup =
   (typeof MsalAuthLoginComponent)['prototype']['formGroup'];
@@ -63,6 +65,13 @@ export class MsalAuthLoginComponent {
     },
   });
   loginMutation = injectMutation(() => ({
+    onMutate: () => {
+      if (isIframed() && isPopupBlocked()) {
+        throw Error(
+          $localize`Please allow pop-up windows in your browser settings to login`,
+        );
+      }
+    },
     mutationFn: ({ email }: ReturnType<LoginFormSsoGroup['getRawValue']>) =>
       this.authService.login({ username: email }, this.returnUrl()),
   }));
