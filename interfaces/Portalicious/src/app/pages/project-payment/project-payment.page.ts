@@ -180,6 +180,7 @@ export class ProjectPaymentPageComponent {
       {
         field: 'financialserviceprovider',
         header: $localize`FSP`,
+        type: QueryTableColumnType.MULTISELECT,
         options: this.project
           .data()
           .programFinancialServiceProviderConfigurations.map((config) => ({
