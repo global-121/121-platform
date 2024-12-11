@@ -110,7 +110,7 @@ export class CommercialBankEthiopiaApiService {
           const debitTheirRefElement = element.elements.find(
             (el) => el.name === 'fun:DEBITTHEIRREF',
           );
-          const creditTheIrRefElement = element.elements.find(
+          const creditTheirRefElement = element.elements.find(
             (el) => el.name === 'fun:CREDITTHEIRREF',
           );
           const creditAcctNoElement = element.elements.find(
@@ -127,8 +127,8 @@ export class CommercialBankEthiopiaApiService {
           );
 
           debitAmountElement.elements[0].text = payment.debitAmount;
-          debitTheirRefElement.elements[0].text = payment.debitTheIrRef;
-          creditTheIrRefElement.elements[0].text = payment.creditTheIrRef;
+          debitTheirRefElement.elements[0].text = payment.debitTheirRef;
+          creditTheirRefElement.elements[0].text = payment.creditTheirRef;
           creditAcctNoElement.elements[0].text = payment.creditAcctNo;
           creditCurrencyElement.elements[0].text = payment.creditCurrency;
           remitterNameElement.elements[0].text = payment.remitterName;
@@ -231,7 +231,7 @@ export class CommercialBankEthiopiaApiService {
             (el) => el.name === 'criteriaValue',
           );
           columnNameElement.elements[0].text = 'ID';
-          criteriaValueElement.elements[0].text = payment.debitTheIrRef;
+          criteriaValueElement.elements[0].text = payment.debitTheirRef;
           // You can modify other elements similarly
           break;
         // Handle other elements if needed

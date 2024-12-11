@@ -1,10 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaMockService {
-  public async postCBETransfer(payment): Promise<any> {
+  public async postCBETransfer(
+    payment: CommercialBankEthiopiaTransferPayload,
+  ): Promise<any> {
     await waitForRandomDelay(100, 300);
 
     const mockScenario = 'success'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
@@ -58,7 +61,7 @@ export class CommercialBankEthiopiaMockService {
         DEBITCURRENCY: { _text: 'ETB' },
         DEBITAMOUNT: { _text: String(payment.debitAmount) },
         DEBITVALUEDATE: { _text: '20210831' },
-        DEBITTHEIRREF: { _text: String(payment.debitTheIrRef) },
+        DEBITTHEIRREF: { _text: String(payment.debitTheirRef) },
         CREDITACCTNO: { _text: String(payment.creditAcctNo) },
         CURRENCYMKTCR: { _text: '1' },
         CREDITCURRENCY: { _text: String(payment.creditCurrency) },
@@ -137,7 +140,7 @@ export class CommercialBankEthiopiaMockService {
       ETXNSTATUSCBEREMITANCEType: {
         gETXNSTATUSCBEREMITANCEDetailType: {
           mETXNSTATUSCBEREMITANCEDetailType: {
-            SENDERREFERENCE: { _text: String(payment.debitTheIrRef) },
+            SENDERREFERENCE: { _text: String(payment.debitTheirRef) },
             TXNREFERENCE: { _text: 'FT21243423L4' },
             TXNAMOUNT: { _text: '' },
             TXNSTATUS: { _text: '' },
