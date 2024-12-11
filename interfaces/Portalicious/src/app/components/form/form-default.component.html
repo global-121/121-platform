@@ -15,6 +15,7 @@
       type="submit"
       rounded
       [loading]="mutation().isPending()"
+      [disabled]="disabled()"
     />
   </div>
 </form>

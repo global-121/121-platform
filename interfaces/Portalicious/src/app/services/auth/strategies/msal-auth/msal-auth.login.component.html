@@ -1,6 +1,7 @@
 <app-form-default
   [formGroup]="formGroup"
   [mutation]="loginMutation"
+  [disabled]="isIframed() && isPopupBlocked()"
   submitButtonText="Log in"
   i18n-submitButtonText
 >
@@ -21,4 +22,7 @@
       autofocus
     />
   </app-form-field-wrapper>
+  @if (isIframed() && isPopupBlocked()) {
+    <app-form-error [error]="allowPopupErrorMessage" />
+  }
 </app-form-default>

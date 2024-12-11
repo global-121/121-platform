@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -16,4 +16,6 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 })
 export class FormDefaultComponent<
   T extends FormGroup,
-> extends FormComponent<T> {}
+> extends FormComponent<T> {
+  disabled = input<boolean>(false);
+}
