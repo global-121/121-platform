@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1034,7 +1034,7 @@
       <trans-unit id="5248644489024163464" datatype="html">
         <source>Import file</source>
       </trans-unit>
-      <trans-unit id="6525991351362607122" datatype="html">
+      <trans-unit id="5842006292473012174" datatype="html">
         <source>The system will create registrations with the status “registered”.</source>
       </trans-unit>
       <trans-unit id="7123246815138482133" datatype="html">
@@ -1198,7 +1198,7 @@
       </trans-unit>
       <trans-unit id="5533720489917693962" datatype="html">
         <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
-        </trans-unit>
+      </trans-unit>
       <trans-unit id="attribute-label-inclusionScore" datatype="html">
         <source>Inclusion Score</source>
       </trans-unit>
@@ -1255,6 +1255,30 @@
       </trans-unit>
       <trans-unit id="8312065814232621608" datatype="html">
         <source>Indonesian</source>
+      </trans-unit>
+      <trans-unit id="1485624035618673724" datatype="html">
+        <source>Import reconciliation data</source>
+      </trans-unit>
+      <trans-unit id="2648122632166597138" datatype="html">
+        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+      </trans-unit>
+      <trans-unit id="4747436386182159575" datatype="html">
+        <source>The status column in the file should contain one of the following values:</source>
+      </trans-unit>
+      <trans-unit id="495282157937447440" datatype="html">
+        <source>Make sure to upload the correct file as this will override the current file.</source>
+      </trans-unit>
+      <trans-unit id="5682129577475133431" datatype="html">
+        <source>Import not possible</source>
+      </trans-unit>
+      <trans-unit id="581189508098722225" datatype="html">
+        <source>Reconciliation data imported successfully.</source>
+      </trans-unit>
+      <trans-unit id="8705310124062464174" datatype="html">
+        <source>A payment is currently in progress. Please try again later</source>
+      </trans-unit>
+      <trans-unit id="2795059376397351120" datatype="html">
+        <source>Registration Status</source>
       </trans-unit>
     </body>
   </file>
