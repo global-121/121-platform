@@ -187,7 +187,7 @@ You can also leave the body empty.`,
       'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.NO_CONTENT,
     description: 'The program has been successfully deleted.',
   })
   @ApiParam({
@@ -207,7 +207,7 @@ You can also leave the body empty.`,
     }
     await this.programService.deleteProgram(programId);
     return res
-      .status(HttpStatus.ACCEPTED)
+      .status(HttpStatus.NO_CONTENT)
       .send('The program has been successfully deleted.');
   }
 
