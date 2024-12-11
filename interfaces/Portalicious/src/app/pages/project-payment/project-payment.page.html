@@ -23,7 +23,7 @@
       <app-metric-tile
         class="grid-in-metric1"
         [pending]="paymentStatus.isPending() || transactions.isPending()"
-        [metricValue]="transactions.data()?.data?.length"
+        [metricValue]="transactions.data()?.length"
         metricLabel="Transfers sent"
         i18n-metricLabel
         chipLabel="In progress"
@@ -35,7 +35,7 @@
       <app-metric-tile
         class="grid-in-metric1"
         [pending]="false"
-        [metricValue]="transactions.data()?.data?.length"
+        [metricValue]="transactions.data()?.length"
         metricLabel="Registrations included"
         i18n-metricLabel
       />
@@ -49,6 +49,8 @@
       [chipLabel]="successfulPaymentsAmount()"
       chipIcon="pi pi-check-circle"
       chipVariant="green"
+      metricTooltip="The total payment amount is calculated by summing up the transfer values of each included registration added to the payment."
+      i18n-metricTooltip
     />
 
     @let paymentDetails = this.payment.data();
@@ -74,13 +76,15 @@
 
     <p-card class="grid-in-table">
       <app-query-table
-        [items]="transactions.data()?.data ?? []"
+        #table
+        [items]="transactions.data() ?? []"
         [isPending]="transactions.isPending()"
         [columns]="columns()"
         [localStorageKey]="localStorageKey()"
         [enableColumnManagement]="true"
         [contextMenuItems]="contextMenuItems()"
         (onUpdateContextMenuItem)="contextMenuSelection.set($event)"
+        [enableSelection]="true"
         [globalFilterFields]="[
           'id',
           'fullName',
@@ -100,7 +104,7 @@
           @if (canRetryTransfers()) {
             <p-button
               label="Retry failed transfers"
-              i18n-label
+              i18n-label="@@retry-failed-transfers"
               rounded
               outlined
               icon="pi pi-refresh"
@@ -112,3 +116,9 @@
     </p-card>
   </div>
 </app-page-layout>
+
+<app-retry-transfers-dialog
+  #retryTransfersDialog
+  [projectId]="projectId()"
+  [paymentId]="paymentId()"
+/>

@@ -50,6 +50,7 @@ import {
   PaginateQuery,
   PaginateQueryService,
 } from '~/services/paginate-query.service';
+import { ToastService } from '~/services/toast.service';
 import { Locale } from '~/utils/locale';
 
 export enum QueryTableColumnType {
@@ -111,6 +112,7 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
     QueryTableGlobalSearchComponent,
     QueryTableColumnManagementComponent,
   ],
+  providers: [ToastService],
   templateUrl: './query-table.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -118,6 +120,7 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
 export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   locale = inject<Locale>(LOCALE_ID);
   paginateQueryService = inject(PaginateQueryService);
+  toastService = inject(ToastService);
 
   items = input.required<TData[]>();
   isPending = input.required<boolean>();
@@ -135,7 +138,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   enableColumnManagement = input<boolean>(false);
   readonly onUpdateContextMenuItem = output<TData>();
   readonly onUpdatePaginateQuery = output<PaginateQuery>();
-  readonly onUpdateSelection = output<QueryTableSelectionEvent<TData>>();
 
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
@@ -349,10 +351,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   selectedItems = model<TData[]>([]);
   selectAll = model<boolean>(false);
+  tableSelection = signal<QueryTableSelectionEvent<TData>>([]);
 
   onSelectionChange(items: TData[]) {
     this.selectedItems.set(items);
-    this.onUpdateSelection.emit(items);
+    this.tableSelection.set(items);
   }
 
   onSelectAllChange(event: TableSelectAllChangeEvent) {
@@ -362,9 +365,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.selectAll.set(checked);
 
     if (checked) {
-      this.onUpdateSelection.emit({ selectAll: true });
+      this.tableSelection.set({ selectAll: true });
     } else {
-      this.onUpdateSelection.emit([]);
+      this.tableSelection.set([]);
     }
   }
 
@@ -377,7 +380,58 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   resetSelection() {
     this.selectedItems.set([]);
     this.selectAll.set(false);
-    this.onUpdateSelection.emit([]);
+    this.tableSelection.set([]);
+  }
+
+  public getActionData({
+    fieldForFilter,
+    currentPaginateQuery,
+    noSelectionToastMessage,
+    triggeredFromContextMenu = false,
+    contextMenuItem,
+  }: {
+    fieldForFilter: keyof TData & string;
+    noSelectionToastMessage: string;
+    currentPaginateQuery?: PaginateQuery;
+    triggeredFromContextMenu?: boolean;
+    contextMenuItem?: TData;
+  }) {
+    let selection = this.tableSelection();
+
+    if ('selectAll' in selection && !this.serverSideFiltering()) {
+      const filteredValue = this.table.filteredValue;
+
+      if (!filteredValue) {
+        this.toastService.showGenericError();
+        return;
+      }
+
+      selection = [...(filteredValue as TData[])];
+    }
+
+    if (Array.isArray(selection) && selection.length === 0) {
+      if (triggeredFromContextMenu) {
+        if (!contextMenuItem) {
+          this.toastService.showGenericError();
+          return;
+        }
+        selection = [contextMenuItem];
+      } else {
+        this.toastService.showToast({
+          severity: 'error',
+          detail: noSelectionToastMessage,
+        });
+        return;
+      }
+    }
+
+    return this.paginateQueryService.selectionEventToActionData({
+      selection,
+      fieldForFilter,
+      totalCount: this.totalRecords(),
+      currentPaginateQuery,
+      previewItemForSelectAll: this.items()[0],
+    });
   }
 
   /**
