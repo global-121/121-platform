@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   input,
 } from '@angular/core';
@@ -19,7 +18,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { FormDefaultComponent } from '~/components/form/form-default.component';
-import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -42,7 +40,6 @@ type LoginFormSsoGroup =
     ReactiveFormsModule,
     FormFieldWrapperComponent,
     FormDefaultComponent,
-    FormErrorComponent,
   ],
   templateUrl: './msal-auth.login.component.html',
   styles: ``,
@@ -52,7 +49,6 @@ export class MsalAuthLoginComponent {
   private authService = inject(AuthService);
   returnUrl = input<string | undefined>(undefined);
 
-  allowPopupErrorMessage = $localize`Please allow pop-up windows to login`;
   formGroup = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
@@ -69,13 +65,14 @@ export class MsalAuthLoginComponent {
     },
   });
   loginMutation = injectMutation(() => ({
+    onMutate: () => {
+      if (isIframed() && isPopupBlocked()) {
+        throw Error(
+          $localize`Please allow pop-up windows in your browser settings to login`,
+        );
+      }
+    },
     mutationFn: ({ email }: ReturnType<LoginFormSsoGroup['getRawValue']>) =>
       this.authService.login({ username: email }, this.returnUrl()),
   }));
-  isPopupBlocked = computed(() => {
-    return isPopupBlocked();
-  });
-  isIframed = computed(() => {
-    return isIframed();
-  });
 }
