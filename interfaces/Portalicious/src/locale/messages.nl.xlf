@@ -50,10 +50,6 @@
         <source>Location</source>
         <target>Locatie</target>
       </trans-unit>
-      <trans-unit id="537231992802647155" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued. A message will be sent to the registration about this update.</source>
-        <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. De huidige kaart wordt geblokkeerd en wordt er een nieuwe kaart uitgegeven. Er wordt een bericht naar de hulpvrager gestuurd over deze update.</target>
-      </trans-unit>
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
         <target>Er zijn <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registratie(s) die deze actie niet ondersteunen</target>
@@ -1575,6 +1571,10 @@
       <trans-unit id="2772534939673815092" datatype="html">
         <source>Please allow pop-up windows in your browser settings to login</source>
         <target state="new">Please allow pop-up windows in your browser settings to login</target>
+      </trans-unit>
+      <trans-unit id="5889532119950831763" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
+        <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. De huidige kaart wordt geblokkeerd en wordt er een nieuwe kaart uitgegeven.</target>
       </trans-unit>
     </body>
   </file>

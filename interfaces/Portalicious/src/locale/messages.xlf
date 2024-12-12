@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -532,9 +532,6 @@
       </trans-unit>
       <trans-unit id="565163819313820565" datatype="html">
         <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
-      </trans-unit>
-      <trans-unit id="537231992802647155" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued. A message will be sent to the registration about this update.</source>
       </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
         <source>Card number</source>
@@ -1183,6 +1180,9 @@
       </trans-unit>
       <trans-unit id="2772534939673815092" datatype="html">
         <source>Please allow pop-up windows in your browser settings to login</source>
+      </trans-unit>
+      <trans-unit id="5889532119950831763" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
       </trans-unit>
     </body>
   </file>

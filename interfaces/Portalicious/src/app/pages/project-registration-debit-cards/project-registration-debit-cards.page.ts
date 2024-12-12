@@ -118,6 +118,14 @@ export class ProjectRegistrationDebitCardsPageComponent {
       },
     ];
 
+    if (this.currentCard()?.explanation) {
+      listData.push({
+        label: $localize`:@@debit-card-explanation:Explanation`,
+        value: this.currentCard()?.explanation,
+        type: 'text',
+      });
+    }
+
     return listData.map((item) => ({
       ...item,
       loading: this.walletWithCards.isLoading(),

@@ -184,6 +184,7 @@ export class RegistrationApiService extends DomainApiService {
         'intersolve-visa',
         'wallet',
       ],
+      method: 'PATCH',
       enabled: () => !!referenceId(),
     });
   }
