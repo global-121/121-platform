@@ -105,7 +105,7 @@ export class RegistrationApiService extends DomainApiService {
         'message',
       ]).join('/'),
       body,
-      params:
+      httpParams:
         this.paginateQueryService.paginateQueryToHttpParamsObject(
           paginateQuery,
         ),
@@ -161,7 +161,7 @@ export class RegistrationApiService extends DomainApiService {
         method,
         endpoint,
         body,
-        params,
+        httpParams: params,
       },
     );
   }
@@ -213,7 +213,7 @@ export class RegistrationApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'PATCH',
       endpoint,
-      params: {
+      httpParams: {
         pause: pauseStatus,
       },
     });
