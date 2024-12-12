@@ -1169,9 +1169,6 @@
       <trans-unit id="3595291210637281374" datatype="html">
         <source>Transfers data</source>
       </trans-unit>
-      <trans-unit id="5391647417948016120" datatype="html">
-        <source>TODO: AB#31324</source>
-      </trans-unit>
       <trans-unit id="9047634939215362248" datatype="html">
         <source>Registrations selected:</source>
       </trans-unit>
@@ -1186,6 +1183,12 @@
       </trans-unit>
       <trans-unit id="8108032945706896800" datatype="html">
         <source>You do not have permission to view this page.</source>
+      </trans-unit>
+      <trans-unit id="4324437964498958057" datatype="html">
+        <source>Transfers sent</source>
+      </trans-unit>
+      <trans-unit id="4585448172507601196" datatype="html">
+        <source>Registrations included</source>
       </trans-unit>
     </body>
   </file>
