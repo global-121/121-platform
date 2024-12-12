@@ -11,6 +11,8 @@ class PaymentsPage extends BasePage {
   readonly addToPaymentButton: Locator;
   readonly fspSummary: Locator;
   readonly startPaymentButton: Locator;
+  readonly paymentTitle: Locator;
+  readonly paymentSummaryMetrics: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -24,6 +26,10 @@ class PaymentsPage extends BasePage {
     this.fspSummary = this.page
       .locator('p-card')
       .filter({ hasText: 'Financial Service Provider(s' });
+    this.paymentTitle = this.page.getByRole('link', { name: 'Payment' });
+    this.paymentSummaryMetrics = this.page
+      .getByTestId('payment-summary-metrics')
+      .locator('app-metric-container');
   }
 
   async selectAllRegistrations() {
@@ -56,6 +62,44 @@ class PaymentsPage extends BasePage {
 
   async startPayment() {
     await this.startPaymentButton.click();
+  }
+
+  async validatePaymentCard({
+    date,
+    registrationsNumber,
+    paymentAmount,
+    successfulTransfers,
+    failedTransfers,
+  }: {
+    date: string;
+    registrationsNumber: number;
+    paymentAmount: number;
+    successfulTransfers: number;
+    failedTransfers: number;
+  }) {
+    const paymentTitle = await this.paymentTitle.textContent();
+    const includedRegistrationsElement = await this.paymentSummaryMetrics
+      .filter({ hasText: 'Included reg.' })
+      .textContent();
+    const totalAmountElement = await this.paymentSummaryMetrics
+      .filter({ hasText: 'Total amount' })
+      .textContent();
+    const successfulTransfersElement = await this.paymentSummaryMetrics
+      .filter({ hasText: 'Successful transfers' })
+      .textContent();
+    const failedTransfersElement = await this.paymentSummaryMetrics
+      .filter({ hasText: 'Failed transfers' })
+      .textContent();
+
+    expect(paymentTitle).toContain(date);
+    expect(includedRegistrationsElement).toContain(
+      registrationsNumber.toString(),
+    );
+    expect(totalAmountElement).toContain(paymentAmount.toString());
+    expect(successfulTransfersElement).toContain(
+      successfulTransfers.toString(),
+    );
+    expect(failedTransfersElement).toContain(failedTransfers.toString());
   }
 }
 

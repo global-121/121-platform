@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -33,15 +34,14 @@ test('[31970] Do successful payment', async ({ page }) => {
   const payments = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';
-  const financialServiceProviders: string[] = [
-    'Visa debit card',
-    'Albert Heijn voucher WhatsApp',
-  ];
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
+  const date = new Date();
+  const formattedDate = format(date, 'dd/MM/yyyy, HH:mm');
+  const lastPaymentDate = `${formattedDate}`;
 
   await test.step('Navigate to Program payments', async () => {
     await basePage.selectProgram(projectTitle);
@@ -51,17 +51,21 @@ test('[31970] Do successful payment', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     await payments.createPayment();
-    await payments.validatePaymentSummary({
-      fsp: financialServiceProviders,
-      registrationsNumber: numberOfPas,
-      paymentAmount: defaultMaxTransferValue,
-    });
     await payments.startPayment();
   });
 
   await test.step('Validate payment card', async () => {
     await payments.validateToastMessage('Payment created.');
     await payments.navigateToProgramPage('Payments');
-    // TODO: Validate payment status card
+    // Reload the page in case there are still some payments in progress
+    await page.reload();
+
+    await payments.validatePaymentCard({
+      date: lastPaymentDate,
+      paymentAmount: defaultMaxTransferValue,
+      registrationsNumber: numberOfPas,
+      successfulTransfers: numberOfPas,
+      failedTransfers: 0,
+    });
   });
 });
