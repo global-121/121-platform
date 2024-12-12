@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31970] Do successful payment', async ({ page }) => {
+test('[31971] Show payment summary', async ({ page }) => {
   const basePage = new BasePage(page);
   const payments = new PaymentsPage(page);
 
@@ -57,11 +57,5 @@ test('[31970] Do successful payment', async ({ page }) => {
       paymentAmount: defaultMaxTransferValue,
     });
     await payments.startPayment();
-  });
-
-  await test.step('Validate payment card', async () => {
-    await payments.validateToastMessage('Payment created.');
-    await payments.navigateToProgramPage('Payments');
-    // TODO: Validate payment status card
   });
 });
