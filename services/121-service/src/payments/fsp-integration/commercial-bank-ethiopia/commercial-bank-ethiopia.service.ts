@@ -240,13 +240,13 @@ export class CommercialBankEthiopiaService
       debitTheirRef:
         debitTheirRefRetry ||
         `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`,
-      creditTheirRef: program.ngo,
-      creditAcctNo: bankAccountNumber,
-      creditCurrency: program.currency,
-      remitterName:
+      creditTheirRef:
         program.titlePortal && program.titlePortal.en
           ? program.titlePortal.en.substring(0, 35)
           : null,
+      creditAcctNo: bankAccountNumber,
+      creditCurrency: program.currency,
+      remitterName: program.ngo,
       beneficiaryName: `${fullName}`,
     };
   }
