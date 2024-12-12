@@ -1,20 +1,16 @@
-<app-page-layout
-  pageTitle=""
-  i18n-pageTitle="@@page-title-project-registration-activity-log"
+<app-registration-page-layout
   [projectId]="projectId()"
   [registrationId]="registrationId()"
 >
-  <div registration-page>
-    <app-query-table
-      [items]="activities()"
-      [isPending]="activityLog.isPending()"
-      [columns]="columns()"
-      localStorageKey="activity-log-table"
-      [expandableRowTemplate]="expandableRowTemplate"
-      [tableCellContext]="tableCellContext()"
-      [globalFilterFields]="globalFilterFields()"
-      [initialSortField]="'created'"
-      [initialSortOrder]="-1"
-    />
-  </div>
-</app-page-layout>
+  <app-query-table
+    [items]="activities()"
+    [isPending]="activityLog.isPending()"
+    [columns]="columns()"
+    localStorageKey="activity-log-table"
+    [expandableRowTemplate]="expandableRowTemplate"
+    [tableCellContext]="tableCellContext()"
+    [globalFilterFields]="globalFilterFields()"
+    [initialSortField]="'created'"
+    [initialSortOrder]="-1"
+  />
+</app-registration-page-layout>

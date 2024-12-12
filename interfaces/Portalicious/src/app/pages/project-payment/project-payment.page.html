@@ -1,11 +1,18 @@
 <app-page-layout
-  pageTitle="Payment"
-  i18n-pageTitle="@@page-title-project-payment"
   [projectId]="projectId()"
-  [paymentId]="paymentId()"
+  [parentPageLink]="allPaymentsLink()"
+  parentPageTitle="All Payments"
+  i18n-parentPageTitle
+  [pageTitle]="paymentTitle()"
+  [isPending]="payments.isPending()"
 >
+  <div header-actions>
+    <app-export-payment-instructions
+      [paymentId]="paymentId()"
+      [projectId]="projectId()"
+    ></app-export-payment-instructions>
+  </div>
   <div
-    payment-page
     class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
   >
     <app-metric-tile
@@ -46,8 +53,8 @@
 
     <p-card class="grid-in-table">
       <app-query-table
-        [items]="payments.data()?.data ?? []"
-        [isPending]="payments.isPending()"
+        [items]="transactions.data()?.data ?? []"
+        [isPending]="transactions.isPending()"
         [columns]="columns()"
         [localStorageKey]="localStorageKey()"
         [enableColumnManagement]="true"
