@@ -63,7 +63,7 @@ export class PaymentApiService extends DomainApiService {
       method: 'POST',
       endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
       body: paymentData,
-      params: {
+      httpParams: {
         ...this.paginateQueryService.paginateQueryToHttpParamsObject(
           paginateQuery,
         ),

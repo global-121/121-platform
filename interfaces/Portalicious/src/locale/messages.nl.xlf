@@ -50,10 +50,6 @@
         <source>Location</source>
         <target>Locatie</target>
       </trans-unit>
-      <trans-unit id="537231992802647155" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued. A message will be sent to the registration about this update.</source>
-        <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. De huidige kaart wordt geblokkeerd en wordt er een nieuwe kaart uitgegeven. Er wordt een bericht naar de hulpvrager gestuurd over deze update.</target>
-      </trans-unit>
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
         <target>Er zijn <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registratie(s) die deze actie niet ondersteunen</target>
@@ -1420,10 +1416,6 @@
         <source>Clear</source>
         <target state="new">Clear</target>
       </trans-unit>
-      <trans-unit id="8090326902764851563" datatype="html">
-        <source>Select included registrations to add to this payment.</source>
-        <target state="new">Select included registrations to add to this payment.</target>
-      </trans-unit>
       <trans-unit id="2200382670798092138" datatype="html">
         <source>Add to payment</source>
         <target state="new">Add to payment</target>
@@ -1439,10 +1431,6 @@
       <trans-unit id="8221183084962199390" datatype="html">
         <source>Payment not found. Please check the URL and try again.</source>
         <target state="new">Payment not found. Please check the URL and try again.</target>
-      </trans-unit>
-      <trans-unit id="3950247133633104105" datatype="html">
-        <source>Redirecting to 121…</source>
-        <target state="new">Redirecting to 121…</target>
       </trans-unit>
       <trans-unit id="5255226222389200378" datatype="html">
         <source>Unknown user account or authentication failed</source>
@@ -1500,9 +1488,9 @@
         <source>Review payment summary and follow the next steps:</source>
         <target state="new">Review payment summary and follow the next steps:</target>
       </trans-unit>
-      <trans-unit id="3107789597484856473" datatype="html">
-        <source>Click start payment, this will redirect you to the payment page.</source>
-        <target state="new">Click start payment, this will redirect you to the payment page.</target>
+      <trans-unit id="4360422423466093126" datatype="html">
+        <source>Click start payment, this will direct you to the payment page.</source>
+        <target state="new">Click start payment, this will direct you to the payment page.</target>
       </trans-unit>
       <trans-unit id="8847988975348610068" datatype="html">
         <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
@@ -1564,13 +1552,37 @@
         <source>Transfer value</source>
         <target state="new">Transfer value</target>
       </trans-unit>
-      <trans-unit id="5391647417948016120" datatype="html">
-        <source>TODO: AB#31324</source>
-        <target state="new">TODO: AB#31324</target>
-      </trans-unit>
       <trans-unit id="3595291210637281374" datatype="html">
         <source>Transfers data</source>
         <target state="new">Transfers data</target>
+      </trans-unit>
+      <trans-unit id="9047634939215362248" datatype="html">
+        <source>Registrations selected:</source>
+        <target state="new">Registrations selected:</target>
+      </trans-unit>
+      <trans-unit id="3890824728366334701" datatype="html">
+        <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
+        <target state="new">Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</target>
+      </trans-unit>
+      <trans-unit id="2772534939673815092" datatype="html">
+        <source>Please allow pop-up windows in your browser settings to login</source>
+        <target state="new">Please allow pop-up windows in your browser settings to login</target>
+      </trans-unit>
+      <trans-unit id="5889532119950831763" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
+        <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. De huidige kaart wordt geblokkeerd en wordt er een nieuwe kaart uitgegeven.</target>
+      </trans-unit>
+      <trans-unit id="8108032945706896800" datatype="html">
+        <source>You do not have permission to view this page.</source>
+        <target state="new">You do not have permission to view this page.</target>
+      </trans-unit>
+      <trans-unit id="4324437964498958057" datatype="html">
+        <source>Transfers sent</source>
+        <target state="new">Transfers sent</target>
+      </trans-unit>
+      <trans-unit id="4585448172507601196" datatype="html">
+        <source>Registrations included</source>
+        <target state="new">Registrations included</target>
       </trans-unit>
     </body>
   </file>

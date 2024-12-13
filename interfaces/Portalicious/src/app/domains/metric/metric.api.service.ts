@@ -36,10 +36,8 @@ export class MetricApiService extends DomainApiService {
   }) {
     return this.generateQueryOptions<Blob>({
       path: [...BASE_ENDPOINT(projectId), 'export-list', type],
-      requestOptions: {
-        params,
-        responseAsBlob: true,
-      },
+      params,
+      responseAsBlob: true,
     });
   }
 
@@ -53,11 +51,9 @@ export class MetricApiService extends DomainApiService {
   }) {
     return this.generateQueryOptions<{ data: PaymentMetricDetails[] }>({
       path: [...BASE_ENDPOINT(projectId), 'export-list', ExportType.payment],
-      requestOptions: {
-        params: {
-          minPayment: payment,
-          maxPayment: payment,
-        },
+      params: {
+        minPayment: payment,
+        maxPayment: payment,
       },
     });
   }

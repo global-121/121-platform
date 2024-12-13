@@ -31,11 +31,11 @@ const sendPaymentData: PaPaymentDataDto[] = [
 const payload: CommercialBankEthiopiaTransferPayload[] = [
   {
     debitAmount: sendPaymentData[0].transactionAmount,
-    debitTheIrRef: '2401193088037336',
-    creditTheIrRef: 'EKHCDC',
+    debitTheirRef: '2401193088037336',
+    creditTheirRef: 'DRA Joint Response 2023 Ethiopia -',
     creditAcctNo: '407951684723597',
     creditCurrency: 'ETB',
-    remitterName: 'DRA Joint Response 2023 Ethiopia -',
+    remitterName: 'EKHCDC',
     beneficiaryName: 'ANDUALEM MOHAMMED YIMER',
   },
 ];

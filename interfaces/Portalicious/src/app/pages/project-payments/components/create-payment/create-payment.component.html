@@ -14,7 +14,7 @@
   [resizable]="false"
   [modal]="true"
   [closeOnEscape]="false"
-  styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:p-0 [&_.p-dialog-footer]:shadow"
+  styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:p-0 [&_.p-dialog-footer]:shadow-payment-stepper"
 >
   <ng-template pTemplate="header">
     <h3>
@@ -38,7 +38,13 @@
           i18n
           class="mb-5"
         >
-          Select included registrations to add to this payment.
+          Below is a table of all
+          <app-colored-chip
+            [variant]="includedChipData.chipVariant"
+            [label]="includedChipData.chipLabel"
+          />
+          registrations. Select registrations you would like to add to this
+          payment.
         </p>
         <p-card>
           <app-registrations-table
@@ -51,6 +57,7 @@
               today.toISOString()
             "
             [overrideFilters]="overrideFilters"
+            [showSelectionInHeader]="true"
           />
         </p-card>
       </div>
@@ -61,7 +68,7 @@
             <p i18n>Review payment summary and follow the next steps:</p>
             <ol class="mt-2 list-decimal pl-6">
               <li i18n>
-                Click start payment, this will redirect you to the payment page.
+                Click start payment, this will direct you to the payment page.
               </li>
               <li i18n>
                 Export the FSP instructions from the payment page. This is only
@@ -119,7 +126,7 @@
           rounded
           outlined
           class="me-auto"
-          (click)="dryRunResult.set(undefined)"
+          (click)="goBack()"
         />
       }
       <span

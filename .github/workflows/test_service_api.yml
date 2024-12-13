@@ -15,6 +15,7 @@ on:
   push:
     branches:
       - 'release/*'
+      - 'hotfix/*'
     paths:
       - '.github/workflows/test_service_api.yml'
       - '.github/actions/build-service/action.yml'

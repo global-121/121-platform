@@ -49,6 +49,7 @@ export class RegistrationsTableComponent {
   contextMenuItems = input<MenuItem[]>();
   localStorageKey = input<string>();
   overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>({});
+  showSelectionInHeader = input<boolean>(false);
 
   private paginateQueryService = inject(PaginateQueryService);
   private projectApiService = inject(ProjectApiService);
@@ -154,13 +155,12 @@ export class RegistrationsTableComponent {
       },
     ];
 
-    registrationTableColumns.forEach((column) => {
-      column.disableFiltering =
-        !!column.field &&
-        Object.keys(this.overrideFilters()).includes(column.field);
-    });
-
-    return registrationTableColumns;
+    return registrationTableColumns.filter(
+      (column) =>
+        !column.field ||
+        // For example, hide the "status" column when we are forcing a filter by status
+        !Object.keys(this.overrideFilters()).includes(column.field),
+    );
   });
 
   public getActionData({

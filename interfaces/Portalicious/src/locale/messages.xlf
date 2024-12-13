@@ -533,9 +533,6 @@
       <trans-unit id="565163819313820565" datatype="html">
         <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
-      <trans-unit id="537231992802647155" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued. A message will be sent to the registration about this update.</source>
-      </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
         <source>Card number</source>
       </trans-unit>
@@ -1070,9 +1067,6 @@
       <trans-unit id="2200382670798092138" datatype="html">
         <source>Add to payment</source>
       </trans-unit>
-      <trans-unit id="8090326902764851563" datatype="html">
-        <source>Select included registrations to add to this payment.</source>
-      </trans-unit>
       <trans-unit id="2224540478181897692" datatype="html">
         <source>All Payments</source>
       </trans-unit>
@@ -1081,9 +1075,6 @@
       </trans-unit>
       <trans-unit id="8221183084962199390" datatype="html">
         <source>Payment not found. Please check the URL and try again.</source>
-      </trans-unit>
-      <trans-unit id="3950247133633104105" datatype="html">
-        <source>Redirecting to 121…</source>
       </trans-unit>
       <trans-unit id="5255226222389200378" datatype="html">
         <source>Unknown user account or authentication failed</source>
@@ -1130,8 +1121,8 @@
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
       </trans-unit>
-      <trans-unit id="3107789597484856473" datatype="html">
-        <source>Click start payment, this will redirect you to the payment page.</source>
+      <trans-unit id="4360422423466093126" datatype="html">
+        <source>Click start payment, this will direct you to the payment page.</source>
       </trans-unit>
       <trans-unit id="5677186522471416018" datatype="html">
         <source>Upload the file to the Financial Service Provider’s portal.</source>
@@ -1178,8 +1169,26 @@
       <trans-unit id="3595291210637281374" datatype="html">
         <source>Transfers data</source>
       </trans-unit>
-      <trans-unit id="5391647417948016120" datatype="html">
-        <source>TODO: AB#31324</source>
+      <trans-unit id="9047634939215362248" datatype="html">
+        <source>Registrations selected:</source>
+      </trans-unit>
+      <trans-unit id="3890824728366334701" datatype="html">
+        <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
+      </trans-unit>
+      <trans-unit id="2772534939673815092" datatype="html">
+        <source>Please allow pop-up windows in your browser settings to login</source>
+      </trans-unit>
+      <trans-unit id="5889532119950831763" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
+      </trans-unit>
+      <trans-unit id="8108032945706896800" datatype="html">
+        <source>You do not have permission to view this page.</source>
+      </trans-unit>
+      <trans-unit id="4324437964498958057" datatype="html">
+        <source>Transfers sent</source>
+      </trans-unit>
+      <trans-unit id="4585448172507601196" datatype="html">
+        <source>Registrations included</source>
       </trans-unit>
     </body>
   </file>

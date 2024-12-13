@@ -11,7 +11,7 @@
       <ETXNSTATUSCBEREMITANCEType>
         <enquiryInputCollection>
           <columnName>ID</columnName>
-          <criteriaValue>${debitTheIrRef}</criteriaValue>
+          <criteriaValue>${debitTheirRef}</criteriaValue>
           <operand>EQ</operand>
         </enquiryInputCollection>
       </ETXNSTATUSCBEREMITANCEType>

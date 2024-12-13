@@ -43,6 +43,7 @@ export class LoginPageComponent {
     }
     return returnUrl;
   });
+
   constructor() {
     const currentNavigation = this.router.getCurrentNavigation();
     const authError: unknown =

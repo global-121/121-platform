@@ -99,6 +99,9 @@ export default {
         'project-monitoring-wide': '16rem 16rem 1fr',
         'project-payment-wide': '24rem 1fr',
       },
+      boxShadow: {
+        'payment-stepper': '2px 0px 10px 0px #0000000F',
+      },
     },
   },
   plugins: [
