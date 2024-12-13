@@ -27,7 +27,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -35,7 +35,6 @@ import { ToastService } from '~/services/toast.service';
   selector: 'app-project-registration-debit-cards',
   standalone: true,
   imports: [
-    PageLayoutComponent,
     CardModule,
     TabMenuModule,
     CommonModule,
@@ -45,6 +44,7 @@ import { ToastService } from '~/services/toast.service';
     AccordionModule,
     ColoredChipComponent,
     ConfirmationDialogComponent,
+    RegistrationPageLayoutComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registration-debit-cards.page.html',
@@ -117,6 +117,14 @@ export class ProjectRegistrationDebitCardsPageComponent {
         type: 'date',
       },
     ];
+
+    if (this.currentCard()?.explanation) {
+      listData.push({
+        label: $localize`:@@debit-card-explanation:Explanation`,
+        value: this.currentCard()?.explanation,
+        type: 'text',
+      });
+    }
 
     return listData.map((item) => ({
       ...item,

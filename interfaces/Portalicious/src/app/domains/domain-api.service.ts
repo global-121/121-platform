@@ -30,23 +30,37 @@ export abstract class DomainApiService {
   >({
     path,
     processResponse,
-    requestOptions = {},
+    params = {},
+    responseAsBlob = false,
     method = 'GET',
     paginateQuery,
     ...opts
   }: {
     path: Parameters<typeof DomainApiService.prototype.pathToQueryKey>[0];
     processResponse?: (data: BackendDataShape) => ProcessedResponseShape;
-    requestOptions?: Omit<
-      Perform121ServiceRequestParams,
-      'endpoint' | 'method'
+    params?: Record<
+      string,
+      | boolean
+      | number
+      | readonly (boolean | number | string)[]
+      | Signal<
+          boolean | number | readonly (boolean | number | string)[] | string
+        >
+      | string
     >;
+    responseAsBlob?: boolean;
     method?: Perform121ServiceRequestParams['method'];
     paginateQuery?: Signal<PaginateQuery>;
   } & Partial<UndefinedInitialDataOptions<ProcessedResponseShape>>) {
     return () => {
       const queryKey = this.pathToQueryKey(path);
       const endpoint = queryKey.join('/');
+      const deSignalizedParams = Object.fromEntries(
+        Object.entries(params).map(([key, value]) => [
+          key,
+          isSignal(value) ? value() : value,
+        ]),
+      );
 
       return queryOptions({
         ...opts,
@@ -54,13 +68,15 @@ export abstract class DomainApiService {
           ...queryKey,
           method,
           endpoint,
-          JSON.stringify(requestOptions),
+          deSignalizedParams,
+          responseAsBlob,
           paginateQuery && paginateQuery(),
           processResponse,
         ],
         queryFn: async () => {
-          // eslint-disable-next-line prefer-const
-          let { params, ...options } = requestOptions;
+          let httpParams = {
+            ...deSignalizedParams,
+          };
 
           if (paginateQuery) {
             const paginateQueryParams =
@@ -68,8 +84,8 @@ export abstract class DomainApiService {
                 paginateQuery(),
               );
 
-            params = {
-              ...params,
+            httpParams = {
+              ...httpParams,
               ...paginateQueryParams,
             };
           }
@@ -77,8 +93,8 @@ export abstract class DomainApiService {
           const response =
             await this.httpWrapperService.perform121ServiceRequest<BackendDataShape>(
               {
-                ...options,
-                params,
+                responseAsBlob,
+                httpParams,
                 method,
                 endpoint,
               },

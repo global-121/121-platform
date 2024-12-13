@@ -11,7 +11,6 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { TabMenuModule } from 'primeng/tabmenu';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -21,45 +20,46 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { BreadcrumbsTitleComponent } from '~/components/page-layout/components/breadcrumbs-title/breadcrumbs-title.component';
-import { PageLayoutTitleAndActionsComponent } from '~/components/page-layout/components/page-layout-title-and-actions/page-layout-title-and-actions.component';
-import { AddNoteFormComponent } from '~/components/page-layout/components/registration-header/add-note-form/add-note-form.component';
+import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { AddNoteFormComponent } from '~/components/registration-page-layout/components/add-note-form/add-note-form.component';
+import { RegistrationMenuComponent } from '~/components/registration-page-layout/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { AuthService } from '~/services/auth.service';
 
 @Component({
-  selector: 'app-registration-header',
+  selector: 'app-registration-page-layout',
   standalone: true,
   imports: [
-    TabMenuModule,
+    PageLayoutComponent,
     CardModule,
     DataListComponent,
     ButtonModule,
     DatePipe,
     SkeletonInlineComponent,
     AddNoteFormComponent,
-    PageLayoutTitleAndActionsComponent,
-    BreadcrumbsTitleComponent,
+    RegistrationMenuComponent,
   ],
-  templateUrl: './registration-header.component.html',
+  templateUrl: './registration-page-layout.component.html',
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationHeaderComponent {
+export class RegistrationPageLayoutComponent {
   readonly registrationApiService = inject(RegistrationApiService);
   readonly projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
 
   projectId = input.required<number>();
   registrationId = input.required<number>();
+
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.projectId,
       this.registrationId,
     ),
   );
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
 
   registrationData = computed(() => {
     const registrationRawData = this.registration.data();
