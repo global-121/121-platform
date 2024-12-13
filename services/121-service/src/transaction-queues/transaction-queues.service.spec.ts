@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesService } from '@121-service/src/queues/queues.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -44,11 +44,11 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
 
 describe('TransactionQueuesService', () => {
   let transactionQueuesService: TransactionQueuesService;
-  let queueRegistryService: QueueRegistryService;
+  let queuesService: QueuesService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(TransactionQueuesService)
-      .mock(QueueRegistryService)
+      .mock(QueuesService)
       .using({
         transactionJobIntersolveVisaQueue: {
           add: jest.fn(),
@@ -60,7 +60,7 @@ describe('TransactionQueuesService', () => {
       .compile();
 
     transactionQueuesService = unit;
-    queueRegistryService = unitRef.get(QueueRegistryService);
+    queuesService = unitRef.get(QueuesService);
   });
 
   it('should be defined', () => {
@@ -69,10 +69,7 @@ describe('TransactionQueuesService', () => {
 
   it('should add transaction job to queue: intersolve-visa', async () => {
     jest
-      .spyOn(
-        queueRegistryService.transactionJobIntersolveVisaQueue as any,
-        'add',
-      )
+      .spyOn(queuesService.transactionJobIntersolveVisaQueue as any, 'add')
       .mockReturnValue({
         data: {
           id: 1,
@@ -87,10 +84,10 @@ describe('TransactionQueuesService', () => {
 
     // Assert
     expect(
-      queueRegistryService.transactionJobIntersolveVisaQueue.add,
+      queuesService.transactionJobIntersolveVisaQueue.add,
     ).toHaveBeenCalledTimes(1);
     expect(
-      queueRegistryService.transactionJobIntersolveVisaQueue.add,
+      queuesService.transactionJobIntersolveVisaQueue.add,
     ).toHaveBeenCalledWith(
       JobNames.default,
       mockIntersolveVisaTransactionJobDto[0],
@@ -99,7 +96,7 @@ describe('TransactionQueuesService', () => {
 
   it('should add transaction job to queue: safaricom', async () => {
     jest
-      .spyOn(queueRegistryService.transactionJobSafaricomQueue as any, 'add')
+      .spyOn(queuesService.transactionJobSafaricomQueue as any, 'add')
       .mockReturnValue({
         data: {
           id: 1,
@@ -114,10 +111,11 @@ describe('TransactionQueuesService', () => {
 
     // Assert
     expect(
-      queueRegistryService.transactionJobSafaricomQueue.add,
+      queuesService.transactionJobSafaricomQueue.add,
     ).toHaveBeenCalledTimes(1);
-    expect(
-      queueRegistryService.transactionJobSafaricomQueue.add,
-    ).toHaveBeenCalledWith(JobNames.default, mockSafaricomTransactionJobDto[0]);
+    expect(queuesService.transactionJobSafaricomQueue.add).toHaveBeenCalledWith(
+      JobNames.default,
+      mockSafaricomTransactionJobDto[0],
+    );
   });
 });

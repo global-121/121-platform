@@ -8,7 +8,7 @@ import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/s
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
+import { QueuesModule } from '@121-service/src/queues/queues.module';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -17,7 +17,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     HttpModule,
     TypeOrmModule.forFeature([SafaricomTransferEntity]),
     RedisModule,
-    QueueRegistryModule,
+    QueuesModule,
   ],
   providers: [
     SafaricomService,

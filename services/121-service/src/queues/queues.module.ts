@@ -2,7 +2,7 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesService } from '@121-service/src/queues/queues.service';
 import {
   QueueNameCreateMessage,
   QueueNameMessageCallBack,
@@ -200,7 +200,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
   ],
-  providers: [QueueRegistryService, AzureLogService],
-  exports: [QueueRegistryService],
+  providers: [QueuesService, AzureLogService],
+  exports: [QueuesService],
 })
-export class QueueRegistryModule {}
+export class QueuesModule {}

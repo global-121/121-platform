@@ -18,7 +18,7 @@ import {
 } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesService } from '@121-service/src/queues/queues.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -38,19 +38,19 @@ export class MessageQueuesService {
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesService,
   ) {
     this.queueNameToQueueMap = {
       [QueueNameCreateMessage.replyOnIncoming]:
-        this.queueRegistryService.createMessageReplyOnIncomingQueue,
+        this.queuesService.createMessageReplyOnIncomingQueue,
       [QueueNameCreateMessage.smallBulk]:
-        this.queueRegistryService.createMessageSmallBulkQueue,
+        this.queuesService.createMessageSmallBulkQueue,
       [QueueNameCreateMessage.mediumBulk]:
-        this.queueRegistryService.createMessageMediumBulkQueue,
+        this.queuesService.createMessageMediumBulkQueue,
       [QueueNameCreateMessage.largeBulk]:
-        this.queueRegistryService.createMessageLargeBulkQueue,
+        this.queuesService.createMessageLargeBulkQueue,
       [QueueNameCreateMessage.lowPriority]:
-        this.queueRegistryService.createMessageLowPriorityQueue,
+        this.queuesService.createMessageLowPriorityQueue,
     };
   }
 

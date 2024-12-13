@@ -13,7 +13,7 @@ import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transacti
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
-export class QueueRegistryService implements OnModuleInit {
+export class QueuesService implements OnModuleInit {
   private allQueues: Queue[] = [];
 
   constructor(

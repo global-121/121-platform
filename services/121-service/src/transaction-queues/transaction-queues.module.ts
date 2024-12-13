@@ -2,11 +2,11 @@
 import { Module } from '@nestjs/common';
 
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
+import { QueuesModule } from '@121-service/src/queues/queues.module';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 
 @Module({
-  imports: [RedisModule, QueueRegistryModule],
+  imports: [RedisModule, QueuesModule],
   providers: [TransactionQueuesService],
   exports: [TransactionQueuesService],
 })

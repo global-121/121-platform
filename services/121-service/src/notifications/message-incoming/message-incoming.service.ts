@@ -25,7 +25,7 @@ import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integrat
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesService } from '@121-service/src/queues/queues.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -61,7 +61,7 @@ export class MessageIncomingService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
@@ -105,7 +105,7 @@ export class MessageIncomingService {
   public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.queueRegistryService.messageStatusCallbackQueue.add(
+    await this.queuesService.messageStatusCallbackQueue.add(
       ProcessNameMessage.sms,
       callbackData,
     );
@@ -121,7 +121,7 @@ export class MessageIncomingService {
   public async addWhatsappStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.queueRegistryService.messageStatusCallbackQueue.add(
+    await this.queuesService.messageStatusCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
     );
@@ -130,7 +130,7 @@ export class MessageIncomingService {
   public async addIncomingWhatsappToQueue(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
-    await this.queueRegistryService.messageIncomingCallbackQueue.add(
+    await this.queuesService.messageIncomingCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
     );
