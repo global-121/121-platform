@@ -93,22 +93,34 @@ export class SinglePaymentExportComponent {
     },
   }));
 
+  canExportPaymentInstructions = computed(() => {
+    return (
+      projectHasFspWithExportFileIntegration(this.project.data()) &&
+      this.authService.hasPermission({
+        projectId: this.projectId(),
+        requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
+      })
+    );
+  });
+
   exportOptions = computed<MenuItem[]>(() => [
     {
       label: this.fspPaymentListLabel(),
-      visible:
-        projectHasFspWithExportFileIntegration(this.project.data()) &&
-        this.authService.hasPermission({
-          projectId: this.projectId(),
-          requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
-        }),
+      visible: this.canExportPaymentInstructions(),
       command: () => {
         this.exportFspPaymentListDialog.askForConfirmation();
       },
     },
     {
       label: this.paymentReportLabel(),
-      visible: true,
+      visible: this.authService.hasAllPermissions({
+        projectId: this.projectId(),
+        requiredPermissions: [
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.RegistrationPaymentExport,
+        ],
+      }),
       command: () => {
         this.paymentReportDialog.askForConfirmation();
       },
