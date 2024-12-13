@@ -29,7 +29,7 @@ describe('Registrations - [Scoped]', () => {
   const PvProgramId = programIdPV;
   let accessToken: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
   });
