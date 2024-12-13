@@ -170,7 +170,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         id: config.id,
       });
     } catch (e) {
-      // .. transactions and registrations are not and will therefore run into this foreign key constraint if present
+      // .. transactions and registrations are not cascade-deleted and will therefore run into this foreign key constraint if present
       if (e.code === '23503') {
         throw new HttpException(
           'Cannot delete Program FSP Configuration because it is related to e.g. transactions or registrations',
