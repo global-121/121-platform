@@ -1218,7 +1218,7 @@ export class RegistrationsService {
       .getRawMany();
     console.timeEnd('duplicates');
     console.log('🚀 ~ RegistrationsService ~ result:', duplicates);
-
+// do not use levenshtein, but other alternative in this method
     console.time('fuzzyMatch levenshtein');
     const fuzzyQbLeven = await this.registrationDataScopedRepository
       .createQueryBuilder('d1')
