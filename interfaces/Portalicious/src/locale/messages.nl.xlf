@@ -1504,14 +1504,6 @@
         <source>Exporting FSP Instructions</source>
         <target state="new">Exporting FSP Instructions</target>
       </trans-unit>
-      <trans-unit id="5982069520336655984" datatype="html">
-        <source>Export not possible</source>
-        <target state="new">Export not possible</target>
-      </trans-unit>
-      <trans-unit id="5013095735395935362" datatype="html">
-        <source>The current payment is still in progress. Please try again later</source>
-        <target state="new">The current payment is still in progress. Please try again later</target>
-      </trans-unit>
       <trans-unit id="614288202138197410" datatype="html">
         <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
         <target state="new">Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</target>
@@ -1520,7 +1512,7 @@
         <source>An unexpected error occurred while exporting the FSP instructions. Please try again later.</source>
         <target state="new">An unexpected error occurred while exporting the FSP instructions. Please try again later.</target>
       </trans-unit>
-      <trans-unit id="3706395027796944760" datatype="html">
+      <trans-unit id="export-fsp-payment-list" datatype="html">
         <source>Export FSP payment list</source>
         <target state="new">Export FSP payment list</target>
       </trans-unit>
@@ -1595,6 +1587,18 @@
       <trans-unit id="7113199794780283377" datatype="html">
         <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
         <target state="new">You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</target>
+      </trans-unit>
+      <trans-unit id="430567532446749040" datatype="html">
+        <source>You&apos;re about to download an Excel file with the FSP insstructions for payment <x equiv-text="{{ paymentId() }}" id="INTERPOLATION"/>.</source>
+        <target state="new">You&apos;re about to download an Excel file with the FSP insstructions for payment <x equiv-text="{{ paymentId() }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="710132294905416202" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in payment <x equiv-text="{{ paymentId() }}" id="INTERPOLATION"/>.</source>
+        <target state="new">You&apos;re about to download an Excel file with all of the registrations included in payment <x equiv-text="{{ paymentId() }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="payment-report" datatype="html">
+        <source>Payment report</source>
+        <target state="new">Payment report</target>
       </trans-unit>
     </body>
   </file>
