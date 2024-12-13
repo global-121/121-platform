@@ -14,13 +14,20 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TabMenuModule } from 'primeng/tabmenu';
 
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+
 import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { attributeToDataListItem } from '~/domains/project/project.helper';
+import { projectHasInclusionScore } from '~/domains/project/project.helper';
+import {
+  getGenericAttributeDataListItem,
+  getValueForGenericAttribute,
+  projectAttributeToDataListItem,
+} from '~/domains/project/project-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 @Component({
@@ -51,7 +58,7 @@ export class ProjectRegistrationPersonalInformationPageComponent {
     this.projectApiService.getProjectAttributes({
       projectId: this.projectId,
       includeProgramRegistrationAttributes: true,
-      includeTemplateDefaultAttributes: true,
+      includeTemplateDefaultAttributes: false,
     }),
   );
 
@@ -62,20 +69,54 @@ export class ProjectRegistrationPersonalInformationPageComponent {
     ),
   );
 
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
+
   attributeList = computed<DataListItem[]>(() => {
     const list: DataListItem[] = [];
     if (!this.projectAttributes.isSuccess() || !this.registration.isSuccess()) {
       return list;
     }
 
+    const genericAttributeNames =
+      this.genericAttributeNamesForPersonalInformation();
+    for (const attributeName of genericAttributeNames) {
+      const value = getValueForGenericAttribute(
+        this.registration.data()[attributeName],
+        attributeName,
+      );
+      const genericAttributeListItem = getGenericAttributeDataListItem(
+        attributeName,
+        value,
+      );
+      list.push(genericAttributeListItem);
+    }
     for (const attribute of this.projectAttributes.data()) {
       const value = this.registration.data()[attribute.name] as unknown;
-      const dataListItem = attributeToDataListItem(attribute, value);
+      const dataListItem = projectAttributeToDataListItem(attribute, value);
       if (dataListItem) {
         list.push(dataListItem);
       }
     }
-
     return list;
+  });
+
+  private genericAttributeNamesForPersonalInformation = computed<
+    GenericRegistrationAttributes[]
+  >(() => {
+    const genericAttributeNames: GenericRegistrationAttributes[] = [
+      GenericRegistrationAttributes.preferredLanguage,
+      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+      GenericRegistrationAttributes.paymentAmountMultiplier,
+    ];
+    if (this.project.data()?.enableMaxPayments) {
+      genericAttributeNames.concat([
+        GenericRegistrationAttributes.maxPayments,
+        GenericRegistrationAttributes.paymentCountRemaining,
+      ]);
+    }
+    if (projectHasInclusionScore(this.project.data())) {
+      genericAttributeNames.push(GenericRegistrationAttributes.inclusionScore);
+    }
+    return genericAttributeNames;
   });
 }
