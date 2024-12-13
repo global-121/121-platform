@@ -1,21 +1,19 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
-import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
+import { QueueNameCreateMessage } from '@121-service/src/queues/enum/queue-names-create-message.enum';
+import { QueueNameMessageCallBack } from '@121-service/src/queues/enum/queue-names-message-callback.enum';
+import { QueueNameRegistration } from '@121-service/src/queues/enum/queue-names-registration.enum';
+import { QueueNamesSafaricomCallback } from '@121-service/src/queues/enum/queue-names-safaricom-callback.enum';
+import { QueueNamesTransactionJob } from '@121-service/src/queues/enum/queue-names-transaction-jobs.enum';
 import { QueuesService } from '@121-service/src/queues/queues.service';
-import {
-  QueueNameCreateMessage,
-  QueueNameMessageCallBack,
-  QueueNameRegistration,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
   imports: [
     // Transaction job queues
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.intersolveVisa,
+      name: QueueNamesTransactionJob.intersolveVisa,
       processors: [
         {
           path: 'src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor.ts',
@@ -27,7 +25,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.safaricom,
+      name: QueueNamesTransactionJob.safaricom,
       processors: [
         {
           path: 'src/transaction-job-processors/processors/transaction-job-safaricom.processor.ts',
@@ -39,7 +37,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.commercialBankEthiopia,
+      name: QueueNamesTransactionJob.commercialBankEthiopia,
       processors: [
         {
           path: 'src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor.ts',
@@ -51,7 +49,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.intersolveVoucher,
+      name: QueueNamesTransactionJob.intersolveVoucher,
       processors: [
         {
           path: 'src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor.ts',
@@ -65,7 +63,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
     // Safaricom Callback Queues
     BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.transfer,
+      name: QueueNamesSafaricomCallback.transfer,
       processors: [
         {
           path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-transfer-callback-job.processor.ts',
@@ -77,7 +75,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.timeout,
+      name: QueueNamesSafaricomCallback.timeout,
       processors: [
         {
           path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-timeout-callback-job.processor.ts',

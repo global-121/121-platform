@@ -4,14 +4,14 @@ import { Job } from 'bull';
 import Redis from 'ioredis';
 
 import { FinancialServiceProviderCallbackJobProcessorsService } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.service';
-import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { QueueNamesSafaricomCallback } from '@121-service/src/queues/enum/queue-names-safaricom-callback.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(SafaricomCallbackQueueNames.timeout)
+@Processor(QueueNamesSafaricomCallback.timeout)
 export class TimeoutCallbackJobProcessorSafaricom {
   constructor(
     private readonly financialServiceProviderCallbackJobProcessorsService: FinancialServiceProviderCallbackJobProcessorsService,

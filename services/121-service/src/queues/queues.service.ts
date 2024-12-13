@@ -2,14 +2,12 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 
-import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
-import {
-  QueueNameCreateMessage,
-  QueueNameMessageCallBack,
-  QueueNameRegistration,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+import { QueueNameCreateMessage } from '@121-service/src/queues/enum/queue-names-create-message.enum';
+import { QueueNameMessageCallBack } from '@121-service/src/queues/enum/queue-names-message-callback.enum';
+import { QueueNameRegistration } from '@121-service/src/queues/enum/queue-names-registration.enum';
+import { QueueNamesSafaricomCallback } from '@121-service/src/queues/enum/queue-names-safaricom-callback.enum';
+import { QueueNamesTransactionJob } from '@121-service/src/queues/enum/queue-names-transaction-jobs.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
@@ -19,18 +17,18 @@ export class QueuesService implements OnModuleInit {
   constructor(
     private azureLogService: AzureLogService,
 
-    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
+    @InjectQueue(QueueNamesTransactionJob.intersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
+    @InjectQueue(QueueNamesTransactionJob.intersolveVoucher)
     public transactionJobIntersolveVoucherQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
+    @InjectQueue(QueueNamesTransactionJob.commercialBankEthiopia)
     public transactionJobCommercialBankEthiopiaQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.safaricom)
+    @InjectQueue(QueueNamesTransactionJob.safaricom)
     public transactionJobSafaricomQueue: Queue,
 
-    @InjectQueue(SafaricomCallbackQueueNames.transfer)
+    @InjectQueue(QueueNamesSafaricomCallback.transfer)
     public safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(SafaricomCallbackQueueNames.timeout)
+    @InjectQueue(QueueNamesSafaricomCallback.timeout)
     public safaricomTimeoutCallbackQueue: Queue,
 
     @InjectQueue(QueueNameCreateMessage.replyOnIncoming)

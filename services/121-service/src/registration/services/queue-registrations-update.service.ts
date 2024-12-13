@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 
 import { QueuesService } from '@121-service/src/queues/queues.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
-import { ProcessNameRegistration } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { ProcessNameRegistration } from '@121-service/src/registration/enum/process-name-registration.enum';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 @Injectable()

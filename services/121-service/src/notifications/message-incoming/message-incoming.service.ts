@@ -8,6 +8,7 @@ import {
   MessageContentType,
   TemplatedMessages,
 } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -30,7 +31,6 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';

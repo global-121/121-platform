@@ -8,10 +8,10 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { QueueNamesTransactionJob } from '@121-service/src/queues/enum/queue-names-transaction-jobs.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
 
-@Processor(TransactionJobQueueNames.commercialBankEthiopia)
+@Processor(QueueNamesTransactionJob.commercialBankEthiopia)
 export class PaymentProcessorCommercialBankEthiopia {
   constructor(
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,

@@ -1,12 +1,12 @@
 import { TestBed } from '@automock/jest';
 
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/twilio.dto';
 import { QueuesService } from '@121-service/src/queues/queues.service';
-import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;

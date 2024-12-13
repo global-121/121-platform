@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import {
   MessageJobDto,
   MessageProcessType,
@@ -16,7 +17,6 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',
