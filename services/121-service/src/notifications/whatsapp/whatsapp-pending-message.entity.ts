@@ -35,7 +35,7 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
   @Column()

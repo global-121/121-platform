@@ -11,9 +11,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."event" DROP CONSTRAINT "FK_497c4072a86797298c1c0cf776c"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."event" DROP CONSTRAINT "FK_01cd2b829e0263917bf570cb672"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."latest_transaction" DROP CONSTRAINT "FK_10994d027e2fbaf4ff8e8bf5f45"`,
     );
     await queryRunner.query(
@@ -23,19 +20,10 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_financial_service_provider_configuration" DROP CONSTRAINT "FK_f7400125e09c4d8fec5747ec588"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d8a56a1864ef40e1551833430bb"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d3c35664dbb056d04694819316e"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_605baeb040ff0fae995404cea37"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_3a2576be389f520bece9d7dbb98"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_9c1038f92cd1b99b1babcc4fecf"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_cd56d3267e8553557ec97c6741b"`,
@@ -50,9 +38,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."latest_message" DROP CONSTRAINT "FK_b1e5575d941a3f0ce8430c0edfb"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."whatsapp_pending_message" DROP CONSTRAINT "FK_c4e5540ec65a668f0c155df88e9"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."whatsapp_pending_message" DROP CONSTRAINT "FK_a7153217f085fbb3a6e30588c4b"`,
     );
     await queryRunner.query(
@@ -65,13 +50,28 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."intersolve_visa_customer" DROP CONSTRAINT "FK_ad00c730226a462624de94041ec"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher" DROP CONSTRAINT "FK_7eff6d2d8b784b4ff880d925adc"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" DROP CONSTRAINT "FK_e64e394d9af2d9096bd29732ab6"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" DROP CONSTRAINT "FK_4d11d92320228c5ca4634e37140"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_5423104a960c57439e028eb57c5"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."note" DROP CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_1315d078dc3df552bba424c032b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_20a407367336fd4352de7f8138f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_registration_attribute" DROP CONSTRAINT "FK_8788ebf12909c03049a0d8c377d"`,
@@ -81,36 +81,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_attribute_data" DROP CONSTRAINT "FK_8914b71c0e30c44291ab68a9b8a"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_148b6bb5c37ca2d444b01c00c2f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_5423104a960c57439e028eb57c5"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_af6d07a8391d587c4dd40e7a5a9"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" DROP CONSTRAINT "FK_5b87d9d19127bd5d92026017a7b"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" DROP CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_b2e3f7568dafa9e86ae03910111"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_20a407367336fd4352de7f8138f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_1315d078dc3df552bba424c032b"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."try_whatsapp" DROP CONSTRAINT "FK_f9302bf2f79e322f0e35357e80a"`,
@@ -125,10 +95,37 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."safaricom_transfer" DROP CONSTRAINT "FK_71eecfc6a9376e289b2a52cdf55"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."event_attribute" ADD CONSTRAINT "FK_9c065981c6e17cc1d076985fbba" FOREIGN KEY ("eventId") REFERENCES "121-service"."event"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."latest_transaction" DROP CONSTRAINT "registrationPaymentLatestTransactionUnique"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."event" ADD CONSTRAINT "FK_01cd2b829e0263917bf570cb672" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."latest_transaction" ALTER COLUMN "registrationId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" ALTER COLUMN "transactionId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ALTER COLUMN "registrationId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_message" ALTER COLUMN "messageId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."imagecode_export_vouchers" ALTER COLUMN "registrationId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."try_whatsapp" ALTER COLUMN "registrationId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."commercial_bank_ethiopia_account_enquiries" ALTER COLUMN "registrationId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" ALTER COLUMN "programId" SET NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" ADD CONSTRAINT "registrationPaymentLatestTransactionUnique" UNIQUE ("registrationId", "payment")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."event_attribute" ADD CONSTRAINT "FK_9c065981c6e17cc1d076985fbba" FOREIGN KEY ("eventId") REFERENCES "121-service"."event"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."event" ADD CONSTRAINT "FK_497c4072a86797298c1c0cf776c" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -143,13 +140,7 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_financial_service_provider_configuration" ADD CONSTRAINT "FK_f7400125e09c4d8fec5747ec588" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_605baeb040ff0fae995404cea37" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d3c35664dbb056d04694819316e" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d8a56a1864ef40e1551833430bb" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_3a2576be389f520bece9d7dbb98" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -158,10 +149,7 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_9de58ca3e7c32731a9f6aa3d02f" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_cd56d3267e8553557ec97c6741b" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_9c1038f92cd1b99b1babcc4fecf" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_cd56d3267e8553557ec97c6741b" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."latest_message" ADD CONSTRAINT "FK_b1e5575d941a3f0ce8430c0edfb" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -173,9 +161,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."whatsapp_pending_message" ADD CONSTRAINT "FK_a7153217f085fbb3a6e30588c4b" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."whatsapp_pending_message" ADD CONSTRAINT "FK_c4e5540ec65a668f0c155df88e9" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_child_wallet" ADD CONSTRAINT "FK_59ddd28d67a179d138682da697a" FOREIGN KEY ("intersolveVisaParentWalletId") REFERENCES "121-service"."intersolve_visa_parent_wallet"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -185,13 +170,28 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."intersolve_visa_customer" ADD CONSTRAINT "FK_ad00c730226a462624de94041ec" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher" ADD CONSTRAINT "FK_7eff6d2d8b784b4ff880d925adc" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" ADD CONSTRAINT "FK_4d11d92320228c5ca4634e37140" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" ADD CONSTRAINT "FK_e64e394d9af2d9096bd29732ab6" FOREIGN KEY ("voucherId") REFERENCES "121-service"."intersolve_voucher"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_5423104a960c57439e028eb57c5" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_1315d078dc3df552bba424c032b" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_20a407367336fd4352de7f8138f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_registration_attribute" ADD CONSTRAINT "FK_8788ebf12909c03049a0d8c377d" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -201,36 +201,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_attribute_data" ADD CONSTRAINT "FK_3bd62b57d06901bcd85e28fd060" FOREIGN KEY ("programRegistrationAttributeId") REFERENCES "121-service"."program_registration_attribute"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_5423104a960c57439e028eb57c5" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_af6d07a8391d587c4dd40e7a5a9" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_148b6bb5c37ca2d444b01c00c2f" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_5b87d9d19127bd5d92026017a7b" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_b2e3f7568dafa9e86ae03910111" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_20a407367336fd4352de7f8138f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_1315d078dc3df552bba424c032b" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."try_whatsapp" ADD CONSTRAINT "FK_f9302bf2f79e322f0e35357e80a" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -260,36 +230,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."try_whatsapp" DROP CONSTRAINT "FK_f9302bf2f79e322f0e35357e80a"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_1315d078dc3df552bba424c032b"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_20a407367336fd4352de7f8138f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_b2e3f7568dafa9e86ae03910111"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" DROP CONSTRAINT "FK_5b87d9d19127bd5d92026017a7b"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" DROP CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_148b6bb5c37ca2d444b01c00c2f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_af6d07a8391d587c4dd40e7a5a9"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_5423104a960c57439e028eb57c5"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."registration_attribute_data" DROP CONSTRAINT "FK_3bd62b57d06901bcd85e28fd060"`,
     );
     await queryRunner.query(
@@ -299,13 +239,28 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_registration_attribute" DROP CONSTRAINT "FK_8788ebf12909c03049a0d8c377d"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_20a407367336fd4352de7f8138f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_1315d078dc3df552bba424c032b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" DROP CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."note" DROP CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_5423104a960c57439e028eb57c5"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" DROP CONSTRAINT "FK_e64e394d9af2d9096bd29732ab6"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" DROP CONSTRAINT "FK_4d11d92320228c5ca4634e37140"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher" DROP CONSTRAINT "FK_7eff6d2d8b784b4ff880d925adc"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_customer" DROP CONSTRAINT "FK_ad00c730226a462624de94041ec"`,
@@ -317,9 +272,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."intersolve_visa_child_wallet" DROP CONSTRAINT "FK_59ddd28d67a179d138682da697a"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."whatsapp_pending_message" DROP CONSTRAINT "FK_c4e5540ec65a668f0c155df88e9"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."whatsapp_pending_message" DROP CONSTRAINT "FK_a7153217f085fbb3a6e30588c4b"`,
     );
     await queryRunner.query(
@@ -327,9 +279,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."latest_message" DROP CONSTRAINT "FK_b1e5575d941a3f0ce8430c0edfb"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_9c1038f92cd1b99b1babcc4fecf"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_cd56d3267e8553557ec97c6741b"`,
@@ -341,13 +290,7 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_3a2576be389f520bece9d7dbb98"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d8a56a1864ef40e1551833430bb"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d3c35664dbb056d04694819316e"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_605baeb040ff0fae995404cea37"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_provider_configuration" DROP CONSTRAINT "FK_f7400125e09c4d8fec5747ec588"`,
@@ -362,10 +305,37 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."event" DROP CONSTRAINT "FK_497c4072a86797298c1c0cf776c"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."event" DROP CONSTRAINT "FK_01cd2b829e0263917bf570cb672"`,
+      `ALTER TABLE "121-service"."event_attribute" DROP CONSTRAINT "FK_9c065981c6e17cc1d076985fbba"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."event_attribute" DROP CONSTRAINT "FK_9c065981c6e17cc1d076985fbba"`,
+      `ALTER TABLE "121-service"."latest_transaction" DROP CONSTRAINT "registrationPaymentLatestTransactionUnique"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" ALTER COLUMN "programId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."commercial_bank_ethiopia_account_enquiries" ALTER COLUMN "registrationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."try_whatsapp" ALTER COLUMN "registrationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."imagecode_export_vouchers" ALTER COLUMN "registrationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_message" ALTER COLUMN "messageId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ALTER COLUMN "registrationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" ALTER COLUMN "transactionId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" ALTER COLUMN "registrationId" DROP NOT NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" ADD CONSTRAINT "registrationPaymentLatestTransactionUnique" UNIQUE ("payment", "registrationId")`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_transfer" ADD CONSTRAINT "FK_71eecfc6a9376e289b2a52cdf55" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -380,36 +350,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."try_whatsapp" ADD CONSTRAINT "FK_f9302bf2f79e322f0e35357e80a" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_1315d078dc3df552bba424c032b" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_20a407367336fd4352de7f8138f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_b2e3f7568dafa9e86ae03910111" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_5b87d9d19127bd5d92026017a7b" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_af6d07a8391d587c4dd40e7a5a9" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_5423104a960c57439e028eb57c5" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_148b6bb5c37ca2d444b01c00c2f" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."registration_attribute_data" ADD CONSTRAINT "FK_8914b71c0e30c44291ab68a9b8a" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -419,13 +359,28 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_registration_attribute" ADD CONSTRAINT "FK_8788ebf12909c03049a0d8c377d" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_20a407367336fd4352de7f8138f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_1315d078dc3df552bba424c032b" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."note" ADD CONSTRAINT "FK_a341b2f46655af6d3d8356f2b4f" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_5423104a960c57439e028eb57c5" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" ADD CONSTRAINT "FK_4d11d92320228c5ca4634e37140" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."imagecode_export_vouchers" ADD CONSTRAINT "FK_e64e394d9af2d9096bd29732ab6" FOREIGN KEY ("voucherId") REFERENCES "121-service"."intersolve_voucher"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher" ADD CONSTRAINT "FK_7eff6d2d8b784b4ff880d925adc" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_customer" ADD CONSTRAINT "FK_ad00c730226a462624de94041ec" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -440,9 +395,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."whatsapp_pending_message" ADD CONSTRAINT "FK_a7153217f085fbb3a6e30588c4b" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."whatsapp_pending_message" ADD CONSTRAINT "FK_c4e5540ec65a668f0c155df88e9" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."latest_message" ADD CONSTRAINT "FK_b1e5575d941a3f0ce8430c0edfb" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -455,19 +407,10 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
       `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_cd56d3267e8553557ec97c6741b" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_9c1038f92cd1b99b1babcc4fecf" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_3a2576be389f520bece9d7dbb98" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_605baeb040ff0fae995404cea37" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d3c35664dbb056d04694819316e" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d8a56a1864ef40e1551833430bb" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_provider_configuration" ADD CONSTRAINT "FK_f7400125e09c4d8fec5747ec588" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -477,9 +420,6 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."latest_transaction" ADD CONSTRAINT "FK_10994d027e2fbaf4ff8e8bf5f45" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."event" ADD CONSTRAINT "FK_01cd2b829e0263917bf570cb672" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."event" ADD CONSTRAINT "FK_497c4072a86797298c1c0cf776c" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,

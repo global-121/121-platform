@@ -10,8 +10,8 @@ export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity 
   })
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
-  @Column({ type: 'int', nullable: true })
-  public registrationId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public registrationId: number;
 
   @Column({ type: 'character varying', nullable: true })
   public fullNameUsedForTheMatch: string | null;

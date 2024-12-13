@@ -69,21 +69,19 @@ export class TwilioMessageEntity extends Base121Entity {
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.twilioMessages,
-    {
-      onDelete: 'CASCADE',
-    },
+    { onDelete: 'CASCADE' }, // Delete instead of 'SET NULL' even though this is nullable
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'int', nullable: true }) // Keep this FK nullable, as e.g. for default reply there is no registrationId
   public registrationId: number | null;
 
   @Column({ type: 'int', default: 0 })
   public retryCount: number;
 
   @OneToOne(() => TransactionEntity, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'transactionId' })
   public transaction: Relation<TransactionEntity>;
@@ -91,7 +89,7 @@ export class TwilioMessageEntity extends Base121Entity {
   public transactionId: number | null;
 
   @ManyToOne(() => UserEntity, {
-    onDelete: 'CASCADE',
+    onDelete: 'NO ACTION', // Do not delete on deleting users, instead see catch in userService.delete()
   })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
