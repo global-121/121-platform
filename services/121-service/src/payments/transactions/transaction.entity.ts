@@ -17,7 +17,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
@@ -57,7 +57,7 @@ export class TransactionEntity extends Base121AuditedEntity {
     (_type) => ProgramFinancialServiceProviderConfigurationEntity,
     (programFinancialServiceProviderConfiguration) =>
       programFinancialServiceProviderConfiguration.transactions,
-    { onDelete: 'CASCADE' },
+    { onDelete: 'NO ACTION' }, // Do not delete on deleting programFspConfig, instead see catch in programFinancialServiceProviderConfigurationService.delete()
   )
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
@@ -75,8 +75,8 @@ export class TransactionEntity extends Base121AuditedEntity {
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true })
-  public registrationId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public registrationId: number;
 
   @OneToOne(
     () => LatestTransactionEntity,

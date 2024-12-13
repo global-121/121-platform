@@ -33,13 +33,13 @@ export class LatestTransactionEntity extends Base121Entity {
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true })
-  public registrationId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public registrationId: number;
 
   @OneToOne(() => TransactionEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'transactionId' })
   public transaction: Relation<TransactionEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true })
-  public transactionId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public transactionId: number;
 }

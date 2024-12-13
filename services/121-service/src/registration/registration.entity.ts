@@ -50,7 +50,8 @@ export class RegistrationEntity extends Base121Entity {
   @Column()
   public programId: number;
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  // Refactor: remove this relationship as it is PA-app legacy
+  @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   public user: Relation<UserEntity>;
 
   @Index()
@@ -76,7 +77,7 @@ export class RegistrationEntity extends Base121Entity {
   public inclusionScore: number | null;
 
   @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity, {
-    onDelete: 'CASCADE',
+    onDelete: 'NO ACTION', // Do not delete on deleting programFspConfig, instead see catch in programFinancialServiceProviderConfigurationService.delete()
   })
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',

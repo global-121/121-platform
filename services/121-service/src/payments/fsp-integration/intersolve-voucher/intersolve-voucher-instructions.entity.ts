@@ -11,6 +11,6 @@ export class IntersolveVoucherInstructionsEntity extends Base121Entity {
   @ManyToOne(() => ProgramEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
-  @Column({ type: 'int', nullable: true })
-  public programId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public programId: number;
 }

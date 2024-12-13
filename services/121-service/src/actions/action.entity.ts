@@ -11,7 +11,7 @@ export class ActionEntity extends Base121AuditedEntity {
   public actionType: ActionType;
 
   @ManyToOne((_type) => UserEntity, (user) => user.actions, {
-    onDelete: 'CASCADE',
+    onDelete: 'NO ACTION', // Do not delete on deleting users, instead see catch in userService.delete()
   })
   public user: Relation<UserEntity>;
 
