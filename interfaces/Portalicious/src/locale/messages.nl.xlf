@@ -1584,6 +1584,18 @@
         <source>Registrations included</source>
         <target state="new">Registrations included</target>
       </trans-unit>
+      <trans-unit id="retry-failed-transfers" datatype="html">
+        <source>Retry failed transfers</source>
+        <target state="new">Retry failed transfers</target>
+      </trans-unit>
+      <trans-unit id="3971565293367630153" datatype="html">
+        <source>Retry transfers</source>
+        <target state="new">Retry transfers</target>
+      </trans-unit>
+      <trans-unit id="7113199794780283377" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
+        <target state="new">You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

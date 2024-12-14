@@ -24,6 +24,7 @@ export interface PaginateQuery {
 export interface ActionDataWithPaginateQuery<T> {
   query: PaginateQuery;
   count: number;
+  selection: QueryTableSelectionEvent<T>;
   selectAll: boolean;
   previewItem: T;
 }
@@ -229,6 +230,7 @@ export class PaginateQueryService {
           limit: undefined,
         },
         count: totalCount,
+        selection,
         selectAll: true,
         previewItem: previewItemForSelectAll,
       };
@@ -241,6 +243,7 @@ export class PaginateQueryService {
         },
       },
       count: selection.length,
+      selection,
       selectAll: false,
       previewItem: selection[0],
     };
