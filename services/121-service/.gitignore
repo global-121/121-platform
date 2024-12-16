@@ -19,6 +19,7 @@ swagger-spec.json
 
 # certificates
 cert/DigiCertGlobalRootCA.crt.pem
+cert/APIMTPP_redcross_sandbox.pfx
 
 # Compodoc documentation
 documentation

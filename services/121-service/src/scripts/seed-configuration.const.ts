@@ -56,6 +56,16 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     ],
   },
   {
+    name: SeedScript.nedbankProgram,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'program-nedbank.json',
+        messageTemplate: 'message-template-generic.json',
+      },
+    ],
+  },
+  {
     name: SeedScript.testMultiple,
     organization: 'organization-generic.json',
     programs: [

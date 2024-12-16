@@ -103,6 +103,13 @@ export async function removeProgramAssignment(
     .send();
 }
 
+export async function runCronjobUpdateNedbankVoucherStatus(): Promise<void> {
+  const accessToken = await getAccessToken();
+  await getServer()
+    .patch('/financial-service-providers/nedbank')
+    .set('Cookie', [accessToken]);
+}
+
 export async function updatePermissionsOfRole(
   userRoleId: number,
   roleToUpdate: UpdateUserRoleDto,

@@ -6,5 +6,5 @@ export enum SeedScript {
   cbeProgram = 'cbe-program',
   safaricomProgram = 'safari-program',
   // excelProgram = 'excel-program',
-  // nedbankProgram = 'nedbank-program',
+  nedbankProgram = 'nedbank-program',
 }

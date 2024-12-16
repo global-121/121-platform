@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
@@ -11,6 +11,9 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
+import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
+import { NedbankCreateOrderReturn } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-order-return';
+import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
@@ -19,23 +22,23 @@ import { SafaricomService } from '@121-service/src/payments/fsp-integration/safa
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 interface ProcessTransactionResultInput {
   programId: number;
   paymentNumber: number;
   userId: number;
-  calculatedTransferAmountInMajorUnit: number;
+  transferAmountInMajorUnit: number;
   programFinancialServiceProviderConfigurationId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
@@ -49,13 +52,13 @@ export class TransactionJobProcessorsService {
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly safaricomService: SafaricomService,
+    private readonly nedbankService: NedbankService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly eventsService: EventsService,
@@ -82,8 +85,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTransferAmountInMajorUnit:
-            input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
+          transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
           programFinancialServiceProviderConfigurationId:
             input.programFinancialServiceProviderConfigurationId,
           registration,
@@ -149,7 +151,7 @@ export class TransactionJobProcessorsService {
           programId: input.programId,
           paymentNumber: input.paymentNumber,
           userId: input.userId,
-          calculatedTransferAmountInMajorUnit: transferAmountInMajorUnit,
+          transferAmountInMajorUnit,
           programFinancialServiceProviderConfigurationId:
             input.programFinancialServiceProviderConfigurationId,
           registration,
@@ -185,7 +187,7 @@ export class TransactionJobProcessorsService {
       programId: input.programId,
       paymentNumber: input.paymentNumber,
       userId: input.userId,
-      calculatedTransferAmountInMajorUnit:
+      transferAmountInMajorUnit:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
       programFinancialServiceProviderConfigurationId:
         input.programFinancialServiceProviderConfigurationId,
@@ -221,7 +223,7 @@ export class TransactionJobProcessorsService {
         programId: transactionJob.programId,
         paymentNumber: transactionJob.paymentNumber,
         userId: transactionJob.userId,
-        calculatedTransferAmountInMajorUnit: transactionJob.transactionAmount,
+        transferAmountInMajorUnit: transactionJob.transactionAmount,
         programFinancialServiceProviderConfigurationId:
           transactionJob.programFinancialServiceProviderConfigurationId,
         registration,
@@ -271,6 +273,78 @@ export class TransactionJobProcessorsService {
     // 5. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
+  public async processNedbankTransactionJob(
+    transactionJob: NedbankTransactionJobDto,
+  ): Promise<void> {
+    // 1. Get registration to log changes to it later in event table
+    const registration = await this.getRegistrationOrThrow(
+      transactionJob.referenceId,
+    );
+    const oldRegistration = structuredClone(registration);
+
+    // 2. Get number of failed transaction to gerenerate the transaction reference
+    const failedTransactionsCount =
+      await this.transactionScopedRepository.getFailedTransactionAttemptsForPaymentAndRegistration(
+        {
+          registrationId: registration.id,
+          payment: transactionJob.paymentNumber,
+        },
+      );
+
+    let createOrderReturn: NedbankCreateOrderReturn;
+    try {
+      createOrderReturn = await this.nedbankService.createOrder({
+        transferAmount: transactionJob.transactionAmount,
+        fullName: transactionJob.fullName,
+        idNumber: transactionJob.idNumber,
+        transactionReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`, // ##TODO Should we start from 1 or 0?
+      });
+    } catch (error) {
+      if (error instanceof NedbankError) {
+        await this.createTransactionAndUpdateRegistration({
+          programId: transactionJob.programId,
+          paymentNumber: transactionJob.paymentNumber,
+          userId: transactionJob.userId,
+          transferAmountInMajorUnit: transactionJob.transactionAmount,
+          programFinancialServiceProviderConfigurationId:
+            transactionJob.programFinancialServiceProviderConfigurationId,
+          registration,
+          oldRegistration,
+          isRetry: transactionJob.isRetry,
+          status: TransactionStatusEnum.error,
+          errorText: error?.message,
+        });
+
+        return;
+      } else {
+        throw error;
+      }
+    }
+
+    // 3. Store the transactions
+    const transaction = await this.createTransactionAndUpdateRegistration({
+      programId: transactionJob.programId,
+      paymentNumber: transactionJob.paymentNumber,
+      userId: transactionJob.userId,
+      transferAmountInMajorUnit: transactionJob.transactionAmount,
+      programFinancialServiceProviderConfigurationId:
+        transactionJob.programFinancialServiceProviderConfigurationId,
+      registration,
+      oldRegistration,
+      isRetry: transactionJob.isRetry,
+      status: TransactionStatusEnum.waiting, // This will only go to 'success' nightly cronjob
+    });
+
+    // 4. Store the nedbank voucher
+    // ##TODO discuss: We could also store the voucher in the createOrder function
+    // However I think it makes more sense to store it after the transaction is created in the database so we can link the voucher to the transaction with an non-nullable foreign key
+    await this.nedbankService.storeVoucher({
+      transactionId: transaction.id,
+      orderCreateReference: createOrderReturn.orderCreateReference,
+      voucherStatus: createOrderReturn.nedbankVoucherStatus,
+    });
+  }
+
   private async getRegistrationOrThrow(
     referenceId: string,
   ): Promise<RegistrationEntity> {
@@ -290,7 +364,7 @@ export class TransactionJobProcessorsService {
     programId,
     paymentNumber,
     userId,
-    calculatedTransferAmountInMajorUnit,
+    transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
     programFinancialServiceProviderConfigurationId,
     registration,
     oldRegistration,

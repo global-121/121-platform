@@ -1,0 +1,7 @@
+export enum NedbankVoucherStatus {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  REDEEMABLE = 'REDEEMABLE',
+  REDEEMED = 'REDEEMED',
+  REFUNDED = 'REFUNDED',
+}

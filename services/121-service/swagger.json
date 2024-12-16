@@ -933,6 +933,11 @@
     "params": []
   },
   {
+    "method": "patch",
+    "path": "/api/financial-service-providers/nedbank",
+    "params": []
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
     "params": [

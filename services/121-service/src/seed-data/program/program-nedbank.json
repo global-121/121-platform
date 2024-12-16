@@ -1,0 +1,61 @@
+{
+  "published": true,
+  "validation": true,
+  "location": "South Africa",
+  "ngo": "SARCS",
+  "titlePortal": {
+    "en": "South Africa - Nedbank"
+  },
+  "description": {
+    "en": ""
+  },
+  "startDate": "2021-01-11T12:00:00Z",
+  "endDate": "2022-12-31T12:00:00Z",
+  "currency": "ZAR",
+  "distributionFrequency": "week",
+  "distributionDuration": 90,
+  "fixedTransferValue": 100,
+  "targetNrRegistrations": 250,
+  "tryWhatsAppFirst": true,
+  "programRegistrationAttributes": [
+    {
+      "name": "fullName",
+      "label": {
+        "en": "Full Name"
+      },
+      "type": "text",
+      "pattern": null,
+      "options": null,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "nationalId",
+      "label": {
+        "en": "National ID"
+      },
+      "type": "text",
+      "pattern": null,
+      "options": null,
+      "export": ["all-people-affected", "included"],
+      "scoring": {},
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
+    }
+  ],
+  "aboutProgram": {
+    "en": "Program to test Nedbank with"
+  },
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["en", "nl"],
+  "enableMaxPayments": true,
+  "enableScope": true,
+  "allowEmptyPhoneNumber": true,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Nedbank"
+    }
+  ]
+}
