@@ -1,3 +1,4 @@
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdVisa,
@@ -44,14 +45,16 @@ describe('Export Visa debit card report', () => {
       accessToken,
     );
 
-    const exportResult = await exportList(
+    const exportResult = await exportList({
       programId,
-      'intersolve-visa-card-details',
+      exportType: ExportType.intersolveVisaCardDetails,
       accessToken,
-    );
+    });
 
     // Assert
-    expect(exportResult.body.fileName).toBe('intersolve-visa-card-details');
+    expect(exportResult.body.fileName).toBe(
+      ExportType.intersolveVisaCardDetails,
+    );
     // we remove issuedDate and cardNumber, because always changes
     const results = exportResult.body.data.map(
       ({ issuedDate: _issuedDate, cardNumber: _cardNumber, ...rest }) => rest,

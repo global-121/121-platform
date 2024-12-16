@@ -73,6 +73,9 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->RedisModule
   SafaricomModule-->QueuesRegistryModule
+  PaymentsModule-->NedbankModule
+  NedbankModule-->RedisModule
+  NedbankModule-->QueuesRegistryModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
@@ -103,6 +106,8 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   MessageIncomingModule-->QueuesRegistryModule
+  FinancialSyncModule-->NedbankModule
+  FinancialSyncModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   ActivitiesModule-->NoteModule
@@ -113,6 +118,7 @@ graph LR
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule
   TransactionJobProcessorsModule-->SafaricomModule
+  TransactionJobProcessorsModule-->NedbankModule
   TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule

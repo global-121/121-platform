@@ -14,6 +14,7 @@ import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { FinancialServiceProviderCallbackJobProcessorsModule } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.module';
+import { FinancialSyncModule } from '@121-service/src/financial-sync/financial-sync.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
@@ -43,6 +44,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     MessageModule,
     MetricsModule,
     MessageIncomingModule,
+    FinancialSyncModule,
     NoteModule,
     EmailsModule,
     ScheduleModule.forRoot(),

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NedbankApiService createOrder should throw an error if create order fails 1`] = `[NedbankError: Errors: Request Validation Error - TPP account configuration mismatch (Message: NB.APIM.Field.Invalid, Code: NB.APIM.Field.Invalid, Id: 1d3e3076-9e1c-4933-aa7f-69290941ec70)]`;
+
+exports[`NedbankApiService getOrder should throw an error if get order fails 1`] = `[NedbankError: Errors: Request Validation Error - TPP account configuration mismatch (Message: NB.APIM.Field.Invalid, Code: NB.APIM.Field.Invalid, Id: 1d3e3076-9e1c-4933-aa7f-69290941ec70)]`;
