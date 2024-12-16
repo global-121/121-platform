@@ -1,5 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+import { EXTERNAL_API } from '@121-service/src/config';
+
 export class RefactorOnDelete1733492799598 implements MigrationInterface {
   name = 'RefactorOnDelete1733492799598';
 
@@ -94,6 +96,134 @@ export class RefactorOnDelete1733492799598 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."safaricom_transfer" DROP CONSTRAINT "FK_71eecfc6a9376e289b2a52cdf55"`,
     );
+
+    if (
+      EXTERNAL_API.baseApiUrl.includes('demo') ||
+      EXTERNAL_API.baseApiUrl.includes('training')
+    ) {
+      // Delete entities with NULL foreign keys
+      await queryRunner.query(
+        `DELETE FROM "121-service"."event_attribute" WHERE "eventId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."event" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."event" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."latest_transaction" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."latest_transaction" WHERE "transactionId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."program_financial_service_provider_configuration" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."transaction" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."transaction" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."transaction" WHERE "programFinancialServiceProviderConfigurationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."transaction" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."twilio_message" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."twilio_message" WHERE "transactionId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."twilio_message" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."latest_message" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."latest_message" WHERE "messageId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."whatsapp_pending_message" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."whatsapp_pending_message" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."intersolve_visa_child_wallet" WHERE "intersolveVisaParentWalletId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."intersolve_visa_parent_wallet" WHERE "intersolveVisaCustomerId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."intersolve_visa_customer" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."intersolve_voucher" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."imagecode_export_vouchers" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."imagecode_export_vouchers" WHERE "voucherId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."program_registration_attribute" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."registration_attribute_data" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."registration_attribute_data" WHERE "programRegistrationAttributeId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."registration" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."registration" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."registration" WHERE "programFinancialServiceProviderConfigurationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."note" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."note" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."action" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."action" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."message_template" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."program_aidworker_assignment" WHERE "userId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."program_aidworker_assignment" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."try_whatsapp" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."commercial_bank_ethiopia_account_enquiries" WHERE "registrationId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."intersolve_voucher_instruction" WHERE "programId" IS NULL`,
+      );
+      await queryRunner.query(
+        `DELETE FROM "121-service"."safaricom_transfer" WHERE "transactionId" IS NULL`,
+      );
+    }
+
     await queryRunner.query(
       `ALTER TABLE "121-service"."latest_transaction" DROP CONSTRAINT "registrationPaymentLatestTransactionUnique"`,
     );
