@@ -49,13 +49,12 @@ test('[31971] Show payment summary', async ({ page }) => {
     await payments.navigateToProgramPage('Payments');
   });
 
-  await test.step('Do payment', async () => {
+  await test.step('Create payment', async () => {
     await payments.createPayment();
     await payments.validatePaymentSummary({
       fsp: financialServiceProviders,
       registrationsNumber: numberOfPas,
       paymentAmount: defaultMaxTransferValue,
     });
-    await payments.startPayment();
   });
 });
