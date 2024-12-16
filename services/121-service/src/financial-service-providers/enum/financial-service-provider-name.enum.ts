@@ -5,6 +5,7 @@ export enum FinancialServiceProviders {
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
+  nedbank = 'Nedbank',
 }
 
 export enum FinancialServiceProviderConfigurationProperties {
