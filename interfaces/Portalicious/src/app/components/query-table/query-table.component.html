@@ -14,7 +14,7 @@
   [sortField]="initialSortField()"
   [sortOrder]="initialSortOrder()"
   [contextMenu]="contextMenu"
-  (contextMenuSelectionChange)="onUpdateContextMenuItem.emit($event)"
+  (contextMenuSelectionChange)="updateContextMenuItem.emit($event)"
   [globalFilterFields]="globalFilterFields()"
   [paginator]="true"
   [paginatorLocale]="locale"
@@ -53,7 +53,7 @@
         <app-query-table-global-search
           [globalFilterValue]="globalFilterValue()"
           [(globalFilterVisible)]="globalFilterVisible"
-          (onFilterChange)="table.filterGlobal($event, 'contains')"
+          (filterChange)="table.filterGlobal($event, 'contains')"
         />
       }
       @if (enableColumnManagement()) {
@@ -245,8 +245,7 @@
             plain
             icon="pi pi-ellipsis-h"
             (click)="
-              onUpdateContextMenuItem.emit(item);
-              extraOptionsMenu.toggle($event)
+              updateContextMenuItem.emit(item); extraOptionsMenu.toggle($event)
             "
           />
         </td>

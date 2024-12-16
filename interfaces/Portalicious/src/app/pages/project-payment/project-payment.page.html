@@ -83,7 +83,7 @@
         [localStorageKey]="localStorageKey()"
         [enableColumnManagement]="true"
         [contextMenuItems]="contextMenuItems()"
-        (onUpdateContextMenuItem)="contextMenuSelection.set($event)"
+        (updateContextMenuItem)="contextMenuSelection.set($event)"
         [enableSelection]="true"
         [globalFilterFields]="[
           'id',

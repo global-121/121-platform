@@ -36,8 +36,8 @@ import { generateFieldErrors } from '~/utils/form-validation';
 export class ChangeStatusContentsWithoutMessageComponent {
   showAreYouSureCheckbox = input.required<boolean>();
   isMutating = input<boolean>(false);
-  readonly onCancel = output();
-  readonly onConfirm = output();
+  readonly cancelChangeStatus = output();
+  readonly confirmChangeStatus = output();
 
   formGroup = new FormGroup({
     confirmAction: new FormControl<boolean>(false, {
@@ -76,6 +76,6 @@ export class ChangeStatusContentsWithoutMessageComponent {
   }
 
   cancelClick() {
-    this.onCancel.emit();
+    this.cancelChangeStatus.emit();
   }
 }

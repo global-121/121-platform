@@ -13,7 +13,7 @@
   <app-form-error [error]="formFieldErrors()('confirmAction')" />
   <app-change-status-submit-buttons
     [isMutating]="isMutating()"
-    (onCancelClick)="cancelClick()"
-    (onApproveClick)="validateFormGroupOrPreventSubmit($event)"
+    (cancelClick)="cancelClick()"
+    (approveClick)="validateFormGroupOrPreventSubmit($event)"
   />
 </div>

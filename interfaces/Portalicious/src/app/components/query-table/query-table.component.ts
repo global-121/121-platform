@@ -136,8 +136,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   initialSortOrder = input<-1 | 1>(1);
   enableSelection = input<boolean>(false);
   enableColumnManagement = input<boolean>(false);
-  readonly onUpdateContextMenuItem = output<TData>();
-  readonly onUpdatePaginateQuery = output<PaginateQuery>();
+  readonly updateContextMenuItem = output<TData>();
+  readonly updatePaginateQuery = output<PaginateQuery>();
 
   @ViewChild('table') table: Table;
   @ViewChild('contextMenu') contextMenu: Menu;
@@ -328,7 +328,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     if (!paginateQuery) {
       return;
     }
-    this.onUpdatePaginateQuery.emit(paginateQuery);
+    this.updatePaginateQuery.emit(paginateQuery);
   }
 
   totalRecords = computed(() => {

@@ -6,10 +6,10 @@
   [localStorageKey]="localStorageKey()"
   [serverSideFiltering]="true"
   [serverSideTotalRecords]="totalRegistrations()"
-  (onUpdatePaginateQuery)="paginateQuery.set($event)"
+  (updatePaginateQuery)="paginateQuery.set($event)"
   [enableSelection]="true"
   [contextMenuItems]="contextMenuItems()"
-  (onUpdateContextMenuItem)="contextMenuRegistration.set($event)"
+  (updateContextMenuItem)="contextMenuRegistration.set($event)"
   [enableColumnManagement]="true"
 >
   <div table-actions>

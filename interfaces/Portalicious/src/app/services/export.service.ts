@@ -87,6 +87,15 @@ export class ExportService {
     ).toString()}-${date.getDate().toString()}.xlsx`;
   }
 
+  getExportCBEVerificationReportMutation(projectId: Signal<number>) {
+    return async () => {
+      const exportResult = await this.queryClient.fetchQuery(
+        this.projectApiService.getCbeVerificationReport(projectId)(),
+      );
+      return exportResult;
+    };
+  }
+
   getExportListMutation(projectId: Signal<number>, toastService: ToastService) {
     return async ({
       type,

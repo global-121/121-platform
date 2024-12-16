@@ -2,7 +2,7 @@
   mode="advanced"
   [accept]="accept()"
   (onSelect)="fileInputInternalModel.set($event.files[0])"
-  (onRemove)="fileInputInternalModel.set(null); onClearFiles.emit()"
+  (onRemove)="fileInputInternalModel.set(null); clearFiles.emit()"
   [disabled]="fileInputDisabled()"
   [files]="fileInputFiles()"
 >
