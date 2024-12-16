@@ -1,5 +1,4 @@
 import {
-  BeforeRemove,
   Check,
   Column,
   Entity,
@@ -10,7 +9,7 @@ import {
   Unique,
 } from 'typeorm';
 
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -22,7 +21,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 @Unique('programAttributeUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
 @Entity('program_registration_attribute')
-export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
+export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @Column()
   public name: string;
 
@@ -47,6 +46,7 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
   @ManyToOne(
     (_type) => ProgramEntity,
     (program) => program.programRegistrationAttributes,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
@@ -76,14 +76,4 @@ export class ProgramRegistrationAttributeEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public editableInPortal: boolean;
-
-  @BeforeRemove()
-  public async cascadeDelete(): Promise<void> {
-    await this.deleteAllOneToMany([
-      {
-        entityClass: RegistrationAttributeDataEntity,
-        columnName: 'programRegistrationAttributeId',
-      },
-    ]);
-  }
 }

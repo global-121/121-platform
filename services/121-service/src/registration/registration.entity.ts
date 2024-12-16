@@ -7,7 +7,6 @@ import {
   Min,
 } from 'class-validator';
 import {
-  BeforeRemove,
   Check,
   Column,
   Entity,
@@ -20,14 +19,12 @@ import {
   Unique,
 } from 'typeorm';
 
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
-import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
@@ -44,14 +41,17 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
 @Entity('registration')
-export class RegistrationEntity extends CascadeDeleteEntity {
-  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
+export class RegistrationEntity extends Base121Entity {
+  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
   @Column()
   public programId: number;
 
-  @ManyToOne(() => UserEntity)
+  // Refactor: remove this relationship as it is PA-app legacy
+  @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   public user: Relation<UserEntity>;
 
   @Index()
@@ -76,7 +76,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
-  @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity)
+  @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity, {
+    onDelete: 'NO ACTION', // Do not delete on deleting programFspConfig, instead see catch in programFinancialServiceProviderConfigurationService.delete()
+  })
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
   })
@@ -143,6 +145,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @OneToOne(
     () => LatestMessageEntity,
     (latestMessage) => latestMessage.registration,
+    { onDelete: 'NO ACTION' },
   )
   public latestMessage: Relation<LatestMessageEntity>;
 
@@ -162,62 +165,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @OneToOne(
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.registration,
+    { onDelete: 'NO ACTION' },
   )
   public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
-
-  @BeforeRemove()
-  public async cascadeDelete(): Promise<void> {
-    // The order of these calls is important, because of foreign key constraints
-    // Please check if it still works if you change the order
-    await this.deleteAllOneToMany([
-      {
-        entityClass: EventEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: ImageCodeExportVouchersEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: LatestMessageEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: TwilioMessageEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: LatestTransactionEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: TransactionEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: RegistrationAttributeDataEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: WhatsappPendingMessageEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: TryWhatsappEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: CommercialBankEthiopiaAccountEnquiriesEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: NoteEntity,
-        columnName: 'registration',
-      },
-      {
-        entityClass: IntersolveVisaCustomerEntity,
-        columnName: 'registration',
-      },
-    ]);
-  }
 }

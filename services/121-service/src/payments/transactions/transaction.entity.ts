@@ -17,7 +17,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
@@ -31,7 +31,9 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
+  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
   @Index()
@@ -55,6 +57,7 @@ export class TransactionEntity extends Base121AuditedEntity {
     (_type) => ProgramFinancialServiceProviderConfigurationEntity,
     (programFinancialServiceProviderConfiguration) =>
       programFinancialServiceProviderConfiguration.transactions,
+    { onDelete: 'NO ACTION' }, // Do not delete on deleting programFspConfig, instead see catch in programFinancialServiceProviderConfigurationService.delete()
   )
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
@@ -67,16 +70,18 @@ export class TransactionEntity extends Base121AuditedEntity {
   @ManyToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.transactions,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true })
-  public registrationId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public registrationId: number;
 
   @OneToOne(
     () => LatestTransactionEntity,
     (latestTransaction) => latestTransaction.transaction,
+    { onDelete: 'NO ACTION' },
   )
   public latestTransaction: Relation<LatestTransactionEntity>;
 }

@@ -9,17 +9,20 @@ export class LatestMessageEntity extends Base121Entity {
   @OneToOne(
     (_type) => RegistrationEntity,
     (registration) => registration.latestMessage,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true, unique: true })
+  @Column({ type: 'int', nullable: true, unique: true }) // Nullable because there are messages without a registration. Refactor: as these would not need a record in this latest-message.entity
   public registrationId: number | null;
 
-  @OneToOne(() => TwilioMessageEntity)
+  @OneToOne(() => TwilioMessageEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'messageId' })
   public message: Relation<TwilioMessageEntity>;
   @Index()
-  @Column({ type: 'int', nullable: true })
-  public messageId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public messageId: number;
 }

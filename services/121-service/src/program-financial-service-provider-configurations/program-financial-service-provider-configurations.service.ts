@@ -164,22 +164,21 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
-    const transactionCount = await this.transactionScopedRepository.count({
-      where: {
-        programFinancialServiceProviderConfigurationId: Equal(config.id),
-      },
-    });
-    if (transactionCount > 0) {
-      throw new HttpException(
-        'Cannot delete Program FSP Configuration because it has related Transactions',
-        HttpStatus.CONFLICT,
-      );
+    try {
+      // programFspConfigProperties are cascade-deleted..
+      await this.programFspConfigurationRepository.delete({
+        id: config.id,
+      });
+    } catch (e) {
+      // .. transactions and registrations are not cascade-deleted and will therefore run into this foreign key constraint if present
+      if (e.code === '23503') {
+        throw new HttpException(
+          'Cannot delete Program FSP Configuration because it is related to e.g. transactions or registrations',
+          HttpStatus.CONFLICT,
+        );
+      }
+      throw e;
     }
-
-    // Should cascade delete the properties
-    await this.programFspConfigurationRepository.delete({
-      id: config.id,
-    });
   }
 
   public async createProperties({

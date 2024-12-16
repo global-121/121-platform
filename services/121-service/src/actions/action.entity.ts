@@ -10,10 +10,14 @@ export class ActionEntity extends Base121AuditedEntity {
   @Column({ type: 'character varying' })
   public actionType: ActionType;
 
-  @ManyToOne((_type) => UserEntity, (user) => user.actions)
+  @ManyToOne((_type) => UserEntity, (user) => user.actions, {
+    onDelete: 'NO ACTION', // Do not delete on deleting users, instead see catch in userService.delete()
+  })
   public user: Relation<UserEntity>;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.actions)
+  @ManyToOne((_type) => ProgramEntity, (program) => program.actions, {
+    onDelete: 'CASCADE',
+  })
   public program: Relation<ProgramEntity>;
 }
 

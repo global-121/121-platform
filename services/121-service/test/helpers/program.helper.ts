@@ -12,6 +12,7 @@ import {
   UpdateProgramRegistrationAttributeDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -46,6 +47,17 @@ export async function patchProgram(
     .patch(`/programs/${programId}`)
     .set('Cookie', [accessToken])
     .send(programUpdate);
+}
+
+export async function deleteProgram(
+  programId: number,
+  accessToken: string,
+  secretDto: SecretDto,
+): Promise<request.Response> {
+  return await getServer()
+    .delete(`/programs/${programId}`)
+    .set('Cookie', [accessToken])
+    .send(secretDto);
 }
 
 export async function getProgram(
