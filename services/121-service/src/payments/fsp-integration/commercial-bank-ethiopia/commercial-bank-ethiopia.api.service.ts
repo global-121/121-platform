@@ -61,7 +61,10 @@ export class CommercialBankEthiopiaApiService {
         resultDescription =
           'Failed because the certificate file is not found or not valid. Please contact 121 technical support.';
       } else {
-        console.error('Unknown error occurred:', error.response);
+        console.error(
+          'CBE API: CreditTransfer - Unknown error occurred:',
+          error.response ?? error,
+        );
         resultDescription =
           error.response ||
           'Failed because of an unknown error. Please contact 121 technical support.';
@@ -180,7 +183,10 @@ export class CommercialBankEthiopiaApiService {
         result.resultDescription =
           'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
       } else {
-        console.error('Unknown error occurred:', error.response);
+        console.error(
+          'CBE API: TransactionStatus - Unknown error occurred:',
+          error.response ?? error,
+        );
         result.resultDescription = error.response;
       }
 
@@ -278,7 +284,10 @@ export class CommercialBankEthiopiaApiService {
         result.resultDescription =
           'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
       } else {
-        console.error('Unknown error occurred:', error.response);
+        console.error(
+          'CBE API: ValidationStatus - Unknown error occurred:',
+          error.response ?? error,
+        );
         result.resultDescription = error.response;
       }
 
