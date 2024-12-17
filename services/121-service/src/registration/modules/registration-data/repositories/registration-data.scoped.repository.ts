@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
@@ -7,12 +8,11 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationDataEntity } from '@121-service/src/registration/registration-data.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 export class RegistrationDataScopedRepository extends ScopedRepository<RegistrationDataEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
-    @Inject(getScopedRepositoryProviderName(RegistrationDataEntity))
+    @InjectRepository(RegistrationDataEntity)
     scopedRepository: ScopedRepository<RegistrationDataEntity>,
   ) {
     super(request, scopedRepository);
