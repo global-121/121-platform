@@ -46,18 +46,18 @@
     "lodash": "^4.17.21",
     "ngx-filesize": "^3.0.4",
     "primeicons": "^7.0.0",
-    "primeng": "^17.18.12",
+    "primeng": "^17.18.13",
     "rxjs": "~7.8.1",
     "tslib": "^2.8.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.12",
     "@angular/cli": "^18.2.12",
     "@angular/compiler-cli": "^18.2.13",
     "@angular/localize": "^18.2.13",
-    "@azure/static-web-apps-cli": "^2.0.1",
+    "@azure/static-web-apps-cli": "^2.0.2",
     "@microsoft/applicationinsights-debugplugin-js": "^3.3.4",
     "@prettier/plugin-xml": "^3.4.1",
     "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
@@ -87,7 +87,7 @@
     "prettier-plugin-tailwindcss": "^0.6.9",
     "shx": "^0.3.4",
     "tailwindcss": "^3.4.16",
-    "typescript": "~5.5.4",
+    "typescript": "~5.6.3",
     "typescript-eslint": "^8.17.0"
   }
 }
