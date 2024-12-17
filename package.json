@@ -38,6 +38,7 @@
     "fix:portal": "npm run fix --prefix=interfaces/Portal/",
     "fix:portalicious": "npm run fix --prefix=interfaces/Portalicious/",
     "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal fix:portalicious",
+    "tool:download-logs": "cd tools/ && npm run download-logs",
     "prepare": "husky"
   },
   "devDependencies": {
