@@ -754,6 +754,21 @@ export class IntersolveVisaService
         registrationId,
       );
 
+    if (contactInformation.phoneNumber) {
+      await this.intersolveVisaApiService.updateCustomerPhoneNumber({
+        holderId: customer.holderId,
+        phoneNumber: contactInformation.phoneNumber,
+      });
+    }
+
+    if (
+      Object.entries(contactInformation).some(
+        ([key, value]) =>
+          value === undefined && key !== 'addressHouseNumberAddition',
+      )
+    ) {
+      return;
+    }
     await this.intersolveVisaApiService.updateCustomerAddress({
       holderId: customer.holderId,
       addressStreet: contactInformation.addressStreet,
@@ -761,11 +776,6 @@ export class IntersolveVisaService
       addressHouseNumberAddition: contactInformation.addressHouseNumberAddition,
       addressPostalCode: contactInformation.addressPostalCode,
       addressCity: contactInformation.addressCity,
-    });
-
-    await this.intersolveVisaApiService.updateCustomerPhoneNumber({
-      holderId: customer.holderId,
-      phoneNumber: contactInformation.phoneNumber,
     });
   }
 
