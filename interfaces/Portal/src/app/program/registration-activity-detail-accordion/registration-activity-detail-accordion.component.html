@@ -143,44 +143,6 @@
                 }}
               </span>
             </div>
-
-            <!-- custom attributes per FSP -->
-            <ng-container
-              *ngFor="
-                let attribute of getCustomDataAttributesCheck(
-                  activity.paymentRowDetail
-                )
-              "
-            >
-              <div
-                class="util--half-padding-vertical util--half-margin-start"
-                style="
-                  border-bottom: 1px solid var(--ion-color-fiveten-neutral-300);
-                "
-              >
-                <strong>
-                  {{
-                    'page.program.program-people-affected.transaction.custom-data.' +
-                      attribute | translate
-                  }}:
-                </strong>
-                <span
-                  id="hover-trigger"
-                  *ngIf="activity.paymentRowDetail.transaction?.status"
-                  [title]="
-                    activity.paymentRowDetail.transaction?.customData?.[
-                      attribute
-                    ]
-                  "
-                >
-                  {{
-                    activity.paymentRowDetail.transaction?.customData?.[
-                      attribute
-                    ]
-                  }}
-                </span>
-              </div>
-            </ng-container>
           </ion-col>
         </ion-row>
       </ion-grid>
