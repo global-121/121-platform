@@ -30,7 +30,7 @@ export interface ActionDataWithPaginateQuery<T> {
 }
 
 export abstract class IActionDataHandler<TData> {
-  abstract readonly onActionComplete: OutputEmitterRef<void>;
+  abstract readonly actionComplete: OutputEmitterRef<void>;
   abstract triggerAction(
     data: ActionDataWithPaginateQuery<TData>,
     ...args: unknown[]

@@ -56,8 +56,8 @@
 
       @if (!canSendMessage()) {
         <app-change-status-contents-without-message
-          (onCancel)="onChangeStatusCancel()"
-          (onConfirm)="onFormSubmit()"
+          (cancelChangeStatus)="onChangeStatusCancel()"
+          (confirmChangeStatus)="onFormSubmit()"
           [showAreYouSureCheckbox]="status() === RegistrationStatusEnum.deleted"
           [isMutating]="changeStatusMutation.isPending()"
         />
@@ -88,7 +88,7 @@
               [messageData]="sendMessageInputData()"
               [previewRegistration]="actionData()?.previewItem"
               [isMutating]="changeStatusMutation.isPending()"
-              (onCancel)="onChangeStatusCancel()"
+              (cancelChangeStatus)="onChangeStatusCancel()"
             />
           } @else {
             <app-change-status-contents-with-custom-message
@@ -96,8 +96,8 @@
               [enableSendMessage]="enableSendMessage()"
               [previewRegistration]="actionData()?.previewItem"
               [isMutating]="changeStatusMutation.isPending()"
-              (onCancel)="onChangeStatusCancel()"
-              (onCustomMessageUpdated)="customMessage.set($event)"
+              (cancelChangeStatus)="onChangeStatusCancel()"
+              (customMessageUpdated)="customMessage.set($event)"
             />
           }
         }

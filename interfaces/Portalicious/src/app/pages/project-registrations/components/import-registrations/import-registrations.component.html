@@ -43,7 +43,7 @@
       <app-file-upload-control
         formControlName="file"
         accept=".csv,text/csv,text/comma-separated-values,application/csv"
-        (onClearFiles)="resetForm()"
+        (clearFiles)="resetForm()"
       ></app-file-upload-control>
       <app-form-error [error]="formFieldErrors()('file')" />
     </div>

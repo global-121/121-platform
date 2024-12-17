@@ -24,7 +24,7 @@
       [columns]="columns()"
       localStorageKey="users-table"
       [contextMenuItems]="contextMenuItems()"
-      (onUpdateContextMenuItem)="selectedUser.set($event)"
+      (updateContextMenuItem)="selectedUser.set($event)"
       [globalFilterFields]="['displayName', 'username']"
       [initialSortField]="'displayName'"
     />

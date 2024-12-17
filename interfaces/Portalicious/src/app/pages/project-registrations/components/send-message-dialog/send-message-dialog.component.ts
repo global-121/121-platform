@@ -70,7 +70,7 @@ export class SendMessageDialogComponent
   implements OnDestroy, IActionDataHandler<Registration>
 {
   readonly projectId = input.required<number>();
-  readonly onActionComplete = output();
+  readonly actionComplete = output();
 
   private messagingService = inject(MessagingService);
   private notificationApiService = inject(NotificationApiService);
@@ -179,7 +179,7 @@ export class SendMessageDialogComponent
         severity: 'info',
         showSpinner: true,
       });
-      this.onActionComplete.emit();
+      this.actionComplete.emit();
     },
   }));
 

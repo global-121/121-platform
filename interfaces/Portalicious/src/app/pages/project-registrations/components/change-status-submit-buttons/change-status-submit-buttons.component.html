@@ -5,7 +5,7 @@
     outlined
     rounded
     [disabled]="isMutating()"
-    (click)="onCancelClick.emit()"
+    (click)="cancelClick.emit()"
   />
   <p-button
     label="Approve"
@@ -13,7 +13,7 @@
     rounded
     [disabled]="isMutating()"
     [loading]="isMutating()"
-    (click)="onApproveClick.emit($event)"
+    (click)="approveClick.emit($event)"
     type="submit"
   />
 </div>

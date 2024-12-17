@@ -75,7 +75,7 @@ export class ChangeStatusDialogComponent
   implements IActionDataHandler<Registration>
 {
   projectId = input.required<number>();
-  readonly onActionComplete = output();
+  readonly actionComplete = output();
 
   RegistrationStatusEnum = RegistrationStatusEnum;
 
@@ -202,7 +202,7 @@ export class ChangeStatusDialogComponent
           severity: 'info',
           showSpinner: true,
         });
-        this.onActionComplete.emit();
+        this.actionComplete.emit();
         void this.registrationApiService.invalidateCache(this.projectId);
 
         setTimeout(() => {
