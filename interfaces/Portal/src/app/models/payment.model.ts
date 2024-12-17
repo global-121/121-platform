@@ -55,7 +55,3 @@ export class TotalTransferAmounts {
   public registrations: number;
   public transferAmounts: number;
 }
-
-export enum TransactionCustomDataAttributes {
-  intersolveVisaWalletTokenCode = 'intersolveVisaWalletTokenCode',
-}

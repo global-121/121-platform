@@ -483,9 +483,6 @@
         "submit-warning-people-affected": "نفذ <strong>الإجراء {{actionLabel}} على {{applicableCount}}</strong> الأشخاص المتأثرين.",
         "transaction": {
           "amount": "مبلغ",
-          "custom-data": {
-            "intersolveVisaWalletTokenCode": "بطاقة فيزا"
-          },
           "do-single-payment": "قم بالدفع مرة واحدة",
           "fsp": "إف إس بي",
           "not-yet-sent": "لم يتم إرسالها بعد",

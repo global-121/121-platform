@@ -31,8 +31,6 @@ export class RegistrationActivityDetailAccordionComponent implements OnInit {
   public hasErrorCheck = PaymentUtils.hasError;
   public hasWaitingCheck = PaymentUtils.hasError;
   public hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
-  public getCustomDataAttributesCheck =
-    PaymentUtils.getCustomDataAttributesToShow;
 
   @Input()
   public activity: RegistrationActivity;
