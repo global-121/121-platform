@@ -14,6 +14,9 @@ let appTitle = '121-service';
 if (process.env.ENV_NAME) {
   appTitle += ` [${process.env.ENV_NAME}]`;
 }
+if (DEBUG) {
+  appTitle = 'Squagger ' + appTitle;
+}
 export const APP_TITLE = appTitle;
 
 let headerStyle = '#171e50';
