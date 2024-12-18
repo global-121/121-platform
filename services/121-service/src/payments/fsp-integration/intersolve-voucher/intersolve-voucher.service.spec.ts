@@ -4,7 +4,7 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 const programId = 3;
@@ -33,11 +33,11 @@ const paymentDetailsResult: IntersolveVoucherJobDto = {
 
 describe('IntersolveVoucherService', () => {
   let intersolveVoucherService: IntersolveVoucherService;
-  let queueRegistryService: QueueRegistryService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(IntersolveVoucherService)
-      .mock(QueueRegistryService)
+      .mock(QueuesRegistryService)
       .using({
         transactionJobIntersolveVoucherQueue: {
           add: jest.fn(),
@@ -46,7 +46,7 @@ describe('IntersolveVoucherService', () => {
       .compile();
 
     intersolveVoucherService = unit;
-    queueRegistryService = unitRef.get(QueueRegistryService);
+    queuesService = unitRef.get(QueuesRegistryService);
   });
 
   it('should be defined', () => {
@@ -70,10 +70,7 @@ describe('IntersolveVoucherService', () => {
       .mockImplementation(() => Promise.resolve(dbQueryResult));
 
     jest
-      .spyOn(
-        queueRegistryService.transactionJobIntersolveVoucherQueue as any,
-        'add',
-      )
+      .spyOn(queuesService.transactionJobIntersolveVoucherQueue as any, 'add')
       .mockReturnValue({
         data: {
           id: 1,
@@ -91,10 +88,10 @@ describe('IntersolveVoucherService', () => {
 
     // Assert
     expect(
-      queueRegistryService.transactionJobIntersolveVoucherQueue.add,
+      queuesService.transactionJobIntersolveVoucherQueue.add,
     ).toHaveBeenCalledTimes(1);
     expect(
-      queueRegistryService.transactionJobIntersolveVoucherQueue.add,
+      queuesService.transactionJobIntersolveVoucherQueue.add,
     ).toHaveBeenCalledWith(JobNames.default, paymentDetailsResult);
   });
 });
