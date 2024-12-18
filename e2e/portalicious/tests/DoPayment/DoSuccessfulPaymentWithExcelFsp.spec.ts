@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
@@ -41,6 +42,10 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
   }, 0);
   const financialServiceProviders: string[] = ['Excel Payment Instructions'];
 
+  const date = new Date();
+  const formattedDate = format(date, 'dd/MM/yyyy');
+  const lastPaymentDate = `${formattedDate}`;
+
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
 
@@ -60,5 +65,10 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
       currency: '€',
       paymentAmount: defaultMaxTransferValue,
     });
+  });
+
+  await test.step('Download payment instructions', async () => {
+    await paymentsPage.openPaymentByDate({ date: lastPaymentDate });
+    await paymentsPage.downloadPaymentInstructions();
   });
 });
