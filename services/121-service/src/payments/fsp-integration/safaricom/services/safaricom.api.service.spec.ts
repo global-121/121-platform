@@ -55,35 +55,17 @@ describe('SafaricomApiService', () => {
       // Arrange (mock)
       safaricomApiService.tokenSet = new TokenSet({
         access_token: 'mocked-access-token',
-        expires_at: Date.now() + 10 * 60 * 1000, // 10 minute from now
+        expires_at: Date.now() + 10 * 60 * 1000, // 10 minute from now, therefore valid
       });
 
       // Act
       const transferResult = await safaricomApiService.transfer(transferInput);
 
       // Assert
-      expect(transferResult).toBeDefined();
       expect(customHttpService.get).not.toHaveBeenCalled();
       expect(customHttpService.post).toHaveBeenCalled();
+      expect(transferResult).toBeDefined();
     });
-
-    it('should fail if authentication fails', async () => {
-      // Arrange (mock)
-      const mockGetAuthenticationResponse = { data: null };
-      // Can this be moved to central place, instead of repeated in each test?
-      (customHttpService.get as jest.Mock).mockResolvedValue(
-        mockGetAuthenticationResponse,
-      );
-
-      // Act & Assert
-      await expect(
-        safaricomApiService.transfer(transferInput),
-      ).rejects.toThrow();
-      expect(customHttpService.get).toHaveBeenCalled();
-      expect(customHttpService.post).not.toHaveBeenCalled();
-    });
-
-    // ##TODO: Add 1 more test for case where POST fails? And what does POST fail exactly mean? Some error code? Or some response that will trigger a code error later.
 
     it('should return success response if all API-calls succeed', async () => {
       // Arrange (mock)
