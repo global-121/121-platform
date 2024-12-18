@@ -368,3 +368,64 @@ export const registrationSafaricom = {
 };
 
 export const registrationsSafaricom = [registrationSafaricom];
+
+export const registrationPvExcel1 = {
+  referenceId: '44e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Gemma Houtenbos',
+  phoneNumber: '14155235556',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.excel,
+  whatsappPhoneNumber: '14155235555',
+};
+
+export const registrationPvExcel2 = {
+  referenceId: 'asdf234f4gg4ag64545',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Jan Janssen',
+  phoneNumber: '14155235551',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.excel,
+  whatsappPhoneNumber: '14155235551',
+};
+
+export const registrationPvExcel3 = {
+  referenceId: 'asdf234f4gg4ag64547',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Joost Herlembach',
+  phoneNumber: '14155235551',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.excel,
+  whatsappPhoneNumber: '14155235551',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPvExcel4 = {
+  referenceId: 'asdf234f4gg4ag64567',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Jack Strong',
+  phoneNumber: '14155235557',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.excel,
+  whatsappPhoneNumber: '14155235557',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationsPvExcel = [
+  registrationPvExcel1,
+  registrationPvExcel2,
+  registrationPvExcel3,
+  registrationPvExcel4,
+];
