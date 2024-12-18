@@ -7,7 +7,6 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 
@@ -43,16 +42,16 @@ test('[31971] Show payment summary', async ({ page }) => {
   }, 0);
 
   await test.step('Navigate to Program payments', async () => {
-    await basePage.selectProgram(projectTitle);
-
-    await payments.navigateToProgramPage('Payments');
+    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.navigateToProgramPage('Payments');
   });
 
   await test.step('Create payment', async () => {
-    await payments.createPayment();
-    await payments.validatePaymentSummary({
+    await paymentsPage.createPayment();
+    await paymentsPage.validatePaymentSummary({
       fsp: financialServiceProviders,
       registrationsNumber: numberOfPas,
+      currency: '€',
       paymentAmount: defaultMaxTransferValue,
     });
   });
