@@ -60,29 +60,29 @@ export class SinglePaymentExportComponent {
   fspPaymentListLabel = computed(() => {
     return $localize`:@@export-fsp-payment-list:Export FSP payment list`;
   });
+  exportFspPaymentListMutationData = computed(() => ({
+    paymentId: this.paymentId().toString(),
+  }));
   exportFspPaymentListMutation = injectMutation(() => ({
     mutationFn: this.exportService.exportFspInstructions({
       projectId: this.projectId,
-      paymentId: this.paymentId().toString(),
       toastService: this.toastService,
     }),
-    onSuccess: ({ data, fileName }) => {
-      this.exportService.downloadArrayToXlsx()({
-        data,
-        fileName,
+    onSuccess: (filesToExport) => {
+      filesToExport.forEach((fileToExport) => {
+        this.exportService.downloadArrayToXlsx()(fileToExport);
       });
     },
-  }));
-
-  paymentReportMutationData = computed(() => ({
-    type: ExportType.payment,
-    minPayment: this.paymentId(),
-    maxPayment: this.paymentId(),
   }));
 
   paymentReportLabel = computed(() => {
     return $localize`:@@payment-report:Payment report`;
   });
+  paymentReportMutationData = computed(() => ({
+    type: ExportType.payment,
+    minPayment: this.paymentId(),
+    maxPayment: this.paymentId(),
+  }));
   paymentReportMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
       this.projectId,

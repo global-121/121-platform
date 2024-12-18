@@ -194,14 +194,19 @@ export class ExportService {
 
   exportFspInstructions({
     projectId,
-    paymentId,
     toastService,
   }: {
     projectId: Signal<number>;
-    paymentId: string;
     toastService: ToastService;
   }) {
-    return async () => {
+    return async ({ paymentId }: { paymentId: string }) => {
+      const exportResult = await this.queryClient.fetchQuery(
+        this.paymentApiService.exportFspInstructions({
+          projectId,
+          paymentId,
+        })(),
+      );
+
       toastService.showToast({
         summary: $localize`Exporting FSP Instructions`,
         detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
@@ -209,26 +214,14 @@ export class ExportService {
         showSpinner: true,
       });
 
-      try {
-        const query = await this.queryClient.fetchQuery(
-          this.paymentApiService.exportFspInstructions({
-            projectId,
-            paymentId,
-          })(),
-        );
+      return exportResult.map((fspInstructionPerProgramFspConfig) => {
+        const exportFileName = `payment#${paymentId}-${fspInstructionPerProgramFspConfig.fileNamePrefix}-fsp-instructions`;
 
         return {
-          data: query.data,
-          fileName: `payment#${paymentId}-fsp-instructions`,
+          data: fspInstructionPerProgramFspConfig.data,
+          fileName: exportFileName,
         };
-      } catch (error) {
-        toastService.showToast({
-          detail: $localize`An unexpected error occurred while exporting the FSP instructions. Please try again later.`,
-          severity: 'error',
-        });
-
-        throw error;
-      }
+      });
     };
   }
 }
