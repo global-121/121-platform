@@ -8,7 +8,7 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-job.dto';
 import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 
@@ -50,11 +50,11 @@ const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
 
 describe('CommercialBankEthiopiaService', () => {
   let commercialBankEthiopiaService: CommercialBankEthiopiaService;
-  let queuesService: QueuesService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(CommercialBankEthiopiaService)
-      .mock(QueuesService)
+      .mock(QueuesRegistryService)
       .using({
         transactionJobCommercialBankEthiopiaQueue: {
           add: jest.fn(),
@@ -63,7 +63,7 @@ describe('CommercialBankEthiopiaService', () => {
       .compile();
 
     commercialBankEthiopiaService = unit;
-    queuesService = unitRef.get(QueuesService);
+    queuesService = unitRef.get(QueuesRegistryService);
   });
 
   it('should be defined', () => {

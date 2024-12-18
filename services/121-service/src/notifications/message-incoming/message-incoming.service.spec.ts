@@ -6,15 +6,15 @@ import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/twilio.dto';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;
-  let queuesService: QueuesService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(MessageIncomingService)
-      .mock(QueuesService)
+      .mock(QueuesRegistryService)
       .using({
         messageStatusCallbackQueue: {
           add: jest.fn(),
@@ -26,7 +26,7 @@ describe('MessageIncomingService', () => {
       .compile();
 
     messageIncomingService = unit;
-    queuesService = unitRef.get(QueuesService);
+    queuesService = unitRef.get(QueuesRegistryService);
   });
 
   it('should be defined', () => {

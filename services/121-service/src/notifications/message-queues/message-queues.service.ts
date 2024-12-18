@@ -19,8 +19,8 @@ import {
 } from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { QueueNameCreateMessage } from '@121-service/src/queues/enum/queue-names-create-message.enum';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueueNameCreateMessage } from '@121-service/src/queues-registry/enum/queue-names-create-message.enum';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -36,7 +36,7 @@ export class MessageQueuesService {
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly queuesService: QueuesService,
+    private readonly queuesService: QueuesRegistryService,
   ) {
     this.queueNameToQueueMap = {
       [QueueNameCreateMessage.replyOnIncoming]:

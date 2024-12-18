@@ -14,7 +14,7 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueuesModule } from '@121-service/src/queues/queues.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -33,7 +33,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     TransactionsModule,
     UserModule,
     RedisModule,
-    QueuesModule,
+    QueuesRegistryModule,
   ],
   providers: [
     CommercialBankEthiopiaService,

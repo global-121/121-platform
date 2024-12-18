@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -44,11 +44,11 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
 
 describe('TransactionQueuesService', () => {
   let transactionQueuesService: TransactionQueuesService;
-  let queuesService: QueuesService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(TransactionQueuesService)
-      .mock(QueuesService)
+      .mock(QueuesRegistryService)
       .using({
         transactionJobIntersolveVisaQueue: {
           add: jest.fn(),
@@ -60,7 +60,7 @@ describe('TransactionQueuesService', () => {
       .compile();
 
     transactionQueuesService = unit;
-    queuesService = unitRef.get(QueuesService);
+    queuesService = unitRef.get(QueuesRegistryService);
   });
 
   it('should be defined', () => {

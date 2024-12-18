@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { ProcessNameRegistration } from '@121-service/src/registration/enum/process-name-registration.enum';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -10,7 +10,7 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 export class QueueRegistrationUpdateService {
   public constructor(
     @Inject(REQUEST) private request: ScopedUserRequest,
-    private readonly queuesService: QueuesService,
+    private readonly queuesService: QueuesRegistryService,
   ) {}
 
   public async addRegistrationUpdateToQueue(

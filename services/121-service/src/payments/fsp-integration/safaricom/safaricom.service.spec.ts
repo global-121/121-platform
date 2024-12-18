@@ -12,7 +12,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 const mockedDoTransferParams: DoTransferParams = {
@@ -27,11 +27,11 @@ describe('SafaricomService', () => {
   let safaricomApiService: SafaricomApiService;
   let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
   let redisClient: Redis;
-  let queuesService: QueuesService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(SafaricomService)
-      .mock(QueuesService)
+      .mock(QueuesRegistryService)
       .using({
         safaricomTransferCallbackQueue: {
           add: jest.fn(),
@@ -44,7 +44,7 @@ describe('SafaricomService', () => {
 
     safaricomService = unit;
     safaricomApiService = unitRef.get(SafaricomApiService);
-    queuesService = unitRef.get(QueuesService);
+    queuesService = unitRef.get(QueuesRegistryService);
     safaricomTransferScopedRepository = unitRef.get(
       SafaricomTransferScopedRepository,
     );

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, Equal } from 'typeorm';
 
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -16,7 +16,7 @@ import { UserType } from '@121-service/src/user/user-type-enum';
 export class SeedInit implements InterfaceScript {
   public constructor(
     private dataSource: DataSource,
-    private readonly queuesService: QueuesService,
+    private readonly queuesService: QueuesRegistryService,
     private readonly httpService: CustomHttpService,
   ) {}
 

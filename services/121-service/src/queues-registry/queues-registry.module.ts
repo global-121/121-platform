@@ -1,12 +1,12 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
-import { QueueNameCreateMessage } from '@121-service/src/queues/enum/queue-names-create-message.enum';
-import { QueueNameMessageCallBack } from '@121-service/src/queues/enum/queue-names-message-callback.enum';
-import { QueueNameRegistration } from '@121-service/src/queues/enum/queue-names-registration.enum';
-import { QueueNamesSafaricomCallback } from '@121-service/src/queues/enum/queue-names-safaricom-callback.enum';
-import { QueueNamesTransactionJob } from '@121-service/src/queues/enum/queue-names-transaction-jobs.enum';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueueNameCreateMessage } from '@121-service/src/queues-registry/enum/queue-names-create-message.enum';
+import { QueueNameMessageCallBack } from '@121-service/src/queues-registry/enum/queue-names-message-callback.enum';
+import { QueueNameRegistration } from '@121-service/src/queues-registry/enum/queue-names-registration.enum';
+import { QueueNamesSafaricomCallback } from '@121-service/src/queues-registry/enum/queue-names-safaricom-callback.enum';
+import { QueueNamesTransactionJob } from '@121-service/src/queues-registry/enum/queue-names-transaction-jobs.enum';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
@@ -198,7 +198,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
   ],
-  providers: [QueuesService, AzureLogService],
-  exports: [QueuesService],
+  providers: [QueuesRegistryService, AzureLogService],
+  exports: [QueuesRegistryService],
 })
-export class QueuesModule {}
+export class QueuesRegistryModule {}

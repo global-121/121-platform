@@ -26,7 +26,7 @@ import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integrat
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -61,7 +61,7 @@ export class MessageIncomingService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly queuesService: QueuesService,
+    private readonly queuesService: QueuesRegistryService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,

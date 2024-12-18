@@ -22,7 +22,7 @@ graph LR
   TransactionsModule-->MessageQueuesModule
   MessageQueuesModule-->ProgramAttributesModule
   MessageQueuesModule-->RegistrationDataModule
-  MessageQueuesModule-->QueuesModule
+  MessageQueuesModule-->QueuesRegistryModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
@@ -46,7 +46,7 @@ graph LR
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
   IntersolveVoucherModule-->RedisModule
-  IntersolveVoucherModule-->QueuesModule
+  IntersolveVoucherModule-->QueuesRegistryModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MetricsModule-->UserModule
@@ -62,7 +62,7 @@ graph LR
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
   RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
-  RegistrationsModule-->QueuesModule
+  RegistrationsModule-->QueuesRegistryModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->UserModule
@@ -72,7 +72,7 @@ graph LR
   PaymentsModule-->TransactionsModule
   PaymentsModule-->SafaricomModule
   SafaricomModule-->RedisModule
-  SafaricomModule-->QueuesModule
+  SafaricomModule-->QueuesRegistryModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
@@ -80,14 +80,14 @@ graph LR
   CommercialBankEthiopiaModule-->TransactionsModule
   CommercialBankEthiopiaModule-->UserModule
   CommercialBankEthiopiaModule-->RedisModule
-  CommercialBankEthiopiaModule-->QueuesModule
+  CommercialBankEthiopiaModule-->QueuesRegistryModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationDataModule
   PaymentsModule-->TransactionQueuesModule
   TransactionQueuesModule-->RedisModule
-  TransactionQueuesModule-->QueuesModule
+  TransactionQueuesModule-->QueuesRegistryModule
   PaymentsModule-->FinancialServiceProvidersModule
   PaymentsModule-->ProgramFinancialServiceProviderConfigurationsModule
   PaymentsModule-->RedisModule
@@ -102,7 +102,7 @@ graph LR
   MessageIncomingModule-->MessageQueuesModule
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
-  MessageIncomingModule-->QueuesModule
+  MessageIncomingModule-->QueuesRegistryModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   ActivitiesModule-->NoteModule

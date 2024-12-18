@@ -15,7 +15,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class SafaricomService
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
-    private readonly queuesService: QueuesService,
+    private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}

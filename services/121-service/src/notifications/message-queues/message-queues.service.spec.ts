@@ -11,7 +11,7 @@ import {
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { QueuesService } from '@121-service/src/queues/queues.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -31,14 +31,14 @@ const defaultMessageJob = {
 
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
-  let queuesService: QueuesService;
+  let queuesService: QueuesRegistryService;
   let programAttributesService: ProgramAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(MessageQueuesService)
-      .mock(QueuesService)
+      .mock(QueuesRegistryService)
       .using({
         createMessageSmallBulkQueue: {
           add: jest.fn(),
@@ -47,7 +47,7 @@ describe('MessageQueuesService', () => {
       .compile();
 
     queueMessageService = unit;
-    queuesService = unitRef.get(QueuesService);
+    queuesService = unitRef.get(QueuesRegistryService);
     programAttributesService = unitRef.get(ProgramAttributesService);
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(

@@ -3,15 +3,15 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
-import { QueueNameCreateMessage } from '@121-service/src/queues/enum/queue-names-create-message.enum';
-import { QueueNameMessageCallBack } from '@121-service/src/queues/enum/queue-names-message-callback.enum';
-import { QueueNameRegistration } from '@121-service/src/queues/enum/queue-names-registration.enum';
-import { QueueNamesSafaricomCallback } from '@121-service/src/queues/enum/queue-names-safaricom-callback.enum';
-import { QueueNamesTransactionJob } from '@121-service/src/queues/enum/queue-names-transaction-jobs.enum';
+import { QueueNameCreateMessage } from '@121-service/src/queues-registry/enum/queue-names-create-message.enum';
+import { QueueNameMessageCallBack } from '@121-service/src/queues-registry/enum/queue-names-message-callback.enum';
+import { QueueNameRegistration } from '@121-service/src/queues-registry/enum/queue-names-registration.enum';
+import { QueueNamesSafaricomCallback } from '@121-service/src/queues-registry/enum/queue-names-safaricom-callback.enum';
+import { QueueNamesTransactionJob } from '@121-service/src/queues-registry/enum/queue-names-transaction-jobs.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
-export class QueuesService implements OnModuleInit {
+export class QueuesRegistryService implements OnModuleInit {
   private allQueues: Queue[] = [];
 
   constructor(

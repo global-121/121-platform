@@ -21,7 +21,7 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { QueuesModule } from '@121-service/src/queues/queues.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -52,7 +52,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     RegistrationDataModule,
     RegistrationUtilsModule,
     RedisModule,
-    QueuesModule,
+    QueuesRegistryModule,
   ],
   providers: [
     IntersolveVoucherService,
