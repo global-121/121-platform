@@ -168,14 +168,4 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
         },
       ],
     },
-    {
-      name: FinancialServiceProviders.deprecatedJumbo, // This financial service provider is deprecated. However there are still transactions that exists for this FSP in running program. Therefore this is needed as a work around
-      integrationType: FinancialServiceProviderIntegrationType.api,
-      defaultLabel: {
-        en: 'JUMBO deprecated',
-      },
-      notifyOnTransaction: false,
-      attributes: [],
-      configurationProperties: [],
-    },
   ];
