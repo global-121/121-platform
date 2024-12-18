@@ -8,7 +8,6 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 
@@ -31,7 +30,6 @@ test.beforeEach(async ({ page }) => {
 
 test('[31970] Do successful payment', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-
   const projectTitle = 'NLRC OCW Program';
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
@@ -43,23 +41,23 @@ test('[31970] Do successful payment', async ({ page }) => {
   const lastPaymentDate = `${formattedDate}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await basePage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(projectTitle);
 
-    await payments.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProgramPage('Payments');
   });
 
   await test.step('Do payment', async () => {
-    await payments.createPayment();
-    await payments.startPayment();
+    await paymentsPage.createPayment();
+    await paymentsPage.startPayment();
   });
 
   await test.step('Validate payment card', async () => {
-    await payments.validateToastMessage('Payment created.');
-    await payments.navigateToProgramPage('Payments');
+    await paymentsPage.validateToastMessage('Payment created.');
+    await paymentsPage.navigateToProgramPage('Payments');
     // Reload the page in case there are still some payments in progress
     await page.reload();
 
-    await payments.validatePaymentCard({
+    await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,

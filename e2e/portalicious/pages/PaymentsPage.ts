@@ -39,10 +39,12 @@ class PaymentsPage extends BasePage {
   async validatePaymentSummary({
     fsp,
     registrationsNumber,
+    currency,
     paymentAmount,
   }: {
     fsp: string[];
     registrationsNumber: number;
+    currency: string;
     paymentAmount: number;
   }) {
     const fspSummary = await this.fspSummary.textContent();
@@ -51,7 +53,9 @@ class PaymentsPage extends BasePage {
       `Financial Service Provider(s): ${fsp.join(', ')}`,
     );
     expect(fspSummary).toContain(`Registrations: ${registrationsNumber}`);
-    expect(fspSummary).toContain(`Total payment amount: ${currency}${paymentAmount}`);
+    expect(fspSummary).toContain(
+      `Total payment amount: ${currency}${paymentAmount}`,
+    );
   }
 
   async createPayment() {
