@@ -68,6 +68,14 @@ class PaymentsPage extends BasePage {
     await this.startPaymentButton.click();
   }
 
+  async waitForPaymentToComplete() {
+    const inProgressChip = this.page
+      .locator('app-colored-chip')
+      .getByLabel('In progress');
+
+    await inProgressChip.waitFor({ state: 'hidden' });
+  }
+
   async validatePaymentCard({
     date,
     registrationsNumber,

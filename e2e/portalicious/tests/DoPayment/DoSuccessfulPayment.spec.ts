@@ -54,9 +54,7 @@ test('[31970] Do successful payment', async ({ page }) => {
   await test.step('Validate payment card', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
-    // Reload the page in case there are still some payments in progress
-    await page.reload();
-
+    await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
