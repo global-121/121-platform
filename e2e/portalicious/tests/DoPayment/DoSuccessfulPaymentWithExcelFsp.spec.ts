@@ -1,22 +1,26 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { registrationsPvExcel } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
+  const programIdPV = 2;
+  const PVProgramId = programIdPV;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
+  await seedIncludedRegistrations(
+    registrationsPvExcel,
+    PVProgramId,
+    accessToken,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
@@ -29,16 +33,13 @@ test.beforeEach(async ({ page }) => {
 
 test('[31972] Do payment for excel fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = 'NLRC OCW Program';
-  const numberOfPas = registrationsOCW.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
+  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const numberOfPas = registrationsPvExcel.length;
+  const defaultTransferValue = NLRCProgramPV.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const financialServiceProviders: string[] = [
-    'Visa debit card',
-    'Albert Heijn voucher WhatsApp',
-  ];
+  const financialServiceProviders: string[] = ['Excel Payment Instructions'];
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -48,11 +49,11 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
+    await paymentsPage.validateExcelFspInstructions();
     await paymentsPage.startPayment();
   });
 
   await test.step('Create payment', async () => {
-    await paymentsPage.createPayment();
     await paymentsPage.validatePaymentSummary({
       fsp: financialServiceProviders,
       registrationsNumber: numberOfPas,

@@ -13,12 +13,15 @@ class PaymentsPage extends BasePage {
   readonly startPaymentButton: Locator;
   readonly paymentTitle: Locator;
   readonly paymentSummaryMetrics: Locator;
+  readonly paymentSummaryWithInstructions: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
     this.table = new TableComponent(page);
-    this.createPaymentButton = this.page.getByRole('button', { name: 'Pay' });
+    this.createPaymentButton = this.page.getByRole('button', {
+      name: 'Create new payment',
+    });
     this.addToPaymentButton = this.page.getByRole('button', {
       name: 'Add to payment',
     });
@@ -30,6 +33,9 @@ class PaymentsPage extends BasePage {
     this.paymentSummaryMetrics = this.page
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
+    this.paymentSummaryWithInstructions = this.page.getByTestId(
+      'create-payment-excel-fsp-instructions',
+    );
   }
 
   async selectAllRegistrations() {
@@ -112,6 +118,35 @@ class PaymentsPage extends BasePage {
       successfulTransfers.toString(),
     );
     expect(failedTransfersElement).toContain(failedTransfers.toString());
+  }
+
+  async validateExcelFspInstructions() {
+    const paymentSummaryWithInstructions =
+      await this.paymentSummaryWithInstructions.textContent();
+
+    if (!paymentSummaryWithInstructions) {
+      throw new Error('Payment summary with instructions is not available.');
+    }
+
+    const expectedText = `
+      Review payment summary and follow the next steps: Click start payment, this will direct you to the payment page.
+      Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.
+      Save the exported XLSX-file in the format required by the Financial Service Provider.
+      Upload the file to the Financial Service Provider’s portal.
+    `
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const actualText = paymentSummaryWithInstructions
+      .replace(/\s+/g, ' ')
+      .replace(/Financial Service Provider\(s\):.*/g, '')
+      .trim();
+
+    if (actualText !== expectedText) {
+      throw new Error(
+        `Expected payment summary instructions to be:\n${expectedText}\n\nBut received:\n${actualText}`,
+      );
+    }
   }
 }
 
