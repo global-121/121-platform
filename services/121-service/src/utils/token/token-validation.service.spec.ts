@@ -17,6 +17,14 @@ describe('TokenValidationService', () => {
   });
 
   describe('isTokenValid', () => {
+    // ##TODO: Check if valuable to add more tests based on edge case inputs (e.g. expires_at=0 or negative, etc.)
+
+    it('should return false if tokenSet is not filled', () => {
+      const tokenSet = new TokenSet();
+
+      expect(tokenValidationService.isTokenValid(tokenSet)).toBe(false);
+    });
+
     it('should return false if tokenSet does not have expires_at', () => {
       const tokenSet = new TokenSet({
         access_token: 'some-token',
