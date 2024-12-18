@@ -12,7 +12,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 const mockedDoTransferParams: DoTransferParams = {
@@ -27,11 +27,11 @@ describe('SafaricomService', () => {
   let safaricomApiService: SafaricomApiService;
   let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
   let redisClient: Redis;
-  let queueRegistryService: QueueRegistryService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(SafaricomService)
-      .mock(QueueRegistryService)
+      .mock(QueuesRegistryService)
       .using({
         safaricomTransferCallbackQueue: {
           add: jest.fn(),
@@ -44,7 +44,7 @@ describe('SafaricomService', () => {
 
     safaricomService = unit;
     safaricomApiService = unitRef.get(SafaricomApiService);
-    queueRegistryService = unitRef.get(QueueRegistryService);
+    queuesService = unitRef.get(QueuesRegistryService);
     safaricomTransferScopedRepository = unitRef.get(
       SafaricomTransferScopedRepository,
     );
@@ -102,13 +102,13 @@ describe('SafaricomService', () => {
 
       jest.spyOn(redisClient, 'sadd').mockResolvedValue(1);
       jest
-        .spyOn(queueRegistryService.safaricomTransferCallbackQueue, 'add')
+        .spyOn(queuesService.safaricomTransferCallbackQueue, 'add')
         .mockResolvedValue(mockJob as any);
 
       await safaricomService.processTransferCallback(mockCallback);
 
       expect(
-        queueRegistryService.safaricomTransferCallbackQueue.add,
+        queuesService.safaricomTransferCallbackQueue.add,
       ).toHaveBeenCalledWith(JobNames.default, {
         originatorConversationId: mockCallback.Result.OriginatorConversationID,
         mpesaConversationId: mockCallback.Result.ConversationID,
@@ -148,13 +148,13 @@ describe('SafaricomService', () => {
 
       jest.spyOn(redisClient, 'sadd').mockResolvedValue(1);
       jest
-        .spyOn(queueRegistryService.safaricomTimeoutCallbackQueue, 'add')
+        .spyOn(queuesService.safaricomTimeoutCallbackQueue, 'add')
         .mockResolvedValue(mockJob as any);
 
       await safaricomService.processTimeoutCallback(mockTimeoutCallback);
 
       expect(
-        queueRegistryService.safaricomTimeoutCallbackQueue.add,
+        queuesService.safaricomTimeoutCallbackQueue.add,
       ).toHaveBeenCalledWith(JobNames.default, {
         originatorConversationId: mockTimeoutCallback.OriginatorConversationID,
       });

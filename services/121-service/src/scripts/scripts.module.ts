@@ -6,7 +6,7 @@ import { MessageTemplateModule } from '@121-service/src/notifications/message-te
 import { ORMConfig } from '@121-service/src/ormconfig';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
-import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
@@ -29,7 +29,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
   imports: [
     TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions),
     MessageTemplateModule,
-    QueueRegistryModule,
+    QueuesRegistryModule,
     ProgramModule,
     HttpModule,
     ProgramFinancialServiceProviderConfigurationsModule,

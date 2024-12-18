@@ -2,18 +2,16 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 
-import { SafaricomCallbackQueueNames } from '@121-service/src/payments/fsp-integration/safaricom/enum/safaricom-callback-queue-names.enum';
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
-import {
-  QueueNameCreateMessage,
-  QueueNameMessageCallBack,
-  QueueNameRegistration,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/shared/enum/transaction-job-queue-names.enum';
+import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
+import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
+import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
+import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
-export class QueueRegistryService implements OnModuleInit {
+export class QueuesRegistryService implements OnModuleInit {
   private allQueues: Queue[] = [];
 
   constructor(
@@ -33,23 +31,23 @@ export class QueueRegistryService implements OnModuleInit {
     @InjectQueue(SafaricomCallbackQueueNames.timeout)
     public safaricomTimeoutCallbackQueue: Queue,
 
-    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
+    @InjectQueue(CreateMessageQueueNames.replyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.smallBulk)
+    @InjectQueue(CreateMessageQueueNames.smallBulk)
     public createMessageSmallBulkQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.mediumBulk)
+    @InjectQueue(CreateMessageQueueNames.mediumBulk)
     public createMessageMediumBulkQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.largeBulk)
+    @InjectQueue(CreateMessageQueueNames.largeBulk)
     public createMessageLargeBulkQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.lowPriority)
+    @InjectQueue(CreateMessageQueueNames.lowPriority)
     public createMessageLowPriorityQueue: Queue,
 
-    @InjectQueue(QueueNameMessageCallBack.incomingMessage)
+    @InjectQueue(MessageCallBackQueueNames.incomingMessage)
     public messageIncomingCallbackQueue: Queue,
-    @InjectQueue(QueueNameMessageCallBack.status)
+    @InjectQueue(MessageCallBackQueueNames.status)
     public messageStatusCallbackQueue: Queue,
 
-    @InjectQueue(QueueNameRegistration.registration)
+    @InjectQueue(RegistrationQueueNames.registration)
     public updateRegistrationQueue: Queue,
   ) {
     this.allQueues = [

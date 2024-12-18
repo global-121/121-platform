@@ -1,20 +1,20 @@
 import { TestBed } from '@automock/jest';
 
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/twilio.dto';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
-import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 
 describe('MessageIncomingService', () => {
   let messageIncomingService: MessageIncomingService;
-  let queueRegistryService: QueueRegistryService;
+  let queuesService: QueuesRegistryService;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(MessageIncomingService)
-      .mock(QueueRegistryService)
+      .mock(QueuesRegistryService)
       .using({
         messageStatusCallbackQueue: {
           add: jest.fn(),
@@ -26,7 +26,7 @@ describe('MessageIncomingService', () => {
       .compile();
 
     messageIncomingService = unit;
-    queueRegistryService = unitRef.get(QueueRegistryService);
+    queuesService = unitRef.get(QueuesRegistryService);
   });
 
   it('should be defined', () => {
@@ -41,12 +41,13 @@ describe('MessageIncomingService', () => {
     await messageIncomingService.addSmsStatusCallbackToQueue(testCallbackData);
 
     // Assert
-    expect(
-      queueRegistryService.messageStatusCallbackQueue.add,
-    ).toHaveBeenCalledTimes(1);
-    expect(
-      queueRegistryService.messageStatusCallbackQueue.add,
-    ).toHaveBeenCalledWith(ProcessNameMessage.sms, testCallbackData);
+    expect(queuesService.messageStatusCallbackQueue.add).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(queuesService.messageStatusCallbackQueue.add).toHaveBeenCalledWith(
+      ProcessNameMessage.sms,
+      testCallbackData,
+    );
   });
 
   it('should add WhatsApp status callback to queue', async () => {
@@ -59,12 +60,13 @@ describe('MessageIncomingService', () => {
     );
 
     // Assert
-    expect(
-      queueRegistryService.messageStatusCallbackQueue.add,
-    ).toHaveBeenCalledTimes(1);
-    expect(
-      queueRegistryService.messageStatusCallbackQueue.add,
-    ).toHaveBeenCalledWith(ProcessNameMessage.whatsapp, testCallbackData);
+    expect(queuesService.messageStatusCallbackQueue.add).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(queuesService.messageStatusCallbackQueue.add).toHaveBeenCalledWith(
+      ProcessNameMessage.whatsapp,
+      testCallbackData,
+    );
   });
 
   it('should add incoming WhatsApp to queue', async () => {
@@ -78,11 +80,9 @@ describe('MessageIncomingService', () => {
 
     // Assert
     expect(
-      queueRegistryService.messageIncomingCallbackQueue.add,
+      queuesService.messageIncomingCallbackQueue.add,
     ).toHaveBeenCalledTimes(1);
-    expect(
-      queueRegistryService.messageIncomingCallbackQueue.add,
-    ).toHaveBeenCalledWith(
+    expect(queuesService.messageIncomingCallbackQueue.add).toHaveBeenCalledWith(
       ProcessNameMessage.whatsapp,
       testIncommingWhatsappData,
     );

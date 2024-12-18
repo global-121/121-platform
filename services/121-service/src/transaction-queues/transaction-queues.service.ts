@@ -5,7 +5,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -15,7 +15,7 @@ export class TransactionQueuesService {
   public constructor(
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesRegistryService,
   ) {}
 
   public async addIntersolveVisaTransactionJobs(
@@ -23,7 +23,7 @@ export class TransactionQueuesService {
   ): Promise<void> {
     for (const transferJob of transferJobs) {
       const job =
-        await this.queueRegistryService.transactionJobIntersolveVisaQueue.add(
+        await this.queuesService.transactionJobIntersolveVisaQueue.add(
           JobNames.default,
           transferJob,
         );
@@ -35,11 +35,10 @@ export class TransactionQueuesService {
     safaricomTransactionJobs: SafaricomTransactionJobDto[],
   ): Promise<void> {
     for (const safaricomTransactionJob of safaricomTransactionJobs) {
-      const job =
-        await this.queueRegistryService.transactionJobSafaricomQueue.add(
-          JobNames.default,
-          safaricomTransactionJob,
-        );
+      const job = await this.queuesService.transactionJobSafaricomQueue.add(
+        JobNames.default,
+        safaricomTransactionJob,
+      );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }

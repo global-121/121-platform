@@ -22,7 +22,7 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueueRegistryModule } from '@121-service/src/queue-registry/queue-registry.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -47,7 +47,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     MessageQueuesModule,
     MessageTemplateModule,
     RegistrationDataModule,
-    QueueRegistryModule,
+    QueuesRegistryModule,
   ],
   providers: [
     MessageIncomingService,

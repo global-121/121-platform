@@ -43,7 +43,7 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -78,7 +78,7 @@ export class IntersolveVoucherService
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesRegistryService,
     public readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
 
     @Inject(REDIS_CLIENT)
@@ -93,7 +93,7 @@ export class IntersolveVoucherService
   ): Promise<void> {
     for (const paymentInfo of paPaymentList) {
       const job =
-        await this.queueRegistryService.transactionJobIntersolveVoucherQueue.add(
+        await this.queuesService.transactionJobIntersolveVoucherQueue.add(
           JobNames.default,
           {
             paymentInfo,

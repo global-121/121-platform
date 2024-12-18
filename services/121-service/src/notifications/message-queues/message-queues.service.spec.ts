@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import {
   MessageJobDto,
   MessageProcessType,
@@ -10,13 +11,12 @@ import {
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',
@@ -31,14 +31,14 @@ const defaultMessageJob = {
 
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
-  let queueRegistryService: QueueRegistryService;
+  let queuesService: QueuesRegistryService;
   let programAttributesService: ProgramAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(MessageQueuesService)
-      .mock(QueueRegistryService)
+      .mock(QueuesRegistryService)
       .using({
         createMessageSmallBulkQueue: {
           add: jest.fn(),
@@ -47,7 +47,7 @@ describe('MessageQueuesService', () => {
       .compile();
 
     queueMessageService = unit;
-    queueRegistryService = unitRef.get(QueueRegistryService);
+    queuesService = unitRef.get(QueuesRegistryService);
     programAttributesService = unitRef.get(ProgramAttributesService);
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
@@ -81,21 +81,24 @@ describe('MessageQueuesService', () => {
     });
 
     // Assert
-    expect(
-      queueRegistryService.createMessageSmallBulkQueue.add,
-    ).toHaveBeenCalledWith(ProcessNameMessage.send, {
-      ...defaultMessageJob,
-      whatsappPhoneNumber:
-        registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber],
-      phoneNumber: registration.phoneNumber,
-      preferredLanguage: registration.preferredLanguage,
-      registrationId: registration.id,
-      programId: registration.programId,
-      referenceId: registration.referenceId,
-      customData: undefined,
-      mediaUrl: undefined,
-      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-    });
+    expect(queuesService.createMessageSmallBulkQueue.add).toHaveBeenCalledWith(
+      ProcessNameMessage.send,
+      {
+        ...defaultMessageJob,
+        whatsappPhoneNumber:
+          registration[
+            DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
+          ],
+        phoneNumber: registration.phoneNumber,
+        preferredLanguage: registration.preferredLanguage,
+        registrationId: registration.id,
+        programId: registration.programId,
+        referenceId: registration.referenceId,
+        customData: undefined,
+        mediaUrl: undefined,
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      },
+    );
   });
 
   it('should add message to queue registration entity', async () => {
@@ -124,20 +127,21 @@ describe('MessageQueuesService', () => {
 
     // Assert
     expect(mockGetRegistrationDataValueByName).toHaveBeenCalledTimes(1);
-    expect(
-      queueRegistryService.createMessageSmallBulkQueue.add,
-    ).toHaveBeenCalledWith(ProcessNameMessage.send, {
-      ...defaultMessageJob,
-      whatsappPhoneNumber: whatsappNumber,
-      phoneNumber: registration.phoneNumber,
-      preferredLanguage: registration.preferredLanguage,
-      registrationId: registration.id,
-      referenceId: registration.referenceId,
-      programId: registration.programId,
-      customData: undefined,
-      mediaUrl: undefined,
-      messageProcessType: MessageProcessType.whatsappTemplateGeneric,
-    });
+    expect(queuesService.createMessageSmallBulkQueue.add).toHaveBeenCalledWith(
+      ProcessNameMessage.send,
+      {
+        ...defaultMessageJob,
+        whatsappPhoneNumber: whatsappNumber,
+        phoneNumber: registration.phoneNumber,
+        preferredLanguage: registration.preferredLanguage,
+        registrationId: registration.id,
+        referenceId: registration.referenceId,
+        programId: registration.programId,
+        customData: undefined,
+        mediaUrl: undefined,
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+      },
+    );
   });
 
   describe('getPlaceholdersInMessageText', () => {

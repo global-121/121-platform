@@ -1,9 +1,9 @@
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
-import { QueueNameCreateMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
+import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
 
 export class MessageQueueMap {
   types: MessageProcessType[];
-  queueName: QueueNameCreateMessage;
+  queueName: CreateMessageQueueNames;
   bulkSizeQueueName?: BulkSizePriority[];
 }
 
@@ -16,11 +16,11 @@ enum BulkSize {
 
 class BulkSizePriority {
   bulkSize: BulkSize;
-  queueName: QueueNameCreateMessage;
+  queueName: CreateMessageQueueNames;
 }
 
 // Fallback priority if no mapping is found
-export const DEFAULT_QUEUE_CREATE_MESSAGE = QueueNameCreateMessage.smallBulk;
+export const DEFAULT_QUEUE_CREATE_MESSAGE = CreateMessageQueueNames.smallBulk;
 
 // Priority steps of 100 so we can add more in between if needed
 // The lower the prio the sooner the message will be sent
@@ -35,7 +35,7 @@ export const MESSAGE_QUEUE_MAP: MessageQueueMap[] = [
       MessageProcessType.whatsappPendingMessage,
       MessageProcessType.whatsappDefaultReply,
     ],
-    queueName: QueueNameCreateMessage.replyOnIncoming,
+    queueName: CreateMessageQueueNames.replyOnIncoming,
   },
   // These are messages of which we know they are not a reply to a message from the user, so they can be sent later
   {
@@ -45,24 +45,24 @@ export const MESSAGE_QUEUE_MAP: MessageQueueMap[] = [
       MessageProcessType.whatsappTemplateGeneric,
       MessageProcessType.tryWhatsapp, // Try whatsapp is similair prio as whatsappTemplateGeneric but we don't know if the user has whatsapp the reply and this send the the same message
     ],
-    queueName: QueueNameCreateMessage.smallBulk,
+    queueName: CreateMessageQueueNames.smallBulk,
     bulkSizeQueueName: [
       {
         bulkSize: BulkSize.SMALL,
-        queueName: QueueNameCreateMessage.smallBulk,
+        queueName: CreateMessageQueueNames.smallBulk,
       },
       {
         bulkSize: BulkSize.MEDIUM,
-        queueName: QueueNameCreateMessage.mediumBulk,
+        queueName: CreateMessageQueueNames.mediumBulk,
       },
       {
         bulkSize: BulkSize.LARGE,
-        queueName: QueueNameCreateMessage.largeBulk,
+        queueName: CreateMessageQueueNames.largeBulk,
       },
     ],
   },
   {
     types: [MessageProcessType.whatsappTemplateVoucherReminder],
-    queueName: QueueNameCreateMessage.lowPriority,
+    queueName: CreateMessageQueueNames.lowPriority,
   },
 ];

@@ -3,12 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { Equal, Repository } from 'typeorm';
 
-import {
-  DEFAULT_QUEUE_CREATE_MESSAGE,
-  MESSAGE_QUEUE_MAP,
-  MessageQueueMap,
-} from '@121-service/src/notifications/enum/message-queue-mapping.const';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
@@ -16,41 +12,43 @@ import {
   MessageProcessType,
   MessageProcessTypeExtension,
 } from '@121-service/src/notifications/message-job.dto';
+import {
+  DEFAULT_QUEUE_CREATE_MESSAGE,
+  MESSAGE_QUEUE_MAP,
+  MessageQueueMap,
+} from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import {
-  ProcessNameMessage,
-  QueueNameCreateMessage,
-} from '@121-service/src/shared/enum/queue-process.names.enum';
 
 @Injectable()
 export class MessageQueuesService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
-  private readonly queueNameToQueueMap: Record<QueueNameCreateMessage, Queue>;
+  private readonly queueNameToQueueMap: Record<CreateMessageQueueNames, Queue>;
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesRegistryService,
   ) {
     this.queueNameToQueueMap = {
-      [QueueNameCreateMessage.replyOnIncoming]:
-        this.queueRegistryService.createMessageReplyOnIncomingQueue,
-      [QueueNameCreateMessage.smallBulk]:
-        this.queueRegistryService.createMessageSmallBulkQueue,
-      [QueueNameCreateMessage.mediumBulk]:
-        this.queueRegistryService.createMessageMediumBulkQueue,
-      [QueueNameCreateMessage.largeBulk]:
-        this.queueRegistryService.createMessageLargeBulkQueue,
-      [QueueNameCreateMessage.lowPriority]:
-        this.queueRegistryService.createMessageLowPriorityQueue,
+      [CreateMessageQueueNames.replyOnIncoming]:
+        this.queuesService.createMessageReplyOnIncomingQueue,
+      [CreateMessageQueueNames.smallBulk]:
+        this.queuesService.createMessageSmallBulkQueue,
+      [CreateMessageQueueNames.mediumBulk]:
+        this.queuesService.createMessageMediumBulkQueue,
+      [CreateMessageQueueNames.largeBulk]:
+        this.queuesService.createMessageLargeBulkQueue,
+      [CreateMessageQueueNames.lowPriority]:
+        this.queuesService.createMessageLowPriorityQueue,
     };
   }
 
