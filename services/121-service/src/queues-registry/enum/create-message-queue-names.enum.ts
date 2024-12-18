@@ -1,4 +1,4 @@
-export enum QueueNameCreateMessage {
+export enum CreateMessageQueueNames {
   replyOnIncoming = 'replyOnIncoming',
   smallBulk = 'smallBulk',
   mediumBulk = 'mediumBulk',

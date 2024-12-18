@@ -19,7 +19,7 @@ import {
 } from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { QueueNameCreateMessage } from '@121-service/src/queues-registry/enum/queue-names-create-message.enum';
+import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -31,7 +31,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 export class MessageQueuesService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
-  private readonly queueNameToQueueMap: Record<QueueNameCreateMessage, Queue>;
+  private readonly queueNameToQueueMap: Record<CreateMessageQueueNames, Queue>;
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
@@ -39,15 +39,15 @@ export class MessageQueuesService {
     private readonly queuesService: QueuesRegistryService,
   ) {
     this.queueNameToQueueMap = {
-      [QueueNameCreateMessage.replyOnIncoming]:
+      [CreateMessageQueueNames.replyOnIncoming]:
         this.queuesService.createMessageReplyOnIncomingQueue,
-      [QueueNameCreateMessage.smallBulk]:
+      [CreateMessageQueueNames.smallBulk]:
         this.queuesService.createMessageSmallBulkQueue,
-      [QueueNameCreateMessage.mediumBulk]:
+      [CreateMessageQueueNames.mediumBulk]:
         this.queuesService.createMessageMediumBulkQueue,
-      [QueueNameCreateMessage.largeBulk]:
+      [CreateMessageQueueNames.largeBulk]:
         this.queuesService.createMessageLargeBulkQueue,
-      [QueueNameCreateMessage.lowPriority]:
+      [CreateMessageQueueNames.lowPriority]:
         this.queuesService.createMessageLowPriorityQueue,
     };
   }

@@ -8,10 +8,10 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { QueueNamesSafaricomCallback } from '@121-service/src/queues-registry/enum/queue-names-safaricom-callback.enum';
+import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(QueueNamesSafaricomCallback.transfer)
+@Processor(SafaricomCallbackQueueNames.transfer)
 export class TransferCallbackJobProcessorSafaricom {
   constructor(
     private readonly financialServiceProviderCallbackJobProcessorsService: FinancialServiceProviderCallbackJobProcessorsService,

@@ -3,11 +3,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
-import { QueueNameCreateMessage } from '@121-service/src/queues-registry/enum/queue-names-create-message.enum';
-import { QueueNameMessageCallBack } from '@121-service/src/queues-registry/enum/queue-names-message-callback.enum';
-import { QueueNameRegistration } from '@121-service/src/queues-registry/enum/queue-names-registration.enum';
-import { QueueNamesSafaricomCallback } from '@121-service/src/queues-registry/enum/queue-names-safaricom-callback.enum';
-import { QueueNamesTransactionJob } from '@121-service/src/queues-registry/enum/queue-names-transaction-jobs.enum';
+import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
+import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
+import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
+import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
+import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
@@ -17,37 +17,37 @@ export class QueuesRegistryService implements OnModuleInit {
   constructor(
     private azureLogService: AzureLogService,
 
-    @InjectQueue(QueueNamesTransactionJob.intersolveVisa)
+    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
-    @InjectQueue(QueueNamesTransactionJob.intersolveVoucher)
+    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
     public transactionJobIntersolveVoucherQueue: Queue,
-    @InjectQueue(QueueNamesTransactionJob.commercialBankEthiopia)
+    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
     public transactionJobCommercialBankEthiopiaQueue: Queue,
-    @InjectQueue(QueueNamesTransactionJob.safaricom)
+    @InjectQueue(TransactionJobQueueNames.safaricom)
     public transactionJobSafaricomQueue: Queue,
 
-    @InjectQueue(QueueNamesSafaricomCallback.transfer)
+    @InjectQueue(SafaricomCallbackQueueNames.transfer)
     public safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(QueueNamesSafaricomCallback.timeout)
+    @InjectQueue(SafaricomCallbackQueueNames.timeout)
     public safaricomTimeoutCallbackQueue: Queue,
 
-    @InjectQueue(QueueNameCreateMessage.replyOnIncoming)
+    @InjectQueue(CreateMessageQueueNames.replyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.smallBulk)
+    @InjectQueue(CreateMessageQueueNames.smallBulk)
     public createMessageSmallBulkQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.mediumBulk)
+    @InjectQueue(CreateMessageQueueNames.mediumBulk)
     public createMessageMediumBulkQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.largeBulk)
+    @InjectQueue(CreateMessageQueueNames.largeBulk)
     public createMessageLargeBulkQueue: Queue,
-    @InjectQueue(QueueNameCreateMessage.lowPriority)
+    @InjectQueue(CreateMessageQueueNames.lowPriority)
     public createMessageLowPriorityQueue: Queue,
 
-    @InjectQueue(QueueNameMessageCallBack.incomingMessage)
+    @InjectQueue(MessageCallBackQueueNames.incomingMessage)
     public messageIncomingCallbackQueue: Queue,
-    @InjectQueue(QueueNameMessageCallBack.status)
+    @InjectQueue(MessageCallBackQueueNames.status)
     public messageStatusCallbackQueue: Queue,
 
-    @InjectQueue(QueueNameRegistration.registration)
+    @InjectQueue(RegistrationQueueNames.registration)
     public updateRegistrationQueue: Queue,
   ) {
     this.allQueues = [

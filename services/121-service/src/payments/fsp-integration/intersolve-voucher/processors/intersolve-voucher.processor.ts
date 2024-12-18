@@ -8,10 +8,10 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { QueueNamesTransactionJob } from '@121-service/src/queues-registry/enum/queue-names-transaction-jobs.enum';
+import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(QueueNamesTransactionJob.intersolveVoucher)
+@Processor(TransactionJobQueueNames.intersolveVoucher)
 export class PaymentProcessorIntersolveVoucher {
   constructor(
     private readonly intersolveVoucherService: IntersolveVoucherService,

@@ -1,4 +1,4 @@
 // Queues for updating registrations
-export enum QueueNameRegistration {
+export enum RegistrationQueueNames {
   registration = 'registration',
 }

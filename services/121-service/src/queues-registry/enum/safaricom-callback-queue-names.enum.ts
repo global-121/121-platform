@@ -1,4 +1,4 @@
-export enum QueueNamesSafaricomCallback {
+export enum SafaricomCallbackQueueNames {
   transfer = 'safaricomTransferCallback',
   timeout = 'safaricomTimeoutCallback',
 }
