@@ -27,6 +27,7 @@ import { ContactInformation } from '@121-service/src/payments/fsp-integration/in
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
+import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const INTERSOLVE_VISA_UUID_NAMESPACE =
   process.env.INTERSOLVE_VISA_UUID_NAMESPACE || uuid();
@@ -51,13 +52,16 @@ const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
 @Injectable()
 export class IntersolveVisaApiService {
   public tokenSet: TokenSet;
-  public constructor(private readonly httpService: CustomHttpService) {}
+  public constructor(
+    private readonly httpService: CustomHttpService,
+    private readonly tokenValidationService: TokenValidationService,
+  ) {}
 
   public async getAuthenticationToken() {
     if (process.env.MOCK_INTERSOLVE) {
       return 'mocked-token';
     }
-    if (this.isTokenValid(this.tokenSet)) {
+    if (this.tokenValidationService.isTokenValid(this.tokenSet, true)) {
       // Return cached token
       return this.tokenSet.access_token;
     }
@@ -75,19 +79,6 @@ export class IntersolveVisaApiService {
     // Cache tokenSet
     this.tokenSet = tokenSet;
     return tokenSet.access_token;
-  }
-
-  private isTokenValid(
-    tokenSet: TokenSet,
-  ): tokenSet is TokenSet & Required<Pick<TokenSet, 'access_token'>> {
-    if (!tokenSet || !tokenSet.expires_at) {
-      return false;
-    }
-    // Convert expires_at to milliseconds
-    const expiresAtInMs = tokenSet.expires_at * 1000;
-    const timeLeftBeforeExpire = expiresAtInMs - Date.now();
-    // If more than 1 minute left before expiration, the token is considered valid
-    return timeLeftBeforeExpire > 60000;
   }
 
   public async createCustomer({
