@@ -466,9 +466,6 @@
         "submit-warning-people-affected": "{{actionLabel}} для Пострадавших лиц{{applicableCount}}.",
         "transaction": {
           "amount": "Количество",
-          "custom-data": {
-            "intersolveVisaWalletTokenCode": "Идентификатор карты Visa"
-          },
           "do-single-payment": "Выполнить единовременный платеж",
           "fsp": "ФСП",
           "not-yet-sent": "Еще не отправлено",

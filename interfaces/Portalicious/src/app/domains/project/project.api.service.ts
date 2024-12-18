@@ -42,7 +42,7 @@ export class ProjectApiService extends DomainApiService {
     >({
       method: 'POST',
       endpoint: BASE_ENDPOINT,
-      params: {
+      httpParams: {
         importFromKobo: true,
         koboToken: token,
         koboAssetId: assetId,
@@ -93,12 +93,10 @@ export class ProjectApiService extends DomainApiService {
       AttributeWithTranslatedLabel[]
     >({
       path: [BASE_ENDPOINT, projectId, 'attributes'],
-      requestOptions: {
-        params: {
-          includeProgramRegistrationAttributes,
-          includeTemplateDefaultAttributes,
-          filterShowInPeopleAffectedTable,
-        },
+      params: {
+        includeProgramRegistrationAttributes,
+        includeTemplateDefaultAttributes,
+        filterShowInPeopleAffectedTable,
       },
       processResponse: (attributes) => {
         return uniqBy(attributes, 'name').map((attribute) => {
@@ -210,13 +208,11 @@ export class ProjectApiService extends DomainApiService {
         projectId,
         'financial-service-providers/intersolve-voucher/vouchers',
       ],
-      requestOptions: {
-        params: {
-          referenceId: voucherReferenceId,
-          payment: paymentId.toString(),
-        },
-        responseAsBlob: true,
+      params: {
+        referenceId: voucherReferenceId,
+        payment: paymentId.toString(),
       },
+      responseAsBlob: true,
     });
   }
 
@@ -235,11 +231,9 @@ export class ProjectApiService extends DomainApiService {
         projectId,
         'financial-service-providers/intersolve-voucher/vouchers/balance',
       ],
-      requestOptions: {
-        params: {
-          referenceId: registrationReferenceId,
-          payment: paymentId,
-        },
+      params: {
+        referenceId: registrationReferenceId,
+        payment: paymentId,
       },
     });
   }
@@ -265,10 +259,8 @@ export class ProjectApiService extends DomainApiService {
   }) {
     return this.generateQueryOptions<Dto<ActionReturnDto>>({
       path: [BASE_ENDPOINT, projectId, 'actions'],
-      requestOptions: {
-        params: {
-          actionType,
-        },
+      params: {
+        actionType,
       },
     });
   }

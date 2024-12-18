@@ -30,9 +30,9 @@ export class ChangeStatusContentsWithTemplatedMessageComponent {
   previewRegistration = input.required<Registration | undefined>();
   enableSendMessage = input.required<boolean>();
   isMutating = input<boolean>(false);
-  readonly onCancel = output();
+  readonly cancelChangeStatus = output();
 
   cancelClick() {
-    this.onCancel.emit();
+    this.cancelChangeStatus.emit();
   }
 }

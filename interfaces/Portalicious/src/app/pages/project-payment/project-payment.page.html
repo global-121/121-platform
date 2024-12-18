@@ -1,19 +1,90 @@
 <app-page-layout
-  pageTitle="Payment"
-  i18n-pageTitle="@@page-title-project-payment"
   [projectId]="projectId()"
-  [paymentId]="paymentId()"
+  [parentPageLink]="allPaymentsLink()"
+  parentPageTitle="All Payments"
+  i18n-parentPageTitle
+  [pageTitle]="paymentTitle()"
+  [isPending]="payments.isPending()"
 >
-  <div payment-page>
-    <p-card>
+  <div header-actions>
+    <app-export-payment-instructions
+      [paymentId]="paymentId()"
+      [projectId]="projectId()"
+    ></app-export-payment-instructions>
+  </div>
+  <div
+    class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
+  >
+    @if (
+      paymentStatus.isPending() ||
+      transactions.isPending() ||
+      paymentStatus.data()?.inProgress
+    ) {
+      <app-metric-tile
+        class="grid-in-metric1"
+        [pending]="paymentStatus.isPending() || transactions.isPending()"
+        [metricValue]="transactions.data()?.length"
+        metricLabel="Transfers sent"
+        i18n-metricLabel
+        chipLabel="In progress"
+        i18n-chipLabel
+        chipIcon="pi pi-spinner"
+        chipVariant="orange"
+      />
+    } @else {
+      <app-metric-tile
+        class="grid-in-metric1"
+        [pending]="false"
+        [metricValue]="transactions.data()?.length"
+        metricLabel="Registrations included"
+        i18n-metricLabel
+      />
+    }
+    <app-metric-tile
+      class="grid-in-metric2"
+      [pending]="false"
+      [metricValue]="totalPaymentAmount()"
+      metricLabel="Total amount"
+      i18n-metricLabel
+      [chipLabel]="successfulPaymentsAmount()"
+      chipIcon="pi pi-check-circle"
+      chipVariant="green"
+      metricTooltip="The total payment amount is calculated by summing up the transfer values of each included registration added to the payment."
+      i18n-metricTooltip
+    />
+
+    @let paymentDetails = this.payment.data();
+
+    @if (!paymentDetails) {
+      <p-skeleton
+        class="grid-in-chart"
+        height="100%"
+      ></p-skeleton>
+    } @else {
+      <p-card class="grid-in-chart [&_.p-card-body]:h-full [&_.p-card]:h-full">
+        <p
+          i18n
+          class="mb-6 font-medium txt-h-2"
+        >
+          Transfers data
+        </p>
+        <app-project-payment-chart
+          [paymentDetails]="paymentDetails"
+        ></app-project-payment-chart>
+      </p-card>
+    }
+
+    <p-card class="grid-in-table">
       <app-query-table
-        [items]="payments.data()?.data ?? []"
-        [isPending]="payments.isPending()"
+        #table
+        [items]="transactions.data() ?? []"
+        [isPending]="transactions.isPending()"
         [columns]="columns()"
         [localStorageKey]="localStorageKey()"
         [enableColumnManagement]="true"
         [contextMenuItems]="contextMenuItems()"
-        (onUpdateContextMenuItem)="contextMenuSelection.set($event)"
+        (updateContextMenuItem)="contextMenuSelection.set($event)"
+        [enableSelection]="true"
         [globalFilterFields]="[
           'id',
           'fullName',
@@ -33,7 +104,7 @@
           @if (canRetryTransfers()) {
             <p-button
               label="Retry failed transfers"
-              i18n-label
+              i18n-label="@@retry-failed-transfers"
               rounded
               outlined
               icon="pi pi-refresh"
@@ -45,3 +116,9 @@
     </p-card>
   </div>
 </app-page-layout>
+
+<app-retry-transfers-dialog
+  #retryTransfersDialog
+  [projectId]="projectId()"
+  [paymentId]="paymentId()"
+/>

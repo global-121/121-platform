@@ -159,10 +159,10 @@ export class CommercialBankEthiopiaService
       // but in reality it might not be the actual type of requestResult
       const value = (
         customData.requestResult as CommercialBankEthiopiaTransferPayload
-      ).debitTheIrRef;
+      ).debitTheirRef;
       paRegistrationData.push({
         referenceId: paPayment.referenceId,
-        fieldName: 'debitTheIrRef',
+        fieldName: 'debitTheirRef',
         value,
       });
     }
@@ -221,7 +221,7 @@ export class CommercialBankEthiopiaService
   ): CommercialBankEthiopiaTransferPayload {
     let fullName;
     let bankAccountNumber;
-    let debitTheIrRefRetry;
+    let debitTheirRefRetry;
 
     paRegistrationData.forEach((data) => {
       if (data.fieldName === FinancialServiceProviderAttributes.fullName) {
@@ -230,23 +230,23 @@ export class CommercialBankEthiopiaService
         data.fieldName === FinancialServiceProviderAttributes.bankAccountNumber
       ) {
         bankAccountNumber = data.value;
-      } else if ((data.fieldName = 'debitTheIrRef')) {
-        debitTheIrRefRetry = data.value;
+      } else if ((data.fieldName = 'debitTheirRef')) {
+        debitTheirRefRetry = data.value;
       }
     });
 
     return {
       debitAmount: payment.transactionAmount,
-      debitTheIrRef:
-        debitTheIrRefRetry ||
+      debitTheirRef:
+        debitTheirRefRetry ||
         `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`,
-      creditTheIrRef: program.ngo,
-      creditAcctNo: bankAccountNumber,
-      creditCurrency: program.currency,
-      remitterName:
+      creditTheirRef:
         program.titlePortal && program.titlePortal.en
           ? program.titlePortal.en.substring(0, 35)
           : null,
+      creditAcctNo: bankAccountNumber,
+      creditCurrency: program.currency,
+      remitterName: program.ngo,
       beneficiaryName: `${fullName}`,
     };
   }

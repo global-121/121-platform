@@ -21,7 +21,7 @@ export abstract class FormComponent<T extends FormGroup> {
   formGroup = input.required<T>();
   mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    input.required<CreateMutationResult<any, Error, any>>();
+    input.required<CreateMutationResult<any, Error, any, any>>();
   submitButtonText = input<string>($localize`Submit`);
 
   onFormSubmit(): void {

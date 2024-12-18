@@ -13,8 +13,8 @@
       </OfsFunction>
       <FUNDSTRANSFERCBEREMITANCEType id="">
         <fun:DEBITAMOUNT>${debitAmount}</fun:DEBITAMOUNT>
-        <fun:DEBITTHEIRREF>${debitTheIrRef}</fun:DEBITTHEIRREF>
-        <fun:CREDITTHEIRREF>${creditTheIrRef}</fun:CREDITTHEIRREF>
+        <fun:DEBITTHEIRREF>${debitTheirRef}</fun:DEBITTHEIRREF>
+        <fun:CREDITTHEIRREF>${creditTheirRef}</fun:CREDITTHEIRREF>
         <fun:CREDITACCTNO>${creditAcctNo}</fun:CREDITACCTNO>
         <fun:CREDITCURRENCY>${creditCurrency}</fun:CREDITCURRENCY>
         <fun:CREDITAMOUNT></fun:CREDITAMOUNT>

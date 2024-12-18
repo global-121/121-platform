@@ -146,7 +146,6 @@ export class MsalAuthStrategy implements IAuthStrategy {
         state: undefined,
       });
     } catch {
-      // TODO: AB#31489 Return a more generic endpoint from the back-end
       await this.router.navigate(['/', AppRoutes.login], {
         state: {
           [AUTH_ERROR_IN_STATE_KEY]: $localize`Unknown user account or authentication failed`,

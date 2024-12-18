@@ -30,6 +30,8 @@ declare global {
 global.queueCallbacks = {};
 
 async function bootstrap(): Promise<void> {
+  console.log(`Bootstrapping ${APP_TITLE} - ${APP_VERSION}`);
+
   const app = await NestFactory.create(ApplicationModule);
 
   const expressInstance = app.getHttpAdapter().getInstance();

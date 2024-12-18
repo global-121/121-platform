@@ -1,0 +1,61 @@
+<app-page-layout
+  [projectId]="projectId()"
+  [parentPageLink]="allRegistrationsLink()"
+  parentPageTitle="All Registrations"
+  i18n-parentPageTitle
+  [pageTitle]="registrationTitle()"
+  [isPending]="registration.isPending()"
+>
+  <div header-actions>
+    @if (canUpdatePersonalData() && !registration.isError()) {
+      <p-button
+        label="Add note"
+        i18n-label="@@add-note"
+        rounded
+        outlined
+        [loading]="registration.isPending()"
+        icon="pi pi-pen-to-square"
+        (click)="addNoteFormVisible.set(true)"
+        class="ms-auto"
+      />
+      @if (registration.isSuccess()) {
+        <app-add-note-form
+          [(formVisible)]="addNoteFormVisible"
+          [projectId]="projectId()"
+          [registrationReferenceId]="registration.data().referenceId"
+          [registrationName]="registration.data().name"
+        />
+      }
+    }
+  </div>
+
+  <p-card
+    styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
+  >
+    <app-data-list [data]="registrationData()" />
+    <div class="mt-4 text-end">
+      <span class="text-grey-700 txt-system-s">
+        @if (registration.isPending()) {
+          <app-skeleton-inline width="8rem" />
+        } @else {
+          <ng-container i18n>Registered: </ng-container>
+          @if (registration.data()?.registrationCreatedDate) {
+            {{
+              registration.data()?.registrationCreatedDate | date: 'shortDate'
+            }}
+          } @else {
+            —
+          }
+        }
+      </span>
+    </div>
+  </p-card>
+
+  <p-card styleClass="mt-6">
+    <app-registration-menu
+      [projectId]="projectId()"
+      [registrationId]="registrationId()"
+    />
+    <ng-content></ng-content>
+  </p-card>
+</app-page-layout>

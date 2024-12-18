@@ -2,6 +2,7 @@ import { Injectable, Signal } from '@angular/core';
 
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -46,16 +47,6 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPaymentStatusByPaymentId(
-    projectId: Signal<number>,
-    paymentId: Signal<number>,
-  ) {
-    return this.generateQueryOptions<PaymentStatus>({
-      path: [...BASE_ENDPOINT(projectId), paymentId, 'status'],
-      refetchInterval: 3000,
-    });
-  }
-
   createPayment({
     projectId,
     paginateQuery,
@@ -73,12 +64,37 @@ export class PaymentApiService extends DomainApiService {
       method: 'POST',
       endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
       body: paymentData,
-      params: {
+      httpParams: {
         ...this.paginateQueryService.paginateQueryToHttpParamsObject(
           paginateQuery,
         ),
         dryRun,
       },
+    });
+  }
+
+  retryFailedTransfers({
+    projectId,
+    paymentId,
+    referenceIds,
+  }: {
+    projectId: Signal<number>;
+    paymentId: number;
+    referenceIds: string[];
+  }) {
+    const body: Dto<RetryPaymentDto> = {
+      payment: paymentId,
+      referenceIds: {
+        referenceIds,
+      },
+    };
+
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<BulkActionResultPaymentDto>
+    >({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      body,
     });
   }
 

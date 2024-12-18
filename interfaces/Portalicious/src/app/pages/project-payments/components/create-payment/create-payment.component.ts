@@ -3,13 +3,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
+  HostListener,
   inject,
   input,
   model,
   signal,
   ViewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   injectMutation,
@@ -27,6 +29,8 @@ import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bu
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,
   DataListItem,
@@ -45,6 +49,8 @@ import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
+const queryParamStep = 'create-payment-step';
+
 @Component({
   selector: 'app-create-payment',
   standalone: true,
@@ -58,6 +64,7 @@ import { Dto } from '~/utils/dto-type';
     DataListComponent,
     FullscreenSpinnerComponent,
     MenuModule,
+    ColoredChipComponent,
   ],
   templateUrl: './create-payment.component.html',
   styles: ``,
@@ -73,6 +80,7 @@ export class CreatePaymentComponent {
   financialServiceProviderConfigurationApiService = inject(
     FinancialServiceProviderConfigurationApiService,
   );
+  route = inject(ActivatedRoute);
   router = inject(Router);
   paymentApiService = inject(PaymentApiService);
   projectApiService = inject(ProjectApiService);
@@ -93,6 +101,9 @@ export class CreatePaymentComponent {
     // only registrations with status "included" are eligible for payment
     status: RegistrationStatusEnum.included,
   };
+  includedChipData = getChipDataByRegistrationStatus(
+    RegistrationStatusEnum.included,
+  );
 
   financialServiceProviderConfigurations = injectQuery(
     this.financialServiceProviderConfigurationApiService.getFinancialServiceProviderConfigurations(
@@ -205,7 +216,28 @@ export class CreatePaymentComponent {
     this.createPaymentDialog.maximize();
   }
 
-  currentStep = computed(() => (this.dryRunResult() ? 2 : 1));
+  currentStep = computed(() => {
+    if (!this.dialogVisible()) {
+      return 0;
+    }
+
+    if (this.dryRunResult()) {
+      return 2;
+    }
+
+    return 1;
+  });
+
+  goBack() {
+    switch (this.currentStep()) {
+      case 2:
+        this.dryRunResult.set(undefined);
+        break;
+      case 1:
+        this.dialogVisible.set(false);
+        break;
+    }
+  }
 
   createPayment() {
     const actionData = this.registrationsTable?.getActionData();
@@ -315,4 +347,21 @@ export class CreatePaymentComponent {
       this.project.isPending() ||
       this.paymentStatus.isPending(),
   );
+
+  // the combination of the effect and the host listener allow us to make sure
+  // that the user does not navigate away from the page by using the browser "back" button
+  // during the payment creation process
+  addCurrentStepToQueryParams = effect(() => {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [queryParamStep]: this.currentStep() || null },
+      queryParamsHandling: 'replace',
+    });
+  });
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState() {
+    // triggered when the browser "back" button is pressed
+    this.goBack();
+  }
 }

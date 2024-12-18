@@ -499,9 +499,6 @@
         "submit-warning-people-affected": "Voer actie <strong>{{actionLabel}}</strong> uit voor {{applicableCount}} hulpvragers.",
         "transaction": {
           "amount": "Bedrag",
-          "custom-data": {
-            "intersolveVisaWalletTokenCode": "Visakaart-ID"
-          },
           "do-single-payment": "Eenmalige betaling doen",
           "fsp": "FSP",
           "not-yet-sent": "Nog niet verzonden",

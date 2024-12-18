@@ -540,23 +540,7 @@ export class PaymentsService {
 
   public async getProgramPaymentsStatus(
     programId: number,
-    payment?: number,
   ): Promise<ProgramPaymentsStatusDto> {
-    if (payment) {
-      // TODO: refactor this once the "transaction/payment" entity exists,
-      // so that we can just get the status for a specific entity
-      const payments = await this.getPayments(programId);
-      const latestPayment = Math.max(...payments.map((p) => p.payment));
-      const isLatestPayment = payment === latestPayment;
-
-      if (!isLatestPayment) {
-        // only the latest payment can be in progress
-        return {
-          inProgress: false,
-        };
-      }
-    }
-
     return {
       inProgress: await this.isPaymentInProgress(programId),
     };

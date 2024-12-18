@@ -463,9 +463,6 @@
         "submit-warning-people-affected": "{{actionLabel}} for {{applicableCount}} People Affected.",
         "transaction": {
           "amount": "Amount",
-          "custom-data": {
-            "intersolveVisaWalletTokenCode": "Visa card ID"
-          },
           "do-single-payment": "Do single payment",
           "fsp": "FSP",
           "not-yet-sent": "Not yet sent",

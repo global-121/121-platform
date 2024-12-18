@@ -41,8 +41,8 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   previewRegistration = input.required<Registration | undefined>();
   enableSendMessage = input.required<boolean>();
   isMutating = input<boolean>(false);
-  readonly onCancel = output();
-  readonly onCustomMessageUpdated = output<string>();
+  readonly cancelChangeStatus = output();
+  readonly customMessageUpdated = output<string>();
 
   formGroup = new FormGroup({
     customMessage: new FormControl<string | undefined>(undefined, {
@@ -73,7 +73,7 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   }
 
   cancelClick() {
-    this.onCancel.emit();
+    this.cancelChangeStatus.emit();
   }
 
   onProceedToPreview() {
@@ -85,6 +85,6 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
       messageType: 'custom',
       customMessage: this.formGroup.value.customMessage,
     });
-    this.onCustomMessageUpdated.emit(this.formGroup.value.customMessage);
+    this.customMessageUpdated.emit(this.formGroup.value.customMessage);
   }
 }

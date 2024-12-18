@@ -8,7 +8,7 @@ import {
   Unique,
 } from 'typeorm';
 
-import { CascadeDeleteEntity } from '@121-service/src/base.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 
@@ -17,7 +17,7 @@ import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service
   'name',
 ])
 @Entity('program_financial_service_provider_configuration_property')
-export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends CascadeDeleteEntity {
+export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends Base121Entity {
   @Column({ type: 'character varying' })
   public name: FinancialServiceProviderConfigurationProperties;
 

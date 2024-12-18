@@ -852,14 +852,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{payment}/status",
-    "params": [
-      "programId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/payments/{payment}",
     "params": [
       "payment",

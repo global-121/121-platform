@@ -6,6 +6,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 
+export const PERMISSION_DENIED_QUERY_KEY = 'permissionDenied';
+
 export const projectPermissionsGuard: (
   permission: PermissionEnum,
 ) => CanActivateFn = (permission: PermissionEnum) => {
@@ -16,21 +18,15 @@ export const projectPermissionsGuard: (
 
     const projectId = route.params.projectId as number;
 
-    if (isNaN(projectId)) {
-      throw new Error('projectId is not a number');
-    }
-
     if (
       authService.hasPermission({ projectId, requiredPermission: permission })
     ) {
       return true;
     }
 
-    const router = inject(Router);
-    return router.navigate(['/', AppRoutes.project, projectId], {
+    return inject(Router).createUrlTree(['/', AppRoutes.project, projectId], {
       queryParams: {
-        // TODO: implement logic to show message to user when permission is denied.
-        permissionDenied: true,
+        [PERMISSION_DENIED_QUERY_KEY]: true,
       },
     });
   };

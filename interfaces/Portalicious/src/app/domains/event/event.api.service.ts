@@ -22,10 +22,8 @@ export class EventApiService extends DomainApiService {
   }) {
     return this.generateQueryOptions<Blob>({
       path: BASE_ENDPOINT(projectId),
-      requestOptions: {
-        params,
-        responseAsBlob: true,
-      },
+      params,
+      responseAsBlob: true,
     });
   }
 

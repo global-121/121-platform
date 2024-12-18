@@ -1,24 +1,24 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
 } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
-import { PageLayoutTitleAndActionsComponent } from '~/components/page-layout/components/page-layout-title-and-actions/page-layout-title-and-actions.component';
-import { PaymentHeaderComponent } from '~/components/page-layout/components/payment-header/payment-header.component';
 import { ProjectMenuComponent } from '~/components/page-layout/components/project-menu/project-menu.component';
-import { RegistrationHeaderComponent } from '~/components/page-layout/components/registration-header/registration-header.component';
-import { RegistrationMenuComponent } from '~/components/page-layout/components/registration-menu/registration-menu.component';
-import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { ProjectApiService } from '~/domains/project/project.api.service';
-import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import {
+  FOUND_RESOURCE_GUARD_QUERY_KEY,
+  FoundResourceGuardType,
+} from '~/guards/found-resource.guard';
+import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/project-permissions-guard';
 
 @Component({
   selector: 'app-page-layout',
@@ -27,37 +27,50 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
     HeaderComponent,
     ProjectMenuComponent,
     FooterComponent,
-    RegistrationHeaderComponent,
-    RegistrationMenuComponent,
     CardModule,
-    PageLayoutTitleAndActionsComponent,
     MessageModule,
-    PaymentHeaderComponent,
+    SkeletonModule,
+    RouterLink,
   ],
   templateUrl: './page-layout.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutComponent {
-  readonly registrationApiService = inject(RegistrationApiService);
-  readonly projectApiService = inject(ProjectApiService);
-  readonly paymentApiService = inject(PaymentApiService);
+  private route = inject(ActivatedRoute);
 
   pageTitle = input<string>();
+  parentPageTitle = input<string>();
+  parentPageLink = input<RouterLink['routerLink']>();
+
   projectId = input<number>();
-  registrationId = input<number>();
-  paymentId = input<number>();
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  isPending = input<boolean>();
 
-  registration = injectQuery(
-    this.registrationApiService.getRegistrationById(
-      this.projectId,
-      this.registrationId,
-    ),
-  );
+  pageLoadError = computed(() => {
+    const permissionDenied = this.route.snapshot.queryParams[
+      PERMISSION_DENIED_QUERY_KEY
+    ] as unknown;
 
-  payment = injectQuery(
-    this.paymentApiService.getPayment(this.projectId, this.paymentId),
-  );
+    if (permissionDenied) {
+      return $localize`You do not have permission to view this page.`;
+    }
+
+    const notFoundResource = this.route.snapshot.queryParams[
+      FOUND_RESOURCE_GUARD_QUERY_KEY
+    ] as FoundResourceGuardType | undefined;
+
+    if (!notFoundResource) {
+      return undefined;
+    }
+
+    switch (notFoundResource) {
+      case 'project':
+        return $localize`Project not found. Please check the URL and try again.`;
+      case 'registration':
+        return $localize`Registration not found. Please check the URL and try again.`;
+      case 'payment':
+        return $localize`Payment not found. Please check the URL and try again.`;
+    }
+  });
 }
