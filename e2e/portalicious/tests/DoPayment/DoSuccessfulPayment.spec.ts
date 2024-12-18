@@ -30,8 +30,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[31970] Do successful payment', async ({ page }) => {
-  const basePage = new BasePage(page);
-  const payments = new PaymentsPage(page);
+  const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';
   const numberOfPas = registrationsOCW.length;
