@@ -22,6 +22,7 @@ import { MessageIncomingModule } from '@121-service/src/notifications/message-in
 import { OrganizationModule } from '@121-service/src/organization/organization.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
@@ -31,6 +32,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
   imports: [
+    QueuesRegistryModule,
     TypeOrmModule,
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     HealthModule,

@@ -8,6 +8,7 @@ import {
   MessageContentType,
   TemplatedMessages,
 } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -25,12 +26,11 @@ import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integrat
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { ProcessNameMessage } from '@121-service/src/shared/enum/queue-process.names.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -61,7 +61,7 @@ export class MessageIncomingService {
     private readonly registrationDataService: RegistrationDataService,
     private readonly imageCodeService: ImageCodeService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesRegistryService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
@@ -105,7 +105,7 @@ export class MessageIncomingService {
   public async addSmsStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.queueRegistryService.messageStatusCallbackQueue.add(
+    await this.queuesService.messageStatusCallbackQueue.add(
       ProcessNameMessage.sms,
       callbackData,
     );
@@ -121,7 +121,7 @@ export class MessageIncomingService {
   public async addWhatsappStatusCallbackToQueue(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    await this.queueRegistryService.messageStatusCallbackQueue.add(
+    await this.queuesService.messageStatusCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
     );
@@ -130,7 +130,7 @@ export class MessageIncomingService {
   public async addIncomingWhatsappToQueue(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
-    await this.queueRegistryService.messageIncomingCallbackQueue.add(
+    await this.queuesService.messageIncomingCallbackQueue.add(
       ProcessNameMessage.whatsapp,
       callbackData,
     );

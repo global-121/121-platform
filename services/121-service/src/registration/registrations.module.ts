@@ -22,7 +22,7 @@ import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-servic
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
-import { QueueRegistrationUpdateModule } from '@121-service/src/registration/modules/queue-registrations-update/queue-registrations-update.module';
+import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
@@ -33,6 +33,7 @@ import { RegistrationsService } from '@121-service/src/registration/registration
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
+import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -66,8 +67,8 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationDataModule,
     RegistrationUtilsModule,
     EventsModule,
-    QueueRegistrationUpdateModule,
     ProgramFinancialServiceProviderConfigurationsModule,
+    QueuesRegistryModule,
   ],
   providers: [
     RegistrationsService,
@@ -77,6 +78,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationsPaginationService,
     LastMessageStatusService,
     RegistrationsBulkService,
+    QueueRegistrationUpdateService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     FileImportService,
