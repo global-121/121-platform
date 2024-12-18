@@ -7,6 +7,7 @@ import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-i
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
 import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
+import { SafaricomHelperService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
@@ -17,9 +18,12 @@ const safaricomTransferCallbacktUrl = `${callbackBaseUrl}financial-service-provi
 export class SafaricomApiService {
   public tokenSet: TokenSet;
 
-  public constructor(private readonly httpService: CustomHttpService) {}
+  public constructor(
+    private readonly httpService: CustomHttpService,
+    private readonly safaricomHelperService: SafaricomHelperService,
+  ) {}
 
-  // ##TODO: Info to team: paramters were not typed here, implicit any!
+  // ##TODO: Info to team: parameters were not typed here, implicit any!
   public async transfer({
     transferAmount,
     phoneNumber,
@@ -70,7 +74,7 @@ export class SafaricomApiService {
   }
 
   private async authenticate(): Promise<void> {
-    if (this.isTokenValid(this.tokenSet)) {
+    if (this.safaricomHelperService.isTokenValid(this.tokenSet)) {
       return;
     }
 
@@ -155,20 +159,5 @@ export class SafaricomApiService {
       console.error('Failed to make Safaricom B2C payment API call', error);
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
-  }
-
-  private isTokenValid(
-    tokenSet: TokenSet,
-  ): tokenSet is TokenSet & Required<Pick<TokenSet, 'access_token'>> {
-    if (!tokenSet || !tokenSet.expires_at) {
-      return false;
-    }
-    const timeLeftBeforeExpire = tokenSet.expires_at - Date.now();
-    // We set a buffer of 5 minutes to make sure that when doing the subsequent POST call, the token is still valid.
-    return timeLeftBeforeExpire > 5 * 60 * 1000;
-  }
-
-  public testIsTokenValid(tokenSet: TokenSet): boolean {
-    return this.isTokenValid(tokenSet);
   }
 }
