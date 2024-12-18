@@ -533,10 +533,6 @@
         <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
         <target>U staat op het punt een Excel-bestand te downloaden voor <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> geselecteerde registraties.</target>
       </trans-unit>
-      <trans-unit id="5836528780566781670" datatype="html">
-        <source>Successful transfers</source>
-        <target>Succesvolle transfers</target>
-      </trans-unit>
       <trans-unit id="5847820864343475107" datatype="html">
         <source>There are no payments for this project yet.</source>
         <target>Er zijn nog geen betalingen uitgevoerd in dit project.</target>
@@ -1595,6 +1591,14 @@
       <trans-unit id="7113199794780283377" datatype="html">
         <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
         <target state="new">You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</target>
+      </trans-unit>
+      <trans-unit id="8116905776887232271" datatype="html">
+        <source>Expected total amount</source>
+        <target state="new">Expected total amount</target>
+      </trans-unit>
+      <trans-unit id="4957123542385348986" datatype="html">
+        <source>Amount successfully sent</source>
+        <target state="new">Amount successfully sent</target>
       </trans-unit>
     </body>
   </file>
