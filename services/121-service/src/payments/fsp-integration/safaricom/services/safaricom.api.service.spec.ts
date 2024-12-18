@@ -4,8 +4,8 @@ import { TokenSet } from 'openid-client';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
-import { SafaricomHelperService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const transferInput = {
   transferAmount: 10,
@@ -31,7 +31,7 @@ describe('SafaricomApiService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SafaricomApiService,
-        SafaricomHelperService,
+        TokenValidationService,
         {
           provide: CustomHttpService,
           useValue: {

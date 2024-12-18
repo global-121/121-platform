@@ -7,8 +7,8 @@ import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-i
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
 import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
-import { SafaricomHelperService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 const safaricomTimeoutCallbackUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout-callback`;
@@ -20,7 +20,7 @@ export class SafaricomApiService {
 
   public constructor(
     private readonly httpService: CustomHttpService,
-    private readonly safaricomHelperService: SafaricomHelperService,
+    private readonly tokenValidationService: TokenValidationService,
   ) {}
 
   // ##TODO: Info to team: parameters were not typed here, implicit any!
@@ -74,7 +74,7 @@ export class SafaricomApiService {
   }
 
   private async authenticate(): Promise<void> {
-    if (this.safaricomHelperService.isTokenValid(this.tokenSet)) {
+    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
       return;
     }
 
