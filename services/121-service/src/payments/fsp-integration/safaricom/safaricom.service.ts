@@ -34,7 +34,7 @@ export class SafaricomService
    * Do not use! This function was previously used to send payments.
    * It has been deprecated and should not be called anymore.
    */
-  // ##TODO: Unit test this function
+  // ##TODO: remove this method. What is the point of keeping it?
   public async sendPayment(
     _paymentList: PaPaymentDataDto[],
     _programId: number,
