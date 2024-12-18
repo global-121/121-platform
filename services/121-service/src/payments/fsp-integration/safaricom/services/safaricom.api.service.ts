@@ -16,6 +16,7 @@ const safaricomTransferCallbacktUrl = `${callbackBaseUrl}financial-service-provi
 
 @Injectable()
 export class SafaricomApiService {
+  // ##TODO: change this to private, and fix the resulting unit-test error
   public tokenSet: TokenSet;
 
   public constructor(
@@ -45,6 +46,7 @@ export class SafaricomApiService {
 
     let errorMessage: string | undefined;
 
+    // ##TODO: unit test this part (and move to helper)
     if (!transferResponse || !transferResponse.data) {
       errorMessage = `Error: No response data from Safaricom API`;
     } else if (transferResponse.data.errorCode) {
