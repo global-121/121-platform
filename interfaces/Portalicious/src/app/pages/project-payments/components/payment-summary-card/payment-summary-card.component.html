@@ -10,10 +10,10 @@
   </ng-container>
   <ng-container card-footer>
     <div class="min-h-8 text-end">
-      @if (cardIndex() === 0) {
-        @if (paymentInProgress.isPending()) {
+      @if (isLatestPayment()) {
+        @if (paymentStatus.isPending()) {
           <app-skeleton-inline width="8rem" />
-        } @else if (paymentInProgress.data()?.inProgress) {
+        } @else if (paymentStatus.data()?.inProgress) {
           <app-colored-chip
             variant="orange"
             label="In progress"
