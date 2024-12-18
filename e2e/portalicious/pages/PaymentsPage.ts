@@ -51,7 +51,7 @@ class PaymentsPage extends BasePage {
       `Financial Service Provider(s): ${fsp.join(', ')}`,
     );
     expect(fspSummary).toContain(`Registrations: ${registrationsNumber}`);
-    expect(fspSummary).toContain(`Total payment amount: €${paymentAmount}`);
+    expect(fspSummary).toContain(`Total payment amount: ${currency}${paymentAmount}`);
   }
 
   async createPayment() {
