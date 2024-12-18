@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[31971] Show payment summary', async ({ page }) => {
-  const payments = new PaymentsPage(page);
+  const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';
   const financialServiceProviders: string[] = [
