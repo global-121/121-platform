@@ -8,6 +8,7 @@ import { DuplicateOriginatorConversationIdError } from '@121-service/src/payment
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
 import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 const safaricomTimeoutCallbackUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout-callback`;
@@ -15,15 +16,25 @@ const safaricomTransferCallbacktUrl = `${callbackBaseUrl}financial-service-provi
 
 @Injectable()
 export class SafaricomApiService {
+  // ##TODO: change this to private, and fix the resulting unit-test error
   public tokenSet: TokenSet;
 
-  public constructor(private readonly httpService: CustomHttpService) {}
+  public constructor(
+    private readonly httpService: CustomHttpService,
+    private readonly tokenValidationService: TokenValidationService,
+  ) {}
 
+  // ##TODO: Info to team: parameters were not typed here, implicit any!
   public async transfer({
     transferAmount,
     phoneNumber,
     idNumber,
     originatorConversationId,
+  }: {
+    transferAmount: number;
+    phoneNumber: string;
+    idNumber: string;
+    originatorConversationId: string;
   }): Promise<TransferReturnType> {
     const payload = this.createTransferPayload({
       transferAmount,
@@ -35,6 +46,7 @@ export class SafaricomApiService {
 
     let errorMessage: string | undefined;
 
+    // ##TODO: unit test this part (and move to helper)
     if (!transferResponse || !transferResponse.data) {
       errorMessage = `Error: No response data from Safaricom API`;
     } else if (transferResponse.data.errorCode) {
@@ -64,7 +76,7 @@ export class SafaricomApiService {
   }
 
   private async authenticate(): Promise<void> {
-    if (this.isTokenValid(this.tokenSet)) {
+    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
       return;
     }
 
@@ -149,16 +161,5 @@ export class SafaricomApiService {
       console.error('Failed to make Safaricom B2C payment API call', error);
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
-  }
-
-  private isTokenValid(
-    tokenSet: TokenSet,
-  ): tokenSet is TokenSet & Required<Pick<TokenSet, 'access_token'>> {
-    if (!tokenSet || !tokenSet.expires_at) {
-      return false;
-    }
-    const timeLeftBeforeExpire = tokenSet.expires_at - Date.now();
-    // We set a buffer of 5 minutes to make sure that when doing the subsequent POST call, the token is still valid.
-    return timeLeftBeforeExpire > 5 * 60 * 1000;
   }
 }
