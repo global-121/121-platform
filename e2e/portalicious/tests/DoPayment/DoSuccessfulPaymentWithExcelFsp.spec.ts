@@ -54,9 +54,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
   }, 0);
   const financialServiceProviders: string[] = ['Excel Payment Instructions'];
 
-  const date = new Date();
-  const formattedDate = format(date, 'dd/MM/yyyy');
-  const lastPaymentDate = `${formattedDate}`;
+  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
