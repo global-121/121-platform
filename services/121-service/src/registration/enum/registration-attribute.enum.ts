@@ -21,6 +21,7 @@ export enum GenericRegistrationAttributes {
   status = 'status',
   registrationProgramId = 'registrationProgramId',
   registrationCreatedDate = 'registrationCreatedDate',
+  inclusionScore = 'inclusionScore',
 }
 
 export class Attribute {

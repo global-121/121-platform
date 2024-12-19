@@ -19,7 +19,6 @@ import {
   QueryTableColumn,
   QueryTableColumnType,
   QueryTableComponent,
-  QueryTableSelectionEvent,
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -28,11 +27,7 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
-import {
-  PaginateQuery,
-  PaginateQueryService,
-} from '~/services/paginate-query.service';
-import { ToastService } from '~/services/toast.service';
+import { PaginateQuery } from '~/services/paginate-query.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
@@ -41,7 +36,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   imports: [QueryTableComponent],
   templateUrl: './registrations-table.component.html',
   styles: ``,
-  providers: [ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationsTableComponent {
@@ -51,10 +45,8 @@ export class RegistrationsTableComponent {
   overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>({});
   showSelectionInHeader = input<boolean>(false);
 
-  private paginateQueryService = inject(PaginateQueryService);
   private projectApiService = inject(ProjectApiService);
   private registrationApiService = inject(RegistrationApiService);
-  private toastService = inject(ToastService);
   private translatableStringService = inject(TranslatableStringService);
 
   PermissionEnum = PermissionEnum;
@@ -64,7 +56,6 @@ export class RegistrationsTableComponent {
 
   protected RegistrationStatusEnum = RegistrationStatusEnum;
   protected paginateQuery = signal<PaginateQuery | undefined>(undefined);
-  protected tableSelection = signal<QueryTableSelectionEvent<Registration>>([]);
   public contextMenuRegistration = signal<Registration | undefined>(undefined);
 
   private registrationsPaginateQuery = computed<PaginateQuery>(() => {
@@ -168,31 +159,12 @@ export class RegistrationsTableComponent {
   }: {
     triggeredFromContextMenu?: boolean;
   } = {}) {
-    let selection = this.tableSelection();
-
-    if (Array.isArray(selection) && selection.length === 0) {
-      if (triggeredFromContextMenu) {
-        const contextMenuRegistration = this.contextMenuRegistration();
-        if (!contextMenuRegistration) {
-          this.toastService.showGenericError();
-          return;
-        }
-        selection = [contextMenuRegistration];
-      } else {
-        this.toastService.showToast({
-          severity: 'error',
-          detail: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
-        });
-        return;
-      }
-    }
-
-    return this.paginateQueryService.selectionEventToActionData({
-      selection,
+    return this.table.getActionData({
+      triggeredFromContextMenu,
+      contextMenuItem: this.contextMenuRegistration(),
       fieldForFilter: 'referenceId',
-      totalCount: this.totalRegistrations(),
       currentPaginateQuery: this.registrationsPaginateQuery(),
-      previewItemForSelectAll: this.registrations()[0],
+      noSelectionToastMessage: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
     });
   }
 

@@ -8,9 +8,9 @@ export class IntersolveVoucherInstructionsEntity extends Base121Entity {
   @Column({ type: 'bytea' })
   public image: any;
 
-  @ManyToOne(() => ProgramEntity)
+  @ManyToOne(() => ProgramEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'programId' })
   public program: Relation<ProgramEntity>;
-  @Column({ type: 'int', nullable: true })
-  public programId: number | null;
+  @Column({ type: 'int', nullable: false })
+  public programId: number;
 }

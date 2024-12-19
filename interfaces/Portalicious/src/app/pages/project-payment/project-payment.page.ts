@@ -8,6 +8,7 @@ import {
   LOCALE_ID,
   Signal,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -37,8 +38,9 @@ import {
   TRANSACTION_STATUS_LABELS,
 } from '~/domains/transaction/transaction.helper';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
-import { ExportPaymentInstructionsComponent } from '~/pages/project-payment/components/export-payment-instructions/export-payment-instructions.component';
 import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
+import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { SinglePaymentExportComponent } from '~/pages/project-payment/components/single-payment-export/single-payment-export.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -58,8 +60,8 @@ export interface TransactionsTableCellContext {
     MetricTileComponent,
     ProjectPaymentChartComponent,
     SkeletonModule,
-    ExportPaymentInstructionsComponent,
-    CurrencyPipe,
+    RetryTransfersDialogComponent,
+    SinglePaymentExportComponent,
   ],
   templateUrl: './project-payment.page.html',
   styles: ``,
@@ -79,6 +81,11 @@ export class ProjectPaymentPageComponent {
   private router = inject(Router);
   private toastService = inject(ToastService);
   private translatableStringService = inject(TranslatableStringService);
+
+  @ViewChild('table')
+  private table: QueryTableComponent<PaymentMetricDetails, never>;
+  @ViewChild('retryTransfersDialog')
+  private retryTransfersDialog: RetryTransfersDialogComponent;
 
   contextMenuSelection = signal<PaymentMetricDetails | undefined>(undefined);
 
@@ -253,11 +260,7 @@ export class ProjectPaymentPageComponent {
         label: $localize`Retry failed transfers`,
         icon: 'pi pi-refresh',
         command: () => {
-          // TODO AB#31728: Implement this
-          this.toastService.showToast({
-            detail:
-              "Haven't done this yet. Here is a lollipop while you wait: 🍭",
-          });
+          this.retryFailedTransfers({ triggeredFromContextMenu: true });
         },
         visible:
           this.canRetryTransfers() &&
@@ -291,13 +294,26 @@ export class ProjectPaymentPageComponent {
 
     return this.transactions
       .data()
-      .data.some((payment) => payment.status === TransactionStatusEnum.error);
+      .some((payment) => payment.status === TransactionStatusEnum.error);
   });
 
-  retryFailedTransfers() {
-    // TODO AB#31728: Implement this
-    this.toastService.showToast({
-      detail: "Haven't done this yet. Here is a lollipop while you wait: 🍭",
+  retryFailedTransfers({
+    triggeredFromContextMenu = false,
+  }: {
+    triggeredFromContextMenu?: boolean;
+  } = {}) {
+    if (this.paymentStatus.data()?.inProgress) {
+      this.toastService.showToast({
+        severity: 'warn',
+        detail: $localize`A payment is currently in progress. Please wait until it has finished.`,
+      });
+      return;
+    }
+
+    this.retryTransfersDialog.retryFailedTransfers({
+      table: this.table,
+      triggeredFromContextMenu,
+      contextMenuItem: this.contextMenuSelection(),
     });
   }
 }

@@ -30,7 +30,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 })
 export class FileUploadControlComponent implements ControlValueAccessor {
   accept = input.required<string>();
-  readonly onClearFiles = output();
+  readonly clearFiles = output();
 
   fileInputInternalModel = model<File | null>(null);
   fileInputDisabled = model<boolean>(false);

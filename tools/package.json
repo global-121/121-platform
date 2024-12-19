@@ -1,0 +1,16 @@
+{
+  "name": "121-platform-tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "download-logs": "node download-logs.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/identity": "^4.5.0",
+    "dotenv": "^16.4.7",
+    "node-html-parser": "^6.1.13"
+  }
+}

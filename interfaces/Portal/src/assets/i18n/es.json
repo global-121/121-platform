@@ -483,9 +483,6 @@
         "submit-warning-people-affected": "Realice la acción {{actionLabel}} en <strong>{{applicableCount}}</strong> Personas afectadas.",
         "transaction": {
           "amount": "Importe",
-          "custom-data": {
-            "intersolveVisaWalletTokenCode": "Identificación de la tarjeta Visa"
-          },
           "do-single-payment": "Hacer pago único",
           "fsp": "FSP",
           "not-yet-sent": "Aún no se ha enviado",

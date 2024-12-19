@@ -100,12 +100,16 @@ export class ExportRegistrationsComponent {
     },
   }));
 
-  exportCBEVerificationReportMutation = injectMutation((queryClient) => ({
-    mutationFn: () =>
-      queryClient.fetchQuery(
-        this.projectApiService.getCbeVerificationReport(this.projectId)(),
-      ),
-    onSuccess: this.exportService.downloadArrayToXlsx(),
+  exportCBEVerificationReportMutation = injectMutation(() => ({
+    mutationFn: this.exportService.getExportCBEVerificationReportMutation(
+      this.projectId,
+    ),
+    onSuccess: ({ data: data, fileName: fileName }) => {
+      this.exportService.downloadArrayToXlsx()({
+        data,
+        fileName,
+      });
+    },
   }));
 
   exportOptions = computed<MenuItem[]>(() => [

@@ -1,0 +1,16 @@
+<app-confirmation-dialog
+  #retryTransfersConfirmationDialog
+  header="Retry failed transfers"
+  i18n-header="@@retry-failed-transfers"
+  headerIcon="pi pi-refresh"
+  proceedLabel="Retry transfers"
+  i18n-proceedLabel
+  [mutation]="retryFailedTransfersMutation"
+  [mutationData]="referenceIdsForRetryTransfers()"
+>
+  <p i18n>
+    You are about to retry
+    {{ referenceIdsForRetryTransfers().length }} payment(s). The transfer status
+    will change to Pending until received by the registration.
+  </p>
+</app-confirmation-dialog>

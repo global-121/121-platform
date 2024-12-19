@@ -3,10 +3,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { FilterOperator } from '../enums/filters.enum';
 import FspName from '../enums/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import {
-  PaymentRowDetail,
-  TransactionCustomDataAttributes,
-} from '../models/payment.model';
+import { PaymentRowDetail } from '../models/payment.model';
 import { Program } from '../models/program.model';
 import { StatusEnum } from '../models/status.enum';
 import { Transaction } from '../models/transaction.model';
@@ -99,16 +96,6 @@ export class PaymentUtils {
     }
 
     return false;
-  }
-
-  static getCustomDataAttributesToShow(paymentRow: PaymentRowDetail) {
-    if (
-      paymentRow.transaction?.fsp === FinancialServiceProviders.intersolveVisa
-    ) {
-      return [TransactionCustomDataAttributes.intersolveVisaWalletTokenCode];
-    } else {
-      return [];
-    }
   }
 
   static refernceIdsToFilter(referenceIds: string[]): PaginationFilter[] {

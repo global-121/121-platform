@@ -1,3 +1,4 @@
+/* eslint-disable custom-rules/typeorm-cascade-ondelete*/ // as cascade delete is not applicable for views
 import {
   Column,
   DataSource,

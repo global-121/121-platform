@@ -336,15 +336,16 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       ).rejects.toThrow(new HttpException('Not found', HttpStatus.NOT_FOUND));
     });
 
-    it('should throw an exception if the configuration has associated transactions', async () => {
-      mockTransactionScopedRepository.count.mockResolvedValue(1); // Simulating existing transactions
+    it('should throw an exception if the configuration has associated entities', async () => {
+      const error = { code: '23503' };
+      mockProgramFspConfigurationRepository.delete.mockRejectedValue(error);
 
       await expect(service.delete(programId, configName)).rejects.toThrow(
         HttpException,
       );
       await expect(service.delete(programId, configName)).rejects.toThrow(
         new HttpException(
-          'Cannot delete Program FSP Configuration because it has related Transactions',
+          'Cannot delete Program FSP Configuration because it is related to e.g. transactions or registrations',
           HttpStatus.CONFLICT,
         ),
       );

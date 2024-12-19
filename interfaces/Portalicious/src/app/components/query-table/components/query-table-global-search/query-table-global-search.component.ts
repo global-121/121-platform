@@ -25,7 +25,7 @@ import { InputTextModule } from 'primeng/inputtext';
 export class QueryTableGlobalSearchComponent {
   globalFilterValue = input<string | undefined>();
   globalFilterVisible = model<boolean>(false);
-  readonly onFilterChange = output<string | undefined>();
+  readonly filterChange = output<string | undefined>();
 
   @ViewChild('globalFilterContainer')
   globalFilterContainer: ElementRef<HTMLDivElement>;

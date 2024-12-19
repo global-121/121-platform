@@ -87,6 +87,15 @@ export class ExportService {
     ).toString()}-${date.getDate().toString()}.xlsx`;
   }
 
+  getExportCBEVerificationReportMutation(projectId: Signal<number>) {
+    return async () => {
+      const exportResult = await this.queryClient.fetchQuery(
+        this.projectApiService.getCbeVerificationReport(projectId)(),
+      );
+      return exportResult;
+    };
+  }
+
   getExportListMutation(projectId: Signal<number>, toastService: ToastService) {
     return async ({
       type,
@@ -183,23 +192,14 @@ export class ExportService {
     );
   }
 
-  async exportFspInstructions({
+  exportFspInstructions({
     projectId,
-    paymentId,
     toastService,
   }: {
     projectId: Signal<number>;
-    paymentId: string;
     toastService: ToastService;
   }) {
-    toastService.showToast({
-      summary: $localize`Exporting FSP Instructions`,
-      detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
-      severity: 'info',
-      showSpinner: true,
-    });
-
-    try {
+    return async ({ paymentId }: { paymentId: string }) => {
       const exportResult = await this.queryClient.fetchQuery(
         this.paymentApiService.exportFspInstructions({
           projectId,
@@ -207,15 +207,21 @@ export class ExportService {
         })(),
       );
 
-      this.downloadArrayToXlsx()({
-        data: exportResult.data,
-        fileName: `payment#${paymentId}-fsp-instructions`,
-      });
-    } catch {
       toastService.showToast({
-        detail: $localize`An unexpected error occurred while exporting the FSP instructions. Please try again later.`,
-        severity: 'error',
+        summary: $localize`Exporting FSP Instructions`,
+        detail: $localize`This might take a few minutes.\n\nThe file will be automatically downloaded when ready. Closing this notification will not cancel the export.`,
+        severity: 'info',
+        showSpinner: true,
       });
-    }
+
+      return exportResult.map((fspInstructionPerProgramFspConfig) => {
+        const exportFileName = `payment#${paymentId}-${fspInstructionPerProgramFspConfig.fileNamePrefix}-fsp-instructions`;
+
+        return {
+          data: fspInstructionPerProgramFspConfig.data,
+          fileName: exportFileName,
+        };
+      });
+    };
   }
 }

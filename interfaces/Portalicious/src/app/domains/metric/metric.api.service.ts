@@ -2,6 +2,7 @@ import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
@@ -49,11 +50,21 @@ export class MetricApiService extends DomainApiService {
     projectId: Signal<number>;
     payment: Signal<number>;
   }) {
-    return this.generateQueryOptions<{ data: PaymentMetricDetails[] }>({
+    return this.generateQueryOptions<
+      { data: PaymentMetricDetails[] },
+      PaymentMetricDetails[]
+    >({
       path: [...BASE_ENDPOINT(projectId), 'export-list', ExportType.payment],
       params: {
         minPayment: payment,
         maxPayment: payment,
+      },
+      processResponse: (response) => {
+        // TODO: AB#32158 - Should we filter out deleted transactions here?
+        return response.data.filter(
+          (transaction) =>
+            transaction.registrationStatus !== RegistrationStatusEnum.deleted,
+        );
       },
     });
   }

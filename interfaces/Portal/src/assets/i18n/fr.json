@@ -494,9 +494,6 @@
         "submit-warning-people-affected": "{{actionLabel}} pour {{applicableCount}} Personnes affectées.",
         "transaction": {
           "amount": "Quantité",
-          "custom-data": {
-            "intersolveVisaWalletTokenCode": "Numéro de carte Visa"
-          },
           "do-single-payment": "Émettre un paiement unique",
           "fsp": "PSF",
           "not-yet-sent": "Pas encore émis",

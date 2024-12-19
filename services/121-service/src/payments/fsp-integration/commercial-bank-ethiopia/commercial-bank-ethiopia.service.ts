@@ -33,7 +33,7 @@ import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fina
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueueRegistryService } from '@121-service/src/queue-registry/queue-registry.service';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
@@ -58,7 +58,7 @@ export class CommercialBankEthiopiaService
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
-    private readonly queueRegistryService: QueueRegistryService,
+    private readonly queuesService: QueuesRegistryService,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly transactionsService: TransactionsService,
     @Inject(REDIS_CLIENT)
@@ -106,7 +106,7 @@ export class CommercialBankEthiopiaService
         userId: paPayment.userId,
       };
       const job =
-        await this.queueRegistryService.transactionJobCommercialBankEthiopiaQueue.add(
+        await this.queuesService.transactionJobCommercialBankEthiopiaQueue.add(
           JobNames.default,
           jobData,
         );

@@ -1,6 +1,7 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 import { AppRoutes } from '~/app.routes';
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
@@ -52,6 +53,18 @@ export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =
     [RegistrationStatusEnum.declined]: $localize`Decline`,
     [RegistrationStatusEnum.deleted]: $localize`Delete`,
   };
+
+export const LANGUAGE_ENUM_LABEL: Record<LanguageEnum, string> = {
+  ar: $localize`Arabic`,
+  en: $localize`English`,
+  es: $localize`Spanish`,
+  fr: $localize`French`,
+  in: $localize`Indonesian`,
+  nl: $localize`Dutch`,
+  pt_BR: $localize`Portuguese`,
+  tl: $localize`Filipino`,
+  tr: $localize`Turkish`,
+};
 
 export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
   [VisaCard121Status.Active]: $localize`:@@debit-card-status-active:Active`,

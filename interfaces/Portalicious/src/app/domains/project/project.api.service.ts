@@ -7,7 +7,6 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { ATTRIBUTE_LABELS } from '~/domains/project/project.helper';
 import {
   Attribute,
   AttributeWithTranslatedLabel,
@@ -16,6 +15,10 @@ import {
   ProjectUserAssignment,
   ProjectUserWithRolesLabel,
 } from '~/domains/project/project.model';
+import {
+  ATTRIBUTE_LABELS,
+  isGenericAttribute,
+} from '~/domains/project/project-attribute.helpers';
 import { Role } from '~/domains/role/role.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
@@ -103,12 +106,13 @@ export class ProjectApiService extends DomainApiService {
           const translatedLabel = this.translatableStringService.translate(
             attribute.label,
           );
-
           return {
             ...attribute,
             label:
               translatedLabel ??
-              ATTRIBUTE_LABELS[attribute.name] ??
+              (isGenericAttribute(attribute.name)
+                ? ATTRIBUTE_LABELS[attribute.name]
+                : undefined) ??
               attribute.name,
           };
         });
