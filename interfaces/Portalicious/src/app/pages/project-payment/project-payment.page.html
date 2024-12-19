@@ -7,10 +7,10 @@
   [isPending]="payments.isPending()"
 >
   <div header-actions>
-    <app-export-payment-instructions
-      [paymentId]="paymentId()"
+    <app-single-payment-export
       [projectId]="projectId()"
-    ></app-export-payment-instructions>
+      [paymentId]="paymentId()"
+    />
   </div>
   <div
     class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"

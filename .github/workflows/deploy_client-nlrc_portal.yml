@@ -16,15 +16,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  stop_deployment:
-    name: 'Stop Deployment'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Deployment stopped on purpose'
-        run: |
-          echo "Error: This workflow is intentionally failing because we do not deploy to NLRC any more, we are waiting for Intersolve to fix migrations issues. If you want to bypass this, comment out this step temporarily."
-          exit 1
-
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
