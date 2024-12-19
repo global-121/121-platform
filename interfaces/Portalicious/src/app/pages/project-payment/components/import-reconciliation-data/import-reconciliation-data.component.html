@@ -1,0 +1,41 @@
+@if (canImportReconciliationData()) {
+  <p-button
+    label="Import reconciliation data"
+    i18n-label
+    (click)="importReconciliationData()"
+    [disabled]="paymentInProgress.isPending()"
+    icon="pi pi-download"
+    outlined
+    rounded
+  ></p-button>
+
+  <app-import-file-dialog
+    [(dialogVisible)]="dialogVisible"
+    [mutation]="importReconciliationDataMutation"
+    accept=".csv,text/csv,text/comma-separated-values,application/csv"
+    header="Import reconciliation data"
+    i18n-header
+  >
+    <p i18n>
+      Import the file sent by the FSP to see the transfer status of the
+      registrations included in this payment. Download the template
+      <p-button
+        [link]="true"
+        (click)="downloadReconciliationTemplatesMutation.mutate()"
+        >here</p-button
+      >.
+    </p>
+    <p i18n>
+      Make sure to upload the correct file as this will override the current
+      file.
+    </p>
+    <p>
+      <span i18n
+        >The status column in the file should contain one of the following
+        values:</span
+      >
+      <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
+      <span class="ml-1 font-mono">success, error.</span>
+    </p>
+  </app-import-file-dialog>
+}

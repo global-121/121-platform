@@ -7,10 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -18,8 +15,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
-import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import { LatestExportDateComponent } from '~/pages/project-registrations/components/latest-export-date/latest-export-date.component';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
@@ -42,13 +37,10 @@ export class SinglePaymentExportComponent {
   projectId = input.required<number>();
   paymentId = input.required<number>();
 
-  private projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
   private toastService = inject(ToastService);
   private downloadService = inject(DownloadService);
-
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
 
   @ViewChild('exportFspPaymentListDialog')
   private exportFspPaymentListDialog: ConfirmationDialogComponent;
@@ -94,13 +86,10 @@ export class SinglePaymentExportComponent {
   }));
 
   canExportPaymentInstructions = computed(() => {
-    return (
-      projectHasFspWithExportFileIntegration(this.project.data()) &&
-      this.authService.hasPermission({
-        projectId: this.projectId(),
-        requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
-      })
-    );
+    return this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
+    });
   });
 
   exportOptions = computed<MenuItem[]>(() => [

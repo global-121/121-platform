@@ -25,7 +25,7 @@
           <p-button
             label="Choose file"
             i18n-label
-            (onClick)="chooseCallback()"
+            (click)="chooseCallback()"
             icon="pi pi-download"
             [rounded]="true"
             [outlined]="true"
@@ -39,7 +39,7 @@
           <div class="txt-system-s">{{ file.size | filesize }}</div>
           <p-button
             icon="pi pi-trash"
-            (onClick)="removeFileCallback(file, $index)"
+            (click)="removeFileCallback(file, $index)"
             [plain]="true"
             [text]="true"
             styleClass="grow-0"
