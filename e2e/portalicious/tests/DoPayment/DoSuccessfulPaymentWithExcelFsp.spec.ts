@@ -8,7 +8,10 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsPvExcel } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationsPvExcel,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
@@ -23,13 +26,10 @@ const addressPostalCode = registrationsPvExcel[0].addressPostalCode;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
-  const programIdPV = 2;
-  const PVProgramId = programIdPV;
-
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     registrationsPvExcel,
-    PVProgramId,
+    programIdPV,
     accessToken,
   );
 
