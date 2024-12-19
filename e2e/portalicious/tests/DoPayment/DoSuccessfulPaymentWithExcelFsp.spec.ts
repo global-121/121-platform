@@ -15,11 +15,11 @@ import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 // Export Excel FSP payment list
-const amount = 17.5;
-const fullName = 'Gemma Houtenbos';
-const addressStreet = 'Teststraat';
-const addressHouseNumber = '1';
-const addressPostalCode = '1234AB';
+const amount = NLRCProgramPV.fixedTransferValue;
+const fullName = registrationsPvExcel[0].fullName;
+const addressStreet = registrationsPvExcel[0].addressStreet;
+const addressHouseNumber = registrationsPvExcel[0].addressHouseNumber;
+const addressPostalCode = registrationsPvExcel[0].addressPostalCode;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -48,7 +48,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const numberOfPas = registrationsPvExcel.length;
-  const defaultTransferValue = NLRCProgramPV.fixedTransferValue;
+  const defaultTransferValue = amount;
   const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);

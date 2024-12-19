@@ -4,9 +4,14 @@ import { format } from 'date-fns';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { getAccessToken } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import {
+  programIdOCW,
+  registrationsOCW,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
