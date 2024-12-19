@@ -1587,6 +1587,93 @@
       <trans-unit id="4957123542385348986" datatype="html">
         <source>Amount successfully sent</source>
         <target state="new">Amount successfully sent</target>
+      <trans-unit id="payment-report" datatype="html">
+        <source>Payment report</source>
+        <target state="new">Payment report</target>
+      </trans-unit>
+      <trans-unit id="5533720489917693962" datatype="html">
+        <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
+        <target state="new">You&apos;re about to download an Excel file with the FSP instructions for this payment.</target>
+      </trans-unit>
+      <trans-unit id="4044492363974277530" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in this payment.</source>
+        <target state="new">You&apos;re about to download an Excel file with all of the registrations included in this payment.</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-referenceId" datatype="html">
+        <source>Reference ID</source>
+        <target state="new">Reference ID</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-phoneNumber" datatype="html">
+        <source>Phone Number</source>
+        <target state="new">Phone Number</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-preferredLanguage" datatype="html">
+        <source>Preferred Language</source>
+        <target state="new">Preferred Language</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
+        <source>FSP Configuration Name</source>
+        <target state="new">FSP Configuration Name</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCount" datatype="html">
+        <source>Payment Count</source>
+        <target state="new">Payment Count</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-scope" datatype="html">
+        <source>Scope</source>
+        <target state="new">Scope</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-status" datatype="html">
+        <source>Status</source>
+        <target state="new">Status</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationProgramId" datatype="html">
+        <source>Registration ID</source>
+        <target state="new">Registration ID</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+        <source>Registration Created Date</source>
+        <target state="new">Registration Created Date</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-inclusionScore" datatype="html">
+        <source>Inclusion Score</source>
+        <target state="new">Inclusion Score</target>
+      </trans-unit>
+      <trans-unit id="6269202464699193298" datatype="html">
+        <source>Arabic</source>
+        <target state="new">Arabic</target>
+      </trans-unit>
+      <trans-unit id="5866254605255506989" datatype="html">
+        <source>English</source>
+        <target state="new">English</target>
+      </trans-unit>
+      <trans-unit id="5190825892106392539" datatype="html">
+        <source>Spanish</source>
+        <target state="new">Spanish</target>
+      </trans-unit>
+      <trans-unit id="7633754075223722162" datatype="html">
+        <source>French</source>
+        <target state="new">French</target>
+      </trans-unit>
+      <trans-unit id="8312065814232621608" datatype="html">
+        <source>Indonesian</source>
+        <target state="new">Indonesian</target>
+      </trans-unit>
+      <trans-unit id="3071065188816255493" datatype="html">
+        <source>Dutch</source>
+        <target state="new">Nederlands</target>
+      </trans-unit>
+      <trans-unit id="153799456510623899" datatype="html">
+        <source>Portuguese</source>
+        <target state="new">Portuguese</target>
+      </trans-unit>
+      <trans-unit id="1703221125772306676" datatype="html">
+        <source>Filipino</source>
+        <target state="new">Filipino</target>
+      </trans-unit>
+      <trans-unit id="5682359291233237791" datatype="html">
+        <source>Turkish</source>
+        <target state="new">Turkish</target>
       </trans-unit>
       <trans-unit id="attribute-label-referenceId" datatype="html">
         <source>Reference ID</source>
