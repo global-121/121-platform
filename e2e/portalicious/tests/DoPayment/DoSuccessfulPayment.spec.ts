@@ -38,9 +38,7 @@ test('[31970] Do successful payment', async ({ page }) => {
   const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const date = new Date();
-  const formattedDate = format(date, 'dd/MM/yyyy, HH:mm');
-  const lastPaymentDate = `${formattedDate}`;
+  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
