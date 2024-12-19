@@ -34,7 +34,7 @@ test('[29360] Viewing the export options without permission', async ({
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
     await basePage.selectProgram(projectTitle);
