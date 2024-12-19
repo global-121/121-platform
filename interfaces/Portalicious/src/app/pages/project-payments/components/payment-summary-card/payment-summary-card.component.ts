@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +16,7 @@ import { CardWithLinkComponent } from '~/components/card-with-link/card-with-lin
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Locale } from '~/utils/locale';
 
 @Component({
@@ -27,6 +28,7 @@ import { Locale } from '~/utils/locale';
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,
   ],
+  providers: [CurrencyPipe],
   templateUrl: './payment-summary-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +36,8 @@ import { Locale } from '~/utils/locale';
 export class PaymentSummaryCardComponent {
   private locale = inject<Locale>(LOCALE_ID);
   private paymentApiService = inject(PaymentApiService);
+  private currencyPipe = inject(CurrencyPipe);
+  private projectApiService = inject(ProjectApiService);
 
   projectId = input.required<number>();
   paymentId = input.required<number>();
@@ -52,7 +56,7 @@ export class PaymentSummaryCardComponent {
     return successCount + waitingCount + failedCount;
   });
 
-  totalAmount = computed(() => {
+  expectedAmount = computed(() => {
     const successAmount = this.metrics.data()?.success.amount ?? 0;
     const waitingAmount = this.metrics.data()?.waiting.amount ?? 0;
     const failedAmount = this.metrics.data()?.failed.amount ?? 0;
@@ -63,6 +67,8 @@ export class PaymentSummaryCardComponent {
   showFailedAlert = computed(
     () => (this.metrics.data()?.failed.count ?? 0) > 0,
   );
+
+  successAmount = computed(() => this.metrics.data()?.success.amount ?? 0);
 
   paymentInProgress = injectQuery(
     this.paymentApiService.getPaymentStatus(this.projectId),
@@ -75,6 +81,10 @@ export class PaymentSummaryCardComponent {
     AppRoutes.projectPayments,
     paymentId,
   ];
+
+  public project = injectQuery(
+    this.projectApiService.getProject(this.projectId),
+  );
 
   paymentTitle = computed(
     () =>
@@ -94,17 +104,27 @@ export class PaymentSummaryCardComponent {
         label: $localize`Included reg.`,
       },
       {
-        value: this.totalAmount(),
-        label: $localize`Total amount`,
-      },
-      {
-        value: this.metrics.data()?.success.count,
-        label: $localize`Successful transfers`,
+        value: this.currencyPipe.transform(
+          this.expectedAmount(),
+          this.project.data()?.currency ?? 'EUR',
+          'symbol-narrow',
+          '1.2-2',
+        ),
+        label: $localize`Expected total amount`,
       },
       {
         value: this.metrics.data()?.failed.count,
         label: $localize`Failed transfers`,
         showAlert: this.showFailedAlert(),
+      },
+      {
+        value: this.currencyPipe.transform(
+          this.successAmount(),
+          this.project.data()?.currency ?? 'EUR',
+          'symbol-narrow',
+          '1.2-2',
+        ),
+        label: $localize`Amount successfully sent`,
       },
     ];
   });

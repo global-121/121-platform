@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -896,9 +896,6 @@
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
-      <trans-unit id="5836528780566781670" datatype="html">
-        <source>Successful transfers</source>
-      </trans-unit>
       <trans-unit id="5847820864343475107" datatype="html">
         <source>There are no payments for this project yet.</source>
       </trans-unit>
@@ -1198,7 +1195,7 @@
       </trans-unit>
       <trans-unit id="5533720489917693962" datatype="html">
         <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
-        </trans-unit>
+      </trans-unit>
       <trans-unit id="attribute-label-inclusionScore" datatype="html">
         <source>Inclusion Score</source>
       </trans-unit>
@@ -1255,6 +1252,12 @@
       </trans-unit>
       <trans-unit id="8312065814232621608" datatype="html">
         <source>Indonesian</source>
+      </trans-unit>
+      <trans-unit id="4957123542385348986" datatype="html">
+        <source>Amount successfully sent</source>
+      </trans-unit>
+      <trans-unit id="8116905776887232271" datatype="html">
+        <source>Expected total amount</source>
       </trans-unit>
     </body>
   </file>
