@@ -286,6 +286,11 @@ export class CreatePaymentComponent {
       return [];
     }
 
+    const totalPaymentAmount =
+      this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier;
+    const totalPaymentAmountFormat =
+      totalPaymentAmount % 1 === 0 ? '1.0-0' : '1.2-2';
+
     const listData: DataListItem[] = [
       {
         label: $localize`Financial Service Provider(s)`,
@@ -310,10 +315,10 @@ export class CreatePaymentComponent {
       {
         label: $localize`Total payment amount`,
         value: this.currencyPipe.transform(
-          this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
+          totalPaymentAmount,
           this.project.data()?.currency ?? 'EUR',
           'symbol-narrow',
-          '1.0-0',
+          totalPaymentAmountFormat,
         ),
         tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
       },
