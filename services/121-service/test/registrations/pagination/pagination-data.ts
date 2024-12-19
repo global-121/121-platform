@@ -374,10 +374,15 @@ export const registrationPvExcel1 = {
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Gemma Houtenbos',
-  phoneNumber: '14155235556',
+  phoneNumber: '14155235551',
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.excel,
-  whatsappPhoneNumber: '14155235555',
+  whatsappPhoneNumber: '14155235551',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
 };
 
 export const registrationPvExcel2 = {
@@ -389,6 +394,11 @@ export const registrationPvExcel2 = {
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.excel,
   whatsappPhoneNumber: '14155235551',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
 };
 
 export const registrationPvExcel3 = {

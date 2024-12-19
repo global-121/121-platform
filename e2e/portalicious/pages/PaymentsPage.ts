@@ -1,8 +1,5 @@
 import { expect } from '@playwright/test';
-import * as fs from 'fs';
-import * as path from 'path';
 import { Locator, Page } from 'playwright';
-import * as XLSX from 'xlsx';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
@@ -18,6 +15,8 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportFspPaymentListButton: Locator;
+  readonly exportDropdown: Locator;
+  readonly proceedButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -43,6 +42,10 @@ class PaymentsPage extends BasePage {
     this.exportFspPaymentListButton = this.page.getByRole('button', {
       name: 'Export FSP payment list',
     });
+    this.exportDropdown = this.page.getByTestId(
+      'single-payment-export-dropdown',
+    );
+    this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
   }
 
   async selectAllRegistrations() {
@@ -160,29 +163,9 @@ class PaymentsPage extends BasePage {
       );
     }
   }
-
-  async downloadPaymentInstructions() {
-    const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
-      this.exportFspPaymentListButton.click(),
-    ]);
-
-    const downloadDir = path.join(__dirname, '../../downloads');
-    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
-
-    const filePath = path.join(downloadDir, download.suggestedFilename());
-    await download.saveAs(filePath);
-
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: null }) as Record<
-      string,
-      unknown
-    >[];
-    console.log(data);
-
-    if (data.length === 0) throw new Error('No data found in the sheet');
+  async selectPaymentExportOption({ option }: { option: string }) {
+    await this.exportDropdown.click();
+    await this.page.getByRole('menuitem', { name: option }).click();
   }
 }
 
