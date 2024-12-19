@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,7 +13,6 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
   ChipData,
-  getChipDataByRegistrationStatus,
   getChipDataByTransactionStatusEnum,
   getChipDataByTwilioMessageStatus,
 } from '~/components/colored-chip/colored-chip.helper';
@@ -32,12 +30,20 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
     ChipModule,
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
-    NgClass,
   ],
   template: `
     <div class="flex w-full content-between items-center">
       @if (!!overview()) {
-        <span class="me-auto">{{ overview() }}</span>
+        <span class="">{{ overview() }}</span>
+      }
+
+      @if (chipData()) {
+        <div class="me-auto ms-2">
+          <app-colored-chip
+            [label]="chipData()!.chipLabel"
+            [variant]="chipData()!.chipVariant"
+          />
+        </div>
       }
 
       @let dialogData = voucherDialogData();
@@ -47,14 +53,6 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
           [paymentId]="dialogData.paymentId"
           [totalTransfers]="dialogData.totalTransfers"
           [voucherReferenceId]="dialogData.voucherReferenceId"
-          class="me-2"
-        />
-      }
-
-      @if (chipData()) {
-        <app-colored-chip
-          [label]="chipData()!.chipLabel"
-          [variant]="chipData()!.chipVariant"
         />
       }
     </div>
@@ -73,10 +71,6 @@ export class TableCellOverviewComponent
 
     if (type === ActivityTypeEnum.Transaction) {
       return getChipDataByTransactionStatusEnum(attributes.status);
-    }
-
-    if (type === ActivityTypeEnum.StatusChange) {
-      return getChipDataByRegistrationStatus(attributes.newValue);
     }
 
     if (type === ActivityTypeEnum.Message) {
@@ -98,7 +92,7 @@ export class TableCellOverviewComponent
       case ActivityTypeEnum.Note:
         return item.attributes.text;
       case ActivityTypeEnum.StatusChange:
-        return;
+        return item.attributes.newValue; // TODO: Localize this
       case ActivityTypeEnum.Transaction:
         return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} #${item.attributes.payment.toString()}`;
     }

@@ -108,7 +108,7 @@ export class ActivityLogExpandedRowComponent
           {
             label: $localize`Approved by`,
             chipLabel: item.user.username,
-            chipVariant: 'blue',
+            chipVariant: 'grey',
           },
           {
             label: $localize`FSP`,
