@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[31970] Do successful payment', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = 'NLRC OCW Program';
+  const projectTitle = NLRCProgram.programTitle.en;
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
