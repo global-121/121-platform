@@ -72,6 +72,11 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     @Inject(REQUEST) private request: ScopedUserRequest,
     private repository: Repository<T>,
   ) {
+    if (repository instanceof ScopedRepository) {
+      throw new Error(
+        'Invalid repository type: ScopedRepository should not be passed to a ScopedRepository constructor.',
+      );
+    }
     super(repository.target, repository.manager, repository.queryRunner);
     if (indirectRelationConfig[this.repository.metadata.name]) {
       this.relationArrayToRegistration =

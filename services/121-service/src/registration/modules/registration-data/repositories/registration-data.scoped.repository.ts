@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -13,9 +14,9 @@ export class RegistrationDataScopedRepository extends ScopedRepository<Registrat
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(RegistrationAttributeDataEntity)
-    scopedRepository: ScopedRepository<RegistrationAttributeDataEntity>,
+    repository: Repository<RegistrationAttributeDataEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   public async getRegistrationDataArrayByName(
