@@ -40,9 +40,20 @@ export class PaymentSummaryCardComponent {
   paymentDate = input.required<string>();
   cardIndex = input.required<number>();
 
-  metrics = injectQuery(
-    this.paymentApiService.getPayment(this.projectId, this.paymentId),
+  paymentStatus = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
   );
+  metrics = injectQuery(() => ({
+    ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
+    // Refetch the data every second if this is the latest payment, and a payment is in progress
+    refetchInterval:
+      this.isLatestPayment() &&
+      (this.paymentStatus.isPending() || this.paymentStatus.data()?.inProgress)
+        ? 1000
+        : undefined,
+  }));
+
+  isLatestPayment = computed(() => this.cardIndex() === 0);
 
   includedRegistrations = computed(() => {
     const successCount = this.metrics.data()?.success.count ?? 0;
@@ -62,10 +73,6 @@ export class PaymentSummaryCardComponent {
 
   showFailedAlert = computed(
     () => (this.metrics.data()?.failed.count ?? 0) > 0,
-  );
-
-  paymentInProgress = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
   paymentLink = (projectId: number, paymentId: number) => [
