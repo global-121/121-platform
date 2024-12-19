@@ -13,11 +13,8 @@ import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
-
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
+  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
