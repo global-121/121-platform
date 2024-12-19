@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -235,8 +235,8 @@
       <trans-unit id="7203225042973794131" datatype="html">
         <source>&lt;UNNAMED TEMPLATE&gt;</source>
       </trans-unit>
-      <trans-unit id="attribute-label-fspDisplayName" datatype="html">
-        <source>FSP Display Name</source>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationLabel" datatype="html">
+        <source>FSP</source>
       </trans-unit>
       <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
         <source>Transfer value multiplier</source>
@@ -1198,6 +1198,63 @@
       </trans-unit>
       <trans-unit id="5533720489917693962" datatype="html">
         <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
+        </trans-unit>
+      <trans-unit id="attribute-label-inclusionScore" datatype="html">
+        <source>Inclusion Score</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCount" datatype="html">
+        <source>Payment Count</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-phoneNumber" datatype="html">
+        <source>Phone Number</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-preferredLanguage" datatype="html">
+        <source>Preferred Language</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
+        <source>FSP Configuration Name</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-referenceId" datatype="html">
+        <source>Reference ID</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+        <source>Registration Created Date</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationProgramId" datatype="html">
+        <source>Registration ID</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-scope" datatype="html">
+        <source>Scope</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-status" datatype="html">
+        <source>Status</source>
+      </trans-unit>
+      <trans-unit id="153799456510623899" datatype="html">
+        <source>Portuguese</source>
+      </trans-unit>
+      <trans-unit id="1703221125772306676" datatype="html">
+        <source>Filipino</source>
+      </trans-unit>
+      <trans-unit id="3071065188816255493" datatype="html">
+        <source>Dutch</source>
+      </trans-unit>
+      <trans-unit id="5190825892106392539" datatype="html">
+        <source>Spanish</source>
+      </trans-unit>
+      <trans-unit id="5682359291233237791" datatype="html">
+        <source>Turkish</source>
+      </trans-unit>
+      <trans-unit id="5866254605255506989" datatype="html">
+        <source>English</source>
+      </trans-unit>
+      <trans-unit id="6269202464699193298" datatype="html">
+        <source>Arabic</source>
+      </trans-unit>
+      <trans-unit id="7633754075223722162" datatype="html">
+        <source>French</source>
+      </trans-unit>
+      <trans-unit id="8312065814232621608" datatype="html">
+        <source>Indonesian</source>
       </trans-unit>
     </body>
   </file>
