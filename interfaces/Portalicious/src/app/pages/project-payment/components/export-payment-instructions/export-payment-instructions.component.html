@@ -1,9 +1,0 @@
-@if (canExportPaymentInstructions()) {
-  <p-button
-    label="Export FSP payment list"
-    i18n-label
-    icon="pi pi-upload"
-    (click)="exportFspInstructions()"
-    [disabled]="paymentInProgress.isPending()"
-  />
-}
