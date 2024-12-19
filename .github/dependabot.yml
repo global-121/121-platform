@@ -123,6 +123,7 @@ updates:
       angular:
         patterns:
           - '@angular*'
+          - 'primeng'
           - 'typescript'
           - 'zone.js'
       linting:
@@ -135,8 +136,11 @@ updates:
       dependencies:
         patterns:
           - '*'
-        exclude-patterns:
+        exclude-patterns: # Include all of the aboven groups:
           - '@angular*'
+          - 'primeng'
+          - 'typescript'
+          - 'zone.js'
           - '@azure/msal*'
           - '*eslint*'
           - '*prettier*'
@@ -153,6 +157,8 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'filesize'
         versions: ['^10.x'] # See: https://www.npmjs.com/package/ngx-filesize
+      - dependency-name: 'primeng'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: '/e2e'
