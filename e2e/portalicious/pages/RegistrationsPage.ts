@@ -51,6 +51,20 @@ const expectedColumnsDuplicateRegistrationsExport = [
   'duplicateWithIds',
 ];
 
+const expectedColumnsExportExcelFspPaymentList = [
+  'referenceId',
+  'amount',
+  'namePartnerOrganization',
+  'fullName',
+  'phoneNumber',
+  'whatsappPhoneNumber',
+  'addressStreet',
+  'addressHouseNumber',
+  'addressHouseNumberAddition',
+  'addressPostalCode',
+  'addressCity',
+];
+
 interface ExportPaAssertionData {
   status: string;
   id: number;
@@ -74,6 +88,14 @@ interface ExportDuplicateRegistrationsData {
   programFinancialServiceProviderConfigurationLabel: string;
   name: string;
   duplicateWithIds: string;
+}
+
+interface ExportExcelFspData {
+  amount: number;
+  fullName: string;
+  addressStreet: string;
+  addressHouseNumber: string;
+  addressPostalCode: string;
 }
 
 class RegistrationsPage extends BasePage {
@@ -271,7 +293,8 @@ class RegistrationsPage extends BasePage {
     assertionData: Record<string, unknown>,
     registrationIndex: number,
     filterContext?: string,
-    validateRowCount?: { condition: boolean; minRowCount: number },
+    validateMinRowCount?: { condition: boolean; minRowCount: number },
+    validateExactRowCount?: { condition: boolean; rowCount: number },
   ) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
@@ -294,10 +317,18 @@ class RegistrationsPage extends BasePage {
 
     if (data.length === 0) throw new Error('No data found in the sheet');
 
-    if (validateRowCount?.condition) {
-      if (data.length <= validateRowCount.minRowCount) {
+    if (validateMinRowCount?.condition) {
+      if (data.length <= validateMinRowCount.minRowCount) {
         throw new Error(
-          `Row count validation failed. Expected more than ${validateRowCount.minRowCount} rows, but found ${data.length}.`,
+          `Row count validation failed. Expected more than ${validateMinRowCount.minRowCount} rows, but found ${data.length}.`,
+        );
+      }
+    }
+
+    if (validateExactRowCount?.condition) {
+      if (data.length !== validateExactRowCount.rowCount) {
+        throw new Error(
+          `Row count validation failed. Expected ${validateExactRowCount.rowCount} rows, but found ${data.length}.`,
         );
       }
     }
@@ -373,7 +404,7 @@ class RegistrationsPage extends BasePage {
       preferredLanguage,
       programFinancialServiceProviderConfigurationLabel,
     }: ExportPaAssertionData,
-    validateRowCount?: { condition: boolean; minRowCount: number },
+    validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
       status,
@@ -387,7 +418,7 @@ class RegistrationsPage extends BasePage {
       assertionData,
       registrationIndex,
       undefined,
-      validateRowCount,
+      validateMinRowCount,
     );
   }
 
@@ -400,7 +431,7 @@ class RegistrationsPage extends BasePage {
       newValue,
       oldValue,
     }: ExportStatusAndDataChangesData,
-    validateRowCount?: { condition: boolean; minRowCount: number },
+    validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
       referenceId,
@@ -414,7 +445,7 @@ class RegistrationsPage extends BasePage {
       assertionData,
       registrationIndex,
       referenceId,
-      validateRowCount,
+      validateMinRowCount,
     );
   }
 
@@ -427,7 +458,7 @@ class RegistrationsPage extends BasePage {
       name,
       duplicateWithIds,
     }: ExportDuplicateRegistrationsData,
-    validateRowCount?: { condition: boolean; minRowCount: number },
+    validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
     const assertionData = {
       id,
@@ -441,7 +472,35 @@ class RegistrationsPage extends BasePage {
       assertionData,
       registrationIndex,
       undefined,
-      validateRowCount,
+      validateMinRowCount,
+    );
+  }
+
+  async exportAndAssertExcelFspList(
+    registrationIndex: number,
+    {
+      amount,
+      fullName,
+      addressStreet,
+      addressHouseNumber,
+      addressPostalCode,
+    }: ExportExcelFspData,
+    validateExactRowCount?: { condition: boolean; rowCount: number },
+  ) {
+    const assertionData = {
+      amount,
+      fullName,
+      addressStreet,
+      addressHouseNumber,
+      addressPostalCode,
+    };
+    await this.exportAndAssertData(
+      expectedColumnsExportExcelFspPaymentList,
+      assertionData,
+      registrationIndex,
+      undefined,
+      undefined,
+      validateExactRowCount,
     );
   }
 }
