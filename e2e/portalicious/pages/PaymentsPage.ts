@@ -17,6 +17,7 @@ class PaymentsPage extends BasePage {
   readonly exportFspPaymentListButton: Locator;
   readonly exportDropdown: Locator;
   readonly proceedButton: Locator;
+  readonly viewPaymentTitle: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -46,6 +47,9 @@ class PaymentsPage extends BasePage {
       'single-payment-export-dropdown',
     );
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
+    this.viewPaymentTitle = this.page.getByRole('heading', {
+      name: 'All Payments',
+    });
   }
 
   async selectAllRegistrations() {
@@ -90,6 +94,11 @@ class PaymentsPage extends BasePage {
       .getByLabel('In progress');
 
     await inProgressChip.waitFor({ state: 'hidden' });
+  }
+
+  async validatePaymentsDetailsPageByDate(date: string) {
+    const viewPaymentTitle = await this.viewPaymentTitle.textContent();
+    expect(viewPaymentTitle).toContain(date);
   }
 
   async validatePaymentCard({

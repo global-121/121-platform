@@ -49,12 +49,30 @@ test('[31970] Do successful payment', async ({ page }) => {
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
     await paymentsPage.startPayment();
+    // Assert redirection to payment overview page
+    await page.waitForURL((url) =>
+      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+    );
+    // Assert payment overview page by payment date/ title
+    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payment card', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
+    // First try to validate the payment card where system still waits for the response from the PA
+    await paymentsPage.validatePaymentCard({
+      date: lastPaymentDate,
+      paymentAmount: defaultMaxTransferValue,
+      registrationsNumber: numberOfPas,
+      successfulTransfers: numberOfPas - 1,
+      failedTransfers: 0,
+    });
+    // DO NOT MAKE IT A RULE!!!
+    // Only in this case we need to reload the page to get the updated data of the successful payments.
+    // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
+    await page.reload();
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
