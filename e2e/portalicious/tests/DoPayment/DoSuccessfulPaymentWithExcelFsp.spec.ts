@@ -75,6 +75,12 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
       paymentAmount: defaultMaxTransferValue,
     });
     await paymentsPage.startPayment();
+    // Assert redirection to payment overview page
+    await page.waitForURL((url) =>
+      url.pathname.startsWith('/en-GB/project/2/payments/1'),
+    );
+    // Assert payment overview page by payment date/ title
+    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
