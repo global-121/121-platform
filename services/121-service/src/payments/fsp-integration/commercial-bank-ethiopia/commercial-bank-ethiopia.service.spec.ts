@@ -32,7 +32,7 @@ const payload: CommercialBankEthiopiaTransferPayload[] = [
   {
     debitAmount: sendPaymentData[0].transactionAmount,
     debitTheirRef: '2401193088037336',
-    creditTheirRef: 'DRA Joint Response 2023 Ethiopia -',
+    creditTheirRef: 'DRAJointResponse',
     creditAcctNo: '407951684723597',
     creditCurrency: 'ETB',
     remitterName: 'EKHCDC',

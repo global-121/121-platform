@@ -219,7 +219,7 @@ export class CommercialBankEthiopiaService
     paRegistrationData: CommercialBankEthiopiaRegistrationData[],
     program: ProgramEntity,
   ): CommercialBankEthiopiaTransferPayload {
-    let fullName;
+    let fullName = '';
     let bankAccountNumber;
     let debitTheirRefRetry;
 
@@ -237,17 +237,18 @@ export class CommercialBankEthiopiaService
 
     return {
       debitAmount: payment.transactionAmount,
-      debitTheirRef:
+      debitTheirRef: (
         debitTheirRefRetry ||
-        `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`,
+        `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`
+      ).substring(0, 16),
       creditTheirRef:
         program.titlePortal && program.titlePortal.en
-          ? program.titlePortal.en.substring(0, 35)
+          ? program.titlePortal.en.replaceAll(/\W/g, '').substring(0, 16)
           : null,
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
-      remitterName: program.ngo,
-      beneficiaryName: `${fullName}`,
+      remitterName: program.ngo ? program.ngo.substring(0, 35) : null,
+      beneficiaryName: fullName.substring(0, 35),
     };
   }
 
