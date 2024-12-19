@@ -38,9 +38,9 @@ import {
   TRANSACTION_STATUS_LABELS,
 } from '~/domains/transaction/transaction.helper';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
-import { ExportPaymentInstructionsComponent } from '~/pages/project-payment/components/export-payment-instructions/export-payment-instructions.component';
 import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { SinglePaymentExportComponent } from '~/pages/project-payment/components/single-payment-export/single-payment-export.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -60,8 +60,8 @@ export interface TransactionsTableCellContext {
     MetricTileComponent,
     ProjectPaymentChartComponent,
     SkeletonModule,
-    ExportPaymentInstructionsComponent,
     RetryTransfersDialogComponent,
+    SinglePaymentExportComponent,
   ],
   templateUrl: './project-payment.page.html',
   styles: ``,

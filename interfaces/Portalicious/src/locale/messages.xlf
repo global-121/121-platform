@@ -1130,19 +1130,10 @@
       <trans-unit id="8847988975348610068" datatype="html">
         <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
       </trans-unit>
-      <trans-unit id="5013095735395935362" datatype="html">
-        <source>The current payment is still in progress. Please try again later</source>
-      </trans-unit>
-      <trans-unit id="5982069520336655984" datatype="html">
-        <source>Export not possible</source>
-      </trans-unit>
       <trans-unit id="614288202138197410" datatype="html">
         <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
       </trans-unit>
-      <trans-unit id="7386091350857462296" datatype="html">
-        <source>An unexpected error occurred while exporting the FSP instructions. Please try again later.</source>
-      </trans-unit>
-      <trans-unit id="3706395027796944760" datatype="html">
+      <trans-unit id="export-fsp-payment-list" datatype="html">
         <source>Export FSP payment list</source>
       </trans-unit>
       <trans-unit id="504281469996866803" datatype="html">
@@ -1198,6 +1189,15 @@
       </trans-unit>
       <trans-unit id="retry-failed-transfers" datatype="html">
         <source>Retry failed transfers</source>
+      </trans-unit>
+      <trans-unit id="payment-report" datatype="html">
+        <source>Payment report</source>
+      </trans-unit>
+      <trans-unit id="4044492363974277530" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in this payment.</source>
+      </trans-unit>
+      <trans-unit id="5533720489917693962" datatype="html">
+        <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
       </trans-unit>
     </body>
   </file>

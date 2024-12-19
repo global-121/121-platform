@@ -105,7 +105,7 @@ export class PaymentApiService extends DomainApiService {
     projectId: Signal<number>;
     paymentId: string;
   }) {
-    return this.generateQueryOptions<Dto<FspInstructions>>({
+    return this.generateQueryOptions<Dto<FspInstructions[]>>({
       path: [...BASE_ENDPOINT(projectId), paymentId, 'fsp-instructions'],
       staleTime: 0,
     });
