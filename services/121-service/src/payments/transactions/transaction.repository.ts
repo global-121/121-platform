@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -15,9 +16,9 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(TransactionEntity)
-    scopedRepository: ScopedRepository<TransactionEntity>,
+    repository: Repository<TransactionEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   async getLatestTransactionsByRegistrationIdAndProgramId(

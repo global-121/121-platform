@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -11,9 +11,9 @@ export class IntersolveVisaCustomerScopedRepository extends ScopedRepository<Int
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(IntersolveVisaCustomerEntity)
-    scopedRepository: ScopedRepository<IntersolveVisaCustomerEntity>,
+    repository: Repository<IntersolveVisaCustomerEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   public async findOneWithWalletsByRegistrationId(registrationId: number) {

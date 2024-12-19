@@ -1,7 +1,7 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -11,9 +11,9 @@ export class SafaricomTransferScopedRepository extends ScopedRepository<Safarico
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
     @InjectRepository(SafaricomTransferEntity)
-    scopedRepository: ScopedRepository<SafaricomTransferEntity>,
+    repository: Repository<SafaricomTransferEntity>,
   ) {
-    super(request, scopedRepository);
+    super(request, repository);
   }
 
   public async getByOriginatorConversationId(
