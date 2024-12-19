@@ -2,8 +2,10 @@ import { Injectable, Signal } from '@angular/core';
 
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
@@ -108,6 +110,40 @@ export class PaymentApiService extends DomainApiService {
     return this.generateQueryOptions<Dto<FspInstructions[]>>({
       path: [...BASE_ENDPOINT(projectId), paymentId, 'fsp-instructions'],
       staleTime: 0,
+    });
+  }
+
+  getReconciliationDataTemplates(projectId: Signal<number>) {
+    return this.generateQueryOptions<Dto<GetImportTemplateResponseDto>[]>({
+      path: [
+        ...BASE_ENDPOINT(projectId),
+        'fsp-reconciliation',
+        'import-template',
+      ],
+    });
+  }
+
+  importReconciliationData({
+    projectId,
+    paymentId,
+    file,
+  }: {
+    projectId: Signal<number>;
+    paymentId: Signal<number>;
+    file: File;
+  }) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpWrapperService.perform121ServiceRequest<Dto<ImportResult>>({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        paymentId,
+        'fsp-reconciliation',
+      ]).join('/'),
+      body: formData,
+      isUpload: true,
     });
   }
 

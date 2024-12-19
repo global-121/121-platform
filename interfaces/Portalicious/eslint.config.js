@@ -144,6 +144,7 @@ module.exports = tseslint.config(
             'app-confirmation-dialog[headerClass]',
             'app-confirmation-dialog[headerIcon]',
             'app-file-upload-control[accept]',
+            'app-import-file-dialog[accept]',
             'app-metric-tile[chipIcon]',
             'app-metric-tile[chipVariant]',
             'iframe[referrerpolicy]',

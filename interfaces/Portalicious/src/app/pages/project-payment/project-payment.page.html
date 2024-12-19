@@ -6,11 +6,20 @@
   [pageTitle]="paymentTitle()"
   [isPending]="payments.isPending()"
 >
-  <div header-actions>
-    <app-single-payment-export
-      [projectId]="projectId()"
-      [paymentId]="paymentId()"
-    />
+  <div
+    header-actions
+    class="space-x-2"
+  >
+    @if (hasFspWithExportFileIntegration()) {
+      <app-import-reconciliation-data
+        [paymentId]="paymentId()"
+        [projectId]="projectId()"
+      />
+      <app-single-payment-export
+        [projectId]="projectId()"
+        [paymentId]="paymentId()"
+      />
+    }
   </div>
   <div
     class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
