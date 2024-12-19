@@ -313,7 +313,7 @@ export class CreatePaymentComponent {
           this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
           this.project.data()?.currency ?? 'EUR',
           'symbol-narrow',
-          '1.0-0',
+          '1.2-2',
         ),
         tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
       },
