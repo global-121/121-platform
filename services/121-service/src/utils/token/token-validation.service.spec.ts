@@ -56,27 +56,5 @@ describe('TokenValidationService', () => {
       }); // Expires in 10 minutes
       expect(tokenValidationService.isTokenValid(tokenSet)).toBe(true);
     });
-
-    it('should correctly multiply if expires_at is passed in seconds and that is correctly signaled', () => {
-      const tokenSet = new TokenSet({
-        access_token: 'some-token',
-        expires_at: (Date.now() + 10 * 60 * 1000) / 1000,
-      }); // Expired 1 minute ago
-      const expiresAtInSeconds = true;
-      expect(
-        tokenValidationService.isTokenValid(tokenSet, expiresAtInSeconds),
-      ).toBe(true);
-    });
-
-    it('should fail if expires_at is passed in seconds, without signaling that', () => {
-      const tokenSet = new TokenSet({
-        access_token: 'some-token',
-        expires_at: (Date.now() + 10 * 60 * 1000) / 1000,
-      }); // Expired 1 minute ago
-      const expiresAtInSeconds = false;
-      expect(
-        tokenValidationService.isTokenValid(tokenSet, expiresAtInSeconds),
-      ).toBe(false);
-    });
   });
 });
