@@ -401,12 +401,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     if ('selectAll' in selection && !this.serverSideFiltering()) {
       const filteredValue = this.table.filteredValue;
 
-      if (!filteredValue) {
-        this.toastService.showGenericError();
-        return;
+      if (this.table.filteredValue) {
+        selection = [...(filteredValue as TData[])];
+      } else {
+        // no filters are applied, so we can select all items
+        selection = [...this.items()];
       }
-
-      selection = [...(filteredValue as TData[])];
     }
 
     if (Array.isArray(selection) && selection.length === 0) {

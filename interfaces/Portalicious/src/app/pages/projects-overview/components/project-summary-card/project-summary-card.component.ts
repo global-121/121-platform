@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -25,12 +24,11 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   imports: [
     TranslatableStringPipe,
     CommonModule,
-    MetricContainerComponent,
     SkeletonInlineComponent,
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,
   ],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './project-summary-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +38,7 @@ export class ProjectSummaryCardComponent {
   private projectApiService = inject(ProjectApiService);
   private paymentApiService = inject(PaymentApiService);
   private currencyPipe = inject(CurrencyPipe);
+  private decimalPipe = inject(DecimalPipe);
 
   public id = input.required<number>();
 
@@ -73,11 +72,11 @@ export class ProjectSummaryCardComponent {
 
     return [
       {
-        value: this.metrics.data()?.targetedPeople,
+        value: this.decimalPipe.transform(this.metrics.data()?.targetedPeople),
         label: $localize`Target registrations`,
       },
       {
-        value: this.metrics.data()?.includedPeople,
+        value: this.decimalPipe.transform(this.metrics.data()?.includedPeople),
         label: $localize`Included registrations`,
       },
       {

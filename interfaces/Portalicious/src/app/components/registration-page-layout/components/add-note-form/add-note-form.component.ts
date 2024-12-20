@@ -18,6 +18,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -42,10 +43,12 @@ type AddNoteFormGroup = (typeof AddNoteFormComponent)['prototype']['formGroup'];
 })
 export class AddNoteFormComponent {
   private projectApiService = inject(ProjectApiService);
+  private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
   formVisible = model.required<boolean>();
   projectId = input.required<string>();
+  registrationId = input.required<string>();
   registrationReferenceId = input.required<string>();
   registrationName = input<null | string>();
 
@@ -73,6 +76,10 @@ export class AddNoteFormComponent {
       this.toastService.showToast({
         detail: $localize`Note successfully added.`,
       });
+      void this.registrationApiService.invalidateCache(
+        this.projectId,
+        this.registrationId,
+      );
       this.formVisible.set(false);
     },
   }));

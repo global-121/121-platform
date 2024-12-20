@@ -35,7 +35,9 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
   template: `
     <div class="flex w-full content-between items-center">
       @if (!!overview()) {
-        <span class="me-auto">{{ overview() }}</span>
+        <span class="me-auto max-w-96 truncate text-ellipsis">{{
+          overview()
+        }}</span>
       }
 
       @let dialogData = voucherDialogData();

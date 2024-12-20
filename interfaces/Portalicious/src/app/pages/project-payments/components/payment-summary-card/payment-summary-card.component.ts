@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -28,7 +28,7 @@ import { Locale } from '~/utils/locale';
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,
   ],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './payment-summary-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +37,7 @@ export class PaymentSummaryCardComponent {
   private locale = inject<Locale>(LOCALE_ID);
   private paymentApiService = inject(PaymentApiService);
   private currencyPipe = inject(CurrencyPipe);
+  private decimalPipe = inject(DecimalPipe);
   private projectApiService = inject(ProjectApiService);
 
   projectId = input.required<string>();
@@ -111,7 +112,7 @@ export class PaymentSummaryCardComponent {
 
     return [
       {
-        value: this.includedRegistrations(),
+        value: this.decimalPipe.transform(this.includedRegistrations()),
         label: $localize`Included reg.`,
       },
       {
@@ -124,7 +125,7 @@ export class PaymentSummaryCardComponent {
         label: $localize`Expected total amount`,
       },
       {
-        value: this.metrics.data()?.failed.count,
+        value: this.decimalPipe.transform(this.metrics.data()?.failed.count),
         label: $localize`Failed transfers`,
         showAlert: this.showFailedAlert(),
       },
