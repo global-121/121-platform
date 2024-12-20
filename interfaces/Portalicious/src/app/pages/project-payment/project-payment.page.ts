@@ -19,9 +19,11 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -32,12 +34,17 @@ import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentMetricDetails } from '~/domains/metric/metric.model';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { registrationLink } from '~/domains/registration/registration.helper';
+import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
+import {
+  REGISTRATION_STATUS_LABELS,
+  registrationLink,
+} from '~/domains/registration/registration.helper';
 import {
   TRANSACTION_STATUS_CHIP_VARIANTS,
   TRANSACTION_STATUS_LABELS,
 } from '~/domains/transaction/transaction.helper';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
+import { ImportReconciliationDataComponent } from '~/pages/project-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { SinglePaymentExportComponent } from '~/pages/project-payment/components/single-payment-export/single-payment-export.component';
@@ -62,6 +69,7 @@ export interface TransactionsTableCellContext {
     SkeletonModule,
     RetryTransfersDialogComponent,
     SinglePaymentExportComponent,
+    ImportReconciliationDataComponent,
   ],
   templateUrl: './project-payment.page.html',
   styles: ``,
@@ -191,15 +199,24 @@ export class ProjectPaymentPageComponent {
           }),
       },
       {
+        field: 'registrationStatus',
+        header: $localize`Registration Status`,
+        type: QueryTableColumnType.MULTISELECT,
+        options: Object.values(RegistrationStatusEnum).map((status) => ({
+          label: REGISTRATION_STATUS_LABELS[status],
+          value: status,
+        })),
+        getCellChipData: (transaction) =>
+          getChipDataByRegistrationStatus(transaction.registrationStatus),
+      },
+      {
         field: 'status',
         header: $localize`Transfer status`,
         type: QueryTableColumnType.MULTISELECT,
-        options: Object.entries(TRANSACTION_STATUS_LABELS).map(
-          ([value, label]) => ({
-            label,
-            value,
-          }),
-        ),
+        options: Object.values(TransactionStatusEnum).map((status) => ({
+          label: TRANSACTION_STATUS_LABELS[status],
+          value: status,
+        })),
         getCellChipData: (transaction) => ({
           chipLabel: TRANSACTION_STATUS_LABELS[transaction.status],
           chipVariant: TRANSACTION_STATUS_CHIP_VARIANTS[transaction.status],
@@ -316,4 +333,8 @@ export class ProjectPaymentPageComponent {
       contextMenuItem: this.contextMenuSelection(),
     });
   }
+
+  hasFspWithExportFileIntegration = computed(() =>
+    projectHasFspWithExportFileIntegration(this.project.data()),
+  );
 }
