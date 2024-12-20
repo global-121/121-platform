@@ -9,8 +9,12 @@ import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-serv
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration-property.dto';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import {
+  paymentNrVisa,
+  programIdVisa,
+} from '@121-service/src/seed-data/mock/visa-card.data';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import { getTransactions } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFinancialServiceProviderConfiguration,
   deleteProgramFinancialServiceProviderConfigurationProperty,
@@ -208,9 +212,20 @@ describe('Manage financial service provider configurations', () => {
     const getResultConfig = getResult.body.find(
       (config) => config.name === name,
     );
+
+    const getTranactions = await getTransactions(
+      programIdVisa,
+      paymentNrVisa,
+      registrationOCW5.referenceId,
+      accessToken,
+    );
+
     // Assert
-    expect(result.statusCode).toBe(HttpStatus.CONFLICT);
-    expect(getResultConfig).toBeDefined();
+    expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
+    expect(getResultConfig).not.toBeDefined();
+    expect(
+      getTranactions.body[0].programFinancialServiceProviderConfigurationId,
+    ).toBe(null);
   });
 
   it('should add program financial service provider configuration properties to an existing program financial service provider configuration', async () => {
