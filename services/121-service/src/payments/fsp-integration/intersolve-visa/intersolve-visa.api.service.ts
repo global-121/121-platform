@@ -76,6 +76,9 @@ export class IntersolveVisaApiService {
     const tokenSet = await client.grant({
       grant_type: 'client_credentials',
     });
+    if (tokenSet.expires_at) {
+      tokenSet.expires_at *= 1000; // Convert to milliseconds to align with standards in tokenValidationService.isTokenValid()
+    }
     // Cache tokenSet
     this.tokenSet = tokenSet;
     return tokenSet.access_token;
