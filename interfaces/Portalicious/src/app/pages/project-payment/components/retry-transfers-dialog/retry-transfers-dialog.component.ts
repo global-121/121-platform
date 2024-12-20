@@ -45,12 +45,6 @@ export class RetryTransfersDialogComponent {
       }),
     onSuccess: () =>
       this.paymentApiService.invalidateCache(this.projectId, this.paymentId),
-    onError: (error) => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: error.message,
-      });
-    },
   }));
 
   public retryFailedTransfers({

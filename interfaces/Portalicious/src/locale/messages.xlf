@@ -797,9 +797,6 @@
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
       </trans-unit>
-      <trans-unit id="5635594227422805947" datatype="html">
-        <source>Go to profile</source>
-      </trans-unit>
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>
       </trans-unit>
@@ -1282,6 +1279,15 @@
       </trans-unit>
       <trans-unit id="8705310124062464174" datatype="html">
         <source>A payment is currently in progress. Please try again later</source>
+      </trans-unit>
+      <trans-unit id="2276030451798485888" datatype="html">
+        <source>Amount of money successfully transferred.</source>
+      </trans-unit>
+      <trans-unit id="3141897829833464578" datatype="html">
+        <source>Open profile in new tab</source>
+      </trans-unit>
+      <trans-unit id="4067653603451364018" datatype="html">
+        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
       </trans-unit>
     </body>
   </file>
