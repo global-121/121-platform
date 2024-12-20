@@ -49,7 +49,7 @@ jobs:
       - name: Run API tests with Jest
         working-directory: ./services
         run: |
-          docker compose exec 121-service npm run test:e2e:all
+          docker compose exec 121-service npm run test:integration:all
 
       - name: Docker logs
         if: always()
