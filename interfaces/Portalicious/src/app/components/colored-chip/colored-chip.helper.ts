@@ -70,7 +70,6 @@ export function getChipDataByTwilioMessageStatus(status: string): ChipData {
   switch (messageStatus) {
     case MessageStatus.delivered:
     case MessageStatus.read:
-    case MessageStatus.sent:
       return {
         chipLabel,
         chipVariant: 'green',
@@ -80,6 +79,7 @@ export function getChipDataByTwilioMessageStatus(status: string): ChipData {
         chipLabel,
         chipVariant: 'red',
       };
+    case MessageStatus.sent:
     default:
       return {
         chipLabel,
