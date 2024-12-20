@@ -4,10 +4,7 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
-import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -573,36 +570,24 @@ export class IntersolveVoucherService
     intersolveVoucher: IntersolveVoucherEntity,
     programId: number,
   ): Promise<number> {
-    const fspName = intersolveVoucher.whatsappPhoneNumber
+    const financialServiceProviderName = intersolveVoucher.whatsappPhoneNumber
       ? FinancialServiceProviders.intersolveVoucherWhatsapp
       : FinancialServiceProviders.intersolveVoucherPaper;
+    const programFinancialServiceProviderConfiguration =
+      await this.programFspConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
+        { programId, financialServiceProviderName },
+      );
 
-    const configQuery = await this.programFspConfigurationRepository
-      .createQueryBuilder('fspConfig')
-      .select('name')
-      .addSelect('value')
-      .where('fspConfig.programId = :programId', { programId })
-      .andWhere('fsp.fsp = :fspName', { fspName })
-      .leftJoin('fspConfig.fsp', 'fsp');
-
-    const config = await configQuery.getRawMany();
-    let credentials: { username: string; password: string };
-    try {
-      credentials = {
-        username: config.find(
-          (c) =>
-            c.name === FinancialServiceProviderConfigurationProperties.username,
-        ).value,
-        password: config.find(
-          (c) =>
-            c.name === FinancialServiceProviderConfigurationProperties.password,
-        ).value,
-      };
-    } catch (error) {
+    const credentials =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        programFinancialServiceProviderConfiguration[0].id, // TODO: take the 0-th element, because the above method returns an array of entities as e.g. multiple Excel FSPs can be defined per program. For Intersolve-voucher this is not currently the case, so this is needed and worsk, but should be improved.
+      );
+    if (!credentials?.username || !credentials?.password) {
       throw new Error(
-        `Could not retrieve configuration of FSP: "${fspName}", for program: ${programId}. Please contact the 121 platform team.`,
+        `Could not retrieve configuration of FSP: "${financialServiceProviderName}", for program: ${programId}. Please contact the 121 platform team.`,
       );
     }
+
     const getCard = await this.intersolveVoucherApiService.getCard(
       intersolveVoucher.barcode,
       intersolveVoucher.pin,
