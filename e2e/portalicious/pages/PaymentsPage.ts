@@ -43,9 +43,7 @@ class PaymentsPage extends BasePage {
     this.exportFspPaymentListButton = this.page.getByRole('button', {
       name: 'Export FSP payment list',
     });
-    this.exportDropdown = this.page.getByTestId(
-      'single-payment-export-dropdown',
-    );
+    this.exportDropdown = this.page.locator('app-single-payment-export');
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: 'All Payments',
@@ -119,10 +117,10 @@ class PaymentsPage extends BasePage {
       .filter({ hasText: 'Included reg.' })
       .textContent();
     const totalAmountElement = await this.paymentSummaryMetrics
-      .filter({ hasText: 'Total amount' })
+      .filter({ hasText: 'Expected total amount' })
       .textContent();
     const successfulTransfersElement = await this.paymentSummaryMetrics
-      .filter({ hasText: 'Successful transfers' })
+      .filter({ hasText: 'Amount successfully sent' })
       .textContent();
     const failedTransfersElement = await this.paymentSummaryMetrics
       .filter({ hasText: 'Failed transfers' })

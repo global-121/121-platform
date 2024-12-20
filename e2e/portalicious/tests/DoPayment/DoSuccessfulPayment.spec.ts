@@ -66,7 +66,9 @@ test('[31970] Do successful payment', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers: numberOfPas - 1,
+      successfulTransfers:
+        defaultMaxTransferValue -
+        registrationsOCW[4].paymentAmountMultiplier * defaultTransferValue,
       failedTransfers: 0,
     });
     // DO NOT MAKE IT A RULE!!!
@@ -77,7 +79,7 @@ test('[31970] Do successful payment', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers: numberOfPas,
+      successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
     });
   });
