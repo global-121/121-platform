@@ -3,6 +3,7 @@ import { TokenSet } from 'openid-client';
 
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
+import { SafaricomApiHelperService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.helper.service';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
@@ -31,6 +32,7 @@ describe('SafaricomApiService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SafaricomApiService,
+        SafaricomApiHelperService,
         TokenValidationService,
         {
           provide: CustomHttpService,
