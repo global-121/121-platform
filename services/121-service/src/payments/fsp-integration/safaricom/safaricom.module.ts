@@ -6,6 +6,7 @@ import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integrati
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomController } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.controller';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { SafaricomApiHelperService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.helper.service';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
@@ -23,6 +24,7 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
   providers: [
     SafaricomService,
     SafaricomApiService,
+    SafaricomApiHelperService,
     TokenValidationService,
     CustomHttpService,
     SafaricomTransferScopedRepository,
