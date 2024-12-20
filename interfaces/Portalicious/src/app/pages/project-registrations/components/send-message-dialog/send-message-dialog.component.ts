@@ -69,7 +69,7 @@ type SendMessageFormGroup =
 export class SendMessageDialogComponent
   implements OnDestroy, IActionDataHandler<Registration>
 {
-  readonly projectId = input.required<number>();
+  readonly projectId = input.required<string>();
   readonly actionComplete = output();
 
   private messagingService = inject(MessagingService);

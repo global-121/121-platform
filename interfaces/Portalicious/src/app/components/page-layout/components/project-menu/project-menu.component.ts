@@ -23,22 +23,22 @@ import { AuthService } from '~/services/auth.service';
 })
 export class ProjectMenuComponent {
   private authService = inject(AuthService);
-  projectId = input.required<number>();
+  projectId = input.required<string>();
 
   navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-registrations:Registrations`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}`,
       icon: 'pi pi-file-edit',
     },
     {
       label: $localize`:@@page-title-project-payments:Payments`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectPayments}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectPayments}`,
       icon: 'pi pi-money-bill',
     },
     {
       label: $localize`:@@page-title-project-monitoring:Monitoring`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}`,
       icon: 'pi pi-chart-bar',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
@@ -47,7 +47,7 @@ export class ProjectMenuComponent {
     },
     {
       label: $localize`:@@page-title-project-team:Team`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectTeam}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectTeam}`,
       styleClass: 'ms-auto',
       icon: 'pi pi-users',
       visible: this.authService.hasPermission({

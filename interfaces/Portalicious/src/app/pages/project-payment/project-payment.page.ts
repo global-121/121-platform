@@ -53,7 +53,7 @@ import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 export interface TransactionsTableCellContext {
-  projectId: Signal<number>;
+  projectId: Signal<string>;
 }
 
 @Component({
@@ -77,8 +77,9 @@ export interface TransactionsTableCellContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentPageComponent {
-  readonly projectId = input.required<number>();
-  readonly paymentId = input.required<number>();
+  // this is injected by the router
+  readonly projectId = input.required<string>();
+  readonly paymentId = input.required<string>();
 
   private authService = inject(AuthService);
   private currencyPipe = inject(CurrencyPipe);

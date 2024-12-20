@@ -34,8 +34,8 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SinglePaymentExportComponent {
-  projectId = input.required<number>();
-  paymentId = input.required<number>();
+  projectId = input.required<string>();
+  paymentId = input.required<string>();
 
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
@@ -72,8 +72,8 @@ export class SinglePaymentExportComponent {
   });
   paymentReportMutationData = computed(() => ({
     type: ExportType.payment,
-    minPayment: this.paymentId(),
-    maxPayment: this.paymentId(),
+    minPayment: Number(this.paymentId()),
+    maxPayment: Number(this.paymentId()),
   }));
   paymentReportMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(

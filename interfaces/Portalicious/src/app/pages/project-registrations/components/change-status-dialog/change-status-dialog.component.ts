@@ -74,7 +74,7 @@ import { ToastService } from '~/services/toast.service';
 export class ChangeStatusDialogComponent
   implements IActionDataHandler<Registration>
 {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   readonly actionComplete = output();
 
   RegistrationStatusEnum = RegistrationStatusEnum;

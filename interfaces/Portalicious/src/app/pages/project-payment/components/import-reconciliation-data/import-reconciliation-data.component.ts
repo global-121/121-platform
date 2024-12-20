@@ -36,8 +36,8 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportReconciliationDataComponent {
-  projectId = input.required<number>();
-  paymentId = input.required<number>();
+  projectId = input.required<string>();
+  paymentId = input.required<string>();
 
   private queryClient = injectQueryClient();
   private authService = inject(AuthService);

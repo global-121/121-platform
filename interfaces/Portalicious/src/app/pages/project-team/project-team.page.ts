@@ -48,15 +48,15 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectTeamPageComponent {
+  // this is injected by the router
+  readonly projectId = input.required<string>();
+
   private projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
   @ViewChild('removeUserConfirmationDialog')
   private removeUserConfirmationDialog: ConfirmationDialogComponent;
-
-  // this is injected by the router
-  projectId = input.required<number>();
 
   selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
   formVisible = signal(false);

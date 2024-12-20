@@ -39,7 +39,7 @@ export class PaymentSummaryCardComponent {
   private currencyPipe = inject(CurrencyPipe);
   private projectApiService = inject(ProjectApiService);
 
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   paymentId = input.required<number>();
   paymentDate = input.required<string>();
   cardIndex = input.required<number>();
@@ -85,7 +85,7 @@ export class PaymentSummaryCardComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  paymentLink = (projectId: number, paymentId: number) => [
+  paymentLink = (projectId: number | string, paymentId: number | string) => [
     '/',
     AppRoutes.project,
     projectId,

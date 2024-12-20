@@ -99,8 +99,8 @@ export function registrationLink({
   projectId,
   registrationId,
 }: {
-  projectId: number;
-  registrationId: number;
+  projectId: number | string;
+  registrationId: number | string;
 }) {
   return [
     '/',

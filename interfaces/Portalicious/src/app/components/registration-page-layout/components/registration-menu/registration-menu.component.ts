@@ -24,11 +24,12 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationMenuComponent {
+  readonly projectId = input.required<string>();
+  readonly registrationId = input.required<string>();
+
   readonly registrationApiService = inject(RegistrationApiService);
   readonly projectApiService = inject(ProjectApiService);
 
-  projectId = input.required<number>();
-  registrationId = input.required<number>();
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.projectId,

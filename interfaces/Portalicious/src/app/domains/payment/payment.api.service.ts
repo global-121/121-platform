@@ -16,7 +16,7 @@ import {
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
   projectId,
   'payments',
@@ -26,23 +26,23 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   providedIn: 'root',
 })
 export class PaymentApiService extends DomainApiService {
-  getPayments(projectId: Signal<number>) {
+  getPayments(projectId: Signal<number | string>) {
     return this.generateQueryOptions<Payment[]>({
       path: [...BASE_ENDPOINT(projectId)],
     });
   }
 
   getPayment(
-    projectId: Signal<number | undefined>,
-    paymentId: Signal<number | undefined>,
+    projectId: Signal<number | string | undefined>,
+    paymentId: Signal<number | string | undefined>,
   ) {
     return this.generateQueryOptions<PaymentAggregate>({
-      path: [...BASE_ENDPOINT(projectId as Signal<number>), paymentId],
+      path: [...BASE_ENDPOINT(projectId as Signal<number | string>), paymentId],
       enabled: () => !!projectId() && !!paymentId(),
     });
   }
 
-  getPaymentStatus(projectId: Signal<number>) {
+  getPaymentStatus(projectId: Signal<number | string>) {
     return this.generateQueryOptions<PaymentStatus>({
       path: [...BASE_ENDPOINT(projectId), 'status'],
       refetchInterval: 3000,
@@ -55,7 +55,7 @@ export class PaymentApiService extends DomainApiService {
     paymentData,
     dryRun = true,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     paginateQuery: PaginateQuery;
     paymentData: Dto<CreatePaymentDto>;
     dryRun?: boolean;
@@ -80,12 +80,12 @@ export class PaymentApiService extends DomainApiService {
     paymentId,
     referenceIds,
   }: {
-    projectId: Signal<number>;
-    paymentId: number;
+    projectId: Signal<number | string>;
+    paymentId: number | string;
     referenceIds: string[];
   }) {
     const body: Dto<RetryPaymentDto> = {
-      payment: paymentId,
+      payment: Number(paymentId),
       referenceIds: {
         referenceIds,
       },
@@ -104,8 +104,8 @@ export class PaymentApiService extends DomainApiService {
     projectId,
     paymentId,
   }: {
-    projectId: Signal<number>;
-    paymentId: string;
+    projectId: Signal<number | string>;
+    paymentId: number | string;
   }) {
     return this.generateQueryOptions<Dto<FspInstructions[]>>({
       path: [...BASE_ENDPOINT(projectId), paymentId, 'fsp-instructions'],
@@ -113,7 +113,7 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getReconciliationDataTemplates(projectId: Signal<number>) {
+  getReconciliationDataTemplates(projectId: Signal<number | string>) {
     return this.generateQueryOptions<Dto<GetImportTemplateResponseDto>[]>({
       path: [
         ...BASE_ENDPOINT(projectId),
@@ -128,8 +128,8 @@ export class PaymentApiService extends DomainApiService {
     paymentId,
     file,
   }: {
-    projectId: Signal<number>;
-    paymentId: Signal<number>;
+    paymentId: Signal<number | string>;
+    projectId: Signal<number | string>;
     file: File;
   }) {
     const formData = new FormData();
@@ -148,8 +148,8 @@ export class PaymentApiService extends DomainApiService {
   }
 
   public invalidateCache(
-    projectId: Signal<number>,
-    paymentId?: Signal<number>,
+    projectId: Signal<number | string>,
+    paymentId?: Signal<number | string>,
   ): Promise<void> {
     const path = [...BASE_ENDPOINT(projectId)];
 

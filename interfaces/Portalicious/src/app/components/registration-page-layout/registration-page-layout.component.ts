@@ -46,12 +46,12 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationPageLayoutComponent {
+  readonly projectId = input.required<string>();
+  readonly registrationId = input.required<string>();
+
   readonly registrationApiService = inject(RegistrationApiService);
   readonly projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
-
-  projectId = input.required<number>();
-  registrationId = input.required<number>();
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(

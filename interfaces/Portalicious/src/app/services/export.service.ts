@@ -87,7 +87,7 @@ export class ExportService {
     ).toString()}-${date.getDate().toString()}.xlsx`;
   }
 
-  getExportCBEVerificationReportMutation(projectId: Signal<number>) {
+  getExportCBEVerificationReportMutation(projectId: Signal<number | string>) {
     return async () => {
       const exportResult = await this.queryClient.fetchQuery(
         this.projectApiService.getCbeVerificationReport(projectId)(),
@@ -96,7 +96,10 @@ export class ExportService {
     };
   }
 
-  getExportListMutation(projectId: Signal<number>, toastService: ToastService) {
+  getExportListMutation(
+    projectId: Signal<number | string>,
+    toastService: ToastService,
+  ) {
     return async ({
       type,
       paginateQuery,
@@ -175,7 +178,7 @@ export class ExportService {
   }
 
   async getDuplicateCheckAttributes(
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
   ): Promise<string[]> {
     // TODO: AB#30519 This is a temporary solution until we have a better way to get all project attribute with the `duplicateCheck` flag included.
     // Ideally we will delete this function and just replace the call to `getDuplicateCheckAttributes` with a call to `getProjectAttributes`.
@@ -196,7 +199,7 @@ export class ExportService {
     projectId,
     toastService,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     toastService: ToastService;
   }) {
     return async ({ paymentId }: { paymentId: string }) => {
