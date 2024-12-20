@@ -45,7 +45,7 @@ export class AddNoteFormComponent {
   private toastService = inject(ToastService);
 
   formVisible = model.required<boolean>();
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   registrationReferenceId = input.required<string>();
   registrationName = input<null | string>();
 

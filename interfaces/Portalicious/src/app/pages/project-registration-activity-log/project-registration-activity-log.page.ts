@@ -26,7 +26,7 @@ import { TableCellActivityComponent } from '~/pages/project-registration-activit
 import { TableCellOverviewComponent } from '~/pages/project-registration-activity-log/components/table-cell-overview.component';
 
 export interface ActivityLogTableCellContext {
-  projectId: Signal<number>;
+  projectId: Signal<string>;
   referenceId?: string;
 }
 
@@ -45,8 +45,8 @@ export interface ActivityLogTableCellContext {
 })
 export class ProjectRegistrationActivityLogPageComponent {
   // this is injected by the router
-  projectId = input.required<number>();
-  registrationId = input.required<number>();
+  readonly projectId = input.required<string>();
+  readonly registrationId = input.required<string>();
 
   registrationApiService = inject(RegistrationApiService);
 

@@ -30,7 +30,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportRegistrationsComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
 
   private queryClient = injectQueryClient();
   private downloadService = inject(DownloadService);

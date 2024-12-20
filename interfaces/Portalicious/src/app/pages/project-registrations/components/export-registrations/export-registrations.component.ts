@@ -52,7 +52,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportRegistrationsComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   getActionData =
     input.required<
       () => ActionDataWithPaginateQuery<Registration> | undefined

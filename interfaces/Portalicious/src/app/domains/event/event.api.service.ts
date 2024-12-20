@@ -3,7 +3,7 @@ import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
   projectId,
   'events',
@@ -17,7 +17,7 @@ export class EventApiService extends DomainApiService {
     projectId,
     params,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     params: HttpParamsOptions['fromObject'];
   }) {
     return this.generateQueryOptions<Blob>({
@@ -27,7 +27,7 @@ export class EventApiService extends DomainApiService {
     });
   }
 
-  public invalidateCache(projectId: Signal<number>): Promise<void> {
+  public invalidateCache(projectId: Signal<number | string>): Promise<void> {
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(BASE_ENDPOINT(projectId)),
     });

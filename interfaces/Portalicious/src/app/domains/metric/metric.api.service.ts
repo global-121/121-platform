@@ -9,7 +9,7 @@ import {
   ProjectMetrics,
 } from '~/domains/metric/metric.model';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
   projectId,
   'metrics',
@@ -19,7 +19,7 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   providedIn: 'root',
 })
 export class MetricApiService extends DomainApiService {
-  getProjectSummaryMetrics(projectId: Signal<number>) {
+  getProjectSummaryMetrics(projectId: Signal<number | string>) {
     return this.generateQueryOptions<ProjectMetrics>({
       path: [...BASE_ENDPOINT(projectId), 'program-stats-summary'],
     });
@@ -30,7 +30,7 @@ export class MetricApiService extends DomainApiService {
     type,
     params,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     type: ExportType;
     params: HttpParamsOptions['fromObject'];
   }) {
@@ -46,8 +46,8 @@ export class MetricApiService extends DomainApiService {
     projectId,
     payment,
   }: {
-    projectId: Signal<number>;
-    payment: Signal<number>;
+    projectId: Signal<number | string>;
+    payment: Signal<number | string>;
   }) {
     return this.generateQueryOptions<
       { data: PaymentMetricDetails[] },
@@ -64,7 +64,7 @@ export class MetricApiService extends DomainApiService {
     });
   }
 
-  public invalidateCache(projectId: Signal<number>): Promise<void> {
+  public invalidateCache(projectId: Signal<number | string>): Promise<void> {
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(BASE_ENDPOINT(projectId)),
     });

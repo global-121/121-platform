@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,7 +31,6 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
     ChipModule,
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
-    NgClass,
   ],
   template: `
     <div class="flex w-full content-between items-center">

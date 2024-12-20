@@ -52,12 +52,13 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectRegistrationDebitCardsPageComponent {
+  // this is injected by the router
+  readonly projectId = input.required<string>();
+  readonly registrationId = input.required<string>();
+
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
   private readonly queryClient = injectQueryClient();
-
-  projectId = input.required<number>();
-  registrationId = input.required<number>();
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(

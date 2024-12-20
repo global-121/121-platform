@@ -17,7 +17,7 @@ import {
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
   projectId,
   'registrations',
@@ -28,7 +28,7 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
 })
 export class RegistrationApiService extends DomainApiService {
   getManyByQuery(
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
     paginateQuery: Signal<PaginateQuery | undefined>,
   ) {
     return this.generateQueryOptions<FindAllRegistrationsResult>({
@@ -39,16 +39,19 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   getRegistrationById(
-    projectId: Signal<number | undefined>,
-    registrationId: Signal<number | undefined>,
+    projectId: Signal<number | string | undefined>,
+    registrationId: Signal<string | undefined>,
   ) {
     return this.generateQueryOptions<Registration>({
-      path: [...BASE_ENDPOINT(projectId as Signal<number>), registrationId],
+      path: [
+        ...BASE_ENDPOINT(projectId as Signal<number | string>),
+        registrationId,
+      ],
       enabled: () => !!projectId() && !!registrationId(),
     });
   }
 
-  getImportTemplate(projectId: Signal<number>) {
+  getImportTemplate(projectId: Signal<number | string>) {
     return this.generateQueryOptions<string[]>({
       path: [...BASE_ENDPOINT(projectId), 'import', 'template'],
     });
@@ -58,7 +61,7 @@ export class RegistrationApiService extends DomainApiService {
     projectId,
     file,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     file: File;
   }) {
     const formData = new FormData();
@@ -80,7 +83,7 @@ export class RegistrationApiService extends DomainApiService {
     paginateQuery,
     messageData,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     paginateQuery: PaginateQuery | undefined;
     messageData: SendMessageData;
   }) {
@@ -119,7 +122,7 @@ export class RegistrationApiService extends DomainApiService {
     messageData,
     dryRun = true,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     paginateQuery: PaginateQuery | undefined;
     status: RegistrationStatusEnum;
     messageData?: SendMessageData | undefined;
@@ -166,14 +169,17 @@ export class RegistrationApiService extends DomainApiService {
     );
   }
 
-  getActivityLog(projectId: Signal<number>, registrationId: Signal<number>) {
+  getActivityLog(
+    projectId: Signal<number | string>,
+    registrationId: Signal<number | string>,
+  ) {
     return this.generateQueryOptions<ActitivitiesResponse>({
       path: [...BASE_ENDPOINT(projectId), registrationId, 'activities'],
     });
   }
 
   getWalletWithCardsByReferenceId(
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
     referenceId: Signal<string | undefined>,
   ) {
     return this.generateQueryOptions<WalletWithCards>({
@@ -195,7 +201,7 @@ export class RegistrationApiService extends DomainApiService {
     tokenCode,
     pauseStatus,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     referenceId: string;
     tokenCode: string;
     pauseStatus: boolean;
@@ -223,7 +229,7 @@ export class RegistrationApiService extends DomainApiService {
     projectId,
     referenceId,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     referenceId: string;
   }) {
     const endpoint = this.pathToQueryKey([
@@ -242,8 +248,8 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   public invalidateCache(
-    projectId: Signal<number>,
-    registrationId?: Signal<number>,
+    projectId: Signal<number | string>,
+    registrationId?: Signal<number | string>,
   ): Promise<void> {
     const path = [...BASE_ENDPOINT(projectId)];
 

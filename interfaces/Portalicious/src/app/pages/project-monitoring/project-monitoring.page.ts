@@ -16,7 +16,6 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
@@ -24,7 +23,6 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
 import { DashboardIframeComponent } from '~/pages/project-monitoring/components/monitoring-iframe/monitoring-iframe.component';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
 
@@ -35,9 +33,7 @@ import { Locale } from '~/utils/locale';
     PageLayoutComponent,
     CurrencyPipe,
     CardModule,
-    TranslatableStringPipe,
     SkeletonModule,
-    InfoTooltipComponent,
     MetricTileComponent,
     DashboardIframeComponent,
     DecimalPipe,
@@ -51,7 +47,7 @@ import { Locale } from '~/utils/locale';
 })
 export class ProjectMonitoringPageComponent {
   // this is injected by the router
-  projectId = input.required<number>();
+  readonly projectId = input.required<string>();
 
   readonly locale = inject<Locale>(LOCALE_ID);
   readonly metricApiService = inject(MetricApiService);

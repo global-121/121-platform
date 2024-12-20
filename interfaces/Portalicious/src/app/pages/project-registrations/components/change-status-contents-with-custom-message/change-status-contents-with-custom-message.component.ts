@@ -37,7 +37,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   previewRegistration = input.required<Registration | undefined>();
   enableSendMessage = input.required<boolean>();
   isMutating = input<boolean>(false);

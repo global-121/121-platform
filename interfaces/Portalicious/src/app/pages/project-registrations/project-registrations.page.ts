@@ -49,7 +49,7 @@ import { ToastService } from '~/services/toast.service';
 })
 export class ProjectRegistrationsPageComponent {
   // this is injected by the router
-  protected projectId = input.required<number>();
+  readonly projectId = input.required<string>();
 
   private authService = inject(AuthService);
   private router = inject(Router);

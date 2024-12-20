@@ -53,14 +53,14 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
-  getProject(projectId: Signal<number | undefined>) {
+  getProject(projectId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<Project>({
       path: [BASE_ENDPOINT, projectId],
       enabled: () => !!projectId(),
     });
   }
 
-  getProjectUsers(projectId: Signal<number>) {
+  getProjectUsers(projectId: Signal<number | string>) {
     return this.generateQueryOptions<
       ProjectUser[],
       ProjectUserWithRolesLabel[]
@@ -86,7 +86,7 @@ export class ProjectApiService extends DomainApiService {
     includeTemplateDefaultAttributes = false,
     filterShowInPeopleAffectedTable = false,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     includeProgramRegistrationAttributes?: boolean;
     includeTemplateDefaultAttributes?: boolean;
     filterShowInPeopleAffectedTable?: boolean;
@@ -121,7 +121,7 @@ export class ProjectApiService extends DomainApiService {
   }
 
   assignProjectUser(
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
     {
       userId,
       roles,
@@ -145,7 +145,7 @@ export class ProjectApiService extends DomainApiService {
   }
 
   updateProjectUserAssignment(
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
     {
       userId,
       roles,
@@ -168,7 +168,7 @@ export class ProjectApiService extends DomainApiService {
     );
   }
 
-  removeProjectUser(projectId: Signal<number>, userId?: number) {
+  removeProjectUser(projectId: Signal<number | string>, userId?: number) {
     if (!userId) {
       return Promise.reject(new Error('User ID is required'));
     }
@@ -184,7 +184,7 @@ export class ProjectApiService extends DomainApiService {
     registrationReferenceId,
     note,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     registrationReferenceId: Signal<string>;
     note: string;
   }): Promise<unknown> {
@@ -202,9 +202,9 @@ export class ProjectApiService extends DomainApiService {
     voucherReferenceId,
     paymentId,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     voucherReferenceId: string;
-    paymentId: number;
+    paymentId: number | string;
   }) {
     return this.generateQueryOptions<Blob>({
       path: [
@@ -225,9 +225,9 @@ export class ProjectApiService extends DomainApiService {
     registrationReferenceId,
     paymentId,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     registrationReferenceId: string;
-    paymentId: number;
+    paymentId: number | string;
   }) {
     return this.generateQueryOptions<number>({
       path: [
@@ -242,7 +242,7 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
-  getCbeVerificationReport(projectId: Signal<number>) {
+  getCbeVerificationReport(projectId: Signal<number | string>) {
     return this.generateQueryOptions<
       Dto<CommercialBankEthiopiaValidationReportDto>
     >({
@@ -258,7 +258,7 @@ export class ProjectApiService extends DomainApiService {
     projectId,
     actionType,
   }: {
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
     actionType: ExportType;
   }) {
     return this.generateQueryOptions<Dto<ActionReturnDto>>({
@@ -269,8 +269,8 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
-  public invalidateCache(projectId?: Signal<number>): Promise<void> {
-    const path: (Signal<number> | string)[] = [BASE_ENDPOINT];
+  public invalidateCache(projectId?: Signal<number | string>): Promise<void> {
+    const path: (Signal<number | string> | string)[] = [BASE_ENDPOINT];
 
     if (projectId) {
       path.push(projectId);

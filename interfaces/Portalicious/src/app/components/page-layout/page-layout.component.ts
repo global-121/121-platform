@@ -43,7 +43,7 @@ export class PageLayoutComponent {
   parentPageTitle = input<string>();
   parentPageLink = input<RouterLink['routerLink']>();
 
-  projectId = input<number>();
+  projectId = input<string>();
 
   isPending = input<boolean>();
 

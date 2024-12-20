@@ -8,7 +8,7 @@ import {
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { getLanguageEnumFromLocale, Locale } from '~/utils/locale';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'notifications',
   projectId,
 ];
@@ -22,13 +22,13 @@ export class NotificationApiService extends DomainApiService {
     TranslatableStringService,
   );
 
-  getMessageTemplates(projectId: Signal<number | undefined>) {
+  getMessageTemplates(projectId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<
       MessageTemplate[],
       MessageTemplateWithTranslatedLabel[]
     >({
       path: [
-        ...BASE_ENDPOINT(projectId as Signal<number>),
+        ...BASE_ENDPOINT(projectId as Signal<number | string>),
         'message-templates',
       ],
       processResponse: (response) => {
@@ -53,7 +53,9 @@ export class NotificationApiService extends DomainApiService {
     });
   }
 
-  public invalidateMessageTemplates(projectId: Signal<number>): Promise<void> {
+  public invalidateMessageTemplates(
+    projectId: Signal<number | string>,
+  ): Promise<void> {
     const path = [...BASE_ENDPOINT(projectId), 'message-templates'];
 
     return this.queryClient.invalidateQueries({

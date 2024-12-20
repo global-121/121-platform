@@ -25,7 +25,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomMessagePreviewComponent {
-  readonly projectId = input.required<number>();
+  readonly projectId = input.required<string>();
   readonly previewRegistration = input.required<Registration | undefined>();
   readonly messageData = input.required<Partial<MessageInputData>>();
 

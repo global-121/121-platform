@@ -3,7 +3,7 @@ import { Injectable, Signal } from '@angular/core';
 import { DomainApiService } from '~/domains/domain-api.service';
 import { FinancialServiceProviderConfiguration } from '~/domains/financial-service-provider-configuration/financial-service-provider-configuration.model';
 
-const BASE_ENDPOINT = (projectId: Signal<number>) => [
+const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
   projectId,
   'financial-service-provider-configurations',
@@ -13,7 +13,9 @@ const BASE_ENDPOINT = (projectId: Signal<number>) => [
   providedIn: 'root',
 })
 export class FinancialServiceProviderConfigurationApiService extends DomainApiService {
-  getFinancialServiceProviderConfigurations(projectId: Signal<number>) {
+  getFinancialServiceProviderConfigurations(
+    projectId: Signal<number | string>,
+  ) {
     return this.generateQueryOptions<FinancialServiceProviderConfiguration[]>({
       path: BASE_ENDPOINT(projectId),
     });

@@ -39,7 +39,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationsTableComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   contextMenuItems = input<MenuItem[]>();
   localStorageKey = input<string>();
   overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>({});

@@ -25,8 +25,8 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RetryTransfersDialogComponent {
-  readonly projectId = input.required<number>();
-  readonly paymentId = input.required<number>();
+  readonly projectId = input.required<string>();
+  readonly paymentId = input.required<string>();
 
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);

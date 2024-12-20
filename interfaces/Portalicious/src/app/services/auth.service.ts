@@ -128,7 +128,7 @@ export class AuthService {
     projectId,
     user,
   }: {
-    projectId: number;
+    projectId: number | string;
     user?: LocalStorageUser | null;
   }): boolean {
     user = user ?? this.user;
@@ -143,7 +143,7 @@ export class AuthService {
     requiredPermission,
     user,
   }: {
-    projectId: number;
+    projectId: number | string;
     requiredPermission: PermissionEnum;
     user?: LocalStorageUser | null;
   }): boolean {
@@ -156,7 +156,7 @@ export class AuthService {
     return (
       !!user?.permissions &&
       this.isAssignedToProject({ projectId, user }) &&
-      user.permissions[projectId].includes(requiredPermission)
+      user.permissions[Number(projectId)].includes(requiredPermission)
     );
   }
 
@@ -164,7 +164,7 @@ export class AuthService {
     projectId,
     requiredPermissions,
   }: {
-    projectId: number;
+    projectId: number | string;
     requiredPermissions: PermissionEnum[];
   }): boolean {
     return requiredPermissions.every((permissionName) =>

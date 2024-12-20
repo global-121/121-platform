@@ -28,7 +28,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogVoucherDialogComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   paymentId = input.required<number>();
   totalTransfers = input.required<number>();
   voucherReferenceId = input.required<string>();

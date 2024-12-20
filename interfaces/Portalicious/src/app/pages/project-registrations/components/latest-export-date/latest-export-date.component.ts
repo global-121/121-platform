@@ -25,7 +25,7 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LatestExportDateComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   exportType = input.required<ExportType>();
 
   private authService = inject(AuthService);

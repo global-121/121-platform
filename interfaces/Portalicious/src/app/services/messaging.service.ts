@@ -33,7 +33,7 @@ export class MessagingService {
   private projectApiService = inject(ProjectApiService);
   private translatableStringService = inject(TranslatableStringService);
 
-  public getMessagePlaceholders(projectId: Signal<number>) {
+  public getMessagePlaceholders(projectId: Signal<number | string>) {
     return this.projectApiService.getProjectAttributes({
       projectId,
       // This is the same combo used in the 121-service -> QueueMessageService.getPlaceholdersInMessageText
@@ -68,7 +68,7 @@ export class MessagingService {
 
   private async getMessageText(
     input: Partial<MessageInputData>,
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
   ): Promise<string | undefined> {
     const sendMessageData = this.getSendMessageData(input);
     if (!sendMessageData) {
@@ -90,7 +90,7 @@ export class MessagingService {
 
   public async getMessagePreview(
     input: Partial<MessageInputData>,
-    projectId: Signal<number>,
+    projectId: Signal<number | string>,
     previewRegistration?: Registration,
   ): Promise<string | undefined> {
     const messageText = await this.getMessageText(input, projectId);
@@ -131,7 +131,7 @@ export class MessagingService {
     projectId,
   }: {
     type?: string;
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
   }) {
     const templates = await this.queryClient.fetchQuery(
       this.notificationApiService.getMessageTemplates(projectId)(),
@@ -144,7 +144,7 @@ export class MessagingService {
     projectId,
   }: {
     status: RegistrationStatusEnum;
-    projectId: Signal<number>;
+    projectId: Signal<number | string>;
   }): Promise<string | undefined> {
     const templates = await this.queryClient.fetchQuery(
       this.notificationApiService.getMessageTemplates(projectId)(),

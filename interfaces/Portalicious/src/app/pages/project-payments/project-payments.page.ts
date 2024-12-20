@@ -34,7 +34,7 @@ import { AuthService } from '~/services/auth.service';
 })
 export class ProjectPaymentsPageComponent {
   // this is injected by the router
-  projectId = input.required<number>();
+  readonly projectId = input.required<string>();
 
   private authService = inject(AuthService);
   private paymentApiService = inject(PaymentApiService);

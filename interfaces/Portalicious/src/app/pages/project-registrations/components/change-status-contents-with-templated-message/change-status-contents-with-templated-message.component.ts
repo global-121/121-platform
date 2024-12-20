@@ -25,7 +25,7 @@ import { MessageInputData } from '~/services/messaging.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusContentsWithTemplatedMessageComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   readonly messageData = input.required<Partial<MessageInputData>>();
   previewRegistration = input.required<Registration | undefined>();
   enableSendMessage = input.required<boolean>();

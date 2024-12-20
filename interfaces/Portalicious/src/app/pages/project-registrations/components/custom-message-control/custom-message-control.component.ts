@@ -45,7 +45,7 @@ import { MessagingService } from '~/services/messaging.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomMessageControlComponent implements ControlValueAccessor {
-  readonly projectId = input.required<number>();
+  readonly projectId = input.required<string>();
   readonly error = input<string>();
 
   private messagingService = inject(MessagingService);

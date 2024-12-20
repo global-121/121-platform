@@ -44,7 +44,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportPaymentsComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
 
   private authService = inject(AuthService);
   private downloadService = inject(DownloadService);

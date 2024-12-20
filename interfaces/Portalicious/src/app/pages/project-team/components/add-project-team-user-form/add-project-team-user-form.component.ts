@@ -55,7 +55,7 @@ type AddUserToTeamFormGroup =
   ],
 })
 export class AddProjectTeamUserFormComponent {
-  projectId = input.required<number>();
+  projectId = input.required<string>();
   enableScope = input.required<boolean>();
   formVisible = model.required<boolean>();
   userToEdit = input<ProjectUserWithRolesLabel | undefined>();
