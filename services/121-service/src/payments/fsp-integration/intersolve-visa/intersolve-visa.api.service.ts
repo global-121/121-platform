@@ -61,7 +61,7 @@ export class IntersolveVisaApiService {
     if (process.env.MOCK_INTERSOLVE) {
       return 'mocked-token';
     }
-    if (this.tokenValidationService.isTokenValid(this.tokenSet, true)) {
+    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
       // Return cached token
       return this.tokenSet.access_token;
     }
