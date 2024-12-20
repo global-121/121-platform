@@ -177,7 +177,14 @@ export class CreatePaymentComponent {
         return;
       }
 
-      this.dialogVisible.set(false);
+      // Do not set dialogVisible to false here, otherwise the addCurrentStepToQueryParams
+      // effect will be triggered, blocking the user from navigating away
+      // this.dialogVisible.set(false);
+
+      await this.paymentApiService.invalidateCache(
+        this.projectId,
+        signal(paymentId),
+      );
 
       await this.router.navigate([
         '/',
@@ -190,8 +197,6 @@ export class CreatePaymentComponent {
       this.toastService.showToast({
         detail: $localize`Payment created.`,
       });
-
-      void this.paymentApiService.invalidateCache(this.projectId);
     },
     onError: (error) => {
       this.toastService.showToast({
