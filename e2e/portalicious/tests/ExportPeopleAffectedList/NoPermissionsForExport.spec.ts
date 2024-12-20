@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -34,7 +35,7 @@ test('[29360] Viewing the export options without permission', async ({
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
     await basePage.selectProgram(projectTitle);

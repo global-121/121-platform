@@ -104,7 +104,7 @@ export class ProjectPaymentPageComponent {
   payment = injectQuery(() => ({
     ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
     // Refetch the data every second if a payment is in progress
-    staleTime: this.paymentStatus.data()?.inProgress ? 1000 : undefined,
+    refetchInterval: this.paymentStatus.data()?.inProgress ? 1000 : undefined,
   }));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   transactions = injectQuery(
