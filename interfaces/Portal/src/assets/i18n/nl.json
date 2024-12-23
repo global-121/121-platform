@@ -393,6 +393,7 @@
           "phoneNumber": "Telefoonnummer",
           "preferredLanguage": "Voorkeurstaal",
           "programFinancialServiceProviderConfigurationLabel": "Type hulp",
+          "programFinancialServiceProviderConfigurationName": "Type hulp",
           "referenceId": "Referentie nummer",
           "registration-attribute-false": "Nee",
           "registration-attribute-true": "Ja",

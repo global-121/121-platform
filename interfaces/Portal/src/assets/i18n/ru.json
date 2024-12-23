@@ -361,6 +361,8 @@
           "personAffectedSequence": "Пострадавшее лицо",
           "phoneNumber": "Номер телефона",
           "preferredLanguage": "Предпочитаемый язык",
+          "programFinancialServiceProviderConfigurationLabel": "Поставщик финансовых услуг",
+          "programFinancialServiceProviderConfigurationName": "Поставщик финансовых услуг",
           "referenceId": "Идентификатор ссылки",
           "registrationCreated": "Регистрация создана",
           "registrationCreatedDate": "Дата создания регистрации",
