@@ -34,6 +34,7 @@ mockProgramFspConfigEntity.financialServiceProviderName =
   FinancialServiceProviders.intersolveVisa;
 mockProgramFspConfigEntity.label = { en: 'Test Label' };
 mockProgramFspConfigEntity.properties = [mockProgramFspConfigPropertyEntity];
+mockProgramFspConfigEntity.registrations = [];
 
 const validPropertyDto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
   {
@@ -315,7 +316,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
           name: Equal(configName),
           programId: Equal(programId),
         },
-        relations: ['properties'],
+        relations: ['registrations'],
       });
       expect(mockProgramFspConfigurationRepository.delete).toHaveBeenCalledWith(
         {

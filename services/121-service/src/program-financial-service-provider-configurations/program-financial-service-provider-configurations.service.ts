@@ -153,7 +153,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         name: Equal(name),
         programId: Equal(programId),
       },
-      relations: ['properties', 'registrations'], //TODO: Should this module know about registrations?
+      relations: ['registrations'], //TODO: Should this module know about registrations?
     });
     if (!config) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
