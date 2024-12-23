@@ -9,6 +9,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
+  blockVisaCard,
   getMessageHistory,
   getVisaWalletsAndDetails,
   issueNewVisaCard,
@@ -33,13 +34,28 @@ describe('Issue new Visa debit card', () => {
     // Arrange
     await seedPaidRegistrations([registrationVisa], programIdVisa);
 
+    // Block the card first. This is because this usually happens before issuing a new card in practice
+    const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
+      programIdVisa,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+    const tokencode = visaWalletResponseBeforeBlock.body.cards[0].tokenCode;
+
+    await blockVisaCard(
+      programIdVisa,
+      tokencode,
+      accessToken,
+      registrationVisa.referenceId,
+    );
+
     // Act
     await issueNewVisaCard(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
-    await waitFor(2_000);
+    await waitFor(3_000);
     const visaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
