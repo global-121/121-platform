@@ -389,6 +389,7 @@
           "phoneNumber": "Numéro de téléphone",
           "preferredLanguage": "Langue préférée",
           "programFinancialServiceProviderConfigurationLabel": "Prestataire de Services Financiers",
+          "programFinancialServiceProviderConfigurationName": "Prestataire de Services Financiers",
           "referenceId": "Identifiant de référence",
           "registration-attribute-false": "Non",
           "registration-attribute-true": "Oui",
