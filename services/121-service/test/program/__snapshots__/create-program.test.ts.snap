@@ -227,16 +227,6 @@ exports[`Create program should post a program: Create program response for progr
             "$null",
           ],
           "isInteger": false,
-          "name": "financialServiceProvider",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$in",
-            "$ilike",
-            "$null",
-          ],
-          "isInteger": false,
           "name": "fullName",
         },
         {
@@ -404,6 +394,16 @@ exports[`Create program should post a program: Create program response for progr
           ],
           "isInteger": false,
           "name": "preferredLanguage",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "programFinancialServiceProviderConfigurationName",
         },
         {
           "allowedOperators": [
@@ -1227,16 +1227,6 @@ exports[`Create program should post a program: Create program response for progr
             "$null",
           ],
           "isInteger": false,
-          "name": "financialServiceProvider",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$in",
-            "$ilike",
-            "$null",
-          ],
-          "isInteger": false,
           "name": "fullName",
         },
         {
@@ -1284,6 +1274,16 @@ exports[`Create program should post a program: Create program response for progr
           ],
           "isInteger": false,
           "name": "preferredLanguage",
+        },
+        {
+          "allowedOperators": [
+            "$eq",
+            "$in",
+            "$ilike",
+            "$null",
+          ],
+          "isInteger": false,
+          "name": "programFinancialServiceProviderConfigurationName",
         },
         {
           "allowedOperators": [
