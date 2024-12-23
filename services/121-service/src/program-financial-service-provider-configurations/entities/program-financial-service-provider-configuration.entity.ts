@@ -14,6 +14,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 @Unique('programFinancialServiceProviderConfigurationUnique', [
   'programId',
@@ -54,4 +55,11 @@ export class ProgramFinancialServiceProviderConfigurationEntity extends Base121E
     (transactions) => transactions.programFinancialServiceProviderConfiguration,
   )
   public transactions: Relation<TransactionEntity[]>;
+
+  @OneToMany(
+    (_type) => RegistrationEntity,
+    (registrations) =>
+      registrations.programFinancialServiceProviderConfiguration,
+  )
+  public registrations: Relation<RegistrationEntity[]>;
 }
