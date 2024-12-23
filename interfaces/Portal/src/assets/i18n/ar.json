@@ -378,6 +378,7 @@
           "phoneNumber": "رقم الهاتف",
           "preferredLanguage": "اللغة المفضلة",
           "programFinancialServiceProviderConfigurationLabel": "مزود الخدمات المالية",
+          "programFinancialServiceProviderConfigurationName": "مزود الخدمات المالية",
           "referenceId": "الرقم المرجعي",
           "registration-attribute-false": "لا",
           "registration-attribute-true": "نعم",

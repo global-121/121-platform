@@ -358,6 +358,7 @@
           "phoneNumber": "Phonenumber",
           "preferredLanguage": "Preferred language",
           "programFinancialServiceProviderConfigurationLabel": "Financial Service Provider",
+          "programFinancialServiceProviderConfigurationName": "Financial Service Provider",
           "referenceId": "Reference ID",
           "registration-attribute-false": "No",
           "registration-attribute-true": "Yes",

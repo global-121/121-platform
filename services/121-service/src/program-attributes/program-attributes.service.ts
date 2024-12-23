@@ -33,7 +33,7 @@ export class ProgramAttributesService {
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'financialServiceProvider',
+      'programFinancialServiceProviderConfigurationName',
     ];
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,

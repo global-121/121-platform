@@ -378,6 +378,7 @@
           "phoneNumber": "Número de teléfono",
           "preferredLanguage": "Idioma preferido",
           "programFinancialServiceProviderConfigurationLabel": "Proveedor de servicios financieros",
+          "programFinancialServiceProviderConfigurationName": "Proveedor de servicios financieros",
           "referenceId": "ID de referencia",
           "registration-attribute-false": "No",
           "registration-attribute-true": "Sí",
