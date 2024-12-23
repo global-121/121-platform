@@ -580,7 +580,7 @@ export class IntersolveVoucherService
 
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        programFinancialServiceProviderConfiguration[0].id, // TODO: take the 0-th element, because the above method returns an array of entities as e.g. multiple Excel FSPs can be defined per program. For Intersolve-voucher this is not currently the case, so this is needed and worsk, but should be improved.
+        programFinancialServiceProviderConfiguration[0].id, // TODO: take the 0-th element, because the above method returns an array of entities as e.g. multiple Excel FSPs can be defined per program. For Intersolve-voucher this is not currently the case, so this is needed and works, but should be improved.
       );
     if (!credentials?.username || !credentials?.password) {
       throw new Error(
