@@ -164,7 +164,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
-    // programFspConfigProperties are cascade-deleted, transactions/registrations are kept bug FK set to null
+    // programFspConfigProperties are cascade-deleted, transactions/registrations are kept but FK set to null
     await this.programFspConfigurationRepository.delete({
       id: config.id,
     });
