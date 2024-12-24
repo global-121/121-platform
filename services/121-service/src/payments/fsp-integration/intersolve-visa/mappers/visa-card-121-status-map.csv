@@ -45,3 +45,13 @@
 "SUBSTITUTED";"FALSE";"CARD_CLOSED";"Substituted";"Card has been substituted due to re-issue";
 "SUBSTITUTED";"FALSE";"CARD_EXPIRED";"Substituted";"Card has been substituted due to re-issue";
 "SUBSTITUTED";"FALSE";"";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_OK";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_BLOCKED";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"SUSPECTED_FRAUD";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_CLOSED_DUE_TO_FRAUD";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_NO_RENEWAL";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_LOST";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_STOLEN";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_CLOSED";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"CARD_EXPIRED";"Substituted";"Card has been substituted due to re-issue";
+"SUBSTITUTED";"TRUE";"";"Substituted";"Card has been substituted due to re-issue";
