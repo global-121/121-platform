@@ -711,6 +711,24 @@ export class IntersolveVisaMockService {
         },
       };
     }
+    // Return error if the amount is not an integer
+    // If we post a non interger to the real API, it will return a similair error
+    if (!Number.isInteger(amount)) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Bad Request',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'INVALID_PARAMETERS',
+              description:
+                'The JSON value could not be converted to System.Int32',
+            },
+          ],
+        },
+      };
+    }
 
     return {
       status: HttpStatus.OK,
