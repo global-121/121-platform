@@ -29,6 +29,7 @@ import {
   awaitChangePaStatus,
   deleteRegistrations,
   seedPaidRegistrations,
+  waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -237,6 +238,13 @@ describe('Manage financial service provider configurations', () => {
     await deleteRegistrations(
       programIdVisa,
       [registrationOCW5.referenceId],
+      accessToken,
+    );
+    await waitForStatusChangeToComplete(
+      programIdVisa,
+      1,
+      RegistrationStatusEnum.deleted,
+      8_000,
       accessToken,
     );
 
