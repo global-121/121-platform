@@ -447,7 +447,7 @@ export class IntersolveVisaApiService {
     reference: string;
   }): Promise<void> {
     const uuid = generateUUIDFromSeed(reference);
-    const amountInCent = amountInMajorUnit * 100;
+    const amountInCent = Math.round(amountInMajorUnit * 100); // Math round is needed to prevent floating point errors
 
     const transferRequestDto: TransferRequestIntersolveApiDto = {
       quantity: {
