@@ -15,7 +15,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-describe('Should update contact information', () => {
+describe('Update registration data of registration with visa customer', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -24,7 +24,7 @@ describe('Should update contact information', () => {
     await waitFor(2_000);
   });
 
-  it('should update contact information', async () => {
+  it('should update phone number before and after changing FSP configuration from Visa', async () => {
     // Arrange
     await seedPaidRegistrations([registrationVisa], programIdVisa);
 
