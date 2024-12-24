@@ -121,19 +121,19 @@ export class IntersolveVisaMockController {
   @ApiOperation({ summary: 'Update customer phonenumber' })
   @Put('/customer/v1/customers/:holderId/contact-info/phone-numbers')
   public updateCustomerPhoneNumber(
-    @Body() _payload: Record<string, unknown>,
+    @Body() payload: Record<string, string>,
     @Param('holderId') _holderId: string,
   ): { status: number } {
-    return this.intersolveVisaMockService.updateCustomerPhoneNumber();
+    return this.intersolveVisaMockService.updateCustomerPhoneNumber(payload);
   }
 
   @ApiOperation({ summary: 'Update customer address' })
   @Put('/customer/v1/customers/:holderId/contact-info/addresses')
   public updateCustomerAddress(
-    @Body() _payload: Record<string, unknown>,
+    @Body() payload: Record<string, string>,
     @Param('holderId') _holderId: string,
   ): { status: number } {
-    return this.intersolveVisaMockService.updateCustomerAddress();
+    return this.intersolveVisaMockService.updateCustomerAddress(payload);
   }
 
   @ApiOperation({ summary: 'Link token' })

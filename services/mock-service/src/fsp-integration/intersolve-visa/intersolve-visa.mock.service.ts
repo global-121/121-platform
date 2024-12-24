@@ -586,15 +586,62 @@ export class IntersolveVisaMockService {
     return response;
   }
 
-  public updateCustomerPhoneNumber(): { status: number } {
+  public updateCustomerPhoneNumber(
+    payload: Record<string, string>,
+  ): IntersolveVisaMockResponseDto {
+    if (!payload.value || payload.value.includes('undefined')) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Bad Request',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'INVALID_PARAMETERS',
+              field: 'value',
+              description: 'The field value is required.',
+            },
+          ],
+        },
+      };
+    }
     return {
       status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
     };
   }
 
-  public updateCustomerAddress(): { status: number } {
+  public updateCustomerAddress(
+    payload: Record<string, string>,
+  ): IntersolveVisaMockResponseDto {
+    const addresKeys = ['addressLine1', 'city', 'postalCode', 'country'];
+    for (const key of addresKeys) {
+      if (!payload[key] || payload[key].includes('undefined')) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          statusText: 'Bad Request',
+          data: {
+            success: false,
+            errors: [
+              {
+                code: 'INVALID_PARAMETERS',
+                field: key,
+                description: `The ${key} field is required.`,
+              },
+            ],
+          },
+        };
+      }
+    }
     return {
       status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
     };
   }
 
