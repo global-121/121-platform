@@ -712,7 +712,7 @@ export class IntersolveVisaMockService {
       };
     }
     // Return error if the amount is not an integer
-    // If we post a non interger to the real API, it will return a similair error
+    // If we post a non integer to the real API, it will return a similar error
     if (!Number.isInteger(amount)) {
       return {
         status: HttpStatus.BAD_REQUEST,
