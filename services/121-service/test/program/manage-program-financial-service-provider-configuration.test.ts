@@ -8,6 +8,7 @@ import {
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration-property.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import {
   paymentNrVisa,
@@ -24,7 +25,12 @@ import {
   postProgramFinancialServiceProviderConfiguration,
   postProgramFinancialServiceProviderConfigurationProperties,
 } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
-import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  awaitChangePaStatus,
+  deleteRegistrations,
+  seedPaidRegistrations,
+  waitForStatusChangeToComplete,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -193,10 +199,54 @@ describe('Manage financial service provider configurations', () => {
     expect(getResultConfig).toBeUndefined();
   });
 
-  // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
-  it('should not delete existing program financial service provider configuration because of transactions', async () => {
+  it('should not delete existing program financial service provider configuration because of active registrations with that config', async () => {
     // Prepare
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
+
+    // Act
+    const name = seededFspConfigVoucher.financialServiceProvider;
+    const result = await deleteProgramFinancialServiceProviderConfiguration({
+      programId: programIdVisa,
+      name,
+      accessToken,
+    });
+    const getResult = await getProgramFinancialServiceProviderConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
+    const getResultConfig = getResult.body.find(
+      (config) => config.name === name,
+    );
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.CONFLICT);
+    expect(result.body).toMatchSnapshot();
+    expect(getResultConfig).toBeDefined();
+  });
+
+  // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
+  it('deleting program financial service provider configuration with existing transactions should set programFinancialServiceProviderConfigurationId of transactions to null', async () => {
+    // Prepare
+    await seedPaidRegistrations([registrationOCW5], programIdVisa);
+
+    await awaitChangePaStatus(
+      programIdVisa,
+      [registrationOCW5.referenceId],
+      RegistrationStatusEnum.declined,
+      accessToken,
+    );
+    await deleteRegistrations(
+      programIdVisa,
+      [registrationOCW5.referenceId],
+      accessToken,
+    );
+    await waitForStatusChangeToComplete(
+      programIdVisa,
+      1,
+      RegistrationStatusEnum.deleted,
+      8_000,
+      accessToken,
+    );
 
     // Act
     const name = seededFspConfigVoucher.financialServiceProvider;

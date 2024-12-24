@@ -7,7 +7,6 @@ import {
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
@@ -17,6 +16,7 @@ import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
 export class ProgramFinancialServiceProviderConfigurationsService {
@@ -24,10 +24,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   private readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
   @InjectRepository(ProgramFinancialServiceProviderConfigurationPropertyEntity)
   private readonly programFspConfigurationPropertyRepository: Repository<ProgramFinancialServiceProviderConfigurationPropertyEntity>;
-
-  constructor(
-    private readonly transactionScopedRepository: TransactionScopedRepository,
-  ) {}
 
   public async getByProgramId(
     programId: number,
@@ -157,11 +153,25 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         name: Equal(name),
         programId: Equal(programId),
       },
-      relations: ['properties'],
+      relations: ['registrations'], //TODO: Should this module know about registrations?
     });
-
     if (!config) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+
+    const activeRegistrationsWithFspConfig = config.registrations.filter(
+      (r) => r.registrationStatus !== RegistrationStatusEnum.deleted,
+    );
+    if (activeRegistrationsWithFspConfig.length > 0) {
+      const registrationReferenceIds = activeRegistrationsWithFspConfig.map(
+        (r) => r.referenceId,
+      );
+      throw new HttpException(
+        `Cannot delete program financial service provider configuration ${name} because it is still in use by registrations with referenceIds: ${registrationReferenceIds.join(
+          ', ',
+        )}`,
+        HttpStatus.CONFLICT,
+      );
     }
 
     // programFspConfigProperties are cascade-deleted, transactions/registrations are kept but FK set to null
