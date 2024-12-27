@@ -94,6 +94,14 @@ class PaymentsPage extends BasePage {
     await inProgressChip.waitFor({ state: 'hidden' });
   }
 
+  async validateInProgressChipIsPresent() {
+    const inProgressChip = this.page
+      .locator('app-colored-chip')
+      .getByLabel('In progress');
+
+    await expect(inProgressChip).toBeVisible();
+  }
+
   async validatePaymentsDetailsPageByDate(date: string) {
     const viewPaymentTitle = await this.viewPaymentTitle.textContent();
     expect(viewPaymentTitle).toContain(date);
