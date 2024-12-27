@@ -101,7 +101,6 @@ interface ExportExcelFspData {
 class RegistrationsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
-  readonly goToProfileOption: Locator;
   readonly sendMessageDialogPreview: Locator;
   readonly exportButton: Locator;
   readonly proceedButton: Locator;
@@ -110,7 +109,6 @@ class RegistrationsPage extends BasePage {
     super(page);
     this.page = page;
     this.table = new TableComponent(page);
-    this.goToProfileOption = this.page.getByText('Go to profile');
     this.sendMessageDialogPreview = this.page.getByTestId(
       'send-message-dialog-preview',
     );
@@ -194,8 +192,7 @@ class RegistrationsPage extends BasePage {
         (registrationName && isRequestedFullName) ||
         (!registrationName && !isRequestedFullName)
       ) {
-        await fullName.click({ button: 'right' });
-        await this.goToProfileOption.click();
+        await fullName.getByRole('link').click();
         return;
       }
     }
@@ -252,8 +249,7 @@ class RegistrationsPage extends BasePage {
     const randomIndex = Math.floor(Math.random() * rowCount);
     const fullName = await this.table.getCell(randomIndex, 2);
 
-    await fullName.click({ button: 'right' });
-    await this.goToProfileOption.click();
+    await fullName.getByRole('link').click();
     return randomIndex;
   }
 

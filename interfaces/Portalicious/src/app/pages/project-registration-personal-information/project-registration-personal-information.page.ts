@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,15 +5,14 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectButtonModule } from 'primeng/selectbutton';
-import { TabMenuModule } from 'primeng/tabmenu';
 
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  GenericRegistrationAttributes,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import {
   DataListComponent,
@@ -24,25 +22,24 @@ import { RegistrationPageLayoutComponent } from '~/components/registration-page-
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasInclusionScore } from '~/domains/project/project.helper';
 import {
-  getGenericAttributeDataListItem,
+  ATTRIBUTE_LABELS,
+  getGenericAttributeType,
   getValueForGenericAttribute,
-  projectAttributeToDataListItem,
+  personalInformationAttributeToDataListItem,
 } from '~/domains/project/project-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+
+export interface PersonalInformationAttribute {
+  name: string;
+  label: LocalizedString | string;
+  value: unknown;
+  type: RegistrationAttributeTypes;
+}
 
 @Component({
   selector: 'app-project-registration-personal-information',
   standalone: true,
-  imports: [
-    CardModule,
-    TabMenuModule,
-    CommonModule,
-    FormsModule,
-    SelectButtonModule,
-    InputTextModule,
-    DataListComponent,
-    RegistrationPageLayoutComponent,
-  ],
+  imports: [DataListComponent, RegistrationPageLayoutComponent],
   templateUrl: './project-registration-personal-information.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +52,7 @@ export class ProjectRegistrationPersonalInformationPageComponent {
   readonly registrationApiService = inject(RegistrationApiService);
   readonly projectApiService = inject(ProjectApiService);
 
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
   projectAttributes = injectQuery(
     this.projectApiService.getProjectAttributes({
       projectId: this.projectId,
@@ -62,7 +60,6 @@ export class ProjectRegistrationPersonalInformationPageComponent {
       includeTemplateDefaultAttributes: false,
     }),
   );
-
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.projectId,
@@ -70,44 +67,65 @@ export class ProjectRegistrationPersonalInformationPageComponent {
     ),
   );
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
-
-  attributeList = computed<DataListItem[]>(() => {
-    const list: DataListItem[] = [];
-    if (!this.projectAttributes.isSuccess() || !this.registration.isSuccess()) {
-      return list;
-    }
-
-    const genericAttributeNames =
+  attributeList = computed<PersonalInformationAttribute[]>(() => {
+    const genericAttributes =
       this.genericAttributeNamesForPersonalInformation();
-    for (const attributeName of genericAttributeNames) {
-      const value = getValueForGenericAttribute(
-        this.registration.data()[attributeName],
-        attributeName,
-      );
-      const genericAttributeListItem = getGenericAttributeDataListItem(
-        attributeName,
-        value,
-      );
-      list.push(genericAttributeListItem);
-    }
-    for (const attribute of this.projectAttributes.data()) {
-      const value = this.registration.data()[attribute.name] as unknown;
-      const dataListItem = projectAttributeToDataListItem(attribute, value);
-      if (dataListItem) {
-        list.push(dataListItem);
-      }
-    }
-    return list;
+
+    const projectSpecificAttributes = (
+      this.projectAttributes.data() ?? []
+    ).filter(
+      (attribute) =>
+        // both of these are handled elsewhere we don't want to duplicate them here
+        attribute.name !== 'fullName' && attribute.name !== 'phoneNumber',
+    );
+
+    return [
+      {
+        name: 'name',
+        label: $localize`:@@registration-full-name:Name`,
+        value: this.registration.data()?.name,
+        type: RegistrationAttributeTypes.text,
+      },
+      ...genericAttributes.map((attributeName) => {
+        const value = getValueForGenericAttribute(
+          this.registration.data()?.[attributeName],
+          attributeName,
+        );
+        const type = getGenericAttributeType(attributeName);
+
+        return {
+          name: attributeName,
+          label: ATTRIBUTE_LABELS[attributeName],
+          value,
+          type,
+        };
+      }),
+      ...projectSpecificAttributes.map(({ name, label, type }) => {
+        return {
+          name,
+          label,
+          value: this.registration.data()?.[name],
+          type,
+        };
+      }),
+    ];
   });
+
+  dataList = computed<DataListItem[]>(() =>
+    this.attributeList().map((attribute) => ({
+      ...personalInformationAttributeToDataListItem(attribute),
+      loading: this.registration.isPending(),
+    })),
+  );
 
   private genericAttributeNamesForPersonalInformation = computed<
     GenericRegistrationAttributes[]
   >(() => {
     const genericAttributeNames: GenericRegistrationAttributes[] = [
-      GenericRegistrationAttributes.preferredLanguage,
+      GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
       GenericRegistrationAttributes.paymentAmountMultiplier,
+      GenericRegistrationAttributes.preferredLanguage,
     ];
     if (this.project.data()?.enableMaxPayments) {
       genericAttributeNames.concat([

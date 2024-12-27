@@ -105,13 +105,15 @@ export class RegistrationsTableComponent {
           }),
       },
       {
-        field: 'fullName',
-        header: $localize`:@@registration-full-name:Full Name`,
+        field: 'name',
+        header: $localize`:@@registration-full-name:Name`,
         getCellRouterLink: (registration) =>
           registrationLink({
             projectId: this.projectId(),
             registrationId: registration.id,
           }),
+        fieldForFilter: 'fullName',
+        fieldForSort: 'fullName',
       },
       {
         field: 'status',

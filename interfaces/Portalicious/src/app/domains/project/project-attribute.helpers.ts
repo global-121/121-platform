@@ -6,8 +6,8 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { DataListItem } from '~/components/data-list/data-list.component';
-import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
 import { LANGUAGE_ENUM_LABEL } from '~/domains/registration/registration.helper';
+import { PersonalInformationAttribute } from '~/pages/project-registration-personal-information/project-registration-personal-information.page';
 
 export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   referenceId: $localize`:@@attribute-label-referenceId:Reference ID`,
@@ -26,22 +26,16 @@ export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   inclusionScore: $localize`:@@attribute-label-inclusionScore:Inclusion Score`,
 };
 
-export const getGenericAttributeDataListItem = (
+export const getGenericAttributeType = (
   attributeName: GenericRegistrationAttributes,
-  value: unknown,
-): DataListItem => {
-  const label = ATTRIBUTE_LABELS[attributeName];
+): RegistrationAttributeTypes => {
   switch (attributeName) {
     case GenericRegistrationAttributes.paymentAmountMultiplier:
     case GenericRegistrationAttributes.maxPayments:
     case GenericRegistrationAttributes.paymentCountRemaining:
     case GenericRegistrationAttributes.inclusionScore:
     case GenericRegistrationAttributes.paymentCount:
-      return {
-        label,
-        type: 'number',
-        value: value as null | number,
-      };
+      return RegistrationAttributeTypes.numeric;
     case GenericRegistrationAttributes.preferredLanguage:
     case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel:
     case GenericRegistrationAttributes.referenceId:
@@ -50,17 +44,9 @@ export const getGenericAttributeDataListItem = (
     case GenericRegistrationAttributes.scope:
     case GenericRegistrationAttributes.status:
     case GenericRegistrationAttributes.registrationProgramId:
-      return {
-        label,
-        type: 'text',
-        value: value as LocalizedString | null | string,
-      };
+      return RegistrationAttributeTypes.text;
     case GenericRegistrationAttributes.registrationCreatedDate:
-      return {
-        label,
-        type: 'date',
-        value: value as Date | null,
-      };
+      return RegistrationAttributeTypes.date;
   }
 };
 
@@ -76,41 +62,35 @@ export const getValueForGenericAttribute = (
   }
 };
 
-export const projectAttributeToDataListItem = (
-  attribute: AttributeWithTranslatedLabel,
-  value: unknown,
-): DataListItem | undefined => {
-  const label = attribute.label;
-
-  switch (attribute.type) {
+export const personalInformationAttributeToDataListItem = ({
+  type,
+  value,
+  ...attribute
+}: PersonalInformationAttribute): DataListItem => {
+  switch (type) {
     case RegistrationAttributeTypes.multiSelect:
-      // TODO: Implement multiSelect when necessary
-      console.log(
-        'attributeToDataListItem: multiSelect not implemented',
-        value,
-      );
-      return undefined;
+      throw new Error('multiSelect not supported');
     case RegistrationAttributeTypes.numeric:
       return {
-        label,
+        ...attribute,
         type: 'number',
         value: value as number,
       };
     case RegistrationAttributeTypes.numericNullable:
       return {
-        label,
+        ...attribute,
         type: 'number',
         value: value as null | number,
       };
     case RegistrationAttributeTypes.date:
       return {
-        label,
+        ...attribute,
         type: 'date',
         value: value as Date,
       };
     case RegistrationAttributeTypes.boolean:
       return {
-        label,
+        ...attribute,
         type: 'boolean',
         value: value as boolean,
       };
@@ -118,7 +98,7 @@ export const projectAttributeToDataListItem = (
     case RegistrationAttributeTypes.tel:
     case RegistrationAttributeTypes.text:
       return {
-        label,
+        ...attribute,
         type: 'text',
         value: value as LocalizedString | string,
       };

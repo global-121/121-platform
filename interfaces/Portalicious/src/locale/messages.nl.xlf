@@ -474,8 +474,8 @@
         <target>U staat op het punt een Excel-bestand te downloaden voor alle status- en datawijzigingen.</target>
       </trans-unit>
       <trans-unit id="5172848657173998509" datatype="html">
-        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
-        <target>Je staat op het punt een notitie toe te voegen aan het profiel van <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>.</target>
+        <source>You are about to add a note to <x equiv-text="{{ registration.data()?.name }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <target state="new">Je staat op het punt een notitie toe te voegen aan het profiel van <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>.</target>
       </trans-unit>
       <trans-unit id="5209857233936409392" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
@@ -520,10 +520,6 @@
       <trans-unit id="5590086849807274701" datatype="html">
         <source>Scope</source>
         <target>Connectie</target>
-      </trans-unit>
-      <trans-unit id="5635594227422805947" datatype="html">
-        <source>Go to profile</source>
-        <target>Ga naar profiel</target>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -1281,8 +1277,8 @@
         <target>Registratie gecreëerd</target>
       </trans-unit>
       <trans-unit id="registration-full-name" datatype="html">
-        <source>Full Name</source>
-        <target>Volledige naam</target>
+        <source>Name</source>
+        <target state="new">Volledige naam</target>
       </trans-unit>
       <trans-unit id="registration-payments" datatype="html">
         <source>Payments</source>
@@ -1707,6 +1703,18 @@
       <trans-unit id="2795059376397351120" datatype="html">
         <source>Registration Status</source>
         <target state="new">Registration Status</target>
+      </trans-unit>
+      <trans-unit id="4067653603451364018" datatype="html">
+        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
+        <target state="new">The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</target>
+      </trans-unit>
+      <trans-unit id="2276030451798485888" datatype="html">
+        <source>Amount of money successfully transferred.</source>
+        <target state="new">Amount of money successfully transferred.</target>
+      </trans-unit>
+      <trans-unit id="6371588679924903737" datatype="html">
+        <source>Open in new tab</source>
+        <target state="new">Open in new tab</target>
       </trans-unit>
     </body>
   </file>

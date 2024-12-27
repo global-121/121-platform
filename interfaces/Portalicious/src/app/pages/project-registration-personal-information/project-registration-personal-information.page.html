@@ -3,8 +3,6 @@
   [registrationId]="registrationId()"
 >
   <div class="px-2">
-    @if (registration.isSuccess() && projectAttributes.isSuccess()) {
-      <app-data-list [data]="attributeList()"> </app-data-list>
-    }
+    <app-data-list [data]="dataList()"> </app-data-list>
   </div>
 </app-registration-page-layout>

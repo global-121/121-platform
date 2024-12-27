@@ -167,7 +167,7 @@ export class ProjectRegistrationsPageComponent {
   contextMenuItems = computed<MenuItem[]>(() => {
     return [
       {
-        label: $localize`Go to profile`,
+        label: $localize`Open in new tab`,
         icon: 'pi pi-user',
         command: () => {
           const registration =
@@ -176,12 +176,15 @@ export class ProjectRegistrationsPageComponent {
             this.toastService.showGenericError();
             return;
           }
-          void this.router.navigate(
-            registrationLink({
-              projectId: this.projectId(),
-              registrationId: registration.id,
-            }),
+          const url = this.router.serializeUrl(
+            this.router.createUrlTree(
+              registrationLink({
+                projectId: this.projectId(),
+                registrationId: registration.id,
+              }),
+            ),
           );
+          window.open(url, '_blank');
         },
       },
       {
