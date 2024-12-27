@@ -1,5 +1,10 @@
 import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+} from '@angular/core';
 
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -12,6 +17,7 @@ import {
 } from '~/components/colored-chip/colored-chip.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 export type DataListItem = {
   label: LocalizedString | string;
@@ -34,6 +40,11 @@ export type DataListItem = {
   | {
       type: 'date';
       value?: Date | null | number | string;
+    }
+  | {
+      type: 'multi';
+      value: string | string[];
+      options?: { value: string; label?: LocalizedString | string }[];
     }
   | {
       type: 'number';
@@ -66,7 +77,21 @@ export class DataListComponent {
   data = input.required<DataListItem[]>();
   hideBottomBorder = input<boolean>();
 
+  readonly translatableStringService = inject(TranslatableStringService);
+
   skeletonWidth() {
     return `${getRandomInt(42, 98).toString()}%`;
+  }
+
+  multiItemValue(item: { type: 'multi' } & DataListItem) {
+    const value = Array.isArray(item.value) ? item.value : [item.value];
+
+    return value
+      .map((v) => {
+        const option = item.options?.find((o) => o.value === v);
+
+        return this.translatableStringService.translate(option?.label) ?? v;
+      })
+      .join(', ');
   }
 }

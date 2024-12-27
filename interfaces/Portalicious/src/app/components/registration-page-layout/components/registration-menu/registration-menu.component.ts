@@ -47,7 +47,7 @@ export class RegistrationMenuComponent {
     {
       label: $localize`:@@page-title-project-registrations-personal-information:Personal information`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationPersonalInformation}`,
-      icon: 'pi pi-card',
+      icon: 'pi pi-id-card',
     },
     {
       label: $localize`:@@page-title-project-registrations-debit-cards:Debit cards`,

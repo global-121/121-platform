@@ -27,6 +27,7 @@ import { TableCellOverviewComponent } from '~/pages/project-registration-activit
 
 export interface ActivityLogTableCellContext {
   projectId: Signal<string>;
+  registrationId: Signal<string>;
   referenceId?: string;
 }
 
@@ -53,6 +54,7 @@ export class ProjectRegistrationActivityLogPageComponent {
   expandableRowTemplate = ActivityLogExpandedRowComponent;
   tableCellContext = computed<ActivityLogTableCellContext>(() => ({
     projectId: this.projectId,
+    registrationId: this.registrationId,
     referenceId: this.registration.data()?.referenceId,
   }));
 

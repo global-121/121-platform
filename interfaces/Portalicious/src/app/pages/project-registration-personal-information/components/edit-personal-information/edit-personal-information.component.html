@@ -1,0 +1,100 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="space-x-4 text-end">
+    <p-button
+      label="Cancel"
+      i18n-label="@@generic-cancel"
+      (click)="cancelEditing.emit()"
+      icon="pi pi-times"
+      outlined
+      rounded
+      severity="contrast"
+    />
+    <p-button
+      type="submit"
+      label="Save"
+      i18n-label="@@generic-save"
+      icon="pi pi-check"
+      rounded
+    />
+  </div>
+  <div class="grid grid-cols-1 gap-x-5 md:grid-cols-2">
+    @for (attribute of attributeList(); track $index) {
+      <div class="space-x-1 py-4">
+        <app-form-field-wrapper [label]="attribute.label">
+          @let type = attribute.type;
+
+          @if (type === 'date') {
+            <p-calendar
+              [formControlName]="attribute.name"
+              [showClear]="true"
+              appendTo="body"
+            />
+          } @else if (type === 'dropdown') {
+            <p-dropdown
+              [formControlName]="attribute.name"
+              [options]="attribute.options"
+              [optionLabel]="'label'"
+              [optionValue]="'value'"
+              placeholder="Type or select"
+              i18n-placeholder="@@generic-type-or-select"
+              [filter]="true"
+            />
+          } @else if (type === 'boolean') {
+            <!-- XXX: check this -->
+            <p-checkbox
+              [formControlName]="attribute.name"
+              [binary]="true"
+              [value]="true"
+            />
+          } @else {
+            <input
+              pInputText
+              [type]="
+                type === 'numeric' || type === 'numeric-nullable'
+                  ? 'number'
+                  : 'text'
+              "
+              [formControlName]="attribute.name"
+              autocomplete="off"
+            />
+          }
+        </app-form-field-wrapper>
+      </div>
+    }
+  </div>
+</form>
+<app-confirmation-dialog
+  #editPersonalInformationDialog
+  header="Update information"
+  i18n-header
+  headerIcon="pi pi-id-card"
+  proceedLabel="Save"
+  i18n-proceedLabel="@@generic-save"
+  [mutation]="patchRegistrationMutation"
+  [mutationData]="{
+    data: changedRegistrationData(),
+    reason: updateReason(),
+    referenceId: registration.data()?.referenceId!,
+  }"
+>
+  <p
+    i18n
+    class="mb-7"
+  >
+    You're about to update {{ this.registration.data()?.name }}'s details.
+  </p>
+  <app-form-field-wrapper
+    label="Write a reason for the update"
+    i18n-label
+  >
+    <input
+      pInputText
+      type="text"
+      [(ngModel)]="updateReason"
+      autocomplete="off"
+    />
+  </app-form-field-wrapper>
+</app-confirmation-dialog>

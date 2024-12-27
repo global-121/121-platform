@@ -3,6 +3,7 @@ import { Injectable, Signal } from '@angular/core';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
+import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -48,6 +49,32 @@ export class RegistrationApiService extends DomainApiService {
         registrationId,
       ],
       enabled: () => !!projectId() && !!registrationId(),
+    });
+  }
+
+  patchRegistration({
+    projectId,
+    referenceId,
+    data,
+    reason,
+  }: {
+    projectId: Signal<number | string>;
+    referenceId: string;
+    data: UpdateRegistrationDto['data'];
+    reason: string;
+  }) {
+    const body: UpdateRegistrationDto = {
+      data,
+      reason,
+    };
+
+    return this.httpWrapperService.perform121ServiceRequest<Registration>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        referenceId,
+      ]).join('/'),
+      body,
     });
   }
 

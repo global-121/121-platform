@@ -51,6 +51,9 @@
               @case ('number') {
                 {{ item.value | number }}
               }
+              @case ('multi') {
+                {{ multiItemValue(item) }}
+              }
               @default {
                 {{ item.value | translatableString }}
               }

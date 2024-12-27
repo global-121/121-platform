@@ -2,7 +2,7 @@
   #confirmDialog
   [closeOnEscape]="false"
   [dismissableMask]="true"
-  class="[&_.p-dialog-content]:max-w-[632px]"
+  class="md:[&_.p-dialog-content]:w-[632px]"
 >
   <ng-template pTemplate="header">
     <div class="flex w-full items-center">
@@ -20,7 +20,7 @@
     </div>
   </ng-template>
   <ng-template pTemplate="message">
-    <div>
+    <div class="w-full">
       <ng-content></ng-content>
       @if (mutation().isError()) {
         <div class="mt-4">
@@ -35,6 +35,7 @@
       i18n-label="@@generic-cancel"
       outlined
       rounded
+      severity="contrast"
       [disabled]="mutation().isPending()"
       (click)="confirmDialog.reject()"
     />

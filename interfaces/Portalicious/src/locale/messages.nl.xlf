@@ -1716,6 +1716,50 @@
         <source>Open in new tab</source>
         <target state="new">Open in new tab</target>
       </trans-unit>
+      <trans-unit id="generic-save" datatype="html">
+        <source>Save</source>
+        <target state="new">Save</target>
+      </trans-unit>
+      <trans-unit id="3003940161121195414" datatype="html">
+        <source>Update information</source>
+        <target state="new">Update information</target>
+      </trans-unit>
+      <trans-unit id="4788150502649502085" datatype="html">
+        <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
+        <target state="new">You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</target>
+      </trans-unit>
+      <trans-unit id="2317261224640464417" datatype="html">
+        <source>Write a reason for the update</source>
+        <target state="new">Write a reason for the update</target>
+      </trans-unit>
+      <trans-unit id="4669976696598410223" datatype="html">
+        <source>Reason is required</source>
+        <target state="new">Reason is required</target>
+      </trans-unit>
+      <trans-unit id="6404965869709788913" datatype="html">
+        <source>Personal information edited successfully.</source>
+        <target state="new">Personal information edited successfully.</target>
+      </trans-unit>
+      <trans-unit id="7005213248357637960" datatype="html">
+        <source>Edit information</source>
+        <target state="new">Edit information</target>
+      </trans-unit>
+      <trans-unit id="7585097972263982693" datatype="html">
+        <source>Old FSP</source>
+        <target state="new">Old FSP</target>
+      </trans-unit>
+      <trans-unit id="8427406767154725875" datatype="html">
+        <source>New FSP</source>
+        <target state="new">New FSP</target>
+      </trans-unit>
+      <trans-unit id="8103250468659936776" datatype="html">
+        <source>Please fill out all required fields.</source>
+        <target state="new">Please fill out all required fields.</target>
+      </trans-unit>
+      <trans-unit id="4404975094271849688" datatype="html">
+        <source>No changes detected.</source>
+        <target state="new">No changes detected.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

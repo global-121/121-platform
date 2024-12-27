@@ -10,6 +10,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import {
   DataListComponent,
@@ -20,6 +21,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
+import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 @Component({
   selector: 'app-activity-log-expanded-row',
   standalone: true,
@@ -32,9 +34,16 @@ export class ActivityLogExpandedRowComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
   private readonly projectApiService = inject(ProjectApiService);
+  private readonly registrationAttributeService = inject(
+    RegistrationAttributeService,
+  );
 
   value = input.required<Activity>();
   context = input.required<ActivityLogTableCellContext>();
+
+  registrationAttributes = injectQuery(
+    this.registrationAttributeService.getRegistrationAttributes(this.context),
+  );
 
   intersolveVoucherBalance = injectQuery(() => ({
     ...this.projectApiService.getIntersolveVoucherBalance({
@@ -64,6 +73,17 @@ export class ActivityLogExpandedRowComponent
       : undefined;
   });
 
+  private localizeAttribute = (
+    attributeName?: GenericRegistrationAttributes | string,
+    attributeValue = '',
+  ) => {
+    return this.registrationAttributeService.localizeAttribute({
+      attributes: this.registrationAttributes.data(),
+      attributeName,
+      attributeOptionValue: attributeValue,
+    });
+  };
+
   dataList = computed<DataListItem[] | undefined>(() => {
     const item = this.value();
     switch (item.type) {
@@ -71,11 +91,38 @@ export class ActivityLogExpandedRowComponent
         return [
           {
             label: $localize`Old data`,
-            value: item.attributes.oldValue,
+            value: this.localizeAttribute(
+              item.attributes.fieldName,
+              item.attributes.oldValue,
+            ),
           },
           {
             label: $localize`New data`,
-            value: item.attributes.newValue,
+            value: this.localizeAttribute(
+              item.attributes.fieldName,
+              item.attributes.newValue,
+            ),
+          },
+          {
+            label: $localize`Change reason`,
+            value: item.attributes.reason,
+          },
+        ];
+      case ActivityTypeEnum.FinancialServiceProviderChange:
+        return [
+          {
+            label: $localize`Old FSP`,
+            value: this.localizeAttribute(
+              GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+              item.attributes.oldValue,
+            ),
+          },
+          {
+            label: $localize`New FSP`,
+            value: this.localizeAttribute(
+              GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+              item.attributes.newValue,
+            ),
           },
           {
             label: $localize`Change reason`,
