@@ -1,9 +1,9 @@
 <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
 <label
-  class="block [&_.p-calendar]:w-full [&_input]:w-full [&_textarea]:w-full"
+  class="block [&_.p-datepicker]:w-full [&_input]:w-full [&_textarea]:w-full"
 >
   <strong class="mb-2 block">
-    {{ label() }}
+    {{ label() | translatableString }}
   </strong>
   <ng-content></ng-content>
   <app-form-error [error]="errorMessage()" />
