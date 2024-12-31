@@ -7,17 +7,16 @@ import {
 } from '@angular/core';
 
 import { MenuItem } from 'primeng/api';
-import { TabMenuModule } from 'primeng/tabmenu';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-project-menu',
-  standalone: true,
-  imports: [TabMenuModule],
+  imports: [TabsMenuComponent],
   templateUrl: './project-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

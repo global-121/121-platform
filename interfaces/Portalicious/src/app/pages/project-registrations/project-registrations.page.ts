@@ -4,7 +4,7 @@ import {
   computed,
   inject,
   input,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -30,7 +30,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-project-registrations',
-  standalone: true,
   imports: [
     PageLayoutComponent,
     CardModule,
@@ -56,12 +55,12 @@ export class ProjectRegistrationsPageComponent {
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
 
-  @ViewChild('registrationsTable')
-  private registrationsTable: RegistrationsTableComponent;
-  @ViewChild('sendMessageDialog')
-  private sendMessageDialog: SendMessageDialogComponent;
-  @ViewChild('changeStatusDialog')
-  private changeStatusDialog: ChangeStatusDialogComponent;
+  readonly registrationsTable =
+    viewChild.required<RegistrationsTableComponent>('registrationsTable');
+  readonly sendMessageDialog =
+    viewChild.required<SendMessageDialogComponent>('sendMessageDialog');
+  readonly changeStatusDialog =
+    viewChild.required<ChangeStatusDialogComponent>('changeStatusDialog');
 
   RegistrationStatusEnum = RegistrationStatusEnum;
 
@@ -72,7 +71,7 @@ export class ProjectRegistrationsPageComponent {
   }: {
     triggeredFromContextMenu?: boolean;
   } = {}) {
-    const actionData = this.registrationsTable.getActionData({
+    const actionData = this.registrationsTable().getActionData({
       triggeredFromContextMenu,
     });
 
@@ -80,7 +79,7 @@ export class ProjectRegistrationsPageComponent {
       return;
     }
 
-    this.sendMessageDialog.triggerAction(actionData);
+    this.sendMessageDialog().triggerAction(actionData);
   }
 
   changeStatus({
@@ -90,7 +89,7 @@ export class ProjectRegistrationsPageComponent {
     status: RegistrationStatusEnum;
     triggeredFromContextMenu?: boolean;
   }) {
-    const actionData = this.registrationsTable.getActionData({
+    const actionData = this.registrationsTable().getActionData({
       triggeredFromContextMenu,
     });
 
@@ -98,11 +97,11 @@ export class ProjectRegistrationsPageComponent {
       return;
     }
 
-    this.changeStatusDialog.triggerAction(actionData, status);
+    this.changeStatusDialog().triggerAction(actionData, status);
   }
 
   onActionComplete() {
-    this.registrationsTable.resetSelection();
+    this.registrationsTable().resetSelection();
   }
 
   canChangeStatus = computed(
@@ -171,7 +170,7 @@ export class ProjectRegistrationsPageComponent {
         icon: 'pi pi-user',
         command: () => {
           const registration =
-            this.registrationsTable.contextMenuRegistration();
+            this.registrationsTable().contextMenuRegistration();
           if (!registration) {
             this.toastService.showGenericError();
             return;

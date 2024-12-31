@@ -5,7 +5,7 @@ import {
   inject,
   input,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import {
@@ -13,6 +13,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
@@ -33,9 +34,9 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-project-team',
-  standalone: true,
   imports: [
     PageLayoutComponent,
+    ButtonModule,
     CardModule,
     QueryTableComponent,
     AddProjectTeamUserFormComponent,
@@ -55,8 +56,10 @@ export class ProjectTeamPageComponent {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
-  @ViewChild('removeUserConfirmationDialog')
-  private removeUserConfirmationDialog: ConfirmationDialogComponent;
+  readonly removeUserConfirmationDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'removeUserConfirmationDialog',
+    );
 
   selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
   formVisible = signal(false);
@@ -151,7 +154,7 @@ export class ProjectTeamPageComponent {
         icon: 'pi pi-times text-red-500',
         visible: this.canManageAidworkers(),
         command: () => {
-          this.removeUserConfirmationDialog.askForConfirmation();
+          this.removeUserConfirmationDialog().askForConfirmation();
         },
       },
     ];

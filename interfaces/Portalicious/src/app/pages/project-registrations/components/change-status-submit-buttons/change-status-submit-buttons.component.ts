@@ -9,7 +9,6 @@ import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-change-status-submit-buttons',
-  standalone: true,
   imports: [ButtonModule],
   templateUrl: './change-status-submit-buttons.component.html',
   styles: ``,

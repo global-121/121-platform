@@ -12,7 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { MetricContainerComponent } from '~/components/metric-container/metric-container.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -21,11 +20,9 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
   selector: 'app-project-summary-card',
-  standalone: true,
   imports: [
     TranslatableStringPipe,
     CommonModule,
-    MetricContainerComponent,
     SkeletonInlineComponent,
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,

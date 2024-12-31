@@ -14,7 +14,6 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
   selector: 'app-logo',
-  standalone: true,
   imports: [RouterLink, TranslatableStringPipe],
   templateUrl: './logo.component.html',
   styles: ``,

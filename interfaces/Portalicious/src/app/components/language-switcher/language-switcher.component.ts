@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 
 import {
   changeLanguage,
@@ -20,8 +20,7 @@ import {
 
 @Component({
   selector: 'app-language-switcher',
-  standalone: true,
-  imports: [FormsModule, DropdownModule],
+  imports: [FormsModule, SelectModule],
   templateUrl: './language-switcher.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

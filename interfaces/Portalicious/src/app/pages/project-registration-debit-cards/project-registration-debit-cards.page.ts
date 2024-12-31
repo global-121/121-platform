@@ -16,7 +16,6 @@ import {
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { TabMenuModule } from 'primeng/tabmenu';
 
 import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -33,10 +32,8 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-project-registration-debit-cards',
-  standalone: true,
   imports: [
     CardModule,
-    TabMenuModule,
     CommonModule,
     FormsModule,
     DataListComponent,

@@ -20,7 +20,6 @@ import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-project-payments',
-  standalone: true,
   imports: [
     PageLayoutComponent,
     PaymentSummaryCardComponent,

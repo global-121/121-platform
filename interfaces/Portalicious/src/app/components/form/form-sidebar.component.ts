@@ -7,20 +7,19 @@ import {
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
+import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
-import { SidebarModule } from 'primeng/sidebar';
 
 import { FormComponent } from '~/components/form/form.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-form-sidebar',
-  standalone: true,
   imports: [
     ButtonModule,
     ReactiveFormsModule,
     FormErrorComponent,
-    SidebarModule,
+    DrawerModule,
     FocusTrapModule,
   ],
   templateUrl: './form-sidebar.component.html',

@@ -18,7 +18,6 @@ import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-latest-export-date',
-  standalone: true,
   imports: [DatePipe, SkeletonInlineComponent],
   templateUrl: './latest-export-date.component.html',
   styles: ``,

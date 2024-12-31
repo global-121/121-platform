@@ -26,7 +26,6 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
 
 @Component({
   selector: 'app-table-cell-overview',
-  standalone: true,
   imports: [
     ChipModule,
     ColoredChipComponent,

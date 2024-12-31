@@ -5,7 +5,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-fullscreen-spinner',
-  standalone: true,
   imports: [BlockUIModule, ProgressSpinnerModule],
   templateUrl: './fullscreen-spinner.component.html',
   styles: ``,

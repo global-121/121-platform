@@ -41,7 +41,7 @@
             formControlName="messageType"
           />
           <span
-            class="ms-2 font-normal"
+            class="ms-2"
             i18n
             >Template message</span
           >
@@ -49,7 +49,7 @@
 
         @if (formGroup.value.messageType === 'template') {
           <div>
-            <p-dropdown
+            <p-select
               formControlName="messageTemplateKey"
               [options]="messageTemplates.data()"
               [loading]="messageTemplates.isPending()"
@@ -69,7 +69,7 @@
             formControlName="messageType"
           />
           <span
-            class="ms-2 font-normal"
+            class="ms-2"
             i18n
             >Custom message</span
           >

@@ -8,18 +8,18 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
-import { TabMenuModule } from 'primeng/tabmenu';
+import { TabsModule } from 'primeng/tabs';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 @Component({
   selector: 'app-registration-menu',
-  standalone: true,
-  imports: [TabMenuModule],
+  imports: [TabsModule, TabsMenuComponent],
   templateUrl: './registration-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

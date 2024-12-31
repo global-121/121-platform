@@ -5,7 +5,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 
@@ -17,12 +16,10 @@ import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-projects-overview',
-  standalone: true,
   imports: [
     ButtonModule,
     CommonModule,
     PageLayoutComponent,
-    RouterLink,
     ProjectSummaryCardComponent,
     CreateProjectFormComponent,
     CardGridComponent,

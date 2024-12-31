@@ -2,7 +2,7 @@
 
 import { inject, Injectable } from '@angular/core';
 
-import { Message, MessageService } from 'primeng/api';
+import { MessageService, ToastMessageOptions } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,9 @@ export class ToastService {
 
   private messageService = inject(MessageService);
 
-  showToast(message: { showSpinner?: boolean } & Omit<Message, 'key'>) {
+  showToast(
+    message: { showSpinner?: boolean } & Omit<ToastMessageOptions, 'key'>,
+  ) {
     let defaultSummary: string;
 
     switch (message.severity) {

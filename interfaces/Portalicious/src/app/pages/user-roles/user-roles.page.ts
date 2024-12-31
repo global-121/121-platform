@@ -18,7 +18,6 @@ import { Role } from '~/domains/role/role.model';
 
 @Component({
   selector: 'app-user-roles',
-  standalone: true,
   imports: [PageLayoutComponent, CardModule, QueryTableComponent],
   templateUrl: './user-roles.page.html',
   styles: ``,

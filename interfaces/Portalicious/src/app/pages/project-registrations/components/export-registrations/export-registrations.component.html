@@ -83,7 +83,7 @@
       label="Start Date"
       i18n-label
     >
-      <p-calendar
+      <p-datepicker
         [(ngModel)]="fromDateExport"
         [maxDate]="toDateExport()"
         [showClear]="true"
@@ -95,7 +95,7 @@
       label="End Date"
       i18n-label
     >
-      <p-calendar
+      <p-datepicker
         [(ngModel)]="toDateExport"
         [minDate]="fromDateExport()"
         [showClear]="true"

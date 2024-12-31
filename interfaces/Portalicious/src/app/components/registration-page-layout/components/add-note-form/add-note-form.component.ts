@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -28,11 +28,10 @@ type AddNoteFormGroup = (typeof AddNoteFormComponent)['prototype']['formGroup'];
 
 @Component({
   selector: 'app-add-note-form',
-  standalone: true,
   imports: [
     FormSidebarComponent,
     FormFieldWrapperComponent,
-    InputTextareaModule,
+    TextareaModule,
     ReactiveFormsModule,
   ],
   providers: [ToastService],

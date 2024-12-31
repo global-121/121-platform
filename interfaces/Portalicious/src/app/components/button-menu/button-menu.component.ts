@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,8 +12,7 @@ import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'app-button-menu',
-  standalone: true,
-  imports: [ButtonModule, MenuModule],
+  imports: [ButtonModule, MenuModule, NgClass],
   templateUrl: './button-menu.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

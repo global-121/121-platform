@@ -7,7 +7,6 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 
 @Component({
   selector: 'app-card-with-link',
-  standalone: true,
   imports: [CardModule, RouterLink, SkeletonInlineComponent],
   templateUrl: './card-with-link.component.html',
   styles: ``,

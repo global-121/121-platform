@@ -9,7 +9,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-change-password',
-  standalone: true,
   imports: [PageLayoutComponent, CardModule, NgComponentOutlet],
   providers: [ToastService],
   templateUrl: './change-password.page.html',

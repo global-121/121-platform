@@ -14,7 +14,6 @@ import { MessageInputData } from '~/services/messaging.service';
 
 @Component({
   selector: 'app-change-status-contents-with-templated-message',
-  standalone: true,
   imports: [
     CustomMessagePreviewComponent,
     ButtonModule,

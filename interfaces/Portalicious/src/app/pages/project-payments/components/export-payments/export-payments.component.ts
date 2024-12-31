@@ -4,7 +4,7 @@ import {
   computed,
   inject,
   input,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import {
@@ -32,7 +32,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-export-payments',
-  standalone: true,
   imports: [
     ConfirmationDialogComponent,
     ButtonMenuComponent,
@@ -56,12 +55,16 @@ export class ExportPaymentsComponent {
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
 
-  @ViewChild('exportlastPaymentsDialog')
-  private exportlastPaymentsDialog: ConfirmationDialogComponent;
-  @ViewChild('exportUnusedVouchersDialog')
-  private exportUnusedVouchersDialog: ConfirmationDialogComponent;
-  @ViewChild('exportDebitCardUsageDialog')
-  private exportDebitCardUsageDialog: ConfirmationDialogComponent;
+  readonly exportlastPaymentsDialog =
+    viewChild.required<ConfirmationDialogComponent>('exportlastPaymentsDialog');
+  readonly exportUnusedVouchersDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'exportUnusedVouchersDialog',
+    );
+  readonly exportDebitCardUsageDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'exportDebitCardUsageDialog',
+    );
 
   ExportType = ExportType;
 
@@ -126,7 +129,7 @@ export class ExportPaymentsComponent {
           ],
         }),
       command: () => {
-        this.exportlastPaymentsDialog.askForConfirmation();
+        this.exportlastPaymentsDialog().askForConfirmation();
       },
     },
     {
@@ -138,7 +141,7 @@ export class ExportPaymentsComponent {
           requiredPermission: PermissionEnum.PaymentVoucherExport,
         }),
       command: () => {
-        this.exportUnusedVouchersDialog.askForConfirmation();
+        this.exportUnusedVouchersDialog().askForConfirmation();
       },
     },
     {
@@ -151,7 +154,7 @@ export class ExportPaymentsComponent {
           requiredPermission: PermissionEnum.FspDebitCardEXPORT,
         }),
       command: () => {
-        this.exportDebitCardUsageDialog.askForConfirmation();
+        this.exportDebitCardUsageDialog().askForConfirmation();
       },
     },
   ]);

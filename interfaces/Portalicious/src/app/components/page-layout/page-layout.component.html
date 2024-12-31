@@ -2,11 +2,12 @@
   <app-header [projectId]="projectId()" />
   <div class="flex flex-1 flex-col">
     @if (pageLoadError()) {
-      <div class="flex-1 px-6 pt-8 lg:px-24">
+      <div class="w-full px-6 lg:px-24">
         <p-message
           severity="warn"
-          styleClass="w-full"
+          styleClass="my-6 w-full"
           [text]="pageLoadError()"
+          [closable]="true"
         />
       </div>
     }
