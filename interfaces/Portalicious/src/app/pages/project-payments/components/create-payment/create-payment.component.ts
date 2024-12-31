@@ -294,17 +294,14 @@ export class CreatePaymentComponent {
     const listData: DataListItem[] = [
       {
         label: $localize`Financial Service Provider(s)`,
-        value: dryRunResult.programFinancialServiceProviderConfigurationNames
-          .map((paymentFspConfigName) => {
-            const fspConfig = this.financialServiceProviderConfigurations
-              .data()
-              ?.find((fspConfig) => fspConfig.name === paymentFspConfigName);
-            return (
-              this.translatableStringService.translate(fspConfig?.label) ??
-              paymentFspConfigName
-            );
-          })
-          .join(', '),
+        type: 'options',
+        value: dryRunResult.programFinancialServiceProviderConfigurationNames,
+        options: (this.financialServiceProviderConfigurations.data() ?? []).map(
+          (fspConfig) => ({
+            label: fspConfig.label,
+            value: fspConfig.name,
+          }),
+        ),
         loading: this.financialServiceProviderConfigurations.isPending(),
         fullWidth: true,
       },

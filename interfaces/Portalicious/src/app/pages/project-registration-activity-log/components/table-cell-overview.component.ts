@@ -2,13 +2,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
 
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChipModule } from 'primeng/chip';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
@@ -25,6 +28,7 @@ import {
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
+import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 
 @Component({
   selector: 'app-table-cell-overview',
@@ -68,6 +72,12 @@ export class TableCellOverviewComponent
   value = input.required<Activity>();
   context = input.required<ActivityLogTableCellContext>();
 
+  readonly registrationAttributeService = inject(RegistrationAttributeService);
+
+  readonly registrationAttributes = injectQuery(
+    this.registrationAttributeService.getRegistrationAttributes(this.context),
+  );
+
   chipData = computed<ChipData | undefined>(() => {
     const { type, attributes } = this.value();
 
@@ -86,9 +96,17 @@ export class TableCellOverviewComponent
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.DataChange:
-        return item.attributes.fieldName;
+        return this.registrationAttributeService.localizeAttribute({
+          attributes: this.registrationAttributes.data(),
+          attributeName: item.attributes.fieldName,
+        });
       case ActivityTypeEnum.FinancialServiceProviderChange:
-        return item.attributes.newValue;
+        return this.registrationAttributeService.localizeAttribute({
+          attributes: this.registrationAttributes.data(),
+          attributeName:
+            GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+          attributeOptionValue: item.attributes.newValue,
+        });
       case ActivityTypeEnum.Message:
         return MESSAGE_CONTENT_TYPE_LABELS[item.attributes.contentType];
       case ActivityTypeEnum.Note:
