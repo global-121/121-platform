@@ -1,4 +1,10 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 
 import {
   injectQueryClient,
@@ -9,16 +15,26 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasInclusionScore } from '~/domains/project/project.helper';
 import { Project } from '~/domains/project/project.model';
-import { ATTRIBUTE_LABELS } from '~/domains/project/project-attribute.helpers';
+import {
+  ATTRIBUTE_EDIT_INFO,
+  ATTRIBUTE_LABELS,
+  isGenericAttribute,
+} from '~/domains/project/project-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LANGUAGE_ENUM_LABEL } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+
+const nonEditableAttributes = ['inclusionScore', 'name'];
 
 const getGenericAttributeType = (
   attributeName: GenericRegistrationAttributes,
@@ -27,9 +43,9 @@ const getGenericAttributeType = (
     case GenericRegistrationAttributes.maxPayments:
       return RegistrationAttributeTypes.numericNullable;
     case GenericRegistrationAttributes.paymentAmountMultiplier:
-    case GenericRegistrationAttributes.paymentCountRemaining:
     case GenericRegistrationAttributes.inclusionScore:
     case GenericRegistrationAttributes.paymentCount:
+    case GenericRegistrationAttributes.paymentCountRemaining:
       return RegistrationAttributeTypes.numeric;
     case GenericRegistrationAttributes.preferredLanguage:
     case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName:
@@ -66,11 +82,43 @@ export interface NormalizedRegistrationAttribute {
 export class RegistrationAttributeService {
   private readonly queryClient = injectQueryClient();
 
+  private readonly authService = inject(AuthService);
   private readonly projectApiService = inject(ProjectApiService);
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly translatableStringService = inject(
     TranslatableStringService,
   );
+
+  private hasPermissionsRequiredToEditAttribute({
+    attribute,
+    projectId,
+  }: {
+    attribute: NormalizedRegistrationAttribute;
+    projectId: string;
+  }) {
+    const attributeName = attribute.name;
+
+    let requiredPermission = PermissionEnum.RegistrationPersonalUPDATE;
+
+    if (isGenericAttribute(attributeName)) {
+      if (
+        FinancialAttributes.includes(attributeName as keyof RegistrationEntity)
+      ) {
+        requiredPermission =
+          PermissionEnum.RegistrationAttributeFinancialUPDATE;
+      } else if (
+        attributeName ===
+        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
+      ) {
+        requiredPermission = PermissionEnum.RegistrationFspConfigUPDATE;
+      }
+    }
+
+    return this.authService.hasPermission({
+      projectId,
+      requiredPermission,
+    });
+  }
 
   private getGenericAttributeOptions(
     attributeName: GenericRegistrationAttributes,
@@ -128,6 +176,7 @@ export class RegistrationAttributeService {
       return {
         name: attributeName,
         label: ATTRIBUTE_LABELS[attributeName],
+        editInfo: ATTRIBUTE_EDIT_INFO[attributeName],
         options,
         value,
         type,
@@ -213,7 +262,16 @@ export class RegistrationAttributeService {
             {
               name: 'name',
               label: $localize`:@@registration-full-name:Name`,
-              editInfo: $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below.`,
+              editInfo:
+                $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ` +
+                (project.fullnameNamingConvention
+                  ?.map((namingConvention) =>
+                    this.localizeAttribute({
+                      attributes: projectSpecificAttributes,
+                      attributeName: namingConvention,
+                    }),
+                  )
+                  .join(', ') ?? ''),
               value: registration?.name,
               type: RegistrationAttributeTypes.text,
             },
@@ -256,6 +314,81 @@ export class RegistrationAttributeService {
         attribute?.options?.find((o) => o.value === attributeOptionValue)
           ?.label,
       ) ?? attributeOptionValue
+    );
+  }
+
+  private personalInformationAttributeToFormControl({
+    attribute,
+    projectId,
+  }: {
+    attribute: NormalizedRegistrationAttribute;
+    projectId: string;
+  }) {
+    const isRequired = attribute.isRequired;
+
+    const hasRequiredPermissions = this.hasPermissionsRequiredToEditAttribute({
+      attribute,
+      projectId,
+    });
+
+    return new FormControl(
+      {
+        value: attribute.value ?? null,
+        disabled:
+          nonEditableAttributes.includes(attribute.name) ||
+          !hasRequiredPermissions,
+      },
+      {
+        validators: [
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          ...(isRequired ? [Validators.required] : []),
+          ...(attribute.pattern ? [Validators.pattern(attribute.pattern)] : []),
+        ],
+        nonNullable: isRequired,
+      },
+    );
+  }
+
+  attributesToFormGroup({
+    attributes,
+    projectId,
+  }: {
+    attributes: NormalizedRegistrationAttribute[];
+    projectId: string;
+  }) {
+    return new FormGroup(
+      attributes.reduce(
+        (acc, attribute) => ({
+          ...acc,
+          [attribute.name]: this.personalInformationAttributeToFormControl({
+            attribute,
+            projectId,
+          }),
+        }),
+        {},
+      ),
+    );
+  }
+
+  attributesToFormFormFieldErrors({
+    attributes,
+  }: {
+    attributes: NormalizedRegistrationAttribute[];
+  }) {
+    return attributes.reduce(
+      (acc, attribute) => ({
+        ...acc,
+        [attribute.name]: (control: AbstractControl) => {
+          if (!control.invalid) {
+            return undefined;
+          }
+          if (attribute.pattern) {
+            return $localize`Value does not match the required pattern: ${attribute.pattern}`;
+          }
+          return $localize`:@@generic-required-field:This field is required.`;
+        },
+      }),
+      {},
     );
   }
 }

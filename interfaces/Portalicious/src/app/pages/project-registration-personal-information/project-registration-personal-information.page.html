@@ -6,7 +6,29 @@
     @if (!registrationAttributes.isSuccess()) {
       <p-skeleton height="24rem" />
     } @else {
-      <app-data-list [data]="dataList()"> </app-data-list>
+      @if (!isEditing()) {
+        @if (canUpdatePersonalInformation()) {
+          <div class="text-end">
+            <p-button
+              label="Edit information"
+              i18n-label
+              (click)="isEditing.set(true)"
+              icon="pi pi-pencil"
+              outlined
+              rounded
+            />
+          </div>
+        }
+        <app-data-list [data]="dataList()"> </app-data-list>
+      } @else {
+        <app-edit-personal-information
+          [projectId]="projectId()"
+          [registrationId]="registrationId()"
+          [attributeList]="registrationAttributes.data()"
+          (cancelEditing)="isEditing.set(false)"
+          (registrationUpdated)="onRegistrationUpdated()"
+        />
+      }
     }
   </div>
 </app-registration-page-layout>
