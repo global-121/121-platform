@@ -1304,6 +1304,15 @@
       <trans-unit id="4213825410774196775" datatype="html">
         <source>No results</source>
       </trans-unit>
+      <trans-unit id="7585097972263982693" datatype="html">
+        <source>Old FSP</source>
+      </trans-unit>
+      <trans-unit id="8427406767154725875" datatype="html">
+        <source>New FSP</source>
+      </trans-unit>
+      <trans-unit id="registration-full-name-edit-info" datatype="html">
+        <source>This field is dynamically generated based on the other name fields available below.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
