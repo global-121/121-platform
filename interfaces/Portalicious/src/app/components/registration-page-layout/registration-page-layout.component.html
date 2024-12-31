@@ -22,8 +22,7 @@
         <app-add-note-form
           [(formVisible)]="addNoteFormVisible"
           [projectId]="projectId()"
-          [registrationReferenceId]="registration.data().referenceId"
-          [registrationName]="registration.data().name"
+          [registrationId]="registrationId()"
         />
       }
     }

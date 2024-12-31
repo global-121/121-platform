@@ -185,12 +185,12 @@ export class ProjectApiService extends DomainApiService {
     note,
   }: {
     projectId: Signal<number | string>;
-    registrationReferenceId: Signal<string>;
+    registrationReferenceId: string;
     note: string;
   }): Promise<unknown> {
     return this.httpWrapperService.perform121ServiceRequest<Project>({
       method: 'POST',
-      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registrations/${registrationReferenceId()}/notes`,
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registrations/${registrationReferenceId}/notes`,
       body: {
         text: note,
       },

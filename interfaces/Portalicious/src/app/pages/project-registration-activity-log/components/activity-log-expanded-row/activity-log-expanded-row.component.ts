@@ -17,7 +17,10 @@ import {
 } from '~/components/data-list/data-list.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
+import {
+  REGISTRATION_STATUS_CHIP_VARIANTS,
+  REGISTRATION_STATUS_LABELS,
+} from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 @Component({
@@ -85,11 +88,15 @@ export class ActivityLogExpandedRowComponent
         return [
           {
             label: $localize`Old status`,
-            value: REGISTRATION_STATUS_LABELS[item.attributes.oldValue],
+            chipLabel: REGISTRATION_STATUS_LABELS[item.attributes.oldValue],
+            chipVariant:
+              REGISTRATION_STATUS_CHIP_VARIANTS[item.attributes.oldValue],
           },
           {
             label: $localize`New status`,
-            value: REGISTRATION_STATUS_LABELS[item.attributes.newValue],
+            chipLabel: REGISTRATION_STATUS_LABELS[item.attributes.newValue],
+            chipVariant:
+              REGISTRATION_STATUS_CHIP_VARIANTS[item.attributes.newValue],
           },
         ];
       case ActivityTypeEnum.Transaction: {
@@ -107,7 +114,7 @@ export class ActivityLogExpandedRowComponent
           {
             label: $localize`Approved by`,
             chipLabel: item.user.username,
-            chipVariant: 'blue',
+            chipVariant: 'grey',
           },
           {
             label: $localize`FSP`,

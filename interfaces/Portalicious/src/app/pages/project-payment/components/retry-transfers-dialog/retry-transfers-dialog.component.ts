@@ -11,6 +11,7 @@ import { injectMutation } from '@tanstack/angular-query-experimental';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentMetricDetails } from '~/domains/metric/metric.model';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ToastService } from '~/services/toast.service';
@@ -27,6 +28,7 @@ export class RetryTransfersDialogComponent {
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<string>();
 
+  private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
@@ -44,13 +46,12 @@ export class RetryTransfersDialogComponent {
         paymentId: this.paymentId(),
         referenceIds,
       }),
-    onSuccess: () =>
-      this.paymentApiService.invalidateCache(this.projectId, this.paymentId),
-    onError: (error) => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: error.message,
-      });
+    onSuccess: () => {
+      void this.metricApiService.invalidateCache(this.projectId);
+      void this.paymentApiService.invalidateCache(
+        this.projectId,
+        this.paymentId,
+      );
     },
   }));
 

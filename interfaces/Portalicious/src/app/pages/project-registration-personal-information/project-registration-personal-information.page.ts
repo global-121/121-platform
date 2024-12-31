@@ -89,7 +89,7 @@ export class ProjectRegistrationPersonalInformationPageComponent {
       list.push(genericAttributeListItem);
     }
     for (const attribute of this.projectAttributes.data()) {
-      const value = this.registration.data()[attribute.name] as unknown;
+      const value = this.registration.data()[attribute.name];
       const dataListItem = projectAttributeToDataListItem(attribute, value);
       if (dataListItem) {
         list.push(dataListItem);

@@ -39,7 +39,8 @@ body {
     @apply font-semibold;
   }
 
-  p a {
+  p a,
+  p .p-button-link {
     @apply text-blue-500;
     @apply underline;
   }
@@ -223,6 +224,7 @@ body {
     }
   }
 
+  .p-contextmenu,
   .p-menu {
     @apply w-auto;
 

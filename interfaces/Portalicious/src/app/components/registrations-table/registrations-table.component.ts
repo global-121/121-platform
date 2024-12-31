@@ -27,12 +27,13 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-registrations-table',
-  imports: [QueryTableComponent],
+  imports: [QueryTableComponent, TranslatableStringPipe],
   templateUrl: './registrations-table.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -104,13 +105,15 @@ export class RegistrationsTableComponent {
           }),
       },
       {
-        field: 'fullName',
-        header: $localize`:@@registration-full-name:Full Name`,
+        field: 'name',
+        header: $localize`:@@registration-full-name:Name`,
         getCellRouterLink: (registration) =>
           registrationLink({
             projectId: this.projectId(),
             registrationId: registration.id,
           }),
+        fieldForFilter: 'fullName',
+        fieldForSort: 'fullName',
       },
       {
         field: 'status',

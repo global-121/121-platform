@@ -117,12 +117,4 @@ export class ProjectRegistrationActivityLogPageComponent {
       type: QueryTableColumnType.DATE,
     },
   ]);
-
-  globalFilterFields = computed<(keyof Activity)[]>(() => [
-    'type',
-    // TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
-    // @ts-expect-error the typing of query-table does not support "leaves" but the functionality does
-    'user.username',
-    'created',
-  ]);
 }

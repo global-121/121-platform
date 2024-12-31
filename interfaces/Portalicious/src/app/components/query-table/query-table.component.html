@@ -89,70 +89,65 @@
         </th>
       }
       @for (column of visibleColumns(); track $index) {
-        @if (column.field) {
-          <th
-            [pSortableColumn]="getColumnSortField(column)"
-            style="min-width: 14rem"
-          >
-            <div class="flex items-center">
-              <ng-container>{{ column.header }}</ng-container>
+        @let columnSortField = getColumnSortField(column);
+        @let columnFilterField = getColumnFilterField(column);
+        @let columnMatchMode = getColumnMatchMode(column);
 
-              @let columnSortField = getColumnSortField(column);
+        <th
+          [pSortableColumn]="columnSortField"
+          style="min-width: 14rem"
+        >
+          <div class="flex items-center">
+            <ng-container>{{ column.header }}</ng-container>
 
-              @if (columnSortField) {
-                <p-sortIcon
-                  [field]="columnSortField"
-                  class="me-0 ms-2 mt-1"
+            @if (columnSortField) {
+              <p-sortIcon
+                [field]="columnSortField"
+                class="me-0 ms-2 mt-1"
+              />
+            }
+
+            @if (columnFilterField) {
+              @if (column.type === 'multiselect') {
+                <p-columnFilter
+                  [field]="columnFilterField"
+                  [matchMode]="columnMatchMode"
+                  display="menu"
+                  [showMatchModes]="false"
+                  [showOperator]="false"
+                  [showAddButton]="false"
+                >
+                  <ng-template
+                    pTemplate="filter"
+                    let-value
+                    let-filter="filterCallback"
+                  >
+                    <p-multiSelect
+                      [ngModel]="value"
+                      [options]="column.options"
+                      (onChange)="filter($event.value)"
+                      [optionLabel]="'label'"
+                      [optionValue]="'value'"
+                      placeholder="Choose option(s)"
+                      i18n-placeholder
+                    >
+                    </p-multiSelect>
+                  </ng-template>
+                </p-columnFilter>
+              } @else {
+                <p-columnFilter
+                  [type]="getColumnType(column)"
+                  [field]="columnFilterField"
+                  display="menu"
+                  [matchMode]="columnMatchMode"
+                  [showMatchModes]="false"
+                  [showOperator]="false"
+                  [showAddButton]="false"
                 />
               }
-
-              @let columnFilterField = getColumnFilterField(column);
-              @let columnMatchMode = getColumnMatchMode(column);
-
-              @if (columnFilterField) {
-                @if (column.type === 'multiselect') {
-                  <p-columnFilter
-                    [field]="columnFilterField"
-                    [matchMode]="columnMatchMode"
-                    display="menu"
-                    [showMatchModes]="false"
-                    [showOperator]="false"
-                    [showAddButton]="false"
-                  >
-                    <ng-template
-                      pTemplate="filter"
-                      let-value
-                      let-filter="filterCallback"
-                    >
-                      <p-multiSelect
-                        [ngModel]="value"
-                        [options]="column.options"
-                        (onChange)="filter($event.value)"
-                        [optionLabel]="'label'"
-                        [optionValue]="'value'"
-                        placeholder="Choose option(s)"
-                        i18n-placeholder
-                      >
-                      </p-multiSelect>
-                    </ng-template>
-                  </p-columnFilter>
-                } @else {
-                  <p-columnFilter
-                    [type]="getColumnType(column)"
-                    [field]="columnFilterField"
-                    display="menu"
-                    [matchMode]="columnMatchMode"
-                    [showMatchModes]="false"
-                    [showOperator]="false"
-                    [showAddButton]="false"
-                  />
-                }
-              }
-            </div>
-          </th>
-        } @else {
-          <th style="min-width: 14rem">{{ column.header }}</th>
-        }
+            }
+          </div>
+        </th>
       }
       @if (contextMenuItems()) {
         <!-- Extra column for the ellipsis button -->
@@ -282,29 +277,46 @@
     <tr data-testid="query-table-empty">
       <td [attr.colspan]="totalColumnCount()">
         <div class="w-full py-6 text-center">
-          <i class="pi pi-filter mb-5 inline text-xl"></i>
+          @if (isFiltered()) {
+            <i class="pi pi-filter mb-5 inline text-xl"></i>
 
-          <p
-            i18n
-            class="mb-2 font-bold"
-          >
-            No results found
-          </p>
+            <p
+              i18n
+              class="mb-2 font-bold"
+            >
+              No results found
+            </p>
+            <p
+              i18n
+              class="mb-8"
+            >
+              There are no records that match the selected filters, clear some
+              or all filters to continue.
+            </p>
 
-          <p
-            i18n
-            class="mb-8"
-          >
-            There are no records that match the selected filters, clear some or
-            all filters to continue.
-          </p>
-
-          <p-button
-            label="Clear all filters"
-            i18n-label="@@table-clear-filters"
-            link
-            (click)="clearAllFilters()"
-          />
+            <p-button
+              label="Clear all filters"
+              i18n-label="@@table-clear-filters"
+              link
+              (click)="clearAllFilters()"
+            />
+          } @else {
+            @let emptyMessageTemplate = emptyMessage();
+            @if (emptyMessageTemplate) {
+              <ng-container
+                [ngTemplateOutlet]="emptyMessageTemplate"
+              ></ng-container>
+            } @else {
+              <i class="pi pi-exclamation-circle mb-3 inline text-xl"></i>
+              <p
+                i18n
+                class="mb-2 font-bold"
+              >
+                No results
+              </p>
+              <p i18n>There are no records to display.</p>
+            }
+          }
         </div>
       </td>
     </tr>

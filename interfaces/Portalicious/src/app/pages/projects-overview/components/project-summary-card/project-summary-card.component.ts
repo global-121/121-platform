@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,7 +27,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     CardWithLinkComponent,
     CardSummaryMetricsContainerComponent,
   ],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './project-summary-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +37,7 @@ export class ProjectSummaryCardComponent {
   private projectApiService = inject(ProjectApiService);
   private paymentApiService = inject(PaymentApiService);
   private currencyPipe = inject(CurrencyPipe);
+  private decimalPipe = inject(DecimalPipe);
 
   public id = input.required<number>();
 
@@ -70,11 +71,11 @@ export class ProjectSummaryCardComponent {
 
     return [
       {
-        value: this.metrics.data()?.targetedPeople,
+        value: this.decimalPipe.transform(this.metrics.data()?.targetedPeople),
         label: $localize`Target registrations`,
       },
       {
-        value: this.metrics.data()?.includedPeople,
+        value: this.decimalPipe.transform(this.metrics.data()?.includedPeople),
         label: $localize`Included registrations`,
       },
       {
