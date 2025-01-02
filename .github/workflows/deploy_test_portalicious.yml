@@ -5,12 +5,6 @@ name: 'Deploy [test] Interface: Portalicious'
 env:
   workingDirectory: interfaces/Portalicious
 
-permissions:
-  actions: read
-  # Disabling this to avoid spamming the PR with "Your stage site is ready!" comments
-  # https://github.com/Azure/static-web-apps/issues/1135#issuecomment-1750066331
-  # pull-requests: write
-
 on:
   workflow_call:
     secrets:
@@ -37,6 +31,11 @@ jobs:
   test:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      # Disabling this to avoid spamming the PR with "Your stage site is ready!" comments
+      # https://github.com/Azure/static-web-apps/issues/1135#issuecomment-1750066331
+      # pull-requests: write
     environment: 'test'
     env:
       NG_ENV_NAME: 'test'
@@ -51,7 +50,8 @@ jobs:
       AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
       AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-
+    outputs:
+      preview_url: ${{ steps.deploy_to_aswa.outputs.static_web_app_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,11 +88,25 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           npm run verify:deployment-configuration -- --url=${{ steps.deploy_to_aswa.outputs.static_web_app_url }}
-
       - name: Finish
         run: |
           echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
+
+  add_staging_comment:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Add Deployment URL to PR Description
+        uses: nefrob/pr-description@v1.2.0
+        with:
+          content: ${{ needs.test.outputs.preview_url }}
+          regex: '<!-- start deployment url -->.*?<!-- end deployment url -->'
+          regexFlags: ims
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
