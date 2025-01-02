@@ -182,6 +182,11 @@ class PaymentsPage extends BasePage {
     await this.exportDropdown.click();
     await this.page.getByRole('menuitem', { name: option }).click();
   }
+
+  async validateGraphStatus() {
+    const graphText = await this.page.locator('canvas').textContent();
+    console.log(graphText);
+  }
 }
 
 export default PaymentsPage;
