@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -6,19 +7,25 @@ import { seedIncludedRegistrations } from '@121-service/test/helpers/registratio
 import {
   getAccessToken,
   resetDB,
+  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdOCW,
+  registrationOCW1,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
-
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
+  await seedIncludedRegistrations(
+    [registrationOCW1],
+    programIdOCW,
+    accessToken,
+  );
+  await resetDuplicateRegistrations(8);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -29,32 +36,32 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31971] Show payment summary', async ({ page }) => {
+test('[32296] Show in progress chip when payment is in progress', async ({
+  page,
+}) => {
   const paymentsPage = new PaymentsPage(page);
-
-  const projectTitle = 'NLRC OCW Program';
-  const financialServiceProviders: string[] = [
-    'Visa debit card',
-    'Albert Heijn voucher WhatsApp',
-  ];
-  const numberOfPas = registrationsOCW.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
+  const projectTitle = NLRCProgram.titlePortal.en;
+  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
+
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Create payment', async () => {
+  await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
-    await paymentsPage.validatePaymentSummary({
-      fsp: financialServiceProviders,
-      registrationsNumber: numberOfPas,
-      currency: '€',
-      paymentAmount: defaultMaxTransferValue,
-    });
+    await paymentsPage.startPayment();
+    // Assert redirection to payment overview page
+    await page.waitForURL((url) =>
+      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+    );
+    // Assert payment overview page by payment date/ title
+    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+  });
+
+  await test.step('Validate payemnt in progress in Payment overview', async () => {
+    await paymentsPage.validateToastMessage('Payment created.');
+    await paymentsPage.validateInProgressChipIsPresent();
   });
 });
