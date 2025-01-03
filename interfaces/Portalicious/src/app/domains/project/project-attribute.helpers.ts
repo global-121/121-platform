@@ -17,6 +17,15 @@ export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   inclusionScore: $localize`:@@attribute-label-inclusionScore:Inclusion Score`,
 };
 
+export const ATTRIBUTE_EDIT_INFO: Partial<
+  Record<GenericRegistrationAttributes, string>
+> = {
+  maxPayments: $localize`:@@attribute-edit-info-maxPayments:The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.`,
+  paymentAmountMultiplier: $localize`:@@attribute-edit-info-paymentAmountMultiplier:The transfer value will be multiplied by this number for this Person Affected`,
+  phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:The required format is: ONLY numbers, including country-code.`,
+  scope: $localize`:@@attribute-edit-info-scope:Separate the parts with a dot (i.e. 'amsterdam.west').`,
+};
+
 export const isGenericAttribute = (
   name: string,
 ): name is GenericRegistrationAttributes => name in ATTRIBUTE_LABELS;
