@@ -10,7 +10,7 @@ import {
 } from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocusModule } from 'primeng/autofocus';
+import { AutoFocus } from 'primeng/autofocus';
 import { PasswordModule } from 'primeng/password';
 
 import { FormDefaultComponent } from '~/components/form/form-default.component';
@@ -48,9 +48,8 @@ type ChangePasswordFormGroup =
 
 @Component({
   selector: 'app-basic-auth-change-password',
-  standalone: true,
   imports: [
-    AutoFocusModule,
+    AutoFocus,
     PasswordModule,
     ReactiveFormsModule,
     FormDefaultComponent,

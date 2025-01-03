@@ -19,9 +19,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
 
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -39,15 +37,12 @@ type AddUserToTeamFormGroup =
 @Component({
   selector: 'app-add-user-form',
   styles: ``,
-  standalone: true,
   templateUrl: './add-user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
     FormSidebarComponent,
     FormFieldWrapperComponent,
-    DropdownModule,
-    MultiSelectModule,
     InputTextModule,
     ReactiveFormsModule,
   ],
@@ -60,23 +55,18 @@ export class AddUserFormComponent {
   private toastService = inject(ToastService);
 
   constructor() {
-    effect(
-      () => {
-        const user = this.userToEdit();
-        if (user) {
-          this.formGroup.patchValue({
-            displayNameValue: user.displayName,
-            usernameValue: user.username,
-          });
-          this.formGroup.controls.usernameValue.disable();
-        } else {
-          this.formGroup.controls.usernameValue.enable();
-        }
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
+    effect(() => {
+      const user = this.userToEdit();
+      if (user) {
+        this.formGroup.patchValue({
+          displayNameValue: user.displayName,
+          usernameValue: user.username,
+        });
+        this.formGroup.controls.usernameValue.disable();
+      } else {
+        this.formGroup.controls.usernameValue.enable();
+      }
+    });
   }
 
   isEditing = computed(() => !!this.userToEdit());

@@ -5,7 +5,6 @@ import { SummaryMetric } from '~/domains/metric/metric.model';
 
 @Component({
   selector: 'app-card-summary-metrics-container',
-  standalone: true,
   imports: [MetricContainerComponent],
   templateUrl: './card-summary-metrics-container.component.html',
   styles: ``,

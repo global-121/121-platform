@@ -4,7 +4,7 @@ import {
   computed,
   inject,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import {
@@ -30,7 +30,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-users',
-  standalone: true,
   imports: [
     PageLayoutComponent,
     ButtonModule,
@@ -49,8 +48,10 @@ export class UsersPageComponent {
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
 
-  @ViewChild('resetPasswordConfirmationDialog')
-  private resetPasswordConfirmationDialog: ConfirmationDialogComponent;
+  readonly resetPasswordConfirmationDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'resetPasswordConfirmationDialog',
+    );
 
   users = injectQuery(this.userApiService.getAllUsers());
 
@@ -115,7 +116,7 @@ export class UsersPageComponent {
         label: $localize`:@@reset-password-button:Reset password`,
         icon: 'pi pi-refresh',
         command: () => {
-          this.resetPasswordConfirmationDialog.askForConfirmation();
+          this.resetPasswordConfirmationDialog().askForConfirmation();
         },
       },
       {

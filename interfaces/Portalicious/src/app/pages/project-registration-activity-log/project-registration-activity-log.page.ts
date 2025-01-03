@@ -32,7 +32,6 @@ export interface ActivityLogTableCellContext {
 
 @Component({
   selector: 'app-project-registration-activity-log',
-  standalone: true,
   imports: [
     FormsModule,
     SelectButtonModule,

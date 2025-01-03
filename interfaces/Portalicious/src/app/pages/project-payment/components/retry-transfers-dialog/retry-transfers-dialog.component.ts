@@ -4,7 +4,7 @@ import {
   inject,
   input,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
@@ -17,7 +17,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-retry-transfers-dialog',
-  standalone: true,
   imports: [ConfirmationDialogComponent],
   templateUrl: './retry-transfers-dialog.component.html',
   styles: ``,
@@ -33,8 +32,10 @@ export class RetryTransfersDialogComponent {
 
   referenceIdsForRetryTransfers = signal<string[]>([]);
 
-  @ViewChild('retryTransfersConfirmationDialog')
-  private retryTransfersConfirmationDialog: ConfirmationDialogComponent;
+  readonly retryTransfersConfirmationDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'retryTransfersConfirmationDialog',
+    );
 
   retryFailedTransfersMutation = injectMutation(() => ({
     mutationFn: (referenceIds: string[]) =>
@@ -85,6 +86,6 @@ export class RetryTransfersDialogComponent {
     );
 
     this.referenceIdsForRetryTransfers.set(referenceIds);
-    this.retryTransfersConfirmationDialog.askForConfirmation();
+    this.retryTransfersConfirmationDialog().askForConfirmation();
   }
 }

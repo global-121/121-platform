@@ -7,7 +7,7 @@ import {
   input,
   model,
   SecurityContext,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -21,7 +21,6 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 
 @Component({
   selector: 'app-activity-log-voucher-dialog',
-  standalone: true,
   imports: [ButtonModule, DialogModule, ScrollPanelModule, SkeletonModule],
   templateUrl: './activity-log-voucher-dialog.component.html',
   styles: ``,
@@ -36,7 +35,8 @@ export class ActivityLogVoucherDialogComponent {
   private readonly projectApiService = inject(ProjectApiService);
   private readonly domSanitizer = inject(DomSanitizer);
 
-  @ViewChild('voucherIframe') voucherIframe: ElementRef<HTMLIFrameElement>;
+  readonly voucherIframe =
+    viewChild<ElementRef<HTMLIFrameElement>>('voucherIframe');
 
   dialogVisible = model(false);
 
@@ -79,7 +79,7 @@ export class ActivityLogVoucherDialogComponent {
   );
 
   printVoucher() {
-    const contentWindow = this.voucherIframe.nativeElement.contentWindow;
+    const contentWindow = this.voucherIframe()?.nativeElement.contentWindow;
     contentWindow?.focus(); // Required for IE
     contentWindow?.print();
   }

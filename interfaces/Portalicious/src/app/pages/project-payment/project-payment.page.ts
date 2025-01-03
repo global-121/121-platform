@@ -8,7 +8,7 @@ import {
   LOCALE_ID,
   Signal,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -58,7 +58,6 @@ export interface TransactionsTableCellContext {
 
 @Component({
   selector: 'app-project-payment',
-  standalone: true,
   imports: [
     PageLayoutComponent,
     CardModule,
@@ -91,10 +90,12 @@ export class ProjectPaymentPageComponent {
   private toastService = inject(ToastService);
   private translatableStringService = inject(TranslatableStringService);
 
-  @ViewChild('table')
-  private table: QueryTableComponent<PaymentMetricDetails, never>;
-  @ViewChild('retryTransfersDialog')
-  private retryTransfersDialog: RetryTransfersDialogComponent;
+  readonly table =
+    viewChild.required<QueryTableComponent<PaymentMetricDetails, never>>(
+      'table',
+    );
+  readonly retryTransfersDialog =
+    viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
 
   contextMenuSelection = signal<PaymentMetricDetails | undefined>(undefined);
 
@@ -328,8 +329,8 @@ export class ProjectPaymentPageComponent {
       return;
     }
 
-    this.retryTransfersDialog.retryFailedTransfers({
-      table: this.table,
+    this.retryTransfersDialog().retryFailedTransfers({
+      table: this.table(),
       triggeredFromContextMenu,
       contextMenuItem: this.contextMenuSelection(),
     });

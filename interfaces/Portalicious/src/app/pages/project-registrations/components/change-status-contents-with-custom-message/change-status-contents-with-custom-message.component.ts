@@ -24,7 +24,6 @@ import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-change-status-contents-with-custom-message',
-  standalone: true,
   imports: [
     CustomMessagePreviewComponent,
     CustomMessageControlComponent,

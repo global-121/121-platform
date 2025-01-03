@@ -28,7 +28,6 @@ import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-project-monitoring',
-  standalone: true,
   imports: [
     PageLayoutComponent,
     CurrencyPipe,

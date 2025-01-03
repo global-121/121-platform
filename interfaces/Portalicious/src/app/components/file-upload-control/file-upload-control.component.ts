@@ -15,7 +15,6 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-file-upload-control',
-  standalone: true,
   imports: [ButtonModule, DialogModule, FileUploadModule, NgxFilesizeModule],
   templateUrl: './file-upload-control.component.html',
   providers: [

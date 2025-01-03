@@ -3,7 +3,7 @@ import {
   Component,
   inject,
   input,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
@@ -15,7 +15,6 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 
 @Component({
   selector: 'app-confirmation-dialog',
-  standalone: true,
   imports: [ConfirmDialogModule, ButtonModule, FormErrorComponent],
   providers: [ConfirmationService],
   templateUrl: './confirmation-dialog.component.html',
@@ -33,7 +32,7 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
   headerIcon = input<string>('pi pi-question');
   proceedLabel = input($localize`:@@generic-proceed:Proceed`);
 
-  @ViewChild('confirmDialog') confirmDialog: ConfirmDialog;
+  readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
 
   askForConfirmation({
     resetMutation = true,
@@ -47,7 +46,7 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
   onProceed() {
     this.mutation().mutate(this.mutationData(), {
       onSuccess: () => {
-        this.confirmDialog.accept();
+        this.confirmDialog().onAccept();
       },
     });
   }

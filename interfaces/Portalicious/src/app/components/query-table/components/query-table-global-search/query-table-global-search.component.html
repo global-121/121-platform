@@ -2,13 +2,13 @@
   @if (globalFilterVisible() || !!globalFilterValue()) {
     <p-iconField
       iconPosition="left"
-      pAutoFocus
       [autofocus]="true"
     >
       <p-inputIcon styleClass="pi pi-search" />
       <input
         #globalFilterInput
         pInputText
+        [pAutoFocus]="true"
         type="text"
         [value]="globalFilterValue() ?? ''"
         (input)="filterChange.emit(globalFilterInput.value)"

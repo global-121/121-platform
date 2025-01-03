@@ -12,7 +12,6 @@ import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-auth-callback',
-  standalone: true,
   imports: [PageLayoutComponent, ProgressSpinnerModule],
   templateUrl: './auth-callback.page.html',
   styles: ``,

@@ -4,7 +4,6 @@ import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-info-tooltip',
-  standalone: true,
   imports: [TooltipModule],
   templateUrl: './info-tooltip.component.html',
   styles: ``,

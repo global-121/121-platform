@@ -12,7 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { TabMenuModule } from 'primeng/tabmenu';
 
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
@@ -32,10 +31,8 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 
 @Component({
   selector: 'app-project-registration-personal-information',
-  standalone: true,
   imports: [
     CardModule,
-    TabMenuModule,
     CommonModule,
     FormsModule,
     SelectButtonModule,

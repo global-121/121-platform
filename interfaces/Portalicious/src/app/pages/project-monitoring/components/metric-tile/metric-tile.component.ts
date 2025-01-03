@@ -12,7 +12,6 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 
 @Component({
   selector: 'app-metric-tile',
-  standalone: true,
   imports: [
     CardModule,
     ColoredChipComponent,

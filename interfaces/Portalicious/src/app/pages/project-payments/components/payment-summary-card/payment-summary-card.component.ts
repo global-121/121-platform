@@ -21,7 +21,6 @@ import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-payment-summary-card',
-  standalone: true,
   imports: [
     SkeletonInlineComponent,
     ColoredChipComponent,

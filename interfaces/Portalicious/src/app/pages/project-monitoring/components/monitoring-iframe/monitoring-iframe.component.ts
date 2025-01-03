@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-monitoring-iframe',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './monitoring-iframe.component.html',
   styles: ``,

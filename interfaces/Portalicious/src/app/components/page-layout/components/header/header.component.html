@@ -38,8 +38,7 @@
     </div>
   </ng-template>
 </p-toolbar>
-<p-sidebar
-  data-testid="sidebar"
+<p-drawer
   #sideBar
   [(visible)]="sidebarVisible"
   [closeOnEscape]="true"
@@ -60,7 +59,10 @@
       (click)="sidebarVisible.set(false)"
     />
   </ng-template>
-  <div class="flex h-full w-full flex-col">
+  <div
+    class="flex h-full w-full flex-col"
+    data-testid="sidebar"
+  >
     <div class="mb-auto">
       @for (sidebarLink of sidebarLinks(); track $index) {
         <a
@@ -104,4 +106,4 @@
       </small>
     </div>
   </div>
-</p-sidebar>
+</p-drawer>

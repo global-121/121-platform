@@ -22,7 +22,6 @@ import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/project-permissions-guard'
 
 @Component({
   selector: 'app-page-layout',
-  standalone: true,
   imports: [
     HeaderComponent,
     ProjectMenuComponent,

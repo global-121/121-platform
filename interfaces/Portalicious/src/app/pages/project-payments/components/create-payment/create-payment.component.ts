@@ -9,7 +9,7 @@ import {
   input,
   model,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -53,7 +53,6 @@ const queryParamStep = 'create-payment-step';
 
 @Component({
   selector: 'app-create-payment',
-  standalone: true,
   imports: [
     ButtonModule,
     DialogModule,
@@ -87,10 +86,11 @@ export class CreatePaymentComponent {
   toastService = inject(ToastService);
   translatableStringService = inject(TranslatableStringService);
 
-  @ViewChild('createPaymentDialog')
-  createPaymentDialog: Dialog;
-  @ViewChild('registrationsTable')
-  registrationsTable: RegistrationsTableComponent | undefined;
+  readonly createPaymentDialog = viewChild.required<Dialog>(
+    'createPaymentDialog',
+  );
+  readonly registrationsTable =
+    viewChild<RegistrationsTableComponent>('registrationsTable');
 
   dialogVisible = model(false);
   dryRunResult = signal<Dto<BulkActionResultPaymentDto> | undefined>(undefined);
@@ -216,9 +216,9 @@ export class CreatePaymentComponent {
     }
 
     this.dryRunResult.set(undefined);
-    this.registrationsTable?.resetSelection();
+    this.registrationsTable()?.resetSelection();
     this.dialogVisible.set(true);
-    this.createPaymentDialog.maximize();
+    this.createPaymentDialog().maximize();
   }
 
   currentStep = computed(() => {
@@ -245,7 +245,7 @@ export class CreatePaymentComponent {
   }
 
   createPayment() {
-    const actionData = this.registrationsTable?.getActionData();
+    const actionData = this.registrationsTable()?.getActionData();
 
     if (!actionData) {
       return;
@@ -334,7 +334,7 @@ export class CreatePaymentComponent {
       command: () => {
         this.exportRegistrationsMutation.mutate({
           type: ExportType.allPeopleAffected,
-          paginateQuery: this.registrationsTable?.getActionData()?.query,
+          paginateQuery: this.registrationsTable()?.getActionData()?.query,
         });
       },
     },

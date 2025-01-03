@@ -47,7 +47,6 @@ export type DataListItem = {
 
 @Component({
   selector: 'app-data-list',
-  standalone: true,
   imports: [
     InfoTooltipComponent,
     CurrencyPipe,

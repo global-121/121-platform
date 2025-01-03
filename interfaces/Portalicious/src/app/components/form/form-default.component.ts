@@ -8,7 +8,6 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 
 @Component({
   selector: 'app-form-default',
-  standalone: true,
   imports: [ButtonModule, ReactiveFormsModule, FormErrorComponent],
   templateUrl: './form-default.component.html',
   styles: ``,

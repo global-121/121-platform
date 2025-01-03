@@ -1,10 +1,6 @@
-@layer tailwind-base, primeng, tailwind-utilities;
-
 // Please take note of the order in which these are imported
 @import 'tailwindcss/base.css' layer(tailwind-base);
 
-@import 'primeng/resources/primeng.css';
-@import 'primeng/resources/themes/aura-light-blue/theme.css';
 @import 'primeicons/primeicons.css';
 
 @import 'tailwindcss/components.css' layer(tailwind-utilities);
@@ -38,10 +34,6 @@ body {
     @apply font-bold txt-h-3;
   }
 
-  label {
-    @apply font-semibold;
-  }
-
   strong,
   b {
     @apply font-semibold;
@@ -54,7 +46,7 @@ body {
 }
 
 .mention-menu {
-  box-shadow: 0px 2px 12px 0px #0000001a;
+  @apply shadow-menu;
 
   li {
     .mention-item {
@@ -72,10 +64,7 @@ body {
 }
 
 // PrimeNG Component overrides
-//
-// For now we're just overriding some defaults here instead of extending the whole theme,
-// while we wait for PrimeNG v18 to be released with the new theming system.
-//
+
 // Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
 // Following the pattern:
 //
@@ -87,7 +76,7 @@ body {
 //
 // So there will only be ONE section/grouping per PrimeNG component.
 //
-@layer primeng {
+@layer primeng-customisations {
   $toolbar-height: calc(48 / 14 * 1rem);
 
   .p-button {
@@ -108,36 +97,25 @@ body {
     @apply text-black;
 
     .p-card-title {
-      @apply text-black txt-h-2;
+      @apply pb-2 pl-2 font-bold text-black txt-h-2;
     }
   }
 
-  .p-tabmenu {
-    // The ink bar is manually positioned via the 'left' property, but it is broken on page load.
-    // These two rules fix the issue by hiding the ink bar and overriding the default behaviour of the selected tab.
-    .p-tabmenu-ink-bar {
-      display: none;
-    }
-    .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
-      @apply border-purple-700 text-purple-700;
-    }
-  }
-
-  .p-sidebar {
+  .p-drawer {
     color: inherit;
 
-    .p-sidebar-header {
+    .p-drawer-header {
       @apply pl-3;
       height: $toolbar-height - 2;
 
-      .p-sidebar-icon {
+      .p-drawer-icon {
         margin-inline-start: 0;
         height: 33px;
         width: 33px;
       }
     }
 
-    .p-sidebar-content {
+    .p-drawer-content {
       padding-inline-start: 0;
       padding-inline-end: 0;
     }
@@ -151,12 +129,6 @@ body {
     .p-toolbar-group-start {
       white-space: nowrap;
       overflow: hidden;
-    }
-  }
-
-  .p-toast {
-    .p-toast-message-content {
-      border: none; // Hide the 'thick' border, the box-shadow alone is enough emphasis
     }
   }
 
@@ -180,9 +152,9 @@ body {
       @apply bg-grey-50 text-black;
     }
 
-    .p-sortable-column {
-      &:not(.p-highlight),
-      &.p-highlight {
+    .p-datatable-sortable-column {
+      &:not(.p-datatable-column-sorted),
+      &.p-datatable-column-sorted {
         @apply bg-grey-50 text-black;
 
         &:hover,
@@ -191,33 +163,39 @@ body {
         }
       }
 
-      &.p-highlight {
+      &.p-datatable-column-sorted {
         .p-sortable-column-icon {
           @apply text-purple-700;
         }
       }
     }
 
-    .p-column-filter-menu-button.p-column-filter-menu-button-active,
-    .p-column-filter-menu-button.p-column-filter-menu-button-active:hover,
-    .p-column-filter-menu-button.p-column-filter-menu-button-active:focus {
-      @apply bg-purple-100 text-purple-700;
-    }
+    // Styling for the filter button when active
+    // Currently broken: https://github.com/primefaces/primeng/issues/16576
+    // .p-datatable-column-filter-button.p-column-filter-menu-button-active,
+    // .p-datatable-column-filter-button.p-column-filter-menu-button-active:hover,
+    // .p-datatable-column-filter-button.p-column-filter-menu-button-active:focus {
+    //   @apply bg-purple-100 text-purple-700;
+    // }
   }
 
-  .p-chip .p-chip-text {
+  .p-chip .p-chip-label {
     @apply font-semibold txt-body-m;
   }
 
   // All form-inputs should be full-width, a wrapper should be in control of the width.
   .p-password,
-  .p-dropdown,
+  .p-select,
   .p-multiselect {
     @apply w-full;
 
-    .p-dropdown-panel,
-    .p-multiselect-panel {
+    .p-select-overlay,
+    .p-multiselect-overlay {
       @apply max-w-full;
+    }
+
+    .p-paginator & {
+      @apply w-auto;
     }
   }
 
@@ -233,12 +211,14 @@ body {
       @apply items-start text-wrap;
     }
   }
-
-  .p-element.ng-touched.ng-invalid {
-    .p-inputwrapper,
-    .p-inputtext,
-    &.p-inputtext,
-    &.p-inputtextarea {
+  // To be able to remove this rule we need to be able to mark all form fields as "dirty" instead of "touched" on form submit
+  // Waiting for this to be merged & released in angular: https://github.com/angular/angular/pull/58663#issuecomment-2476844180
+  .p-inputwrapper,
+  .p-textarea,
+  .p-checkbox-box,
+  .p-inputtext {
+    &.ng-touched.ng-invalid,
+    [formcontrolname].ng-touched.ng-invalid & {
       border-color: theme('colors.red.500') !important;
     }
   }
@@ -246,31 +226,21 @@ body {
   .p-menu {
     @apply w-auto;
 
-    .p-menuitem {
-      &:not(.p-highlight):not(.p-disabled) {
-        > .p-menuitem-content:hover {
-          @apply bg-purple-100 text-purple-700;
-        }
-      }
-    }
-
     .p-menuitem-text {
       @apply whitespace-nowrap;
     }
   }
 
-  .p-fileupload {
-    .p-fileupload-buttonbar,
-    p-progressbar {
-      display: none;
+  .p-fileupload.p-fileupload-advanced {
+    @apply rounded-[16px] border border-dashed border-grey-500;
+
+    .ng-touched.ng-invalid & {
+      @apply border-red-500;
     }
 
-    .p-fileupload-content {
-      @apply rounded-[16px] border border-dashed border-grey-500;
-
-      .ng-touched.ng-invalid & {
-        @apply border-red-500;
-      }
+    .p-fileupload-header,
+    p-progressbar {
+      display: none;
     }
 
     .p-fileupload-filename,
@@ -283,11 +253,13 @@ body {
     }
   }
 
-  .p-checkbox-label {
-    @apply font-normal;
-  }
-
   .p-progress-spinner-svg .p-progress-spinner-circle {
     @apply stroke-purple-700 #{!important};
+  }
+
+  .p-toast {
+    .p-toast-close-button {
+      @apply text-grey-700;
+    }
   }
 }
