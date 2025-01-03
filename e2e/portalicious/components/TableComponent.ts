@@ -71,6 +71,67 @@ class TableComponent {
     // wait for 500s for filter to be cleared in the BE
     await this.page.waitForTimeout(500);
   }
+
+  async getSortingTypeOfColumn({ columnName }: { columnName: string }) {
+    const sortingType = await this.page
+      .getByRole('columnheader', { name: columnName })
+      .getAttribute('aria-sort');
+
+    return sortingType;
+  }
+
+  async sortAndValidateColumnByName({ columnName }: { columnName: string }) {
+    const columnToSort = this.page
+      .getByRole('columnheader', { name: columnName })
+      .locator('p-sorticon');
+
+    await columnToSort.click();
+    let sortingType = await this.getSortingTypeOfColumn({ columnName });
+    expect(sortingType).toContain('ascending');
+
+    await columnToSort.click();
+    sortingType = await this.getSortingTypeOfColumn({ columnName });
+    expect(sortingType).toContain('descending');
+  }
+
+  async sortColumnByName({
+    columnName,
+    sort,
+  }: {
+    columnName: string;
+    sort: 'ascending' | 'descending';
+  }) {
+    const columnToSort = this.page
+      .getByRole('columnheader', { name: columnName })
+      .locator('p-sorticon');
+
+    let sortingType = await this.getSortingTypeOfColumn({ columnName });
+
+    if (sortingType === 'none') {
+      // Click once to go to ascending
+      await columnToSort.click();
+      sortingType = await this.getSortingTypeOfColumn({ columnName });
+
+      if (sort === 'ascending') {
+        expect(sortingType).toContain('ascending');
+        return;
+      }
+    }
+
+    // If the current state is not the desired state, click to change it
+    if (sortingType !== sort) {
+      await columnToSort.click();
+      sortingType = await this.getSortingTypeOfColumn({ columnName });
+
+      // If still not in the desired state, click again
+      if (sortingType !== sort) {
+        await columnToSort.click();
+        sortingType = await this.getSortingTypeOfColumn({ columnName });
+      }
+    }
+
+    expect(sortingType).toContain(sort);
+  }
 }
 
 export default TableComponent;
