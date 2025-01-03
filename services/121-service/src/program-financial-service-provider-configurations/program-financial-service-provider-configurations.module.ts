@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationsController } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.controller';
@@ -14,7 +13,6 @@ import { ProgramFinancialServiceProviderConfigurationsService } from '@121-servi
       ProgramFinancialServiceProviderConfigurationEntity,
       ProgramFinancialServiceProviderConfigurationPropertyEntity,
     ]),
-    TransactionsModule,
   ],
   providers: [
     ProgramFinancialServiceProviderConfigurationsService,
