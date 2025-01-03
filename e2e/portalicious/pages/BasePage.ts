@@ -40,7 +40,7 @@ class BasePage {
   }
 
   async navigateToProgramPage(pageName: string) {
-    await this.projectHeader.getByLabel(pageName).click();
+    await this.projectHeader.getByRole('tab', { name: pageName }).click();
   }
 
   async selectProgram(programName: string) {
