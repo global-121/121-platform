@@ -123,9 +123,17 @@ export class ProjectMonitoringPageComponent {
       },
       {
         label: $localize`FSP(s)`,
-        value: projectData?.programFinancialServiceProviderConfigurations
-          .map((fsp) => this.translatableStringService.translate(fsp.label))
-          .join(', '),
+        value:
+          projectData?.programFinancialServiceProviderConfigurations.map(
+            (fsp) => fsp.name,
+          ) ?? [],
+        type: 'options',
+        options: projectData?.programFinancialServiceProviderConfigurations.map(
+          (config) => ({
+            label: config.label,
+            value: config.name,
+          }),
+        ),
       },
       {
         label: $localize`Budget`,
