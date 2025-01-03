@@ -55,10 +55,11 @@ describe('SafaricomApiService', () => {
   describe('transfer', () => {
     it('should succeed without authenticating if tokenSet still valid', async () => {
       // Arrange (mock)
-      safaricomApiService.tokenSet = new TokenSet({
+      const tokenSet = new TokenSet({
         access_token: 'mocked-access-token',
         expires_at: Date.now() + 10 * 60 * 1000, // 10 minute from now, therefore valid
       });
+      safaricomApiService.setTokenSet(tokenSet);
 
       // Act
       const transferResult = await safaricomApiService.transfer(transferInput);
@@ -69,7 +70,7 @@ describe('SafaricomApiService', () => {
       expect(transferResult).toBeDefined();
     });
 
-    it('should return success response if all API-calls succeed', async () => {
+    it('should succeed with authenticating if no tokenSet present', async () => {
       // Arrange (mock)
       const mockGetAuthenticationResponse: AuthResponseSafaricomApiDto = {
         data: {
@@ -85,6 +86,8 @@ describe('SafaricomApiService', () => {
       const transferResult = await safaricomApiService.transfer(transferInput);
 
       // Assert
+      expect(customHttpService.get).toHaveBeenCalled();
+      expect(customHttpService.post).toHaveBeenCalled();
       expect(transferResult).toBeDefined();
       expect(transferResult.mpesaConversationId).toEqual(
         mockPostTransferResponse.data.ConversationID,

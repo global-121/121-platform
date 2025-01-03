@@ -31,6 +31,7 @@ export class SafaricomApiHelperService {
       IDNumber: idNumber,
     };
   }
+
   public createErrorMessageIfApplicable(
     transferResponse: TransferResponseSafaricomApiDto,
     originatorConversationId: string,
