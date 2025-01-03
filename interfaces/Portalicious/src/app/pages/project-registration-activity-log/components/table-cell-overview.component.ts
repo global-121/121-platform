@@ -13,13 +13,15 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
   ChipData,
-  getChipDataByRegistrationStatus,
   getChipDataByTransactionStatusEnum,
   getChipDataByTwilioMessageStatus,
 } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
-import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
+import {
+  ACTIVITY_LOG_ITEM_TYPE_LABELS,
+  REGISTRATION_STATUS_LABELS,
+} from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
@@ -34,7 +36,16 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
   template: `
     <div class="flex w-full content-between items-center">
       @if (!!overview()) {
-        <span class="me-auto">{{ overview() }}</span>
+        <span class="max-w-96 truncate text-ellipsis">{{ overview() }}</span>
+      }
+
+      @if (chipData()) {
+        <div class="me-auto ms-2">
+          <app-colored-chip
+            [label]="chipData()!.chipLabel"
+            [variant]="chipData()!.chipVariant"
+          />
+        </div>
       }
 
       @let dialogData = voucherDialogData();
@@ -44,14 +55,6 @@ import { ActivityLogTableCellContext } from '~/pages/project-registration-activi
           [paymentId]="dialogData.paymentId"
           [totalTransfers]="dialogData.totalTransfers"
           [voucherReferenceId]="dialogData.voucherReferenceId"
-          class="me-2"
-        />
-      }
-
-      @if (chipData()) {
-        <app-colored-chip
-          [label]="chipData()!.chipLabel"
-          [variant]="chipData()!.chipVariant"
         />
       }
     </div>
@@ -70,10 +73,6 @@ export class TableCellOverviewComponent
 
     if (type === ActivityTypeEnum.Transaction) {
       return getChipDataByTransactionStatusEnum(attributes.status);
-    }
-
-    if (type === ActivityTypeEnum.StatusChange) {
-      return getChipDataByRegistrationStatus(attributes.newValue);
     }
 
     if (type === ActivityTypeEnum.Message) {
@@ -95,7 +94,7 @@ export class TableCellOverviewComponent
       case ActivityTypeEnum.Note:
         return item.attributes.text;
       case ActivityTypeEnum.StatusChange:
-        return;
+        return REGISTRATION_STATUS_LABELS[item.attributes.newValue];
       case ActivityTypeEnum.Transaction:
         return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} #${item.attributes.payment.toString()}`;
     }

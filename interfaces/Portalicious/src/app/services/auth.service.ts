@@ -98,7 +98,11 @@ export class AuthService {
   public async logout() {
     this.logService.logEvent(LogEvent.userLogout);
 
-    await this.authStrategy.logout(this.user);
+    try {
+      await this.authStrategy.logout(this.user);
+    } catch (error) {
+      console.error('AuthService: Error logging out', error);
+    }
 
     // Cleanup local state, to leave no trace of the user.
     localStorage.removeItem(LOCAL_STORAGE_AUTH_USER_KEY);

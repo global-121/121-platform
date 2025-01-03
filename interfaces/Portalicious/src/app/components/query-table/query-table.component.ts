@@ -1,8 +1,9 @@
-import { DatePipe, NgComponentOutlet } from '@angular/common';
+import { DatePipe, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   effect,
   inject,
   input,
@@ -10,6 +11,7 @@ import {
   model,
   output,
   signal,
+  TemplateRef,
   Type,
   viewChild,
 } from '@angular/core';
@@ -109,6 +111,7 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
     CheckboxModule,
     QueryTableGlobalSearchComponent,
     QueryTableColumnManagementComponent,
+    NgTemplateOutlet,
   ],
   providers: [ToastService],
   templateUrl: './query-table.component.html',
@@ -137,6 +140,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly updateContextMenuItem = output<TData>();
   readonly updatePaginateQuery = output<PaginateQuery>();
 
+  readonly emptyMessage =
+    contentChild<TemplateRef<unknown>>('tableEmptyMessage');
   readonly table = viewChild.required<Table>('table');
   readonly contextMenu = viewChild<Menu>('contextMenu');
   readonly extraOptionsMenu = viewChild<Menu>('extraOptionsMenu');
@@ -399,12 +404,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     if ('selectAll' in selection && !this.serverSideFiltering()) {
       const filteredValue = this.table().filteredValue;
 
-      if (!filteredValue) {
-        this.toastService.showGenericError();
-        return;
+      if (this.table().filteredValue) {
+        selection = [...(filteredValue as TData[])];
+      } else {
+        // no filters are applied, so we can select all items
+        selection = [...this.items()];
       }
-
-      selection = [...(filteredValue as TData[])];
     }
 
     if (Array.isArray(selection) && selection.length === 0) {

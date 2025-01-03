@@ -28,7 +28,7 @@ export class ProjectPaymentChartComponent {
 
   chartData = computed(() => {
     const { waiting, success, failed } = this.paymentDetails();
-    const data: ChartData = {
+    const data = {
       labels: [
         TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
         TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
@@ -46,7 +46,7 @@ export class ProjectPaymentChartComponent {
       ],
     };
 
-    return data;
+    return data satisfies ChartData;
   });
 
   chartOptions = {
@@ -88,4 +88,18 @@ export class ProjectPaymentChartComponent {
       },
     },
   };
+
+  chartAriaLabel = computed(() => {
+    const chartData = this.chartData();
+    const metrics = chartData.datasets[0].data;
+
+    return (
+      $localize`Payment status chart. ` +
+      chartData.labels
+        .map((label, index) => {
+          return `${label}: ${String(metrics[index])}`;
+        })
+        .join(', ')
+    );
+  });
 }

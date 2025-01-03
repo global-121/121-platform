@@ -474,7 +474,7 @@
         <target>U staat op het punt een Excel-bestand te downloaden voor alle status- en datawijzigingen.</target>
       </trans-unit>
       <trans-unit id="5172848657173998509" datatype="html">
-        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <source>You are about to add a note to <x equiv-text="{{ registration.data()?.name }}" id="INTERPOLATION"/>&apos;s profile.</source>
         <target>Je staat op het punt een notitie toe te voegen aan het profiel van <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>.</target>
       </trans-unit>
       <trans-unit id="5209857233936409392" datatype="html">
@@ -520,10 +520,6 @@
       <trans-unit id="5590086849807274701" datatype="html">
         <source>Scope</source>
         <target>Connectie</target>
-      </trans-unit>
-      <trans-unit id="5635594227422805947" datatype="html">
-        <source>Go to profile</source>
-        <target>Ga naar profiel</target>
       </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
@@ -1281,8 +1277,8 @@
         <target>Registratie gecreëerd</target>
       </trans-unit>
       <trans-unit id="registration-full-name" datatype="html">
-        <source>Full Name</source>
-        <target>Volledige naam</target>
+        <source>Name</source>
+        <target>Naam</target>
       </trans-unit>
       <trans-unit id="registration-payments" datatype="html">
         <source>Payments</source>
@@ -1707,6 +1703,38 @@
       <trans-unit id="2795059376397351120" datatype="html">
         <source>Registration Status</source>
         <target state="new">Registration Status</target>
+      </trans-unit>
+      <trans-unit id="4067653603451364018" datatype="html">
+        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
+        <target state="new">The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</target>
+      </trans-unit>
+      <trans-unit id="2276030451798485888" datatype="html">
+        <source>Amount of money successfully transferred.</source>
+        <target state="new">Amount of money successfully transferred.</target>
+      </trans-unit>
+      <trans-unit id="6371588679924903737" datatype="html">
+        <source>Open in new tab</source>
+        <target state="new">Open in new tab</target>
+      </trans-unit>
+      <trans-unit id="5452570589103987928" datatype="html">
+        <source>Payment status chart.</source>
+        <target state="new">Payment status chart.</target>
+      </trans-unit>
+      <trans-unit id="4213825410774196775" datatype="html">
+        <source>No results</source>
+        <target state="new">No results</target>
+      </trans-unit>
+      <trans-unit id="414383194277792669" datatype="html">
+        <source>There are no records to display.</source>
+        <target state="new">There are no records to display.</target>
+      </trans-unit>
+      <trans-unit id="37959892232763790" datatype="html">
+        <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
+        <target state="new">Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="2982203751444563776" datatype="html">
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+        <target state="new">There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</target>
       </trans-unit>
     </body>
   </file>

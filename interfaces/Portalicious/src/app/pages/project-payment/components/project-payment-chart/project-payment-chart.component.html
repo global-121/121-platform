@@ -3,5 +3,6 @@
   [data]="chartData()"
   [options]="chartOptions"
   responsive
-  class="[&>div]:max-h-96"
+  class="[&>div]:max-w-full md:[&>div]:h-64"
+  [ariaLabel]="chartAriaLabel()"
 />

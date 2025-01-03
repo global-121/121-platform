@@ -109,7 +109,8 @@ export class RegistrationPageLayoutComponent {
 
   registrationTitle = computed(() => {
     const localized = $localize`Reg. #`;
-    return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.fullName ?? ''}`;
+
+    return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
   });
 
   addNoteFormVisible = signal(false);
