@@ -12,8 +12,7 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
 
 @Injectable()
 export class SafaricomApiService {
-  // ##TODO: change this to private, and fix the resulting unit-test error
-  public tokenSet: TokenSet;
+  private tokenSet: TokenSet;
 
   public constructor(
     private readonly httpService: CustomHttpService,
@@ -84,7 +83,7 @@ export class SafaricomApiService {
         expires_at: (data.expires_in - 5 * 60) * 1000 + Date.now(), //expires_in is typically 3599, so in seconds and 1 hour from now. We subtract 5 minutes to be safe.
       });
 
-      this.tokenSet = tokenSet;
+      this.setTokenSet(tokenSet);
     } catch (error) {
       console.error(
         'Failed to make OAuth Access Token payment API call',
@@ -120,5 +119,10 @@ export class SafaricomApiService {
       console.error('Failed to make Safaricom B2C payment API call', error);
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
+  }
+
+  public setTokenSet(tokenSet: TokenSet): void {
+    // use this as workaround to set tokenSet in unit tests
+    this.tokenSet = tokenSet;
   }
 }
