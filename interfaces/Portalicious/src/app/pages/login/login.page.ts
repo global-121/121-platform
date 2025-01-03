@@ -17,7 +17,6 @@ import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [
     LogoComponent,
     ToolbarModule,

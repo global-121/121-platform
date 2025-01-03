@@ -19,9 +19,9 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectModule } from 'primeng/select';
 
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -41,14 +41,13 @@ type AddUserToTeamFormGroup =
 @Component({
   selector: 'app-add-project-team-user-form',
   styles: ``,
-  standalone: true,
   templateUrl: './add-project-team-user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
     FormSidebarComponent,
     FormFieldWrapperComponent,
-    DropdownModule,
+    SelectModule,
     MultiSelectModule,
     InputTextModule,
     ReactiveFormsModule,
@@ -66,27 +65,22 @@ export class AddProjectTeamUserFormComponent {
   private toastService = inject(ToastService);
 
   constructor() {
-    effect(
-      () => {
-        const user = this.userToEdit();
-        if (user) {
-          this.formGroup.patchValue({
-            userValue: user.id,
-            rolesValue: user.roles.map(({ role }) => role),
-            scopeValue: user.scope,
-          });
-          this.formGroup.controls.userValue.disable();
-        } else {
-          this.formGroup.patchValue({
-            userValue: -1,
-          });
-          this.formGroup.controls.userValue.enable();
-        }
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
+    effect(() => {
+      const user = this.userToEdit();
+      if (user) {
+        this.formGroup.patchValue({
+          userValue: user.id,
+          rolesValue: user.roles.map(({ role }) => role),
+          scopeValue: user.scope,
+        });
+        this.formGroup.controls.userValue.disable();
+      } else {
+        this.formGroup.patchValue({
+          userValue: -1,
+        });
+        this.formGroup.controls.userValue.enable();
+      }
+    });
   }
 
   isEditing = computed(() => !!this.userToEdit());

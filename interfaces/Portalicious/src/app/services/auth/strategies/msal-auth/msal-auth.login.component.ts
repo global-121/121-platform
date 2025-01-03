@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocusModule } from 'primeng/autofocus';
+import { AutoFocus } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -29,14 +29,13 @@ type LoginFormSsoGroup =
 
 @Component({
   selector: 'app-msal-auth.login',
-  standalone: true,
   imports: [
     ButtonModule,
     FormFieldWrapperComponent,
     ReactiveFormsModule,
     ProgressSpinnerModule,
     InputTextModule,
-    AutoFocusModule,
+    AutoFocus,
     ReactiveFormsModule,
     FormFieldWrapperComponent,
     FormDefaultComponent,

@@ -18,7 +18,6 @@ const tailwindConfig = getTailwindConfig();
 
 @Component({
   selector: 'app-project-payment-chart',
-  standalone: true,
   imports: [ChartModule],
   templateUrl: './project-payment-chart.component.html',
   styles: ``,

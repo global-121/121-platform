@@ -5,7 +5,6 @@ import { SummaryMetric } from '~/domains/metric/metric.model';
 
 @Component({
   selector: 'app-metric-container',
-  standalone: true,
   imports: [SkeletonInlineComponent],
   templateUrl: './metric-container.component.html',
   styles: ``,

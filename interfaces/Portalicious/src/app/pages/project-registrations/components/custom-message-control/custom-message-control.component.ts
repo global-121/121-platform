@@ -15,7 +15,7 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MentionModule } from 'angular-mentions';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
@@ -24,11 +24,10 @@ import { MessagingService } from '~/services/messaging.service';
 
 @Component({
   selector: 'app-custom-message-control',
-  standalone: true,
   imports: [
     FormsModule,
     InfoTooltipComponent,
-    InputTextareaModule,
+    TextareaModule,
     NgClass,
     FormErrorComponent,
     MentionModule,

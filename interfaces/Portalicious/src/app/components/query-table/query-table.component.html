@@ -13,7 +13,7 @@
   [rowHover]="contextMenuItems()"
   [sortField]="initialSortField()"
   [sortOrder]="initialSortOrder()"
-  [contextMenu]="contextMenu"
+  [contextMenu]="contextMenu()"
   (contextMenuSelectionChange)="updateContextMenuItem.emit($event)"
   [globalFilterFields]="globalFilterFields()"
   [paginator]="true"
@@ -34,7 +34,7 @@
   [dataKey]="'id'"
 >
   <ng-template pTemplate="caption">
-    <div class="flex items-center">
+    <div class="flex min-h-11 items-center">
       <ng-content select="[table-actions]"></ng-content>
       <span class="ms-auto"></span>
       @if (isFiltered()) {
@@ -102,7 +102,7 @@
               @if (columnSortField) {
                 <p-sortIcon
                   [field]="columnSortField"
-                  class="me-1"
+                  class="me-0 ms-2 mt-1"
                 />
               }
 
@@ -245,7 +245,8 @@
             plain
             icon="pi pi-ellipsis-h"
             (click)="
-              updateContextMenuItem.emit(item); extraOptionsMenu.toggle($event)
+              updateContextMenuItem.emit(item);
+              extraOptionsMenu()?.toggle($event)
             "
           />
         </td>

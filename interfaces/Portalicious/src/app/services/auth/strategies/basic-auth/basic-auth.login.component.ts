@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { AutoFocusModule } from 'primeng/autofocus';
+import { AutoFocus } from 'primeng/autofocus';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
@@ -26,11 +26,10 @@ type LoginFormGroup =
 
 @Component({
   selector: 'app-basic-auth-login',
-  standalone: true,
   imports: [
     InputTextModule,
     PasswordModule,
-    AutoFocusModule,
+    AutoFocus,
     FormDefaultComponent,
     ReactiveFormsModule,
     FormFieldWrapperComponent,

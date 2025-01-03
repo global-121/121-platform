@@ -8,7 +8,7 @@ import {
   model,
   output,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -18,10 +18,9 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputSwitchModule } from 'primeng/inputswitch';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -49,15 +48,13 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-change-status-dialog',
-  standalone: true,
   imports: [
     DialogModule,
     ButtonModule,
     ReactiveFormsModule,
     FormErrorComponent,
     RadioButtonModule,
-    DropdownModule,
-    InputSwitchModule,
+    ToggleSwitchModule,
     SkeletonModule,
     ConfirmationDialogComponent,
     ChangeStatusContentsWithoutMessageComponent,
@@ -83,8 +80,8 @@ export class ChangeStatusDialogComponent
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  @ViewChild('dryRunWarningDialog')
-  private dryRunWarningDialog: ConfirmationDialogComponent;
+  readonly dryRunWarningDialog =
+    viewChild.required<ConfirmationDialogComponent>('dryRunWarningDialog');
 
   actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
     undefined,
@@ -143,15 +140,14 @@ export class ChangeStatusDialogComponent
   messageTemplateKey = injectQuery(() => ({
     queryKey: ['change-status-template-key', this.status(), this.projectId()],
     queryFn: () => {
-      const status = this.status();
-      if (!status) {
-        return;
-      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const status = this.status()!;
       return this.messagingService.getTemplateTypeByRegistrationStatus({
         status,
         projectId: this.projectId,
       });
     },
+    enabled: !!this.status(),
   }));
 
   sendMessageInputData = computed<Partial<MessageInputData>>(() => {
@@ -221,7 +217,7 @@ export class ChangeStatusDialogComponent
 
       // case #3: the change can be applied to only some of the registrations
       this.dialogVisible.set(false);
-      this.dryRunWarningDialog.askForConfirmation({
+      this.dryRunWarningDialog().askForConfirmation({
         resetMutation: false,
       });
     },

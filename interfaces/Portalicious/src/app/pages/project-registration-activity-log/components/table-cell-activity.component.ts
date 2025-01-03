@@ -14,7 +14,6 @@ import { Activity } from '~/domains/registration/registration.model';
 
 @Component({
   selector: 'app-table-cell-activity',
-  standalone: true,
   imports: [],
   template: `
     <span class="inline-flex items-center">

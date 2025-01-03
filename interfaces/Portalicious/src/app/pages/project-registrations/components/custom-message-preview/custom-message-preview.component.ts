@@ -8,7 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 
 import { Registration } from '~/domains/registration/registration.model';
 import {
@@ -18,8 +18,7 @@ import {
 
 @Component({
   selector: 'app-custom-message-preview',
-  standalone: true,
-  imports: [InputTextareaModule, FormsModule],
+  imports: [TextareaModule, FormsModule],
   templateUrl: './custom-message-preview.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

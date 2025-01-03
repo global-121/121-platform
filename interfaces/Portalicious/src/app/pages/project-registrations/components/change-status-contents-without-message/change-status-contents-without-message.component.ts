@@ -21,7 +21,6 @@ import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-change-status-contents-without-message',
-  standalone: true,
   imports: [
     ButtonModule,
     CheckboxModule,

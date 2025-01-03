@@ -6,7 +6,7 @@ import {
   input,
   model,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -15,7 +15,7 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
@@ -36,12 +36,11 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-export-registrations',
-  standalone: true,
   imports: [
     ConfirmationDialogComponent,
     LatestExportDateComponent,
     ButtonMenuComponent,
-    CalendarModule,
+    DatePickerModule,
     FloatLabelModule,
     FormsModule,
     FormFieldWrapperComponent,
@@ -64,14 +63,16 @@ export class ExportRegistrationsComponent {
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
 
-  @ViewChild('exportSelectedDialog')
-  private exportSelectedDialog: ConfirmationDialogComponent;
-  @ViewChild('exportDuplicatesDialog')
-  private exportDuplicatesDialog: ConfirmationDialogComponent;
-  @ViewChild('exportDataChangesDialog')
-  private exportDataChangesDialog: ConfirmationDialogComponent;
-  @ViewChild('exportAccountVerificationDialog')
-  private exportAccountVerificationDialog: ConfirmationDialogComponent;
+  readonly exportSelectedDialog =
+    viewChild.required<ConfirmationDialogComponent>('exportSelectedDialog');
+  readonly exportDuplicatesDialog =
+    viewChild.required<ConfirmationDialogComponent>('exportDuplicatesDialog');
+  readonly exportDataChangesDialog =
+    viewChild.required<ConfirmationDialogComponent>('exportDataChangesDialog');
+  readonly exportAccountVerificationDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'exportAccountVerificationDialog',
+    );
 
   exportSelectedActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
@@ -121,13 +122,13 @@ export class ExportRegistrationsComponent {
           return;
         }
         this.exportSelectedActionData.set(actionData);
-        this.exportSelectedDialog.askForConfirmation();
+        this.exportSelectedDialog().askForConfirmation();
       },
     },
     {
       label: $localize`:@@export-duplicate:Export duplicate registrations`,
       command: () => {
-        this.exportDuplicatesDialog.askForConfirmation();
+        this.exportDuplicatesDialog().askForConfirmation();
       },
     },
     {
@@ -135,7 +136,7 @@ export class ExportRegistrationsComponent {
       command: () => {
         this.fromDateExport.set(undefined);
         this.toDateExport.set(undefined);
-        this.exportDataChangesDialog.askForConfirmation();
+        this.exportDataChangesDialog().askForConfirmation();
       },
     },
     {
@@ -147,7 +148,7 @@ export class ExportRegistrationsComponent {
           requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
         }),
       command: () => {
-        this.exportAccountVerificationDialog.askForConfirmation();
+        this.exportAccountVerificationDialog().askForConfirmation();
       },
     },
   ]);

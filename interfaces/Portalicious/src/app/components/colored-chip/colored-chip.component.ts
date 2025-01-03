@@ -19,7 +19,6 @@ export type ChipVariant =
 
 @Component({
   selector: 'app-colored-chip',
-  standalone: true,
   imports: [ChipModule, TooltipModule],
   templateUrl: './colored-chip.component.html',
   styles: ``,

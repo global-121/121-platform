@@ -31,7 +31,6 @@ export type ImportFileDialogFormGroup =
 
 @Component({
   selector: 'app-import-file-dialog',
-  standalone: true,
   imports: [
     DialogModule,
     ReactiveFormsModule,

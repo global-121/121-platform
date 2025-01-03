@@ -33,7 +33,6 @@ type CreateProjectFormGroup =
 
 @Component({
   selector: 'app-create-project-form',
-  standalone: true,
   imports: [
     InputTextModule,
     PasswordModule,

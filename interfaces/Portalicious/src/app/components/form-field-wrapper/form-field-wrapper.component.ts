@@ -4,7 +4,6 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 
 @Component({
   selector: 'app-form-field-wrapper',
-  standalone: true,
   imports: [FormErrorComponent],
   templateUrl: './form-field-wrapper.component.html',
   styles: ``,

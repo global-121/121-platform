@@ -5,7 +5,7 @@ import {
   inject,
   input,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -32,7 +32,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 
 @Component({
   selector: 'app-registrations-table',
-  standalone: true,
   imports: [QueryTableComponent],
   templateUrl: './registrations-table.component.html',
   styles: ``,
@@ -51,8 +50,8 @@ export class RegistrationsTableComponent {
 
   PermissionEnum = PermissionEnum;
 
-  @ViewChild('table')
-  private table: QueryTableComponent<Registration, never>;
+  readonly table =
+    viewChild.required<QueryTableComponent<Registration, never>>('table');
 
   protected RegistrationStatusEnum = RegistrationStatusEnum;
   protected paginateQuery = signal<PaginateQuery | undefined>(undefined);
@@ -159,7 +158,7 @@ export class RegistrationsTableComponent {
   }: {
     triggeredFromContextMenu?: boolean;
   } = {}) {
-    return this.table.getActionData({
+    return this.table().getActionData({
       triggeredFromContextMenu,
       contextMenuItem: this.contextMenuRegistration(),
       fieldForFilter: 'referenceId',
@@ -169,6 +168,6 @@ export class RegistrationsTableComponent {
   }
 
   public resetSelection() {
-    this.table.resetSelection();
+    this.table().resetSelection();
   }
 }

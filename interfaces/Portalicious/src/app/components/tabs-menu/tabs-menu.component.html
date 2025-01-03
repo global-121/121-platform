@@ -1,0 +1,17 @@
+<p-tabs>
+  <p-tablist>
+    @for (tab of menuItems(); track tab.routerLink) {
+      @if (tab.visible === undefined || tab.visible) {
+        <p-tab
+          [value]="tab.routerLink"
+          [routerLink]="tab.routerLink"
+          [routerLinkActive]="['p-tab-active']"
+          [class]="tab.styleClass"
+        >
+          <i [class]="tab.icon"></i>
+          <span>{{ tab.label }}</span>
+        </p-tab>
+      }
+    }
+  </p-tablist>
+</p-tabs>

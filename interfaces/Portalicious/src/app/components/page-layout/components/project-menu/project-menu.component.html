@@ -1,6 +1,6 @@
 <div
-  class="w-full bg-white px-6 pt-2 lg:px-24 [&_.p-tabmenu-nav]:border-transparent [&_.p-tabmenu-nav_.p-tabmenuitem:not(.p-highlight)_.p-menuitem-link]:border-transparent"
+  class="w-full bg-white px-6 pt-1 shadow-project-menu lg:px-24 [&_.p-tablist-tab-list]:border-transparent [&_.p-tablist-tab-list_.p-tab:not(.p-tab-active)]:border-transparent"
   data-testid="project-header"
 >
-  <p-tabMenu [model]="navMenuItems()" />
+  <app-tabs-menu [menuItems]="navMenuItems()" />
 </div>

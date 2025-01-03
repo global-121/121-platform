@@ -7,13 +7,13 @@ import {
   model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
+import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
 import { MenuModule } from 'primeng/menu';
-import { SidebarModule } from 'primeng/sidebar';
 import { ToolbarModule } from 'primeng/toolbar';
 
 import { AppRoutes } from '~/app.routes';
@@ -25,19 +25,19 @@ import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
   imports: [
     ButtonModule,
     ToolbarModule,
     MenuModule,
-    SidebarModule,
+    DrawerModule,
     FocusTrapModule,
-    DropdownModule,
     FormsModule,
     LogoComponent,
     HealthWidgetComponent,
     LanguageSwitcherComponent,
     ButtonMenuComponent,
+    RouterLink,
+    RouterLinkActive,
   ],
   providers: [],
   templateUrl: './header.component.html',

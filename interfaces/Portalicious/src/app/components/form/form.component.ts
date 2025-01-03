@@ -12,7 +12,6 @@ import { CreateMutationResult } from '@tanstack/angular-query-experimental';
  */
 @Component({
   selector: 'app-abstract-form-do-not-use',
-  standalone: true,
   imports: [],
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,

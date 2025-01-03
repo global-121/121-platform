@@ -5,7 +5,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-card-grid',
-  standalone: true,
   imports: [SkeletonModule, CardModule],
   templateUrl: './card-grid.component.html',
   styles: ``,

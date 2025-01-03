@@ -22,7 +22,6 @@ import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 @Component({
   selector: 'app-activity-log-expanded-row',
-  standalone: true,
   imports: [DataListComponent],
   templateUrl: './activity-log-expanded-row.component.html',
   styles: ``,

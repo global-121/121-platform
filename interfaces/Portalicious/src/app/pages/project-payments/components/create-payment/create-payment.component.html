@@ -13,6 +13,7 @@
   [draggable]="false"
   [resizable]="false"
   [modal]="true"
+  [maximizable]="true"
   [closeOnEscape]="false"
   styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:p-0 [&_.p-dialog-footer]:shadow-payment-stepper"
 >
@@ -112,35 +113,37 @@
   </div>
   <app-fullscreen-spinner [loading]="createPaymentMutation.isPending()" />
   <ng-template pTemplate="footer">
-    <div
-      class="border-t-2 border-t-purple-300 transition-all"
-      [style]="{
-        width: (currentStep() / totalSteps) * 100 + '%',
-      }"
-    ></div>
-    <div class="flex items-center justify-end p-4">
-      @if (currentStep() > 1) {
+    <div class="relative w-full">
+      <div
+        class="border-t-2 border-t-purple-300 transition-all"
+        [style]="{
+          width: (currentStep() / totalSteps) * 100 + '%',
+        }"
+      ></div>
+      <div class="flex items-center justify-end p-4">
+        @if (currentStep() > 1) {
+          <p-button
+            label="Back"
+            i18n-label
+            rounded
+            outlined
+            class="me-auto"
+            (click)="goBack()"
+          />
+        }
+        <span
+          i18n
+          class="absolute left-1/2 -translate-x-1/2"
+          >Step {{ currentStep() }} of {{ totalSteps }}</span
+        >
         <p-button
-          label="Back"
-          i18n-label
+          [label]="proceedLabel()"
           rounded
-          outlined
-          class="me-auto"
-          (click)="goBack()"
+          [loading]="cannotProceed()"
+          [disabled]="cannotProceed()"
+          (click)="createPayment()"
         />
-      }
-      <span
-        i18n
-        class="absolute left-1/2 -translate-x-1/2"
-        >Step {{ currentStep() }} of {{ totalSteps }}</span
-      >
-      <p-button
-        [label]="proceedLabel()"
-        rounded
-        [loading]="cannotProceed()"
-        [disabled]="cannotProceed()"
-        (click)="createPayment()"
-      />
+      </div>
     </div>
   </ng-template>
 </p-dialog>

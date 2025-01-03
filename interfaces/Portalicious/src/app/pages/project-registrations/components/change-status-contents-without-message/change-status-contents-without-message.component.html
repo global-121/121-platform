@@ -2,12 +2,18 @@
 <div [formGroup]="formGroup">
   @if (showAreYouSureCheckbox()) {
     <div class="mt-4 w-full">
-      <p-checkbox
-        formControlName="confirmAction"
-        [binary]="true"
-        label="I understand this action can not be undone."
-        i18n-label
-      />
+      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+      <label>
+        <p-checkbox
+          formControlName="confirmAction"
+          [binary]="true"
+        />
+        <span
+          i18n
+          class="pl-2"
+          >I understand this action can not be undone.</span
+        >
+      </label>
     </div>
   }
   <app-form-error [error]="formFieldErrors()('confirmAction')" />

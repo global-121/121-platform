@@ -21,7 +21,6 @@ import { QueryTableColumn } from '~/components/query-table/query-table.component
 
 @Component({
   selector: 'app-query-table-column-management',
-  standalone: true,
   imports: [
     ButtonModule,
     FormSidebarComponent,

@@ -5,7 +5,6 @@ import { DashboardIframeComponent } from '~/pages/project-monitoring/components/
 
 @Component({
   selector: 'app-monitoring-iframe-test-host',
-  standalone: true,
   imports: [DashboardIframeComponent],
   template: '<app-monitoring-iframe [url]="testUrl"></app-monitoring-iframe>',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -10,7 +10,7 @@
     i18n-label
     [errorMessage]="formFieldErrors()('userValue')"
   >
-    <p-dropdown
+    <p-select
       [options]="availableUsers()"
       [optionLabel]="'username'"
       [optionValue]="'id'"
@@ -20,7 +20,7 @@
       i18n-placeholder="@@generic-type-or-select"
       [loading]="availableUsersIsLoading()"
     >
-    </p-dropdown>
+    </p-select>
   </app-form-field-wrapper>
 
   <app-form-field-wrapper

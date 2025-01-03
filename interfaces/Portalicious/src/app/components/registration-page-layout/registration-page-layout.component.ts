@@ -30,7 +30,6 @@ import { AuthService } from '~/services/auth.service';
 
 @Component({
   selector: 'app-registration-page-layout',
-  standalone: true,
   imports: [
     PageLayoutComponent,
     CardModule,

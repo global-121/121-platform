@@ -28,7 +28,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-import-reconciliation-data',
-  standalone: true,
   imports: [ButtonModule, ImportFileDialogComponent],
   templateUrl: './import-reconciliation-data.component.html',
   providers: [ToastService],

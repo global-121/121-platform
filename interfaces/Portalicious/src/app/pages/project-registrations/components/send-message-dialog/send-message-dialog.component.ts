@@ -21,8 +21,8 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { SelectModule } from 'primeng/select';
 import { Subscription } from 'rxjs';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
@@ -50,14 +50,13 @@ type SendMessageFormGroup =
 
 @Component({
   selector: 'app-send-message-dialog',
-  standalone: true,
   imports: [
     DialogModule,
     ButtonModule,
     ReactiveFormsModule,
     FormErrorComponent,
     RadioButtonModule,
-    DropdownModule,
+    SelectModule,
     CustomMessageControlComponent,
     CustomMessagePreviewComponent,
   ],

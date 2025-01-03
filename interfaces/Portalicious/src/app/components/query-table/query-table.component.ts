@@ -11,7 +11,7 @@ import {
   output,
   signal,
   Type,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -23,7 +23,6 @@ import {
   MenuItem,
   TableState,
 } from 'primeng/api';
-import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
@@ -92,7 +91,6 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
 
 @Component({
   selector: 'app-query-table',
-  standalone: true,
   imports: [
     TableModule,
     SkeletonModule,
@@ -107,7 +105,7 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
     FormsModule,
     SkeletonInlineComponent,
     ColoredChipComponent,
-    AutoFocusModule,
+    RouterLink,
     CheckboxModule,
     QueryTableGlobalSearchComponent,
     QueryTableColumnManagementComponent,
@@ -139,9 +137,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly updateContextMenuItem = output<TData>();
   readonly updatePaginateQuery = output<PaginateQuery>();
 
-  @ViewChild('table') table: Table;
-  @ViewChild('contextMenu') contextMenu: Menu;
-  @ViewChild('extraOptionsMenu') extraOptionsMenu: Menu;
+  readonly table = viewChild.required<Table>('table');
+  readonly contextMenu = viewChild<Menu>('contextMenu');
+  readonly extraOptionsMenu = viewChild<Menu>('extraOptionsMenu');
 
   /**
    * DISPLAY
@@ -236,7 +234,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   globalFilterVisible = model<boolean>(false);
 
   clearAllFilters() {
-    this.table.clear();
+    this.table().clear();
     const localStorageKey = this.localStorageKey();
     if (localStorageKey) {
       localStorage.removeItem(localStorageKey);
@@ -399,7 +397,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     let selection = this.tableSelection();
 
     if ('selectAll' in selection && !this.serverSideFiltering()) {
-      const filteredValue = this.table.filteredValue;
+      const filteredValue = this.table().filteredValue;
 
       if (!filteredValue) {
         this.toastService.showGenericError();
@@ -487,18 +485,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     );
   }
 
-  columnVisibilityEffect = effect(
-    () => {
-      if (
-        (!this.enableColumnManagement() ||
-          this.visibleColumns().length === 0) &&
-        this.columns().length > 0
-      ) {
-        this.resetColumnVisibility();
-      }
-    },
-    {
-      allowSignalWrites: true,
-    },
-  );
+  columnVisibilityEffect = effect(() => {
+    if (
+      (!this.enableColumnManagement() || this.visibleColumns().length === 0) &&
+      this.columns().length > 0
+    ) {
+      this.resetColumnVisibility();
+    }
+  });
 }

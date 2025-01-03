@@ -11,7 +11,6 @@ import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
 
 @Component({
   selector: 'app-skeleton-inline',
-  standalone: true,
   imports: [SkeletonModule],
   templateUrl: './skeleton-inline.component.html',
   styles: ``,

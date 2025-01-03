@@ -7,7 +7,6 @@ import { ChangeDetectionStrategy, Component, InputSignal } from '@angular/core';
  */
 @Component({
   selector: 'app-abstract-table-cell-do-not-use',
-  standalone: true,
   imports: [],
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,

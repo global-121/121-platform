@@ -4,7 +4,7 @@ import {
   computed,
   inject,
   input,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
@@ -23,7 +23,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-single-payment-export',
-  standalone: true,
   imports: [
     ConfirmationDialogComponent,
     ButtonMenuComponent,
@@ -42,10 +41,12 @@ export class SinglePaymentExportComponent {
   private toastService = inject(ToastService);
   private downloadService = inject(DownloadService);
 
-  @ViewChild('exportFspPaymentListDialog')
-  private exportFspPaymentListDialog: ConfirmationDialogComponent;
-  @ViewChild('paymentReportDialog')
-  private paymentReportDialog: ConfirmationDialogComponent;
+  readonly exportFspPaymentListDialog =
+    viewChild.required<ConfirmationDialogComponent>(
+      'exportFspPaymentListDialog',
+    );
+  readonly paymentReportDialog =
+    viewChild.required<ConfirmationDialogComponent>('paymentReportDialog');
 
   ExportType = ExportType;
 
@@ -97,7 +98,7 @@ export class SinglePaymentExportComponent {
       label: this.fspPaymentListLabel(),
       visible: this.canExportPaymentInstructions(),
       command: () => {
-        this.exportFspPaymentListDialog.askForConfirmation();
+        this.exportFspPaymentListDialog().askForConfirmation();
       },
     },
     {
@@ -111,7 +112,7 @@ export class SinglePaymentExportComponent {
         ],
       }),
       command: () => {
-        this.paymentReportDialog.askForConfirmation();
+        this.paymentReportDialog().askForConfirmation();
       },
     },
   ]);

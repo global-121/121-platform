@@ -22,7 +22,6 @@ import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-import-registrations',
-  standalone: true,
   imports: [ButtonModule, ImportFileDialogComponent],
   providers: [ToastService],
   templateUrl: './import-registrations.component.html',
