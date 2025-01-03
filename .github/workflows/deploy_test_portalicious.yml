@@ -94,7 +94,7 @@ jobs:
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
 
   add_staging_comment:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -106,6 +106,7 @@ jobs:
           content: ${{ needs.test.outputs.preview_url }}
           regex: '<!-- start deployment url -->.*?<!-- end deployment url -->'
           regexFlags: ims
+          appendContentOnMatchOnly: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
   close_pull_request_job:
