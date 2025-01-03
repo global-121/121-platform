@@ -62,7 +62,7 @@
     "@microsoft/applicationinsights-debugplugin-js": "^3.3.4",
     "@prettier/plugin-xml": "^3.4.1",
     "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
-    "@tanstack/eslint-plugin-query": "^5.62.1",
+    "@tanstack/eslint-plugin-query": "^5.62.9",
     "@types/jasmine": "~5.1.5",
     "@types/lodash": "^4.17.13",
     "angular-eslint": "^19.0.2",
