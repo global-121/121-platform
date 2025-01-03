@@ -563,10 +563,10 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return await this.getBalance(voucher, programId);
+    return await this.getAndStoreBalance(voucher, programId);
   }
 
-  private async getBalance(
+  private async getAndStoreBalance(
     intersolveVoucher: IntersolveVoucherEntity,
     programId: number,
   ): Promise<number> {
@@ -598,6 +598,10 @@ export class IntersolveVoucherService
 
     intersolveVoucher.lastRequestedBalance = realBalance;
     intersolveVoucher.updatedLastRequestedBalance = new Date();
+    if (realBalance !== intersolveVoucher.amount) {
+      intersolveVoucher.balanceUsed = true;
+      intersolveVoucher.send = true;
+    }
     await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     return realBalance;
   }
@@ -682,12 +686,7 @@ export class IntersolveVoucherService
           })
           .getMany();
       for await (const voucher of previouslyUnusedVouchers) {
-        const balance = await this.getBalance(voucher, programId);
-        if (balance !== voucher.amount) {
-          voucher.balanceUsed = true;
-          voucher.send = true;
-          await this.intersolveVoucherScopedRepository.save(voucher);
-        }
+        await this.getAndStoreBalance(voucher, programId);
       }
       id += 1000;
     }
@@ -871,12 +870,7 @@ export class IntersolveVoucherService
         const vouchersToUpdate = await q.getMany();
 
         for await (const voucher of vouchersToUpdate) {
-          const balance = await this.getBalance(voucher, programId);
-          if (balance !== voucher.amount) {
-            voucher.balanceUsed = true;
-            voucher.send = true;
-            await this.intersolveVoucherScopedRepository.save(voucher);
-          }
+          await this.getAndStoreBalance(voucher, programId);
         }
         id += 1000;
       }
