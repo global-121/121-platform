@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -62,6 +62,7 @@ export interface TransactionsTableCellContext {
     PageLayoutComponent,
     CardModule,
     QueryTableComponent,
+    DecimalPipe,
     ButtonModule,
     MetricTileComponent,
     ProjectPaymentChartComponent,
@@ -72,7 +73,7 @@ export interface TransactionsTableCellContext {
   ],
   templateUrl: './project-payment.page.html',
   styles: ``,
-  providers: [CurrencyPipe, DatePipe, ToastService],
+  providers: [CurrencyPipe, DatePipe, DecimalPipe, ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentPageComponent {
@@ -264,15 +265,18 @@ export class ProjectPaymentPageComponent {
 
     return [
       {
-        label: $localize`Go to profile`,
+        label: $localize`Open in new tab`,
         icon: 'pi pi-user',
         command: () => {
-          void this.router.navigate(
-            registrationLink({
-              projectId: this.projectId(),
-              registrationId: transaction.registrationId,
-            }),
+          const url = this.router.serializeUrl(
+            this.router.createUrlTree(
+              registrationLink({
+                projectId: this.projectId(),
+                registrationId: transaction.registrationId,
+              }),
+            ),
           );
+          window.open(url, '_blank');
         },
       },
       {

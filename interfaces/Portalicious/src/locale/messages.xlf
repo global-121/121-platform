@@ -103,7 +103,7 @@
         <source>Add note</source>
       </trans-unit>
       <trans-unit id="5172848657173998509" datatype="html">
-        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <source>You are about to add a note to <x equiv-text="{{ registration.data()?.name }}" id="INTERPOLATION"/>&apos;s profile.</source>
       </trans-unit>
       <trans-unit id="4478569469579904965" datatype="html">
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
@@ -639,7 +639,7 @@
         <source>Delete</source>
       </trans-unit>
       <trans-unit id="registration-full-name" datatype="html">
-        <source>Full Name</source>
+        <source>Name</source>
       </trans-unit>
       <trans-unit id="registration-created" datatype="html">
         <source>Registration created</source>
@@ -796,9 +796,6 @@
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
         <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
-      </trans-unit>
-      <trans-unit id="5635594227422805947" datatype="html">
-        <source>Go to profile</source>
       </trans-unit>
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>
@@ -1282,6 +1279,30 @@
       </trans-unit>
       <trans-unit id="8705310124062464174" datatype="html">
         <source>A payment is currently in progress. Please try again later</source>
+      </trans-unit>
+      <trans-unit id="2276030451798485888" datatype="html">
+        <source>Amount of money successfully transferred.</source>
+      </trans-unit>
+      <trans-unit id="4067653603451364018" datatype="html">
+        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
+      </trans-unit>
+      <trans-unit id="6371588679924903737" datatype="html">
+        <source>Open in new tab</source>
+      </trans-unit>
+      <trans-unit id="5452570589103987928" datatype="html">
+        <source>Payment status chart.</source>
+      </trans-unit>
+      <trans-unit id="2982203751444563776" datatype="html">
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="37959892232763790" datatype="html">
+        <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="414383194277792669" datatype="html">
+        <source>There are no records to display.</source>
+      </trans-unit>
+      <trans-unit id="4213825410774196775" datatype="html">
+        <source>No results</source>
       </trans-unit>
     </body>
   </file>

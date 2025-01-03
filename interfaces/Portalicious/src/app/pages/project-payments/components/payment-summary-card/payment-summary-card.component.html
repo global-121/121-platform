@@ -1,6 +1,7 @@
 <app-card-with-link
   [href]="paymentLink(projectId(), paymentId())"
   [title]="paymentTitle()"
+  [loading]="metrics.isPending()"
 >
   <ng-container card-content>
     <app-card-summary-metrics-container

@@ -39,12 +39,14 @@
         i18n-chipLabel
         chipIcon="pi pi-spinner"
         chipVariant="orange"
+        chipTooltip="The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading."
+        i18n-chipTooltip
       />
     } @else {
       <app-metric-tile
         class="grid-in-metric1"
         [pending]="false"
-        [metricValue]="transactions.data()?.length"
+        [metricValue]="transactions.data()?.length | number"
         metricLabel="Registrations included"
         i18n-metricLabel
       />
@@ -58,6 +60,8 @@
       [chipLabel]="successfulPaymentsAmount()"
       chipIcon="pi pi-check-circle"
       chipVariant="green"
+      chipTooltip="Amount of money successfully transferred."
+      i18n-chipTooltip
       metricTooltip="The total payment amount is calculated by summing up the transfer values of each included registration added to the payment."
       i18n-metricTooltip
     />
@@ -83,7 +87,7 @@
       </p-card>
     }
 
-    <p-card class="grid-in-table">
+    <p-card class="overflow-x-auto grid-in-table">
       <app-query-table
         #table
         [items]="transactions.data() ?? []"
@@ -103,7 +107,7 @@
       >
         <div
           table-actions
-          class="me-2 flex w-full"
+          class="me-2 flex grow"
         >
           <span
             i18n
