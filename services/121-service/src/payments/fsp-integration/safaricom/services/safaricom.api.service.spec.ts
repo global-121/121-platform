@@ -59,7 +59,7 @@ describe('SafaricomApiService', () => {
         access_token: 'mocked-access-token',
         expires_at: Date.now() + 10 * 60 * 1000, // 10 minute from now, therefore valid
       });
-      safaricomApiService.setTokenSet(tokenSet);
+      safaricomApiService.setTokenSetForUnitTest(tokenSet);
 
       // Act
       const transferResult = await safaricomApiService.transfer(transferInput);
