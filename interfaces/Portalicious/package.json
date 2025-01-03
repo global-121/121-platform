@@ -36,7 +36,7 @@
     "@angular/platform-browser-dynamic": "^19.0.5",
     "@angular/router": "^19.0.5",
     "@azure/msal-angular": "3.0.25",
-    "@azure/msal-browser": "3.26.1",
+    "@azure/msal-browser": "3.28.0",
     "@microsoft/applicationinsights-web": "^3.3.4",
     "@primeng/themes": "^19.0.2",
     "@tanstack/angular-query-experimental": "^5.62.8",
