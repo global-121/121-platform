@@ -82,8 +82,7 @@ export class SafaricomApiService {
         access_token: data.access_token,
         expires_at: (data.expires_in - 5 * 60) * 1000 + Date.now(), //expires_in is typically 3599, so in seconds and 1 hour from now. We subtract 5 minutes to be safe.
       });
-
-      this.setTokenSet(tokenSet);
+      this.tokenSet = tokenSet;
     } catch (error) {
       console.error(
         'Failed to make OAuth Access Token payment API call',
@@ -121,7 +120,7 @@ export class SafaricomApiService {
     }
   }
 
-  public setTokenSet(tokenSet: TokenSet): void {
+  public setTokenSetForUnitTest(tokenSet: TokenSet): void {
     // use this as workaround to set tokenSet in unit tests
     this.tokenSet = tokenSet;
   }
