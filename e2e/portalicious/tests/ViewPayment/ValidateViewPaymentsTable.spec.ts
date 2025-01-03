@@ -17,6 +17,25 @@ import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 
+const registrationIds = ['Reg. #1', 'Reg. #2', 'Reg. #3', 'Reg. #4', 'Reg. #5'];
+const ascedingRegistrationIds = [...registrationIds].sort((a, b) =>
+  a.localeCompare(b),
+);
+const descedingRegistrationIds = [...registrationIds].sort((b, a) =>
+  a.localeCompare(b),
+);
+
+const names = [
+  'Anna Hello',
+  'John Smith',
+  'Lars Larsson',
+  'Luiz Garcia',
+  'Sophia Johnson',
+];
+
+const ascedingNames = [...names].sort((a, b) => a.localeCompare(b));
+const descedingNames = [...names].sort((b, a) => a.localeCompare(b));
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
@@ -68,7 +87,37 @@ test('[32298] Table should be a filtered list of registrations included in the t
     await table.sortAndValidateColumnByName({ columnName: 'Transfer value' });
     await table.sortAndValidateColumnByName({ columnName: 'FSP' });
 
-    // Validate applied sorting filters
-    await table.sortColumnByName({ columnName: 'Reg.', sort: 'ascending' });
+    // Validate applied sorting filters for Registration IDs
+    await table.validateSortingOfColumns(
+      'Reg.',
+      2,
+      ascedingRegistrationIds,
+      descedingRegistrationIds,
+    );
+
+    // Validate applied sorting filters for Name column
+    await table.validateSortingOfColumns(
+      'Name',
+      3,
+      ascedingNames,
+      descedingNames,
+    );
+
+    // Apply filter for Transfer value
+    await table.filterColumnByText({
+      columnName: 'Transfer value',
+      filterText: '75',
+    });
+    await table.validateTableRowCount({ expectedRowCount: 2 });
+
+    // Reset filters
+    await table.clearAllFilters();
+
+    // Apply filter for FSP
+    await table.filterColumnByDopDownSelection({
+      columnName: 'FSP',
+      selection: 'Albert Heijn voucher WhatsApp',
+    });
+    await table.validateTableRowCount({ expectedRowCount: 1 });
   });
 });
