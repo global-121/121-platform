@@ -5,7 +5,6 @@ export enum FinancialServiceProviders {
   safaricom = 'Safaricom',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
-  deprecatedJumbo = 'Intersolve-jumbo-physical',
 }
 
 export enum FinancialServiceProviderConfigurationProperties {

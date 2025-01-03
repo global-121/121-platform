@@ -116,9 +116,6 @@ export class PaymentsService {
         this.commercialBankEthiopiaService,
       ],
       [FinancialServiceProviders.excel]: [this.excelService],
-      [FinancialServiceProviders.deprecatedJumbo]: [
-        {} as FinancialServiceProviderIntegrationInterface,
-      ],
     };
   }
 
