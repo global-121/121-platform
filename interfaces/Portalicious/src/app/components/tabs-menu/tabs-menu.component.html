@@ -1,4 +1,4 @@
-<p-tabs>
+<p-tabs scrollable>
   <p-tablist>
     @for (tab of menuItems(); track tab.routerLink) {
       @if (tab.visible === undefined || tab.visible) {
@@ -7,6 +7,7 @@
           [routerLink]="tab.routerLink"
           [routerLinkActive]="['p-tab-active']"
           [class]="tab.styleClass"
+          queryParamsHandling="merge"
         >
           <i [class]="tab.icon"></i>
           <span>{{ tab.label }}</span>

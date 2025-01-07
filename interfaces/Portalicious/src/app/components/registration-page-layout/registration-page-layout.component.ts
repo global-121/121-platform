@@ -27,6 +27,8 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { AuthService } from '~/services/auth.service';
+import { RegistrationLookupService } from '~/services/registration-lookup.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-registration-page-layout',
@@ -48,9 +50,11 @@ export class RegistrationPageLayoutComponent {
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
 
-  readonly registrationApiService = inject(RegistrationApiService);
-  readonly projectApiService = inject(ProjectApiService);
   private authService = inject(AuthService);
+  readonly projectApiService = inject(ProjectApiService);
+  readonly registrationApiService = inject(RegistrationApiService);
+  readonly registrationLookupService = inject(RegistrationLookupService);
+  readonly translatableStringService = inject(TranslatableStringService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
@@ -100,12 +104,24 @@ export class RegistrationPageLayoutComponent {
     }));
   });
 
-  allRegistrationsLink = computed(() => [
-    '/',
-    AppRoutes.project,
-    this.projectId(),
-    AppRoutes.projectRegistrations,
-  ]);
+  parentLink = computed(() =>
+    this.registrationLookupService.isActive()
+      ? undefined
+      : [
+          '/',
+          AppRoutes.project,
+          this.projectId(),
+          AppRoutes.projectRegistrations,
+        ],
+  );
+
+  parentTitle = computed(() =>
+    this.registrationLookupService.isActive()
+      ? this.translatableStringService.translate(
+          this.project.data()?.titlePortal,
+        )
+      : $localize`All Registrations`,
+  );
 
   registrationTitle = computed(() => {
     const localized = $localize`Reg. #`;
