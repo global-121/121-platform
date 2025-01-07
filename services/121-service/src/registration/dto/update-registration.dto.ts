@@ -24,7 +24,7 @@ export class UpdateRegistrationDto {
     description: `Key value pairs of the registration object.`,
     example: `{ "phoneNumber" : "1234567890" }`,
   })
-  public data: Record<string, string | number | boolean | undefined>;
+  public data: Record<string, string | number | boolean | null | undefined>;
 
   @ApiProperty({
     description: `Reason is the same for all provided attributes in one API-call`,

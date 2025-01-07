@@ -1206,7 +1206,7 @@
         <source>Preferred Language</source>
       </trans-unit>
       <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
-        <source>FSP Configuration Name</source>
+        <source>FSP</source>
       </trans-unit>
       <trans-unit id="attribute-label-referenceId" datatype="html">
         <source>Reference ID</source>
@@ -1311,7 +1311,52 @@
         <source>New FSP</source>
       </trans-unit>
       <trans-unit id="registration-full-name-edit-info" datatype="html">
-        <source>This field is dynamically generated based on the other name fields available below.</source>
+        <source>This field is dynamically generated based on the other name fields available below:</source>
+      </trans-unit>
+      <trans-unit id="1545261806462361427" datatype="html">
+        <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="2317261224640464417" datatype="html">
+        <source>Write a reason for the update</source>
+      </trans-unit>
+      <trans-unit id="3003940161121195414" datatype="html">
+        <source>Update information</source>
+      </trans-unit>
+      <trans-unit id="4404975094271849688" datatype="html">
+        <source>No changes detected.</source>
+      </trans-unit>
+      <trans-unit id="4788150502649502085" datatype="html">
+        <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
+      </trans-unit>
+      <trans-unit id="6404965869709788913" datatype="html">
+        <source>Personal information edited successfully.</source>
+      </trans-unit>
+      <trans-unit id="7005213248357637960" datatype="html">
+        <source>Edit information</source>
+      </trans-unit>
+      <trans-unit id="7906932148820692681" datatype="html">
+        <source>Operation not possible.</source>
+      </trans-unit>
+      <trans-unit id="8103250468659936776" datatype="html">
+        <source>Please fill out all required fields.</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
+        <source>The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentAmountMultiplier" datatype="html">
+        <source>The transfer value will be multiplied by this number for this Person Affected</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>The required format is: ONLY numbers, including country-code.</source>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-scope" datatype="html">
+        <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
+      </trans-unit>
+      <trans-unit id="generic-save" datatype="html">
+        <source>Save</source>
+      </trans-unit>
+      <trans-unit id="8602877633844729884" datatype="html">
+        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
       </trans-unit>
     </body>
   </file>
