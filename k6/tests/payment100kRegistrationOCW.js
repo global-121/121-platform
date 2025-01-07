@@ -11,6 +11,7 @@ const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;
+const amount = 11.11; // Using an amount with cents. To ensure we handle javascript floating point precision issues
 
 export const options = {
   thresholds: {
@@ -30,6 +31,7 @@ export default function () {
     paymentId,
     maxTimeoutAttempts,
     minPassRatePercentage,
+    amount,
   );
   check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
