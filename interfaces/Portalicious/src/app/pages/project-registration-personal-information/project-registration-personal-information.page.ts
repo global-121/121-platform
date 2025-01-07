@@ -5,33 +5,50 @@ import {
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
+import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
+import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
+import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 
 @Component({
   selector: 'app-project-registration-personal-information',
-  imports: [DataListComponent, RegistrationPageLayoutComponent, SkeletonModule],
+  imports: [
+    RegistrationPageLayoutComponent,
+    SkeletonModule,
+    ButtonModule,
+    DataListComponent,
+    EditPersonalInformationComponent,
+  ],
   templateUrl: './project-registration-personal-information.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectRegistrationPersonalInformationPageComponent {
+export class ProjectRegistrationPersonalInformationPageComponent
+  implements ComponentCanDeactivate
+{
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
 
+  readonly authService = inject(AuthService);
+  readonly registrationApiService = inject(RegistrationApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
   registrationAttributes = injectQuery(
@@ -41,6 +58,19 @@ export class ProjectRegistrationPersonalInformationPageComponent {
         registrationId: this.registrationId,
       }),
     ),
+  );
+
+  isEditing = signal(false);
+  editPersonalInformationComponent =
+    viewChild.required<EditPersonalInformationComponent>(
+      'editPersonalInformation',
+    );
+
+  canUpdatePersonalInformation = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationAttributeUPDATE,
+    }),
   );
 
   dataList = computed<DataListItem[]>(() =>
@@ -90,4 +120,20 @@ export class ProjectRegistrationPersonalInformationPageComponent {
       },
     ),
   );
+
+  onRegistrationUpdated() {
+    this.isEditing.set(false);
+    void this.registrationApiService.invalidateCache(
+      this.projectId,
+      this.registrationId,
+    );
+    void this.registrationAttributes.refetch();
+  }
+
+  canDeactivate() {
+    return (
+      !this.isEditing() ||
+      this.editPersonalInformationComponent().canDeactivate()
+    );
+  }
 }

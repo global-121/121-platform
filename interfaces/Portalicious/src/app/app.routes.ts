@@ -5,6 +5,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { authGuard } from '~/guards/auth.guard';
 import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { foundResourceGuard } from '~/guards/found-resource.guard';
+import { pendingChangesGuard } from '~/guards/pending-changes.guard';
 import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
 
 export enum AppRoutes {
@@ -126,6 +127,7 @@ export const routes: Routes = [
               },
               {
                 path: AppRoutes.projectRegistrationPersonalInformation,
+                canDeactivate: [pendingChangesGuard],
                 loadComponent: () =>
                   import(
                     '~/pages/project-registration-personal-information/project-registration-personal-information.page'

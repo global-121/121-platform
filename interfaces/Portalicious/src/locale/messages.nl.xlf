@@ -1601,8 +1601,8 @@
         <target state="new">Preferred Language</target>
       </trans-unit>
       <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
-        <source>FSP Configuration Name</source>
-        <target state="new">FSP Configuration Name</target>
+        <source>FSP</source>
+        <target state="new">FSP</target>
       </trans-unit>
       <trans-unit id="attribute-label-paymentCount" datatype="html">
         <source>Payment Count</source>
@@ -1745,8 +1745,68 @@
         <target state="new">New FSP</target>
       </trans-unit>
       <trans-unit id="registration-full-name-edit-info" datatype="html">
-        <source>This field is dynamically generated based on the other name fields available below.</source>
-        <target state="new">This field is dynamically generated based on the other name fields available below.</target>
+        <source>This field is dynamically generated based on the other name fields available below:</source>
+        <target state="new">This field is dynamically generated based on the other name fields available below:</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
+        <source>The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</source>
+        <target state="new">The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentAmountMultiplier" datatype="html">
+        <source>The transfer value will be multiplied by this number for this Person Affected</source>
+        <target state="new">The transfer value will be multiplied by this number for this Person Affected</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>The required format is: ONLY numbers, including country-code.</source>
+        <target state="new">The required format is: ONLY numbers, including country-code.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-scope" datatype="html">
+        <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
+        <target state="new">Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</target>
+      </trans-unit>
+      <trans-unit id="generic-save" datatype="html">
+        <source>Save</source>
+        <target state="new">Save</target>
+      </trans-unit>
+      <trans-unit id="3003940161121195414" datatype="html">
+        <source>Update information</source>
+        <target state="new">Update information</target>
+      </trans-unit>
+      <trans-unit id="4788150502649502085" datatype="html">
+        <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
+        <target state="new">You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</target>
+      </trans-unit>
+      <trans-unit id="2317261224640464417" datatype="html">
+        <source>Write a reason for the update</source>
+        <target state="new">Write a reason for the update</target>
+      </trans-unit>
+      <trans-unit id="6404965869709788913" datatype="html">
+        <source>Personal information edited successfully.</source>
+        <target state="new">Personal information edited successfully.</target>
+      </trans-unit>
+      <trans-unit id="8103250468659936776" datatype="html">
+        <source>Please fill out all required fields.</source>
+        <target state="new">Please fill out all required fields.</target>
+      </trans-unit>
+      <trans-unit id="7906932148820692681" datatype="html">
+        <source>Operation not possible.</source>
+        <target state="new">Operation not possible.</target>
+      </trans-unit>
+      <trans-unit id="4404975094271849688" datatype="html">
+        <source>No changes detected.</source>
+        <target state="new">No changes detected.</target>
+      </trans-unit>
+      <trans-unit id="7005213248357637960" datatype="html">
+        <source>Edit information</source>
+        <target state="new">Edit information</target>
+      </trans-unit>
+      <trans-unit id="1545261806462361427" datatype="html">
+        <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
+        <target state="new">Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></target>
+      </trans-unit>
+      <trans-unit id="8602877633844729884" datatype="html">
+        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
+        <target state="new">Changes that you made may not be saved. Are you sure you wish to proceed?</target>
       </trans-unit>
     </body>
   </file>

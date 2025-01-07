@@ -4,7 +4,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 
 @Pipe({
   name: 'translatableString',
-  standalone: true,
 })
 export class TranslatableStringPipe implements PipeTransform {
   private translatableStringService = inject(TranslatableStringService);
