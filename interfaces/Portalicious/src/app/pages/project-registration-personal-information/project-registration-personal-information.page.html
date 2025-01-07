@@ -22,6 +22,7 @@
         <app-data-list [data]="dataList()"> </app-data-list>
       } @else {
         <app-edit-personal-information
+          #editPersonalInformation
           [projectId]="projectId()"
           [registrationId]="registrationId()"
           [attributeList]="registrationAttributes.data()"

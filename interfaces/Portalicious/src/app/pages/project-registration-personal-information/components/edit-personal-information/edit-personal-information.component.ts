@@ -39,6 +39,7 @@ import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/co
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import {
   NormalizedRegistrationAttribute,
   RegistrationAttributeService,
@@ -69,7 +70,9 @@ type EditPersonalInformationFormGroup =
   providers: [ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditPersonalInformationComponent implements OnInit, OnDestroy {
+export class EditPersonalInformationComponent
+  implements OnInit, OnDestroy, ComponentCanDeactivate
+{
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
   readonly attributeList = input.required<NormalizedRegistrationAttribute[]>();
@@ -238,9 +241,11 @@ export class EditPersonalInformationComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  preventLosingChanges($event: BeforeUnloadEvent) {
+  canDeactivate($event?: BeforeUnloadEvent) {
     if (this.hasChanges()) {
-      $event.preventDefault();
+      $event?.preventDefault();
+      return false;
     }
+    return true;
   }
 }

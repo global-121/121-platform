@@ -5,6 +5,7 @@ import {
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -21,6 +22,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
@@ -38,7 +40,9 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectRegistrationPersonalInformationPageComponent {
+export class ProjectRegistrationPersonalInformationPageComponent
+  implements ComponentCanDeactivate
+{
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
@@ -57,6 +61,10 @@ export class ProjectRegistrationPersonalInformationPageComponent {
   );
 
   isEditing = signal(false);
+  editPersonalInformationComponent =
+    viewChild.required<EditPersonalInformationComponent>(
+      'editPersonalInformation',
+    );
 
   canUpdatePersonalInformation = computed(() =>
     this.authService.hasPermission({
@@ -120,5 +128,12 @@ export class ProjectRegistrationPersonalInformationPageComponent {
       this.registrationId,
     );
     void this.registrationAttributes.refetch();
+  }
+
+  canDeactivate() {
+    return (
+      !this.isEditing() ||
+      this.editPersonalInformationComponent().canDeactivate()
+    );
   }
 }

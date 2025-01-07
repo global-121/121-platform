@@ -1804,6 +1804,10 @@
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
         <target state="new">Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></target>
       </trans-unit>
+      <trans-unit id="8602877633844729884" datatype="html">
+        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
+        <target state="new">Changes that you made may not be saved. Are you sure you wish to proceed?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
