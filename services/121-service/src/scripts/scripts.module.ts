@@ -16,12 +16,8 @@ import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
 import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
-import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
-import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
-import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
 import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
-import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
@@ -38,14 +34,10 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     ScriptsService,
     SeedInit,
     SeedHelper,
-    SeedProgramValidation,
-    SeedNLProgramPV,
-    SeedDemoProgram,
     SeedEthJointResponse,
     SeedMultipleKRCS,
     SeedMultipleNLRC,
     SeedMultipleNLRCMockData,
-    SeedTestProgram,
     SeedTestOneAdmin,
     SeedTestMultipleProgram,
     SeedMockHelper,

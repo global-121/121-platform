@@ -5,7 +5,7 @@ import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import messageTemplateDemo from '@121-service/src/seed-data/message-template/message-template-demo.json';
 import messageTemplateTest from '@121-service/src/seed-data/message-template/message-template-test.json';
 import messageTemplateValidation from '@121-service/src/seed-data/message-template/message-template-validation.json';
-import organizationDemo from '@121-service/src/seed-data/organization/organization-demo.json';
+import organizationGeneric from '@121-service/src/seed-data/organization/organization-generic.json';
 import programDemo from '@121-service/src/seed-data/program/program-demo.json';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import programValidation from '@121-service/src/seed-data/program/program-validation.json';
@@ -36,7 +36,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
 
     // ***** CREATE ORGANIZATION *****
     // Technically multiple organizations could be loaded, but that should not be done
-    await this.seedHelper.addOrganization(organizationDemo);
+    await this.seedHelper.addOrganization(organizationGeneric);
 
     // ************************
     // ***** Program Test *****

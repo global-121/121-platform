@@ -5,7 +5,7 @@ import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import messageTemplateAne from '@121-service/src/seed-data/message-template/message-template-joint-response-ANE.json';
 import messageTemplateDorcas from '@121-service/src/seed-data/message-template/message-template-joint-response-dorcas.json';
 import messageTemplateEKHCDC from '@121-service/src/seed-data/message-template/message-template-joint-response-EKHCDC.json';
-import organizationEthJointResponse from '@121-service/src/seed-data/organization/organization-eth-joint-response.json';
+import organizationGeneric from '@121-service/src/seed-data/organization/organization-generic.json';
 import programAne from '@121-service/src/seed-data/program/program-joint-response-ANE.json';
 import programDorcas from '@121-service/src/seed-data/program/program-joint-response-dorcas.json';
 import programEKHCDC from '@121-service/src/seed-data/program/program-joint-response-EKHCDC.json';
@@ -36,7 +36,7 @@ export class SeedEthJointResponse implements InterfaceScript {
 
     // ***** CREATE ORGANIZATION *****
     // Technically multiple organizations could be loaded, but that should not be done
-    await this.seedHelper.addOrganization(organizationEthJointResponse);
+    await this.seedHelper.addOrganization(organizationGeneric);
 
     // ************************
     // ***** Program Dorcas *****

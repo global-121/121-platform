@@ -5,7 +5,7 @@ import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import messageTemplateBaringo from '@121-service/src/seed-data/message-template/message-template-krcs-baringo.json';
 import messageTemplateTurkana from '@121-service/src/seed-data/message-template/message-template-krcs-turkana.json';
 import messageTemplateWestPokot from '@121-service/src/seed-data/message-template/message-template-krcs-westpokot.json';
-import organizationKRCS from '@121-service/src/seed-data/organization/organization-krcs.json';
+import organizationGeneric from '@121-service/src/seed-data/organization/organization-generic.json';
 import programBaringo from '@121-service/src/seed-data/program/program-krcs-baringo.json';
 import programTurkana from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import programWestPokot from '@121-service/src/seed-data/program/program-krcs-westpokot.json';
@@ -36,7 +36,7 @@ export class SeedMultipleKRCS implements InterfaceScript {
 
     // ***** CREATE ORGANIZATION *****
     // Technically multiple organizations could be loaded, but that should not be done
-    await this.seedHelper.addOrganization(organizationKRCS);
+    await this.seedHelper.addOrganization(organizationGeneric);
 
     // ************************
     // ***** Program Turkana *****

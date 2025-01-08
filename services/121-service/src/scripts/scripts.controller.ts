@@ -9,19 +9,15 @@ import {
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import { DEBUG } from '@121-service/src/config';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
-import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
-import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
-import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
 import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
-import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
@@ -38,13 +34,9 @@ export class ScriptsController {
     private readonly seedMultipleKrcs: SeedMultipleKRCS,
     private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
     private readonly seedMultipleNlrc: SeedMultipleNLRC,
-    private readonly seedDemoProgram: SeedDemoProgram,
     private readonly seedEthJointRepose: SeedEthJointResponse,
-    private readonly seedProgramNlrcPv: SeedNLProgramPV,
     private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
-    private readonly seedProgramTest: SeedTestProgram,
     private readonly seedProgramOneAdmin: SeedTestOneAdmin,
-    private readonly seedProgramValidation: SeedProgramValidation,
     private readonly seedInit: SeedInit,
     private readonly scriptsService: ScriptsService,
   ) {}
@@ -114,23 +106,15 @@ export class ScriptsController {
     ) {
       await this.seedInit.run(isApiTests);
     }
-    if (script == SeedScript.demo) {
-      await this.seedDemoProgram.run(isApiTests);
-    } else if (script == SeedScript.test) {
-      await this.seedProgramTest.run(isApiTests);
-    } else if (script == SeedScript.oneAdmin) {
+    if (script == SeedScript.oneAdmin) {
       await this.seedProgramOneAdmin.run(isApiTests);
     } else if (script == SeedScript.testMultiple) {
       await this.seedProgramTestMultiple.run(isApiTests);
     } else if (script == SeedScript.nlrcMultiple) {
       await this.seedMultipleNlrc.run(isApiTests);
-    } else if (script == SeedScript.nlrcPV) {
-      await this.seedProgramNlrcPv.run(isApiTests);
-    } else if (script == SeedScript.validation) {
-      await this.seedProgramValidation.run(isApiTests);
-    } else if (script == SeedScript.ethJointResponse) {
+    } else if (script == SeedScript.cbeProgram) {
       await this.seedEthJointRepose.run(isApiTests);
-    } else if (script == SeedScript.krcsMultiple) {
+    } else if (script == SeedScript.safaricomProgram) {
       await this.seedMultipleKrcs.run(isApiTests);
     } else if (
       script == SeedScript.nlrcMultipleMock &&
