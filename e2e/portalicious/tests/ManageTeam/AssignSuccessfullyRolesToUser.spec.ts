@@ -13,7 +13,7 @@ const userFullEmail = 'cva-officer@example.org';
 const userRole = 'Only CREATE registrations';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.oneAdmin);
+  await resetDB(SeedScript.testMultiple);
 
   // Login
   const loginPage = new LoginPage(page);

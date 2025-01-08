@@ -32,7 +32,7 @@ const expectedAssignedUsers = [
 ];
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.oneAdmin);
+  await resetDB(SeedScript.testMultiple);
 
   // Login
   const loginPage = new LoginPage(page);
