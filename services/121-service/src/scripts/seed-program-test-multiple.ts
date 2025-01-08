@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import messageTemplateDemo from '@121-service/src/seed-data/message-template/message-template-demo.json';
-import messageTemplateTest from '@121-service/src/seed-data/message-template/message-template-test.json';
-import messageTemplateValidation from '@121-service/src/seed-data/message-template/message-template-validation.json';
+import messageTemplateGeneric from '@121-service/src/seed-data/message-template/message-template-generic.json';
 import organizationGeneric from '@121-service/src/seed-data/organization/organization-generic.json';
 import programDemo from '@121-service/src/seed-data/program/program-demo.json';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
@@ -27,7 +25,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
-      messageTemplateDemo,
+      messageTemplateGeneric,
       programEntityDemo,
     );
 
@@ -50,7 +48,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
-      messageTemplateTest,
+      messageTemplateGeneric,
       programEntityTest,
     );
 
@@ -69,7 +67,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
 
     // ***** CREATE MESSAGE TEMPLATES *****
     await this.seedHelper.addMessageTemplates(
-      messageTemplateValidation,
+      messageTemplateGeneric,
       programEntityValidation,
     );
 

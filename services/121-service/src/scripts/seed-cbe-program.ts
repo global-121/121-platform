@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import messageTemplate from '@121-service/src/seed-data/message-template/message-template-cbe-program.json';
+import messageTemplateGeneric from '@121-service/src/seed-data/message-template/message-template-generic.json';
 import organizationGeneric from '@121-service/src/seed-data/organization/organization-generic.json';
 import program from '@121-service/src/seed-data/program/program-cbe.json';
 
@@ -15,7 +15,10 @@ export class SeedCbeProgram implements InterfaceScript {
     const programEntity = await this.seedHelper.addProgram(program, isApiTests);
 
     // ***** CREATE MESSAGE TEMPLATES *****
-    await this.seedHelper.addMessageTemplates(messageTemplate, programEntity);
+    await this.seedHelper.addMessageTemplates(
+      messageTemplateGeneric,
+      programEntity,
+    );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntity);
