@@ -5,11 +5,10 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
+import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/intersolve-voucher.helper';
 import {
   doPayment,
-  getTransactions,
   waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -67,30 +66,14 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
+      const getTransactionsBody = await getTransactionsIntersolveVoucher(
+        programId,
+        payment,
+        registrationAh.referenceId,
+        accessToken,
+      );
+
       // Assert
-      let getTransactionsBody: any[] = [];
-      let attempts = 0;
-      while (attempts <= 10) {
-        attempts++;
-        getTransactionsBody = (
-          await getTransactions(
-            programId,
-            payment,
-            registrationAh.referenceId,
-            accessToken,
-          )
-        ).body;
-
-        if (
-          getTransactionsBody.length > 0 &&
-          getTransactionsBody[0].status === TransactionStatusEnum.success
-        ) {
-          break;
-        }
-
-        await waitFor(2_000);
-      }
-
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
