@@ -563,12 +563,9 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
-    });
     const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        registration.programFinancialServiceProviderConfigurationId,
+      await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+        voucher.id,
       );
     return await this.getAndStoreBalance(voucher, programId, credentials);
   }
@@ -681,12 +678,9 @@ export class IntersolveVoucherService
             programId,
           })
           .getMany();
-      const programFspConfigId =
-        previouslyUnusedVouchers[0].image[0].registration
-          .programFinancialServiceProviderConfigurationId;
       const credentials =
-        await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-          programFspConfigId,
+        await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+          previouslyUnusedVouchers[0].id,
         );
       for await (const voucher of previouslyUnusedVouchers) {
         await this.getAndStoreBalance(voucher, programId, credentials);
@@ -871,12 +865,9 @@ export class IntersolveVoucherService
           });
 
         const vouchersToUpdate = await q.getMany();
-        const programFspConfigId =
-          vouchersToUpdate[0].image[0].registration
-            .programFinancialServiceProviderConfigurationId;
         const credentials =
-          await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-            programFspConfigId,
+          await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+            vouchersToUpdate[0].id,
           );
         for await (const voucher of vouchersToUpdate) {
           await this.getAndStoreBalance(voucher, programId, credentials);

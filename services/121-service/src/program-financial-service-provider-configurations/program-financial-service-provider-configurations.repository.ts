@@ -65,6 +65,30 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     return response;
   }
 
+  public async getUsernamePasswordPropertiesByVoucherId(
+    intersolveVoucherId: number,
+  ): Promise<UsernamePasswordInterface> {
+    const programFspConfig = await this.baseRepository
+      .createQueryBuilder('configuration')
+      .leftJoin('configuration.transactions', 'transactions')
+      .leftJoin('transactions.registration', 'registration')
+      .leftJoin('registration.images', 'images')
+      .leftJoin('images.voucher', 'voucher')
+      .where('voucher.id = :intersolveVoucherId', {
+        intersolveVoucherId,
+      })
+      .andWhere('voucher.payment = transactions.payment') // REFACTOR: this filter is needed, as it is not taken care of by the joins above. Better refactor the entity relations here.
+      .getOne(); // the above can still return multiple transaction (steps/attempts) for the same voucher, but they will always have the same fspConfig, so take one
+
+    if (!programFspConfig) {
+      throw new Error(
+        `ProgramFspConfig not found based onintersolveVoucherId ${intersolveVoucherId}`,
+      );
+    }
+
+    return this.getUsernamePasswordProperties(programFspConfig.id);
+  }
+
   // This methods specfically does not throw as it also used to check if the property exists
   public async getPropertyValueByName({
     programFinancialServiceProviderConfigurationId,
