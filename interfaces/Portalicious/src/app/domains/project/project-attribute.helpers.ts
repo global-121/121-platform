@@ -21,6 +21,7 @@ export const ATTRIBUTE_EDIT_INFO: Partial<
   Record<GenericRegistrationAttributes, string>
 > = {
   maxPayments: $localize`:@@attribute-edit-info-maxPayments:The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.`,
+  paymentCountRemaining: $localize`:@@attribute-edit-info-paymentCountRemaining:This is automatically calculated based on Max. payments and payments sucessfully sent`,
   paymentAmountMultiplier: $localize`:@@attribute-edit-info-paymentAmountMultiplier:The transfer value will be multiplied by this number for this Person Affected`,
   phoneNumber: $localize`:@@attribute-edit-info-phoneNumber:The required format is: ONLY numbers, including country-code.`,
   scope: $localize`:@@attribute-edit-info-scope:Separate the parts with a dot (i.e. 'amsterdam.west').`,

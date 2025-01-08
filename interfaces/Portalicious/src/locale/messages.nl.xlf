@@ -1808,6 +1808,10 @@
         <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
         <target state="new">Changes that you made may not be saved. Are you sure you wish to proceed?</target>
       </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
+        <source>This is automatically calculated based on Max. payments and payments sucessfully sent</source>
+        <target state="new">This is automatically calculated based on Max. payments and payments sucessfully sent</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

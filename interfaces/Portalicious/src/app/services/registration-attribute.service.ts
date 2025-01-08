@@ -34,7 +34,11 @@ import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
-const nonEditableAttributes = ['inclusionScore', 'name'];
+const nonEditableAttributes = [
+  'inclusionScore',
+  'name',
+  'paymentCountRemaining',
+];
 
 const getGenericAttributeType = (
   attributeName: GenericRegistrationAttributes,
