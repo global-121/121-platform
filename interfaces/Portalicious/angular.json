@@ -42,7 +42,7 @@
               },
               "src/favicon.ico"
             ],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/fonts.css", "src/styles.scss"],
             "scripts": []
           },
           "configurations": {
