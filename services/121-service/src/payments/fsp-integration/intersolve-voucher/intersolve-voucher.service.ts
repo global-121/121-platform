@@ -563,22 +563,21 @@ export class IntersolveVoucherService
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return await this.getAndStoreBalance(voucher, programId, referenceId);
+    const registration = await this.registrationScopedRepository.findOneOrFail({
+      where: { referenceId: Equal(referenceId) },
+    });
+    const credentials =
+      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+        registration.programFinancialServiceProviderConfigurationId,
+      );
+    return await this.getAndStoreBalance(voucher, programId, credentials);
   }
 
   private async getAndStoreBalance(
     intersolveVoucher: IntersolveVoucherEntity,
     programId: number,
-    referenceId: string,
+    credentials: UsernamePasswordInterface,
   ): Promise<number> {
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
-    });
-
-    const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        registration.programFinancialServiceProviderConfigurationId,
-      );
     if (!credentials?.username || !credentials?.password) {
       throw new Error(
         `Could not retrieve configuration of FSP Intersolve Voucher for program: ${programId}. Please contact the 121 platform team.`,
@@ -682,12 +681,15 @@ export class IntersolveVoucherService
             programId,
           })
           .getMany();
-      for await (const voucher of previouslyUnusedVouchers) {
-        await this.getAndStoreBalance(
-          voucher,
-          programId,
-          voucher.image[0].registration.referenceId,
+      const programFspConfigId =
+        previouslyUnusedVouchers[0].image[0].registration
+          .programFinancialServiceProviderConfigurationId;
+      const credentials =
+        await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+          programFspConfigId,
         );
+      for await (const voucher of previouslyUnusedVouchers) {
+        await this.getAndStoreBalance(voucher, programId, credentials);
       }
       id += 1000;
     }
@@ -869,13 +871,15 @@ export class IntersolveVoucherService
           });
 
         const vouchersToUpdate = await q.getMany();
-
-        for await (const voucher of vouchersToUpdate) {
-          await this.getAndStoreBalance(
-            voucher,
-            programId,
-            voucher.image[0].registration.referenceId,
+        const programFspConfigId =
+          vouchersToUpdate[0].image[0].registration
+            .programFinancialServiceProviderConfigurationId;
+        const credentials =
+          await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+            programFspConfigId,
           );
+        for await (const voucher of vouchersToUpdate) {
+          await this.getAndStoreBalance(voucher, programId, credentials);
         }
         id += 1000;
       }
