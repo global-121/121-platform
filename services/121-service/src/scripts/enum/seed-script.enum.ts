@@ -7,6 +7,4 @@ export enum SeedScript {
   safaricomProgram = 'safari-program',
   excelProgram = 'excel-program',
   // nedbankProgram = 'nedbank-program',
-  // ##TODO: refactor out the need for this script
-  oneAdmin = 'one-admin',
 }

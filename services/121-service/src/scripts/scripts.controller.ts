@@ -16,7 +16,6 @@ import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
-import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
 import { SeedSafaricomProgram } from '@121-service/src/scripts/seed-safaricom-program';
 import { WrapperType } from '@121-service/src/wrapper.type';
 export class SecretDto {
@@ -36,7 +35,6 @@ export class ScriptsController {
     private readonly seedMultipleNlrc: SeedMultipleNLRC,
     private readonly seedCbeProgram: SeedCbeProgram,
     private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
-    private readonly seedProgramOneAdmin: SeedTestOneAdmin,
     private readonly seedInit: SeedInit,
     private readonly scriptsService: ScriptsService,
   ) {}
@@ -99,23 +97,21 @@ export class ScriptsController {
 
     isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
 
-    // If script is in seed enum and does not inculde mock data
+    // If script is in seed enum and does not include mock data
     if (
       Object.values(SeedScript).includes(script) &&
       script != SeedScript.nlrcMultipleMock
     ) {
       await this.seedInit.run(isApiTests);
     }
-    if (script == SeedScript.oneAdmin) {
-      await this.seedProgramOneAdmin.run(isApiTests);
-    } else if (script == SeedScript.testMultiple) {
+    if (script == SeedScript.testMultiple) {
       await this.seedProgramTestMultiple.run(isApiTests);
-    } else if (script == SeedScript.nlrcMultiple) {
-      await this.seedMultipleNlrc.run(isApiTests);
     } else if (script == SeedScript.cbeProgram) {
       await this.seedCbeProgram.run(isApiTests);
     } else if (script == SeedScript.safaricomProgram) {
       await this.seedMultipleKrcs.run(isApiTests);
+    } else if (script == SeedScript.nlrcMultiple) {
+      await this.seedMultipleNlrc.run(isApiTests);
     } else if (
       script == SeedScript.nlrcMultipleMock &&
       ['development', 'test'].includes(process.env.NODE_ENV!)

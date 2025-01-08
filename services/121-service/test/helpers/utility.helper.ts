@@ -95,8 +95,12 @@ export async function getAccessTokenCvaManager(): Promise<string> {
 export async function removeProgramAssignment(
   programId: number,
   userId: number,
+  accessToken: string,
 ): Promise<request.Response> {
-  return getServer().delete(`/programs/${programId}/users/${userId}`).send();
+  return getServer()
+    .delete(`/programs/${programId}/users/${userId}`)
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export async function updatePermissionsOfRole(

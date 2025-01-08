@@ -16,7 +16,6 @@ import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
-import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
 import { SeedSafaricomProgram } from '@121-service/src/scripts/seed-safaricom-program';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -38,7 +37,6 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     SeedSafaricomProgram,
     SeedMultipleNLRC,
     SeedMultipleNLRCMockData,
-    SeedTestOneAdmin,
     SeedTestMultipleProgram,
     SeedMockHelper,
     AxiosCallsService,
