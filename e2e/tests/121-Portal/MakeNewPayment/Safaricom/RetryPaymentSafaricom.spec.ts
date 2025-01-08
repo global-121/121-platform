@@ -22,7 +22,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-const krcsProgramTitle = programSafaricom.titlePortal.en;
+const programTitle = programSafaricom.titlePortal.en;
 const ok = englishTranslations.common.ok;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 const paymentStatus = englishTranslations.entity.payment.status.error;
@@ -82,7 +82,7 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
   }).format(defaultMaxTransferValue);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(krcsProgramTitle);
+    await homePage.navigateToProgramme(programTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
   });
 
@@ -114,14 +114,14 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
 
     await test.step('Retry payment', async () => {
       await page.goto('/');
-      await homePage.navigateToProgramme(krcsProgramTitle);
+      await homePage.navigateToProgramme(programTitle);
       await navigationModule.navigateToProgramTab(paymentLabel);
       await paymentsPage.validatePaymentStatus({});
       await paymentsPage.validateFailedPaymentStatus({ payments: 1 });
       const accessToken = await getAccessToken();
 
       await updateRegistration(
-        bhaProgramId,
+        programId,
         registrationsSafaricomRetry[0].referenceId,
         {
           phoneNumber: '254708374149',

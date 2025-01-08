@@ -2,13 +2,12 @@
   "published": true,
   "validation": false,
   "location": "Ethiopia",
-  "ngo": "ANE",
+  "ngo": "NGO",
   "titlePortal": {
-    "en": "DRA Joint Response 2023 Ethiopia - ANE",
-    "et_AM": "የዲአርኤ የጋራ ምላሽ 2023 ኢትዮጵያ - አኔ"
+    "en": "CBE Program"
   },
   "description": {
-    "en": ""
+    "en": "Test program using Commercial Bank of Ethiopia FSP"
   },
   "startDate": "2023-08-01T12:00:00Z",
   "endDate": "2023-12-31T12:00:00Z",
@@ -106,182 +105,6 @@
           }
         }
       ],
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyFemale",
-      "label": {
-        "en": "How many female?",
-        "et_AM": "ሴት አባላት"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyMale",
-      "label": {
-        "en": "How many male?",
-        "et_AM": "ወንድ አባላት"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "totalFamilyMembers",
-      "label": {
-        "en": "Total family members",
-        "et_AM": "በቤተሰብዎ ውስጥ ያሉት አባላት"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyFemaleUnder18",
-      "label": {
-        "en": "Female under 18",
-        "et_AM": "ሴት ከ18 ዓመት በታች"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyMaleUnder18",
-      "label": {
-        "en": "Male under 18",
-        "et_AM": "ወንድ ከ18 ዓመት በታች"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyFemaleOver18",
-      "label": {
-        "en": "Female over 18",
-        "et_AM": "ሴት ከ18 ዓመት በላይ"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyMaleOver18",
-      "label": {
-        "en": "Male over 18",
-        "et_AM": "ወንድ ከ18 ዓመት በላይ"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyFemaleDisabilityUnder18",
-      "label": {
-        "en": "Female with disability under 18",
-        "et_AM": "ሴት ከ18 ዓመት በታች አካል ጉዳተኛ"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyMaleDisabilityUnder18",
-      "label": {
-        "en": "Male with disability under 18",
-        "et_AM": "ወንድ ከ18 ዓመት በታች አካል ጉዳተኛ"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyFemaleDisabilityOver18",
-      "label": {
-        "en": "Female with disability over 18",
-        "et_AM": "ሴት ከ18 ዓመት በላይ አካል ጉዳተኛ"
-      },
-      "type": "numeric",
-      "options": null,
-      "scoring": {},
-      "pattern": null,
-      "editableInPortal": true,
-      "export": ["all-people-affected", "included"],
-      "duplicateCheck": false,
-      "placeholder": null,
-      "showInPeopleAffectedTable": false
-    },
-    {
-      "name": "howManyMaleDisabilityOver18",
-      "label": {
-        "en": "Male with disability over 18",
-        "et_AM": "ወንድ ከ18 ዓመት በላይ አካል ጉዳተኛ"
-      },
-      "type": "numeric",
-      "options": null,
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,

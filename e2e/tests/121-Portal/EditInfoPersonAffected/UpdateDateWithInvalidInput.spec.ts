@@ -24,7 +24,7 @@ const message =
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.testMultiple);
-  const programIdWesteros = 1;
+  const programIdWesteros = 2;
   accessToken = await getAccessToken();
 
   await importRegistrationsCSV(
