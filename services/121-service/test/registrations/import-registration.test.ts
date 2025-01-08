@@ -258,13 +258,13 @@ describe('Import a registration', () => {
     await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
     const registrationWesteros1Copy = { ...registrationWesteros1 };
-    const programIdWestoros = 1;
+    const programIdWesteros = 2;
     // @ts-expect-error we are forcing something to be null when it shouldn't be
     registrationWesteros1Copy.house = null;
 
     // Act
     const response = await importRegistrations(
-      programIdWestoros,
+      programIdWesteros,
       [registrationWesteros1Copy],
       accessToken,
     );
@@ -274,7 +274,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
-      programIdWestoros,
+      programIdWesteros,
       accessToken,
     );
 
