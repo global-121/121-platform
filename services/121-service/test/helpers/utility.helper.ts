@@ -92,6 +92,13 @@ export async function getAccessTokenCvaManager(): Promise<string> {
   );
 }
 
+export async function removeProgramAssignment(
+  programId: number,
+  userId: number,
+): Promise<request.Response> {
+  return getServer().delete(`/programs/${programId}/users/${userId}`).send();
+}
+
 export async function updatePermissionsOfRole(
   userRoleId: number,
   roleToUpdate: UpdateUserRoleDto,

@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
 test('[29759] Assign successfully roles to a user ', async ({ page }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeam(page);
-  const projectTitle = 'Cash program Warsaw';
+  const projectTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);

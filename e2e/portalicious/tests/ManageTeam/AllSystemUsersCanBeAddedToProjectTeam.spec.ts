@@ -1,7 +1,10 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
+import {
+  removeProgramAssignment,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
@@ -18,9 +21,14 @@ const expectedAvailablesystemUsers = [
   'finance-officer@example.org',
   'view-no-pii@example.org',
 ];
+const programId = 2;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.testMultiple);
+  // remove assignments of all users except admin again, to create the context for this test
+  for (let i = 2; i <= 9; i++) {
+    await removeProgramAssignment(i, programId);
+  }
 
   // Login
   const loginPage = new LoginPage(page);
@@ -36,7 +44,7 @@ test('[29758] All system-users are available to be added to a "project team"', a
 }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeam(page);
-  const projectTitle = 'Cash program Warsaw';
+  const projectTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
