@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedMiddelburgPv,

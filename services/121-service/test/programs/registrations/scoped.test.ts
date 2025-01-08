@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   registrationScopedGoesPv,
   registrationScopedMiddelburgPv,

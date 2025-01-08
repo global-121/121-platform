@@ -5,7 +5,7 @@ import { FinancialServiceProviderAttributes } from '@121-service/src/financial-s
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,

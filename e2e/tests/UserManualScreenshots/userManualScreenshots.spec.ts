@@ -4,7 +4,7 @@ import { Page } from 'playwright';
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import { BulkActionId } from '@121-portal/src/app/models/bulk-actions.models';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,

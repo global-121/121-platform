@@ -1,5 +1,5 @@
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,

@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programEth from '@121-service/src/seed-data/program/program-joint-response-dorcas.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import {

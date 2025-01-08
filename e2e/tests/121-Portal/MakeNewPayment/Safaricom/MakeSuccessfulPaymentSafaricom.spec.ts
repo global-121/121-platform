@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {

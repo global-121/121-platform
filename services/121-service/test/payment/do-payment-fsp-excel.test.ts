@@ -6,7 +6,7 @@ import { FinancialServiceProviderConfigurationProperties } from '@121-service/sr
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import {
   doPayment,

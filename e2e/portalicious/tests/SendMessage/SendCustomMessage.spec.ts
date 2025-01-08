@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
