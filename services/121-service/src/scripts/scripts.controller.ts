@@ -11,13 +11,13 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { DEBUG } from '@121-service/src/config';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
-import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
+import { SeedCbeProgram } from '@121-service/src/scripts/seed-cbe-program';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
-import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
 import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
 import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
+import { SeedSafaricomProgram } from '@121-service/src/scripts/seed-safaricom-program';
 import { WrapperType } from '@121-service/src/wrapper.type';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
@@ -31,10 +31,10 @@ export class SecretDto {
 @Controller('scripts')
 export class ScriptsController {
   public constructor(
-    private readonly seedMultipleKrcs: SeedMultipleKRCS,
+    private readonly seedMultipleKrcs: SeedSafaricomProgram,
     private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
     private readonly seedMultipleNlrc: SeedMultipleNLRC,
-    private readonly seedEthJointRepose: SeedEthJointResponse,
+    private readonly seedCbeProgram: SeedCbeProgram,
     private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
     private readonly seedProgramOneAdmin: SeedTestOneAdmin,
     private readonly seedInit: SeedInit,
@@ -113,7 +113,7 @@ export class ScriptsController {
     } else if (script == SeedScript.nlrcMultiple) {
       await this.seedMultipleNlrc.run(isApiTests);
     } else if (script == SeedScript.cbeProgram) {
-      await this.seedEthJointRepose.run(isApiTests);
+      await this.seedCbeProgram.run(isApiTests);
     } else if (script == SeedScript.safaricomProgram) {
       await this.seedMultipleKrcs.run(isApiTests);
     } else if (

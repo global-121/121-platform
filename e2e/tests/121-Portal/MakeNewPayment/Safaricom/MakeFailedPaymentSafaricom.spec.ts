@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
+import programSafaricom from '@121-service/src/seed-data/program/program-safaricom.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -20,7 +20,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-const krcsProgramTitle = KRCSProgram.titlePortal.en;
+const programTitle = programSafaricom.titlePortal.en;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 const paymentStatus = englishTranslations.entity.payment.status.error;
 const paymentFilter =
@@ -34,15 +34,14 @@ const registrationsSafaricomFailed = structuredClone(
 ) as unknown as MappedPaginatedRegistrationDto[];
 registrationsSafaricomFailed[0].phoneNumber = '254000000000';
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.krcsMultiple);
-  const programIdBHA = 2;
-  const bhaProgramId = programIdBHA;
+  await resetDB(SeedScript.safaricomProgram);
+  const programId = 1;
   // make shallow copy
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     registrationsSafaricomFailed,
-    bhaProgramId,
+    programId,
     accessToken,
   );
 
@@ -63,14 +62,14 @@ test('[30262] Safaricom: Make failed payment', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const numberOfPas = registrationsSafaricomFailed.length;
-  const defaultTransferValue = KRCSProgram.fixedTransferValue;
+  const defaultTransferValue = programSafaricom.fixedTransferValue;
   const defaultMaxTransferValue = registrationsSafaricomFailed.reduce(
     (output, pa) => {
       return output + pa.paymentAmountMultiplier * defaultTransferValue;
     },
     0,
   );
-  const currency = KRCSProgram.currency;
+  const currency = programSafaricom.currency;
 
   // Format the number
   const formattedValue = new Intl.NumberFormat('en-US', {
@@ -78,7 +77,7 @@ test('[30262] Safaricom: Make failed payment', async ({ page }) => {
   }).format(defaultMaxTransferValue);
 
   await test.step('Navigate to PA table', async () => {
-    await homePage.navigateToProgramme(krcsProgramTitle);
+    await homePage.navigateToProgramme(programTitle);
     await navigationModule.navigateToProgramTab(paymentLabel);
   });
 

@@ -23,7 +23,7 @@ const message =
   ]['error-alert']['invalid-date'];
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.test);
+  await resetDB(SeedScript.testMultiple);
   const programIdWesteros = 1;
   accessToken = await getAccessToken();
 

@@ -255,7 +255,7 @@ describe('Import a registration', () => {
 
   it('should throw an error with a dropdown registration atribute set to null', async () => {
     // Arrange
-    await resetDB(SeedScript.test);
+    await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
     const registrationWesteros1Copy = { ...registrationWesteros1 };
     const programIdWestoros = 1;
@@ -284,7 +284,7 @@ describe('Import a registration', () => {
 
   it('should throw an error when a required fsp attribute is missing', async () => {
     // Arrange
-    await resetDB(SeedScript.test);
+    await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
 
     // Removes whatsapp from original registration

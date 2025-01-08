@@ -24,7 +24,7 @@ const expectedFinalAssignedUsers = expectedInitialAssignedUsers.filter(
 );
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.test);
+  await resetDB(SeedScript.testMultiple);
 
   // Login
   const loginPage = new LoginPage(page);

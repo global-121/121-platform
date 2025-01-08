@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import KRCSProgram from '@121-service/src/seed-data/program/program-krcs-turkana.json';
+import programSafaricom from '@121-service/src/seed-data/program/program-safaricom.json';
 import {
   seedIncludedRegistrations,
   updateRegistration,
@@ -22,7 +22,7 @@ import TableModule from '@121-e2e/pages/Table/TableModule';
 import { AppRoutes } from '../../../../../interfaces/Portal/src/app/app-routes.enum';
 import englishTranslations from '../../../../../interfaces/Portal/src/assets/i18n/en.json';
 
-const krcsProgramTitle = KRCSProgram.titlePortal.en;
+const krcsProgramTitle = programSafaricom.titlePortal.en;
 const ok = englishTranslations.common.ok;
 const paymentLabel = englishTranslations.page.program.tab.payment.label;
 const paymentStatus = englishTranslations.entity.payment.status.error;
@@ -33,21 +33,20 @@ const paymentErrorMessages =
   englishTranslations.page.program['program-people-affected'][
     'payment-status-popup'
   ]['fix-error'];
-const programIdBHA = 2;
-const bhaProgramId = programIdBHA;
+const programId = 1;
 const registrationsSafaricomRetry = JSON.parse(
   JSON.stringify(registrationsSafaricom),
 );
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.krcsMultiple);
+  await resetDB(SeedScript.safaricomProgram);
 
   registrationsSafaricomRetry[0].phoneNumber = '254000000000';
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     registrationsSafaricomRetry,
-    bhaProgramId,
+    programId,
     accessToken,
   );
 
@@ -68,14 +67,14 @@ test('[30279] Safaricom: Retry failed payment', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const numberOfPas = registrationsSafaricomRetry.length;
-  const defaultTransferValue = KRCSProgram.fixedTransferValue;
+  const defaultTransferValue = programSafaricom.fixedTransferValue;
   const defaultMaxTransferValue = registrationsSafaricom.reduce(
     (output, pa) => {
       return output + pa.paymentAmountMultiplier * defaultTransferValue;
     },
     0,
   );
-  const currency = KRCSProgram.currency;
+  const currency = programSafaricom.currency;
 
   // Format the number
   const formattedValue = new Intl.NumberFormat('en-US', {

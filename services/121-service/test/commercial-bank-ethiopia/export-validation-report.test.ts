@@ -16,7 +16,7 @@ describe('Export CBE validation report', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.ethJointResponse);
+    await resetDB(SeedScript.cbeProgram);
     accessToken = await getAccessToken();
     await waitFor(1_000);
   });

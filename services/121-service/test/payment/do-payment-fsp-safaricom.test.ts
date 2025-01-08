@@ -25,7 +25,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Do payment to 1 PA', () => {
-  const programId = 2;
+  const programId = 1;
   const payment = 1;
   const amount = 12327;
   const registrationSafaricom = {
@@ -137,7 +137,7 @@ describe('Do payment to 1 PA', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.krcsMultiple);
+      await resetDB(SeedScript.safaricomProgram);
       accessToken = await getAccessToken();
     });
 

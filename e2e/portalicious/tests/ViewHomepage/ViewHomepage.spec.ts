@@ -6,7 +6,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.test);
+  await resetDB(SeedScript.testMultiple);
 
   // Login
   const loginPage = new LoginPage(page);

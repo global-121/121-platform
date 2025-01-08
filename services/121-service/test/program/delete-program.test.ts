@@ -55,24 +55,24 @@ describe('Delete program', () => {
     expect(getProgramResponsePV.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should delete eth programs', async () => {
-    const programIdEth = 1;
-    await resetDB(SeedScript.ethJointResponse);
+  it('should delete CBE programs', async () => {
+    const programIdCbe = 1;
+    await resetDB(SeedScript.cbeProgram);
     accessToken = await getAccessToken();
 
-    await seedPaidRegistrations([registrationCbe], programIdEth);
-    await startCbeValidationProcess(programIdEth, accessToken);
+    await seedPaidRegistrations([registrationCbe], programIdCbe);
+    await startCbeValidationProcess(programIdCbe, accessToken);
 
     // Act + Assert
     const secretDto = { secret: process.env.RESET_SECRET! };
-    const deleteResponseEth = await deleteProgram(
-      programIdEth,
+    const deleteResponseCbe = await deleteProgram(
+      programIdCbe,
       accessToken,
       secretDto,
     );
-    expect(deleteResponseEth.statusCode).toBe(HttpStatus.NO_CONTENT);
+    expect(deleteResponseCbe.statusCode).toBe(HttpStatus.NO_CONTENT);
 
-    const getProgramResponseEth = await getProgram(programIdEth, accessToken);
-    expect(getProgramResponseEth.statusCode).toBe(HttpStatus.NOT_FOUND);
+    const getProgramResponseCbe = await getProgram(programIdCbe, accessToken);
+    expect(getProgramResponseCbe.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 });
