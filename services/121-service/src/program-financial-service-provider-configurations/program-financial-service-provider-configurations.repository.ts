@@ -71,14 +71,16 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     const programFspConfig = await this.baseRepository
       .createQueryBuilder('configuration')
       .leftJoin('configuration.transactions', 'transactions')
-      .leftJoin('transactions.registration', 'registration')
+      .innerJoin('transactions.latestTransaction', 'latestTransaction')
+      .leftJoin('latestTransaction.registration', 'registration')
       .leftJoin('registration.images', 'images')
       .leftJoin('images.voucher', 'voucher')
       .where('voucher.id = :intersolveVoucherId', {
         intersolveVoucherId,
       })
-      .andWhere('voucher.payment = transactions.payment') // REFACTOR: this filter is needed, as it is not taken care of by the joins above. Better refactor the entity relations here.
-      .getOne(); // the above can still return multiple transaction (steps/attempts) for the same voucher, but they will always have the same fspConfig, so take one
+      .andWhere('voucher.payment = transactions.payment') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsiblity then.
+      .select('configuration.id AS id')
+      .getRawOne();
 
     if (!programFspConfig) {
       throw new Error(
