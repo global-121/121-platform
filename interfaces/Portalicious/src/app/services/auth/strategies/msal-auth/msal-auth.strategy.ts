@@ -7,7 +7,7 @@ import {
   PopupRequest,
   RedirectRequest,
 } from '@azure/msal-browser';
-import { injectQueryClient } from '@tanstack/angular-query-experimental';
+import { QueryClient } from '@tanstack/angular-query-experimental';
 
 import { AppRoutes } from '~/app.routes';
 import { UserApiService } from '~/domains/user/user.api.service';
@@ -33,7 +33,7 @@ export class MsalAuthStrategy implements IAuthStrategy {
   private readonly msalService = inject(MsalService);
   private readonly router = inject(Router);
   private readonly userApiService = inject(UserApiService);
-  private queryClient = injectQueryClient();
+  private queryClient = inject(QueryClient);
 
   constructor() {
     this.msalService.initialize();

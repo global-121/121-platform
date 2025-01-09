@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import {
   injectMutation,
   injectQuery,
-  injectQueryClient,
+  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
@@ -55,7 +55,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
 
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
-  private readonly queryClient = injectQueryClient();
+  private readonly queryClient = inject(QueryClient);
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(

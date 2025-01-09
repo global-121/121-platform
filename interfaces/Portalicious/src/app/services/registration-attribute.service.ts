@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 
 import {
-  injectQueryClient,
+  QueryClient,
   queryOptions,
 } from '@tanstack/angular-query-experimental';
 
@@ -84,7 +84,7 @@ export interface NormalizedRegistrationAttribute {
   providedIn: 'root',
 })
 export class RegistrationAttributeService {
-  private readonly queryClient = injectQueryClient();
+  private readonly queryClient = inject(QueryClient);
 
   private readonly authService = inject(AuthService);
   private readonly projectApiService = inject(ProjectApiService);

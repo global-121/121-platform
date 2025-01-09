@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 
-import { injectQueryClient } from '@tanstack/angular-query-experimental';
+import { QueryClient } from '@tanstack/angular-query-experimental';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
@@ -27,7 +27,7 @@ export type MessageInputData =
   providedIn: 'root',
 })
 export class MessagingService {
-  private queryClient = injectQueryClient();
+  private queryClient = inject(QueryClient);
 
   private notificationApiService = inject(NotificationApiService);
   private projectApiService = inject(ProjectApiService);
