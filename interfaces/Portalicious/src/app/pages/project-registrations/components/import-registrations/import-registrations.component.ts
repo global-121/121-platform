@@ -8,7 +8,7 @@ import {
 
 import {
   injectMutation,
-  injectQueryClient,
+  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 
@@ -31,7 +31,7 @@ import { ToastService } from '~/services/toast.service';
 export class ImportRegistrationsComponent {
   projectId = input.required<string>();
 
-  private queryClient = injectQueryClient();
+  private queryClient = inject(QueryClient);
   private downloadService = inject(DownloadService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);

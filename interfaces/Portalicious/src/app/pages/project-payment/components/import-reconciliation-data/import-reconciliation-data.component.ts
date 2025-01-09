@@ -10,7 +10,7 @@ import {
 import {
   injectMutation,
   injectQuery,
-  injectQueryClient,
+  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 
@@ -38,7 +38,7 @@ export class ImportReconciliationDataComponent {
   projectId = input.required<string>();
   paymentId = input.required<string>();
 
-  private queryClient = injectQueryClient();
+  private queryClient = inject(QueryClient);
   private authService = inject(AuthService);
   private downloadService = inject(DownloadService);
   private metricApiService = inject(MetricApiService);

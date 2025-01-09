@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 
-import { injectQueryClient } from '@tanstack/angular-query-experimental';
+import { QueryClient } from '@tanstack/angular-query-experimental';
 import * as XLSX from 'xlsx';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -25,7 +25,7 @@ import { addDaysToDate, dateToIsoString } from '~/utils/date';
   providedIn: 'root',
 })
 export class ExportService {
-  private queryClient = injectQueryClient();
+  private queryClient = inject(QueryClient);
 
   private paginateQueryService = inject(PaginateQueryService);
   private eventApiService = inject(EventApiService);
