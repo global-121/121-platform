@@ -21,8 +21,8 @@ const registrationIds = ['Reg. #1', 'Reg. #2', 'Reg. #3', 'Reg. #4', 'Reg. #5'];
 const ascedingRegistrationIds = [...registrationIds].sort((a, b) =>
   a.localeCompare(b),
 );
-const descedingRegistrationIds = [...registrationIds].sort((b, a) =>
-  a.localeCompare(b),
+const descedingRegistrationIds = [...registrationIds].sort((a, b) =>
+  b.localeCompare(a),
 );
 
 const names = [
