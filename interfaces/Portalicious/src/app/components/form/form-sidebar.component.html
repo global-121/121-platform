@@ -3,10 +3,9 @@
   [(visible)]="visible"
   position="right"
   styleClass="max-w-[96vw] sm:min-w-[30rem]"
-  pFocusTrap
-  [pFocusTrapDisabled]="!visible"
   [blockScroll]="true"
-  (onHide)="formGroup().reset()"
+  (onShow)="onShow()"
+  (onHide)="onHide()"
   [modal]="modal()"
 >
   <ng-template pTemplate="headless">
@@ -16,6 +15,9 @@
       (ngSubmit)="onFormSubmit()"
       (keydown.control.enter)="onFormSubmit()"
       (keydown.meta.enter)="onFormSubmit()"
+      pFocusTrap
+      [pFocusTrapDisabled]="!visible()"
+      [pAutoFocus]="visible()"
     >
       <div class="flex grow flex-col gap-2">
         <h2 class="mb-5">
