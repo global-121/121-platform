@@ -9,8 +9,10 @@
       plain
       rounded
       text
-      class="lg:mr-9 [&_button:not(:hover)]:text-white"
+      class="lg:mr-9 [&_button:focus]:bg-white [&_button:not(:hover,:focus)]:text-white"
       (click)="sidebarVisible.set(true)"
+      [attr.aria-controls]="sidebarVisible() ? 'menu' : null"
+      [attr.aria-expanded]="sidebarVisible()"
       data-testid="sidebar-toggle"
     />
     <app-logo [projectId]="projectId()" />
@@ -22,7 +24,7 @@
         i18n-label="Top-right user-menu@@header-user-menu"
         [icon]="'pi pi-user'"
         [menuItems]="userMenuOptions()"
-        class="[&_.p-button-label]:duration-0 [&_button:not(:hover)]:text-white"
+        class="[&_.p-button-label]:duration-0 [&_button:focus]:bg-white [&_button:not(:hover,:focus)]:text-white"
         [plain]="true"
         [text]="true"
         [size]="'small'"
@@ -43,67 +45,71 @@
   [(visible)]="sidebarVisible"
   [closeOnEscape]="true"
   [showCloseIcon]="false"
-  (onShow)="sideBar.el.nativeElement.focus()"
-  pFocusTrap
-  [pFocusTrapDisabled]="!sidebarVisible()"
-  [tabindex]="-1"
+  (onShow)="sideBar.el.nativeElement.querySelector('#menu').focus()"
 >
-  <ng-template pTemplate="header">
-    <p-button
-      label="Close"
-      i18n-label="@@generic-close"
-      icon="pi pi-times"
-      iconPos="left"
-      plain
-      text
-      (click)="sidebarVisible.set(false)"
-    />
-  </ng-template>
-  <div
-    class="flex h-full w-full flex-col"
-    data-testid="sidebar"
-  >
-    <div class="mb-auto">
-      @for (sidebarLink of sidebarLinks(); track $index) {
+  <ng-template pTemplate="headless">
+    <div
+      id="menu"
+      class="flex h-full w-full flex-col"
+      data-testid="sidebar"
+      pFocusTrap
+      [pFocusTrapDisabled]="!sidebarVisible()"
+      [tabIndex]="-1"
+    >
+      <div>
+        <p-button
+          label="Close"
+          i18n-label="@@generic-close"
+          icon="pi pi-times"
+          iconPos="left"
+          plain
+          text
+          (click)="sidebarVisible.set(false)"
+          [pAutoFocus]="sidebarVisible()"
+        />
+      </div>
+      <div class="mb-auto">
+        @for (sidebarLink of sidebarLinks(); track $index) {
+          <a
+            [routerLink]="sidebarLink.routerLink"
+            [routerLinkActive]="['font-bold', 'pointer-events-none']"
+            [ariaCurrentWhenActive]="'page'"
+            class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          >
+            {{ sidebarLink.label }}
+          </a>
+        }
         <a
-          [routerLink]="sidebarLink.routerLink"
-          [routerLinkActive]="['font-bold', 'pointer-events-none']"
-          [ariaCurrentWhenActive]="'page'"
-          class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          href="https://manual.121.global/"
+          class="inline-flex w-full items-center rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          target="_blank"
+          title="Opens in a new window"
+          i18n-title="@@generic-opens-in-new-window"
         >
-          {{ sidebarLink.label }}
+          <ng-container i18n>Manual</ng-container>
+          <span
+            class="p-button-icon p-button-icon-right pi pi-external-link ml-2 text-sm"
+          ></span>
         </a>
-      }
-      <a
-        href="https://manual.121.global/"
-        class="inline-flex w-full items-center rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
-        target="_blank"
-        title="Opens in a new window"
-        i18n-title="@@generic-opens-in-new-window"
-      >
-        <ng-container i18n>Manual</ng-container>
-        <span
-          class="p-button-icon p-button-icon-right pi pi-external-link ml-2 text-sm"
-        ></span>
-      </a>
-      <a
-        href="mailto:support@121.global"
-        class="inline-flex w-full items-center rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
-        target="_blank"
-        title="Opens in a new window"
-        i18n-title="@@generic-opens-in-new-window"
-      >
-        <ng-container i18n>Email Support</ng-container>
-        <span
-          class="p-button-icon p-button-icon-right pi pi-external-link ml-2 text-sm"
-        ></span>
-      </a>
+        <a
+          href="mailto:support@121.global"
+          class="inline-flex w-full items-center rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          target="_blank"
+          title="Opens in a new window"
+          i18n-title="@@generic-opens-in-new-window"
+        >
+          <ng-container i18n>Email Support</ng-container>
+          <span
+            class="p-button-icon p-button-icon-right pi pi-external-link ml-2 text-sm"
+          ></span>
+        </a>
+      </div>
+      <div class="px-6">
+        <app-language-switcher />
+        <small class="block text-center text-grey-500">
+          <app-health-widget />
+        </small>
+      </div>
     </div>
-    <div class="px-6">
-      <app-language-switcher />
-      <small class="block text-center text-grey-500">
-        <app-health-widget />
-      </small>
-    </div>
-  </div>
+  </ng-template>
 </p-drawer>

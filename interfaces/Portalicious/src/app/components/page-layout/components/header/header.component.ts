@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MenuItem } from 'primeng/api';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
@@ -27,6 +28,7 @@ import { AuthService } from '~/services/auth.service';
   selector: 'app-header',
   imports: [
     ButtonModule,
+    AutoFocusModule,
     ToolbarModule,
     MenuModule,
     DrawerModule,
