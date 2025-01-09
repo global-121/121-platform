@@ -34,7 +34,7 @@ const names = [
 ];
 
 const ascedingNames = [...names].sort((a, b) => a.localeCompare(b));
-const descedingNames = [...names].sort((b, a) => a.localeCompare(b));
+const descedingNames = [...names].sort((a, b) => b.localeCompare(a));
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
