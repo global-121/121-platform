@@ -62,6 +62,10 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
   await test.step('Validate payemnt in progress in Payment overview', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.waitForPaymentToComplete();
+    // When the reload is not commented out, the test fails because the page is fully loaded and the in progress chip is not visible anymore
+    await page.reload();
+    // The graph is not fully loaded when chip is gone, hence one extra reload is needed
+    // Question is shall we keep it like that or it has to be fixed?
     await paymentsPage.validateGraphStatus({
       pending: 0,
       successful: 16,
