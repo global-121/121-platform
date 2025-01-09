@@ -1,7 +1,7 @@
 import { inject, signal } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 
-import { injectQueryClient } from '@tanstack/angular-query-experimental';
+import { QueryClient } from '@tanstack/angular-query-experimental';
 
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -17,7 +17,7 @@ export const foundResourceGuard: (
   return async function projectPermissionsCanActivateFn(
     route: ActivatedRouteSnapshot,
   ) {
-    const queryClient = injectQueryClient();
+    const queryClient = inject(QueryClient);
     const router = inject(Router);
 
     const registrationApiService = inject(RegistrationApiService);

@@ -1,7 +1,7 @@
 import { inject, isSignal, Signal } from '@angular/core';
 
 import {
-  injectQueryClient,
+  QueryClient,
   queryOptions,
   UndefinedInitialDataOptions,
 } from '@tanstack/angular-query-experimental';
@@ -18,7 +18,7 @@ import {
 export abstract class DomainApiService {
   protected httpWrapperService = inject(HttpWrapperService);
   protected paginateQueryService = inject(PaginateQueryService);
-  protected queryClient = injectQueryClient();
+  protected queryClient = inject(QueryClient);
 
   protected pathToQueryKey = (
     path: (number | Signal<number | string | undefined> | string)[],
