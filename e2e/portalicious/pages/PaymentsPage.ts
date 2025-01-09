@@ -183,9 +183,27 @@ class PaymentsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async validateGraphStatus() {
-    const graphText = await this.page.locator('canvas').textContent();
-    console.log(graphText);
+  async validateGraphStatus({
+    pending,
+    successful,
+    failed,
+  }: {
+    pending: number;
+    successful: number;
+    failed: number;
+  }) {
+    const graph = await this.page.locator('canvas').getAttribute('aria-label');
+    if (graph) {
+      const graphText = graph
+        .replace('Payment status chart.', '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      expect(graphText).toContain(
+        `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
+      );
+    } else {
+      console.log('Graph attribute is null');
+    }
   }
 }
 

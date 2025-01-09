@@ -12,7 +12,6 @@ import {
 import {
   programIdOCW,
   registrationOCW1,
-  registrationOCW5,
   registrationOCW6Fail,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -23,7 +22,7 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    [registrationOCW1, registrationOCW5, registrationOCW6Fail],
+    [registrationOCW1, registrationOCW6Fail],
     programIdOCW,
     accessToken,
   );
@@ -54,7 +53,7 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
@@ -63,6 +62,10 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
   await test.step('Validate payemnt in progress in Payment overview', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.waitForPaymentToComplete();
-    await paymentsPage.validateGraphStatus();
+    await paymentsPage.validateGraphStatus({
+      pending: 0,
+      successful: 16,
+      failed: 16,
+    });
   });
 });
