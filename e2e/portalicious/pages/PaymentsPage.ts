@@ -200,7 +200,6 @@ class PaymentsPage extends BasePage {
         .replace('Payment status chart.', '')
         .replace(/\s+/g, ' ')
         .trim();
-
       expect(graphText).toContain(
         `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
       );
