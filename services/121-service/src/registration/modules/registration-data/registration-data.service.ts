@@ -15,7 +15,6 @@ import { RegistrationAttributeDataEntity } from '@121-service/src/registration/r
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
-// ## TODO see what be refactored in this service to live in a repository file
 @Injectable()
 export class RegistrationDataService {
   @InjectRepository(ProgramEntity)

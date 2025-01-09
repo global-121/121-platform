@@ -20,7 +20,6 @@ export class SafaricomApiService {
     private readonly safaricomApiHelperService: SafaricomApiHelperService,
   ) {}
 
-  // ##TODO: Info to team: parameters were not typed here, implicit any!
   public async transfer({
     transferAmount,
     phoneNumber,
