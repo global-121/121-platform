@@ -1,6 +1,7 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
+import Redis from 'ioredis';
 
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
 import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
@@ -120,9 +121,20 @@ export class QueuesRegistryService implements OnModuleInit {
       const keysWithoutPrefix = keys.map((key) =>
         key.replace(process.env.REDIS_PREFIX + ':', ''),
       );
-      await redisClient.del(...keysWithoutPrefix);
+      await this.batchDeleteKeys(redisClient, keysWithoutPrefix);
     }
-
     await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
+  }
+
+  // This is prevent this error when deleting large amount of keys: RangeError: Maximum call stack size exceeded
+  private async batchDeleteKeys(
+    redisClient: Redis,
+    keys: string[],
+    batchSize = 1000,
+  ): Promise<void> {
+    for (let i = 0; i < keys.length; i += batchSize) {
+      const batch = keys.slice(i, i + batchSize);
+      await redisClient.del(...batch);
+    }
   }
 }
