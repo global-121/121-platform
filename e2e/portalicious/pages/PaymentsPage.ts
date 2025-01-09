@@ -202,7 +202,7 @@ class PaymentsPage extends BasePage {
         `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
       );
     } else {
-      console.log('Graph attribute is null');
+      throw new Error('Graph attribute is null');
     }
   }
 }
