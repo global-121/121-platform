@@ -105,22 +105,6 @@ if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
   ]);
 }
 
-// Feature: Google Fonts (TODO: To Be Removed before launch! AB#31610)
-if (process.env.USE_GOOGLE_FONTS === 'for-now') {
-  console.info('✅ Allow loading Google Fonts');
-
-  let styleSrc = contentSecurityPolicy.get('style-src');
-  contentSecurityPolicy.set('style-src', [
-    ...styleSrc,
-    `https://fonts.googleapis.com`,
-  ]);
-
-  contentSecurityPolicy.set('font-src', [
-    `'self'`,
-    `https://fonts.gstatic.com`,
-  ]);
-}
-
 // Construct the Content-Security-Policy header-value
 const contentSecurityPolicyValue = Array.from(contentSecurityPolicy)
   .map((directive) => {

@@ -26,7 +26,6 @@ jobs:
       NG_LOCALES: 'en-GB,nl'
       NG_DEFAULT_LOCALE: 'en-GB'
       NG_URL_121_SERVICE_API: 'https://staging.121.global/api'
-      USE_GOOGLE_FONTS: 'for-now'
       USE_IN_TWILIO_FLEX_IFRAME: ${{ vars.USE_IN_TWILIO_FLEX_IFRAME }}
       USE_POWERBI_DASHBOARDS: ${{ vars.USE_POWERBI_DASHBOARDS }}
       USE_SSO_AZURE_ENTRA: ${{ vars.USE_SSO_AZURE_ENTRA }}

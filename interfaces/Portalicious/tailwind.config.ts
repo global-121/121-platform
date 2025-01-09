@@ -10,6 +10,7 @@ export default {
       center: true,
     },
     fontFamily: {
+      // See loading of font-files in: src/fonts.css
       display: ['Montserrat', 'sans-serif'],
       body: ['"Open Sans"', 'sans-serif'],
       mono: ['monospace'],
