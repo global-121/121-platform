@@ -48,6 +48,7 @@
               placeholder="Type or select"
               i18n-placeholder="@@generic-type-or-select"
               [filter]="true"
+              [showClear]="attribute.isRequired === false"
             />
           } @else if (type === 'boolean') {
             <p-checkbox
