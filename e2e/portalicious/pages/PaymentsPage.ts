@@ -194,7 +194,6 @@ class PaymentsPage extends BasePage {
   }) {
     await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
     const graph = await this.page.locator('canvas').getAttribute('aria-label');
-
     if (graph) {
       const graphText = graph
         .replace('Payment status chart.', '')
