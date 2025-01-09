@@ -1,5 +1,9 @@
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { getProgram } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangePaStatus,
   getRegistrations,
@@ -17,7 +21,19 @@ import {
   registrationOCW2,
   registrationOCW3,
   registrationOCW4,
+  registrationOCW5,
 } from '@121-service/test/registrations/pagination/pagination-data';
+
+const registrations = [
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
+  registrationOCW5,
+];
+const allReferenceIds = registrations.map(
+  (registration) => registration.referenceId,
+);
 
 describe('Load PA table', () => {
   describe('getting registration using paginate', () => {
@@ -27,16 +43,7 @@ describe('Load PA table', () => {
       await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
 
-      await importRegistrations(
-        programIdOCW,
-        [
-          registrationOCW1,
-          registrationOCW2,
-          registrationOCW3,
-          registrationOCW4,
-        ],
-        accessToken,
-      );
+      await importRegistrations(programIdOCW, registrations, accessToken);
 
       await awaitChangePaStatus(
         programIdOCW,
@@ -88,27 +95,92 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(1);
     });
 
-    it('should filter based on root attributes & registration data', async () => {
-      // Act
-      const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
-        accessToken,
-        filter: {
-          'filter.whatsappPhoneNumber': registrationOCW3.whatsappPhoneNumber,
-          'filter.preferredLanguage': registrationOCW3.preferredLanguage,
+    it('should filter based on root attributes', async () => {
+      const filterAssertionConfig: Partial<
+        Record<
+          GenericRegistrationAttributes,
+          {
+            filterValue: string;
+            expectedReferenceIds: string[];
+          }
+        >
+      > = {
+        referenceId: {
+          filterValue: '63e6286',
+          expectedReferenceIds: [registrationOCW1.referenceId],
         },
-      });
-      const data = getRegistrationsResponse.body.data;
-      const meta = getRegistrationsResponse.body.meta;
+        registrationCreatedDate: {
+          filterValue: '2', // Should find all registration as they were create between 2000 and 2999
+          expectedReferenceIds: allReferenceIds,
+        },
+        phoneNumber: {
+          filterValue: '14155235555',
+          expectedReferenceIds: [registrationOCW4.referenceId],
+        },
+        preferredLanguage: {
+          filterValue: LanguageEnum.en,
+          expectedReferenceIds: [
+            registrationOCW1.referenceId,
+            registrationOCW2.referenceId,
+          ],
+        },
+        inclusionScore: {
+          filterValue: '',
+          expectedReferenceIds: allReferenceIds,
+        },
+        paymentAmountMultiplier: {
+          filterValue: '1',
+          expectedReferenceIds: allReferenceIds,
+        },
+        programFinancialServiceProviderConfigurationName: {
+          filterValue: FinancialServiceProviders.intersolveVoucherWhatsapp,
+          expectedReferenceIds: [registrationOCW5.referenceId],
+        },
+      };
 
-      // Assert
-      expect(data[0]).toMatchObject(
-        createExpectedValueObject(registrationOCW3, 3),
+      const program = await getProgram(programIdOCW, accessToken);
+      const filterablePaAttributes = program.body.filterableAttributes.find(
+        (attribute) => attribute.group === 'paAttributes',
       );
-      for (const attribute of expectedAttributes) {
-        expect(data[0]).toHaveProperty(attribute);
+      const genericFilterableAttributes = filterablePaAttributes.filters.filter(
+        (attribute) => GenericRegistrationAttributes[attribute.name],
+      );
+      for (const attribute of genericFilterableAttributes) {
+        if (!filterAssertionConfig[attribute.name]) {
+          throw new Error(
+            `No filterAssertionConfig found for attribute: ${attribute.name}`,
+          );
+        }
+
+        const filterValue = filterAssertionConfig[attribute.name]?.filterValue;
+
+        const filter = {
+          [`filter.${attribute.name}`]: `$ilike:${filterValue}`,
+        };
+
+        // Act
+        const getRegistrationsResponse = await getRegistrations({
+          programId: programIdOCW,
+          accessToken,
+          filter,
+        });
+        const data = getRegistrationsResponse.body.data;
+        const foundReferenceIds = data.map(
+          (registration) => registration.referenceId,
+        );
+
+        // Assert
+        // The referenceId are compared with the attribute name attached to it
+        // This way you can more easily find for which attribute the test failed
+        const foundValidatationObject = {
+          [attribute.name]: foundReferenceIds.sort(),
+        };
+        const expectedValidationObject = {
+          [attribute.name]:
+            filterAssertionConfig[attribute.name]?.expectedReferenceIds.sort(),
+        };
+        expect(foundValidatationObject).toEqual(expectedValidationObject);
       }
-      expect(meta.totalItems).toBe(1);
     });
 
     it('should filter using in, eq, ilike and null', async () => {
