@@ -10,6 +10,9 @@ class TableComponent {
   readonly globalSearchOpenerButton: Locator;
   readonly globalSearchInput: Locator;
   readonly clearAllFiltersButton: Locator;
+  readonly applyFiltersButton: Locator;
+  readonly textboxField: Locator;
+  readonly searchBox: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -24,6 +27,9 @@ class TableComponent {
     this.clearAllFiltersButton = this.page.getByRole('button', {
       name: 'Clear all filters',
     });
+    this.applyFiltersButton = this.page.getByLabel('Apply');
+    this.textboxField = this.page.getByRole('textbox');
+    this.searchBox = this.page.getByRole('searchbox');
   }
 
   async getCell(row: number, column: number) {
@@ -53,6 +59,16 @@ class TableComponent {
     );
   }
 
+  async validateTableRowCount({
+    expectedRowCount,
+  }: {
+    expectedRowCount: number;
+  }) {
+    const regColumnContents = await this.getTextArrayFromColumn(3);
+    const regColumnContentsCount = regColumnContents.length;
+    expect(regColumnContentsCount).toEqual(expectedRowCount);
+  }
+
   async globalSearch(searchText: string) {
     const isGlobalSearchOpen = await this.globalSearchInput.isVisible();
 
@@ -70,6 +86,121 @@ class TableComponent {
     await this.clearAllFiltersButton.click();
     // wait for 500s for filter to be cleared in the BE
     await this.page.waitForTimeout(500);
+  }
+
+  async getSortingTypeOfColumn({ columnName }: { columnName: string }) {
+    const sortingType = await this.page
+      .getByRole('columnheader', { name: columnName })
+      .getAttribute('aria-sort');
+
+    return sortingType;
+  }
+
+  async sortAndValidateColumnByName({ columnName }: { columnName: string }) {
+    const columnToSort = this.page
+      .getByRole('columnheader', { name: columnName })
+      .locator('p-sorticon');
+
+    await columnToSort.click();
+    let sortingType = await this.getSortingTypeOfColumn({ columnName });
+    expect(sortingType).toContain('ascending');
+
+    await columnToSort.click();
+    sortingType = await this.getSortingTypeOfColumn({ columnName });
+    expect(sortingType).toContain('descending');
+  }
+
+  async sortColumnByName({
+    columnName,
+    sort,
+  }: {
+    columnName: string;
+    sort: 'ascending' | 'descending';
+  }) {
+    const columnToSort = this.page
+      .getByRole('columnheader', { name: columnName })
+      .locator('p-sorticon');
+
+    let sortingType = await this.getSortingTypeOfColumn({ columnName });
+
+    if (sortingType === 'none') {
+      // Click once to go to ascending
+      await columnToSort.click();
+      sortingType = await this.getSortingTypeOfColumn({ columnName });
+
+      if (sort === 'ascending') {
+        expect(sortingType).toContain('ascending');
+        return;
+      }
+    }
+
+    // If the current state is not the desired state, click to change it
+    if (sortingType !== sort) {
+      await columnToSort.click();
+      sortingType = await this.getSortingTypeOfColumn({ columnName });
+
+      // If still not in the desired state, click again
+      if (sortingType !== sort) {
+        await columnToSort.click();
+        sortingType = await this.getSortingTypeOfColumn({ columnName });
+      }
+    }
+
+    expect(sortingType).toContain(sort);
+  }
+
+  async filterColumnByText({
+    columnName,
+    filterText,
+  }: {
+    columnName: string;
+    filterText: string;
+  }) {
+    const filterMenuButton = this.page
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+
+    await this.textboxField.click();
+    await this.textboxField.fill(filterText);
+    await this.applyFiltersButton.click();
+  }
+
+  async filterColumnByDopDownSelection({
+    columnName,
+    selection,
+  }: {
+    columnName: string;
+    selection: string;
+  }) {
+    const filterMenuButton = this.page
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+
+    await this.page.getByText('Choose option(s)').click();
+    await this.searchBox.click();
+    await this.searchBox.fill(selection);
+    await this.page.getByRole('option', { name: selection }).click();
+  }
+
+  async validateSortingOfColumns(
+    columnName: string,
+    columnIndex: number,
+    ascendingExpected: string[],
+    descendingExpected: string[],
+  ) {
+    await this.sortColumnByName({ columnName, sort: 'ascending' });
+    let textFromColumn = await this.getTextArrayFromColumn(columnIndex);
+    expect(textFromColumn).toEqual(ascendingExpected);
+
+    await this.sortColumnByName({ columnName, sort: 'descending' });
+    textFromColumn = await this.getTextArrayFromColumn(columnIndex);
+    expect(textFromColumn).toEqual(descendingExpected);
   }
 }
 
