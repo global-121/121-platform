@@ -14,11 +14,13 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
 import { ProjectMenuComponent } from '~/components/page-layout/components/project-menu/project-menu.component';
+import { RegistrationLookupMenuComponent } from '~/components/page-layout/components/registration-lookup-menu/registration-lookup-menu.component';
 import {
   FOUND_RESOURCE_GUARD_QUERY_KEY,
   FoundResourceGuardType,
 } from '~/guards/found-resource.guard';
 import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/project-permissions-guard';
+import { RegistrationLookupService } from '~/services/registration-lookup.service';
 
 @Component({
   selector: 'app-page-layout',
@@ -30,13 +32,15 @@ import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/project-permissions-guard'
     MessageModule,
     SkeletonModule,
     RouterLink,
+    RegistrationLookupMenuComponent,
   ],
   templateUrl: './page-layout.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutComponent {
-  private route = inject(ActivatedRoute);
+  readonly route = inject(ActivatedRoute);
+  readonly registrationLookupService = inject(RegistrationLookupService);
 
   pageTitle = input<string>();
   parentPageTitle = input<string>();

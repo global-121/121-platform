@@ -1361,6 +1361,15 @@
       <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
         <source>This is automatically calculated based on Max. payments and payments sucessfully sent</source>
       </trans-unit>
+      <trans-unit id="296794328137675469" datatype="html">
+        <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the projects you have access to on the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="3894950702316166331" datatype="html">
+        <source>Loading...</source>
+      </trans-unit>
+      <trans-unit id="836413862079537522" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot; &gt;" id="START_TAG_STRONG"/><x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s)<x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/> found with this number</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

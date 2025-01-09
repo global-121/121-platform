@@ -11,7 +11,10 @@
         />
       </div>
     }
-    @if (projectId()) {
+    @let lookupPhonenumber = registrationLookupService.phonenumber();
+    @if (registrationLookupService.isActive() && lookupPhonenumber) {
+      <app-registration-lookup-menu [phonenumber]="lookupPhonenumber" />
+    } @else if (projectId()) {
       <app-project-menu [projectId]="projectId()!" />
     }
     <div class="flex-1 px-6 py-6 lg:px-24">
@@ -27,12 +30,16 @@
                 height="1.6rem"
               />
             } @else {
-              @if (parentTitle && parentLink) {
-                <a
-                  [routerLink]="parentLink"
-                  class="font-normal hover:text-purple-700 focus:text-purple-700"
-                  >{{ parentTitle }}</a
-                >
+              @if (parentTitle) {
+                @if (parentLink) {
+                  <a
+                    [routerLink]="parentLink"
+                    class="font-normal hover:text-purple-700 focus:text-purple-700"
+                    >{{ parentTitle }}</a
+                  >
+                } @else {
+                  <span class="font-normal">{{ parentTitle }}</span>
+                }
                 <i class="pi pi-chevron-right mx-2"></i>
               }
               {{ pageTitle() }}

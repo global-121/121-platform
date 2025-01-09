@@ -21,6 +21,7 @@ export enum AppRoutes {
   projectRegistrations = 'registrations',
   projects = 'projects',
   projectTeam = 'team',
+  registrationLookup = 'registration-lookup',
   userRoles = 'user-roles',
   users = 'users',
 }
@@ -179,6 +180,14 @@ export const routes: Routes = [
         redirectTo: AppRoutes.projectRegistrations,
       },
     ],
+  },
+  {
+    path: AppRoutes.registrationLookup,
+    loadComponent: () =>
+      import('~/pages/registration-lookup/registration-lookup.page').then(
+        (x) => x.RegistrationLookupPageComponent,
+      ),
+    canActivate: [authGuard],
   },
   {
     path: AppRoutes.project,

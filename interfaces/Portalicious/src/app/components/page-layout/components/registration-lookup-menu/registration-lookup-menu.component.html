@@ -1,0 +1,22 @@
+<div class="w-full bg-purple-300 px-6 py-5 txt-system-s lg:px-24">
+  @if (registrations.isPending() || assignedProjects.isPending()) {
+    <ng-container i18n>Loading...</ng-container>
+  } @else if (!registrations.data()?.length) {
+    <ng-container i18n
+      >We couldn't find any information linked to this person's phone number in
+      the projects you have access to on the 121 Platform.</ng-container
+    >
+  } @else {
+    <span i18n>
+      <strong class="txt-system-bold-s"
+        >{{ registrations.data()?.length }} registration(s)</strong
+      >
+      found with this number</span
+    >
+  }
+</div>
+@if (registrationMenuItems().length > 0) {
+  <div class="w-full bg-white px-6 lg:px-24">
+    <app-tabs-menu [menuItems]="registrationMenuItems()" />
+  </div>
+}
