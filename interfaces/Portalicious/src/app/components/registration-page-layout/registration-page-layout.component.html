@@ -1,8 +1,7 @@
 <app-page-layout
   [projectId]="projectId()"
-  [parentPageLink]="allRegistrationsLink()"
-  parentPageTitle="All Registrations"
-  i18n-parentPageTitle
+  [parentPageLink]="parentLink()"
+  [parentPageTitle]="parentTitle()"
   [pageTitle]="registrationTitle()"
   [isPending]="registration.isPending()"
 >

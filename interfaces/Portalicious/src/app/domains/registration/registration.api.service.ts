@@ -274,6 +274,19 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
+  getRegistrationsByPhonenumber({
+    phonenumber,
+  }: {
+    phonenumber: Signal<string>;
+  }) {
+    return this.generateQueryOptions<Registration[]>({
+      path: ['registrations'],
+      params: {
+        phonenumber,
+      },
+    });
+  }
+
   public invalidateCache(
     projectId: Signal<number | string>,
     registrationId?: Signal<number | string>,

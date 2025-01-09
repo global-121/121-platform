@@ -1,5 +1,6 @@
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Injectable, Signal, signal } from '@angular/core';
 
+import { queryOptions } from '@tanstack/angular-query-experimental';
 import { uniqBy } from 'lodash';
 
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
@@ -20,6 +21,7 @@ import {
   isGenericAttribute,
 } from '~/domains/project/project-attribute.helpers';
 import { Role } from '~/domains/role/role.model';
+import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
@@ -29,6 +31,7 @@ const BASE_ENDPOINT = 'programs';
   providedIn: 'root',
 })
 export class ProjectApiService extends DomainApiService {
+  private readonly authService = inject(AuthService);
   private readonly translatableStringService = inject(
     TranslatableStringService,
   );
@@ -267,6 +270,32 @@ export class ProjectApiService extends DomainApiService {
         actionType,
       },
     });
+  }
+
+  getAssignedProjects() {
+    return () => {
+      const projectIds = this.authService.getAssignedProjectIds();
+
+      return queryOptions({
+        queryKey: [BASE_ENDPOINT, 'assignedProjects', projectIds],
+        queryFn: async () => {
+          const projects = await Promise.all(
+            projectIds.map((projectId) =>
+              this.queryClient.fetchQuery<Project>(
+                this.getProject(signal(projectId))(),
+              ),
+            ),
+          );
+
+          const result: Record<number, Project | undefined> = {};
+
+          return projects.reduce(
+            (acc, project) => ({ ...acc, [project.id]: project }),
+            result,
+          );
+        },
+      });
+    };
   }
 
   public invalidateCache(projectId?: Signal<number | string>): Promise<void> {
