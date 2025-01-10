@@ -131,7 +131,8 @@ export class RegistrationsInputValidator {
         if (errorObjMaxPayments) {
           errors.push(errorObjMaxPayments);
         } else {
-          validatedRegistrationInput.maxPayments = validatedMaxPayments;
+          validatedRegistrationInput.maxPayments =
+            validatedMaxPayments ?? undefined;
         }
       }
 
