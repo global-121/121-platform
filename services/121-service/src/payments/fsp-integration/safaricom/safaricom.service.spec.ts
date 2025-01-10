@@ -51,15 +51,6 @@ describe('SafaricomService', () => {
     redisClient = unitRef.get(REDIS_CLIENT);
   });
 
-  describe('sendPayment', () => {
-    it('should throw an error when called', async () => {
-      await expect(safaricomService.sendPayment([], 1, 1)).rejects.toThrow(
-        'Method should not be called anymore.',
-      );
-    });
-  });
-
-  // ##TODO: See comment in SafaricomService.doTransfer
   describe('doTransfer', () => {
     it('should do transfer', async () => {
       const transferResult: TransferReturnType = {
@@ -84,7 +75,6 @@ describe('SafaricomService', () => {
     });
   });
 
-  // ##TODO: See comment in SafaricomService.processTransferCallback
   describe('processTransferCallback', () => {
     it('should add job to safaricomTransferCallbackQueue and update Redis', async () => {
       const mockCallback: SafaricomTransferCallbackDto = {
@@ -126,7 +116,6 @@ describe('SafaricomService', () => {
     });
   });
 
-  // ##TODO: See comment in SafaricomService.processTimeoutCallback
   describe('processTimeoutCallback', () => {
     it('should add job to safaricomTimeoutCallbackQueue and update Redis', async () => {
       const mockTimeoutCallback: SafaricomTimeoutCallbackDto = {

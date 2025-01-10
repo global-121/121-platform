@@ -29,25 +29,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {}
 
-  /* ## TODO:
-  Unit testing:
-  - programId is 0
-  - programId is negative
-  - programId is number, but not in the database
-  - programId is in the database, but no configurations are found
-  - programId is in the database, and configurations are found
-  - programId is in the database, and configurations are found, but no properties are found
-  - programId is in the database, and configurations are found, and properties are found
-  - programId is in the database, and configurations are found, and properties are found, but response data is not as expected (Can this happen given the typing, als for Properties?)
-  - mapEntitiesToDtos returns empty array
-
-  Integration testing:
-  - Happy paths, typical use cases, common error situations
-  - Program is not in the database
-  - Program is in the database, but no configurations are found
-  - Program is in the database, and configurations are found, but no properties
-  - Program is in the database, and configurations are found, and properties are found
-  */
   public async getByProgramId(
     programId: number,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
@@ -62,20 +43,6 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     );
   }
 
-  /* ##TODO:
-  Unit testing:
-  - Nothing? This function just calls 2 other functions, no internal logic to test. The called functions will have their own tests...
-  ... but these are private functions => Choice to make, test private functions via the public that calls them? Or use the any trick, or add a test-wrapper function?
-  Maybe the convention could be to test via the public function, if that does not make testing (much) more complex than directly.
-  In this case I think it is fine. In the case if Safaricom.isTokenValid maybe not?
-
-  Integration testing:
-  - Happy paths, typical use cases, common error situations
-  - programId does not exist in the database
-  - programId exists in the database, no configuration yet for this FSP, no properties provided
-  - programId exists in the database, no configuration yet for this FSP, properties provided
-  - programId exists in the database, configuration already exists for this FSP (should throw error??)
-  */
   public async create(
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,

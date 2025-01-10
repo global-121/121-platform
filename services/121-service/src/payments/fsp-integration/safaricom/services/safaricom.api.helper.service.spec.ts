@@ -26,7 +26,7 @@ describe('SafaricomApiHelperService', () => {
   });
 
   describe('createErrorMessageIfApplicable', () => {
-    // ##TODO: there could be an additional test here for case (!transferResponse || !transferResponse.data), but this is hard to mock here
+    // There could be an additional test here for case (!transferResponse || !transferResponse.data), since that can happen at runtime. However, due to type checking at compile timing creating these tests is complex. So leaving it out for now.
 
     it('to throw DuplicateOriginatorConversationIdError if API errorCode indicating duplicate originatorConversationId', async () => {
       // Arrange

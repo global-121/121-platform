@@ -17,8 +17,6 @@ describe('TokenValidationService', () => {
   });
 
   describe('isTokenValid', () => {
-    // ##TODO: Check if valuable to add more tests based on edge case inputs (e.g. expires_at=0 or negative, etc.)
-
     it('should return false if tokenSet is not filled', () => {
       const tokenSet = new TokenSet();
 
