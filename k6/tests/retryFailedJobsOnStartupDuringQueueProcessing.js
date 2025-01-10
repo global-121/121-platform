@@ -14,6 +14,7 @@ const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
+const amount = 10;
 
 export const options = {
   vus: 1,
@@ -46,7 +47,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId);
+  const doPayment = paymentsPage.createPayment(programId, amount);
   check(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
