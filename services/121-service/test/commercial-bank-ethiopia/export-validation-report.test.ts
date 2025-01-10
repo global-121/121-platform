@@ -1,4 +1,4 @@
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getCbeValidationReport,
@@ -16,7 +16,7 @@ describe('Export CBE validation report', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.ethJointResponse);
+    await resetDB(SeedScript.cbeProgram);
     accessToken = await getAccessToken();
     await waitFor(1_000);
   });

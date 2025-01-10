@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import { BulkActionId } from '@121-portal/src/app/models/bulk-actions.models';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { importRegistrationsCSV } from '@121-service/test/helpers/registration.helper';
 import {

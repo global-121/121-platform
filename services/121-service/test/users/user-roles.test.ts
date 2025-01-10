@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
   getServer,
@@ -12,7 +12,7 @@ describe('/ Users', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.test);
+      await resetDB(SeedScript.testMultiple);
       accessToken = await getAccessToken();
     });
 

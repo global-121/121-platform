@@ -1,8 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
-import programEth from '@121-service/src/seed-data/program/program-joint-response-dorcas.json';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import programCbe from '@121-service/src/seed-data/program/program-cbe.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import {
   getProgram,
@@ -25,8 +25,8 @@ describe('Create program', () => {
   it('should post a program', async () => {
     // Arrange
     const programOcwJson = JSON.parse(JSON.stringify(programOCW));
-    const programEthJson = JSON.parse(JSON.stringify(programEth));
-    const seedPrograms = [programOcwJson, programEthJson];
+    const programCbeJson = JSON.parse(JSON.stringify(programCbe));
+    const seedPrograms = [programOcwJson, programCbeJson];
 
     for (const seedProgram of seedPrograms) {
       // Act
@@ -52,19 +52,18 @@ describe('Create program', () => {
 
   it('should not be able to post a program with 2 of the same names', async () => {
     // Arrange
-    const programEthJson = JSON.parse(JSON.stringify(programEth));
-    programEthJson.programRegistrationAttributes.push(
-      programEthJson.programRegistrationAttributes[0],
+    const programCbeJson = JSON.parse(JSON.stringify(programCbe));
+    programCbeJson.programRegistrationAttributes.push(
+      programCbeJson.programRegistrationAttributes[0],
     );
     // Act
     const createProgramResponse = await postProgram(
-      programEthJson,
+      programCbeJson,
       accessToken,
     );
     const getProgramResponse = await getProgram(4, accessToken);
 
     // Assert
-    // const programId = createProgramResponse.body.id;
     expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(createProgramResponse.body).toMatchSnapshot();
 

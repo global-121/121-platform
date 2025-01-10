@@ -2,7 +2,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { CreateMessageTemplateDto } from '@121-service/src/notifications/message-template/dto/message-template.dto';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import {
   getMessageTemplates,

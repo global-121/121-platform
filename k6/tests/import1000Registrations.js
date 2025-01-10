@@ -14,7 +14,7 @@ const programId = 2;
 const csvFilePath =
   '../../e2e/test-registration-data/test-registrations-westeros-1000.csv';
 
-// Somehow this works, but is not recognized. If importing from k6 above, it will not work.
+// Somehow this works, but is not recognized. If importing 'open' from k6 above instead, it will not work.
 // eslint-disable-next-line no-undef
 const csvFile = open(csvFilePath); // open() only works here in 'init' stage of k6 test
 if (!csvFile) {
