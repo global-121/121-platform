@@ -60,15 +60,11 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     organization: 'organization-generic.json',
     programs: [
       {
-        program: 'program-cbe.json',
+        program: 'program-cbe.json', // The test seed has multiple programs, because some tests scenarios only occur with multiple program
         messageTemplate: 'message-template-generic.json',
       },
       {
         program: 'program-test.json',
-        messageTemplate: 'message-template-generic.json',
-      },
-      {
-        program: 'program-validation.json',
         messageTemplate: 'message-template-generic.json',
       },
     ],
