@@ -119,9 +119,4 @@ export class SafaricomApiService {
       throw new SafaricomApiError(`Error: ${error.message}`);
     }
   }
-
-  public setTokenSetForUnitTest(tokenSet: TokenSet): void {
-    // use this as workaround to set tokenSet in unit tests
-    this.tokenSet = tokenSet;
-  }
 }
