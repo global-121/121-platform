@@ -28,7 +28,7 @@
     "test:e2e:watch": "npm run test:e2e:all -- --watchAll",
     "test:e2e:coverage": "npm run test:e2e:all -- --coverage --coverageDirectory=coverage/e2e",
     "typeorm": "ts-node --require=tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:create": "npm run typeorm migration:create -- --dataSource=./src/datasource-manage-migrations.ts",
+    "migration:create": "npm run typeorm migration:create",
     "migration:generate": "npm run typeorm migration:generate -- --dataSource=./src/datasource-manage-migrations.ts",
     "migration:run": "npm run typeorm migration:run -- --dataSource=./src/datasource-manage-migrations.ts",
     "migration:revert": "npm run typeorm migration:revert -- --dataSource=./src/datasource-manage-migrations.ts",

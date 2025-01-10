@@ -57,14 +57,14 @@ export class TransactionEntity extends Base121AuditedEntity {
     (_type) => ProgramFinancialServiceProviderConfigurationEntity,
     (programFinancialServiceProviderConfiguration) =>
       programFinancialServiceProviderConfiguration.transactions,
-    { onDelete: 'NO ACTION' }, // Do not delete on deleting programFspConfig, instead see catch in programFinancialServiceProviderConfigurationService.delete()
+    { onDelete: 'SET NULL' },
   )
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
   })
   public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
   @Index()
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   public programFinancialServiceProviderConfigurationId: number;
 
   @ManyToOne(

@@ -359,34 +359,6 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/transactions",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
-    "params": [
-      "registrationId",
-      "programId"
-    ]
-  },
-  {
     "method": "patch",
     "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa",
     "params": []
@@ -479,6 +451,34 @@
     "method": "post",
     "path": "/api/financial-service-providers/intersolve-voucher/send-reminders",
     "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
+    "params": [
+      "registrationId",
+      "programId"
+    ]
   },
   {
     "method": "get",
