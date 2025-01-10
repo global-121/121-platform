@@ -15,6 +15,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
         messageTemplate: 'message-template-nlrc-ocw.json',
       },
     ],
+    includeDebugScopes: true,
     firstProgramId: 2,
   },
   {
@@ -30,6 +31,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
         messageTemplate: 'message-template-nlrc-ocw.json',
       },
     ],
+    includeDebugScopes: true,
     includeMockData: true,
     firstProgramId: 2,
   },

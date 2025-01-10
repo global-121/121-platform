@@ -16,6 +16,9 @@ export class SeedConfigurationDto {
   @ApiProperty({ default: false })
   readonly includeMockData?: boolean;
 
+  @ApiProperty({ default: false })
+  readonly includeDebugScopes?: boolean;
+
   @ApiProperty({ default: 1 })
   readonly firstProgramId?: number;
 }

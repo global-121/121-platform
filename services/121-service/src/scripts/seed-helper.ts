@@ -21,6 +21,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/user.entity';
@@ -63,7 +64,11 @@ export class SeedHelper {
       await this.addMessageTemplates(messageTemplateData, programEntity);
 
       // Add default users
-      await this.addDefaultUsers(programEntity);
+      const debugScopes = Object.values(DebugScope);
+      await this.addDefaultUsers(
+        programEntity,
+        seedConfig.includeDebugScopes ? debugScopes : [],
+      );
     }
   }
 
