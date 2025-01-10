@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
+import fs from 'fs';
+import { join } from 'path';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
@@ -19,6 +21,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
@@ -32,6 +35,48 @@ export class SeedHelper {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
+
+  public async seedData(seedConfig: SeedConfigurationDto, isApiTests = false) {
+    // Add organization
+    const organizationPath = `organization/${seedConfig.organization}`;
+    const organizationData = await this.importData(organizationPath);
+    await this.addOrganization(organizationData);
+
+    // ***** SET SEQUENCE *****
+    // This is to keep PV and OCW program ids on respectively 2 and 3
+    // This to prevent differences between our local and prod dbs so we are less prone to mistakes
+    if (seedConfig.firstProgramId && seedConfig.firstProgramId !== 1) {
+      await this.dataSource.query(
+        `ALTER SEQUENCE "121-service".program_id_seq RESTART WITH ${seedConfig.firstProgramId};`,
+      );
+    }
+
+    for (const program of seedConfig.programs) {
+      // Add program
+      const programPath = `program/${program.program}`;
+      const programData = await this.importData(programPath);
+      const programEntity = await this.addProgram(programData, isApiTests);
+
+      // Add message templates
+      const messageTemplatePath = `message-template/${program.messageTemplate}`;
+      const messageTemplateData = await this.importData(messageTemplatePath);
+      await this.addMessageTemplates(messageTemplateData, programEntity);
+
+      // Add default users
+      await this.addDefaultUsers(programEntity);
+    }
+  }
+
+  private importData(subPath: string) {
+    const filePath = join(
+      __dirname,
+      '../seed-data', // TODO: move seed-data folder into scripts folder? Rename scripts folder?
+      subPath,
+    );
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(fileContent);
+  }
+
   public async addDefaultUsers(
     program: ProgramEntity,
     debugScopeUsers: string[] = [],

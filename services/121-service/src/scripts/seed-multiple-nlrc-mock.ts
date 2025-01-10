@@ -2,8 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
+import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
+import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
-import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
   amountVisa,
@@ -17,7 +18,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(
     private readonly seedMockHelper: SeedMockHelper,
     private axiosCallsService: AxiosCallsService,
-    private seedMultipleNLRC: SeedMultipleNLRC,
+    private seedHelper: SeedHelper,
   ) {}
 
   public async run(
@@ -27,6 +28,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     powerNrMessagesString?: string,
     mockPv = true,
     mockOcw = true,
+    seedConfig?: SeedConfigurationDto,
   ): Promise<void> {
     if (!process.env.MOCK_INTERSOLVE || !process.env.MOCK_TWILIO) {
       throw new HttpException(
@@ -43,7 +45,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     // ************************
 
     // Set up organization and program
-    await this.seedMultipleNLRC.run(isApiTests);
+    await this.seedHelper.seedData(seedConfig!, isApiTests);
 
     // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {

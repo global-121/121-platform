@@ -5,6 +5,6 @@ export enum SeedScript {
   // we keep one specific program for each FSP at least (Intersolve Visa/Voucher are covered in nlrcMultiple)
   cbeProgram = 'cbe-program',
   safaricomProgram = 'safari-program',
-  excelProgram = 'excel-program',
+  // excelProgram = 'excel-program',
   // nedbankProgram = 'nedbank-program',
 }

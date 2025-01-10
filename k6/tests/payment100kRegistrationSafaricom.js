@@ -5,9 +5,9 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 17; // '17' leads to 131k registrations
-const resetScript = 'krcs-multiple';
-const programId = 3;
+const duplicateNumber = 5; // '17' leads to 131k registrations
+const resetScript = 'safari-program';
+const programId = 1;
 const paymentId = 3;
 const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;
