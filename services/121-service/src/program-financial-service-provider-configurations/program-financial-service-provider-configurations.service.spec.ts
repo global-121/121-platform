@@ -135,10 +135,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       );
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('findByProgramId', () => {
     it('should return program configurations for a given program ID', async () => {
       const result = await service.getByProgramId(programId);

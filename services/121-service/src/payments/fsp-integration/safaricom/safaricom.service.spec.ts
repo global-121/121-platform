@@ -6,8 +6,8 @@ import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-inte
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
-import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.api.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -49,14 +49,6 @@ describe('SafaricomService', () => {
       SafaricomTransferScopedRepository,
     );
     redisClient = unitRef.get(REDIS_CLIENT);
-  });
-
-  describe('sendPayment', () => {
-    it('should throw an error when called', async () => {
-      await expect(safaricomService.sendPayment([], 1, 1)).rejects.toThrow(
-        'Method should not be called anymore.',
-      );
-    });
   });
 
   describe('doTransfer', () => {
