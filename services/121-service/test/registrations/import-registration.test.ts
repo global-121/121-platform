@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   registrationScopedGoesPv,
@@ -255,16 +255,16 @@ describe('Import a registration', () => {
 
   it('should throw an error with a dropdown registration atribute set to null', async () => {
     // Arrange
-    await resetDB(SeedScript.test);
+    await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
     const registrationWesteros1Copy = { ...registrationWesteros1 };
-    const programIdWestoros = 1;
+    const programIdWesteros = 2;
     // @ts-expect-error we are forcing something to be null when it shouldn't be
     registrationWesteros1Copy.house = null;
 
     // Act
     const response = await importRegistrations(
-      programIdWestoros,
+      programIdWesteros,
       [registrationWesteros1Copy],
       accessToken,
     );
@@ -274,7 +274,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
-      programIdWestoros,
+      programIdWesteros,
       accessToken,
     );
 
@@ -284,7 +284,7 @@ describe('Import a registration', () => {
 
   it('should throw an error when a required fsp attribute is missing', async () => {
     // Arrange
-    await resetDB(SeedScript.test);
+    await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
 
     // Removes whatsapp from original registration

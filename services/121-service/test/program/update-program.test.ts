@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,

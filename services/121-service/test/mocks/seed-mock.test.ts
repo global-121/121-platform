@@ -1,5 +1,5 @@
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import { getRegistrations } from '@121-service/test/helpers/registration.helper';

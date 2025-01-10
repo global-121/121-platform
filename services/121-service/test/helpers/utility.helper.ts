@@ -2,7 +2,7 @@ import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
@@ -90,6 +90,17 @@ export async function getAccessTokenCvaManager(): Promise<string> {
     process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
     process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
+}
+
+export async function removeProgramAssignment(
+  programId: number,
+  userId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .delete(`/programs/${programId}/users/${userId}`)
+    .set('Cookie', [accessToken])
+    .send();
 }
 
 export async function updatePermissionsOfRole(

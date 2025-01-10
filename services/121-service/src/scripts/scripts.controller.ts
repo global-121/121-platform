@@ -9,19 +9,8 @@ import {
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import { DEBUG } from '@121-service/src/config';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
-import { SeedEthJointResponse } from '@121-service/src/scripts/seed-eth-joint-response';
-import { SeedInit } from '@121-service/src/scripts/seed-init';
-import { SeedMultipleKRCS } from '@121-service/src/scripts/seed-multiple-krcs';
-import { SeedMultipleNLRC } from '@121-service/src/scripts/seed-multiple-nlrc';
-import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
-import { SeedDemoProgram } from '@121-service/src/scripts/seed-program-demo';
-import { SeedNLProgramPV } from '@121-service/src/scripts/seed-program-nlrc-pv';
-import { SeedTestProgram } from '@121-service/src/scripts/seed-program-test';
-import { SeedTestMultipleProgram } from '@121-service/src/scripts/seed-program-test-multiple';
-import { SeedTestOneAdmin } from '@121-service/src/scripts/seed-program-test-one-admin';
-import { SeedProgramValidation } from '@121-service/src/scripts/seed-program-validation';
-import { SeedScript } from '@121-service/src/scripts/seed-script.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
@@ -34,20 +23,7 @@ export class SecretDto {
 // TODO: REFACTOR: rename to instance
 @Controller('scripts')
 export class ScriptsController {
-  public constructor(
-    private readonly seedMultipleKrcs: SeedMultipleKRCS,
-    private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
-    private readonly seedMultipleNlrc: SeedMultipleNLRC,
-    private readonly seedDemoProgram: SeedDemoProgram,
-    private readonly seedEthJointRepose: SeedEthJointResponse,
-    private readonly seedProgramNlrcPv: SeedNLProgramPV,
-    private readonly seedProgramTestMultiple: SeedTestMultipleProgram,
-    private readonly seedProgramTest: SeedTestProgram,
-    private readonly seedProgramOneAdmin: SeedTestOneAdmin,
-    private readonly seedProgramValidation: SeedProgramValidation,
-    private readonly seedInit: SeedInit,
-    private readonly scriptsService: ScriptsService,
-  ) {}
+  public constructor(private readonly scriptsService: ScriptsService) {}
 
   @ApiQuery({
     name: 'script',
@@ -107,43 +83,15 @@ export class ScriptsController {
 
     isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
 
-    // If script is in seed enum and does not inculde mock data
-    if (
-      Object.values(SeedScript).includes(script) &&
-      script != SeedScript.nlrcMultipleMock
-    ) {
-      await this.seedInit.run(isApiTests);
-    }
-    if (script == SeedScript.demo) {
-      await this.seedDemoProgram.run(isApiTests);
-    } else if (script == SeedScript.test) {
-      await this.seedProgramTest.run(isApiTests);
-    } else if (script == SeedScript.oneAdmin) {
-      await this.seedProgramOneAdmin.run(isApiTests);
-    } else if (script == SeedScript.testMultiple) {
-      await this.seedProgramTestMultiple.run(isApiTests);
-    } else if (script == SeedScript.nlrcMultiple) {
-      await this.seedMultipleNlrc.run(isApiTests);
-    } else if (script == SeedScript.nlrcPV) {
-      await this.seedProgramNlrcPv.run(isApiTests);
-    } else if (script == SeedScript.validation) {
-      await this.seedProgramValidation.run(isApiTests);
-    } else if (script == SeedScript.ethJointResponse) {
-      await this.seedEthJointRepose.run(isApiTests);
-    } else if (script == SeedScript.krcsMultiple) {
-      await this.seedMultipleKrcs.run(isApiTests);
-    } else if (
-      script == SeedScript.nlrcMultipleMock &&
-      ['development', 'test'].includes(process.env.NODE_ENV!)
-    ) {
+    if (script == SeedScript.nlrcMultipleMock) {
       const booleanMockPv = mockPv
         ? JSON.parse(mockPv as unknown as string)
         : true;
       const booleanMockOcw = mockOcw
         ? JSON.parse(mockOcw as unknown as string)
         : true;
-      await this.seedInit.run(isApiTests);
-      await this.seedMultipleNlrcMockData.run(
+      await this.scriptsService.loadSeedScenario(
+        SeedScript.nlrcMultipleMock,
         isApiTests,
         mockPowerNumberRegistrations,
         mockNumberPayments,
@@ -151,13 +99,10 @@ export class ScriptsController {
         booleanMockPv,
         booleanMockOcw,
       );
-    } else {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .send(
-          'Not a known program (seed dummy only works in development and test)',
-        );
+    } else if (Object.values(SeedScript).includes(script)) {
+      await this.scriptsService.loadSeedScenario(script);
     }
+
     return res
       .status(HttpStatus.ACCEPTED)
       .send('Request received. Database should be reset.');
