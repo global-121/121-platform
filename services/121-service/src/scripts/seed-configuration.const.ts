@@ -60,7 +60,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     organization: 'organization-generic.json',
     programs: [
       {
-        program: 'program-demo.json',
+        program: 'program-cbe.json',
         messageTemplate: 'message-template-generic.json',
       },
       {
