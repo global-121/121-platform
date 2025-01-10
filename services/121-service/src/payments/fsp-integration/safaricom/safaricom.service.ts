@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Redis } from 'ioredis';
 
+import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
+import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
@@ -17,7 +19,9 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
-export class SafaricomService {
+export class SafaricomService
+  implements FinancialServiceProviderIntegrationInterface
+{
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
@@ -25,6 +29,18 @@ export class SafaricomService {
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
+
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
+  public async sendPayment(
+    _paymentList: PaPaymentDataDto[],
+    _programId: number,
+    _paymentNr: number,
+  ): Promise<void> {
+    throw new Error('Method should not be called anymore.');
+  }
 
   public async doTransfer({
     transferAmount,
