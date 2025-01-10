@@ -121,7 +121,7 @@ export class RegistrationsInputValidator {
         validatedRegistrationInput.paymentAmountMultiplier =
           validatedPaymentAmountMultiplier;
       }
-      if (program.enableMaxPayments && row.maxPayments != null) {
+      if (program.enableMaxPayments && row.maxPayments !== undefined) {
         const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
           this.validateMaxPayments({
             value: row.maxPayments,
