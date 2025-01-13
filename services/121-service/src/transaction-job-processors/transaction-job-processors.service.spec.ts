@@ -157,8 +157,7 @@ describe('TransactionJobProcessorsService', () => {
       isRetry: false,
       userId: 1,
       bulkSize: 10,
-      idNumber: registrationNedbank.nationalId,
-      fullName: registrationNedbank.fullName,
+      phoneNumber: registrationNedbank.nationalId,
       programFinancialServiceProviderConfigurationId: 1,
     };
 
@@ -198,7 +197,7 @@ describe('TransactionJobProcessorsService', () => {
       expect(nedbankService.createOrder).toHaveBeenCalledWith({
         transferAmount: mockedNedbankTransactionJob.transactionAmount,
         fullName: mockedNedbankTransactionJob.fullName,
-        idNumber: mockedNedbankTransactionJob.idNumber,
+        idNumber: mockedNedbankTransactionJob.phoneNumber,
         transactionReference: `ReferenceId=${mockedNedbankTransactionJob.referenceId},PaymentNumber=${mockedSafaricomTransactionJob.paymentNumber},Attempt=0`,
       });
 

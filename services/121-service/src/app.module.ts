@@ -14,7 +14,6 @@ import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { FinancialServiceProviderCallbackJobProcessorsModule } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.module';
-import { FinancialSyncModule } from '@121-service/src/financial-sync/financial-sync.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
@@ -24,6 +23,7 @@ import { OrganizationModule } from '@121-service/src/organization/organization.m
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
+import { NedbankReconciliationModule } from '@121-service/src/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
@@ -44,7 +44,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     MessageModule,
     MetricsModule,
     MessageIncomingModule,
-    FinancialSyncModule,
+    NedbankReconciliationModule,
     NoteModule,
     EmailsModule,
     ScheduleModule.forRoot(),

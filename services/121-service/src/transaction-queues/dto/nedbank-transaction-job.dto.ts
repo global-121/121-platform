@@ -8,6 +8,5 @@ export interface NedbankTransactionJobDto {
   readonly isRetry: boolean;
   readonly userId: number;
   readonly bulkSize: number;
-  readonly fullName: string;
-  readonly idNumber: string;
+  readonly phoneNumber: string;
 }

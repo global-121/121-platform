@@ -295,8 +295,7 @@ export class TransactionJobProcessorsService {
     try {
       createOrderReturn = await this.nedbankService.createOrder({
         transferAmount: transactionJob.transactionAmount,
-        fullName: transactionJob.fullName,
-        idNumber: transactionJob.idNumber,
+        phoneNumber: transactionJob.phoneNumber,
         transactionReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`, // ##TODO Should we start from 1 or 0?
       });
     } catch (error) {

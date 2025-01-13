@@ -9,14 +9,14 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 
 @Injectable()
-export class FinancialSyncService {
+export class NedbankReconciliation {
   public constructor(
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {}
 
-  public async syncNedbankVoucherAndTransactionStatusses(): Promise<void> {
+  public async cronDoNedbankReconciliation(): Promise<void> {
     const vouchers = await this.nedbankVoucherScopedRepository.find({
       select: ['id', 'orderCreateReference', 'transactionId'],
       where: [
@@ -49,8 +49,6 @@ export class FinancialSyncService {
         }
       }
 
-      // ##TODO: Should the NedbankService know about the TransactionModule?
-      // It is the case in https://miro.com/app/board/uXjVLVYmSPM=/?moveToWidget=3458764603767347191&cot=14 however I am not sure about it
       if (voucherStatus === NedbankVoucherStatus.REDEEMED) {
         await this.transactionScopedRepository.update(
           { id: voucher.transactionId },
@@ -63,7 +61,7 @@ export class FinancialSyncService {
           {
             status: TransactionStatusEnum.error,
             errorMessage:
-              'Voucher has been refunded by Nedbank. Please contact Nedbank support.', // TODO: is this the correct ux copy?
+              'Voucher has been refunded by Nedbank. If you retry this transfer, the person will receive a new voucher.',
           },
         );
       }

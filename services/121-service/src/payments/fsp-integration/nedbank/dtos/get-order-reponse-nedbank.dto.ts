@@ -1,7 +1,8 @@
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 
-export interface NedbankGetOrderResponseDto {
+export interface GetOrderResponseNedbankDto {
   Data: {
+    OrderId: string;
     Transactions: {
       Voucher: {
         Code: string;
