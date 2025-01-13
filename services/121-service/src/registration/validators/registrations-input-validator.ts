@@ -24,7 +24,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
 
-type InputAttributeType = string | boolean | number | undefined;
+type InputAttributeType = string | boolean | number | undefined | null;
 
 @Injectable()
 export class RegistrationsInputValidator {
@@ -121,7 +121,7 @@ export class RegistrationsInputValidator {
         validatedRegistrationInput.paymentAmountMultiplier =
           validatedPaymentAmountMultiplier;
       }
-      if (program.enableMaxPayments && row.maxPayments != null) {
+      if (program.enableMaxPayments && row.maxPayments !== undefined) {
         const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
           this.validateMaxPayments({
             value: row.maxPayments,
@@ -888,7 +888,7 @@ export class RegistrationsInputValidator {
     attribute,
     i,
   }: {
-    value: string[] | string | number | boolean | undefined;
+    value: string[] | string | number | boolean | undefined | null;
     type: string;
     attribute: string;
     i: number;
@@ -932,7 +932,7 @@ export class RegistrationsInputValidator {
     attribute,
   }: {
     type: string;
-    value: string[] | string | number | boolean | undefined;
+    value: string[] | string | number | boolean | undefined | null;
     attribute: string;
   }): string {
     const valueString = Array.isArray(value) ? JSON.stringify(value) : value;
@@ -940,7 +940,7 @@ export class RegistrationsInputValidator {
   }
 
   private valueIsBool(
-    value: string[] | string | number | boolean | undefined,
+    value: string[] | string | number | boolean | undefined | null,
   ): boolean {
     if (typeof value === 'boolean') {
       return true;

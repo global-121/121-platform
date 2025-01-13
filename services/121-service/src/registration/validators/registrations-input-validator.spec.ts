@@ -148,6 +148,8 @@ describe('RegistrationsInputValidator', () => {
       id: 1,
       name: 'Test Program',
       languages: ['en'],
+      enableMaxPayments: true,
+      enableScope: true,
       programFinancialServiceProviderConfigurations: [
         {
           financialServiceProviderName:
@@ -323,5 +325,27 @@ describe('RegistrationsInputValidator', () => {
           'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
       },
     ]);
+  });
+
+  it('should add max payment when its null', async () => {
+    const csvArray = [
+      {
+        maxPayments: null,
+      },
+    ];
+
+    const result = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.update,
+      validationConfig: {
+        validateExistingReferenceId: true,
+        validatePhoneNumberLookup: true,
+        validateUniqueReferenceId: true,
+      },
+    });
+
+    expect(result[0]).toHaveProperty('maxPayments');
   });
 });
