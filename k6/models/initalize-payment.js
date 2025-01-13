@@ -21,6 +21,7 @@ export default class InitializePaymentModel {
     paymentId,
     maxTimeoutAttempts,
     minPassRatePercentage,
+    amount,
   ) {
     // reset db
     resetPage.resetDB(resetScript);
@@ -33,7 +34,7 @@ export default class InitializePaymentModel {
     // Change status of all PAs to included and check response
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
 
-    paymentsPage.createPayment(programId);
+    paymentsPage.createPayment(programId, amount);
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,

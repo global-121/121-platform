@@ -6,11 +6,11 @@ const { baseUrl } = config;
 
 export default class paymentsModel {
   constructor() {}
-  createPayment(programId) {
+  createPayment(programId, amount) {
     const url = `${baseUrl}api/programs/${programId}/payments`;
     const payload = JSON.stringify({
       payment: 3,
-      amount: 10,
+      amount,
     });
     const params = {
       headers: {

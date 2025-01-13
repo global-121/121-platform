@@ -11,6 +11,7 @@ const programId = 1;
 const paymentId = 3;
 const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;
+const amount = 10;
 
 export const options = {
   thresholds: {
@@ -30,6 +31,7 @@ export default function () {
     paymentId,
     maxTimeoutAttempts,
     minPassRatePercentage,
+    amount,
   );
   check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
