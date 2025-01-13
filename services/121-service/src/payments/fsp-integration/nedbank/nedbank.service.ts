@@ -33,8 +33,7 @@ export class NedbankService
 
   public async createOrder({
     transferAmount,
-    fullName,
-    idNumber,
+    phoneNumber,
     transactionReference,
   }: NedbankCreateOrderParams): Promise<NedbankCreateOrderReturn> {
     const isAmountMultipleOf10 =
@@ -55,7 +54,7 @@ export class NedbankService
     // I wanted to use a deterministic UUID for the orderCreateReference (so use uuid v5 instead of v4)
     // However nedbank has a check in place to check if the orderCreateReference has 4 in the 15th position (which is uuid v4)
     // So I made some code to replace the 5 with a 4 which does work but feels a bit hacky
-    // No sure if this is the best way to go about it
+    // Not sure if this is the best way to go about it
     // However it seems very useful to have a deterministic UUID for the orderCreateReference so you can gerenate the same orderCreateReference for the same transaction
     // So if for some reason you trigger the same payment twice the second time you can just use the same orderCreateReference
     const orderCreateReference = generateUUIDFromSeed(
@@ -64,8 +63,7 @@ export class NedbankService
 
     const cashoutResult = await this.nedbankApiService.createOrder({
       transferAmount,
-      fullName,
-      idNumber,
+      phoneNumber,
       orderCreateReference,
     });
     return {

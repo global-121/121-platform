@@ -17,7 +17,7 @@ const mockPaymentJob: NedbankTransactionJobDto = {
   isRetry: false,
   bulkSize: 10,
   fullName: registrationNedbank.fullName,
-  idNumber: registrationNedbank.nationalId,
+  phoneNumber: registrationNedbank.nationalId,
   programFinancialServiceProviderConfigurationId: 1,
 };
 const testJob = { data: mockPaymentJob } as Job;

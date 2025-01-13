@@ -1,6 +1,5 @@
 export interface NedbankCreateOrderParams {
   transferAmount: number;
-  fullName: string;
-  idNumber: string;
+  phoneNumber: string;
   transactionReference: string;
 }

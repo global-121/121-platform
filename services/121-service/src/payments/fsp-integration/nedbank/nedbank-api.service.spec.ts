@@ -1,8 +1,8 @@
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { NedbankCreateOrderResponseDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-create-order-response.dto';
-import { NedbankGetOrderResponseDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-get-order-reponse.dto';
+import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-response-nedbank.dto';
+import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/get-order-reponse-nedbank.dto';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankErrorResponse } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-error-reponse';
@@ -31,7 +31,7 @@ describe('NedbankApiService', () => {
 
   describe('createOrder', () => {
     it('should create an order successfully', async () => {
-      const response: AxiosResponse<NedbankCreateOrderResponseDto> = {
+      const response: AxiosResponse<CreateOrderResponseNedbankDto> = {
         data: {
           Data: {
             OrderId: '',
@@ -52,8 +52,7 @@ describe('NedbankApiService', () => {
 
       const result = await service.createOrder({
         transferAmount: amount,
-        fullName: registrationNedbank.fullName,
-        idNumber: registrationNedbank.nationalId,
+        phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference,
       });
       expect(result).toEqual(response.data);
@@ -70,8 +69,8 @@ describe('NedbankApiService', () => {
         Data: {
           Initiation: {
             CreditorAccount: {
-              Identification: registrationNedbank.nationalId,
-              Name: registrationNedbank.fullName,
+              Identification: registrationNedbank.phoneNumber,
+              Name: '',
               SchemeName: 'recipient',
               SecondaryIdentification: '1',
             },
@@ -140,8 +139,7 @@ describe('NedbankApiService', () => {
       await expect(
         service.createOrder({
           transferAmount: amount,
-          fullName: registrationNedbank.fullName,
-          idNumber: registrationNedbank.nationalId,
+          phoneNumber: registrationNedbank.phoneNumber,
           orderCreateReference,
         }),
       ).rejects.toThrow(NedbankError);
@@ -151,8 +149,7 @@ describe('NedbankApiService', () => {
       try {
         await service.createOrder({
           transferAmount: amount,
-          fullName: registrationNedbank.fullName,
-          idNumber: registrationNedbank.nationalId,
+          phoneNumber: registrationNedbank.phoneNumber,
           orderCreateReference,
         });
       } catch (error) {
@@ -164,9 +161,10 @@ describe('NedbankApiService', () => {
 
   describe('getOrder', () => {
     it('should get an order successfully', async () => {
-      const response: AxiosResponse<NedbankGetOrderResponseDto> = {
+      const response: AxiosResponse<GetOrderResponseNedbankDto> = {
         data: {
           Data: {
+            OrderId: '',
             Transactions: {
               Voucher: {
                 Code: '',

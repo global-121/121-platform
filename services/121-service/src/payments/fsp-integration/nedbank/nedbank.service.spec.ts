@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UpdateResult } from 'typeorm';
 
-import { NedbankCreateOrderResponseDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-create-order-response.dto';
-import { NedbankGetOrderResponseDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-get-order-reponse.dto';
+import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-response-nedbank.dto';
+import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/get-order-reponse-nedbank.dto';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -56,7 +56,7 @@ describe('NedbankService', () => {
       const mockUUID = '12345678901234567890123456789012'; // Mock UUID
       (generateUUIDFromSeed as jest.Mock).mockReturnValue(mockUUID);
 
-      const response: NedbankCreateOrderResponseDto = {
+      const response: CreateOrderResponseNedbankDto = {
         Data: {
           OrderId: 'orderId',
           Status: NedbankVoucherStatus.PENDING,
@@ -71,8 +71,7 @@ describe('NedbankService', () => {
 
       const result = await service.createOrder({
         transferAmount: amount,
-        fullName: registrationNedbank.fullName,
-        idNumber: registrationNedbank.nationalId,
+        phoneNumber: registrationNedbank.nationalId,
         transactionReference,
       });
 
@@ -83,7 +82,6 @@ describe('NedbankService', () => {
 
       expect(apiService.createOrder).toHaveBeenCalledWith({
         transferAmount: amount,
-        fullName: registrationNedbank.fullName,
         idNumber: registrationNedbank.nationalId,
         orderCreateReference: mockUUID.replace(/^(.{14})5/, '$14'),
       });
@@ -94,8 +92,7 @@ describe('NedbankService', () => {
       await expect(
         service.createOrder({
           transferAmount: amount, // Not a multiple of 10
-          fullName: registrationNedbank.fullName,
-          idNumber: registrationNedbank.nationalId,
+          phoneNumber: registrationNedbank.nationalId,
           transactionReference,
         }),
       ).rejects.toThrow(NedbankError);
@@ -103,8 +100,7 @@ describe('NedbankService', () => {
       await expect(
         service.createOrder({
           transferAmount: amount, // Not a multiple of 10
-          fullName: registrationNedbank.fullName,
-          idNumber: registrationNedbank.nationalId,
+          phoneNumber: registrationNedbank.nationalId,
           transactionReference,
         }),
       ).rejects.toThrow('Amount must be a multiple of 10');
@@ -116,8 +112,7 @@ describe('NedbankService', () => {
       await expect(
         service.createOrder({
           transferAmount: 6000, // Exceeds the maximum limit
-          fullName: registrationNedbank.fullName,
-          idNumber: registrationNedbank.nationalId,
+          phoneNumber: registrationNedbank.nationalId,
           transactionReference,
         }),
       ).rejects.toThrow(NedbankError);
@@ -125,8 +120,7 @@ describe('NedbankService', () => {
       await expect(
         service.createOrder({
           transferAmount: 6000, // Exceeds the maximum limit
-          fullName: registrationNedbank.fullName,
-          idNumber: registrationNedbank.nationalId,
+          phoneNumber: registrationNedbank.nationalId,
           transactionReference,
         }),
       ).rejects.toThrow('Amount must be equal or less than 5000, got 6000');
@@ -135,8 +129,9 @@ describe('NedbankService', () => {
   });
 
   describe('retrieveAndUpdateVoucherStatus', () => {
-    const getOrderResponse: NedbankGetOrderResponseDto = {
+    const getOrderResponse: GetOrderResponseNedbankDto = {
       Data: {
+        OrderId: '',
         Transactions: {
           Voucher: {
             Code: '',

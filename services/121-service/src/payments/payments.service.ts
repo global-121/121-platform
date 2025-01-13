@@ -938,7 +938,7 @@ export class PaymentsService {
           bulkSize: referenceIdsTransactionAmounts.length,
           fullName:
             registrationView[FinancialServiceProviderAttributes.fullName]!,
-          idNumber:
+          phoneNumber:
             registrationView[FinancialServiceProviderAttributes.nationalId]!,
         };
       });

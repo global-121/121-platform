@@ -187,11 +187,7 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       notifyOnTransaction: false,
       attributes: [
         {
-          name: FinancialServiceProviderAttributes.fullName,
-          isRequired: true,
-        },
-        {
-          name: FinancialServiceProviderAttributes.nationalId,
+          name: FinancialServiceProviderAttributes.phoneNumber,
           isRequired: true,
         },
       ],

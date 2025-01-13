@@ -3,9 +3,9 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import * as https from 'https';
 import { v4 as uuid } from 'uuid';
 
-import { NedbankCreateOrderPayloadDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-create-order-payload.dto';
-import { NedbankCreateOrderResponseDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-create-order-response.dto';
-import { NedbankGetOrderResponseDto } from '@121-service/src/payments/fsp-integration/nedbank/dto/nedbank-get-order-reponse.dto';
+import { NedbankCreateOrderRequestBodyDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-request-body-nedbank.dto';
+import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-response-nedbank.dto';
+import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/get-order-reponse-nedbank.dto';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankErrorResponse } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-error-reponse';
 import { createHttpsAgentWithCertificate } from '@121-service/src/payments/payments.helpers';
@@ -24,14 +24,12 @@ export class NedbankApiService {
 
   public async createOrder({
     transferAmount,
-    fullName,
-    idNumber,
+    phoneNumber,
     orderCreateReference,
-  }): Promise<NedbankCreateOrderResponseDto> {
+  }): Promise<CreateOrderResponseNedbankDto> {
     const payload = this.createOrderPayload({
       transferAmount,
-      fullName,
-      idNumber,
+      phoneNumber,
       orderCreateReference,
     });
 
@@ -42,10 +40,9 @@ export class NedbankApiService {
 
   private createOrderPayload({
     transferAmount,
-    fullName,
-    idNumber,
+    phoneNumber,
     orderCreateReference,
-  }): NedbankCreateOrderPayloadDto {
+  }): NedbankCreateOrderRequestBodyDto {
     const currentDate = new Date();
     const expirationDate = new Date(
       currentDate.getTime() + 7 * 24 * 60 * 60 * 1000, // 7 days from now
@@ -67,8 +64,8 @@ export class NedbankApiService {
           },
           CreditorAccount: {
             SchemeName: 'recipient',
-            Identification: idNumber,
-            Name: fullName,
+            Identification: phoneNumber,
+            Name: '',
             SecondaryIdentification: '1', // Leaving this at '1' - Additional identification of recipient, like customer number. But not used anywhere at the moment.
           },
         },
@@ -83,13 +80,13 @@ export class NedbankApiService {
   }
 
   private async makeCreateOrderCall(
-    payload: NedbankCreateOrderPayloadDto,
-  ): Promise<AxiosResponse<NedbankCreateOrderResponseDto>> {
+    payload: NedbankCreateOrderRequestBodyDto,
+  ): Promise<AxiosResponse<CreateOrderResponseNedbankDto>> {
     const createOrderUrl = !!process.env.MOCK_NEDBANK
       ? `${process.env.MOCK_SERVICE_URL}api/fsp/nedbank/v1/orders`
       : `${process.env.NEDBANK_API_URL}/v1/orders`;
 
-    return this.nedbankApiRequestOrThrow<NedbankCreateOrderResponseDto>(
+    return this.nedbankApiRequestOrThrow<CreateOrderResponseNedbankDto>(
       createOrderUrl,
       'POST',
       payload,
@@ -98,19 +95,19 @@ export class NedbankApiService {
 
   public async getOrder(
     orderCreateReference: string,
-  ): Promise<NedbankGetOrderResponseDto> {
+  ): Promise<GetOrderResponseNedbankDto> {
     const response = await this.makeGetOrderCall(orderCreateReference);
     return response.data;
   }
 
   private async makeGetOrderCall(
     orderCreateReference: string,
-  ): Promise<AxiosResponse<NedbankGetOrderResponseDto>> {
+  ): Promise<AxiosResponse<GetOrderResponseNedbankDto>> {
     const getOrderUrl = !!process.env.MOCK_NEDBANK
       ? `${process.env.MOCK_SERVICE_URL}api/fsp/nedbank/v1/orders/references/${orderCreateReference}`
       : `${process.env.NEDBANK_API_URL}/v1/orders/references/${orderCreateReference}`;
 
-    return this.nedbankApiRequestOrThrow<NedbankGetOrderResponseDto>(
+    return this.nedbankApiRequestOrThrow<GetOrderResponseNedbankDto>(
       getOrderUrl,
       'GET',
       null,

@@ -106,8 +106,8 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   MessageIncomingModule-->QueuesRegistryModule
-  FinancialSyncModule-->NedbankModule
-  FinancialSyncModule-->TransactionsModule
+  NedbankReconciliationModule-->NedbankModule
+  NedbankReconciliationModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   ActivitiesModule-->NoteModule

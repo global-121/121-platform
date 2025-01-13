@@ -84,10 +84,11 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
+  // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
   @Cron(CronExpression.EVERY_DAY_AT_4AM, {
     disabled: !shouldBeEnabled(process.env.CRON_NEDBANK_VOUCHERS),
   })
-  public async cronRetrieveAndUpdateNedbankVouchers(): Promise<void> {
+  public async cronDoNedbankReconciliation(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/nedbank`;
