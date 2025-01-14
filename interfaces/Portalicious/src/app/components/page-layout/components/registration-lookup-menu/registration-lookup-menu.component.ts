@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 
-import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
@@ -26,7 +26,6 @@ export class RegistrationLookupMenuComponent {
   readonly phonenumber = input.required<string>();
 
   readonly projectApiService = inject(ProjectApiService);
-  readonly queryClient = inject(QueryClient);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly translatableStringService = inject(TranslatableStringService);
 
