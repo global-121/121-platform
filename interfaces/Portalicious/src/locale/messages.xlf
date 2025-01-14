@@ -1370,6 +1370,18 @@
       <trans-unit id="836413862079537522" datatype="html">
         <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot; &gt;" id="START_TAG_STRONG"/><x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s)<x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/> found with this number</source>
       </trans-unit>
+      <trans-unit id="payment-count" datatype="html">
+        <source>Number of payments</source>
+      </trans-unit>
+      <trans-unit id="last-message-status" datatype="html">
+        <source>Last message status</source>
+      </trans-unit>
+      <trans-unit id="max-payments" datatype="html">
+        <source>Max payments</source>
+      </trans-unit>
+      <trans-unit id="payment-count-remaining" datatype="html">
+        <source>Remaining payments</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

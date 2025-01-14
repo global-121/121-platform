@@ -27,6 +27,17 @@ import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = 'programs';
 
+export const filterableAttributesToIgnore = [
+  'failedPayment',
+  'waitingPayment',
+  'successPayment',
+  'notYetSentPayment',
+  // Below attributes are already hardcoded in the table columns service
+  'programFinancialServiceProviderConfigurationName',
+  'fullName',
+  'registrationCreatedDate',
+];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -60,6 +71,23 @@ export class ProjectApiService extends DomainApiService {
     return this.generateQueryOptions<Project>({
       path: [BASE_ENDPOINT, projectId],
       enabled: () => !!projectId(),
+      processResponse: (project) => {
+        if (project.filterableAttributes) {
+          project.filterableAttributes = project.filterableAttributes.map(
+            (group) => {
+              return {
+                ...group,
+                filters: group.filters.filter(
+                  (filter) =>
+                    !filterableAttributesToIgnore.includes(filter.name),
+                ),
+              };
+            },
+          );
+        }
+
+        return project;
+      },
     });
   }
 
