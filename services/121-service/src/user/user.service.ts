@@ -83,7 +83,7 @@ export class UserService {
     programId: string | number,
     userId: number,
   ): Promise<boolean> {
-    // if programId is not a number than it is not a programId so a user does not have access
+    // if programId is not a number then it is not a programId so a user does not have access
     // the query builder cannot handle this so we need to check it here
     if (isNaN(Number(programId))) {
       return false;
