@@ -295,7 +295,7 @@ describe('Import a registration', () => {
     registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
       FinancialServiceProviders.intersolveVoucherWhatsapp;
 
-    const programIdWestoros = 1;
+    const programIdWestoros = 2;
 
     // Act
     const response = await importRegistrations(

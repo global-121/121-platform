@@ -30,8 +30,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdWesteros,
-  programIdWithValidation,
-  registrationPV5,
+  registrationCbe,
   registrationWesteros1,
   registrationWesteros2,
   registrationWesteros3,
@@ -56,8 +55,9 @@ describe('Do payment with Excel FSP', () => {
     (registration) => registration.phoneNumber,
   );
 
-  const registrationsProgramWithValidation = [registrationPV5];
-  const refrenceIdsWithValidation = [registrationPV5.referenceId];
+  const registrationsProgramWithValidation = [registrationCbe];
+  const refrenceIdsWithValidation = [registrationCbe.referenceId];
+  const programIdCbe = 1;
 
   beforeEach(async () => {
     await resetDB(SeedScript.testMultiple);
@@ -95,27 +95,21 @@ describe('Do payment with Excel FSP', () => {
     // Do more tests with multiple programs, to include data isolation in tests
     // Specifically, this enables testing if transactions and registrations have the same length (see excel.service.ts)
     await importRegistrations(
-      programIdWithValidation,
+      programIdCbe,
       registrationsProgramWithValidation,
       accessToken,
     );
     await awaitChangePaStatus(
-      programIdWithValidation,
+      programIdCbe,
       refrenceIdsWithValidation,
       RegistrationStatusEnum.included,
       accessToken,
     );
 
-    await doPayment(
-      programIdWithValidation,
-      paymentNr,
-      amount,
-      [],
-      accessToken,
-    );
+    await doPayment(programIdCbe, paymentNr, amount, [], accessToken);
 
     await waitForPaymentTransactionsToComplete(
-      programIdWithValidation,
+      programIdCbe,
       refrenceIdsWithValidation,
       accessToken,
       10_000,
