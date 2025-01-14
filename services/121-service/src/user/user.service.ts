@@ -80,9 +80,14 @@ export class UserService {
 
   public async canActivate(
     permissions: PermissionEnum[],
-    programId: number,
+    programId: string | number,
     userId: number,
   ): Promise<boolean> {
+    // if programId is not a number than it is not a programId so a user does not have access
+    // the query builder cannot handle this so we need to check it here
+    if (isNaN(Number(programId))) {
+      return false;
+    }
     const results = await this.userRepository
       .createQueryBuilder('user')
       .leftJoin('user.programAssignments', 'assignment')
