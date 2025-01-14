@@ -29,7 +29,6 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
         },
       ],
     },
-
     {
       name: FinancialServiceProviders.intersolveVisa,
       integrationType: FinancialServiceProviderIntegrationType.api,

@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   HttpStatus,
@@ -28,7 +27,6 @@ import stream from 'stream';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IdentifyVoucherDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/identify-voucher.dto';
-import { IntersolveVoucherJobDetails } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/job-details.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
@@ -156,30 +154,6 @@ export class IntersolveVoucherController {
     );
   }
 
-  //TODO: mention this in WORKFLOWS?
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary: 'Start a job to update all voucher balances of a program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Voucher update job started',
-  })
-  @Post(
-    '/programs/:programId/financial-service-providers/intersolve-voucher/batch-jobs',
-  )
-  public async createJob(
-    @Body() jobDetails: IntersolveVoucherJobDetails,
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<void> {
-    await this.intersolveVoucherService.updateVoucherBalanceJob(
-      programId,
-      jobDetails.name,
-    );
-  }
-
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Cancel by refpos',
@@ -193,30 +167,6 @@ export class IntersolveVoucherController {
     console.info('CronjobService - Started: cancelByRefposIntersolve');
     await this.intersolveVoucherCronService.cancelByRefposIntersolve();
     console.info('CronjobService - Complete: cancelByRefposIntersolve');
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary: '[CRON] Cache unused vouchers',
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Cached unused vouchers',
-  })
-  @Post('/financial-service-providers/intersolve-voucher/cache-unused-vouchers')
-  public async cacheUnusedVouchers(): Promise<void> {
-    console.info('CronjobService - Started: cronCacheUnusedVouchers');
-    this.intersolveVoucherCronService
-      .cacheUnusedVouchers()
-      .then(() => {
-        console.info('CronjobService - Complete: cronCacheUnusedVouchers');
-        return;
-      })
-      .catch((error) => {
-        throw new Error(
-          `CronjobService - Failed: cronCacheUnusedVouchers - ${error}`,
-        );
-      });
   }
 
   @AuthenticatedUser({ isAdmin: true })

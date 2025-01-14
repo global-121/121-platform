@@ -66,7 +66,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: SafaricomCallbackQueueNames.transfer,
       processors: [
         {
-          path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-transfer-callback-job.processor.ts',
+          path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
       limiter: {
@@ -78,7 +78,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: SafaricomCallbackQueueNames.timeout,
       processors: [
         {
-          path: 'src/financial-service-provider-callback-job-processors/processors/safaricom-timeout-callback-job.processor.ts',
+          path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
       limiter: {
