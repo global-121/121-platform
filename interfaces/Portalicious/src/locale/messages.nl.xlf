@@ -1824,6 +1824,22 @@
         <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot; &gt;" id="START_TAG_STRONG"/><x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s)<x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/> found with this number</source>
         <target state="new"><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot; &gt;" id="START_TAG_STRONG"/><x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s)<x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/> found with this number</target>
       </trans-unit>
+      <trans-unit id="payment-count" datatype="html">
+        <source>Number of payments</source>
+        <target state="new">Number of payments</target>
+      </trans-unit>
+      <trans-unit id="payment-count-remaining" datatype="html">
+        <source>Remaining payments</source>
+        <target state="new">Remaining payments</target>
+      </trans-unit>
+      <trans-unit id="max-payments" datatype="html">
+        <source>Max payments</source>
+        <target state="new">Max payments</target>
+      </trans-unit>
+      <trans-unit id="last-message-status" datatype="html">
+        <source>Last message status</source>
+        <target state="new">Last message status</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
