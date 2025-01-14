@@ -1863,6 +1863,22 @@
         <source>Did you know?</source>
         <target state="new">Did you know?</target>
       </trans-unit>
+      <trans-unit id="payment-count" datatype="html">
+        <source>Number of payments</source>
+        <target state="new">Number of payments</target>
+      </trans-unit>
+      <trans-unit id="payment-count-remaining" datatype="html">
+        <source>Remaining payments</source>
+        <target state="new">Remaining payments</target>
+      </trans-unit>
+      <trans-unit id="max-payments" datatype="html">
+        <source>Max payments</source>
+        <target state="new">Max payments</target>
+      </trans-unit>
+      <trans-unit id="last-message-status" datatype="html">
+        <source>Last message status</source>
+        <target state="new">Last message status</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
