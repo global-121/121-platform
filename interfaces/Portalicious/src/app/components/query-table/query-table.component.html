@@ -34,7 +34,7 @@
   [dataKey]="'id'"
 >
   <ng-template pTemplate="caption">
-    <div class="flex min-h-11 items-center">
+    <div class="flex min-h-11 items-center overflow-x-auto">
       <ng-content select="[table-actions]"></ng-content>
       <span class="ms-auto"></span>
       @if (isFiltered()) {

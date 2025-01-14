@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
@@ -16,6 +17,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 @Component({
   selector: 'app-form-sidebar',
   imports: [
+    AutoFocusModule,
     ButtonModule,
     ReactiveFormsModule,
     FormErrorComponent,
@@ -32,4 +34,22 @@ export class FormSidebarComponent<
   visible = model<boolean>(false);
   formTitle = input.required<string>();
   modal = model<boolean>(true);
+
+  triggerElement: HTMLElement | null = null;
+
+  rememberTrigger() {
+    this.triggerElement = document.activeElement as HTMLElement;
+  }
+  restoreFocusToTrigger() {
+    this.triggerElement?.focus();
+  }
+
+  onShow() {
+    this.rememberTrigger();
+  }
+
+  onHide() {
+    this.formGroup().reset();
+    this.restoreFocusToTrigger();
+  }
 }
