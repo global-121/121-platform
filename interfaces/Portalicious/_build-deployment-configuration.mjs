@@ -32,7 +32,6 @@ if (!swaConfig.globalHeaders) {
 // NOTE: All values in each array are written as template-strings, as the use of single-quotes around some values (i.e. 'self') is mandatory and will affect the working of the HTTP-Header.
 let contentSecurityPolicy = new Map([
   ['default-src', [`'self'`]],
-  ['disown-opener', []],
   ['connect-src', [`'self'`]],
   ['frame-ancestors', [`'self'`]],
   ['frame-src', [`blob:`, `'self'`]],
