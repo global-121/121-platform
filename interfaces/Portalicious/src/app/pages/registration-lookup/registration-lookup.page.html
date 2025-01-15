@@ -1,4 +1,12 @@
 <app-page-layout>
-  <!-- This page does not actually have any content -->
-  <!-- We only need to show the registration-lookup-menu component, which is handled by the page-layout component -->
+  <!--
+    When there is a search-query for a phone-number, the registration-lookup-menu component will be shown.
+    This is handled by the page-layout component.
+  -->
+  @if (!registrations.data()) {
+    <p i18n>
+      When you receive a task, any information linked to the person's phone
+      number found in active programs in the 121 Platform will appear here.
+    </p>
+  }
 </app-page-layout>
