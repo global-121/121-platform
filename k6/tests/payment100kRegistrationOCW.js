@@ -18,7 +18,7 @@ export const options = {
     http_req_failed: ['rate<0.001'], // http errors should be less than 1%
   },
   vus: 1,
-  duration: '10s',
+  duration: '3m',
   iterations: 1,
 };
 
