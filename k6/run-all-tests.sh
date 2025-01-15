@@ -13,7 +13,8 @@ for file in tests/*.js; do
   echo "Contents of summary.json:"
   cat summary.json
 
-  if grep -q '"failed": [1-9]' summary.json; then
+  # Check if there are any failed checks
+  if [ $(jq '.metrics.checks.fails' summary.json) -gt 0 ]; then
       echo "Test failed: $file"
       failed_tests+=("$file")
   fi
