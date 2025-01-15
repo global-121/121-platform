@@ -9,7 +9,7 @@ const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 3;
 const paymentId = 3;
-const maxTimeoutAttempts = 200;
+const maxTimeoutAttempts = 1;
 const minPassRatePercentage = 10;
 const amount = 11.11; // Using an amount with cents. To ensure we handle javascript floating point precision issues
 
@@ -18,7 +18,7 @@ export const options = {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
   },
   vus: 1,
-  duration: '20m',
+  duration: '1m',
   iterations: 1,
 };
 
