@@ -1,4 +1,4 @@
-import { check } from 'k6';
+import { check, fail } from 'k6';
 
 // const initializePayment = new InitializePaymentModel();
 
@@ -22,7 +22,11 @@ export const options = {
 export default function () {
   // Manual check that always fails
   check(null, {
-    'Manual failure check': () => false,
+    'Manual failure check': () => {
+      console.log('This is a manual check that always fails');
+      fail('bla');
+      return false;
+    },
   });
   // const monitorPayment = initializePayment.initializePayment(
   //   resetScript,
