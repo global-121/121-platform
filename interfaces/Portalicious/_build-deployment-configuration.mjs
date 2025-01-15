@@ -32,7 +32,6 @@ if (!swaConfig.globalHeaders) {
 // NOTE: All values in each array are written as template-strings, as the use of single-quotes around some values (i.e. 'self') is mandatory and will affect the working of the HTTP-Header.
 let contentSecurityPolicy = new Map([
   ['default-src', [`'self'`]],
-  ['disown-opener', []],
   ['connect-src', [`'self'`]],
   ['frame-ancestors', [`'self'`]],
   ['frame-src', [`blob:`, `'self'`]],
@@ -41,7 +40,6 @@ let contentSecurityPolicy = new Map([
   ['referrer', [`no-referrer`]],
   ['reflected-xss', [`block`]],
   ['style-src', [`'self'`, `'unsafe-inline'`]],
-  ['upgrade-insecure-requests', []],
 ]);
 
 // Set API-origin
@@ -92,6 +90,18 @@ if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
     ...frameAncestors,
     `https://flex.twilio.com`,
   ]);
+}
+
+if (
+  process.env.USE_SSO_AZURE_ENTRA === 'true' &&
+  process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true'
+) {
+  console.info(
+    '✅ Allow control of pop-ups for SSO when the Portal is in an iframe on Twilio Flex',
+  );
+
+  swaConfig.globalHeaders['Cross-Origin-Opener-Policy'] =
+    'same-origin-allow-popups';
 }
 
 // Feature: PowerBI Dashboard(s)
