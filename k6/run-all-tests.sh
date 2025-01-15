@@ -6,9 +6,10 @@ for file in tests/*.js; do
   echo "Starting services"
   (cd .. ; npm run start:services ; cd services)
   echo "Running k6 test"
-  if ! npx dotenv -e ../services/.env -- ./k6 run $file; then
-    echo "Test failed: $file"
-    failed_tests+=("$file")
+  npx dotenv -e ../services/.env -- ./k6 run --summary-export=summary.json $file
+  if grep -q '"failed": [1-9]' summary.json; then
+      echo "Test failed: $file"
+      failed_tests+=("$file")
   fi
   echo "Stopping services"
   (cd ../services ; docker compose -f docker-compose.yml down)
