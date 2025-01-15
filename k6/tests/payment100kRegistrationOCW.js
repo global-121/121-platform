@@ -15,14 +15,18 @@ const amount = 11.11; // Using an amount with cents. To ensure we handle javascr
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    http_req_failed: ['rate<0.001'], // http errors should be less than 1%
   },
   vus: 1,
-  duration: '1m',
+  duration: '10s',
   iterations: 1,
 };
 
 export default function () {
+  // Manual check that always fails
+  check(null, {
+    'Manual failure check': () => false,
+  });
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
     programId,
