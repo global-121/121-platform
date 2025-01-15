@@ -25,4 +25,5 @@ if [ ${#failed_tests[@]} -ne 0 ]; then
   exit 1
 else
   echo "All tests passed successfully."
+  exit 1
 fi
