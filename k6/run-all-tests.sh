@@ -1,5 +1,3 @@
-set -e
-
 # Array to collect failed tests
 failed_tests=()
 
