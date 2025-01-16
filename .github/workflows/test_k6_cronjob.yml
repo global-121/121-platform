@@ -50,8 +50,8 @@ jobs:
         uses: jwalton/gh-docker-logs@v2
 
       - name: Microsoft Teams Notification
+        if: always()
         uses: tlolkema/simple-teams-message@main
-        if: ${{ github.event_name == 'schedule' }}
         env:
           JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
         with:
