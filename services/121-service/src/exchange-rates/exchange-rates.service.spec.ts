@@ -74,7 +74,7 @@ describe('ExchangeRatesService', () => {
       closeTime: GBP_closeTime,
     });
 
-    await exchangeRateService.getAndStoreProgramsExchangeRates();
+    await exchangeRateService.retrieveAndStoreAllExchangeRates();
 
     // Expectations for repository save calls
     expect(mockExchangeRateRepository.save).toHaveBeenCalledWith(

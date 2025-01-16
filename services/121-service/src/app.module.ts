@@ -13,6 +13,7 @@ import { AuthModule } from '@121-service/src/auth/auth.module';
 import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
+import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
 import { FinancialServiceProviderCallbackJobProcessorsModule } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
@@ -37,6 +38,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
     HealthModule,
     CronjobModule,
+    ExchangeRatesModule,
     ScriptsModule,
     OrganizationModule,
     ProgramModule,
