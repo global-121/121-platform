@@ -116,6 +116,7 @@
                   [showMatchModes]="false"
                   [showOperator]="false"
                   [showAddButton]="false"
+                  [ngClass]="isColumnFiltered(column)"
                 >
                   <ng-template
                     pTemplate="filter"
@@ -143,6 +144,7 @@
                   [showMatchModes]="false"
                   [showOperator]="false"
                   [showAddButton]="false"
+                  [ngClass]="isColumnFiltered(column)"
                 />
               }
             }
