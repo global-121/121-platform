@@ -1,17 +1,18 @@
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
-import { registrationVisa } from '../helpers/registration-default.data.js';
+import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
 const duplicateNumber = 17; // '17' leads to 131k registrations
-const resetScript = 'nlrc-multiple';
-const programId = 3;
+const resetScript = 'safari-program';
+const programId = 1;
 const paymentId = 3;
 const maxTimeoutAttempts = 600;
-const minPassRatePercentage = 5;
+const minPassRatePercentage = 10;
+const amount = 10;
 
 export const options = {
   thresholds: {
@@ -37,21 +38,19 @@ export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
     programId,
-    registrationVisa,
+    registrationSafaricom,
     duplicateNumber,
     paymentId,
     maxTimeoutAttempts,
     minPassRatePercentage,
+    amount,
   );
   checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
-        console.log('responseBody: ', responseBody);
-        console.log('status: ', r.status);
         console.log(responseBody.error || r.status);
       }
-      console.log('status: ', r.status);
       return r.status == 200;
     },
   });
