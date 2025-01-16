@@ -3,7 +3,7 @@ import { Get, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { GetExchangeRatesDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
+import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -23,10 +23,10 @@ export class ExchangeRatesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get alls exchange rates for a program',
-    type: [GetExchangeRatesDto],
+    type: [GetExchangeRateDto],
   })
   @Get()
-  public async getAll(): Promise<GetExchangeRatesDto[]> {
+  public async getAll(): Promise<GetExchangeRateDto[]> {
     return this.exchangeRateService.getAll();
   }
 }

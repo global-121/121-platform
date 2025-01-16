@@ -85,7 +85,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
-    disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
+    // disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
   public async getDailyExchangeRates(): Promise<void> {
     console.info('CronjobService - Started: getDailyExchangeRates');

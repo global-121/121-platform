@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { GetExchangeRatesDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
+import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
 import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -18,7 +18,7 @@ export class ExchangeRatesService {
     private readonly exchangeRateApiService: ExchangeRatesApiService,
   ) {}
 
-  public async getAll(): Promise<GetExchangeRatesDto[]> {
+  public async getAll(): Promise<GetExchangeRateDto[]> {
     return await this.exchangeRateRepository.find({
       select: ['currency', 'euroExchangeRate', 'closeTime'],
     });
