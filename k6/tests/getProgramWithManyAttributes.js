@@ -1,4 +1,5 @@
-import { check, sleep } from 'k6';
+import { check, fail, sleep } from 'k6';
+import { Counter } from 'k6/metrics';
 
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import loginModel from '../models/login.js';
@@ -24,16 +25,26 @@ export const options = {
   iterations: 1,
 };
 
+const failedChecks = new Counter('failed_checks');
+
+function checkAndFail(response, checks) {
+  const result = check(response, checks);
+  if (!result) {
+    failedChecks.add(1);
+    fail('One or more checks failed');
+  }
+}
+
 export default function () {
   // reset db
   const reset = resetPage.resetDB(resetScript);
-  check(reset, {
+  checkAndFail(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  check(login, {
+  checkAndFail(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -49,7 +60,7 @@ export default function () {
       programsPage.createProgramRegistrationAttribute(programId, attributeName);
     registrationVisa[attributeName] = 'bla';
 
-    check(programRegistrationAttributes, {
+    checkAndFail(programRegistrationAttributes, {
       'Program registration attributes added successfully status was 201': (
         r,
       ) => {
@@ -66,7 +77,7 @@ export default function () {
     programId,
     registrationVisa,
   );
-  check(registrationImport, {
+  checkAndFail(registrationImport, {
     'Import of registration successful status was 201': (r) => r.status == 201,
   });
 
@@ -79,7 +90,7 @@ export default function () {
 
   // get program by id and validte load time is less than 200ms
   const program = programsPage.getProgramById(2);
-  check(program, {
+  checkAndFail(program, {
     'Programme loaded succesfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
