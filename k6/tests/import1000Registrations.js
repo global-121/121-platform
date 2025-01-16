@@ -1,4 +1,5 @@
-import { check, sleep } from 'k6';
+import { check, fail, sleep } from 'k6';
+import { Counter } from 'k6/metrics';
 
 import LoginModel from '../models/login.js';
 import RegistrationsModel from '../models/registrations.js';
@@ -24,6 +25,7 @@ if (!csvFile) {
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
   iterations: 1,
@@ -31,16 +33,26 @@ export const options = {
   duration: '9m', // At the time of writing this test, this test took ~7m both locally and on GH actions. Setting the limit to 9m, so it's below the API timeout limit of10m. Change this value only deliberatedly. If the tests takes longer because of regression effects, it should fail.
 };
 
+const failedChecks = new Counter('failed_checks');
+
+function checkAndFail(response, checks) {
+  const result = check(response, checks);
+  if (!result) {
+    failedChecks.add(1);
+    fail('One or more checks failed');
+  }
+}
+
 export default function () {
   // reset db
   const reset = resetPage.resetDB(resetScript);
-  check(reset, {
+  checkAndFail(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  check(login, {
+  checkAndFail(login, {
     'Login successful status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -55,7 +67,7 @@ export default function () {
     programId,
     csvFile,
   );
-  check(registrationImport, {
+  checkAndFail(registrationImport, {
     'Import of registration successful status was 201': (r) => r.status == 201,
   });
 
