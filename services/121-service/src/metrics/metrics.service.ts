@@ -17,6 +17,7 @@ import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/nedbank-voucher.entity';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -790,12 +791,15 @@ export class MetricsService {
       await this.getAdditionalFspExportFields(programId);
 
     for (const field of additionalFspExportFields) {
+      const joinTableAlias = `joinTable${field.entityJoinedToTransaction.name}`;
       transactionQuery.leftJoin(
         field.entityJoinedToTransaction,
-        'joinTable',
-        'transaction.id = joinTable.transactionId',
+        joinTableAlias,
+        `transaction.id = ${joinTableAlias}.transactionId`,
       );
-      transactionQuery.addSelect(`"${field.attribute}"`);
+      transactionQuery.addSelect(
+        `"${joinTableAlias}"."${field.attribute}" as "${field.alias}"`,
+      );
     }
 
     const duplicateNames = registrationDataOptions
@@ -863,10 +867,12 @@ export class MetricsService {
     return result;
   }
 
-  private async getAdditionalFspExportFields(
-    programId: number,
-  ): Promise<
-    { entityJoinedToTransaction: EntityClass<any>; attribute: string }[]
+  private async getAdditionalFspExportFields(programId: number): Promise<
+    {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+      alias: string;
+    }[]
   > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
@@ -875,6 +881,7 @@ export class MetricsService {
     let fields: {
       entityJoinedToTransaction: EntityClass<any>;
       attribute: string;
+      alias: string;
     }[] = [];
 
     for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
@@ -888,6 +895,22 @@ export class MetricsService {
             {
               entityJoinedToTransaction: SafaricomTransferEntity,
               attribute: 'mpesaTransactionId',
+              alias: 'mpesaTransactionId',
+            },
+          ],
+        ];
+      }
+      if (
+        fspConfig.financialServiceProviderName ===
+        FinancialServiceProviders.nedbank
+      ) {
+        fields = [
+          ...fields,
+          ...[
+            {
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              attribute: 'status',
+              alias: 'nedbankVoucherStatus',
             },
           ],
         ];

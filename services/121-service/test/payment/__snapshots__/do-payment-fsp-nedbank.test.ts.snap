@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Do payment to 1 PA with FSP: Nedbank should fail pay-out when debitor account number is missing 1`] = `"Errors: Request Validation Error - TPP account configuration mismatch (Message: NB.APIM.Field.Invalid, Code: NB.APIM.Field.Invalid, Id: 1d3e3076-9e1c-4933-aa7f-69290941ec70)"`;
