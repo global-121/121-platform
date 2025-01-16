@@ -2,24 +2,24 @@ import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ExchangeRateApiService } from '@121-service/src/exchange-rate/exchange-rate.api.service';
-import { ExchangeRateEntity } from '@121-service/src/exchange-rate/exchange-rate.entity';
-import { ExchangeRateService } from '@121-service/src/exchange-rate/exchange-rate.service';
+import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
+import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
+import { ExchangeRatesService as ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 
 // Mock for ExchangeRateApiService
-const mockExchangeRateApiService = {
+const mockExchangeRatesApiService = {
   retrieveExchangeRate: jest.fn(),
 };
 
-describe('ExchangeRateService', () => {
-  let exchangeRateService: ExchangeRateService;
+describe('ExchangeRatesService', () => {
+  let exchangeRateService: ExchangeRatesService;
   let mockExchangeRateRepository: jest.Mocked<Repository<ExchangeRateEntity>>;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
-        ExchangeRateService,
+        ExchangeRatesService,
         {
           provide: getRepositoryToken(ExchangeRateEntity),
           useValue: {
@@ -43,14 +43,14 @@ describe('ExchangeRateService', () => {
           },
         },
         {
-          provide: ExchangeRateApiService,
-          useValue: mockExchangeRateApiService,
+          provide: ExchangeRatesApiService,
+          useValue: mockExchangeRatesApiService,
         },
       ],
     }).compile();
 
     exchangeRateService =
-      moduleRef.get<ExchangeRateService>(ExchangeRateService);
+      moduleRef.get<ExchangeRatesService>(ExchangeRatesService);
     mockExchangeRateRepository = moduleRef.get<
       jest.Mocked<Repository<ExchangeRateEntity>>
     >(getRepositoryToken(ExchangeRateEntity));
@@ -65,11 +65,11 @@ describe('ExchangeRateService', () => {
     const GBP_closeTime = '2024-01-30';
 
     // Mocking API responses for retrieveExchangeRate
-    mockExchangeRateApiService.retrieveExchangeRate!.mockResolvedValueOnce({
+    mockExchangeRatesApiService.retrieveExchangeRate!.mockResolvedValueOnce({
       rate: USD_euroExchangeRate.toString(),
       closeTime: USD_closeTime,
     });
-    mockExchangeRateApiService.retrieveExchangeRate!.mockResolvedValue({
+    mockExchangeRatesApiService.retrieveExchangeRate!.mockResolvedValue({
       rate: GBP_euroExchangeRate.toString(),
       closeTime: GBP_closeTime,
     });

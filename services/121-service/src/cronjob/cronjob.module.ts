@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import { CronjobService } from '@121-service/src/cronjob/cronjob.service';
-import { ExchangeRateModule } from '@121-service/src/exchange-rate/exchange-rate.module';
+import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
 
 @Module({
-  imports: [ExchangeRateModule],
+  imports: [ExchangeRatesModule],
   providers: [CronjobService],
   controllers: [],
   exports: [CronjobService],

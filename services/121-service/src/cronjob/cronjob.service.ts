@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { ExchangeRateService } from '@121-service/src/exchange-rate/exchange-rate.service';
+import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
@@ -15,7 +15,7 @@ export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
 
-  constructor(private exchangeRateService: ExchangeRateService) {}
+  constructor(private exchangeRatesService: ExchangeRatesService) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     disabled: !shouldBeEnabled(
@@ -90,7 +90,7 @@ export class CronjobService {
   public async getDailyExchangeRates(): Promise<void> {
     console.info('CronjobService - Started: getDailyExchangeRates');
 
-    await this.exchangeRateService.getAndStoreProgramsExchangeRates();
+    await this.exchangeRatesService.getAndStoreProgramsExchangeRates();
 
     console.info('CronjobService - Complete: getDailyExchangeRates');
   }
