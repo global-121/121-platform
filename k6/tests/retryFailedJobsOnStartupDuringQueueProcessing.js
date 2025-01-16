@@ -1,5 +1,6 @@
-import { check, sleep } from 'k6';
+import { check, fail, sleep } from 'k6';
 import http from 'k6/http';
+import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
@@ -20,6 +21,7 @@ export const options = {
   vus: 1,
   duration: '40m',
   iterations: 1,
+  failed_checks: ['count<1'], // fail the test if any check fails
 };
 
 function isServiceUp() {
@@ -27,16 +29,26 @@ function isServiceUp() {
   return response.status === 200;
 }
 
+const failedChecks = new Counter('failed_checks');
+
+function checkAndFail(response, checks) {
+  const result = check(response, checks);
+  if (!result) {
+    failedChecks.add(1);
+    fail('One or more checks failed');
+  }
+}
+
 export default function () {
   // reset db
   const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
-  check(reset, {
+  checkAndFail(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  check(login, {
+  checkAndFail(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -76,7 +88,7 @@ export default function () {
     duplicateNumber,
     minPassRatePercentage,
   );
-  check(monitorPayment, {
+  checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
