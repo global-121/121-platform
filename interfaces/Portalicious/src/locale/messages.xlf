@@ -4,7 +4,6 @@
     <body>
       <trans-unit id="page-title-change-password" datatype="html">
         <source>Change password</source>
-        <note priority="1" from="description">Browser-tab-title</note>
       </trans-unit>
       <trans-unit id="generic-not-available" datatype="html">
         <source>Not available</source>
@@ -584,7 +583,7 @@
       <trans-unit id="4026691210548476882" datatype="html">
         <source>Failed to load options</source>
       </trans-unit>
-      <trans-unit id="loading" datatype="html">
+      <trans-unit id="generic-loading" datatype="html">
         <source>Loading...</source>
       </trans-unit>
       <trans-unit id="3082094200535618477" datatype="html">
@@ -1372,6 +1371,12 @@
       </trans-unit>
       <trans-unit id="8209340100752123472" datatype="html">
         <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
+      </trans-unit>
+      <trans-unit id="page-title-login" datatype="html">
+        <source>Log in</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-registration-details" datatype="html">
+        <source>Registration details</source>
       </trans-unit>
     </body>
   </file>

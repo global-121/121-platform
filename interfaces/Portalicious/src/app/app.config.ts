@@ -9,7 +9,11 @@ import {
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import {
+  provideRouter,
+  TitleStrategy,
+  withComponentInputBinding,
+} from '@angular/router';
 
 import {
   provideTanStackQuery,
@@ -19,6 +23,7 @@ import { providePrimeNG } from 'primeng/config';
 
 import { routes } from '~/app.routes';
 import AppTheme from '~/app.theme';
+import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
 import { Locale } from '~/utils/locale';
 
@@ -64,6 +69,7 @@ export function getAppConfig(locale: Locale): ApplicationConfig {
         }),
       ),
       ...AuthService.APP_PROVIDERS,
+      { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
       { provide: LOCALE_ID, useValue: locale },
     ],
   };

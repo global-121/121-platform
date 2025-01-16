@@ -46,7 +46,7 @@ export class CustomMessagePreviewComponent {
 
   messageText = computed(() =>
     this.messagePreview.isPending()
-      ? $localize`:@@loading:Loading...`
+      ? $localize`:@@generic-loading:Loading...`
       : this.messagePreview.data(),
   );
 }
