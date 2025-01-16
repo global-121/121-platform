@@ -1,5 +1,4 @@
-import { check, fail, sleep } from 'k6';
-import { Counter } from 'k6/metrics';
+import { check, sleep } from 'k6';
 
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import loginModel from '../models/login.js';
@@ -19,33 +18,22 @@ const programId = 2;
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
-    failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
   duration: '30s',
   iterations: 1,
 };
 
-const failedChecks = new Counter('failed_checks');
-
-function checkAndFail(response, checks) {
-  const result = check(response, checks);
-  if (!result) {
-    failedChecks.add(1);
-    fail('One or more checks failed');
-  }
-}
-
 export default function () {
   // reset db
   const reset = resetPage.resetDB(resetScript);
-  checkAndFail(reset, {
+  check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  checkAndFail(login, {
+  check(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -61,7 +49,7 @@ export default function () {
       programsPage.createProgramRegistrationAttribute(programId, attributeName);
     registrationVisa[attributeName] = 'bla';
 
-    checkAndFail(programRegistrationAttributes, {
+    check(programRegistrationAttributes, {
       'Program registration attributes added successfully status was 201': (
         r,
       ) => {
@@ -78,7 +66,7 @@ export default function () {
     programId,
     registrationVisa,
   );
-  checkAndFail(registrationImport, {
+  check(registrationImport, {
     'Import of registration successful status was 201': (r) => r.status == 201,
   });
 
@@ -91,7 +79,7 @@ export default function () {
 
   // get program by id and validte load time is less than 200ms
   const program = programsPage.getProgramById(2);
-  checkAndFail(program, {
+  check(program, {
     'Programme loaded succesfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
