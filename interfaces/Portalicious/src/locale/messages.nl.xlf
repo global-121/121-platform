@@ -1828,6 +1828,10 @@
         <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
         <target state="new">When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</target>
       </trans-unit>
+      <trans-unit id="5709449651238206423" datatype="html">
+        <source>Gotcha!</source>
+        <target state="new">Gotcha!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
