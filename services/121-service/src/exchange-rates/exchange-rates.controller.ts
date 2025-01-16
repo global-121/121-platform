@@ -22,7 +22,7 @@ export class ExchangeRatesController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get alls exchange rate for a program',
+    description: 'Gets all exchange rates for a program',
     type: [GetExchangeRateDto],
   })
   @Get()
