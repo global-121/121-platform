@@ -5,7 +5,7 @@ failed_tests=()
 for file in tests/*.js; do
   echo "Test: $file"
   echo "Starting services"
-  (cd ../services ; docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300)
+  (cd .. ; npm run start:services ; cd services)
   echo "Running k6 test"
   npx dotenv -e ../services/.env -- ./k6 run --summary-export=summary.json $file
 
