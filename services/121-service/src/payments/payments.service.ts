@@ -753,7 +753,6 @@ export class PaymentsService {
       (q) => q.name,
     );
     const dataFieldNames = [
-      FinancialServiceProviderAttributes.fullName,
       FinancialServiceProviderAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
@@ -936,10 +935,8 @@ export class PaymentsService {
           isRetry,
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
-          fullName:
-            registrationView[FinancialServiceProviderAttributes.fullName]!,
           phoneNumber:
-            registrationView[FinancialServiceProviderAttributes.nationalId]!,
+            registrationView[FinancialServiceProviderAttributes.phoneNumber]!,
         };
       });
     await this.transactionQueuesService.addNedbankTransactionJobs(

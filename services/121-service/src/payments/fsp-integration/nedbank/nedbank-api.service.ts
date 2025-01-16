@@ -3,12 +3,12 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import * as https from 'https';
 import { v4 as uuid } from 'uuid';
 
-import { NedbankCreateOrderRequestBodyDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-request-body-nedbank.dto';
-import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-response-nedbank.dto';
-import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/get-order-reponse-nedbank.dto';
+import { NedbankCreateOrderRequestBodyDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-request-body-nedbank.dto';
+import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-response-nedbank.dto';
+import { ErrorReponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-reponse-nedbank.dto';
+import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/get-order-reponse-nedbank.dto';
+import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
-import { NedbankErrorResponse } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-error-reponse';
-import { createHttpsAgentWithCertificate } from '@121-service/src/payments/payments.helpers';
 import {
   CustomHttpService,
   Header,
@@ -16,17 +16,21 @@ import {
 
 @Injectable()
 export class NedbankApiService {
-  public httpsAgent: https.Agent;
+  public httpsAgent: https.Agent | undefined;
 
   public constructor(private readonly httpService: CustomHttpService) {
-    this.createHttpsAgent();
+    this.httpsAgent = this.createHttpsAgent();
   }
 
   public async createOrder({
     transferAmount,
     phoneNumber,
     orderCreateReference,
-  }): Promise<CreateOrderResponseNedbankDto> {
+  }: {
+    transferAmount: number;
+    phoneNumber: string;
+    orderCreateReference: string;
+  }): Promise<NedbankVoucherStatus> {
     const payload = this.createOrderPayload({
       transferAmount,
       phoneNumber,
@@ -35,23 +39,27 @@ export class NedbankApiService {
 
     const createOrderResponse = await this.makeCreateOrderCall(payload);
 
-    return createOrderResponse.data;
+    return createOrderResponse.data.Data.Status;
   }
 
   private createOrderPayload({
     transferAmount,
     phoneNumber,
     orderCreateReference,
+  }: {
+    transferAmount: number;
+    phoneNumber: string;
+    orderCreateReference: string;
   }): NedbankCreateOrderRequestBodyDto {
     const currentDate = new Date();
-    const expirationDate = new Date(
-      currentDate.getTime() + 7 * 24 * 60 * 60 * 1000, // 7 days from now
+    const expirationDateIsoString = new Date(
+      currentDate.setDate(new Date().getDate() + 7),
     ).toISOString();
 
     return {
       Data: {
         Initiation: {
-          InstructionIdentification: uuid().replace(/-/g, ''), // This should be a string without dashes or you get an error from nedbank
+          InstructionIdentification: uuid().replace(/-/g, ''), // This should be a unique string without dashes or you get an error from nedbank
           InstructedAmount: {
             Amount: `${transferAmount.toString()}.00`, // This should be a string with two decimal places
             Currency: 'ZAR',
@@ -60,20 +68,17 @@ export class NedbankApiService {
             SchemeName: 'account', // should always be 'account'
             Identification: process.env.NEDBANK_ACCOUNT_NUMBER!, // ##TODO should we check somewhere if the .env is set?
             Name: 'MyRefOnceOffQATrx', // ##TODO Not sure what to set here. Quote from the API word document from didirik: 'This is what shows on the SARCS statement. We can set this value for (manual) reconciliation purposes.'
-            SecondaryIdentification: '1', // Leaving this at '1' - This is described in the online documentation but not in the word we have from Nedbank. I assume it is not use like the other SecondaryIdentification.
           },
           CreditorAccount: {
             SchemeName: 'recipient',
             Identification: phoneNumber,
-            Name: '',
-            SecondaryIdentification: '1', // Leaving this at '1' - Additional identification of recipient, like customer number. But not used anywhere at the moment.
+            Name: 'MyRefOnceOffQATrx', // Name cannot be left empty so set it to a default value found on nedbank api documentation
           },
         },
-        ExpirationDateTime: expirationDate,
+        ExpirationDateTime: expirationDateIsoString,
       },
       Risk: {
         OrderCreateReference: orderCreateReference,
-        // OrderCreateReference: uuid(),
         OrderDateTime: new Date().toISOString().split('T')[0], // This needs to be set to yyyy-mm-dd
       },
     };
@@ -86,39 +91,42 @@ export class NedbankApiService {
       ? `${process.env.MOCK_SERVICE_URL}api/fsp/nedbank/v1/orders`
       : `${process.env.NEDBANK_API_URL}/v1/orders`;
 
-    return this.nedbankApiRequestOrThrow<CreateOrderResponseNedbankDto>(
-      createOrderUrl,
-      'POST',
+    return this.nedbankApiRequestOrThrow<CreateOrderResponseNedbankDto>({
+      url: createOrderUrl,
+      method: 'POST',
       payload,
-    );
+    });
   }
 
-  public async getOrder(
+  public async getOrderByOrderCreateReference(
     orderCreateReference: string,
-  ): Promise<GetOrderResponseNedbankDto> {
-    const response = await this.makeGetOrderCall(orderCreateReference);
-    return response.data;
-  }
-
-  private async makeGetOrderCall(
-    orderCreateReference: string,
-  ): Promise<AxiosResponse<GetOrderResponseNedbankDto>> {
+  ): Promise<NedbankVoucherStatus> {
     const getOrderUrl = !!process.env.MOCK_NEDBANK
       ? `${process.env.MOCK_SERVICE_URL}api/fsp/nedbank/v1/orders/references/${orderCreateReference}`
       : `${process.env.NEDBANK_API_URL}/v1/orders/references/${orderCreateReference}`;
 
-    return this.nedbankApiRequestOrThrow<GetOrderResponseNedbankDto>(
-      getOrderUrl,
-      'GET',
-      null,
-    );
+    const response =
+      await this.nedbankApiRequestOrThrow<GetOrderResponseNedbankDto>({
+        url: getOrderUrl,
+        method: 'GET',
+      });
+    return response.data.Data.Transactions.Voucher.Status;
   }
 
-  private async nedbankApiRequestOrThrow<T>(
-    url: string,
-    method: 'POST' | 'GET',
-    payload: unknown,
-  ): Promise<AxiosResponse<T>> {
+  private async nedbankApiRequestOrThrow<T>({
+    url,
+    method,
+    payload,
+  }: {
+    url: string;
+    method: 'POST' | 'GET';
+    payload?: unknown;
+  }): Promise<AxiosResponse<T>> {
+    if (!this.httpsAgent) {
+      throw new NedbankError(
+        'Nedbank certificate has not been read. It could be that NEDBANK_CERTIFICATE_PATH or NEDBANK_CERTIFICATE_PASSWORD are not set or that certificate has not been uploaded to the server. Please contact 121 support',
+      );
+    }
     const headers = this.createHeaders();
 
     let response: AxiosResponse<T>;
@@ -149,7 +157,7 @@ export class NedbankApiService {
         value: process.env.NEDBANK_CLIENT_SECRET!,
       },
       {
-        name: 'x-idempotency-key', // ##TODO: From the comments in the Nedbank API documenetation word file it's now completely clear what this should be. I assume based on this convo that we use OrderCreateReference as 'idempotency' key and I therefore set this thing randomly
+        name: 'x-idempotency-key', // We use OrderCreateReference as 'idempotency' key and therefore set this thing with a random value
         value: Math.floor(Math.random() * 10000).toString(),
       },
       {
@@ -164,12 +172,12 @@ export class NedbankApiService {
   }
 
   private isNedbankErrorResponse(
-    response: unknown | NedbankErrorResponse,
-  ): response is NedbankErrorResponse {
-    return (response as NedbankErrorResponse).Errors !== undefined;
+    response: unknown | ErrorReponseNedbankDto,
+  ): response is ErrorReponseNedbankDto {
+    return (response as ErrorReponseNedbankDto).Errors !== undefined;
   }
 
-  private formatError(responseBody: NedbankErrorResponse | null): string {
+  private formatError(responseBody: ErrorReponseNedbankDto | null): string {
     if (!responseBody) {
       return 'Nebank URL could not be reached';
     }
@@ -205,18 +213,17 @@ export class NedbankApiService {
     return errorMessage;
   }
 
-  private createHttpsAgent() {
+  private createHttpsAgent(): https.Agent | undefined {
     if (this.httpsAgent) {
-      return;
+      return this.httpsAgent;
     }
-    // ##TODO is there a smart way to throw an error here if the .env is not set but the client does want to use nedbank? Or is that overengineering?
     if (
       !process.env.NEDBANK_CERTIFICATE_PATH ||
       !process.env.NEDBANK_CERTIFICATE_PASSWORD
     ) {
       return;
     }
-    this.httpsAgent = createHttpsAgentWithCertificate(
+    return this.httpService.createHttpsAgentWithCertificate(
       process.env.NEDBANK_CERTIFICATE_PATH!,
       process.env.NEDBANK_CERTIFICATE_PASSWORD!,
     );

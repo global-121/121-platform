@@ -130,7 +130,7 @@ describe('Do payment to 1 PA', () => {
     it('should fail pay-out when debitor account number is missing', async () => {
       const registrationFailDebitorAccount = {
         ...registrationNedbank,
-        fullName: 'failDebitorAccountIncorrect',
+        phoneNumber: '27000000001',
       };
       const paymentReferenceIds = [registrationFailDebitorAccount.referenceId];
       await seedIncludedRegistrations(
@@ -140,7 +140,7 @@ describe('Do payment to 1 PA', () => {
       );
 
       // Act
-      const doPaymentResponse = await doPayment(
+      await doPayment(
         programId,
         payment,
         amount,
@@ -160,7 +160,7 @@ describe('Do payment to 1 PA', () => {
         ],
       );
 
-      const getTransactionsBodyBeforeCronjob = (
+      const getTransactionsBody = (
         await getTransactions(
           programId,
           payment,
@@ -170,23 +170,55 @@ describe('Do payment to 1 PA', () => {
       ).body;
 
       // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(
-        paymentReferenceIds.length,
+      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
+      expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+    });
+
+    it('should fail pay-out when we make a payment with a payment amount of over 5000', async () => {
+      const registrationFailDebitorAccount = {
+        ...registrationNedbank,
+        phoneNumber: '27000000001',
+      };
+      const paymentReferenceIds = [registrationFailDebitorAccount.referenceId];
+      await seedIncludedRegistrations(
+        [registrationFailDebitorAccount],
+        programId,
+        accessToken,
       );
-      expect(doPaymentResponse.body.totalFilterCount).toBe(
-        paymentReferenceIds.length,
+
+      // Act
+      await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
       );
-      expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
-      expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
-        registrationFailDebitorAccount.paymentAmountMultiplier,
+
+      await waitForPaymentTransactionsToComplete(
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        30_000,
+        [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+          TransactionStatusEnum.waiting,
+        ],
       );
-      expect(getTransactionsBodyBeforeCronjob[0].status).toBe(
-        TransactionStatusEnum.error,
-      );
-      expect(
-        getTransactionsBodyBeforeCronjob[0].errorMessage,
-      ).toMatchSnapshot();
+
+      const getTransactionsBody = (
+        await getTransactions(
+          programId,
+          payment,
+          registrationFailDebitorAccount.referenceId,
+          accessToken,
+        )
+      ).body;
+
+      // Assert
+      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
+      expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
     });
   });
 });

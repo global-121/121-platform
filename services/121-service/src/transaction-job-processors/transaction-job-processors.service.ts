@@ -12,8 +12,9 @@ import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-i
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
-import { NedbankCreateOrderReturn } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-order-return';
+import { NedbankCreateOrderReturnType } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-voucher-return-type';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
+import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
@@ -57,6 +58,7 @@ export class TransactionJobProcessorsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
+    private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
@@ -284,19 +286,19 @@ export class TransactionJobProcessorsService {
 
     // 2. Get number of failed transaction to gerenerate the transaction reference
     const failedTransactionsCount =
-      await this.transactionScopedRepository.getFailedTransactionAttemptsForPaymentAndRegistration(
+      await this.transactionScopedRepository.getFailedTransactionsCountForPaymentAndRegistration(
         {
           registrationId: registration.id,
           payment: transactionJob.paymentNumber,
         },
       );
 
-    let createOrderReturn: NedbankCreateOrderReturn;
+    let createOrderReturn: NedbankCreateOrderReturnType;
     try {
-      createOrderReturn = await this.nedbankService.createOrder({
+      createOrderReturn = await this.nedbankService.createVoucher({
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber,
-        transactionReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`, // ##TODO Should we start from 1 or 0?
+        orderCreateReferenceSeed: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`,
       });
     } catch (error) {
       if (error instanceof NedbankError) {
@@ -337,7 +339,7 @@ export class TransactionJobProcessorsService {
     // 4. Store the nedbank voucher
     // ##TODO discuss: We could also store the voucher in the createOrder function
     // However I think it makes more sense to store it after the transaction is created in the database so we can link the voucher to the transaction with an non-nullable foreign key
-    await this.nedbankService.storeVoucher({
+    await this.nedbankVoucherScopedRepository.storeVoucher({
       transactionId: transaction.id,
       orderCreateReference: createOrderReturn.orderCreateReference,
       voucherStatus: createOrderReturn.nedbankVoucherStatus,

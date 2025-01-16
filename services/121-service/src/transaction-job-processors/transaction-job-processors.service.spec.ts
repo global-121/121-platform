@@ -3,8 +3,9 @@ import { UpdateResult } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
-import { NedbankCreateOrderReturn } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-order-return';
+import { NedbankCreateOrderReturnType } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-voucher-return-type';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
+import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -61,6 +62,7 @@ describe('TransactionJobProcessorsService', () => {
   let registrationScopedRepository: RegistrationScopedRepository;
   let latestTransactionRepository: LatestTransactionRepository;
   let transactionScopedRepository: TransactionScopedRepository;
+  let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -83,6 +85,10 @@ describe('TransactionJobProcessorsService', () => {
     latestTransactionRepository = unitRef.get<LatestTransactionRepository>(
       LatestTransactionRepository,
     );
+    nedbankVoucherScopedRepository =
+      unitRef.get<NedbankVoucherScopedRepository>(
+        NedbankVoucherScopedRepository,
+      );
 
     jest
       .spyOn(registrationScopedRepository, 'getByReferenceId')
@@ -103,7 +109,7 @@ describe('TransactionJobProcessorsService', () => {
     jest
       .spyOn(
         transactionScopedRepository,
-        'getFailedTransactionAttemptsForPaymentAndRegistration',
+        'getFailedTransactionsCountForPaymentAndRegistration',
       )
       .mockResolvedValueOnce(0);
   });
@@ -157,11 +163,11 @@ describe('TransactionJobProcessorsService', () => {
       isRetry: false,
       userId: 1,
       bulkSize: 10,
-      phoneNumber: registrationNedbank.nationalId,
+      phoneNumber: registrationNedbank.phoneNumber,
       programFinancialServiceProviderConfigurationId: 1,
     };
 
-    const mockedCreateOrderReturn: NedbankCreateOrderReturn = {
+    const mockedCreateOrderReturn: NedbankCreateOrderReturnType = {
       orderCreateReference: 'orderCreateReference',
       nedbankVoucherStatus: NedbankVoucherStatus.PENDING,
     };
@@ -172,11 +178,11 @@ describe('TransactionJobProcessorsService', () => {
         .mockResolvedValueOnce(mockedRegistration);
 
       jest
-        .spyOn(nedbankService, 'createOrder')
+        .spyOn(nedbankService, 'createVoucher')
         .mockResolvedValueOnce(mockedCreateOrderReturn);
 
       jest
-        .spyOn(nedbankService, 'storeVoucher')
+        .spyOn(nedbankVoucherScopedRepository, 'storeVoucher')
         .mockResolvedValueOnce(undefined);
 
       await transactionJobProcessorsService.processNedbankTransactionJob(
@@ -189,19 +195,18 @@ describe('TransactionJobProcessorsService', () => {
         referenceId: mockedNedbankTransactionJob.referenceId,
       });
       expect(
-        transactionScopedRepository.getFailedTransactionAttemptsForPaymentAndRegistration,
+        transactionScopedRepository.getFailedTransactionsCountForPaymentAndRegistration,
       ).toHaveBeenCalledWith({
         registrationId: mockedRegistration.id,
         payment: mockedNedbankTransactionJob.paymentNumber,
       });
-      expect(nedbankService.createOrder).toHaveBeenCalledWith({
+      expect(nedbankService.createVoucher).toHaveBeenCalledWith({
         transferAmount: mockedNedbankTransactionJob.transactionAmount,
-        fullName: mockedNedbankTransactionJob.fullName,
         idNumber: mockedNedbankTransactionJob.phoneNumber,
-        transactionReference: `ReferenceId=${mockedNedbankTransactionJob.referenceId},PaymentNumber=${mockedSafaricomTransactionJob.paymentNumber},Attempt=0`,
+        orderCreateReferenceSeed: `ReferenceId=${mockedNedbankTransactionJob.referenceId},PaymentNumber=${mockedSafaricomTransactionJob.paymentNumber},Attempt=0`,
       });
 
-      expect(nedbankService.storeVoucher).toHaveBeenCalledWith({
+      expect(nedbankVoucherScopedRepository.storeVoucher).toHaveBeenCalledWith({
         transactionId: mockedTransactionId,
         orderCreateReference: mockedCreateOrderReturn.orderCreateReference,
         voucherStatus: mockedCreateOrderReturn.nedbankVoucherStatus,
@@ -215,7 +220,7 @@ describe('TransactionJobProcessorsService', () => {
 
       const nedbankError = new NedbankError('Nedbank error occurred');
       jest
-        .spyOn(nedbankService, 'createOrder')
+        .spyOn(nedbankService, 'createVoucher')
         .mockRejectedValueOnce(nedbankError);
 
       await transactionJobProcessorsService.processNedbankTransactionJob(
@@ -230,7 +235,9 @@ describe('TransactionJobProcessorsService', () => {
         }),
       );
       // Store voucher is not called
-      expect(nedbankService.storeVoucher).not.toHaveBeenCalled();
+      expect(
+        nedbankVoucherScopedRepository.storeVoucher,
+      ).not.toHaveBeenCalled();
     });
   });
 });

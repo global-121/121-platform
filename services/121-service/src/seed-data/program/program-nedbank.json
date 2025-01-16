@@ -32,16 +32,20 @@
       "showInPeopleAffectedTable": false
     },
     {
-      "name": "nationalId",
+      "name": "phoneNumber",
       "label": {
-        "en": "National ID"
+        "en": "Phone Number"
       },
-      "type": "text",
+      "placeholder": {
+        "en": "+31 6 00 00 00 00"
+      },
+      "type": "tel",
       "pattern": null,
       "options": null,
-      "export": ["all-people-affected", "included"],
+      "export": [],
       "scoring": {},
-      "editableInPortal": true,
+      "duplicateCheck": true,
+      "editableInPortal": false,
       "showInPeopleAffectedTable": false
     }
   ],

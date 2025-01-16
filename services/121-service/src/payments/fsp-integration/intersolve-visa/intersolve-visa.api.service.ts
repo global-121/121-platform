@@ -25,10 +25,10 @@ import { GetTransactionInformationReturnType } from '@121-service/src/payments/f
 import { IssueTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/issue-token-return-type.interface';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
-import { generateUUIDFromSeed } from '@121-service/src/payments/payments.helpers';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
+import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`

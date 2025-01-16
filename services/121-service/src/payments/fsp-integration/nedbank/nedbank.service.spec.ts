@@ -1,21 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UpdateResult } from 'typeorm';
 
-import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-response-nedbank.dto';
-import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/get-order-reponse-nedbank.dto';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankApiService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank-api.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
-import { generateUUIDFromSeed } from '@121-service/src/payments/payments.helpers';
+import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
-const transactionReference = 'transaction123';
+const orderCreateReferenceSeed = `ReferenceId=${registrationNedbank.referenceId},PaymentNumber=0,Attempt=0`;
 
 jest.mock('./nedbank-api.service');
 jest.mock('./repositories/nedbank-voucher.scoped.repository');
-jest.mock('@121-service/src/payments/payments.helpers');
+jest.mock('@121-service/src/utils/uuid.helpers');
 
 describe('NedbankService', () => {
   let service: NedbankService;
@@ -30,7 +28,7 @@ describe('NedbankService', () => {
           provide: NedbankApiService,
           useValue: {
             createOrder: jest.fn(),
-            getOrder: jest.fn(),
+            getOrderByOrderCreateReference: jest.fn(),
           },
         },
         {
@@ -56,23 +54,14 @@ describe('NedbankService', () => {
       const mockUUID = '12345678901234567890123456789012'; // Mock UUID
       (generateUUIDFromSeed as jest.Mock).mockReturnValue(mockUUID);
 
-      const response: CreateOrderResponseNedbankDto = {
-        Data: {
-          OrderId: 'orderId',
-          Status: NedbankVoucherStatus.PENDING,
-        },
-        Links: {
-          Self: '',
-        },
-        Meta: {},
-      };
+      jest
+        .spyOn(apiService, 'createOrder')
+        .mockResolvedValue(NedbankVoucherStatus.PENDING);
 
-      jest.spyOn(apiService, 'createOrder').mockResolvedValue(response);
-
-      const result = await service.createOrder({
+      const result = await service.createVoucher({
         transferAmount: amount,
-        phoneNumber: registrationNedbank.nationalId,
-        transactionReference,
+        phoneNumber: registrationNedbank.phoneNumber,
+        orderCreateReferenceSeed,
       });
 
       expect(result).toEqual({
@@ -82,7 +71,7 @@ describe('NedbankService', () => {
 
       expect(apiService.createOrder).toHaveBeenCalledWith({
         transferAmount: amount,
-        idNumber: registrationNedbank.nationalId,
+        phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference: mockUUID.replace(/^(.{14})5/, '$14'),
       });
     });
@@ -90,82 +79,33 @@ describe('NedbankService', () => {
     it('should throw an error if amount is not a multiple of 10', async () => {
       const amount = 25;
       await expect(
-        service.createOrder({
+        service.createVoucher({
           transferAmount: amount, // Not a multiple of 10
-          phoneNumber: registrationNedbank.nationalId,
-          transactionReference,
+          phoneNumber: registrationNedbank.phoneNumber,
+          orderCreateReferenceSeed,
         }),
       ).rejects.toThrow(NedbankError);
 
       await expect(
-        service.createOrder({
+        service.createVoucher({
           transferAmount: amount, // Not a multiple of 10
-          phoneNumber: registrationNedbank.nationalId,
-          transactionReference,
+          phoneNumber: registrationNedbank.phoneNumber,
+          orderCreateReferenceSeed,
         }),
       ).rejects.toThrow('Amount must be a multiple of 10');
 
       expect(apiService.createOrder).not.toHaveBeenCalled();
     });
-
-    it('should throw an error if amount exceeds the maximum limit', async () => {
-      await expect(
-        service.createOrder({
-          transferAmount: 6000, // Exceeds the maximum limit
-          phoneNumber: registrationNedbank.nationalId,
-          transactionReference,
-        }),
-      ).rejects.toThrow(NedbankError);
-
-      await expect(
-        service.createOrder({
-          transferAmount: 6000, // Exceeds the maximum limit
-          phoneNumber: registrationNedbank.nationalId,
-          transactionReference,
-        }),
-      ).rejects.toThrow('Amount must be equal or less than 5000, got 6000');
-      expect(apiService.createOrder).not.toHaveBeenCalled();
-    });
   });
 
   describe('retrieveAndUpdateVoucherStatus', () => {
-    const getOrderResponse: GetOrderResponseNedbankDto = {
-      Data: {
-        OrderId: '',
-        Transactions: {
-          Voucher: {
-            Code: '',
-            Status: NedbankVoucherStatus.REDEEMABLE,
-            Redeem: {
-              Redeemable: true,
-              Redeemed: false,
-              RedeemedOn: '',
-              RedeemedAt: '',
-            },
-            Refund: {
-              Refundable: true,
-              Refunded: false,
-              RefundedOn: '',
-            },
-            Pin: '',
-          },
-          PaymentReferenceNumber: '',
-          OrderCreateReference: '',
-          OrderDateTime: '',
-          OrderExpiry: '',
-        },
-      },
-      Links: {
-        Self: '',
-      },
-      Meta: {},
-    };
-
     it('should retrieve and update voucher status successfully', async () => {
       const orderCreateReference = 'orderCreateReference';
       const voucherId = 1;
 
-      jest.spyOn(apiService, 'getOrder').mockResolvedValue(getOrderResponse);
+      jest
+        .spyOn(apiService, 'getOrderByOrderCreateReference')
+        .mockResolvedValue(NedbankVoucherStatus.REDEEMABLE);
       jest
         .spyOn(voucherRepository, 'update')
         .mockResolvedValue({} as UpdateResult);
@@ -176,7 +116,9 @@ describe('NedbankService', () => {
       );
 
       expect(result).toBe(NedbankVoucherStatus.REDEEMABLE);
-      expect(apiService.getOrder).toHaveBeenCalledWith(orderCreateReference);
+      expect(apiService.getOrderByOrderCreateReference).toHaveBeenCalledWith(
+        orderCreateReference,
+      );
       expect(voucherRepository.update).toHaveBeenCalledWith(
         { id: voucherId },
         { status: NedbankVoucherStatus.REDEEMABLE },

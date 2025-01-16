@@ -4,11 +4,11 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError as NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
-import { NedbankCreateOrderParams } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-order-params';
-import { NedbankCreateOrderReturn } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-order-return';
+import { NedbankCreateOrderParams } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-voucher-params';
+import { NedbankCreateOrderReturnType } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-create-voucher-return-type';
 import { NedbankApiService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank-api.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
-import { generateUUIDFromSeed } from '@121-service/src/payments/payments.helpers';
+import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
 export class NedbankService
@@ -31,23 +31,14 @@ export class NedbankService
     throw new Error('Method should not be called anymore.');
   }
 
-  public async createOrder({
+  public async createVoucher({
     transferAmount,
     phoneNumber,
-    transactionReference,
-  }: NedbankCreateOrderParams): Promise<NedbankCreateOrderReturn> {
-    const isAmountMultipleOf10 =
-      this.isCashoutAmountMultipleOf10(transferAmount);
+    orderCreateReferenceSeed,
+  }: NedbankCreateOrderParams): Promise<NedbankCreateOrderReturnType> {
+    const isAmountMultipleOf10 = transferAmount % 10 === 0;
     if (!isAmountMultipleOf10) {
       throw new NedbankError('Amount must be a multiple of 10');
-    }
-    const maxAmount = 5000;
-    if (transferAmount >= maxAmount) {
-      // ##TODO: If check here for 5000 and Nebank changes the max amount we need to change it here as well
-      // How often would it happen that user try to cashout more than 5000? So how valuable is it that we maintain this check?
-      throw new NedbankError(
-        `Amount must be equal or less than ${maxAmount}, got ${transferAmount}`,
-      );
     }
 
     // ##TODO Find a way to properly cover this with a test to ensure this keeps working if we refactor transactions to have one per payment
@@ -58,56 +49,34 @@ export class NedbankService
     // However it seems very useful to have a deterministic UUID for the orderCreateReference so you can gerenate the same orderCreateReference for the same transaction
     // So if for some reason you trigger the same payment twice the second time you can just use the same orderCreateReference
     const orderCreateReference = generateUUIDFromSeed(
-      transactionReference,
+      orderCreateReferenceSeed,
     ).replace(/^(.{14})5/, '$14');
 
-    const cashoutResult = await this.nedbankApiService.createOrder({
+    const nedbankVoucherStatus = await this.nedbankApiService.createOrder({
       transferAmount,
       phoneNumber,
       orderCreateReference,
     });
     return {
       orderCreateReference,
-      nedbankVoucherStatus: cashoutResult.Data.Status,
+      nedbankVoucherStatus,
     };
-  }
-
-  public async storeVoucher({
-    // Should this function live in the repository only?
-    orderCreateReference,
-    voucherStatus,
-    transactionId,
-  }: {
-    orderCreateReference: string;
-    voucherStatus: NedbankVoucherStatus;
-    transactionId: number;
-  }): Promise<void> {
-    const nedbankVoucherEntity = this.nedbankVoucherScopedRepository.create({
-      orderCreateReference,
-      status: voucherStatus,
-      transactionId,
-    });
-    await this.nedbankVoucherScopedRepository.save(nedbankVoucherEntity);
   }
 
   public async retrieveAndUpdateVoucherStatus(
     orderCreateReference: string,
     voucherId: number,
   ): Promise<NedbankVoucherStatus> {
-    const getOrderReponseBody =
-      await this.nedbankApiService.getOrder(orderCreateReference);
+    const voucherStatus =
+      await this.nedbankApiService.getOrderByOrderCreateReference(
+        orderCreateReference,
+      );
 
     // ##TODO: How to mock if another response comes back than status REDEEMABLE from the sandbox?
-    const voucherResponse = getOrderReponseBody.Data.Transactions.Voucher;
-
     await this.nedbankVoucherScopedRepository.update(
       { id: voucherId },
-      { status: voucherResponse.Status },
+      { status: voucherStatus },
     );
-    return voucherResponse.Status;
-  }
-
-  private isCashoutAmountMultipleOf10(amount: number): boolean {
-    return amount % 10 === 0;
+    return voucherStatus;
   }
 }

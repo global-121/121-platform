@@ -339,12 +339,10 @@ export const registrationsPvExcel = [
 
 export const registrationNedbank = {
   referenceId: 'registration-nedbank-1',
-  phoneNumber: '14155238886',
+  phoneNumber: '39231855170',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.nedbank,
   maxPayments: 3,
-  fullName: 'ANDUALEM MOHAMMED YIMER',
-  nationalId: '39231855170',
 };

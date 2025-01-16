@@ -1,11 +1,12 @@
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as https from 'https';
 
-import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/create-order-response-nedbank.dto';
-import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/get-order-reponse-nedbank.dto';
+import { CreateOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-response-nedbank.dto';
+import { ErrorReponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-reponse-nedbank.dto';
+import { GetOrderResponseNedbankDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/get-order-reponse-nedbank.dto';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
-import { NedbankErrorResponse } from '@121-service/src/payments/fsp-integration/nedbank/interfaces/nedbank-error-reponse';
 import { NedbankApiService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank-api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
@@ -14,7 +15,6 @@ const amount = 250;
 const orderCreateReference = '123456'; // This is a uuid generated deterministically, so we can use a fixed value
 
 jest.mock('@121-service/src/shared/services/custom-http.service');
-jest.mock('@121-service/src/payments/payments.helpers');
 
 describe('NedbankApiService', () => {
   let service: NedbankApiService;
@@ -26,6 +26,7 @@ describe('NedbankApiService', () => {
     }).compile();
 
     service = module.get<NedbankApiService>(NedbankApiService);
+    service.httpsAgent = {} as https.Agent;
     httpService = module.get<CustomHttpService>(CustomHttpService);
   });
 
@@ -55,7 +56,7 @@ describe('NedbankApiService', () => {
         phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference,
       });
-      expect(result).toEqual(response.data);
+      expect(result).toEqual(response.data.Data.Status);
 
       const requestCallArgs = (httpService.request as jest.Mock).mock.calls[0];
       const requestCallParamObject = requestCallArgs[0];
@@ -70,15 +71,13 @@ describe('NedbankApiService', () => {
           Initiation: {
             CreditorAccount: {
               Identification: registrationNedbank.phoneNumber,
-              Name: '',
+              Name: 'MyRefOnceOffQATrx',
               SchemeName: 'recipient',
-              SecondaryIdentification: '1',
             },
             DebtorAccount: {
               Identification: process.env.NEDBANK_ACCOUNT_NUMBER,
               Name: 'MyRefOnceOffQATrx',
               SchemeName: 'account',
-              SecondaryIdentification: '1',
             },
             InstructedAmount: {
               Amount: `${amount.toString()}.00`,
@@ -113,7 +112,7 @@ describe('NedbankApiService', () => {
     });
 
     it('should throw an error if create order fails', async () => {
-      const errorResponse: AxiosResponse<NedbankErrorResponse> = {
+      const errorResponse: AxiosResponse<ErrorReponseNedbankDto> = {
         data: {
           Message: 'BUSINESS ERROR',
           Code: 'NB.APIM.Field.Invalid',
@@ -143,6 +142,23 @@ describe('NedbankApiService', () => {
           orderCreateReference,
         }),
       ).rejects.toThrow(NedbankError);
+
+      // TODO: Not sure if this is the best/prettiest syntax to test the content of the error but it works
+      let errorOnCreateOrder: NedbankError | undefined;
+      try {
+        await service.createOrder({
+          transferAmount: amount,
+          phoneNumber: registrationNedbank.phoneNumber,
+          orderCreateReference,
+        });
+      } catch (error) {
+        errorOnCreateOrder = error;
+      }
+      expect(errorOnCreateOrder).toMatchSnapshot();
+    });
+
+    it('should throw an error if httpsAgent is not defined', async () => {
+      service.httpsAgent = undefined;
 
       // TODO: Not sure if this is the best/prettiest syntax to test the content of the error but it works
       let errorOnCreateOrder: NedbankError | undefined;
@@ -200,8 +216,9 @@ describe('NedbankApiService', () => {
       };
       jest.spyOn(httpService, 'request').mockResolvedValue(response);
 
-      const result = await service.getOrder(orderCreateReference);
-      expect(result).toEqual(response.data);
+      const result =
+        await service.getOrderByOrderCreateReference(orderCreateReference);
+      expect(result).toEqual(response.data.Data.Transactions.Voucher.Status);
 
       const requestCallArgs = (httpService.request as jest.Mock).mock.calls[0];
 
@@ -211,12 +228,12 @@ describe('NedbankApiService', () => {
       // Check the method
       expect(requestCallArgs[0].method).toBe('GET');
 
-      // C// Do not check the header details as this is already done in the createOrder test
+      //  Do not check the header details as this is already done in the createOrder test
       expect(requestCallArgs[0].headers).toEqual(expect.any(Object));
     });
 
     it('should throw an error if get order fails', async () => {
-      const errorResponse: AxiosResponse<NedbankErrorResponse> = {
+      const errorResponse: AxiosResponse<ErrorReponseNedbankDto> = {
         data: {
           Message: 'BUSINESS ERROR',
           Code: 'NB.APIM.Field.Invalid',
@@ -239,14 +256,14 @@ describe('NedbankApiService', () => {
 
       jest.spyOn(httpService, 'request').mockResolvedValue(errorResponse);
 
-      await expect(service.getOrder('orderCreateReference')).rejects.toThrow(
-        NedbankError,
-      );
+      await expect(
+        service.getOrderByOrderCreateReference('orderCreateReference'),
+      ).rejects.toThrow(NedbankError);
 
       // Check the error message
       let errorOnGetOrder: NedbankError | undefined;
       try {
-        await service.getOrder('orderCreateReference');
+        await service.getOrderByOrderCreateReference('orderCreateReference');
       } catch (error) {
         errorOnGetOrder = error;
       }

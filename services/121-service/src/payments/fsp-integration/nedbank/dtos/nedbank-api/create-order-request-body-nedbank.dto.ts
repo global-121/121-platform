@@ -10,13 +10,11 @@ export interface NedbankCreateOrderRequestBodyDto {
         SchemeName: 'account'; // should always be 'account'
         Identification: string;
         Name: string;
-        SecondaryIdentification: string;
       };
       CreditorAccount: {
         SchemeName: string;
         Identification: string;
         Name: string;
-        SecondaryIdentification: string;
       };
     };
     ExpirationDateTime: string;

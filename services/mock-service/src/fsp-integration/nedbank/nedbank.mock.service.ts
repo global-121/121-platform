@@ -10,8 +10,9 @@ export enum NedbankVoucherStatus { // Would be great if we could import this for
   REFUNDED = 'REFUNDED',
 }
 
-enum MockFailScenarios {
-  failDebitorAccountIncorrect = 'failDebitorAccountIncorrect',
+// +27 (the prefix of SA phonenumber) is not included in the number here because the (real nedbank) API accepts both with and without the prefix
+enum NedbankMockNumbers {
+  failDebitorAccountIncorrect = '000000001',
 }
 
 @Injectable()
@@ -51,8 +52,8 @@ export class NedbankMockService {
     // Scenario  Incorrect DebtorAccount Identification
     if (
       !Initiation.DebtorAccount.Identification ||
-      Data.Initiation.CreditorAccount.Name.includes(
-        MockFailScenarios.failDebitorAccountIncorrect,
+      Data.Initiation.CreditorAccount.Identification.includes(
+        NedbankMockNumbers.failDebitorAccountIncorrect,
       )
     ) {
       return {
@@ -66,6 +67,19 @@ export class NedbankMockService {
               'Request Validation Error - TPP account configuration mismatch',
             Path: '',
             Url: '',
+          },
+        ],
+      };
+    }
+    if (Number(Data.Initiation.InstructedAmount.Amount.slice(0, -3)) > 5000) {
+      return {
+        Message: 'BUSINESS ERROR',
+        Code: 'NB.APIM.Field.Invalid',
+        Id: '1d3e3076-9e1c-4933-aa7f-69290941ec70',
+        Errors: [
+          {
+            ErrorCode: 'NB.APIM.Field.Invalid',
+            Message: 'Request Validation Error - Instructed amount is invalid',
           },
         ],
       };

@@ -1,4 +1,4 @@
-export interface NedbankErrorResponse {
+export interface ErrorReponseNedbankDto {
   Message: string;
   Code: string;
   Id: string;

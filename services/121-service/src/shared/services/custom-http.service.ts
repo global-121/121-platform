@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
+import fs from 'fs';
 import * as https from 'https';
 import { isPlainObject } from 'lodash';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
@@ -256,6 +257,22 @@ export class CustomHttpService {
         console.log('An error occured in logErrorRequest: ', error);
       }
     }
+  }
+
+  /**
+   * Create an HTTPS agent with a certificate.
+   * @param certificatePath The path to the certificate.
+   * @param password The passphrase for the certificate.
+   * @returns The HTTPS agent.
+   */
+  public createHttpsAgentWithCertificate(
+    certificatePath: string,
+    password: string,
+  ): https.Agent {
+    return new https.Agent({
+      pfx: fs.readFileSync(certificatePath),
+      passphrase: password,
+    });
   }
 
   private flushLogs(methodName: string): void {

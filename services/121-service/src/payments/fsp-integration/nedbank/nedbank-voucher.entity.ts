@@ -9,11 +9,8 @@ export class NedbankVoucherEntity extends Base121Entity {
   @Column({ unique: true })
   public orderCreateReference: string;
 
-  @Column({ nullable: true, type: 'character varying' })
+  @Column({ type: 'character varying' })
   public status: NedbankVoucherStatus;
-
-  @Column({ type: 'integer', default: 0 })
-  public retrivalCount: number;
 
   @OneToOne(() => TransactionEntity, {
     onDelete: 'CASCADE',

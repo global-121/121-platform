@@ -28,7 +28,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: TransactionJobQueueNames.nedbank,
       processors: [
         {
-          path: 'src/transaction-job-processors/processors/transaction-job-safaricom.processor.ts',
+          path: 'src/transaction-job-processors/processors/transaction-job-nedbank.processor.ts',
         },
       ],
       limiter: {
